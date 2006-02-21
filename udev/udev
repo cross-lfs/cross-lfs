@@ -57,7 +57,7 @@ case "$1" in
 	echo "" > /proc/sys/kernel/hotplug
 
 	# start udevd
-	bootmesg "Starting udevd..."
+	boot_mesg "Starting udevd..."
 	loadproc /sbin/udevd --daemon
 
 	# cleanup some stuff
@@ -65,7 +65,7 @@ case "$1" in
 	rm -rf /events/*
 
 	# start coldplugging
-	bootmesg "Performing Coldplugging..."
+	boot_mesg "Performing Coldplugging..."
 
 	# unlikely, but we may be faster than the first event
 	mkdir -p /dev/.udev/queue
@@ -85,13 +85,13 @@ case "$1" in
 	;;
 
     stop)
-	bootmesg "Stopping udevd..."
+	boot_mesg "Stopping udevd..."
 	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
 	killproc /sbin/udevd
 	;;
 
     restart)
-	bootmesg "Restarting udevd..."
+	boot_mesg "Restarting udevd..."
 	killproc /sbin/udevd
 	loadproc /sbin/udevd --daemon
 	evaluate_retval
@@ -102,14 +102,14 @@ case "$1" in
 	;;
 
     reload)
-	bootmesg "Reloading udev rules..."
+	boot_mesg "Reloading udev rules..."
 	udevcontrol reload_rules
 	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
 	evaluate_retval
 	;;
 
     force-reload)
-	bootmesg "Updating all available device nodes in /dev..."
+	boot_mesg "Updating all available device nodes in /dev..."
 	udevcontrol reload_rules
 	rm -rf /dev/.udev /dev/disk
 	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
