@@ -74,7 +74,7 @@
     results of <option>--print-multi-lib</option> from our cross-compiler,
     not the native compiler <command>gcc</command> builds now.</para>
 
-<screen os="db"><userinput>cp gcc/Makefile.in{,.orig2}
+<screen os="db"><userinput>cp -v gcc/Makefile.in{,.orig2}
 sed -e "/MULTILIBS/s@\$(GCC_FOR_TARGET)@/cross-tools/bin/${CC}@g" \
    gcc/Makefile.in.orig2 > gcc/Makefile.in</userinput></screen>
 
