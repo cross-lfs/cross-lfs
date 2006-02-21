@@ -37,16 +37,17 @@
 
     <para os="c">Compile the package:</para>
 
-<screen><userinput>make EXTRAS="extras/firmware extras/run_directory" udevdir=/dev</userinput></screen>
+<screen><userinput>make EXTRAS="extras/firmware extras/run_directory"</userinput></screen>
 
     <variablelist os="d">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
-      <term><parameter>udevdir=/dev</parameter></term>
+      <term><parameter>EXTRAS="extras/firmware extras/run_directory"</parameter></term>
         <listitem>
-          <para>This tells <command>udev</command> in which directory
-          devices nodes are to be created.</para>
+          <para>This builds the <command>udev_run_devd</command> and
+          <command>udev_run_hotplugd</command> binaries, which are required for
+          correct handling of hotpluggable devices.</para>
         </listitem>
       </varlistentry>
 
@@ -57,8 +58,21 @@
 
     <para os="f">Install the package:</para>
 
-<screen os="g"><userinput>make EXTRAS="extras/firmware extras/run_directory" udevdir=/dev install</userinput></screen>
+<screen os="g"><userinput>make DESTDIR=/ EXTRAS="extras/firmware extras/run_directory" install</userinput></screen>
 
+    <variablelist os="g1">
+      <title>The meaning of the make parameter:</title>
+
+      <varlistentry>
+      <term><parameter>DESTDIR=/</parameter></term>
+        <listitem>
+          <para>This prevents the Udev build process from killing any
+          <command>udevd</command> processes that may be running on the
+          system.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
     <para os="h">Udev's configuration is far from ideal by default, so install
     the configuration files here:</para>
 
