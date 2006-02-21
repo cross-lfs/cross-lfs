@@ -24,10 +24,10 @@ CXXFLAGS="${TGT_CFLAGS}" \
 ./configure --prefix=/usr --sysconfdir=/etc ${extra_conf} \
    --mandir=/usr/share/man --infodir=/usr/share/info \
    --libexecdir=/usr/${libdirname}/gamin \
+   --enable-inotify \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
-# Reenable this when gamin supports latest inotify
-#--enable-inotify \
+
 min_log_init ${BUILDLOGS} &&
 make \
    >> ${LOGFILE} 2>&1 &&
