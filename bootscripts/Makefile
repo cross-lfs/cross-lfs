@@ -120,9 +120,5 @@ minimal: create-dirs create-service-dir
 	ln -sf ../init.d/setclock    ${EXTDIR}/rc.d/rcsysinit.d/S60setclock
 	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} lfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
 
-install-net-agent:
-	install                   -m 755 contrib/hotplug/net.agent   ${EXTDIR}/hotplug
-
 .PHONY: all create-dirs create-service-dir \
-	install install-service-mtu install-livecd \
-	install-net-agent install-enhanced
+	install install-service-mtu
