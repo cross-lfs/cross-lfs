@@ -80,17 +80,22 @@ help:
 	@echo "---------------------------------------------------------------------------------------"
 
 install-helper-functions:
+	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/etc/sysconfig
 	install -m 644 contrib/common/helper.functions ${DESTDIR}/lib/udev/helper.functions
 	install -m 644 contrib/common/udev_helper ${DESTDIR}/etc/sysconfig/udev_helper
 	
 install-network: install-helper-functions install-network-update
+	install -d ${DESTDIR}/etc/udev/rules.d/
 	@echo "Adding rules to ${DESTDIR}/etc/udev/rules.d/35-helper.rules."
 	@cp ${DESTDIR}/etc/udev/rules.d/35-helper.rules /tmp/first
 	@cat /tmp/first contrib/network/rules > ${DESTDIR}/etc/udev/rules.d/35-helper.rules 2>&1
-	@rm ${DESTDIR}/etc/rc.d/rc2.d/K80network
-	@rm ${DESTDIR}/etc/rc.d/rc{3,4,5}.d/S20network
+	@rm -f ${DESTDIR}/etc/rc.d/rc2.d/K80network
+	@rm -f ${DESTDIR}/etc/rc.d/rc{3,4,5}.d/S20network
 
 install-network-update:
+	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/etc/rc.d/init.d
 	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/lib/udev/network_helper.sh
 	install -m ${INITMODE} contrib/network/network ${DESTDIR}/etc/rc.d/init.d/network
 
