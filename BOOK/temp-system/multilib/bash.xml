@@ -32,11 +32,20 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/bash.xml"
+    xpointer="xpointer(//*[@os='ac'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bash.xml"
+    xpointer="xpointer(//*[@os='ad'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bash.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
 <screen os="h"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
    ./configure --prefix=/tools --with-curses \
-   --without-bash-malloc --host=${LFS_TARGET}</userinput></screen>
+   --without-bash-malloc --host=${LFS_TARGET} \
+   --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/bash.xml"
