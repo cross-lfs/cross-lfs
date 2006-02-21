@@ -16,3 +16,13 @@
 
 # kernel firmware loader
 SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware_helper"
+
+# check cdrom helper
+KERNEL=="hd[a-z]", 	BUS=="ide", SYSFS{removable}=="1", RESULT=="cdrom", SYMLINK+="cdrom%e"
+KERNEL=="hd[a-z]", 	BUS=="ide", SYSFS{removable}=="1", PROGRAM=="/lib/udev/check-cdrom.sh %k DVD", SYMLINK+="dvd%e"
+KERNEL=="sr[0-9]*",	BUS=="scsi", PROGRAM=="/lib/udev/check-cdrom.sh %k DVD", SYMLINK+="dvd%e"
+KERNEL=="hd[a-z]", 	BUS=="ide", SYSFS{removable}=="1", PROGRAM=="/lib/udev/check-cdrom.sh %k CD-R", SYMLINK+="cdwriter%e"
+KERNEL=="sr[0-9]*", 	BUS=="scsi", PROGRAM=="/lib/udev/check-cdrom.sh %k CD-R", SYMLINK+="cdwriter%e"
+KERNEL=="hd[a-z]", 	BUS=="ide", SYSFS{removable}=="1", PROGRAM="/lib/udev/check-cdrom.sh %k DVD-R", SYMLINK+="dvdwriter%e"
+KERNEL=="sr[0-9]*", 	BUS=="scsi", PROGRAM=="/lib/udev/check-cdrom.sh %k DVD-R", SYMLINK+="dvdwriter%e"
+

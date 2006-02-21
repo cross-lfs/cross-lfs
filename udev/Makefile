@@ -21,6 +21,7 @@ rules:
 
 scripts:
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
+	install -m ${SCRIPTMODE} check-cdrom.sh ${DESTDIR}/lib/udev/check-cdrom.sh
 	install -m ${SCRIPTMODE} input.sh ${DESTDIR}/lib/udev/input.sh
 
 boot:

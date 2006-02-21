@@ -161,3 +161,9 @@ KERNEL=="iseries/ibmsis*",	NAME="%k", GROUP="disk"
 
 # libusb device access
 SUBSYSTEM=="usb_device", 	PROGRAM="/bin/sh -c 'K=%k; K=$${K#usbdev}; printf bus/usb/%%03i/%%03i $${K%%%%.*} $${K#*.}'", NAME="%c", MODE="0644"
+
+# cdrom
+KERNEL=="sr[0-9]*",             GROUP="cdrom", SYMLINK+="cdrom%e"
+KERNEL=="scd[0-9]*",            GROUP="cdrom", SYMLINK+="cdrom%e"
+KERNEL=="pcd[0-9]*",            GROUP="cdrom", SYMLINK+="cdrom%e"
+
