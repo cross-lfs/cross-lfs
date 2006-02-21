@@ -52,6 +52,11 @@
 
 <screen os="d"><userinput>patch -Np1 -i ../&glibc-linuxthreads-localedef_segfault-patch;</userinput></screen>
 
+   <para os="s1">This patch will fix an obsolete gcc option that was removed in
+   GCC 4.x:</para>
+
+<screen os="s2"><userinput>patch -Np1 -i ../&glibc-sparc_gcc4_fixes-patch;</userinput></screen>
+
     <para os="l5">NPTL is not supported on Sparc v8 and below, so we need to remove the NPTL from our build.
     We do this by removing the NPTL directories:</para>
 
