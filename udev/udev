@@ -61,12 +61,8 @@ case "$1" in
 	cp --preserve=all --recursive --remove-destination /lib/udev/devices/* /dev
 	evaluate_retval
 	
-	boot_mesg "Setting Permissons /dev/shm..."
+	boot_mesg "Setting Permissons on /dev/shm..."
 	chmod 1777 /dev/shm
-	evaluate_retval
-
-	boot_mesg "Mounting /dev/pts..."
-	mount -n -t devpts -o mode=0620,gid=10 devpts /dev/pts
 	evaluate_retval
 
 	echo "" > /sys/kernel/uevent_helper
