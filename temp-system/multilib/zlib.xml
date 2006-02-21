@@ -5,47 +5,49 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-temp-system-ncurses-64bit" role="wrap">
-  <?dbhtml filename="ncurses-64.html"?>
+<sect1 id="ch-temp-system-zlib" role="wrap">
+  <?dbhtml filename="zlib.html"?>
 
-  <title>Ncurses-&ncurses-version; 64 Bit</title>
+  <title>Zlib-&zlib-version;</title>
 
-  <indexterm zone="ch-temp-system-ncurses-64bit">
-    <primary sortas="a-Ncurses">Ncurses</primary>
-    <secondary>temporary system, 64 Bit</secondary>
+  <indexterm zone="ch-temp-system-zlib">
+    <primary sortas="a-Zlib">Zlib</primary>
+    <secondary>temporary system</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../final-system/common/ncurses.xml"
+  href="../../final-system/common/zlib.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
-    <title>Installation of Ncurses</title>
+    <title>Installation of Zlib</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/ncurses.xml"
+    href="../common/zlib.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
-   ./configure --prefix=/tools --with-shared \
-   --host=${LFS_TARGET} --without-debug --without-ada \
-   --enable-overwrite --with-build-cc=gcc --libdir=/tools/lib64</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/zlib.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
+
+<screen os="c"><userinput>CC="${CC} ${BUILD64}" \
+   ./configure --prefix=/tools --shared --libdir=/tools/lib64</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/ncurses.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/ncurses.xml"
+    href="../common/zlib.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/ncurses.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+    href="../common/zlib.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/ncurses.xml"
+    href="../common/zlib.xml"
     xpointer="xpointer(//*[@os='g'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/zlib.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
 
   </sect2>
 
@@ -53,7 +55,7 @@
     <title/>
 
     <para>Details on this package are located in <xref
-    linkend="contents-ncurses" role="."/></para>
+    linkend="contents-zlib" role="."/></para>
 
   </sect2>
 
