@@ -27,7 +27,7 @@
     because only the headers are being installed now; no compiling takes place.
     In the next glibc build, the gcc that's built right after this section will be used.</para>
 
-<screen os="s2"><userinput>cp configure{,.orig}
+<screen os="s2"><userinput>cp -v configure{,.orig}
 sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -137,7 +137,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
     <para os="cf">First copy a common file over to <filename
     class="directory">/tools/include</filename>:</para>
 
-<screen os="cg"><userinput>install -d /tools/include/bits
+<screen os="cg"><userinput>install -dv /tools/include/bits
 cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
     <para os="ch">Now create a blank stub file:</para>
@@ -146,11 +146,11 @@ cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
     <para os="cj">For NPTL use the following command:</para>
 
-<screen os="ck"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/pthread/pthread.h /tools/include/</userinput></screen>
+<screen os="ck"><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/pthread/pthread.h /tools/include/</userinput></screen>
 
     <para os="cl">Now copy the architecture specific header over:</para>
 
-<screen os="cm"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
+<screen os="cm"><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
 
   </sect2>
 
