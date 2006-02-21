@@ -76,11 +76,20 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
 
 <screen os="m"><userinput>make tooldir=/usr</userinput></screen>
 
-    <para os="n">Normally, the tooldir (the directory where the executables
-    will ultimately be located) is set to <filename
-    class="directory">$(exec_prefix)/$(target_alias)</filename>. Because this
-    is a custom system, this target-specific directory in <filename
-    class="directory">/usr</filename> is not required.</para>
+    <variablelist os="n">
+      <title>The meaning of the make parameter:</title>
+
+      <varlistentry>
+        <term><parameter>tooldir=/usr</parameter></term>
+        <listitem>
+          <para>Normally, the tooldir (the directory where the executables
+          will ultimately be located) is set to <filename
+          class="directory">$(exec_prefix)/$(target_alias)</filename>. Because this
+          is a custom system, this target-specific directory in <filename
+          class="directory">/usr</filename> is not required.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
     <important os="o">
       <para>The test suite for Binutils in this section is  considered critical.
