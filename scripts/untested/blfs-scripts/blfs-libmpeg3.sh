@@ -13,7 +13,7 @@ if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=/usr/${libdirname}"
 fi
 
-unpack_tarball libmpeg3-${LIBMPEG3_VER}
+unpack_tarball libmpeg3-${LIBMPEG3_VER}-src
 cd ${PKGDIR}
 
 # Eeeek this is a mess...
