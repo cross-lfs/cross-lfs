@@ -30,16 +30,17 @@
     href="zlib.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>CC="${CC} ${BUILDN32}" \
+<screen os="aa"><userinput>CC="${CC} ${BUILDN32}" \
    ./configure --prefix=/tools --shared --libdir=/tools/lib32</userinput></screen>
 
-    <variablelist>
+    <variablelist os="ab">
       <title>The meaning of the new configure options:</title>
 
       <varlistentry>
         <term><parameter>CC="${CC} ${BUILDN32}"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>Tell ZLIB to use our architecutre specific gcc and use
+          our N32 build flags.</para>
         </listitem>
       </varlistentry>
 

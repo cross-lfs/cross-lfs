@@ -30,40 +30,51 @@
     href="../common/gettext.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<para>Prepare Gettext for compilation:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gettext.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
-<screen><userinput>CC="${CC} ${BUILD32}" CXX="${CXX} ${BUILD32}" \
+<screen os="d"><userinput>CC="${CC} ${BUILD32}" CXX="${CXX} ${BUILD32}" \
    ./configure --prefix=/tools \
    --host=${LFS_TARGET} --disable-libasprintf \
    --without-csharp --cache-file=config.cache</userinput></screen>
 
-    <variablelist>
+    <variablelist os="e">
       <title>The meaning of the configure options:</title>
 
       <varlistentry>
         <term><parameter>CXX="${CXX} ${BUILD32}"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>Forces Gettext is use our Target Architecture g++ compiler
+          with our 32 bit build flags.</para>
         </listitem>
       </varlistentry>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../common/gettext.xml"
-      xpointer="xpointer(//*[@os='c1'])"/>
+      xpointer="xpointer(//*[@os='e1'])"/>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../common/gettext.xml"
-      xpointer="xpointer(//*[@os='c2'])"/>
+      xpointer="xpointer(//*[@os='e2'])"/>
 
     </variablelist>
 
-    <para>Compile the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gettext.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
 
-<screen><userinput>make</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gettext.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gettext.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gettext.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
 
   </sect2>
 

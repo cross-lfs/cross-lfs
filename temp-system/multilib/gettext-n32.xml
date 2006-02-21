@@ -29,32 +29,43 @@
     href="gettext.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-    <para>Prepare Gettext for compilation:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gettext.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
-<screen><userinput>CC="${CC} ${BUILDN32}" CXX="${CXX} ${BUILDN32}" \
+<screen os="d"><userinput>CC="${CC} ${BUILDN32}" CXX="${CXX} ${BUILDN32}" \
    ./configure --prefix=/tools --libdir=/tools/lib32 \
    --host=${LFS_TARGET} --disable-libasprintf \
    --without-csharp --cache-file=config.cache</userinput></screen>
 
-    <variablelist>
+    <variablelist os="e">
       <title>The meaning of the configure options:</title>
 
       <varlistentry>
         <term><parameter>CXX="${CXX} ${BUILDN32}"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>Forces Gettext is use our Target Architecture g++ compiler
+          with our N32 flags.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
-    <para>Compile the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gettext.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
 
-<screen><userinput>make</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gettext.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gettext.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gettext.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
 
   </sect2>
 
