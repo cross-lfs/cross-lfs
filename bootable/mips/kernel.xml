@@ -8,7 +8,7 @@
 <sect1 id="ch-bootable-kernel" role="wrap">
   <?dbhtml filename="kernel.html"?>
 
-  <title>Linux-&linux-mips-version;</title>
+  <title>Linux-&linux-version;</title>
 
   <indexterm zone="ch-bootable-kernel">
     <primary sortas="a-Linux">Linux</primary>
@@ -115,30 +115,32 @@
     href="../x86/kernel.xml"
     xpointer="xpointer(//*[@os='v'])"/>
 
-<screen><userinput>cp vmlinux /boot/vmlinux-&linux-mips-version;
-gzip -9 /boot/vmlinux-&linux-mips-version;</userinput></screen>
+<screen><userinput>cp vmlinux /boot/vmlinux-&linux-version;
+gzip -9 /boot/vmlinux-&linux-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/kernel.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen><userinput>cp System.map /boot/System.map-&linux-mips-version;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/kernel.xml"
+    xpointer="xpointer(//*[@os='w1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/kernel.xml"
     xpointer="xpointer(//*[@os='x'])"/>
 
-<screen><userinput>cp .config /boot/config-&linux-mips-version;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/kernel.xml"
+    xpointer="xpointer(//*[@os='x1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/kernel.xml"
     xpointer="xpointer(//*[@os='y'])"/>
 
-    <para>If the kernel source tree is going to retained, run
-    <command>chown -R 0:0</command> on the <filename
-    class="directory">linux-&linux-mips-version;</filename>
-    directory to ensure all files are owned by user <systemitem
-    class="username">root</systemitem>.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/kernel.xml"
+    xpointer="xpointer(//*[@os='y1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/kernel.xml"
