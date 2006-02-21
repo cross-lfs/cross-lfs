@@ -59,24 +59,26 @@
       </varlistentry>
     </variablelist>
 
-    <para os="h">Install the package:</para>
+    <para os="h">This package does not come with a test suite.</para>
 
-<screen os="i"><userinput>make install</userinput></screen>
+    <para os="i">Install the package:</para>
 
-    <para os="j">Give Readline's dynamic libraries more appropriate
+<screen os="j"><userinput>make install</userinput></screen>
+
+    <para os="k">Give Readline's dynamic libraries more appropriate
     permissions:</para>
 
-<screen os="k"><userinput>chmod 755 /lib/lib{readline,history}.so*</userinput></screen>
+<screen os="l"><userinput>chmod 755 /lib/lib{readline,history}.so*</userinput></screen>
 
-    <para os="l">Now move the static libraries to a more appropriate location:</para>
+    <para os="m">Now move the static libraries to a more appropriate location:</para>
 
-<screen os="m"><userinput>mv /lib/lib{readline,history}.a /usr/lib</userinput></screen>
+<screen os="n"><userinput>mv /lib/lib{readline,history}.a /usr/lib</userinput></screen>
 
-    <para os="n">Next, remove the <filename class="extension">.so</filename>
+    <para os="o">Next, remove the <filename class="extension">.so</filename>
     files in <filename class="directory">/lib</filename> and relink them into
     <filename class="directory">/usr/lib</filename>.</para>
 
-<screen os="o"><userinput>rm /lib/lib{readline,history}.so
+<screen os="p"><userinput>rm /lib/lib{readline,history}.so
 ln -sf ../../lib/libreadline.so.5 /usr/lib/libreadline.so
 ln -sf ../../lib/libhistory.so.5 /usr/lib/libhistory.so</userinput></screen>
 

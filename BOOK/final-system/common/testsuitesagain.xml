@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-final-system-testsuitesagain">
+  <?dbhtml filename="testsuitesagain.html"?>
+
+  <title>About Test Suites, Again</title>
+
+  <para>In the final-system build, you are no longer cross-compiling so it
+  is possible to run package testsuites. Some test suites are more important
+  than others. For example,  the test suites for the core toolchain
+  packages&mdash;GCC, Binutils, and Glibc&mdash;are of the utmost
+  importance due to their central role in a properly functioning system.
+  The test suites for GCC and Glibc can take a very long time to complete,
+  especially on slower hardware, but are strongly recommended.</para>
+
+  <para>A common issue with running the test suites for Binutils and GCC
+  is running out of pseudo terminals (PTYs). This can result in a high
+  number of failing tests. This may happen for several reasons, but the
+  most likely cause is that the host system does not have the
+  <systemitem class="filesystem">devpts</systemitem> file system set up
+  correctly. This issue is discussed in greater detail at
+  <ulink url="http://www.linuxfromscratch.org/lfs/faq.html#no-ptys"/>.</para>
+
+  <para>Sometimes package test suites will fail, but for reasons which the
+  developers are aware of and have deemed non-critical. Consult the logs located
+  at <ulink url="&test-results;"/> to verify whether or not these failures are
+  expected. This site is valid for all tests throughout this book.</para>
+
+</sect1>
