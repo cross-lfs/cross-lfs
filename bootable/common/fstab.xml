@@ -42,12 +42,7 @@ EOF</userinput></screen>
   class="filesystem">ext2</systemitem>. For details on the six
   fields in this file, see <command>man 5 fstab</command>.</para>
 
-  <para os="c">When using a journalling file system, the <parameter>1
-  1</parameter> at the end of the line should be replaced with
-  <parameter>0 0</parameter> because such a partition does not need to
-  be dumped or checked.</para>
-
-  <para os="d">The <filename class="directory">/dev/shm</filename> mount point
+  <para os="c">The <filename class="directory">/dev/shm</filename> mount point
   for <systemitem class="filesystem">tmpfs</systemitem> is included to
   allow enabling POSIX-shared memory. The kernel must have the required
   support built into it for this to work (more about this is in the next
