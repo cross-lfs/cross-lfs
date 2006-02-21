@@ -8,7 +8,7 @@
 #               kay.sievers@suse.de
 #
 # Adapted to  : Jim Gifford
-# LFS
+# LFS	      : Alexander E. Patrakov
 #
 # Version     : 00.00
 #
@@ -61,20 +61,15 @@ case "$1" in
 	cp -ar /lib/udev/devices/* /dev
 	evaluate_retval
 
-	boot_mesg "Executing udevstart..."
-	udevstart
-	evaluate_retval
-
 	# disable hotplug helper, udevd listens to netlink
+	if [ `cat /proc/sys/kernel/hotplug` ] ; then
 	echo "" > /proc/sys/kernel/hotplug
+	fi
 
 	# start udevd
 	boot_mesg "Starting udevd..."
-	loadproc /sbin/udevd --daemon
-
-	# cleanup some stuff
-	rm -f /var/run/sysconfig/network
-	rm -rf /events/*
+	/sbin/udevd --daemon
+	evaluate_retval
 
 	# start coldplugging
 	boot_mesg "Performing Coldplugging..."

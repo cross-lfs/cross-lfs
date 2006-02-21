@@ -1,0 +1,34 @@
+########################################################################
+#
+# Description : 55-sound.rules
+#
+# Authors     : Alexander E. Patrakov 
+#
+# Version     : 00.01
+#
+# Notes       :
+#
+########################################################################
+
+# ALSA
+KERNEL=="controlC[0-9]*",		NAME="snd/%k", GROUP="audio"
+KERNEL=="hw[CD0-9]*",			NAME="snd/%k", GROUP="audio"
+KERNEL=="pcm[CD0-9cp]*",  		NAME="snd/%k", GROUP="audio"
+KERNEL=="midiC[D0-9]*",	 		NAME="snd/%k", GROUP="audio"
+KERNEL=="timer",			NAME="snd/%k", GROUP="audio"
+KERNEL=="seq",				NAME="snd/%k", GROUP="audio
+
+# Sound devices
+KERNEL=="admmidi*",			GROUP="audio"
+KERNEL=="adsp*",			GROUP="audio"
+KERNEL=="aload*",			GROUP="audio"
+KERNEL=="amidi*",			GROUP="audio"
+KERNEL=="amixer*",			GROUP="audio"
+KERNEL=="audio*",			GROUP="audio"
+KERNEL=="dmfm*",			GROUP="audio"
+KERNEL=="dmmidi*",			GROUP="audio"
+KERNEL=="dsp*",				GROUP="audio"
+KERNEL=="midi*",			GROUP="audio"
+KERNEL=="mixer*",			GROUP="audio"
+KERNEL=="music",			GROUP="audio"
+KERNEL=="sequencer*",			GROUP="audio"

@@ -1,24 +1,20 @@
-#!/bin/sh
 ########################################################################
 #
-# Description : udev.count_events
+# Description : 35-helper.rules
 #
 # Authors     : Based on Open Suse Udev Rules
 #               kay.sievers@suse.de
 #
 # Adapted to  : Jim Gifford
-# LFS
+# LFS	      : Alexander E. Patrakov
 #
-# Version     : 00.00
+# Version     : 00.01
 #
-# Notes       : Wait for all current udev events to finish
+# Notes       :
 #
 ########################################################################
 
-loop=100
-while test -d /dev/.udev/queue; do
-    sleep 0.1;
-    test "$loop" -gt 0 || exit 1
-    loop=$(($loop - 1))
-done
-exit 0
+# kernel firmware loader
+SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware_helper"
+
+

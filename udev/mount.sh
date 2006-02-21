@@ -1,7 +1,7 @@
 #!/bin/sh
 ########################################################################
 #
-# Description : Input devices
+# Description : Mount devices
 #
 # Authors     : Based on Open Suse Udev Rules
 #               kay.sievers@suse.de
@@ -34,7 +34,7 @@ NODES=$DEVNAME
 for sl in `udevinfo -q symlink -p $DEVPATH`; do
 	NODES="$NODES /dev/$sl"
 done
-boot_mesg "Avilable nodes: $NODES"
+boot_mesg "Available nodes: $NODES"
 
 NODE=
 declare -i FSCK=0

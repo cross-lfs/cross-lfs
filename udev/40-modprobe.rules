@@ -1,0 +1,28 @@
+########################################################################
+#
+# Description : 40-modprobe.rules
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS	      : Alexander E. Patrakov 
+#
+# Version     : 00.01
+#
+# Notes       :
+#
+########################################################################
+
+# hotplug
+ENV{MODALIAS}=="?*",	RUN+="/sbin/modprobe $env{MODALIAS}"
+
+# scsi
+SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="0|7|14", RUN+="/sbin/modprobe sd_mod"
+SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="1", SYSFS{device/vendor}=="On[sS]tream", RUN+="/sbin/modprobe osst"
+SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="1", RUN+="/sbin/modprobe st"
+SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="[45]", RUN+="/sbin/modprobe sr_mod"
+SUBSYSTEM=="scsi_device",	ACTION=="add", RUN+="/sbin/modprobe sg"
+
+# floppy
+KERNEL=="nvram",		ACTION=="add", RUN+="load_floppy_module.sh"
