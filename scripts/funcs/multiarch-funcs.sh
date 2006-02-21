@@ -50,6 +50,26 @@ set_libdirname() {
    GNOME_LIBCONF_PATH=`echo "${GNOME_LIBCONF_PATH}" | \
                     sed -e "s@lib[36][124]@lib@g"  -e "s@lib@${libdirname}@g" `
 
+   # JAVA handling ... see java-setup.sh
+   #------------------------------------
+   # TODO: This needs to be done a WHOLE lot better...
+   TMP_JAVA_HOME="${JAVA_INSTALLDIR}/jdk${JAVA_VER}"
+   if [ "${MULTIARCH}" = "Y" ]; then
+      TMP_JAVA_HOME="${TMP_JAVA_HOME}-${BUILDENV}"
+   fi
+   if [ -d "${TMP_JAVA_HOME}" ]; then
+      export JAVA_HOME="${TMP_JAVA_HOME}"
+
+      # Alter PATH
+      echo "${PATH}" | grep "${JAVA_INSTALLDIR}/jdk${JAVA_VER}" \
+         > /dev/null 2>&1 &&
+      {
+         PATH=`echo "${PATH}" | sed -e "s@${JAVA_INSTALLDIR}/jdk${JAVA_VER}\(\|-[36][124]\)@${JAVA_HOME}@g" `
+      } || {
+         PATH="${PATH}:${JAVA_HOME}/bin"
+      }
+   fi
+
 }
 
 # Following function sets compiler options
@@ -196,6 +216,7 @@ EOF
 }
 
 use_wrapper() {
+set -x
    # Use full path
    wrapper=/usr/bin/multilib_wrapper
 
@@ -217,15 +238,23 @@ use_wrapper() {
          return 1
       fi
 
+      if [ -L ${file} ]; then
+         # eek, old wrapper symlink wasn't replaced...
+         echo "use_wrapper: error, ${file} is a symlink" 1>&2
+         return 1
+      fi
+         
+         
       # do the work
       mv ${file} ${file}-${BUILDENV} &&
-      ln -sf ${wrapper} ${file} &&
+      ln -sfnv ${wrapper} ${file} &&
       echo "   - ${file}" || {
          echo "use_wrapper: error creating ${file}" 1>&2 
          return 1
       }
 
    done
+set +x
 }
 
 export -f set_buildenv
