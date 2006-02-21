@@ -8,16 +8,15 @@ SELF=`basename ${0}`
 set_buildenv
 set_libdirname
 setup_multiarch
-if [ ! "${libdirname}" = "lib" ]; then
-   extra_conf="--libdir=/usr/${libdirname}"
-fi
 
 unpack_tarball fftw-${FFTW3_VER}
 if [ -d ${PKGDIR}-single ]; then rm -rf ${PKGDIR}-single ; fi
 mv ${PKGDIR} ${PKGDIR}-single
+
 unpack_tarball fftw-${FFTW3_VER}
 if [ -d ${PKGDIR}-double ]; then rm -rf ${PKGDIR}-double ; fi
 mv ${PKGDIR} ${PKGDIR}-double
+
 unpack_tarball fftw-${FFTW3_VER}
 if [ -d ${PKGDIR}-long-double ]; then rm -rf ${PKGDIR}-long-double ; fi
 mv ${PKGDIR} ${PKGDIR}-long-double
@@ -25,8 +24,12 @@ mv ${PKGDIR} ${PKGDIR}-long-double
 
 ### SINGLE ###
 cd ${SRC}/${PKGDIR}-single
-
 LOG=fftw3-single-blfs.log
+
+extra_conf=""
+if [ ! "${libdirname}" = "lib" ]; then
+   extra_conf="--libdir=/usr/${libdirname}"
+fi
 
 # TODO: gonna need to set extra_conf for each arch methinks...
 #       currently only handling amd64/i686
@@ -71,9 +74,9 @@ echo " o ALL OK" || barf
 cd ${SRC}/${PKGDIR}-double
 
 LOG=fftw3-double-blfs.log
-
+extra_conf=""
 if [ ! "${libdirname}" = "lib" ]; then
-   extra_conf="--libdir=/usr/${libdirname}"
+   extra_conf="${extra_conf} --libdir=/usr/${libdirname}"
 fi
 
 # OK, for 32bit on amd64, we can use -sse2 extensions, but it barfs on
@@ -123,7 +126,7 @@ echo " o ALL OK" || barf
 cd ${SRC}/${PKGDIR}-double
 
 LOG=fftw3-long-double-blfs.log
-
+extra_conf=""
 if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=/usr/${libdirname}"
 fi
