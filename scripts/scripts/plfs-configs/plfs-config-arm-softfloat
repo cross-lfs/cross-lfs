@@ -100,6 +100,12 @@ export PMFLAGS="-j 3"
 # against. Expects linux-libc-headers
 export USE_SANITISED_HEADERS=Y
 
+# SYSROOT OPTIONS
+#----------------
+# Set to Y to do a sysrooted build.
+# Sysroot will be ${LFS}
+export USE_SYSROOT=Y
+
 # GCC
 #-----
 # Change the following to Y if you would like
@@ -121,6 +127,9 @@ export USE_NPTL=N
 
 # Are we building a multi-arch toolchain
 export MULTIARCH=N
+
+# Dont build shared libgcc prior to main glibc build
+export NO_GCC_EH=Y
 
 # MISC
 #------
