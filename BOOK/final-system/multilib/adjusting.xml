@@ -11,73 +11,69 @@
   <title>Adjusting the Toolchain</title>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../x86/adjusting.xml"
+  href="../common/adjusting.xml"
   xpointer="xpointer(//*[@os='a'])"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../x86/adjusting.xml"
-  xpointer="xpointer(//*[@os='b'])"/>
-
 <screen os="c"><userinput>gcc -dumpspecs | \
-perl -pi -e 's@/tools/lib/ld@/lib/ld@g;' \
+perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
      -e 's@/tools/lib64/ld@/lib64/ld@g;' \
      -e 's@\*startfile_prefix_spec:\n@$_/usr/lib/ @g;' > \
      `dirname $(gcc --print-libgcc-file-name)`/specs</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../x86/adjusting.xml"
+  href="../common/adjusting.xml"
   xpointer="xpointer(//*[@os='d'])"/>
 
-  <para>Note that <filename class="directory">/lib</filename> or
+  <para os="m1">Note that <filename class="directory">/lib</filename> or
   <filename class="directory">/lib64</filename> is now the prefix
   of our dynamic linker.</para>
 
   <caution>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para>For 32 bit ABI:</para>
+    <para os="m2">For 32 bit ABI:</para>
 
-<screen><userinput>echo 'main(){}' &gt; dummy.c
+<screen os="m3"><userinput>echo 'main(){}' &gt; dummy.c
 cc ${BUILD32} dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-    <para>For 64 bit ABI:</para>
+    <para os="m4">For 64 bit ABI:</para>
 
-<screen><userinput>echo 'main(){}' &gt; dummy.c
+<screen os="m5"><userinput>echo 'main(){}' &gt; dummy.c
 cc ${BUILD64} dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><computeroutput>[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]</computeroutput></screen>
+<screen os="m6"><computeroutput>[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]</computeroutput></screen>
 
-    <para>Note that <filename class="directory">/lib</filename> or
+    <para os="m7">Note that <filename class="directory">/lib</filename> or
     <filename class="directory">/lib64</filename> is now the prefix
     of our dynamic linker.</para>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='k'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='l'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/adjusting.xml"
+    href="../common/adjusting.xml"
     xpointer="xpointer(//*[@os='m'])"/>
 
   </caution>
