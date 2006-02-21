@@ -51,16 +51,16 @@
 
     <para os="h">Move the Ncurses static libraries to the proper locations:</para>
 
-<screen os="i"><userinput>mv /lib/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib</userinput></screen>
+<screen os="i"><userinput>mv -v /lib/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib</userinput></screen>
 
     <para os="j">Create symlinks in <filename class="directory">/usr/lib:</filename></para>
 
-<screen os="k"><userinput>rm /lib/lib{ncurses,menu,panel,form,curses}.so
-ln -sf ../../lib/libncurses.so.5 /usr/lib/libcurses.so
-ln -sf ../../lib/libncurses.so.5 /usr/lib/libncurses.so
-ln -sf ../../lib/libmenu.so.5 /usr/lib/libmenu.so
-ln -sf ../../lib/libpanel.so.5 /usr/lib/libpanel.so
-ln -sf ../../lib/libform.so.5 /usr/lib/libform.so</userinput></screen>
+<screen os="k"><userinput>rm -v /lib/lib{ncurses,menu,panel,form,curses}.so
+ln -svf ../../lib/libncurses.so.5 /usr/lib/libcurses.so
+ln -svf ../../lib/libncurses.so.5 /usr/lib/libncurses.so
+ln -svf ../../lib/libmenu.so.5 /usr/lib/libmenu.so
+ln -svf ../../lib/libpanel.so.5 /usr/lib/libpanel.so
+ln -svf ../../lib/libform.so.5 /usr/lib/libform.so</userinput></screen>
 
     <para os="l">Give the Ncurses libraries execute permissions:</para>
 

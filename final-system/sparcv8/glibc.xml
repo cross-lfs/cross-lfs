@@ -33,7 +33,7 @@
 <filename>glibc-ports-&glibc-ports-version;.tar.bz2</filename> and move the
 linuxthreads directories. The following commands will accomplish the task:</para>
 
-<screen os="l2"><userinput>tar jxvf glibc-ports-&glibc-ports-version;.tar.bz2 \
+<screen os="l2"><userinput>tar -jxvf glibc-ports-&glibc-ports-version;.tar.bz2 \
 --strip-components=1 glibc-&glibc-ports-version;/linuxthreads*</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -47,7 +47,7 @@ linuxthreads directories. The following commands will accomplish the task:</para
     <para os="l3">NPTL is not supported on Sparc v8 and below, so we need to remove the NPTL from our build.
     We do this by removing the NPTL directories:</para>
 
-<screen os="l4"><userinput>rm -rf nptl*</userinput></screen>
+<screen os="l4"><userinput>rm -rvf nptl*</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"

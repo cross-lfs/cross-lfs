@@ -25,11 +25,11 @@
   <para>Begin by creating directories onto which the file systems will
   be mounted:</para>
 
-<screen><userinput>mkdir -p $LFS/{proc,sys}</userinput></screen>
+<screen><userinput>mkdir -pv $LFS/{proc,sys}</userinput></screen>
 
   <para>Now mount the file systems:</para>
 
-<screen><userinput>mount -t proc proc $LFS/proc
+<screen><userinput>mount -vt proc proc $LFS/proc
 mount -t sysfs sysfs $LFS/sys</userinput></screen>
 
   <para>Remember that if for any reason you stop working on the LFS system
@@ -40,8 +40,8 @@ mount -t sysfs sysfs $LFS/sys</userinput></screen>
   chroot environment. To keep the host up to date, perform a <quote>fake
   mount</quote> for each of these now:</para>
 
-<screen><userinput>mount -f -t tmpfs tmpfs $LFS/dev
-mount -f -t tmpfs tmpfs $LFS/dev/shm
-mount -f -t devpts -o gid=10,mode=620 devpts $LFS/dev/pts</userinput></screen>
+<screen><userinput>mount -f -vt tmpfs tmpfs $LFS/dev
+mount -f -vt tmpfs tmpfs $LFS/dev/shm
+mount -f -vt devpts -o gid=10,mode=620 devpts $LFS/dev/pts</userinput></screen>
 
 </sect1>

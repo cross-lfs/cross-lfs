@@ -62,7 +62,7 @@
     <para os="e">The Glibc documentation recommends building Glibc outside of the
     source directory in a dedicated build directory:</para>
 
-<screen os="f"><userinput>mkdir ../glibc-build
+<screen os="f"><userinput>mkdir -v ../glibc-build
 cd ../glibc-build</userinput></screen>
 
     <para os="g">Prepare Glibc for compilation:</para>
@@ -168,7 +168,7 @@ cd ../glibc-build</userinput></screen>
     will install the minimum set of locales necessary for the tests to run
     successfully:</para>
 
-<screen><userinput>mkdir -p /usr/lib/locale
+<screen><userinput>mkdir -pv /usr/lib/locale
 localedef -i de_DE -f ISO-8859-1 de_DE
 localedef -i de_DE@euro -f ISO-8859-15 de_DE@euro
 localedef -i en_HK -f ISO-8859-1 en_HK
@@ -244,7 +244,7 @@ EOF</userinput></screen>
     <emphasis>Canada/Eastern</emphasis>). Then create the
     <filename>/etc/localtime</filename> file by running:</para>
 
-<screen><userinput>cp --remove-destination /usr/share/zoneinfo/<replaceable>[xxx]</replaceable> \
+<screen><userinput>cp -v --remove-destination /usr/share/zoneinfo/<replaceable>[xxx]</replaceable> \
     /etc/localtime</userinput></screen>
 
     <para>Replace <replaceable>[xxx]</replaceable> with the name of the time zone

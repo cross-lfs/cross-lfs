@@ -81,12 +81,12 @@
     <para os="j">Udev's configuration is far from ideal by default, so install
     the configuration files here:</para>
 
-<screen os="k"><userinput>cp ../&udev-config-file; /etc/udev/rules.d/25-lfs.rules</userinput></screen>
+<screen os="k"><userinput>cp -v ../&udev-config-file; /etc/udev/rules.d/25-lfs.rules</userinput></screen>
 
     <para os="l">Install the documentation that explains how to create
     Udev rules:</para>
 
-<screen os="m"><userinput>install -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
+<screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
 
     <para os="n">Run the <command>udevstart</command> program to create our full
     complement of device nodes.</para>

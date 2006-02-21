@@ -54,16 +54,16 @@
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="i"><userinput>mv /lib32/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib32</userinput></screen>
+<screen os="i"><userinput>mv -v /lib32/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib32</userinput></screen>
 
     <para os="j">Create symlinks in <filename class="directory">/usr/lib32:</filename></para>
 
-<screen os="k"><userinput>rm /lib32/lib{ncurses,menu,panel,form,curses}.so
-ln -sf ../../lib32/libncurses.so.5 /usr/lib32/libncurses.so
-ln -sf ../../lib32/libncurses.so.5 /usr/lib32/libcurses.so
-ln -sf ../../lib32/libmenu.so.5 /usr/lib32/libmenu.so
-ln -sf ../../lib32/libpanel.so.5 /usr/lib32/libpanel.so
-ln -sf ../../lib32/libform.so.5 /usr/lib32/libform.so</userinput></screen>
+<screen os="k"><userinput>rm -v /lib32/lib{ncurses,menu,panel,form,curses}.so
+ln -svf ../../lib32/libncurses.so.5 /usr/lib32/libncurses.so
+ln -svf ../../lib32/libncurses.so.5 /usr/lib32/libcurses.so
+ln -svf ../../lib32/libmenu.so.5 /usr/lib32/libmenu.so
+ln -svf ../../lib32/libpanel.so.5 /usr/lib32/libpanel.so
+ln -svf ../../lib32/libform.so.5 /usr/lib32/libform.so</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="ncurses.xml"

@@ -66,7 +66,7 @@
     class="directory">/usr/lib</filename>. Create a symlink to account for
     this:</para>
 
-<screen os="m"><userinput>ln -s libfl.a /usr/lib/libl.a</userinput></screen>
+<screen os="m"><userinput>ln -sv libfl.a /usr/lib/libl.a</userinput></screen>
 
     <para os="n">A few programs do not know about <command>flex</command> yet and
     try to run its predecessor, <command>lex</command>. To support those
@@ -82,7 +82,7 @@ exec /usr/bin/flex -l "$@"
 
 # End /usr/bin/lex</literal>
 EOF
-chmod 755 /usr/bin/lex</userinput></screen>
+chmod -v 755 /usr/bin/lex</userinput></screen>
 
   </sect2>
 

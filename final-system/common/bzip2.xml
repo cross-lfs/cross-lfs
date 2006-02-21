@@ -65,7 +65,7 @@ make clean</userinput></screen>
 <screen os="e"><userinput>make</userinput></screen>
 
     <para os="f">If reinstalling Bzip2, perform
-    <userinput>rm -f /usr/bin/bz*</userinput> first, otherwise the
+    <userinput>rm -vf /usr/bin/bz*</userinput> first, otherwise the
     following <command>make install</command> will fail.</para>
 
     <para os="g">Install the programs:</para>
@@ -76,12 +76,12 @@ make clean</userinput></screen>
     <filename class="directory">/bin</filename> directory, make
     some necessary symbolic links, and clean up:</para>
 
-<screen os="j"><userinput>cp bzip2-shared /bin/bzip2
-cp -a libbz2.so* /lib
-ln -s ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
-rm /usr/bin/{bunzip2,bzcat,bzip2}
-ln -s bzip2 /bin/bunzip2
-ln -s bzip2 /bin/bzcat</userinput></screen>
+<screen os="j"><userinput>cp -v bzip2-shared /bin/bzip2
+cp -av libbz2.so* /lib
+ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
+rm -v /usr/bin/{bunzip2,bzcat,bzip2}
+ln -sv bzip2 /bin/bunzip2
+ln -sv bzip2 /bin/bzcat</userinput></screen>
 
   </sect2>
 
