@@ -75,13 +75,13 @@ sed -e 's|(LDLIBPTH) ./miniperl|(LDLIBPTH) ./miniperl-cross|g' Makefile.orig > M
    cross-tools we have created:</para>
 
 <screen os="m"><userinput>cp config.sh{,.orig}
-   sed -e "s@\(^ar=\).*@\1'${AR}'@g" config.sh.orig > config.sh
-   cp config.sh{,.orig}
-   sed -e "s@\(^ranlib=\).*@\1'${RANLIB}'@g" config.sh.orig > config.sh
-   cp config.sh{,.orig}
-   sed -e "s@\(^cc=\).*@\1'${CC} ${BUILD32}'@g" config.sh.orig > config.sh
-   cp config.sh{,.orig}
-   sed -e "s@\(^ld=\).*@\1'${CC} ${BUILD32}'@g" config.sh.orig > config.sh</userinput></screen>
+sed -e "s@\(^ar=\).*@\1'${AR}'@g" config.sh.orig > config.sh
+cp config.sh{,.orig}
+sed -e "s@\(^ranlib=\).*@\1'${RANLIB}'@g" config.sh.orig > config.sh
+cp config.sh{,.orig}
+sed -e "s@\(^cc=\).*@\1'${CC} ${BUILD32}'@g" config.sh.orig > config.sh
+cp config.sh{,.orig}
+sed -e "s@\(^ld=\).*@\1'${CC} ${BUILD32}'@g" config.sh.orig > config.sh</userinput></screen>
 
   <para os="n">Now we are ready to make our cross-compiled perl:</para>
 
