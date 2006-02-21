@@ -1,4 +1,4 @@
-#!/bin/ibash
+#!/bin/bash
 
 ### aspell ###
 
