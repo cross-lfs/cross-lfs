@@ -52,13 +52,6 @@ set_libdirname() {
 
 }
 
-which_func() {
-   type ${1} | \
-   sed -e 's@.* \(.*\)$@\1@g' \
-       -e 's@[()]@@g'
-}
-
-
 # Following function sets compiler options
 setup_multiarch() {
    if [ "Y" = "${MULTIARCH}" ]; then

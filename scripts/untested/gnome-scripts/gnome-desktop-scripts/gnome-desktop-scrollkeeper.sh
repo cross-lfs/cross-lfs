@@ -48,3 +48,4 @@ echo " o ALL OK" || barf
 if [ "Y" = "${MULTIARCH}" ]; then
    use_wrapper /usr/bin/scrollkeeper-config
 fi
+

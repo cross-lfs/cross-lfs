@@ -51,4 +51,3 @@ min_log_init ${INSTLOGS} &&
 make install \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
-
