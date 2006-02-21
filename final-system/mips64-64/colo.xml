@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  <!ENTITY % patches-entities SYSTEM "../../patches.ent">
+  %general-entities;
+  %patches-entities;
+]>
+
+<sect1 id="ch-system-colo" role="wrap">
+  <?dbhtml filename="colo.html"?>
+
+  <title>Colo-&colo-version;</title>
+
+  <indexterm zone="ch-system-colo">
+    <primary sortas="a-Colo">Colo</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/colo.xml"
+    xpointer="xpointer(//*[@role='package']/para[1])"/>
+
+    <segmentedlist>
+      <segtitle>&buildtime;</segtitle>
+      <segtitle>&diskspace;</segtitle>
+
+      <seglistitem>
+        <seg>Not checked yet</seg>
+        <seg>Not checked yet</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/colo.xml"
+    xpointer="xpointer(//*[@role='package']/segmentedlist[2])"/>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Colo</title>
+
+    <para>Since 64 bit version doesn't work currently we are going to
+    compile the utilities as 64 bit and use the precompiled bootloader.</para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/colo.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
+
+<screen><userinput>make CC="gcc ${BUILD64}" tooldirs</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/colo.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/colo.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
+
+  </sect2>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../mips/colo.xml"
+  xpointer="xpointer(id('contents-colo'))"/>
+
+</sect1>

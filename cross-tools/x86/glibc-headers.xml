@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  <!ENTITY % patches-entities SYSTEM "../../patches.ent">
+  %general-entities;
+  %patches-entities;
+]>
+
+<sect1 id="ch-cross-tools-glibc-headers" role="wrap">
+  <?dbhtml filename="glibc-headers.html"?>
+
+  <title>Glibc-&glibc-version; Headers</title>
+
+  <indexterm zone="ch-cross-tools-glibc-headers">
+    <primary sortas="a-Glibc">Glibc</primary>
+    <secondary>cross tools, headers</secondary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/glibc.xml"
+    xpointer="xpointer(//*[@role='package']/para[1])"/>
+
+    <segmentedlist>
+      <segtitle>&buildtime;</segtitle>
+      <segtitle>&diskspace;</segtitle>
+
+      <seglistitem>
+        <seg>Not checked yet</seg>
+        <seg>Not checked yet</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/glibc.xml"
+    xpointer="xpointer(//*[@role='package']/segmentedlist[2])"/>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Glibc Headers</title>
+
+    <para os="s1">The following sed removes a dependency of gcc 3.4.x from
+    the glibc we are using in cross-lfs. The reason we are changing it is
+    because this only installs the headers, no compiling takes place. In the
+    next glibc chapter, we use the gcc that's build right after this chapter.</para>
+
+<screen os="s2"><userinput>cp configure{,.orig}
+sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/glibc.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/glibc.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/glibc.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
+
+<screen><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
+    --host=${LFS_TARGET} --build=${LFS_HOST} \
+    --disable-sanity-checks --enable-kernel=2.6.0 \
+    --with-headers=/tools/include \
+    --with-binutils=/cross-tools/${LFS_TARGET}/bin</userinput></screen>
+
+   <warning os="e1">
+      <para><emphasis>Any</emphasis> error message you see about nptl at this point\
+       can safely be ignored.</para>
+   </warning>
+
+    <variablelist os="ca">
+      <title>The meaning of the configure options:</title>
+
+      <varlistentry>
+        <term><parameter>CC=gcc</parameter></term>
+        <listitem>
+          <para>This do ...</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca1">
+        <term><parameter>--prefix=/tools</parameter></term>
+        <listitem>
+          <para>This tells the configure script to prepare to install the
+          package in the <filename class="directory">/tools</filename>
+          directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca2">
+        <term><parameter>--host=${LFS_TARGET}</parameter></term>
+        <listitem>
+          <para>This do ...</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca3">
+        <term><parameter>--build=${LFS_HOST}</parameter></term>
+        <listitem>
+          <para>This do ...</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-sanity-checks</parameter></term>
+        <listitem>
+          <para>This switch do ... .</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca4">
+        <term><parameter>--enable-kernel=2.6.0</parameter></term>
+        <listitem>
+          <para>This tells Glibc to compile the library with support
+          for 2.6.x Linux kernels.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca5">
+        <term><parameter>--with-headers=/tools/include</parameter></term>
+        <listitem>
+          <para>This tells Glibc to compile itself against the headers
+          recently installed to the <filename class="directory">/tools</filename>
+          directory, so that it knows exactly what features the kernel has
+          and can optimize itself accordingly.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-binutils=/cross-tools/${LFS_TARGET}/bin</parameter></term>
+        <listitem>
+          <para>This switch do ... .</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="cb">Now, install the headers:</para>
+
+<screen os="cd"><userinput>make install-headers</userinput></screen>
+
+    <para os="ce">Some files aren't installed by the above command, then
+    we will copy the header files we need:</para>
+
+    <para os="cf">First we will copy a common file over to <filename
+    class="directory">/tools/include</filename>:</para>
+
+<screen os="cg"><userinput>install -d /tools/include/bits
+cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
+
+    <para os="ch">Now we will create a blank stub file:</para>
+
+<screen os="ci"><userinput>touch /tools/include/gnu/stubs.h</userinput></screen>
+
+    <para os="cj">For NPTL we use the following command:</para>
+
+<screen os="ck"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/pthread/pthread.h /tools/include/</userinput></screen>
+
+    <para os="cl">Now we copy the architecture specific header over:</para>
+
+<screen><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-glibc" role="."/></para>
+
+  </sect2>
+
+</sect1>

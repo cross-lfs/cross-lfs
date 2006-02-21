@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-temp-system-variables">
+  <?dbhtml filename="variables.html"?>
+
+  <title>Build Variables</title>
+
+  <para>We will need to setup target specific variables for the compiler
+  and linkers:</para>
+
+<screen><userinput>export CC="${LFS_TARGET}-gcc"
+export CXX="${LFS_TARGET}-g++"
+export AR="${LFS_TARGET}-ar"
+export AS="${LFS_TARGET}-as"
+export RANLIB="${LFS_TARGET}-ranlib"
+export LD="${LFS_TARGET}-ld"
+export STRIP="${LFS_TARGET}-strip"</userinput></screen>
+
+  <para>Lets add the build variables to <filename>~/.bashrc</filename> to
+  prevent issues if we stop and come back later:</para>
+
+<screen><userinput>echo export CC=\""${CC}\"" &gt;&gt; ~/.bashrc
+echo export CXX=\""${CXX}\"" &gt;&gt; ~/.bashrc
+echo export AR=\""${AR}\"" &gt;&gt; ~/.bashrc
+echo export AS=\""${AS}\"" &gt;&gt; ~/.bashrc
+echo export RANLIB=\""${RANLIB}\"" &gt;&gt; ~/.bashrc
+echo export LD=\""${LD}\"" &gt;&gt; ~/.bashrc
+echo export STRIP=\""${STRIP}\"" &gt;&gt; ~/.bashrc</userinput></screen>
+
+</sect1>

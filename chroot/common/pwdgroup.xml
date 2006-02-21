@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-chroot-pwdgroup">
+  <?dbhtml filename="pwdgroup.html"?>
+
+  <title>Creating the passwd, group, and log Files</title>
+
+  <indexterm zone="ch-chroot-pwdgroup">
+    <primary sortas="e-/etc/passwd">/etc/passwd</primary>
+  </indexterm>
+
+  <indexterm zone="ch-chroot-pwdgroup">
+    <primary sortas="e-/etc/group">/etc/group</primary>
+  </indexterm>
+
+  <indexterm zone="ch-chroot-pwdgroup">
+    <primary sortas="e-/var/run/utmp">/var/run/utmp</primary>
+  </indexterm>
+
+  <indexterm zone="ch-chroot-pwdgroup">
+    <primary sortas="e-/var/log/btmp">/var/log/btmp</primary>
+  </indexterm>
+
+  <indexterm zone="ch-chroot-pwdgroup">
+    <primary sortas="e-/var/log/lastlog">/var/log/lastlog</primary>
+  </indexterm>
+
+  <indexterm zone="ch-chroot-pwdgroup">
+    <primary sortas="e-/var/log/wtmp">/var/log/wtmp</primary>
+  </indexterm>
+
+  <para>In order for user <systemitem class="username">root</systemitem> to
+  be able to login and for the name <quote>root</quote> to be recognized,
+  there must be relevant entries in the <filename>/etc/passwd</filename>
+  and <filename>/etc/group</filename> files.</para>
+
+  <para>Create the <filename>/etc/passwd</filename> file by running the
+  following command:</para>
+
+<screen><userinput>cat &gt; /etc/passwd &lt;&lt; "EOF"
+<literal>root::0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/bin/false
+daemon:x:2:2:daemon:/sbin:/bin/false
+adm:x:3:4:adm:/var/adm:/bin/false
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+lp:x:10:18:lp:/var/spool/lp:/bin/false
+mail:x:30:30:mail:/var/spool/mail:/bin/false
+news:x:31:31:news:/var/spool/news:/bin/false
+uucp:x:32:32:uucp:/var/spool/uucp:/bin/false
+operator:x:50:0:operator:/root:/bin/bash
+postmaster:x:51:30:postmaster:/var/spool/mail:/bin/false
+nobody:x:65534:65534:nobody:/:/bin/false</literal>
+EOF</userinput></screen>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='a'])"/>
+
+  <para>Create the <filename>/etc/group</filename> file by running the
+  following command:</para>
+
+<screen><userinput>cat &gt; /etc/group &lt;&lt; "EOF"
+<literal>root::0:root
+bin::1:root,bin,daemon
+daemon::2:root,bin,daemon
+sys::3:root,bin,adm
+adm::4:root,adm,daemon
+kmem::5:
+tty::10:
+video::11:root
+console::12:
+disk::13:root,adm
+floppy::14:root
+cdrom::15:
+cdrw::16:
+tape::17:root
+lp::18:lp
+usb::19:
+audio::20:
+dialout::21:root
+mail::30:mail
+news::31:news
+uucp::32:uucp
+users::100:
+nogroup::65533:
+nobody::65534:</literal>
+EOF</userinput></screen>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='b'])"/>
+
+  <para>To remove the <quote>I have no name!</quote> prompt, start a
+  new shell. Since a full Glibc was installed in <xref
+  linkend="chapter-cross-tools"/> and the <filename>/etc/passwd</filename>
+  and <filename>/etc/group</filename> files have been created, user name
+  and group name resolution will now work.</para>
+
+<screen><userinput>exec /tools/bin/bash --login +h</userinput></screen>
+
+  <para>Note the use of the <parameter>+h</parameter> directive. This tells
+  <command>bash</command> not to use its internal path hashing. Without this
+  directive, <command>bash</command> would remember the paths to binaries it
+  has executed. To ensure the use of the newly compiled binaries as soon as
+  they are installed, the <parameter>+h</parameter> directive will be used
+  for the duration of the nexts chapters.</para>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='c'])"/>
+
+<screen><userinput>touch /var/run/utmp /var/log/{btmp,lastlog,wtmp}
+chgrp utmp /var/run/utmp /var/log/lastlog
+chmod 664 /var/run/utmp /var/log/lastlog
+chmod 600 /var/log/btmp</userinput></screen>
+
+  <para>The <filename>/var/run/utmp</filename> file records the users that
+  are currently logged in. The <filename>/var/log/wtmp</filename> file records
+  all logins and logouts. The <filename>/var/log/lastlog</filename> file
+  records when each user last logged in. The <filename>/var/log/btmp</filename>
+  file records the bad login attempts.</para>
+
+</sect1>

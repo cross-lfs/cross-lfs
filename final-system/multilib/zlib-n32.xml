@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  <!ENTITY % patches-entities SYSTEM "../../patches.ent">
+  %general-entities;
+  %patches-entities;
+]>
+
+<sect1 id="ch-system-zlib-n32" role="wrap">
+  <?dbhtml filename="zlib-n32.html"?>
+
+  <title>Zlib-&zlib-version; N32 Libraries</title>
+
+  <indexterm zone="ch-system-zlib-n32">
+    <primary sortas="a-Zlib">Zlib</primary>
+    <secondary>N32</secondary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/zlib.xml"
+    xpointer="xpointer(//*[@role='package']/para[1])"/>
+
+    <segmentedlist>
+      <segtitle>&buildtime;</segtitle>
+      <segtitle>&diskspace;</segtitle>
+
+      <seglistitem>
+        <seg>Not checked yet</seg>
+        <seg>Not checked yet</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/zlib.xml"
+    xpointer="xpointer(//*[@role='package']/segmentedlist[2])"/>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Zlib</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
+
+<screen><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure --prefix=/usr \
+   --shared --libdir=/lib32</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
+
+    <para>The previous command installed a <filename
+    class="extension">.so</filename> file in <filename
+    class="directory">/lib32</filename>. We will remove it and relink it into
+    <filename class="directory">/usr/lib32</filename>:</para>
+
+<screen><userinput>rm /lib32/libz.so
+ln -sf ../../lib32/libz.so.&zlib-version; /usr/lib32/libz.so</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='j'])"/>
+
+<screen><userinput>make clean
+CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure \
+    --prefix=/usr --libdir=/usr/lib32
+make</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='m'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='n'])"/>
+
+<screen><userinput>chmod 644 /usr/lib32/libz.a</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-zlib" role="."/></para>
+
+  </sect2>
+
+</sect1>

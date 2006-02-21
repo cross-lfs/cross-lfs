@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  <!ENTITY % patches-entities SYSTEM "../../patches.ent">
+  %general-entities;
+  %patches-entities;
+]>
+
+<sect1 id="ch-system-bzip2" role="wrap">
+  <?dbhtml filename="bzip2-64bit.html"?>
+
+  <title>Bzip2-&bzip2-version; 64 Bit</title>
+
+  <indexterm zone="ch-system-bzip2">
+    <primary sortas="a-Bzip2">Bzip2</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bzip2.xml"
+    xpointer="xpointer(//*[@role='package']/para[1])"/>
+
+    <segmentedlist>
+      <segtitle>&buildtime;</segtitle>
+      <segtitle>&diskspace;</segtitle>
+
+      <seglistitem>
+        <seg>Not checked yet</seg>
+        <seg>Not checked yet</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bzip2.xml"
+    xpointer="xpointer(//*[@role='package']/segmentedlist[2])"/>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Bzip2</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bzip2.xml"
+    xpointer="xpointer(//*[@os='j'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bzip2.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='m'])"/>
+
+    <para os="ba">We need to remove the tests since they won't work on
+    a multi-architecture build, and tell change the default lib path
+    to <filename class="directory">lib64</filename>:</para>
+
+<screen os="bb"><userinput>sed -i -e 's@^\(all:.*\) test@\1@g' \
+    -e 's@/lib\(/\| \|$\)@/lib64\1@g' Makefile</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
+
+<screen><userinput>make -f Makefile-libbz2_so CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}"
+make clean</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
+
+<screen><userinput>make CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}"</userinput></screen>
+
+    <para>Now we remove the 32 bit versions of the programs so we
+    can install the 64 bit versions.</para>
+
+<screen><userinput>rm -f /usr/bin/bz* /bin/bz*</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
+
+<screen><userinput>cp bzip2-shared /bin/bzip2
+cp -a libbz2.so* /lib64
+ln -s ../../lib64/libbz2.so.1.0 /usr/lib64/libbz2.so
+rm /usr/bin/{bunzip2,bzcat,bzip2}
+ln -s bzip2 /bin/bzcat</userinput></screen>
+
+  </sect2>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/bzip2.xml"
+  xpointer="xpointer(id('contents-bzip2'))"/>
+
+</sect1>

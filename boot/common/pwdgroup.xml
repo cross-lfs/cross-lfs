@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-pwdgroup">
+  <?dbhtml filename="pwdgroup.html"?>
+
+  <title>Creating the passwd, group, and log Files</title>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-${LFS}/etc/passwd">${LFS}/etc/passwd</primary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-${LFS}/etc/group">${LFS}/etc/group</primary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-${LFS}/var/run/utmp">${LFS}/var/run/utmp</primary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-${LFS}/var/log/btmp">${LFS}/var/log/btmp</primary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-${LFS}/var/log/lastlog">${LFS}/var/log/lastlog</primary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-${LFS}/var/log/wtmp">${LFS}/var/log/wtmp</primary>
+  </indexterm>
+
+  <para>In order for user <systemitem class="username">root</systemitem> to
+  be able to login and for the name <quote>root</quote> to be recognized,
+  there must be relevant entries in the <filename>${LFS}/etc/passwd</filename>
+  and <filename>${LFS}/etc/group</filename> files.</para>
+
+  <para>Create the <filename>${LFS}/etc/passwd</filename> file by running
+  the following command:</para>
+
+<screen><userinput>cat &gt; ${LFS}/etc/passwd &lt;&lt; "EOF"
+<literal>root::0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/bin/false
+daemon:x:2:2:daemon:/sbin:/bin/false
+adm:x:3:4:adm:/var/adm:/bin/false
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+lp:x:10:18:lp:/var/spool/lp:/bin/false
+mail:x:30:30:mail:/var/spool/mail:/bin/false
+news:x:31:31:news:/var/spool/news:/bin/false
+uucp:x:32:32:uucp:/var/spool/uucp:/bin/false
+operator:x:50:0:operator:/root:/bin/bash
+postmaster:x:51:30:postmaster:/var/spool/mail:/bin/false
+nobody:x:65534:65534:nobody:/:/bin/false</literal>
+EOF</userinput></screen>
+
+  <para os="a">The actual password for <systemitem class="username">root</systemitem>
+  (the <quote>x</quote> used here is just a placeholder) will be set
+  later.</para>
+
+  <para>Create the <filename>${LFS}/etc/group</filename> file by running
+  the following command:</para>
+
+<screen><userinput>cat &gt; ${LFS}/etc/group &lt;&lt; "EOF"
+<literal>root::0:root
+bin::1:root,bin,daemon
+daemon::2:root,bin,daemon
+sys::3:root,bin,adm
+adm::4:root,adm,daemon
+kmem::5:
+tty::10:
+video::11:root
+console::12:
+disk::13:root,adm
+floppy::14:root
+cdrom::15:
+cdrw::16:
+tape::17:root
+lp::18:lp
+usb::19:
+audio::20:
+dialout::21:root
+mail::30:mail
+news::31:news
+uucp::32:uucp
+users::100:
+nogroup::65533:
+nobody::65534:</literal>
+EOF</userinput></screen>
+
+  <para os="b">The created groups are not part of any standard&mdash;they are
+  groups decided on in part by the requirements of the Udev configuration
+  in the final system, and in part by common convention employed by a
+  number of existing Linux distributions. The Linux Standard Base (LSB,
+  available at <ulink url="http://www.linuxbase.org"/>) recommends only
+  that, besides the group <quote>root</quote> with a Group ID (GID) of 0,
+  a group <quote>bin</quote> with a GID of 1 be present. All other group
+  names and GIDs can be chosen freely by the system administrator since
+  well-written programs do not depend on GID numbers, but rather use the
+  group's name.</para>
+
+  <para os="c">The <command>login</command>, <command>agetty</command>, and
+  <command>init</command> programs (and others) use a number of log
+  files to record information such as who was logged into the system and
+  when. However, these programs will not write to the log files if they
+  do not already exist. Initialize the log files and give them
+  proper permissions:</para>
+
+<screen><userinput>touch ${LFS}/var/run/utmp ${LFS}/var/log/{btmp,lastlog,wtmp}
+chmod 664 ${LFS}/var/run/utmp ${LFS}/var/log/lastlog
+chmod 600 ${LFS}/var/log/btmp</userinput></screen>
+
+  <para>The <filename>${LFS}/var/run/utmp</filename> file records the users
+  that are currently logged in. The <filename>${LFS}/var/log/wtmp</filename>
+  file records all logins and logouts. The
+  <filename>${LFS}/var/log/lastlog</filename> file records when
+  each user last logged in. The <filename>${LFS}/var/log/btmp</filename> file
+  records the bad login attempts.</para>
+
+</sect1>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  <!ENTITY % patches-entities SYSTEM "../../patches.ent">
+  %general-entities;
+  %patches-entities;
+]>
+
+<sect1 id="ch-chroot-util-linux" role="wrap">
+  <?dbhtml filename="util-linux.html"?>
+
+  <title>Util-linux-&util-linux-version;</title>
+
+  <indexterm zone="ch-chroot-util-linux">
+    <primary sortas="a-Util-linux">Util-linux</primary>
+    <secondary>chroot</secondary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/util-linux.xml"
+    xpointer="xpointer(//*[@role='package']/para[1])"/>
+
+    <segmentedlist>
+      <segtitle>&buildtime;</segtitle>
+      <segtitle>&diskspace;</segtitle>
+
+      <seglistitem>
+        <seg>Not checked yet</seg>
+        <seg>Not checked yet</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/util-linux.xml"
+    xpointer="xpointer(//*[@role='package']/segmentedlist[2])"/>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Util-linux</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/util-linux.xml"
+    xpointer="xpointer(//*[@os='b1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/util-linux.xml"
+    xpointer="xpointer(//*[@os='b2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../boot/common/util-linux.xml"
+    xpointer="xpointer(//*[@os='ba'])"/>
+
+<screen os="ca"><userinput>cp configure configure.orig
+sed -e 's@/usr/include@/tools/include@g' configure.orig &gt; configure</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/util-linux.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
+
+<screen><userinput>./configure</userinput></screen>
+
+    <para os="cb">Compile some support routines:</para>
+
+<screen os="cd"><userinput>make ARCH="" CPU="" -C lib</userinput></screen>
+
+    <para os="ce">Only a few of the utilities contained in this package need to be
+    built:</para>
+
+<screen os="cf"><userinput>make ARCH="" CPU="" -C mount mount umount
+make ARCH="" CPU="" -C text-utils more</userinput></screen>
+
+    <para os="cg">Copy these programs to the temporary tools directory:</para>
+
+<screen os="ch"><userinput>cp mount/{,u}mount text-utils/more /tools/bin</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-util-linux" role="."/></para>
+
+  </sect2>
+
+</sect1>
