@@ -17,6 +17,12 @@ fi
 unpack_tarball a2ps-${A2PS_VER}
 cd ${PKGDIR}
 
+case ${A2PS_VER} in
+  4.13* )
+      apply_patch a2ps-4.13b-update_gnu_config-1
+  ;;
+esac
+
 # TODO: NEEDS WORK
 #       update libtool so we understand newer architectures
 #libtoolize --copy --force
