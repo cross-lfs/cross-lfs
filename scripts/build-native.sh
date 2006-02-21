@@ -108,6 +108,7 @@ native-zlib.sh"
 }
 
 script_list="${script_list}
+native-mktemp.sh
 native-findutils.sh
 native-gawk.sh"
 
