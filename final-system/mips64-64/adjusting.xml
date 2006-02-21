@@ -15,7 +15,7 @@
   xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="c"><userinput>gcc -dumpspecs | \
-perl -pi -e 's@/tools/lib/ld@/lib/ld@g;' \
+perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
      -e 's@/tools/lib32/ld@/lib32/ld@g;' \
      -e 's@/tools/lib64/ld@/lib64/ld@g;' \
      -e 's@\*startfile_prefix_spec:\n@$_/usr/lib/ @g;' > \
