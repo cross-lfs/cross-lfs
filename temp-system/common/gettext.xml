@@ -29,30 +29,18 @@
 
     <para os="c">Prepare Gettext for compilation:</para>
 
-<screen os="d"><userinput>./configure --prefix=/tools \
-   --host=${LFS_TARGET} --disable-libasprintf \
-   --without-csharp --cache-file=config.cache</userinput></screen>
+<screen os="d"><userinput>cd gettext-tools
+   ./configure --prefix=/tools \
+   --host=${LFS_TARGET} --disable-shared \
+   --cache-file=config.cache</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
 
       <varlistentry os="e1">
-        <term><parameter>--disable-libasprintf</parameter></term>
+        <term><parameter>--disable-shared</parameter></term>
         <listitem>
-          <para>This flag tells Gettext not to build the <filename
-          class="libraryfile">asprintf</filename> library. Because
-          nothing in this chapter or the next requires this library
-          and Gettext gets rebuilt later, exclude it to save time
-          and space.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="e2">
-        <term><parameter>--without-csharp</parameter></term>
-        <listitem>
-          <para>This ensures that Gettext does not build support for the C#
-          compiler which may be present on the host but will not be available
-          when building the final system.</para>
+          <para>This tells Gettext not to create a shared library.</para>
         </listitem>
       </varlistentry>
 
@@ -60,11 +48,12 @@
 
     <para os="f">Compile the package:</para>
 
-<screen os="g"><userinput>make</userinput></screen>
+<screen os="g"><userinput>make -C lib
+make -C src msgfmt</userinput></screen>
 
     <para os="h">Install the package:</para>
 
-<screen os="i"><userinput>make install</userinput></screen>
+<screen os="i"><userinput>cp -v src/msgfmt /tools/bin</userinput></screen>
 
   </sect2>
 

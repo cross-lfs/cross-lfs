@@ -34,31 +34,13 @@
     href="../common/gettext.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="d"><userinput>CC="${CC} ${BUILD32}" CXX="${CXX} ${BUILD32}" \
-   ./configure --prefix=/tools \
-   --host=${LFS_TARGET} --disable-libasprintf \
-   --without-csharp --cache-file=config.cache</userinput></screen>
+<screen os="d"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
+   ./configure --prefix=/tools --disable-shared \
+   --cache-file=config.cache</userinput></screen>
 
-    <variablelist os="e">
-      <title>The meaning of the configure options:</title>
-
-      <varlistentry>
-        <term><parameter>CXX="${CXX} ${BUILD32}"</parameter></term>
-        <listitem>
-          <para>Forces Gettext is use our Target Architecture g++ compiler
-          with our 32 bits build flags.</para>
-        </listitem>
-      </varlistentry>
-
-      <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-      href="../common/gettext.xml"
-      xpointer="xpointer(//*[@os='e1'])"/>
-
-      <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-      href="../common/gettext.xml"
-      xpointer="xpointer(//*[@os='e2'])"/>
-
-    </variablelist>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gettext.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gettext.xml"
