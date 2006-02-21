@@ -47,8 +47,8 @@
 #undef STARTFILE_PREFIX_SPEC
 #define STARTFILE_PREFIX_SPEC \"/tools/lib/\"" &gt;&gt; gcc/config/linux.h</userinput></screen>
 
-    <para os="ai">Now we will change <command>gcc</command>'s search path to look
-    into <filename class="directory">/tools</filename> only:</para>
+    <para os="ai">Now we will alter <command>gcc</command>'s c preprocessors default
+    include search path to use <filename class="directory">/tools</filename> only:</para>
 
 <screen os="aj"><userinput>cp gcc/Makefile.in{,.orig}
 sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
