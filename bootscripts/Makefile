@@ -48,9 +48,9 @@ install: create-dirs create-service-dir
 	ln -sf ../init.d/localnet    ${EXTDIR}/rc.d/rc0.d/S90localnet
 	ln -sf ../init.d/halt        ${EXTDIR}/rc.d/rc0.d/S99halt
 	ln -sf ../init.d/network     ${EXTDIR}/rc.d/rc1.d/K80network
-	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc1.d/K90sysklogd
-	ln -sf ../init.d/network     ${EXTDIR}/rc.d/rc2.d/K80network
-	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc2.d/K90sysklogd
+	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc1.d/S10sysklogd
+	ln -sf ../init.d/network     ${EXTDIR}/rc.d/rc2.d/S20network
+	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc2.d/S10sysklogd
 	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc3.d/S10sysklogd
 	ln -sf ../init.d/network     ${EXTDIR}/rc.d/rc3.d/S20network
 	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc4.d/S10sysklogd
