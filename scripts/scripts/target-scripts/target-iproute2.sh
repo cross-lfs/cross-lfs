@@ -40,6 +40,9 @@ sed -e '/^TARGETS/s@arpd@@g' \
     -e 's@\(install[-a-zA-Z0-9 ]*\)-s@\1@g' \
     misc/Makefile-ORIG > misc/Makefile
 
+# Bleh, configure sometimes is not executable
+chmod 755 ./configure
+
 max_log_init iproute2 ${IPROUTE2_VER} "target (shared)" ${CONFLOGS} ${LOG}
 ./configure ${INSTALL_PREFIX}/include \
    >> ${LOGFILE} 2>&1 &&
