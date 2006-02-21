@@ -8,6 +8,8 @@ all: help
 
 install: device_dirs device_links rules scripts boot mknod_devices
 
+install-netboot: device_dirs device_links rules-netboot mknod_devices
+
 rules:
 	install -d ${DESTDIR}/etc/udev/rules.d
 	install -m ${RULESMODE} 05-udev-early.rules ${DESTDIR}/etc/udev/rules.d/05-udev-early.rules
@@ -18,6 +20,11 @@ rules:
 	install -m ${RULESMODE} 60-persistent.rules ${DESTDIR}/etc/udev/rules.d/60-persistent.rules
 	install -m ${RULESMODE} 90-user.rules ${DESTDIR}/etc/udev/rules.d/90-user.rules
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
+
+rules-netboot:
+	install -d ${DESTDIR}/etc/udev/rules.d
+	install -m ${RULESMODE} 05-udev-early.rules ${DESTDIR}/etc/udev/rules.d/05-udev-early.rules
+	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 
 scripts:
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
@@ -76,6 +83,7 @@ help:
 	@echo "command				description"
 	@echo "---------------------------------------------------------------------------------------"
 	@echo "make install			install udev rules package and helper scripts"
+	@echo "make install-netboot		install udev rules package for netboot"
 	@echo "make install-network		install network helper package"
 	@echo "make install-network-upgrade	upgrades current network helper package"
 	@echo "---------------------------------------------------------------------------------------"
@@ -101,4 +109,5 @@ install-network-update:
 	install -m ${INITMODE} contrib/network/network ${DESTDIR}/etc/rc.d/init.d/network
 
 .PHONY: all install device_dirs device_links rules scripts boot mknod_devices \
-	help install-helper-functions install-network install-network-update
+	help install-helper-functions install-network install-network-update \
+	install-netboot rules-netboot
