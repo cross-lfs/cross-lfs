@@ -53,7 +53,10 @@
 
 <screen os="ah"><userinput>echo "
 #undef STARTFILE_PREFIX_SPEC
-#define STARTFILE_PREFIX_SPEC \"/tools/lib/\"" &gt;&gt; gcc/config/rs6000/linux.h</userinput></screen>
+#define STARTFILE_PREFIX_SPEC \"/tools/lib/\"" &gt;&gt; gcc/config/rs6000/linux.h
+echo "
+#undef STARTFILE_PREFIX_SPEC
+#define STARTFILE_PREFIX_SPEC \"/tools/lib/\"" &gt;&gt; gcc/config/rs6000/linux64.h</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/gcc-static.xml"
@@ -80,7 +83,7 @@
     xpointer="xpointer(//*[@os='h'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/gcc-static.xml"
+    href="../x86_64/gcc-static.xml"
     xpointer="xpointer(//*[@os='al'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -91,9 +94,7 @@
     href="../x86/gcc-static.xml"
     xpointer="xpointer(//*[@os='an'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/gcc-static.xml"
-    xpointer="xpointer(//*[@os='ao'])"/>
+<screen><userinput>make all-gcc</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/gcc-static.xml"
