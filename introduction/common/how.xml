@@ -42,40 +42,48 @@
   work through <xref linkend="chapter-cross-tools"/> and
   beyond.</para>
 
-  <para><xref linkend="chapter-temp-system"/> explains the
-  installation of a number of packages that will form the basic
-  development suite (or toolchain) which is used to build the actual
-  system in <xref linkend="chapter-building-system"/>. Some of these
-  packages are needed to resolve circular dependencies&mdash;for example,
-  to compile a compiler, you need a compiler.</para>
+  <para><xref linkend="chapter-cross-tools"/> explains the installation of
+  cross-compile tools which will be built on the host but be able to compile
+  programs that run on the target machine. These cross-compile tools will
+  be used to create a temporary, minimal system that will be the basis for
+  building the final LFS system. Some of these packages are needed to resolve
+  circular dependencies&mdash;for example, to compile a compiler, you need a
+  compiler.</para>
 
-  <para><xref linkend="chapter-temp-system"/> also shows the user
-  how to build a first pass of the toolchain, including Binutils and GCC
-  (first pass basically means these two core packages will be re-installed
-  a second time). The next step is to build Glibc, the C library. Glibc
-  will be compiled by the toolchain programs built in the first pass. Then,
-  a second pass of the toolchain will be built. This time, the toolchain
-  will be dynamically linked against the newly built Glibc. The remaining
-  <xref linkend="chapter-temp-system"/> packages are built using this
-  second pass toolchain. When this is done, the LFS installation process
-  will no longer depend on the host distribution, with the exception of the
-  running kernel. </para>
+  <para>The process of building cross-compile tools first involves installing
+  binutils into /cross-tools, so that the linker can be used with the building
+  of everything else in the temp-system. GCC is then compiled statically and
+  installed into /cross-tools, and this cross-compiler is used to build glibc
+  into /tools for the temp-system. The GCC cross-compiler is then rebuilt
+  dynamically - this final cross-compiler is what will be used to build the
+  rest of the temporary system. When this is done, the CLFS installation
+  process will no longer depend on the host distribution, with the exception
+  of the running kernel.
+  <!-- still needs some work - needs to provide a better technical
+explanation, especially the reasoning for compiling gcc statically then dynamically... --></para>
+
+  <para>The packages in <xref linkend="chapter-temp-system"/> are then built
+  using the cross-compiled tools in /cross-tools, and linked against the
+  C library that was installed during the building of the cross-tools.</para>
 
   <para>This effort to isolate the new system from the host distribution
   may seem excessive, but a full technical explanation is provided at the
   beginning of <xref linkend="chapter-temp-system"/>.</para>
 
   <para>In <xref linkend="chapter-building-system"/>, the full LFS system is
-  built. The <command>chroot</command> (change root) program is used to enter
+  built. Depending on the system you are cross-compiling for, either you will
+  boot the minimal temp-system on the target machine, or chroot into it.</para>
+
+  <para>The <command>chroot</command> (change root) program is used to enter
   a virtual environment and start a new shell whose root directory will be set
   to the LFS partition. This is very similar to rebooting and instructing the
-  kernel to mount the LFS partition as the root partition. The system does not
-  actually reboot, but instead <command>chroot</command>'s because creating a
-  bootable system requires additional work which is not necessary just yet.
+  kernel to mount the LFS partition as the root partition.
   The major advantage is that <quote>chrooting</quote> allows the builder to
   continue using the host while LFS is being built. While waiting for package
   compilation to complete, a user can switch to a different virtual console
   (VC) or X desktop and continue using the computer as normal.</para>
+
+  <para>Some systems cannot be built by chrooting so they must be booted instead. Generally, if you building for a different arch than the host system, you must reboot because the kernel will likely not support the target machine. Booting involves installing a few additional packages that are needed for bootup, installing bootscripts, and building a miminal kernel.</para>
 
   <para>To finish the installation, the LFS-Bootscripts are set up in <xref
   linkend="chapter-bootscripts"/>, and the kernel and boot loader are set
