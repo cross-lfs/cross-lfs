@@ -19,7 +19,7 @@
 . /etc/sysconfig/rc
 . ${rc_functions}
 
-function trigger_device_events() {
+trigger_device_events() {
 	# generate events with the sysfs trigger
 	list=$(echo /sys/bus/*/devices/*/uevent)
 	list="$list $(echo /sys/class/*/*/uevent)"
