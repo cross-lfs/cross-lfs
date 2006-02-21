@@ -16,6 +16,7 @@ rules:
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 	install -m ${RULESMODE} 55-sound.rules ${DESTDIR}/etc/udev/rules.d/55-sound.rules
 	install -m ${RULESMODE} 60-persistent.rules ${DESTDIR}/etc/udev/rules.d/60-persistent.rules
+	install -m ${RULESMODE} 90-user.rules ${DESTDIR}/etc/udev/rules.d/90-user.rules
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
 
 scripts:
