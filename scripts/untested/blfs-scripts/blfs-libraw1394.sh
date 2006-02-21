@@ -48,4 +48,6 @@ echo " o ALL OK" || barf
 # devices on all connected 1394 buses unrestricted, including
 # harddisks and other probably sensitive devices.
 
-make dev
+if [ ! -e /dev/raw1394 ]; then
+   make dev
+fi
