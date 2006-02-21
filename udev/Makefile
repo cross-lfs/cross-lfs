@@ -82,10 +82,9 @@ help:
 
 install-helper-functions:
 	install -m 644 contrib/common/helper.functions ${DESTDIR}/lib/udev/helper.functions
+	install -m 644 contrib/common/udev_helper ${DESTDIR}/etc/sysconfig/udev_helper
 	
-install-network: install-helper-functions
-	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/lib/udev/network_helper.sh
-	install -m ${INITMODE} contrib/network/network ${DESTDIR}/etc/rc.d/init.d/network
+install-network: install-helper-functions install-network-update
 	@echo "Adding rules to ${DESTDIR}/etc/udev/rules.d/35-helper.rules."
 	@cp ${DESTDIR}/etc/udev/rules.d/35-helper.rules /tmp/first
 	@cat /tmp/first contrib/network/rules > ${DESTDIR}/etc/udev/rules.d/35-helper.rules 2>&1
