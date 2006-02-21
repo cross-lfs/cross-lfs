@@ -28,11 +28,11 @@
 
     <para>Make bootscripts usable at boot:</para>
 
-<screen><userinput>cp ${LFS}/etc/rc.d/init.d/functions{,.bak}
+<screen><userinput>cp -v ${LFS}/etc/rc.d/init.d/functions{,.bak}
 sed 's|/bin:/usr/bin:/sbin:/usr/sbin|/tools/bin:/tools/sbin:/bin:/sbin|g' \
    ${LFS}/etc/rc.d/init.d/functions.bak \
    > ${LFS}/etc/rc.d/init.d/functions
-cp ${LFS}/etc/rc.d/init.d/mountfs{,.bak}
+cp -v ${LFS}/etc/rc.d/init.d/mountfs{,.bak}
 sed 's@mount -f /sys || failed=1@mount -f /sys | udevstart || failed=1@' \
    ${LFS}/etc/rc.d/init.d/mountfs.bak \
    > ${LFS}/etc/rc.d/init.d/mountfs</userinput></screen>
