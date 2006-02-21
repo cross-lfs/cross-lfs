@@ -8,7 +8,7 @@
 <sect1 id="ch-temp-tools-perl" role="wrap">
   <?dbhtml filename="perl.html"?>
 
-  <title>Perl-&perl-version; 32 Bit</title>
+  <title>Perl-&perl-version;</title>
 
   <indexterm zone="ch-temp-tools-perl">
     <primary sortas="a-Perl">Perl</primary>
@@ -21,6 +21,19 @@
 
   <sect2 role="installation">
     <title>Installation of Perl</title>
+
+    <para os="a0a">We need a working Perl to build glibc and test coreutils, it
+    doesn't matter whether this is a 32-bit or a 64-bit program. But, the perl
+    configure process knows nothing about multilib and assumes it will be installed
+    in a 'lib' directory.  Using the same patch as for non-multilib systems we can
+    easily install into <filename class="directory">/tools/lib</filename>.</para>
+
+    <para os="a0b">Installing successfully into a different directory such as
+    <filename class="directory">/tools/lib64</filename> would require more effort
+   (compare how we install Perl in the final system) for no real gain. On this
+   multilib system, <filename class="directory">/tools/lib</filename> is where we
+   install 32-bit libraries, so for consistency we will build a 32-bit Perl here.
+   </para> 
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
