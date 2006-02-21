@@ -32,13 +32,18 @@
   <sect2 role="installation">
     <title>Installation of ELFtoaout</title>
 
-    <para>Compile the ELFtoaout package:</para>
+    <para os="p1">The following patch fixes some 64 bit issues with
+    elftoaout:</para>
 
-<screen><userinput>make</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&elftoaout-fixes-patch;</userinput></screen>
 
-    <para>Install the package:</para>
+    <para os="a">Compile the ELFtoaout package:</para>
 
-<screen><userinput>make install</userinput></screen>
+<screen os="b"><userinput>make</userinput></screen>
+
+    <para os="c">Install the package:</para>
+
+<screen os="d"><userinput>make install</userinput></screen>
 
   </sect2>
 
