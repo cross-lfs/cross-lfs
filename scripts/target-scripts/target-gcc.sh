@@ -194,7 +194,6 @@ case ${target_gcc_ver} in
    3.4* )
       apply_patch gcc-3.4.1-fix_configure_for_target_native
    ;;
-
    4.* )
       # Testing only... set AS_FOR_TARGET and LD_FOR_TARGET so these are used
       # for feature checks... will have to check for unintended side effects
