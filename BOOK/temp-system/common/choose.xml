@@ -10,17 +10,22 @@
 
   <title>To Boot or to Chroot?</title>
 
-  <para>The boot method is for when you are building on a different architecture.
-  Like building PowerPC and x86, you can't chroot.</para>
+  <para> There are two different ways you can proceed from this point
+  to build the final system. You can build a kernel, a bootloader, and
+  a few other utilities, boot into the temporary system, and build the
+  rest there. The other option is to chroot into the temporary system.
 
-  <para>For the boot method, follow to <xref linkend="chapter-boot"/>.</para>
-
-  <para>The chroot method is for when you are building on the same architecture,
-  Like building x86 and x86, you simply just chroot. The rule of thumb
-  here is if the architectures match and you are running the same series kernel
+  <para>The boot method is for when you are building on a different
+  architecture. For example, if you are building a PowerPC system from
+  an x86, you can't chroot. The chroot method is for when you are
+  building on the same architecture. If you are building on, and for,
+  an x86 system, you can simply chroot. The rule of thumb here is if
+  the architectures match and you are running the same series kernel
   you can just chroot. If you aren't running the same series kernel, or are
   wanting to run a different ABI, you will need to use the boot option.</para>
 
-  <para>For the chroot method, follow to <xref linkend="chapter-chroot"/>.</para>
+  <para>For the boot method, follow <xref linkend="chapter-boot"/>.</para>
+
+  <para>For the chroot method, follow <xref linkend="chapter-chroot"/>.</para>
 
 </sect1>
