@@ -61,15 +61,13 @@ mknod_devices:
 		if ! [ -e ${DESTDIR}/lib/udev/devices/null ]; then \
 			echo "You will need to issue the following command as the root user" ;\
 			echo "" ;\
-			mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3 ;\
-			echo "" ;\
+			echo "mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3" ;\
 		fi \
 	fi
 	@if [ "$$UID" != "0" ]; then \
 		if ! [ -e ${DESTDIR}/lib/udev/devices/console ]; then \
-			echo "You will need to issue the following command as the root user" ;\
+			echo "mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1" ;\
 			echo "" ;\
-			mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1 ;\
 		fi \
 	fi
 
