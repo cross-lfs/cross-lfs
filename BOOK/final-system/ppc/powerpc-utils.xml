@@ -36,8 +36,7 @@
     <title>Installation of Powerpc-Utils</title>
 
     <para>This package, originally pmac-utils, has issues with NewWorld macintoshes.
-    The following debian patch fixes these issues and generally updates the package,
-    although it also introduces a bogus warning to update the kernel headers.</para>
+    The following patch fixes these issues and generally updates the package.</para>
 
 <screen><userinput>zcat ../&powerpcutils-patch; | patch -p1</userinput></screen>
 
@@ -48,7 +47,7 @@
     <para>Install the package:</para>
 
 <screen><userinput>install -m755 nvsetenv nvsetvol /usr/sbin
-install -m644 nvsetvol.8 /usr/share/man/man8</userinput></screen>
+install -m644 nvsetenv.8 nvsetvol.8 /usr/share/man/man8</userinput></screen>
 
   </sect2>
 
