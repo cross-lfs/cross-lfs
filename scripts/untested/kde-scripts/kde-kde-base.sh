@@ -43,7 +43,7 @@ make check \
 echo " o Test OK" || errmsg
 
 min_log_init ${INSTLOGS} &&
-make install \
+make DESTDIR=/opt/${PKGDIR}-${BUILDENV} install \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 

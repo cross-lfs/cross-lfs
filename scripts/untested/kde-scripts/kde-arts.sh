@@ -12,6 +12,8 @@ if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=${KDE_PREFIX}/${libdirname}"
 fi
 
+# override TARBALLS to point at kde tree
+export TARBALLS=${KDE_TARBALLS}/stable/${KDE_VER}/src
 unpack_tarball arts-${ARTS_VER}
 cd ${PKGDIR}
 
@@ -29,10 +31,10 @@ echo " o Configure OK" &&
 min_log_init ${BUILDLOGS} &&
 make ${PMFLAGS} \
    >> ${LOGFILE} 2>&1 &&
-echo " o Build OK" &&
+echo " o Build OK" || barf
 
 min_log_init ${TESTLOGS} &&
-make check \
+make -k check \
    >> ${LOGFILE} 2>&1 &&
 echo " o Test OK" || errmsg
 

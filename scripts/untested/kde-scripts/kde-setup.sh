@@ -3,14 +3,15 @@
 # Temporary KDE setup script... this to be controlled via a wrapper
 
 mkdir -p /opt/kde-${KDE_VER}
+ln -sfn kde-${KDE_VER} /opt/kde
 
-export KDE_PREFIX=/opt/kde-${KDE_MAJ}
+export KDE_PREFIX=/opt/kde-${KDE_VER}
 
 export PATH=${PATH}:${KDE_PREFIX}/bin
-export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${KDE_PREFIX}/lib/pkgconfig
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${KDE_PREFIX}/${libdirname}/pkgconfig
 
-grep ${KDE_PREFIX}/${libdir} /etc/ld.so.conf > /dev/null 2>&1 ||
-   echo "${KDE_PREFIX}/${libdir}" >> /etc/ld.so.conf
+grep ${KDE_PREFIX}/${libdirname} /etc/ld.so.conf > /dev/null 2>&1 ||
+   echo "${KDE_PREFIX}/${libdirname}" >> /etc/ld.so.conf
 
 grep ${KDE_PREFIX}/man /etc/man.conf > /dev/null 2>&1 ||
 echo "${KDE_PREFIX}/man" >> /etc/man.conf

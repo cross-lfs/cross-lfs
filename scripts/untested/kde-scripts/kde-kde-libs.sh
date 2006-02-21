@@ -33,6 +33,8 @@ case ${KDE_VER} in
    ;;
 esac
 
+# fast-malloc only works on i?86 ...
+#   --enable-fast-malloc=full \
 max_log_init kdelibs ${KDELIBS_VER} "kde (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
@@ -40,7 +42,6 @@ CFLAGS="${TGT_CFLAGS}" \
 CXXFLAS="${TGT_CFLAGS}" \
 ./configure --prefix=${KDE_PREFIX} ${extra_conf} \
    --disable-debug --disable-dependency-tracking \
-   --enable-fast-malloc=full \
    --with-qt-libraries=/opt/qt/${libdirname} \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
@@ -60,3 +61,6 @@ make install \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 
+if [ "${MULTIARCH}" = "Y" ]; then
+   use_wrapper ${KDE_PREFIX}/bin/kde-config
+fi
