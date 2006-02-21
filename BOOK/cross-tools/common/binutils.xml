@@ -58,14 +58,16 @@
       <varlistentry os="bd2">
         <term><parameter>--host=${LFS_HOST}</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>When used injunction with --target, this creates a cross-architecture
+          executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry os="bd3">
         <term><parameter>--target=${LFS_TARGET}</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>When used injunction with --host, this creates a cross-architecture
+          executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
         </listitem>
       </varlistentry>
 
@@ -98,7 +100,16 @@
       <varlistentry os="bd7">
         <term><parameter>--enable-64-bit-bfd</parameter></term>
         <listitem>
-          <para>This adds 64 bit support to our toolchain.</para>
+          <para>This adds 64 bit support to our toolchain. This flag will not
+          interfere with 32 bit builds.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="bd8">
+        <term><parameter>--disable-multilib</parameter></term>
+        <listitem>
+          <para>This options disables the building of a multilib
+          capable binutils.</para>
         </listitem>
       </varlistentry>
 
@@ -109,33 +120,27 @@
 <screen os="bf"><userinput>make configure-host
 make</userinput></screen>
 
-    <variablelist os="bf1">
+    <variablelist os="bg">
       <title>The meaning of the make options:</title>
 
-      <varlistentry>
+      <varlistentry os="bg1">
         <term><parameter>configure-host</parameter></term>
         <listitem>
-          <para>This do ...</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>headers -C bfd</parameter></term>
-        <listitem>
-          <para>This do ...</para>
+          <para>This checks the host environment and makes sure all the
+          necessary tools are available to compile binutils.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
-    <para os="bg">Install the package:</para>
+    <para os="bh">Install the package:</para>
 
-<screen os="bh"><userinput>make install</userinput></screen>
+<screen os="bi"><userinput>make install</userinput></screen>
 
-    <para os="bi">Copy <filename class="headerfile">libiberty.h</filename> file to
+    <para os="bj">Copy <filename class="headerfile">libiberty.h</filename> file to
     <filename class="directory">/tools/include</filename> directory:</para>
 
-<screen os="bj"><userinput>cp ../binutils-&binutils-version;/include/libiberty.h /tools/include</userinput></screen>
+<screen os="bk"><userinput>cp ../binutils-&binutils-version;/include/libiberty.h /tools/include</userinput></screen>
 
   </sect2>
 
