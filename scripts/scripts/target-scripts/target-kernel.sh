@@ -70,7 +70,11 @@ case ${KERNEL_VER} in
       # fix gcc4 compilation issues
       # Note: you cannot compile kernel < 2.6.9 with gcc4
       case ${target_gcc_ver} in
-         4.* ) apply_patch linux-2.6.11-gcc4_fixes -Np0 ;;
+         4.* ) 
+            case ${KERNEL_VER} in
+               2.6.9* | 2.6.1[01]* ) apply_patch linux-2.6.11-gcc4_fixes -Np0 ;;
+            esac
+         ;;
       esac
 
       # update cx88 driver (applies 2.6.10 + 2.6.11, need to check 2.6.12+ )
@@ -82,7 +86,15 @@ case ${KERNEL_VER} in
       # This is to remove some gnu-specific expr syntax and invoke depmod.pl
       # instead of depmod since we need a depmod that is not a target-native
       # binary.
-      apply_patch linux-2.6-lfh-Makefile
+      case ${KERNEL_VER} in
+         2.6.[4-9]* | 2.6.1[01]* ) apply_patch linux-2.6-lfh-Makefile ;;
+         2.6.14* )
+            apply_patch linux-2.6-lfh-Makefile-2 
+            # TODO: interim fix only - see http://lkml.org/lkml/2005/11/10/146
+            apply_patch linux-2.6.14-fix_generic_get_unaligned
+         ;;
+         2.6.1[2-9]* ) apply_patch linux-2.6-lfh-Makefile-2 ;;
+      esac
    ;;
 esac
 
