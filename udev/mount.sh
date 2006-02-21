@@ -30,7 +30,6 @@ case "$DEVNAME" in
 	*sd[a-z]|*hd[a-z]) exit 0 ;;
 esac
 
-
 NODES=$DEVNAME
 for sl in `udevinfo -q symlink -p $DEVPATH`; do
 	NODES="$NODES /dev/$sl"
