@@ -54,17 +54,22 @@ trigger_device_events() {
 case "$1" in
     start)
 	boot_mesg "Creating /dev in tmpfs..."
-	mount -n -t tmpfs tmpfs /dev -o mode=755
+	mount -n -t tmpfs -o mode=0755 udev /dev
 	evaluate_retval
 
 	boot_mesg "Copying static entries..."
-	cp -ar /lib/udev/devices/* /dev
+	cp --preserve=all --recursive --remove-destination /lib/udev/devices/* /dev
+	evaluate_retval
+	
+	boot_mesg "Setting Permissons /dev/shm..."
+	chmod 1777 /dev/shm
 	evaluate_retval
 
-	# disable hotplug helper, udevd listens to netlink
-	if [ `cat /proc/sys/kernel/hotplug` ] ; then
-	echo "" > /proc/sys/kernel/hotplug
-	fi
+	boot_mesg "Mounting /dev/pts..."
+	mount -n -t devpts -o mode=0620,gid=10 devpts /dev/pts
+	evaluate_retval
+
+	echo "" > /sys/kernel/uevent_helper
 
 	# start udevd
 	boot_mesg "Starting udevd..."
