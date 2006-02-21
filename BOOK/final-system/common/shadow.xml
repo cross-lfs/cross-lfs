@@ -98,7 +98,7 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
       <primary sortas="e-/etc/login.access">/etc/login.access</primary>
     </indexterm>
 
-<screen os="o"><userinput>cp etc/{limits,login.access} /etc</userinput></screen>
+<screen os="o"><userinput>cp -v etc/{limits,login.access} /etc</userinput></screen>
 
     <para id="shadow-login_defs" os="p">Instead of using the default
     <emphasis>crypt</emphasis> method, use the more secure
@@ -127,20 +127,20 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
 
     <para os="t">Move a misplaced program to its proper location:</para>
 
-<screen os="u"><userinput>mv /usr/bin/passwd /bin</userinput></screen>
+<screen os="u"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
     <para os="v">Move Shadow's dynamic libraries to a more appropriate
     location:</para>
 
-<screen os="w"><userinput>mv /lib/libshadow.*a /usr/lib
-rm /lib/libshadow.so
-ln -sf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
+<screen os="w"><userinput>mv -v /lib/libshadow.*a /usr/lib
+rm -v /lib/libshadow.so
+ln -svf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
 
     <para os="x">The <option>-D</option> option of the <command>useradd</command>
     program requires the <filename class="directory">/etc/default</filename>
     directory for it to work properly:</para>
 
-<screen os="y"><userinput>install -d /etc/default</userinput></screen>
+<screen os="y"><userinput>install -dv /etc/default</userinput></screen>
 
   </sect2>
 

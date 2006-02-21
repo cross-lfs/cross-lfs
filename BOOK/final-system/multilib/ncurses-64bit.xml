@@ -53,16 +53,16 @@
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="i"><userinput>mv /lib64/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib64</userinput></screen>
+<screen os="i"><userinput>mv -v /lib64/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib64</userinput></screen>
 
     <para os="j">Create symlinks in <filename class="directory">/usr/lib64:</filename></para>
 
-<screen os="k"><userinput>rm /lib64/lib{ncurses,menu,panel,form,curses}.so
-ln -sf ../../lib64/libncurses.so.5 /usr/lib64/libncurses.so
-ln -sf ../../lib64/libncurses.so.5 /usr/lib64/libcurses.so
-ln -sf ../../lib64/libmenu.so.5 /usr/lib64/libmenu.so
-ln -sf ../../lib64/libpanel.so.5 /usr/lib64/libpanel.so
-ln -sf ../../lib64/libform.so.5 /usr/lib64/libform.so</userinput></screen>
+<screen os="k"><userinput>rm -v /lib64/lib{ncurses,menu,panel,form,curses}.so
+ln -svf ../../lib64/libncurses.so.5 /usr/lib64/libncurses.so
+ln -svf ../../lib64/libncurses.so.5 /usr/lib64/libcurses.so
+ln -svf ../../lib64/libmenu.so.5 /usr/lib64/libmenu.so
+ln -svf ../../lib64/libpanel.so.5 /usr/lib64/libpanel.so
+ln -svf ../../lib64/libform.so.5 /usr/lib64/libform.so</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="ncurses.xml"

@@ -28,7 +28,7 @@
       <parameter>--with-libcrack</parameter> to the <command>configure</command>
       command below.</para>
 
-      <para>You will also need to use the follow sed after the configuration command
+      <para>You will also need to use the following sed after the configuration command
       to make sure the correct library is linked.</para>
 
       <screen><userinput>sed -i libtool \
@@ -119,9 +119,9 @@
     href="shadow.xml"
     xpointer="xpointer(//*[@os='v'])"/>
 
-<screen os="u"><userinput>mv /lib64/libshadow.*a /usr/lib64
-rm /lib64/libshadow.so
-ln -sf ../../lib64/libshadow.so.0 /usr/lib64/libshadow.so</userinput></screen>
+<screen os="u"><userinput>mv -v /lib64/libshadow.*a /usr/lib64
+rm -v /lib64/libshadow.so
+ln -svf ../../lib64/libshadow.so.0 /usr/lib64/libshadow.so</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/shadow.xml"

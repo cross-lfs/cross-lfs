@@ -66,7 +66,7 @@
     class="directory">/bin</filename>. Therefore, move them to <filename
     class="directory">/usr/bin</filename>:</para>
 
-<screen os="i"><userinput>mv /bin/pstree* /usr/bin</userinput></screen>
+<screen os="i"><userinput>mv -v /bin/pstree* /usr/bin</userinput></screen>
 
     <para os="j">By default, Psmisc's <command>pidof</command> program is not installed.
     This usually is not a problem because it is installed later in the Sysvinit
@@ -74,7 +74,7 @@
     Sysvinit will not be used for a particular system, complete the installation
     of Psmisc by creating the following symlink:</para>
 
-<screen os="k"><userinput>ln -s killall /bin/pidof</userinput></screen>
+<screen os="k"><userinput>ln -sv killall /bin/pidof</userinput></screen>
 
   </sect2>
 

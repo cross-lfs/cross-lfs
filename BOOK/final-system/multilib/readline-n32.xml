@@ -62,21 +62,21 @@
     xpointer="xpointer(//*[@os='k'])"/>
 
 
-<screen os="k"><userinput>chmod 755 /lib32/lib{readline,history}.so*</userinput></screen>
+<screen os="k"><userinput>chmod -v 755 /lib32/lib{readline,history}.so*</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="readline.xml"
     xpointer="xpointer(//*[@os='m'])"/>
 
-<screen os="m"><userinput>mv /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
+<screen os="m"><userinput>mv -v /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
 
     <para os="n">Next, remove the <filename class="extension">.so</filename>
     files in <filename class="directory">/lib32</filename> and relink them into
     <filename class="directory">/usr/lib32</filename>.</para>
 
-<screen os="o"><userinput>rm /lib32/lib{readline,history}.so
-ln -sf ../../lib32/libreadline.so.5 /usr/lib32/libreadline.so
-ln -sf ../../lib32/libhistory.so.5 /usr/lib32/libhistory.so</userinput></screen>
+<screen os="o"><userinput>rm -v /lib32/lib{readline,history}.so
+ln -svf ../../lib32/libreadline.so.5 /usr/lib32/libreadline.so
+ln -svf ../../lib32/libhistory.so.5 /usr/lib32/libhistory.so</userinput></screen>
 
   </sect2>
 

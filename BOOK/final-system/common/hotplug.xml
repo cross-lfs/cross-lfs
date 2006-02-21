@@ -44,18 +44,18 @@
     <para os="c">Remove the init script that Hotplug installs since we are going
     to be using the script included in the LFS-Bootscripts package:</para>
 
-<screen os="d"><userinput>rm -rf /etc/init.d</userinput></screen>
+<screen os="d"><userinput>rm -rvf /etc/init.d</userinput></screen>
 
     <para os="e">Network device hotplugging is not yet supported by the
     LFS-Bootscripts package. For that reason, remove the network
     hotplug agent:</para>
 
-<screen os="f"><userinput>rm -f /etc/hotplug/net.agent</userinput></screen>
+<screen os="f"><userinput>rm -fv /etc/hotplug/net.agent</userinput></screen>
 
     <para os="g">Create a directory for storing firmware that can be loaded by
     <command>hotplug</command>:</para>
 
-<screen os="h"><userinput>mkdir /lib/firmware</userinput></screen>
+<screen os="h"><userinput>mkdir -v /lib/firmware</userinput></screen>
 
   </sect2>
 
