@@ -30,11 +30,11 @@
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="bzip2.xml"
+    href="../common/bzip2.xml"
     xpointer="xpointer(//*[@os='p3'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="bzip2.xml"
+    href="../common/bzip2.xml"
     xpointer="xpointer(//*[@os='p4'])"/>
 
     <para os="m1">We need to remove the tests since they won't work on
@@ -55,29 +55,33 @@ make clean</userinput></screen>
     href="bzip2.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="bzip2-n32.xml"
+    xpointer="xpointer(//*[@os='c1'])"/>
+
 <screen os="e"><userinput>make CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}"</userinput></screen>
 
-    <para os="m3">Now we remove the 32 bit versions of the programs so we
-    can install the 64 bit versions.</para>
-
-<screen os="m4"><userinput>rm -f /usr/bin/bz* /bin/bz*</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bzip2.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="bzip2.xml"
+    href="../common/bzip2.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="bzip2.xml"
+    href="../common/bzip2.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="bzip2.xml"
+    href="../common/bzip2.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
 <screen os="j"><userinput>cp bzip2-shared /bin/bzip2
 cp -a libbz2.so* /lib64
 ln -s ../../lib64/libbz2.so.1.0 /usr/lib64/libbz2.so
 rm /usr/bin/{bunzip2,bzcat,bzip2}
+ln -s bzip2 /bin/bunzip2
 ln -s bzip2 /bin/bzcat</userinput></screen>
 
   </sect2>

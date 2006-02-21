@@ -24,14 +24,6 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='p3'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='p4'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>make -f Makefile-libbz2_so CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}"
@@ -47,25 +39,12 @@ make clean</userinput></screen>
 
 <screen os="e"><userinput>make CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}"</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+    <para os="i">Install the libraries, make
+    some necessary symbolic links, and clean up:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='g'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/bzip2.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+<screen os="j"><userinput>cp libbz2.a /usr/lib
+cp -a libbz2.so* /lib
+ln -s ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so</userinput></screen>
 
   </sect2>
 
