@@ -36,7 +36,7 @@ make \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 
-echo"
+cat <<EOF
 ###############################################################
 # TODO: This should be handled by udev, devices don't get 
 #       automatically created...
@@ -48,4 +48,4 @@ echo"
 #cp prog/init/lm_sensors.init /etc/rc.d/init.d/lm_sensors
 #echo \"alias char-major-89 i2c-dev\" >> /etc/modules.conf
 #mkdir -p /var/lock/subsys
-"
+EOF
