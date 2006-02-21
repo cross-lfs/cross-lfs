@@ -20,7 +20,6 @@ scripts:
 	install -m ${SCRIPTMODE} ide.sh ${DESTDIR}/lib/udev/ide.sh
 	install -m ${SCRIPTMODE} input.sh ${DESTDIR}/lib/udev/input.sh
 	install -m ${SCRIPTMODE} mount.sh ${DESTDIR}/lib/udev/mount.sh
-	install -m ${CONFMODE} scsi_id.config ${DESTDIR}/etc/scsi_id.config
 	install -m ${SCRIPTMODE} udev.count_events ${DESTDIR}/usr/bin/udev.count_events
 
 boot:
