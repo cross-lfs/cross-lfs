@@ -23,13 +23,21 @@
     <title>Installation of Colo</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/mips64/colo.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/mips64/colo.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../mips/colo-build.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen><userinput>cd tools/elf2rfx
 make CC=gcc
 cd ../..
-make CC="${CC} ${BUILD32)" CROSS_COMPILE="${LFS_TARGET}-" binary</userinput></screen>
+make CROSS_COMPILE="${LFS_TARGET}-" binary</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../mips/colo-build.xml"
