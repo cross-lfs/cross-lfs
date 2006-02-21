@@ -17,11 +17,15 @@ fi
 unpack_tarball OpenEXR-${OPENEXR_VER}
 cd ${PKGDIR}
 
+env | grep CONFIG
+
+# LDFLAGS added to satisfy libtool (after libstdc++ symlinks were created)
 max_log_init OpenEXR ${OPENEXR_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \
 CXXFLAGS="${TGT_CFLAGS}" \
+LDFLAGS="-L/usr/${libdirname}" \
 ./configure --prefix=/usr ${extra_conf} \
    --mandir=/usr/share/man --infodir=/usr/share/info \
    >> ${LOGFILE} 2>&1 &&
