@@ -50,7 +50,7 @@
     <para os="ai">Now alter <command>gcc</command>'s c preprocessors default
     include search path to use <filename class="directory">/tools</filename> only:</para>
 
-<screen os="aj"><userinput>cp gcc/Makefile.in{,.orig}
+<screen os="aj"><userinput>cp -v gcc/Makefile.in{,.orig}
 sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
  gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
