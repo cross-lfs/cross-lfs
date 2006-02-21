@@ -13,7 +13,7 @@ if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=/usr/${libdirname}"
 fi
 
-unpack_tarball cups-${CUPS_VER}
+unpack_tarball cups-${CUPS_VER}-source
 cd ${PKGDIR}
 
 sed -i -e "s@pam/pam@security/pam@g" \
