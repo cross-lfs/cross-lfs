@@ -25,17 +25,16 @@
     href="../common/tcl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
+    <para os="m1">We need to change the default lib path to lib64:</para>
+
+<screen os="m2"><userinput>cd unix
+sed -i 's@\$(prefix)/lib@\$(prefix)/lib64@g' Makefile.in</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/tcl.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>cd unix
-sed -i 's@\$(prefix)/lib@\$(prefix)/lib64@g' Makefile.in
-CC="gcc ${BUILD64}" ./configure --prefix=/tools --libdir=/tools/lib64</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/tcl.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+<screen os="c"><userinput>CC="gcc ${BUILD64}" ./configure --prefix=/tools --libdir=/tools/lib64</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/tcl.xml"
@@ -52,6 +51,10 @@ CC="gcc ${BUILD64}" ./configure --prefix=/tools --libdir=/tools/lib64</userinput
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/tcl.xml"
     xpointer="xpointer(//*[@os='g'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/tcl.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/tcl.xml"
