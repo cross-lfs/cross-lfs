@@ -6,7 +6,7 @@
 ]>
 
 <sect1 id="ch-system-glibc" role="wrap">
-  <title>Glibc-&glibc-version;</title>
+  <title>Glibc-&glibc-linuxthreads-version;</title>
 
   <?dbhtml filename="glibc.html"?>
 
@@ -29,17 +29,33 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+    <para os="l1">This architecture does not currently support NPTL, so we will
+    have to include Glibc Linuxthreads as a threading library. Building
+    for a Linuxthreads based glibc you will need to unpack the
+    <filename>glibc-linuxthreads-&glibc-linuxthreads-version;</filename> tarball from
+    within the <filename class="directory">glibc-&glibc-linuxthreads-version;</filename>
+    directory.</para>
+
+<screen os="l2"><userinput>tar -xjvf /sources/glibc-linuxthreads-&glibc-linuxthreads-version;.tar.bz2</userinput></screen>
+
+    <para os="l3">If you require libidn support, you can add it
+    by unpacking <filename>glibc-libidn-&glibc-linuxthreads-version;</filename>
+    tarball from within the <filename class="directory">glibc-&glibc-linuxthreads-version;</filename>
+    directory. If you used libidn during your cross-tools build, you will need to add it
+    here also.</para>
+
+<screen os="l4"><userinput>tar -xjvf /sources/glibc-libidn-&glibc-linuxthreads-version;.tar.bz2</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='d'])"/>
+    xpointer="xpointer(//*[@os='b'])"/>
 
-   <para os="s1">This patch will add TLS(Thread Local Storage) support to Sparc:</para>
+<screen os="d"><userinput>patch -Np1 -i ../&glibc-linuxthreads-localedef_segfault-patch;</userinput></screen>
 
-<screen os="s2"><userinput>patch -Np1 -i ../&glibc-sparc_tls-patch;</userinput></screen>
+    <para os="l5">NPTL is not supported on Sparc v8 and below, so we need to remove the NPTL from our build.
+    We do this by removing the NPTL directories:</para>
+
+<screen os="l6"><userinput>rm -rf nptl*</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
@@ -53,9 +69,9 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+<screen os="h"><userinput>../glibc-&glibc-linuxthreads-version;/configure --prefix=/usr \
+    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
+    --libexecdir=/usr/lib/glibc</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
