@@ -8,11 +8,11 @@
 <sect1 id="ch-temp-system-gettext" role="wrap">
   <?dbhtml filename="gettext.html"?>
 
-  <title>Gettext-&gettext-version; 32 Bit</title>
+  <title>Gettext-&gettext-version;</title>
 
   <indexterm zone="ch-temp-system-gettext">
     <primary sortas="a-Gettext">Gettext</primary>
-    <secondary>temporary system, 32 Bit</secondary>
+    <secondary>temporary system</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -34,9 +34,11 @@
     href="../common/gettext.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="d"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
-   ./configure --prefix=/tools --disable-shared \
-   --cache-file=config.cache</userinput></screen>
+<screen os="d"><userinput>cd gettext-tools
+   CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
+   ./configure --prefix=/tools \
+   --host=${LFS_TARGET} --disable-shared \
+   --cache-file=../config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gettext.xml"
