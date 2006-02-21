@@ -27,8 +27,8 @@ cd ${PKGDIR}
 max_log_init GConf ${GCONF_VER} "gnome-platform (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
-CFLAGS="${TGT_CFLAGS}" \
-CXXFLAGS="${TGT_CFLAGS}" \
+CFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
+CXXFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
 ./configure --prefix=${GNOME_PREFIX} ${extra_conf} \
    --libexecdir=${GNOME_PREFIX}/${libdirname}/GConf \
    >> ${LOGFILE} 2>&1 &&

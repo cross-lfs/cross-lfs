@@ -5,11 +5,16 @@
 cd ${SRC}
 LOG=gnome-mime-data-gnome-platform.log
 
+set_buildenv
 set_libdirname
 setup_multiarch
+# *sigh* doing this just so we end up with 2 .pc files...
+if [ ! "${libdirname}" = "lib" ]; then
+   extra_conf="--libdir=${GNOME_PREFIX}/${libdirname}"
+fi
 
 if [ "${GNOME_PREFIX}" = "/usr" ]; then
-   extra_conf="--sysconfdir=/etc/gnome"
+   extra_conf="${extra_conf} --sysconfdir=/etc/gnome"
 fi
 
 # override TARBALLS to point at gnome/platform tree

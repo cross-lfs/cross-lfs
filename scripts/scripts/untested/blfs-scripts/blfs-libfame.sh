@@ -20,15 +20,20 @@ case ${LIBFAME_VER} in
    0.9.1 )
       apply_patch libfame-0.9.1-gcc34-1
       # update config.sub and config.guess so libfame groks newer arches
-      apply_patch libfame-0.9.1-gnu_config-1
+      apply_patch libfame-0.9.1-update_gnu_config-1
       sed -i -e '/FAME_RLD_FLAGS=/s@\\${exec_prefix}/lib@${libdir}@g' \
          configure
    ;;
 esac
 
+# Update libtool so we grok passing CC as "gcc -mXX"
+libtoolize --copy --force
+
 max_log_init libfame ${LIBFAME_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
+CXX="${CXX-g++} ${ARCH_CFLAGS}" \
 CFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
+CXXFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
 ./configure --prefix=/usr ${extra_conf} \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
