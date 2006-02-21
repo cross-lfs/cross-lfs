@@ -15,7 +15,7 @@ cd ${PKGDIR}
 
 apply_patch alsa-tools-1.0.8-update_ac3dec_config_foo-1
 
-cd ${PKGDIR}/ac3dec
+cd ${SRC}/${PKGDIR}/ac3dec
 
 max_log_init alsa-tools ${ALSA_TOOLS_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
