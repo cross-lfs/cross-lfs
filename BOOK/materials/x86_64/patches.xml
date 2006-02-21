@@ -8,11 +8,11 @@
 <sect1 id="ch-materials-patches-x86_64">
   <?dbhtml filename="patches-x86_64.html"?>
 
-  <title>Additional Patches for x86_64</title>
+  <title>Additional Patches for x86_64 Multilib</title>
 
   <variablelist role="materials">
 
-    <varlistentry>
+    <varlistentry os="binutils-multilib-patch">
       <term>Binutils Multilib Patch - 3 KB:</term>
       <listitem>
         <para><ulink
@@ -20,21 +20,13 @@
       </listitem>
     </varlistentry>
 
-    <varlistentry>
-      <term>Coreutils Uname Patch - 1 KB:</term>
-      <listitem>
-        <para><ulink
-        url="&patches-root;coreutils/&coreutils-x86_uname-patch;"/></para>
-      </listitem>
-    </varlistentry>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/patches.xml"
+    xpointer="xpointer(//*[@os='coreutils-x86_uname-patch'])"/>
 
-    <varlistentry>
-      <term>GCC Specs Patch - 14 KB:</term>
-      <listitem>
-        <para><ulink
-        url="&patches-root;gcc/&gcc-specs-patch;"/></para>
-      </listitem>
-    </varlistentry>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/patches.xml"
+    xpointer="xpointer(//*[@os='gcc-specs-patch'])"/>
 
     <varlistentry>
       <term>Linux-libc-headers x86_64 Biarch Patch - 99 KB:</term>
@@ -44,7 +36,7 @@
       </listitem>
     </varlistentry>
 
-    <varlistentry>
+    <varlistentry os="perl-multilib-patch">
       <term>Perl Configure Multilib Patch - 1.4 KB:</term>
       <listitem>
         <para><ulink
@@ -52,7 +44,7 @@
       </listitem>
     </varlistentry>
 
-    <varlistentry>
+    <varlistentry os="perl-lib64-patch">
       <term>Perl Libc lib64 Patch - 0.9 KB:</term>
       <listitem>
         <para><ulink
