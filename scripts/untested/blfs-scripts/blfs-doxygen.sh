@@ -10,7 +10,7 @@ set_buildenv
 set_libdirname
 setup_multiarch
 
-unpack_tarball doxygen-${DOXYGEN_VER}
+unpack_tarball doxygen-${DOXYGEN_VER}.src
 cd ${PKGDIR}
 
 # overwrite src/unistd.h with the systems
@@ -32,7 +32,17 @@ sed -i -e "/TMAKE_LIBDIR.*/s@lib@${libdirname}@g" \
        -e "s@^TMAKE_CC\s.*@& ${ARCH_CFLAGS}@g" \
        -e "s@^TMAKE_CFLAGS\s.*@& ${TGT_CFLAGS}@g" \
        -e "s@^TMAKE_CXX\s.*@& ${ARCH_CFLAGS}@g" \
+       -e "s@^TMAKE_LINK\s.*@& ${ARCH_CFLAGS}@g" \
+       -e "s@^TMAKE_LINK_SHLIB\s.*@& ${ARCH_CFLAGS}@g" \
       tmake/lib/${platform}/tmake.conf
+touch src/scanner.cpp
+
+#for file in src/libdoxycfg.t src/Makefile.libdoxycfg \
+#            src/doxytag.t src/libdoxygen.t \
+#            addon/doxywizard/doxywizard.t \
+#            addon/doxywizard/Makefile.doxywizard; do
+#   sed -i '/^LEX.*=/s@flex@flex -l@g' ${file}
+#done
 
 max_log_init doxygen ${DOXYGEN_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 
@@ -52,18 +62,15 @@ make \
 echo " o Build OK" || barf
 
 min_log_init ${INSTLOGS}
-make install \
-  >> ${LOGFILE} 2>&1 &&
-make doxywizard_install \
-  >> ${LOGFILE} 2>&1 &&
-make docs \
-  >> ${LOGFILE} 2>&1 &&
-make pdf \
-  >> ${LOGFILE} 2>&1 &&
-install -d -m755 /usr/share/doc/doxygen/src &&
-install -m644 src/translator{,_adapter,_en}.h \
-    /usr/share/doc/doxygen/src &&
-install -m644 VERSION /usr/share/doc/doxygen &&
-make install_docs \
-  >> ${LOGFILE} 2>&1 &&
+(
+   make install &&
+   make doxywizard_install &&
+   make docs &&
+   make pdf &&
+   install -d -m755 /usr/share/doc/doxygen/src &&
+   install -m644 src/translator{,_adapter,_en}.h \
+      /usr/share/doc/doxygen/src &&
+   install -m644 VERSION /usr/share/doc/doxygen &&
+   make install_docs 
+)  >> ${LOGFILE} 2>&1 &&
 echo " o Install OK" || barf
