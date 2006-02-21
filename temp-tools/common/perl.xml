@@ -22,17 +22,17 @@
   <sect2 role="installation">
     <title>Installation of Perl</title>
 
-    <para os="aa">First adapt some hard-wired paths to the C library by applying
+    <para os="a">First adapt some hard-wired paths to the C library by applying
     the following patch:</para>
 
-<screen os="ab"><userinput>patch -Np1 -i ../&perl-libc-patch;</userinput></screen>
+<screen os="b"><userinput>patch -Np1 -i ../&perl-libc-patch;</userinput></screen>
 
-    <para os="ac">Prepare Perl for compilation (make sure to get the 'Data/Dumper
+    <para os="c">Prepare Perl for compilation (make sure to get the 'Data/Dumper
     IO Fcntl POSIX' part of the command correct&mdash;they are all letters):</para>
 
-<screen><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX'</userinput></screen>
+<screen os="d"><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX'</userinput></screen>
 
-    <variablelist os="ad">
+    <variablelist os="e">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -46,20 +46,20 @@
 
     </variablelist>
 
-    <para os="ae">Only a few of the utilities contained in this package need to be
+    <para os="f">Only a few of the utilities contained in this package need to be
     built:</para>
 
-<screen os="af"><userinput>make perl utilities</userinput></screen>
+<screen os="g"><userinput>make perl utilities</userinput></screen>
 
-    <para os="ag">Although Perl comes with a test suite, it is not recommended to
+    <para os="h">Although Perl comes with a test suite, it is not recommended to
     run it at this point. Only part of Perl was built and running
     <userinput>make test</userinput> now will cause the rest of Perl to be
     built as well, which is unnecessary at this point. The test suite can
     be run in the next chapter if desired.</para>
 
-    <para os="ah">Install these tools and their libraries:</para>
+    <para os="i">Install these tools and their libraries:</para>
 
-<screen os="ai"><userinput>cp perl pod/pod2man /tools/bin
+<screen os="j"><userinput>cp perl pod/pod2man /tools/bin
 install -d /tools/lib/perl5/&perl-version;
 cp -R lib/* /tools/lib/perl5/&perl-version;</userinput></screen>
 
