@@ -24,11 +24,15 @@
     href="../x86/grub.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
+    <para os="p1">This patch updates grub to work in a Pure64 environment:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&grub-pure64-patch;</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/grub.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>CC="gcc -m32 -static" ./configure --prefix=/usr</userinput></screen>
+<screen><userinput>./configure --prefix=/usr</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/grub.xml"
