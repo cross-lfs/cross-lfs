@@ -8,7 +8,7 @@
 <sect1 id="ch-cross-tools-glibc" role="wrap">
   <?dbhtml filename="glibc.html"?>
 
-  <title>Glibc-&glibc-linuxthreads-version;</title>
+  <title>Glibc-&glibc-version;</title>
 
   <indexterm zone="ch-cross-tools-glibc">
     <primary sortas="a-Glibc">Glibc</primary>
@@ -30,25 +30,19 @@
     href="../../final-system/sparcv8/glibc.xml"
     xpointer="xpointer(//*[@os='l1'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/sparcv8/glibc.xml"
-    xpointer="xpointer(//*[@os='l2'])"/>
-
-    <para os="l3">If you require libidn support, you can add it
-    by unpacking <filename>glibc-libidn-&glibc-linuxthreads-version;</filename>
-    tarball from within the <filename class="directory">glibc-&glibc-linuxthreads-version;</filename>
-    directory. If you use libidn here, you will also need to build it during
-    the final-system build.</para>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/sparcv8/glibc.xml"
-    xpointer="xpointer(//*[@os='l4'])"/>
+<screen os="l2"><userinput>cd ..
+tar jxvf glibc-ports-&glibc-ports-version;.tar.bz2
+cd glibc-ports-&glibc-ports-version;
+mv linuxthreads* ../glibc-&glibc-version;
+cd ../glibc-&glibc-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='db'])"/>
 
-<screen os="dc"><userinput>patch -Np1 -i ../&glibc-linuxthreads-libgcc_eh-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='dc'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
@@ -59,20 +53,20 @@
     xpointer="xpointer(//*[@os='d'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/sparcv8/glibc.xml"
+    href="../../final-system/sparc/glibc.xml"
     xpointer="xpointer(//*[@os='s1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/sparcv8/glibc.xml"
+    href="../../final-system/sparc/glibc.xml"
     xpointer="xpointer(//*[@os='s2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/sparcv8/glibc.xml"
-    xpointer="xpointer(//*[@os='l5'])"/>
+    xpointer="xpointer(//*[@os='l3'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/sparcv8/glibc.xml"
-    xpointer="xpointer(//*[@os='l6'])"/>
+    xpointer="xpointer(//*[@os='l4'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
@@ -86,9 +80,13 @@
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='df'])"/>
+
 <screen os="df"><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc" \
     AR="${LFS_TARGET}-ar" RANLIB="${LFS_TARGET}-ranlib" \
-    ../glibc-&glibc-linuxthreads-version;/configure --prefix=/tools \
+    ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${LFS_TARGET} --build=${LFS_HOST} \
     --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include</userinput></screen>
