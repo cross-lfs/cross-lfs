@@ -63,10 +63,10 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
     --with-headers=/tools/include --cache-file=config.cache \
     --with-binutils=/cross-tools/${LFS_TARGET}/bin</userinput></screen>
 
-   <warning os="e1">
-      <para><emphasis>Any</emphasis> error message you see about nptl at this point
-       can safely be ignored.</para>
-   </warning>
+   <note os="e1">
+      <para><emphasis>Any</emphasis> error message you see about nptl at this
+      point can safely be ignored.</para>
+   </note>
 
     <variablelist os="ca">
       <title>The meaning of the configure options:</title>
@@ -138,7 +138,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
     class="directory">/tools/include</filename>:</para>
 
 <screen os="cg"><userinput>install -dv /tools/include/bits
-cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
+cp -v bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
     <para os="ch">Now create a blank stub file:</para>
 

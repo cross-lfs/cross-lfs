@@ -19,8 +19,8 @@
   combination of two or more of these techniques. This section briefly mentions
   issues that may arise when upgrading packages.</para>
 
-  <para>Some reasons why no package manager is mentioned in LFS or BLFS
-  include:</para>
+  <para>Some reasons why no specific package manager is recommended in LFS or
+  BLFS include:</para>
 
   <itemizedlist>
     <listitem>
@@ -30,7 +30,7 @@
 
     <listitem>
       <para>There are multiple solutions for package management, each having
-      its strengths and drawbacks.  Including one that satisfies all audiences
+      its strengths and drawbacks. Including one that satisfies all audiences
       is difficult.</para>
     </listitem>
   </itemizedlist>
@@ -38,14 +38,6 @@
   <para>There are some hints written on the topic of package management. Visit
   the <ulink url="&hints-root;">Hints subproject</ulink> and see if one of them
   fits your need.</para>
-
-  <note>
-    <para>As no particular package management technique is mentioned in LFS,
-    the commands in the remainder of this book must be performed while logged in
-    as user <systemitem class="username">root</systemitem> and no longer as user
-    <systemitem class="username">lfs</systemitem>. Also, double check that
-    <envar>$LFS</envar> is set.</para>
-  </note>
 
   <sect2>
     <title>Upgrade Issues</title>
@@ -59,7 +51,7 @@
       <listitem>
         <para>If one of the toolchain packages (Glibc, GCC or Binutils) needs
         to be upgraded to a newer minor version, it is safer to rebuild LFS.
-        Though you <emphasis>may</emphasis> be able to get by rebuilding all
+        Though, you <emphasis>may</emphasis> be able to get by rebuilding all
         the packages in their dependency order, we do not recommend it. For
         example, if glibc-2.2.x needs to be updated to glibc-2.3.x, it is safer
         to rebuild. For micro version updates, a simple reinstallation usually
