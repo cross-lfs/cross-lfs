@@ -16,7 +16,6 @@ rules:
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
 
 scripts:
-	install -m ${SCRIPTMODE} remove_floppy_devices.sh ${DESTDIR}/lib/udev/remove_floppy_devices.sh
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
 	install -m ${SCRIPTMODE} ide.sh ${DESTDIR}/lib/udev/ide.sh
 	install -m ${SCRIPTMODE} input.sh ${DESTDIR}/lib/udev/input.sh
