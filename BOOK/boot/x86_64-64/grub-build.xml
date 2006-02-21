@@ -27,10 +27,18 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/x86_64-64/grub.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/x86_64-64/grub.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/grub-build.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>CC="${CC} -m32 -static" ./configure --prefix=${LFS}/usr</userinput></screen>
+<screen><userinput>./configure --prefix=${LFS}/usr</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/grub-build.xml"
