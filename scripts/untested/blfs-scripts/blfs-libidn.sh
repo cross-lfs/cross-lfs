@@ -22,7 +22,7 @@ CXX="${CXX-g++} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \
 CXXFLAGS="${TGT_CFLAGS}" \
 ./configure --prefix=/usr ${extra_conf} \
-   --mandir=/usr/share/man --infodir=/usr/share/info
+   --mandir=/usr/share/man --infodir=/usr/share/info \
    --enable-java \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
