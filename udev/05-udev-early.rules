@@ -14,22 +14,6 @@
 #
 ########################################################################
 
-########################################################################
-#
-# Description : 05-udev-early.rules
-#
-# Authors     : Based on Open Suse Udev Rules
-#               kay.sievers@suse.de
-#
-# Adapted to  : Jim Gifford
-# LFS
-#
-# Version     : 00.01
-#
-# Notes       :
-#
-########################################################################
-
 # sysfs is populated after the event is sent
 #
 ACTION=="add", DEVPATH=="/devices/*", ENV{PHYSDEVBUS}=="?*", WAIT_FOR_SYSFS="bus"

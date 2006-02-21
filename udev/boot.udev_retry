@@ -23,7 +23,7 @@
 case "$1" in
     start)
 	if test -d /dev/.udev/failed; then
-	    bootmesg "Retry device configuration..."
+	    boot_mesg "Retry device configuration..."
 	    list=$(echo /dev/.udev/failed/*)
 	    for i in $list; do
 		device="$(readlink $i)/uevent"
