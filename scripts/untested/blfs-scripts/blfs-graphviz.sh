@@ -13,6 +13,9 @@ if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=/usr/${libdirname}"
 fi
 
+unpack_tarball graphviz-${GRAPHVIZ_VER}
+cd ${PKGDIR}
+
 if [ "Y" = "${MULTIARCH}" ]; then
    extra_conf="${extra_conf} --with-expatlibdir=/usr/${libdirname}"
    # fix LIBPOSTFIX so we dont always search lib64 on x86_64, ppc64 etc
@@ -21,10 +24,6 @@ if [ "Y" = "${MULTIARCH}" ]; then
       sed -i -e "/LIBPOSTFIX/s@64@@g" configure
    fi
 fi
-
-
-unpack_tarball graphviz-${GRAPHVIZ_VER}
-cd ${PKGDIR}
 
 max_log_init graphviz ${GRAPHVIZ_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
