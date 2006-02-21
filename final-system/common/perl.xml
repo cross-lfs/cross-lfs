@@ -34,6 +34,13 @@
   <sect2 role="installation">
     <title>Installation of Perl</title>
 
+    <para os="a00">Before starting to configure, create a basic
+    <filename>/etc/hosts</filename> file which will be referenced in one
+    of Perl's configuration files as well as being used used by the testsuite
+    if you run that.</para>
+
+<screen os="a01"><userinput>echo "127.0.0.1 localhost $(hostname)" &gt; /etc/hosts</userinput></screen>
+
     <para os="a">To have full control over the way Perl is set up, run the
     interactive <command>Configure</command> script and hand-pick the way
     this package is built. If the defaults it auto-detects are suitable,
@@ -56,12 +63,6 @@
     <para os="d">Compile the package:</para>
 
 <screen os="e"><userinput>make</userinput></screen>
-
-    <para os="f">To run the test suite, first create a basic
-    <filename>/etc/hosts</filename> file which is needed by a couple of
-    the tests to resolve the network name localhost:</para>
-
-<screen os="g"><userinput>echo "127.0.0.1 localhost $(hostname)" &gt; /etc/hosts</userinput></screen>
 
     <para os="h">Now run the tests, if desired:</para>
 
