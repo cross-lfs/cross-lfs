@@ -42,28 +42,28 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
+<screen os="s3"><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${LFS_TARGET} --build=${LFS_HOST} \
     --disable-sanity-checks --enable-kernel=2.6.0 \
     --with-headers=/tools/include \
     --with-binutils=/cross-tools/${LFS_TARGET}/bin</userinput></screen>
 
    <warning os="e1">
-      <para><emphasis>Any</emphasis> error message you see about nptl at this point\
+      <para><emphasis>Any</emphasis> error message you see about nptl at this point
        can safely be ignored.</para>
    </warning>
 
     <variablelist os="ca">
       <title>The meaning of the configure options:</title>
 
-      <varlistentry>
+      <varlistentry os="ca1">
         <term><parameter>CC=gcc</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>Tells GLIBC to use the hosts GCC compiler.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca1">
+      <varlistentry os="ca2">
         <term><parameter>--prefix=/tools</parameter></term>
         <listitem>
           <para>This tells the configure script to prepare to install the
@@ -72,28 +72,30 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca2">
-        <term><parameter>--host=${LFS_TARGET}</parameter></term>
-        <listitem>
-          <para>This do ...</para>
-        </listitem>
-      </varlistentry>
-
       <varlistentry os="ca3">
-        <term><parameter>--build=${LFS_HOST}</parameter></term>
+        <term><parameter>--host=${LFS_HOST}</parameter></term>
         <listitem>
-          <para>This do ...</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--disable-sanity-checks</parameter></term>
-        <listitem>
-          <para>This switch do ... .</para>
+          <para>When used injunction with --target, this creates a cross-architecture
+          executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
         </listitem>
       </varlistentry>
 
       <varlistentry os="ca4">
+        <term><parameter>--target=${LFS_TARGET}</parameter></term>
+        <listitem>
+          <para>When used injunction with --host, this creates a cross-architecture
+          executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca5">
+        <term><parameter>--disable-sanity-checks</parameter></term>
+        <listitem>
+          <para>This switch disables any checks that are in place.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="ca6">
         <term><parameter>--enable-kernel=2.6.0</parameter></term>
         <listitem>
           <para>This tells Glibc to compile the library with support
@@ -101,7 +103,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca5">
+      <varlistentry os="ca7">
         <term><parameter>--with-headers=/tools/include</parameter></term>
         <listitem>
           <para>This tells Glibc to compile itself against the headers
@@ -111,10 +113,10 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry>
+      <varlistentry os="ca8">
         <term><parameter>--with-binutils=/cross-tools/${LFS_TARGET}/bin</parameter></term>
         <listitem>
-          <para>This switch do ... .</para>
+          <para>This tells GLIBC to use the binutils for our specific target architecture.</para>
         </listitem>
       </varlistentry>
 
@@ -143,7 +145,7 @@ cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
     <para os="cl">Now we copy the architecture specific header over:</para>
 
-<screen><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
+<screen os="cm"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
 
   </sect2>
 

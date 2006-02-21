@@ -57,7 +57,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc" \
+<screen os="df"><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc" \
     AR="${LFS_TARGET}-ar" RANLIB="${LFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${LFS_TARGET} --build=${LFS_HOST} \
@@ -66,100 +66,107 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
-    <variablelist os="di">
+    <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
 
-      <varlistentry os="di1">
+      <varlistentry os="dg1">
         <term><parameter>BUILD_CC="gcc"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This sets GLIBC to use the current compiler on our system. This is
+          used to create the tools GLIBC uses durings it's build.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di2">
+      <varlistentry os="dg2">
         <term><parameter>CC="${LFS_TARGET}-gcc"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This forces GLIBC to use the GCC complier that we made for our target
+          architecture.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di3">
+      <varlistentry os="dg3">
         <term><parameter>AR="${LFS_TARGET}-ar"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This forces GLIBC to use the AR utilitythat we made for our target
+          architecture.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di4">
+      <varlistentry os="dg4">
         <term><parameter>RANLIB="${LFS_TARGET}-ranlib"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This forces GLIBC to use the RANLIB utility we made for our target
+          architecture.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di5">
+      <varlistentry os="dg5">
         <term><parameter>--disable-profile</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This builds the libraries without profiling information. 
+	  Omit this option if profiling on the temporary tools is necessary.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di6">
+      <varlistentry os="dg6">
         <term><parameter>--enable-add-ons</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This tells GLIBC to utilize all add-on's that are avaialble.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di7">
+      <varlistentry os="dg7">
         <term><parameter>--with-tls</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This tells GLIBC to use Thread Local Storage.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di8">
+      <varlistentry os="dg8">
         <term><parameter>--with-__thread</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This tells GLIBC to use use the __thread for libc and
+          libpthread builds.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di9">
+      <varlistentry os="dg9">
         <term><parameter>--with-binutils=/cross-tools/bin</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This tells GLIBC to use the Binutils that are specific to
+          our target architecture.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="di10">
+      <varlistentry os="dg10">
         <term><parameter>--cache-file=config.cache</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This tells GLIBC to utilize a premade cache file.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
-    <para os="df">During this stage the following warning might appear:</para>
+    <para os="dh">During this stage the following warning might appear:</para>
 
-<blockquote os="dg"><screen><computeroutput>configure: WARNING:
+<blockquote os="di"><screen><computeroutput>configure: WARNING:
 *** These auxiliary programs are missing or
 *** incompatible versions: msgfmt
 *** some features will be disabled.
 *** Check the INSTALL file for required versions.</computeroutput></screen></blockquote>
 
-    <para os="dh">The missing or incompatible <command>msgfmt</command> program is
+    <para os="dj">The missing or incompatible <command>msgfmt</command> program is
     generally harmless. This <command>msgfmt</command> program is part of the
     Gettext package which the host distribution should provide.</para>
 
-    <para os="dj">Compile the package:</para>
+    <para os="dk">Compile the package:</para>
 
-<screen os="dk"><userinput>make</userinput></screen>
+<screen os="dl"><userinput>make</userinput></screen>
 
-    <para os="dl">Install the package:</para>
+    <para os="dm">Install the package:</para>
 
-<screen os="dm"><userinput>make install</userinput></screen>
+<screen os="dn"><userinput>make install</userinput></screen>
 
   </sect2>
 

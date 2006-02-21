@@ -42,11 +42,9 @@
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
-    --host=${LFS_TARGET} --build=${LFS_HOST} \
-    --disable-sanity-checks --enable-kernel=2.6.0 \
-    --with-headers=/tools/include \
-    --with-binutils=/cross-tools/${LFS_TARGET}/bin</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/glibc-headers.xml"
+    xpointer="xpointer(//*[@os='s3'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/glibc-headers.xml"
@@ -96,7 +94,7 @@
     href="../x86/glibc-headers.xml"
     xpointer="xpointer(//*[@os='cl'])"/>
 
-<screen><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/x86_64/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
+<screen os="cm"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/x86_64/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
 
   </sect2>
 
