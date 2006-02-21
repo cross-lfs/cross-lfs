@@ -27,16 +27,16 @@
 
 <screen os="ab"><userinput>patch -Np1 -i ../&perl-libc-patch;</userinput></screen>
 
-    <para os="ac">Prepare Perl for compilation (make sure to get the 'IO Fcntl POSIX'
-    part of the command correct&mdash;they are all letters):</para>
+    <para os="ac">Prepare Perl for compilation (make sure to get the 'Data/Dumper
+    IO Fcntl POSIX' part of the command correct&mdash;they are all letters):</para>
 
-<screen><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='IO Fcntl POSIX'</userinput></screen>
+<screen><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX'</userinput></screen>
 
     <variablelist os="ad">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
-        <term><parameter>-Dstatic_ext='IO Fcntl POSIX'</parameter></term>
+        <term><parameter>-Dstatic_ext='Data/Dumper IO Fcntl POSIX'</parameter></term>
         <listitem>
           <para>This tells Perl to build the minimum set of static
           extensions needed for installing and testing the Coreutils
