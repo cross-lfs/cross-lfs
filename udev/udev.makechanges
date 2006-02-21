@@ -1,11 +1,27 @@
-Udev will need to be made with the following extras
+I know this is a topic a lot of people are interested in. How
+to get udev hotplugging working. It's not a simple procedure,
+but I got it to work on a Sparc so it should work for everyone.
 
-extras/firmware_helper
-extras/scsi_id
-extras/volume_id
-extras/ata_id
-extras/usb_id
-extras/edd_id
-extras/dasd_id
-extras/cdrom_id
-extras/floppy
+First off, you will need to patch the kernel. 2.6.15 is not all
+the way there, but GregKH has the necessary patches available to
+make it work. I used
+
+http://www.kernel.org/pub/linux/kernel/people/gregkh/gregkh-2.6/gregkh-all-2.6.15.patch
+
+Second, you will need to use udev 079, here is the build instructions
+you must use to get full functionality.
+make EXTRAS="extras/firmware extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/cdrom_id extras/floppy" udevdir=/dev
+
+make EXTRAS="extras/firmware extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/cdrom_id extras/floppy" udevdir=/dev install
+cp extras/path_id /sbin
+cp extras/eventrecorder.sh /lib/udev
+rm -rf /etc/udev/rules.d/*
+
+Third you will need the udev package that the Cross-LFS team developed.
+I keep tarballs available on my system for download
+
+http://ftp.jg555.com/udev/udev-cross-lfs.tar.bz2
+
+To install this package use make install
+
+Then make sure you remove your hotplug script if you have it running in /etc/rc.d/
