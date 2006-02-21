@@ -27,16 +27,16 @@
 
 <screen os="b"><userinput>echo "am_cv_func_working_getline=yes" &gt;&gt; config.cache</userinput></screen>
 
-    <para>Prepare Gettext for compilation:</para>
+    <para os="c">Prepare Gettext for compilation:</para>
 
-<screen><userinput>./configure --prefix=/tools \
+<screen os="d"><userinput>./configure --prefix=/tools \
    --host=${LFS_TARGET} --disable-libasprintf \
    --without-csharp --cache-file=config.cache</userinput></screen>
 
-    <variablelist os="c">
+    <variablelist os="e">
       <title>The meaning of the configure options:</title>
 
-      <varlistentry os="c1">
+      <varlistentry os="e1">
         <term><parameter>--disable-libasprintf</parameter></term>
         <listitem>
           <para>This flag tells Gettext not to build the <filename
@@ -47,7 +47,7 @@
         </listitem>
       </varlistentry>
 
-      <varlistentry os="c2">
+      <varlistentry os="e2">
         <term><parameter>--without-csharp</parameter></term>
         <listitem>
           <para>This ensures that Gettext does not build support for the C#
@@ -58,13 +58,13 @@
 
     </variablelist>
 
-    <para>Compile the package:</para>
+    <para os="f">Compile the package:</para>
 
-<screen><userinput>make</userinput></screen>
+<screen os="g"><userinput>make</userinput></screen>
 
-    <para>Install the package:</para>
+    <para os="h">Install the package:</para>
 
-<screen><userinput>make install</userinput></screen>
+<screen os="i"><userinput>make install</userinput></screen>
 
   </sect2>
 
