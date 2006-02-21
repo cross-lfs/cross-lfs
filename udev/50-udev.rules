@@ -123,7 +123,7 @@ KERNEL=="pktcdvd",		NAME="pktcdvd/control"
 KERNEL=="pktcdvd[0-9]*",	NAME="pktcdvd/%k"
 
 # fix floppy devices
-KERNEL=="fd[0-9]*", 		ACTION=="add", GROUP="floppy", SYSFS{device/cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{device/cmos} -m %M /dev/%k"
+KERNEL=="fd[0-9]*", 		ACTION=="add", GROUP="floppy", MODE="660"
 KERNEL=="fd[0-9]*", 		ACTION=="remove", RUN+="/bin/rm -f $root/%k*"
 
 # sd:		0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
