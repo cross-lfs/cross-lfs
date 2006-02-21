@@ -16,13 +16,25 @@ fi
 unpack_tarball lesstif-${LESSTIF_VER}
 cd ${PKGDIR}
 
-apply_patch lesstif-0.94.0-use_libdir
+case ${LESSTIF_VER} in
+   0.94.0 )
+     apply_patch lesstif-0.94.0-use_libdir
+   ;;
+   0.94.4 )
+     apply_patch lesstif-0.94.4-use_libdir_and_fix_installdirs
+     apply_patch lesstif-0.94.4-testsuite_fix-1
+   ;;
+esac
+
+# fix mxmkmf generation to point at correct location when multi-arch
+sed -i -e "/^lcfgdir=/s@/lib/@/${libdirname}/@g" \
+   lib/config/mxmkmf.in
 
 max_log_init lesstif ${LESSTIF_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
-CFLAGS="${TGT_CFLAGS}" \
-CXXFLAGS="${TGT_CFLAGS}" \
+CFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
+CXXFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
 ./configure --prefix=/usr ${extra_conf} \
    --enable-build-21 \
    --disable-debug \
@@ -44,9 +56,7 @@ make install \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 
-# TODO: Need to edit /usr/bin/mxmkmf to set the correct libdir ...
-# (it really should be setup fom --libdir )
-if [ "Y" = "${MULTIARCH}" ]i; then
+if [ "Y" = "${MULTIARCH}" ]; then
    use_wrapper /usr/bin/mxmkmf
 fi
 
