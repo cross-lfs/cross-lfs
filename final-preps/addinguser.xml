@@ -78,12 +78,14 @@ useradd -s /bin/bash -g lfs -m -k /dev/null lfs</userinput></screen>
 <screen><userinput>passwd lfs</userinput></screen>
 
   <para>Grant <systemitem class="username">lfs</systemitem> full access to
-  <filename class="directory">$LFS</filename> and <filename
-  class="directory">$LFS/tools</filename> by making <systemitem
+  <filename class="directory">$LFS</filename>,
+  <filename class="directory">$LFS/cross-tools</filename>, 
+  and <filename class="directory">$LFS/tools</filename> by making <systemitem
   class="username">lfs</systemitem> the directories owner:</para>
 
 <screen><userinput>chown lfs $LFS
-chown lfs $LFS/tools</userinput></screen>
+chown lfs $LFS/tools
+chown lfs $LFS/cross-tools</userinput></screen>
 
   <para>If a separate working directory was created as suggested, we will
   show you how to create the directory and give user <systemitem
