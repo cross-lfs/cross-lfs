@@ -14,6 +14,9 @@
 #
 ########################################################################
 
+# hotplug
+ENV{MODALIAS}=="?*",    RUN+="/sbin/modprobe $env{MODALIAS}"
+
 # console
 KERNEL=="pty[pqrstuvwxyzabcdef][0123456789abcdef]", NAME="%k", GROUP="tty", MODE="666", OPTIONS="last_rule"
 KERNEL=="tty[pqrstuvwxyzabcdef][0123456789abcdef]", NAME="%k", GROUP="tty", MODE="666", OPTIONS="last_rule"
