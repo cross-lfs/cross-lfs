@@ -66,28 +66,32 @@ sed -e 's/miniperl/miniperl-cross/g' utils/Makefile.orig > utils/Makefile</useri
 mv miniperl miniperl-cross
 make clean</userinput></screen>
 
-    <para os="j">We will now edit the main Makefile to use our newly created miniperl-cross:</para>
-
-<screen os="k"><userinput>cp Makefile{,.orig}
-sed -e 's|(LDLIBPTH) ./miniperl|(LDLIBPTH) ./miniperl-cross|g' Makefile.orig > Makefile</userinput></screen>
-
-   <para os="l">We will now make perl cross-compile friendly by forcing it to use our
+   <para os="j">We will now make perl cross-compile friendly by forcing it to use our
    cross-tools we have created:</para>
 
-<screen os="m"><userinput>cp config.sh{,.orig}
+<screen os="k"><userinput>cp config.sh{,.orig}
 sed -e "s@\(^ar=\).*@\1'${AR}'@g" \
     -e "s@\(^ranlib=\).*@\1'${RANLIB}'@g" \
     -e "s@\(^cc=\).*@\1'${CC} ${BUILD32}'@g" \
     -e "s@\(^ld=\).*@\1'${CC} ${BUILD32}'@g" config.sh.orig > config.sh</userinput></screen>
 
-  <para os="n">Now we are ready to make our cross-compiled perl:</para>
+<para os="l">Now we will make miniperl for our architecture:</para>
 
-<screen os="o"><userinput>make miniperl
+<screen os="m"><userinput>make miniperl</userinput></screen>
+
+    <para os="n">We will now edit the main Makefile to use our newly created miniperl-cross:</para>
+
+<screen os="o"><userinput>cp Makefile{,.orig}
+sed -e 's|(LDLIBPTH) ./miniperl|(LDLIBPTH) ./miniperl-cross|g' Makefile.orig > Makefile</userinput></screen>
+
+  <para os="p">Now we are ready to make our cross-compiled perl:</para>
+
+<screen os="q"><userinput>make miniperl
 make perl utilities</userinput></screen>
 
-    <para os="p">Install these tools and their libraries:</para>
+    <para os="r">Install these tools and their libraries:</para>
 
-<screen os="q"><userinput>cp perl pod/pod2man /tools/bin
+<screen os="s"><userinput>cp perl pod/pod2man /tools/bin
 install -d /tools/lib/perl5/&perl-version;
 cp -R lib/* /tools/lib/perl5/&perl-version;</userinput></screen>
 
