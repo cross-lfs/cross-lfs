@@ -21,6 +21,11 @@
   <sect2 role="installation">
     <title>Installation of Colo</title>
 
+    <para os="p1">This patch updates the Colo bootloader to build under
+    64 bit:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&colo-make-patch;</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../mips/colo.xml"
     xpointer="xpointer(//*[@os='a'])"/>
@@ -29,7 +34,7 @@
     href="../mips/colo.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>make CC="gcc ${BUILD32}" binary
+<screen><userinput>make binary
 make CC="gcc ${BUILD64}" tooldirs</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"

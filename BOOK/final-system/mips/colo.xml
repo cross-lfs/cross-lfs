@@ -45,23 +45,16 @@
     <para os="c">Install the package:</para>
 
 <screen os="d"><userinput>install -d  /usr/lib/colo/examples
-install binaries/colo-chain.elf /usr/lib/colo
-install binaries/colo-rom-image.bin /usr/lib/colo
-install tools/colo-perm/colo-perm /sbin
-install tools/colo-perm/colo-perm.8 /usr/man/man8
-install tools/elf2rfx/elf2rfx /sbin
-install tools/flash-tool/flash-tool /sbin
-install tools/flash-tool/flash-tool.8 /usr/man/man8
+install chain/colo-chain.elf /usr/lib/colo
 install tools/lcdtools/e2fsck-lcd/e2fsck-lcd /sbin
 install tools/lcdtools/e2fsck-lcd/e2fsck-lcd.8 /usr/man/man8
-install tools/lcdtools/liblcd/liblcd.a /lib
 install tools/lcdtools/paneld/paneld /sbin
 install tools/lcdtools/paneld/paneld.8 /usr/man/man8
 install tools/lcdtools/putlcd/putlcd /sbin
 install tools/lcdtools/putlcd/putlcd.8 /usr/man/man8
 install examples/menu.colo /usr/lib/colo/examples
 install examples/simple.colo /usr/lib/colo/examples
-cp binaries/colo-chain.elf /boot/vmlinux
+cp chain/colo-chain.elf /boot/vmlinux
 gzip -9 /boot/vmlinux</userinput></screen>
 
   </sect2>
@@ -73,8 +66,7 @@ gzip -9 /boot/vmlinux</userinput></screen>
       <segtitle>Installed programs</segtitle>
 
       <seglistitem>
-        <seg>colo-chain.elf, colo-rom-image.bin, colo-perm, elf2rfx,
-        flash-tool, e2fsck-lcd, paneld and putlcd</seg>
+        <seg>colo-chain.elf, e2fsck-lcd, paneld and putlcd</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -92,50 +84,6 @@ gzip -9 /boot/vmlinux</userinput></screen>
           firmware</para>
           <indexterm zone="ch-system-colo colo-chain.elf">
             <primary sortas="b-colo-chain.elf">colo-chain.elf</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="colo-rom-image.bin">
-        <term><command>colo-rom-image.bin</command></term>
-        <listitem>
-          <para>Is a replacement firmware for the Cobalt's standard
-          firmware</para>
-          <indexterm zone="ch-system-colo colo-rom-image.bin">
-            <primary sortas="b-colo-rom-image.bin">colo-rom-image.bin</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="colo-perm">
-        <term><command>colo-perm</command></term>
-        <listitem>
-          <para>Is a tool which looks in the ROM of a Cobalt machine for a
-          magic string identifying CoLo. This way, it can be determined if
-          the original Cobalt firmware is used or whether CoLo has been
-          flashed to the ROM</para>
-          <indexterm zone="ch-system-colo colo-perm">
-            <primary sortas="b-colo-perm">colo-perm</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="elf2rfx">
-        <term><command>elf2rfx</command></term>
-        <listitem>
-          <para>UNKNOWN</para>
-          <indexterm zone="ch-system-colo elf2rfx">
-            <primary sortas="b-elf2rfx">elf2rfx</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="flash-tool">
-        <term><command>flash-tool</command></term>
-        <listitem>
-          <para>Read or write Cobalt's firmware flash memory</para>
-          <indexterm zone="ch-system-colo flash-tool">
-            <primary sortas="b-flash-tool">flash-tool</primary>
           </indexterm>
         </listitem>
       </varlistentry>
