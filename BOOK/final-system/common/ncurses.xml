@@ -51,11 +51,12 @@
 
     <para os="g">Move the Ncurses static libraries to the proper locations:</para>
 
-<screen os="h"><userinput>mv /lib/lib{panel,menu,form,ncurses,ncurses++}.a /usr/lib</userinput></screen>
+<screen os="h"><userinput>mv /lib/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib</userinput></screen>
 
     <para os="i">Create symlinks in <filename class="directory">/usr/lib:</filename></para>
 
 <screen os="j"><userinput>rm /lib/lib{ncurses,menu,panel,form,curses}.so
+ln -sf ../../lib/libncurses.so.5 /usr/lib/libcurses.so
 ln -sf ../../lib/libncurses.so.5 /usr/lib/libncurses.so
 ln -sf ../../lib/libmenu.so.5 /usr/lib/libmenu.so
 ln -sf ../../lib/libpanel.so.5 /usr/lib/libpanel.so

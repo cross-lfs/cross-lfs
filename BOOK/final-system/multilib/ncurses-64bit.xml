@@ -53,12 +53,13 @@
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>mv /lib64/lib{panel,menu,form,ncurses,ncurses++}.a /usr/lib64</userinput></screen>
+<screen><userinput>mv /lib64/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib64</userinput></screen>
 
     <para>Create symlinks in <filename class="directory">/usr/lib64:</filename></para>
 
 <screen><userinput>rm /lib64/lib{ncurses,menu,panel,form,curses}.so
 ln -sf ../../lib64/libncurses.so.5 /usr/lib64/libncurses.so
+ln -sf ../../lib64/libncurses.so.5 /usr/lib64/libcurses.so
 ln -sf ../../lib64/libmenu.so.5 /usr/lib64/libmenu.so
 ln -sf ../../lib64/libpanel.so.5 /usr/lib64/libpanel.so
 ln -sf ../../lib64/libform.so.5 /usr/lib64/libform.so</userinput></screen>
