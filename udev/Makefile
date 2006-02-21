@@ -32,7 +32,6 @@ boot:
 	install -d ${DESTDIR}/var/adm/fillup-templates
 	install -m ${CONFMODE} sysconfig.storage ${DESTDIR}/var/adm/fillup-templates/sysconfig.storage
 	install -m ${SCRIPTMODE} show_event_log ${DESTDIR}/usr/share/udev/show_event_log
-	install -m ${CONFMODE} README.Logging ${DESTDIR}/usr/share/udev/README.Logging
 	ln -sf ../init.d/udev ${DESTDIR}/etc/rc.d/rcsysinit.d/S10udev
 	ln -sf ../init.d/udev_retry ${DESTDIR}/etc/rc.d/rcsysinit.d/S15udev_retry
 
