@@ -63,11 +63,11 @@ fetch() {
 }
 
 fetch_tarball() { # ${1} should be a package name w version
-   for type in tar.bz2 tar.gz tgz tar bleh; do
-      fetch ${1}.${type}
-      if [ "${?}" = "0" ]; then return 0 ; fi
+   for type in tar.bz2 tar.gz tgz tar.Z tar bleh; do
       # if the following is true, we failed in our mission
       if [ "${type}" = "bleh" ]; then return 1 ; fi
+      fetch ${1}.${type}
+      if [ "${?}" = "0" ]; then return 0 ; fi
    done
 }
 
@@ -75,6 +75,14 @@ unpack_tarball() { # ${1}=<package-${PACKAGE_VER}> ${2}
    local pkgname=${1}
    shift
    local filelist="${@}"
+
+   # Check if -no-remove option is set
+   echo ${filelist} | grep \\-no-remove > /dev/null 2>&1 &&
+   {
+      local no_remove=Y
+      filelist=`echo ${filelist} | sed 's@-no-remove@@g'`
+   }
+
    # Easier add of .tgz
 
    # if PACKAGE_VER was not set for this package, warn but exit with no error.
@@ -87,7 +95,7 @@ unpack_tarball() { # ${1}=<package-${PACKAGE_VER}> ${2}
    fi
    
    local archive=`ls -t ${TARBALLS}/${pkgname}* 2> /dev/null | \
-      ${GREP} -E ${pkgname}.\(tgz\|tar.gz\|tar.bz2\|tar\)$ | head -n 1`
+      ${GREP} -E ${pkgname}.\(tgz\|tar.gz\|tar.bz2\|tar.Z\|tar\)$ | head -n 1`
 
    if [ -z ${archive} ]; then
       echo "unpack_tarball: unable to locate tarball for '${pkgname}' in ${TARBALLS} ... exiting"
@@ -97,7 +105,8 @@ unpack_tarball() { # ${1}=<package-${PACKAGE_VER}> ${2}
    case ${archive} in
       *.gz | *.tgz )   local CAT="gzip -dc" ;;
       *.bz2 )          local CAT="bzcat"    ;;
-      *.tar )          local CAT="cat"    ;;
+      *.Z )            local CAT="zcat"     ;;
+      *.tar )          local CAT="cat"      ;;
       * )   echo "unpack_tarball: unable to determine tarball type... exiting"
             exit 1 ;;
    esac
@@ -125,7 +134,7 @@ unpack_tarball() { # ${1}=<package-${PACKAGE_VER}> ${2}
       # prepend ${PKGDIR} to each required file 
       filelist=`echo ${filelist} | \
          sed "s@\([-+_a-zA-Z0-9/.]* \?\)@${PKGDIR}/\1@g"`
-   elif [ -d ${PKGDIR} ]; then
+   elif [ -d ${PKGDIR} -a ! "${no_remove}" = "Y" ]; then
       echo -n "Removing existing ${PKGDIR} directory... "
       rm -rf ${PKGDIR} && echo "DONE" || 
       echo "Error removing ${PKGDIR}... "; #return 1
@@ -134,7 +143,7 @@ unpack_tarball() { # ${1}=<package-${PACKAGE_VER}> ${2}
 
    echo "Unpacking ${archive}"
    ${CAT} ${archive} | tar -xf - ${filelist} 2> /dev/null &&
-   echo " o ${1} unpacked successfully" ||
+   echo " o ${archive} unpacked successfully" ||
    {
       echo "unpack_tarball: unable to unpack tarball ${archive}... exiting"
       exit 1
@@ -196,7 +205,7 @@ check_tarballs () {
       #local archive=`ls -t ${TARBALLS}/${pkgname}.@(tgz|tar.gz|tar.bz2) \
       #  2> /dev/null | head -n 1`
       local archive=`ls -t ${TARBALLS}/${pkgname}* 2> /dev/null | \
-      ${GREP} -E ${pkgname}.\(tgz\|tar.gz\|tar.bz2\|tar\)$ | head -n 1`
+      ${GREP} -E ${pkgname}.\(tgz\|tar.gz\|tar.bz2\|tar.Z\|tar\)$ | head -n 1`
 
       if [ -z "${archive}" ]; then
          echo "not found"
