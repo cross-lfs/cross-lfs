@@ -26,8 +26,8 @@ scripts:
 	install -m ${SCRIPTMODE) ${DESTDIR}/usr/bin/udev.count_events
 
 boot:
-	install -m ${INITMODE} ${DESTDIR}/etc/init.d/boot.udev
-	install -m ${INITMODE} ${DESTDIR}/etc/init.d/boot.udev_retry
+	install -m ${INITMODE} ${DESTDIR}/etc/init.d/udev
+	install -m ${INITMODE} ${DESTDIR}/etc/init.d/udev_retry
 	install -m ${CONFMODE} ${DESTDIR}/var/adm/fillup-templates/sysconfig.storage
 	install -m ${SCRIPTMODE) doc/show_event_log
 	install -m ${CONFMODE} doc/README.Logging
