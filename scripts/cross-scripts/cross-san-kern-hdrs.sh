@@ -38,6 +38,13 @@ else
 fi
 KERN_HDR_DIR=${INSTALL_PREFIX}/include
 
+# ARGHHH, asm-x86_64/types.h conflicts with sys/types.h with regards to
+# __s64 and __u64. llh defines them as long long, glibc as long.
+# On amd64 long and long long are both 8bytes. Here we edit asm_x86_64
+# to define __s64 and __u64 as type long
+sed -i -e 's@long long@long@g' \
+   include/asm-x86_64/types.h
+
 # If we are doing a biarch build we will need the kernel headers for
 # both architectures and will have to create stub headers in include/asm
 
