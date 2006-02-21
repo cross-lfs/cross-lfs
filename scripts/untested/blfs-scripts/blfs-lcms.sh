@@ -17,6 +17,9 @@ unpack_tarball lcms-${LCMS_VER}
 cd ${PKGDIR}
 
 # TODO: need to patch python/lcms.i as SWIG_LPGAMMATABLE is not defined
+
+sed -i 's@SWIGTYPE_LPGAMMATABLE@SWIGTYPE_p_GAMMATABLE@g' python/lcms.i
+
 # TODO: check python output what it defines for site-packeages during
 #       bi-arch builds... python script dir is always lib, not lib64
 #       ( thio could be an issue with the python build ).
@@ -28,6 +31,7 @@ CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \
 CXXFLAGS="${TGT_CFLAGS}" \
+LDFLAGS="-L/usr/${libdirname}" \
 ./configure --prefix=/usr --with-python ${extra_conf} \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
