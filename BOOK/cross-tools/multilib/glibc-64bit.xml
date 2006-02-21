@@ -50,16 +50,16 @@
     href="glibc.xml"
     xpointer="xpointer(//*[@os='de'])"/>
 
-    <para>Now we make sure the Glibc goes into <filename
+    <para os="n1">Now we make sure the Glibc goes into <filename
     class="directory">/tools/lib64</filename>:</para>
 
-<screen><userinput>echo "slibdir=/tools/lib64" &gt;&gt; configparms</userinput></screen>
+<screen os="n2"><userinput>echo "slibdir=/tools/lib64" &gt;&gt; configparms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc ${BUILD64}" \
+<screen os="df"><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc ${BUILD64}" \
     AR="${LFS_TARGET}-ar" RANLIB="${LFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${LFS_TARGET} --build=${LFS_HOST} --libdir=/tools/lib64 \
@@ -68,24 +68,33 @@
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
-    <variablelist os="fa">
+    <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
 
       <varlistentry os="fa1">
         <term><parameter>CC="${LFS_TARGET}-gcc ${BUILD64}"</parameter></term>
         <listitem>
-          <para>This switch do ... .</para>
+          <para>Forces GLIBC to utilize our target architecture GCC utilizing
+          the 64 BIT flags.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry>
+      <varlistentry os="fa2">
         <term><parameter>--libdir=/tools/lib64</parameter></term>
         <listitem>
-          <para>This switch do ... .</para>
+          <para>Puts GLIBC into a /tools/lib64 instead of /tools/lib.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="glibc.xml"
+    xpointer="xpointer(//*[@os='dh'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="glibc.xml"
+    xpointer="xpointer(//*[@os='di'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
@@ -102,6 +111,10 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
     xpointer="xpointer(//*[@os='dm'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="glibc.xml"
+    xpointer="xpointer(//*[@os='dn'])"/>
 
   </sect2>
 

@@ -66,16 +66,16 @@
     href="glibc.xml"
     xpointer="xpointer(//*[@os='de'])"/>
 
-    <para>Now we make sure the Glibc goes into <filename
+    <para os="n1">Now we make sure the Glibc goes into <filename
     class="directory">/tools/lib32</filename>:</para>
 
-<screen><userinput>echo "slibdir=/tools/lib32" &gt;&gt; configparms</userinput></screen>
+<screen os="n2"><userinput>echo "slibdir=/tools/lib32" &gt;&gt; configparms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc ${BUILDN32}" \
+<screen os="df"><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc ${BUILDN32}" \
     AR="${LFS_TARGET}-ar" RANLIB="${LFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${LFS_TARGET} --build=${LFS_HOST} --libdir=/tools/lib32 \
@@ -90,18 +90,27 @@
       <varlistentry os="fa1">
         <term><parameter>CC="${LFS_TARGET}-gcc ${BUILDN32}"</parameter></term>
         <listitem>
-          <para>This switch do ... .</para>
+          <para>Forces GLIBC to utilize our target architecture GCC utilizing
+          the N32 flags.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
         <term><parameter>--libdir=/tools/lib32</parameter></term>
         <listitem>
-          <para>This switch do ... .</para>
+          <para>Puts GLIBC into a /tools/lib32 instead of /tools/lib.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="glibc.xml"
+    xpointer="xpointer(//*[@os='dh'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="glibc.xml"
+    xpointer="xpointer(//*[@os='di'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
@@ -118,6 +127,10 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
     xpointer="xpointer(//*[@os='dm'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="glibc.xml"
+    xpointer="xpointer(//*[@os='dn'])"/>
 
   </sect2>
 

@@ -41,21 +41,21 @@
     href="glibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para>Now we make sure the Glibc goes into
+    <para os="m1">Now we make sure the Glibc goes into
     <filename class="directory">/lib64</filename>:</para>
 
-<screen><userinput>echo "slibdir=/lib64" &gt;&gt; configparms</userinput></screen>
+<screen os="m2"><userinput>echo "slibdir=/lib64" &gt;&gt; configparms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+<screen os="h"><userinput>CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
     ../glibc-&glibc-version;/configure --prefix=/usr \
     --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
     --libexecdir=/usr/lib64/glibc --libdir=/usr/lib64</userinput></screen>
 
-    <variablelist>
+    <variablelist os="i">
       <title>The meaning of the new configure option:</title>
 
       <varlistentry>
