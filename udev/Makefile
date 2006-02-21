@@ -20,7 +20,6 @@ rules:
 
 scripts:
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
-	install -m ${SCRIPTMODE} ide.sh ${DESTDIR}/lib/udev/ide.sh
 	install -m ${SCRIPTMODE} input.sh ${DESTDIR}/lib/udev/input.sh
 	install -m ${SCRIPTMODE} mount.sh ${DESTDIR}/lib/udev/mount.sh
 
