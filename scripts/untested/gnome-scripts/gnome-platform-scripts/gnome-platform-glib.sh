@@ -26,11 +26,6 @@ if [ ! -z ${ALT_TGT} ]; then
    extra_conf="${extra_conf} --build=${ALT_TGT}"
 fi
 
-# If ${PERL} is set, strip the path from it so PERL_PATH gets set correctly
-if [ ! -z "${PERL}" ]; then
-   export PERL=`basename ${PERL}`
-fi
-
 max_log_init glib ${GLIB_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \

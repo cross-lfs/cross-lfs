@@ -50,14 +50,6 @@ set_libdirname() {
    GNOME_LIBCONF_PATH=`echo "${GNOME_LIBCONF_PATH}" | \
                     sed -e "s@lib[36][124]@lib@g"  -e "s@lib@${libdirname}@g" `
 
-   if [ "${MULTIARCH}" = "Y" ]; then
-      export PERL=`which_func perl-${BUILDENV}`
-      export PYTHON=`which_func python-${BUILDENV}`
-   else
-      export PERL=`which_func perl`
-      export PYTHON=`which_func python`
-   fi
-
 }
 
 which_func() {
@@ -155,16 +147,58 @@ create_wrapper() {
    wrapperdir=`dirname ${wrapper}`
    if [ ! -d ${wrapperdir} ]; then mkdir -p ${wrapperdir} ; fi
 
-   cat > ${wrapper} <<EOF
-#!/bin/sh
+   cat > wrapper.c <<"EOF"
+/*
 
-# Set to default if BUILDENV not set
-if [ -z \${BUILDENV} ]; then BUILDENV=${DEFAULTENV} ; fi
-export BUILDENV
-exec \${0}-\${BUILDENV} \${@}
+   wrapper.c - c wrapper for cross-lfs multiarch handling
+   ------------------------------------------------------
+   Created By:  Ryan Oliver <ryan.oliver@pha.com.au> 20050606
+
+   $LastChangedBy$
+   $LastChangedDate$
+   $LastChangedRevision$
+   $HeadURL$
+
+ */
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
+
+/* TODO: should check for __x86_64__ , __powerpc64__ etc and set accordingly */
+#ifndef DEFAULTENV
+#define DEFAULTENV "64"
+#endif
+
+int main(int argc, char **argv) {
+
+        char *filename;
+        char *buildenv;
+
+        if(!(buildenv = getenv("BUILDENV")))
+                buildenv = DEFAULTENV;
+
+        filename = (char *) malloc(strlen(argv[0]) + strlen(buildenv) + 2);
+        strcpy(filename, argv[0]);
+        strcat(filename, "-");
+        strcat(filename, buildenv);
+
+        execvp(filename, argv);
+        perror(argv[0]);
+        free(filename);
+
+}
 EOF
 
+   OLD_BUILDENV="${BUILDENV}"
+   BUILDENV="${DEFAULTENV}"
+   setup_multiarch
+
+   ${CC-gcc} ${ARCH_CFLAGS} -DDEFAULTENV=\"${DEFAULTENV}\" \
+       wrapper.c -o ${wrapper}
    chmod 755 ${wrapper}
+
+   BUILDENV="${OLD_BUILDENV}"
 
 }
 

@@ -194,6 +194,13 @@ case ${target_gcc_ver} in
    3.4* )
       apply_patch gcc-3.4.1-fix_configure_for_target_native
    ;;
+
+   4.* )
+      # Testing only... set AS_FOR_TARGET and LD_FOR_TARGET so these are used
+      # for feature checks... will have to check for unintended side effects
+      extra_makeopts="AS_FOR_TARGET=${HST_TOOLS}/bin/${TARGET}-as"
+      extra_makeopts="${extra_makeopts} LD_FOR_TARGET=${HST_TOOLS}/bin/${TARGET}-ld"
+   ;;
 esac
 #
 # End HACKS
@@ -221,7 +228,7 @@ echo " o Configure OK" || barf
 
 min_log_init ${BUILDLOGS} &&
 make ${PMFLAGS} BOOT_LDFLAGS="-s" BOOT_CFLAGS="-O2 ${HOST_CFLAGS} -pipe" \
-   STAGE1_CFLAGS="-O2 ${HOST_CFLAGS} -pipe" all \
+   STAGE1_CFLAGS="-O2 ${HOST_CFLAGS} -pipe" ${extra_makeopts} all \
    >> ${LOGFILE} 2>&1 &&
 echo " o Build OK" || barf
 

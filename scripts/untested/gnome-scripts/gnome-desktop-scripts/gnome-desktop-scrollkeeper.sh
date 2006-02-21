@@ -24,9 +24,6 @@ cd ${PKGDIR}
 # TODO: probably should add extra directories to --with-omfdirs...
 #######
 
-# Set perl binary to use if multiarch (else intltool component barfs)
-export INTLTOOL_PERL="${PERL}"
-
 max_log_init scrollkeeper ${SCROLLKEEPER_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \

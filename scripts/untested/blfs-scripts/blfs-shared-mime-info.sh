@@ -11,10 +11,6 @@ setup_multiarch
 unpack_tarball shared-mime-info-${SHD_MIME_INFO_VER}
 cd ${PKGDIR}
 
-if [ "${MULTIARCH}" = "Y" ]; then
-   export INTLTOOL_PERL="${PERL}"
-fi
-
 max_log_init shared-mime-info ${SHD_MIME_INFO_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \

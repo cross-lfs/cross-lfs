@@ -19,10 +19,6 @@ export TARBALLS=${GNOME_TARBALLS}/platform/${GNOME_REL_MAJ}/${GNOME_REL}/sources
 unpack_tarball gnome-mime-data-${GNOME_MIME_DATA_VER}
 cd ${PKGDIR}
 
-if [ "${MULTIARCH}" = "Y" ]; then
-   export INTLTOOL_PERL="${PERL}"
-fi
-
 # TODO: does this use g++
 max_log_init gnome-mime-data ${GNOME_MIME_DATA_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
