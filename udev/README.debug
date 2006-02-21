@@ -1,0 +1,70 @@
+Debugging the udev event processing
+===================================
+
+To visualize the driver core events and the udev event processes, use:
+  udevmonitor
+
+it prints:
+  UEVENT[1132632714.285362] add@/devices/pci0000:00/0000:00:1d.1/usb2/2-2
+  UEVENT[1132632714.288166] add@/devices/pci0000:00/0000:00:1d.1/usb2/2-2/2-2:1.0
+  UEVENT[1132632714.309485] add@/class/input/input6
+  UEVENT[1132632714.309511] add@/class/input/input6/mouse2
+  UEVENT[1132632714.309524] add@/class/usb_device/usbdev2.12
+  UDEV  [1132632714.348966] add@/devices/pci0000:00/0000:00:1d.1/usb2/2-2
+  UDEV  [1132632714.420947] add@/devices/pci0000:00/0000:00:1d.1/usb2/2-2/2-2:1.0
+  UDEV  [1132632714.427298] add@/class/input/input6
+  UDEV  [1132632714.434223] add@/class/usb_device/usbdev2.12
+  UDEV  [1132632714.439934] add@/class/input/input6/mouse2
+
+UEVENT lines show the events the kernel sends over netlink, the UDEV lines
+show the finished udev event handlers. The timing is printed in microseconds.
+The time between UEVENT and UDEV is the time udev took to process this event
+or was queued to synchronize it with other events.
+
+If called with:
+  udevmonitor --env
+
+it prints the whole event environment:
+  UDEV  [1132633002.937243] add@/class/input/input7
+  UDEV_LOG=3
+  ACTION=add
+  DEVPATH=/class/input/input7
+  SUBSYSTEM=input
+  SEQNUM=1043
+  PHYSDEVPATH=/devices/pci0000:00/0000:00:1d.1/usb2/2-2/2-2:1.0
+  PHYSDEVBUS=usb
+  PHYSDEVDRIVER=usbhid
+  PRODUCT=3/46d/c03e/2000
+  NAME="Logitech USB-PS/2 Optical Mouse"
+
+
+Udev also sends messages to syslog according to the configured debugging
+level. Udev specific tools which are called, also respect the setting
+of udev_log. But there might be some which need special actions to make
+them verbose.
+
+Set  udevs loglevel in the damon at runtime with:
+  udevcontrol log_priority=<level>
+
+Enable logging permanently, set (it may make udev _very_ slow):
+  udev_log=info in /etc/udev/udev.conf.
+
+
+For further processing of the logging output you should get a clean logfile at
+next boot. Just move the old logfile away. (Syslog will still use the moved file
+until it's restarted).
+
+The script 'show_event_log' provided along with this file, can be used to
+extract info out of /var/log/messages. Call it:
+  show_event_log <first> [<last> [<list of event types>] ]
+<first> is the sequence number of the first event you are interested in.
+<last>  is the number of the last event. You may write 'last' literally. It may
+        also be omitted if you want to see a single event. 
+<list>  is a list of event types you like to see. If you omit it, you get most
+        events, not all. Some are exclude by default. Use " " as list if you
+        want to see really all. Or edit the list of skipped events in the first
+        lines of the script
+
+If you don't use /var/log/messages as the logfile you may set the environment
+variable MESSAGES=<logfile>.
+

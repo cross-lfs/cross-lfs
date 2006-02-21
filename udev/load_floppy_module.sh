@@ -17,6 +17,14 @@
 
 PROC=/proc/driver/nvram
 
+# wait for /proc file to appear
+loop=10
+while ! test -e $PROC; do
+    sleep 0.1;
+    test "$loop" -gt 0 || break
+    loop=$(($loop - 1))
+done
+
 if [ ! -r /proc/driver/nvram ]; then
     exit 0;
 fi

@@ -19,10 +19,6 @@
 . /etc/sysconfig/rc
 . ${rc_functions}
 
-PATH="/sbin:/bin"
-DAEMON=/sbin/udevd
-udevd_args="--daemon"
-
 function trigger_device_events() {
 	# generate events with the sysfs trigger
 	list=$(echo /sys/bus/*/devices/*/uevent)
@@ -57,16 +53,19 @@ function trigger_device_events() {
 
 case "$1" in
     start)
-
 	# disable hotplug helper, udevd listens to netlink
 	echo "" > /proc/sys/kernel/hotplug
 
 	# start udevd
-	boot_mesg "Starting udevd"
-	loadproc $DAEMON $udevd_args
+	bootmesg "Starting udevd..."
+	loadproc /sbin/udevd --daemon
 
 	# cleanup some stuff
+	rm -f /var/run/sysconfig/network
 	rm -rf /events/*
+
+	# start coldplugging
+	bootmesg "Performing Coldplugging..."
 
 	# unlikely, but we may be faster than the first event
 	mkdir -p /dev/.udev/queue
@@ -81,18 +80,21 @@ case "$1" in
 	    test "$loop" -gt 300 && break
 	    loop=$(($loop + 1))
 	done
+
+	echo_ok
 	;;
 
     stop)
-	boot_mesg "Stopping udevd:"
+	bootmesg "Stopping udevd..."
 	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
-	killproc $DAEMON
+	killproc /sbin/udevd
 	;;
 
     restart)
-	${0} stop
-        sleep 1
-        ${0} start
+	bootmesg "Restarting udevd..."
+	killproc /sbin/udevd
+	loadproc /sbin/udevd --daemon
+	evaluate_retval
 	;;
 
     status)
@@ -100,20 +102,21 @@ case "$1" in
 	;;
 
     reload)
-	boot_mesg "Reloading udev rules:"
+	bootmesg "Reloading udev rules..."
 	udevcontrol reload_rules
 	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
 	evaluate_retval
 	;;
 
     force-reload)
-	boot_mesg "Updating all available device nodes in /dev: "
+	bootmesg "Updating all available device nodes in /dev..."
 	udevcontrol reload_rules
 	rm -rf /dev/.udev /dev/disk
 	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
 	trigger_device_events
 	evaluate_retval
 	;;
+
     *)
 	echo "Usage: $0 {start|stop|restart|status|reload|force-reload}"
 	exit 1

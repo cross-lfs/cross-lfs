@@ -1,7 +1,7 @@
 #!/bin/sh
 ########################################################################
 #
-# Description : load_ide_modules
+# Description : Load ide
 #
 # Authors     : Based on Open Suse Udev Rules
 #               kay.sievers@suse.de
@@ -11,20 +11,23 @@
 #
 # Version     : 00.00
 #
-# Notes       : 
+# Notes       :
 #
 ########################################################################
 
+# calculate device name from bus and drive number
 device=${DEVPATH#/devices/*/ide?/}
 drive=${device#?.}
 bus=${device%.?}
-name=$(printf "hd%x" $(($drive + $bus * 2 + 10)))
+unitnum=$((96 + 1 + $drive + $bus * 2))
+name=$(printf "hd\\$(printf '%o' $unitnum)")
 procfile="/proc/ide/$name/media"
 
-loop=50
+# wait for /proc file to appear
+loop=30
 while ! test -e $procfile; do
     sleep 0.1;
-    test "$loop" -gt 0 || exit 1
+    test "$loop" -gt 0 || break
     loop=$(($loop - 1))
 done
 

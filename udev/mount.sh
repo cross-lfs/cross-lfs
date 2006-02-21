@@ -1,6 +1,22 @@
-#! /bin/bash
+#!/bin/sh
+########################################################################
+#
+# Description : Input devices
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS
+#
+# Version     : 00.00
+#
+# Notes       :
+#
+########################################################################
 
-. /etc/sysconfig/hardware/scripts/functions
+. /etc/sysconfig/rc
+. ${rc_functions}
 . /etc/sysconfig/storage
 
 test "$HOTPLUG_MOUNT_FSTAB" != yes && exit
@@ -19,7 +35,7 @@ NODES=$DEVNAME
 for sl in `udevinfo -q symlink -p $DEVPATH`; do
 	NODES="$NODES /dev/$sl"
 done
-info_mesg "Avilable nodes: $NODES"
+boot_mesg "Avilable nodes: $NODES"
 
 NODE=
 declare -i FSCK=0
@@ -32,8 +48,8 @@ while read dn mp fs opts dump fsck x; do
 			esac
 			NODE="$n"
 			FSCK="$fsck"
-			info_mesg "matching line for $DEVNAME:"
-			info_mesg "$dn $mp $fs $opts $dump $fsck $x"
+			boot_mesg "matching line for $DEVNAME:"
+			boot_mesg "$dn $mp $fs $opts $dump $fsck $x"
 			break 2
 		fi
 	done
@@ -42,11 +58,11 @@ done < /etc/fstab
 if [ "$HOTPLUG_CHECK_FILESYSTEMS" == yes -a "$FSCK" -gt 0 ] ; then
 	MESSAGE="`fsck -a $DEVNAME`"
 	RET=$?
-	info_mesg "$MESSAGE"
+	boot_mesg "$MESSAGE"
 	case $RET in
 		0|1) : ;;
 		2|3) 
-			info_mesg "Please unplug device $DEVNAME, and plug it again" 
+			boot_mesg "Please unplug device $DEVNAME, and plug it again" 
 			logger -t $0 "fsck for '$DEVNAME' failed. Will not mount it."
 			exit 0
 			;;
@@ -62,5 +78,5 @@ fi
 if [ -n "$NODE" ] ; then
 	MESSAGE="`mount -av "$NODE"`"
 	test $? != 0 && logger -t $0 "Could not mount '$DEVNAME'."
-	info_mesg "$MESSAGE"
+	boot_mesg "$MESSAGE"
 fi
