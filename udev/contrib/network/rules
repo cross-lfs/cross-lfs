@@ -1,3 +1,4 @@
+
 # Run network stuff when the network device is loaded
 ACTION=="add", SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="network_helper.sh"
 ACTION=="remove", SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="network_helper.sh"
