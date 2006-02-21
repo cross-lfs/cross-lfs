@@ -97,6 +97,7 @@ CXXFLAGS="${TGT_CFLAGS}" \
    --infodir=/usr/share/info \
    --enable-shared --enable-threads \
    --enable-type-prefix \
+   --enable-float \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
 
