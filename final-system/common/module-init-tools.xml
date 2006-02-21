@@ -54,6 +54,18 @@
 
 <screen os="b"><userinput>touch modprobe.conf.5</userinput></screen>
 
+    <para os="g">If you wish to run the test suite for Module-Init-Tools, you
+    will need to download the separate testsuite tarball. Issue the
+    following commands to perform the tests (note that the
+    <command>make distclean</command> command is required to clean up
+    the source tree, as the source gets recompiled as part of the testing
+    process):</para>
+
+<screen os="g1"><userinput>tar -xvf ../module-init-tools-testsuite-&module-init-tools-version;.tar.bz2 &amp;&amp;
+./configure &amp;&amp;
+make check &amp;&amp;
+make distclean</userinput></screen>
+
     <para os="c">Prepare Module-Init-Tools for compilation:</para>
 
 <screen os="c1"><userinput>./configure --prefix="" --enable-zlib</userinput></screen>
@@ -74,9 +86,6 @@
     <para os="e">Compile the package:</para>
 
 <screen os="f"><userinput>make</userinput></screen>
-
-    <para os="g">To test the results, issue:
-    <userinput>make check</userinput>.</para>
 
     <para os="h">Install the package:</para>
 
