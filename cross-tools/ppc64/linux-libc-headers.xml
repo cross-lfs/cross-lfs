@@ -22,10 +22,20 @@
   <sect2 role="installation">
     <title>Installation of Linux-Libc-Headers</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/ppc64/linux-libc-headers.xml"
+    xpointer="xpointer(//*[@os='aa'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/ppc64/linux-libc-headers.xml"
+    xpointer="xpointer(//*[@os='ab'])"/>
+
     <para>Install the header files:</para>
 
 <screen><userinput>install -dv /tools/include
-cp -Rv include/asm-ppc /tools/include/asm
+cp -Rv include/asm-ppc /tools/include/
+cp -Rv include/asm-ppc64 /tools/include/
+cp -Rv include/asm-ppc-biarch /tools/include/asm
 cp -Rv include/linux /tools/include</userinput></screen>
 
   </sect2>
