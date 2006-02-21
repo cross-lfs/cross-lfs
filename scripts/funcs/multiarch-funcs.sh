@@ -233,4 +233,3 @@ export -f set_libdirname
 export -f setup_multiarch
 export -f create_wrapper
 export -f use_wrapper
-export -f which_func
