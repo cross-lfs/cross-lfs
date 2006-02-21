@@ -1,5 +1,11 @@
 script_list="blfs-scripts/blfs-which.sh"
 
+# Add libXvMCW to X install...
+# TODO: merge this into the Xorg build (until next release anyway)
+script_list="${script_list}
+blfs-scripts/blfs-libXvMCW-32.sh
+blfs-scripts/blfs-libXvMCW-64.sh"
+
 ### Autotools ###
 script_list="${script_list}
 autotools/blfs-autoconf.sh
@@ -384,6 +390,12 @@ blfs-scripts/blfs-flac-32.sh
 blfs-scripts/blfs-flac-64.sh
 blfs-scripts/blfs-libsndfile-32.sh
 blfs-scripts/blfs-libsndfile-64.sh
+blfs-scripts/blfs-libsamplerate-32.sh
+blfs-scripts/blfs-libsamplerate-64.sh
+blfs-scripts/blfs-polypaudio-32.sh
+blfs-scripts/blfs-polypaudio-64.sh
+blfs-scripts/blfs-libmodplug-32.sh
+blfs-scripts/blfs-libmodplug-64.sh
 blfs-scripts/blfs-lame-32.sh
 blfs-scripts/blfs-lame-64.sh"
 
@@ -424,14 +436,15 @@ blfs-scripts/blfs-sdl-64.sh
 blfs-scripts/blfs-libtheora-32.sh
 blfs-scripts/blfs-libtheora-64.sh
 blfs-scripts/blfs-xvid-32.sh
-blfs-scripts/blfs-xvid-64.sh"
-
+blfs-scripts/blfs-xvid-64.sh
+blfs-scripts/blfs-gsm-32.sh
+blfs-scripts/blfs-gsm-64.sh"
 
 # FFMpeg and deps
 # Here we are using code straight from svn/cvs
 #---------------------------------------------
 # spidermonkey (ij) needed by gpac.
-# gpac needed by x264 , reqs spidermonkey, cvid and (circ) ffmpeg
+# gpac needed by x264 , reqs spidermonkey, xvid and (circ) ffmpeg
 #script_list="${script_list}
 #blfs-scripts/blfs-gpac-32.sh
 #blfs-scripts/blfs-gpac-64.sh"
@@ -439,5 +452,23 @@ blfs-scripts/blfs-xvid-64.sh"
 #script_list="${script_list}
 #blfs-scripts/blfs-x264-32.sh
 #blfs-scripts/blfs-x264-64.sh"
+script_list="${script_list}
+blfs-scripts/blfs-ffmpeg-32.sh
+blfs-scripts/blfs-ffmpeg-64.sh"
+
+# libsamplerate
+# libpolypaudio
+
+# pyrex
+# dbus
+# hal
+# howl
+
+# libbonobo
+# gtk-engines
+# GConf
+# Gnome-vfs
+
+
 
 # gtkam [ gtk2 libgphoto optional libexif bonobo gnome gimp ]
