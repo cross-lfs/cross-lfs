@@ -66,9 +66,9 @@ install: create-dirs create-service-dir
 	ln -sf ../init.d/reboot      ${EXTDIR}/rc.d/rc6.d/S99reboot
 	ln -sf ../init.d/mountkernfs ${EXTDIR}/rc.d/rcsysinit.d/S00mountkernfs
 	ln -sf ../init.d/modules     ${EXTDIR}/rc.d/rcsysinit.d/S05modules
-	ln -sf ../init.d/swap        ${EXTDIR}/rc.d/rcsysinit.d/S20swap
-	ln -sf ../init.d/checkfs     ${EXTDIR}/rc.d/rcsysinit.d/S30checkfs
-	ln -sf ../init.d/mountfs     ${EXTDIR}/rc.d/rcsysinit.d/S40mountfs
+	ln -sf ../init.d/checkfs     ${EXTDIR}/rc.d/rcsysinit.d/S20checkfs
+	ln -sf ../init.d/mountfs     ${EXTDIR}/rc.d/rcsysinit.d/S30mountfs
+	ln -sf ../init.d/swap        ${EXTDIR}/rc.d/rcsysinit.d/S40swap
 	ln -sf ../init.d/cleanfs     ${EXTDIR}/rc.d/rcsysinit.d/S50cleanfs
 	ln -sf ../init.d/setclock    ${EXTDIR}/rc.d/rcsysinit.d/S60setclock
 	ln -sf ../init.d/console     ${EXTDIR}/rc.d/rcsysinit.d/S70console
