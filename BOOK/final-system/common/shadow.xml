@@ -42,44 +42,65 @@
       command below.</para>
     </note>
 
-    <para os="p1">Shadow has selinux, pam, and auditing defaulted to on. The
-     following patch properly fixes this issue:</para>
-
-<screen os="p2"><userinput>patch -Np1 -i ../&shadow-configure_fix-patch;</userinput></screen>
-
     <para os="b">Prepare Shadow for compilation:</para>
 
-<screen os="c"><userinput>./configure --libdir=/lib --enable-shared</userinput></screen>
+<screen os="c"><userinput>./configure --libdir=/lib --enable-shared \
+    --without-libpam --without-audit --without-selinux</userinput></screen>
 
-    <para os="d">Disable the installation of the <command>groups</command>
+<para os="d">The meaning of the configure options:</para>
+
+  <variablelist os="e">
+    <varlistentry>
+      <term><parameter>--without-libpam</parameter></term>
+      <listitem><para>Support for Linux-PAM is enabled by default in Shadow,
+      however PAM is not installed on a base LFS system, so this switch
+      disables PAM support in Shadow. For instructions to install PAM and
+      link Shadow to it, you can look at
+      <ulink url="&blfs-root;view/svn/postlfs/shadow.html"/>.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><parameter>--without-audit</parameter></term>
+      <listitem><para>Support for auditing is enabled by default, but a
+      a library that it needs is not installed in a base LFS system. This
+      switch disables auditing support.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><parameter>--without-selinux</parameter></term>
+      <listitem><para>Support for selinux is enabled by default, but selinux
+      is not built in a base LFS system and configure will fail without this
+      switch.</para></listitem>
+    </varlistentry>
+  </variablelist>
+
+    <para os="f">Disable the installation of the <command>groups</command>
     program and its man page, as Coreutils provides a better version:</para>
 
-<screen os="e"><userinput>sed -i 's/groups$(EXEEXT) //' src/Makefile
+<screen os="g"><userinput>sed -i 's/groups$(EXEEXT) //' src/Makefile
 sed -i '/groups/d' man/Makefile</userinput></screen>
 
-    <para os="f">Compile the package:</para>
+    <para os="h">Compile the package:</para>
 
-<screen os="g"><userinput>make</userinput></screen>
+<screen os="i"><userinput>make</userinput></screen>
 
-    <para os="h">Install the package:</para>
+    <para os="j">Install the package:</para>
 
-<screen os="i"><userinput>make install</userinput></screen>
+<screen os="k"><userinput>make install</userinput></screen>
 
-    <para id="shadow-limits-login_access" os="j">Shadow uses two files to configure
+    <para id="shadow-limits-login_access" os="l">Shadow uses two files to configure
     authentication settings for the system. Install these two configuration
     files:</para>
 
-    <indexterm zone="shadow-limits-login_access" os="k">
+    <indexterm zone="shadow-limits-login_access" os="m">
       <primary sortas="e-/etc/limits">/etc/limits</primary>
     </indexterm>
 
-    <indexterm zone="shadow-limits-login_access" os="l">
+    <indexterm zone="shadow-limits-login_access" os="n">
       <primary sortas="e-/etc/login.access">/etc/login.access</primary>
     </indexterm>
 
-<screen os="m"><userinput>cp etc/{limits,login.access} /etc</userinput></screen>
+<screen os="o"><userinput>cp etc/{limits,login.access} /etc</userinput></screen>
 
-    <para id="shadow-login_defs" os="n">Instead of using the default
+    <para id="shadow-login_defs" os="p">Instead of using the default
     <emphasis>crypt</emphasis> method, use the more secure
     <emphasis>MD5</emphasis> method of password encryption, which also allows
     passwords longer than 8 characters. It is also necessary to change the
@@ -89,37 +110,37 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
     these can be accomplished by changing the relevant configuration file
     while copying it to its destination:</para>
 
-    <indexterm zone="shadow-login_defs" os="o">
+    <indexterm zone="shadow-login_defs" os="q">
       <primary sortas="e-/etc/login.defs">/etc/login.defs</primary>
     </indexterm>
 
-    <note os="p">
+    <note os="r">
       <para>If you built Shadow with Cracklib support, insert the following into
       the <command>sed</command> given below:</para>
 
 <screen><literal>-e 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@'</literal></screen>
     </note>
 
-<screen os="q"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
+<screen os="s"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
     -e 's@/var/spool/mail@/var/mail@' \
     etc/login.defs &gt; /etc/login.defs</userinput></screen>
 
-    <para os="r">Move a misplaced program to its proper location:</para>
+    <para os="t">Move a misplaced program to its proper location:</para>
 
-<screen os="s"><userinput>mv /usr/bin/passwd /bin</userinput></screen>
+<screen os="u"><userinput>mv /usr/bin/passwd /bin</userinput></screen>
 
-    <para os="t">Move Shadow's dynamic libraries to a more appropriate
+    <para os="v">Move Shadow's dynamic libraries to a more appropriate
     location:</para>
 
-<screen os="u"><userinput>mv /lib/libshadow.*a /usr/lib
+<screen os="w"><userinput>mv /lib/libshadow.*a /usr/lib
 rm /lib/libshadow.so
 ln -sf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
 
-    <para os="v">The <option>-D</option> option of the <command>useradd</command>
+    <para os="x">The <option>-D</option> option of the <command>useradd</command>
     program requires the <filename class="directory">/etc/default</filename>
     directory for it to work properly:</para>
 
-<screen os="w"><userinput>install -d /etc/default</userinput></screen>
+<screen os="y"><userinput>install -d /etc/default</userinput></screen>
 
   </sect2>
 

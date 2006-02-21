@@ -39,18 +39,10 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="shadow.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="shadow.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="shadow.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
 <screen os="c"><userinput>CC="gcc ${BUILDN32}" ./configure --libdir=/lib32 \
-   --enable-shared</userinput></screen>
+   --enable-shared --without-libpam --without-audit --without-selinux</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="shadow.xml"
@@ -78,17 +70,25 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="shadow.xml"
-    xpointer="xpointer(//*[@os='r'])"/>
+    xpointer="xpointer(//*[@os='j'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="shadow.xml"
-    xpointer="xpointer(//*[@os='s'])"/>
+    xpointer="xpointer(//*[@os='k'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="shadow.xml"
     xpointer="xpointer(//*[@os='t'])"/>
 
-<screen os="u"><userinput>mv /lib32/libshadow.*a /usr/lib32
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="shadow.xml"
+    xpointer="xpointer(//*[@os='u'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="shadow.xml"
+    xpointer="xpointer(//*[@os='v'])"/>
+
+<screen os="w"><userinput>mv /lib32/libshadow.*a /usr/lib32
 rm /lib32/libshadow.so
 ln -sf ../../lib32/libshadow.so.0 /usr/lib32/libshadow.so</userinput></screen>
 
