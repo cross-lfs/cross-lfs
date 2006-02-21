@@ -1,7 +1,6 @@
 #!/bin/sh
 
 ### qt ###
-
 cd ${SRC}
 LOG=qt-blfs.log
 
@@ -9,6 +8,12 @@ SELF=`basename ${0}`
 set_buildenv
 set_libdirname
 setup_multiarch
+
+# qt-setup.sh should have been sourced 
+#QT_INSTALL_SELF_CONTAINED=Y
+#USE_MYSQL=Y
+#USE_PGSQL=Y
+#USE_UNIXODBC=Y
 
 if [ "Y" = "${QT_INSTALL_SELF_CONTAINED}" ]; then
    # for now, install to /opt
@@ -32,11 +37,25 @@ else
    extra_conf="${extra_conf} -sysconfdir /etc/qt"
 fi
 
-unpack_tarball qt-${QT_VER}
+if [ "${USE_MYSQL}" = "Y" ]; then
+   extra_conf="${extra_conf} -plugin-sql-mysql $( mysql_config --include )"
+   echo extra_conf
+fi
+
+
+if [ "${USE_POSTGRES}" = "Y" ]; then
+   extra_conf="${extra_conf} -plugin-sql-psql -I$( pg_config --includedir )"
+fi
+
+if [ "${USE_ODBC}" = "Y" ]; then
+   extra_conf="${extra_conf} -plugin-sql-odbc -I/usr/include"
+fi
+
+unpack_tarball qt-x11-free-${QT_VER}
 cd ${PKGDIR}
 
 # Here we have to handle lib / lib64 , and also handle multilib compilers
-if [ "Y" = "${BIARCH}" ]; then
+if [ "Y" = "${MULTIARCH}" ]; then
    platform="linux-g++"
    if [ "${libdirname}" = "lib64" ]; then platform="linux-g++-64" ; fi
 fi
@@ -44,36 +63,48 @@ fi
 sed -i "s@\(gcc\|g++\)@& ${ARCH_CFLAGS} ${TGT_CFLAGS}@g" \
    mkspecs/${platform}/qmake.conf
 
+# Force removal of existing file when installing
+echo "QMAKE_INSTALL_FILE      = cp --remove-destination" \
+   >> mkspecs/${platform}/qmake.conf
+sed -i -e 's@cp -f@cp --remove-destination@g' \
+   qmake/Makefile.unix
+
 extra_conf="${extra_conf} -platform ${platform}"
+
+export QTDIR="${SRC}/${PKGDIR}"
+export LD_LIBRARY_PATH="${QTDIR}/lib:${LD_LIBRARY_PATH}" 
+export PATH=${QTDIR}/bin:${PATH}
 
 max_log_init qt ${QT_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 echo "yes" | ./configure \
    -prefix ${qtprefix} ${extra_conf} \
    -no-exceptions -thread -plugin-imgfmt-png \
    -system-libpng -system-libmng -system-zlib -system-libjpeg \
-   -system-nas-sound -qt-gif \
+   -system-nas-sound -qt-gif -tablet \
    >> ${LOGFILE} 2>&1 &&
-echo " o Configure OK" &&
+echo " o Configure OK" || barf
 
 min_log_init ${BUILDLOGS} &&
 make \
    >> ${LOGFILE} 2>&1 &&
-echo " o Build OK" &&
+echo " o Build OK" || barf
 
 if [ "Y" = "${MULTIARCH}" ]; then
    # Preserve any existing configurations for the other
    # qt platform during install
    case ${platform} in
-   linux-g++ )
-      if [ -d ${qtprefix}/mkspecs/linux-g++-64 ];then
-         mv ${qtprefix}/mkspecs/linux-g++-64 \
-            ${qtprefix}/mkspecs/linux-g++-64-ORIG
-      fi
-   linux-g++-64 )
-      if [ -d ${qtprefix}/mkspecs/linux-g++ ];then
-         mv ${qtprefix}/mkspecs/linux-g++ \
-            ${qtprefix}/mkspecs/linux-g++-ORIG
-      fi
+      linux-g++ )
+         if [ -d ${qtprefix}/mkspecs/linux-g++-64 ];then
+            mv ${qtprefix}/mkspecs/linux-g++-64 \
+               ${qtprefix}/mkspecs/linux-g++-64-ORIG
+         fi
+      ;;
+      linux-g++-64 )
+         if [ -d ${qtprefix}/mkspecs/linux-g++ ];then
+            mv ${qtprefix}/mkspecs/linux-g++ \
+               ${qtprefix}/mkspecs/linux-g++-ORIG
+         fi
+      ;;
    esac
 fi
 
@@ -84,18 +115,20 @@ echo " o ALL OK" || barf
 
 if [ "Y" = "${MULTIARCH}" ]; then
    case ${platform} in
-   linux-g++ )
-      if [ -d ${qtprefix}/mkspecs/linux-g++-64-ORIG ];then
-         rm -rf ${qtprefix}/mkspecs/linux-g++-64
-         mv ${qtprefix}/mkspecs/linux-g++-64-ORIG \
-            ${qtprefix}/mkspecs/linux-g++-64
-      fi
-   linux-g++-64 )
-      if [ -d ${qtprefix}/mkspecs/linux-g++-ORIG ];then
-         rm -rf ${qtprefix}/mkspecs/linux-g++
-         mv ${qtprefix}/mkspecs/linux-g++-ORIG \
-            ${qtprefix}/mkspecs/linux-g++
-      fi
+      linux-g++ )
+         if [ -d ${qtprefix}/mkspecs/linux-g++-64-ORIG ];then
+            rm -rf ${qtprefix}/mkspecs/linux-g++-64
+            mv ${qtprefix}/mkspecs/linux-g++-64-ORIG \
+               ${qtprefix}/mkspecs/linux-g++-64
+         fi
+      ;;
+      linux-g++-64 )
+         if [ -d ${qtprefix}/mkspecs/linux-g++-ORIG ];then
+            rm -rf ${qtprefix}/mkspecs/linux-g++
+            mv ${qtprefix}/mkspecs/linux-g++-ORIG \
+               ${qtprefix}/mkspecs/linux-g++
+         fi
+      ;;
    esac
 fi
 
@@ -119,5 +152,5 @@ if [ "Y" = "${MULTIARCH}" ]; then
    # between 32 and 64 bit ( stores things such as size of long long
    # for the given architecture ). Here we move it to a subdir and
    # create a stub header
-   create_stub_hdrs ${qtincludedir}/qconfig.h
+   create_stub_hdrs ${qtheaderdir}/qconfig.h
 fi
