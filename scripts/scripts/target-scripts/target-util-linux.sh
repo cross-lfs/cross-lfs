@@ -33,11 +33,14 @@ case ${UTILLINUX_VER} in
          ;;
       esac
    ;;
-   2.12[k-q] )
+   2.12[k-r] )
       # fix cramfs, this fix will need to be tracked for later versions...
       apply_patch util-linux-2.12q-cramfs-1
       # fix sfdisk for mips n32/64 as n32/64 uses lseek, not llseek
       apply_patch util-linux-2.12q-sfdisk_use_lseek_for_mips64-1
+      case ${GCC_VER} in
+         4.* ) apply_patch util-linux-2.12r-gcc4_fixes-1 ;;
+      esac
    ;;
 esac
 
