@@ -35,47 +35,47 @@
   <sect2 role="installation">
     <title>Installation of Bzip2</title>
 
-    <para os="j">Apply a patch to install the documentation for this
+    <para os="p1">Apply a patch to install the documentation for this
     package:</para>
 
-<screen os="k"><userinput>patch -Np1 -i ../&bzip2-docs-patch;</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&bzip2-docs-patch;</userinput></screen>
 
-    <para os="l">The <command>bzgrep</command> command does not escape '|' and
+    <para os="p3">The <command>bzgrep</command> command does not escape '|' and
     '&amp;' in filenames passed to it. This allows arbitrary commands to be
     executed with the privileges of the user running <command>bzgrep</command>.
     Apply the following patch to address this:</para>
 
-<screen os="m"><userinput>patch -Np1 -i ../&bzip2-bzgrep-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&bzip2-bzgrep-patch;</userinput></screen>
 
     <para os="a">The Bzip2 package does not contain a <command>configure</command>
     script. Compile it with:</para>
 
-<screen><userinput>make -f Makefile-libbz2_so
+<screen os="b"><userinput>make -f Makefile-libbz2_so
 make clean</userinput></screen>
 
-    <para os="b">The <parameter>-f</parameter> flag will cause Bzip2 to be built
+    <para os="c">The <parameter>-f</parameter> flag will cause Bzip2 to be built
     using a different <filename>Makefile</filename> file, in this case the
     <filename>Makefile-libbz2_so</filename> file, which creates a dynamic
     <filename class="libraryfile">libbz2.so</filename> library and links the
     Bzip2 utilities against it.</para>
 
-    <para os="c">Compile and test the package:</para>
+    <para os="d">Compile and test the package:</para>
 
-<screen><userinput>make</userinput></screen>
+<screen os="e"><userinput>make</userinput></screen>
 
-    <para os="e">If reinstalling Bzip2, perform
+    <para os="f">If reinstalling Bzip2, perform
     <userinput>rm -f /usr/bin/bz*</userinput> first, otherwise the
     following <command>make install</command> will fail.</para>
 
-    <para os="f">Install the programs:</para>
+    <para os="g">Install the programs:</para>
 
-<screen os="g"><userinput>make install</userinput></screen>
+<screen os="h"><userinput>make install</userinput></screen>
 
-    <para os="h">Install the shared <command>bzip2</command> binary into the
+    <para os="i">Install the shared <command>bzip2</command> binary into the
     <filename class="directory">/bin</filename> directory, make
     some necessary symbolic links, and clean up:</para>
 
-<screen os="i"><userinput>cp bzip2-shared /bin/bzip2
+<screen os="j"><userinput>cp bzip2-shared /bin/bzip2
 cp -a libbz2.so* /lib
 ln -s ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
 rm /usr/bin/{bunzip2,bzcat,bzip2}

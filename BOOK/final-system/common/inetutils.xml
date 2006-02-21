@@ -33,25 +33,25 @@
   <sect2 role="installation">
     <title>Installation of Inetutils</title>
 
-    <para os="a">All programs that come with Inetutils will not be installed.
+    <para os="p1">All programs that come with Inetutils will not be installed.
     However, the Inetutils build system will insist on installing all the
     man pages anyway. The following patch will correct this
     situation:</para>
 
-<screen os="b"><userinput>patch -Np1 -i ../&inetutils-man_pages-patch;</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&inetutils-man_pages-patch;</userinput></screen>
 
-    <para os="b1">The following patches addresses build issues with GCC 4.x:</para>
+    <para os="p3">The following patches addresses build issues with GCC 4.x:</para>
 
-<screen os="b2"><userinput>patch -Np1 -i ../&inetutils-gcc4_fixes-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&inetutils-gcc4_fixes-patch;</userinput></screen>
 
-    <para os="c">Prepare Inetutils for compilation:</para>
+    <para os="a">Prepare Inetutils for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr --libexecdir=/usr/sbin \
+<screen os="b"><userinput>./configure --prefix=/usr --libexecdir=/usr/sbin \
     --sysconfdir=/etc --localstatedir=/var \
     --disable-logger --disable-syslogd \
     --disable-whois --disable-servers</userinput></screen>
 
-    <variablelist os="d">
+    <variablelist os="c">
       <title>The meaning of the configure options:</title>
 
       <varlistentry>
@@ -97,18 +97,18 @@
       </varlistentry>
     </variablelist>
 
-    <para os="e">Compile the package:</para>
+    <para os="d">Compile the package:</para>
 
-<screen os="f"><userinput>make</userinput></screen>
+<screen os="e"><userinput>make</userinput></screen>
 
-    <para os="g">Install the package:</para>
+    <para os="f">Install the package:</para>
 
-<screen os="h"><userinput>make install</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="i">Move the <command>ping</command> program to its FHS-compliant
+    <para os="h">Move the <command>ping</command> program to its FHS-compliant
     place:</para>
 
-<screen os="j"><userinput>mv /usr/bin/ping /bin</userinput></screen>
+<screen os="i"><userinput>mv /usr/bin/ping /bin</userinput></screen>
 
   </sect2>
 

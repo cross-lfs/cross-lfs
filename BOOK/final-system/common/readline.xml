@@ -43,13 +43,13 @@
 
     <para os="c">Prepare Readline for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr --libdir=/lib</userinput></screen>
+<screen os="d"><userinput>./configure --prefix=/usr --libdir=/lib</userinput></screen>
 
-    <para os="d">Compile the package:</para>
+    <para os="e">Compile the package:</para>
 
-<screen os="e"><userinput>make SHLIB_XLDFLAGS=-lncurses</userinput></screen>
+<screen os="f"><userinput>make SHLIB_XLDFLAGS=-lncurses</userinput></screen>
 
-    <variablelist os="f">
+    <variablelist os="g">
       <title>The meaning of the make option:</title>
 
       <varlistentry>
@@ -61,24 +61,24 @@
       </varlistentry>
     </variablelist>
 
-    <para os="g">Install the package:</para>
+    <para os="h">Install the package:</para>
 
-<screen os="h"><userinput>make install</userinput></screen>
+<screen os="i"><userinput>make install</userinput></screen>
 
-    <para os="i">Give Readline's dynamic libraries to a more appropriate
+    <para os="j">Give Readline's dynamic libraries to a more appropriate
     permissions:</para>
 
-<screen os="j"><userinput>chmod 755 /lib/lib{readline,history}.so*</userinput></screen>
+<screen os="k"><userinput>chmod 755 /lib/lib{readline,history}.so*</userinput></screen>
 
-    <para os="k">Now move the static libraries to a more appropriate location:</para>
+    <para os="l">Now move the static libraries to a more appropriate location:</para>
 
-<screen os="l"><userinput>mv /lib/lib{readline,history}.a /usr/lib</userinput></screen>
+<screen os="m"><userinput>mv /lib/lib{readline,history}.a /usr/lib</userinput></screen>
 
-    <para os="m">Next, remove the <filename class="extension">.so</filename>
+    <para os="n">Next, remove the <filename class="extension">.so</filename>
     files in <filename class="directory">/lib</filename> and relink them into
     <filename class="directory">/usr/lib</filename>.</para>
 
-<screen os="n"><userinput>rm /lib/lib{readline,history}.so
+<screen os="o"><userinput>rm /lib/lib{readline,history}.so
 ln -sf ../../lib/libreadline.so.5 /usr/lib/libreadline.so
 ln -sf ../../lib/libhistory.so.5 /usr/lib/libhistory.so</userinput></screen>
 

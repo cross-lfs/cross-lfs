@@ -53,10 +53,10 @@ sed -i "s|htmldir = @htmldir@|htmldir = /usr/share/doc/bash-&bash-version;|" \
 
     <para os="g">Prepare Bash for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr --bindir=/bin \
+<screen os="h"><userinput>./configure --prefix=/usr --bindir=/bin \
     --without-bash-malloc --with-installed-readline</userinput></screen>
 
-    <variablelist os="h">
+    <variablelist os="i">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -70,23 +70,23 @@ sed -i "s|htmldir = @htmldir@|htmldir = /usr/share/doc/bash-&bash-version;|" \
       </varlistentry>
     </variablelist>
 
-    <para os="i">Compile the package:</para>
+    <para os="j">Compile the package:</para>
 
-<screen os="j"><userinput>make</userinput></screen>
+<screen os="k"><userinput>make</userinput></screen>
 
-    <para os="k">To test the results, issue:
+    <para os="l">To test the results, issue:
     <userinput>make tests</userinput>.</para>
 
-    <para os="l">Install the package:</para>
+    <para os="m">Install the package:</para>
 
-<screen os="m"><userinput>make install</userinput></screen>
+<screen os="n"><userinput>make install</userinput></screen>
 
-    <para os="n">Run the newly compiled <command>bash</command> program (replacing
+    <para os="o">Run the newly compiled <command>bash</command> program (replacing
     the one that is currently being executed):</para>
 
-<screen os="o"><userinput>exec /bin/bash --login +h</userinput></screen>
+<screen os="p"><userinput>exec /bin/bash --login +h</userinput></screen>
 
-    <note os="p">
+    <note os="q">
       <para>The parameters used make the <command>bash</command>
       process an interactive login shell and continue to disable hashing so
       that new programs are found as they become available.</para>

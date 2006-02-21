@@ -41,25 +41,25 @@
 
     <para os="a">Prepare Texinfo for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
-    <para os="b">Compile the package:</para>
+    <para os="c">Compile the package:</para>
 
-<screen os="c"><userinput>make</userinput></screen>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <para os="d">To test the results, issue:
+    <para os="e">To test the results, issue:
     <userinput>make check</userinput>.</para>
 
-    <para os="e">Install the package:</para>
+    <para os="f">Install the package:</para>
 
-<screen os="f"><userinput>make install</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="g">Optionally, install the components belonging in a TeX
+    <para os="h">Optionally, install the components belonging in a TeX
     installation:</para>
 
-<screen os="h"><userinput>make TEXMF=/usr/share/texmf install-tex</userinput></screen>
+<screen os="i"><userinput>make TEXMF=/usr/share/texmf install-tex</userinput></screen>
 
-    <variablelist os="i">
+    <variablelist os="j">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
@@ -73,7 +73,7 @@
 
     </variablelist>
 
-    <para os="j">The Info documentation system uses a plain text file to hold
+    <para os="k">The Info documentation system uses a plain text file to hold
     its list of menu entries. The file is located at
     <filename>/usr/share/info/dir</filename>. Unfortunately, due to occasional
     problems in the Makefiles of various packages, it can sometimes get out of
@@ -81,7 +81,7 @@
     <filename>/usr/share/info/dir</filename> file ever needs to be recreated,
     the following optional commands will accomplish the task:</para>
 
-<screen os="k"><userinput>cd /usr/share/info
+<screen os="l"><userinput>cd /usr/share/info
 rm dir
 for f in *
 do install-info $f dir 2&gt;/dev/null

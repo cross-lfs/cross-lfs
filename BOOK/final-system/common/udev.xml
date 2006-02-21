@@ -33,11 +33,11 @@
   <sect2 role="installation">
     <title>Installation of Udev</title>
 
-    <para os="c">Compile the package:</para>
+    <para os="a">Compile the package:</para>
 
-<screen><userinput>make EXTRAS="extras/firmware extras/run_directory"</userinput></screen>
+<screen os="b"><userinput>make EXTRAS="extras/firmware extras/run_directory"</userinput></screen>
 
-    <variablelist os="d">
+    <variablelist os="c">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
@@ -51,14 +51,14 @@
 
     </variablelist>
 
-    <para os="e">To test the results, issue:
+    <para os="d">To test the results, issue:
     <userinput>make test</userinput>.</para>
 
-    <para os="f">Install the package:</para>
+    <para os="e">Install the package:</para>
 
-<screen os="g"><userinput>make DESTDIR=/ EXTRAS="extras/firmware extras/run_directory" install</userinput></screen>
+<screen os="f"><userinput>make DESTDIR=/ EXTRAS="extras/firmware extras/run_directory" install</userinput></screen>
 
-    <variablelist os="g1">
+    <variablelist os="g">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
@@ -71,20 +71,21 @@
       </varlistentry>
 
     </variablelist>
+
     <para os="h">Udev's configuration is far from ideal by default, so install
     the configuration files here:</para>
 
 <screen os="i"><userinput>cp ../&udev-config-file; /etc/udev/rules.d/25-lfs.rules</userinput></screen>
 
-    <para os="a">Install the documentation that explains how to create
+    <para os="j">Install the documentation that explains how to create
     Udev rules:</para>
 
-<screen os="b"><userinput>install -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
+<screen os="k"><userinput>install -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
 
-    <para os="j">Run the <command>udevstart</command> program to create our full
+    <para os="l">Run the <command>udevstart</command> program to create our full
     complement of device nodes.</para>
 
-<screen os="k"><userinput>/sbin/udevstart</userinput></screen>
+<screen os="m"><userinput>/sbin/udevstart</userinput></screen>
 
   </sect2>
 

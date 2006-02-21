@@ -21,7 +21,7 @@
   <sect2 role="installation">
     <title>Installation of Perl</title>
 
-    <para>In multilib builds we install compilers and libraries for each available
+    <para os="m1">In multilib builds we install compilers and libraries for each available
     architecture.  The description below says that perl installs several hundred
     libraries, but they are used by invoking <command>perl</command>, not by linking
     to them with <command>ld</command>.  Although it is possible to install perl for
@@ -30,31 +30,31 @@
     libraries and modules for the last version installed will be accessible. We
     therefore only install one version.</para>
 
-    <para>Perl does not, by default, know about library directories with names other
+    <para os="p1">Perl does not, by default, know about library directories with names other
     than lib, such as lib64.  The following patch will allow it to install to lib64.</para>
 
-<screen><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
 
-    <para>There is a further (possibly cosmetic) anomaly - if we install perl and
+    <para os="p3">There is a further (possibly cosmetic) anomaly - if we install perl and
     then run <command>perl -V</command> it will claim that libc is in /lib.  The
     following patch fixes this, but only takes effect when <command>make install
     </command> is run.</para>
 
-<screen><userinput>patch -Np1 -i ../&perl-lib64-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&perl-lib64-patch;</userinput></screen>
 
-    <para>We still need to tell perl to actually use lib64</para>
+    <para os="m2">We still need to tell perl to actually use lib64</para>
 
-<screen><userinput>echo 'installstyle="lib64/perl5"' >>hints/linux.sh</userinput></screen>
+<screen os="m3"><userinput>echo 'installstyle="lib64/perl5"' >>hints/linux.sh</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>./configure.gnu --prefix=/usr -Dpager="/bin/less -isR" \
+<screen os="b"><userinput>./configure.gnu --prefix=/usr -Dpager="/bin/less -isR" \
    -Dlibpth="/usr/local/lib64 /lib64 /usr/lib64" \
    -Dcc="gcc ${BUILD64}"</userinput></screen>
 
-    <variablelist>
+    <variablelist os="m4">
       <title>The meaning of the new configure option:</title>
 
       <varlistentry>
@@ -64,11 +64,11 @@
         </listitem>
       </varlistentry>
 
-    </variablelist>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+    xpointer="xpointer(//*[@os='c1'])"/>
+
+    </variablelist>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
