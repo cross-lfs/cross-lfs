@@ -23,13 +23,13 @@
     <title>Installation of Cross GCC Compiler with Static libgcc
     and no Threads</title>
 
-    <para os="aa">We will make a couple of essential adjustments to the specs file
+    <para os="aa">First make a couple of essential adjustments to the specs file
     to point to use our build environment:</para>
 
 <screen os="ab"><userinput>patch -Np1 -i ../&gcc-specs-patch;</userinput></screen>
 
-    <para os="ac">To make sure that we use the proper syntax for a couple of tools,
-    we apply the following patch:</para>
+    <para os="ac">To make sure that a couple of tools use the proper syntax,
+    apply the following patch:</para>
 
 <screen os="ad"><userinput>patch -Np1 -i ../&gcc-posix-patch;</userinput></screen>
 
@@ -40,14 +40,14 @@
 
 <screen os="af"><userinput>patch -Np1 -i ../&gcc-cross_search-patch;</userinput></screen>
 
-    <para os="ag">Now we will need to setup our StartFile Spec to the correct library
+    <para os="ag">Now setup the StartFile Spec to the correct library
     location:</para>
 
 <screen os="ah"><userinput>echo "
 #undef STARTFILE_PREFIX_SPEC
 #define STARTFILE_PREFIX_SPEC \"/tools/lib/\"" &gt;&gt; gcc/config/linux.h</userinput></screen>
 
-    <para os="ai">Now we will alter <command>gcc</command>'s c preprocessors default
+    <para os="ai">Now alter <command>gcc</command>'s c preprocessors default
     include search path to use <filename class="directory">/tools</filename> only:</para>
 
 <screen os="aj"><userinput>cp gcc/Makefile.in{,.orig}
@@ -101,9 +101,9 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
         <term><parameter>--disable-threads</parameter></term>
         <listitem>
           <para>This will prevent GCC from finding the multi-thread
-          include files, since we haven't created them for this architecture
-          yet. We will be able to find the multi-thread information after
-          we create the Glibc headers.</para>
+          include files, since they haven't been created for this architecture
+          yet. GCC will be able to find the multi-thread information after
+          the Glibc headers are created.</para>
         </listitem>
       </varlistentry>
 

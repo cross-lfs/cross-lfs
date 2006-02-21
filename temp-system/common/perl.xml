@@ -27,9 +27,8 @@
 
 <screen os="b"><userinput>patch -Np1 -i ../&perl-libc-patch;</userinput></screen>
 
-   <para os="c">We will now make a change so we can make a cross-compiled version of
-   perl. We will change the permissions on the files we need to update, so we
-   can make a change. This change will rename miniperl to miniperl-cross:</para>
+   <para os="c">Now make a change to allow the creation of a cross-compiled version of
+   perl. This change will rename miniperl to miniperl-cross. The files that need to be modified also need their permissions changed:</para>
 
 <screen os="d"><userinput>chmod 755 ext/util/make_ext
 cp ext/util/make_ext{,.orig}

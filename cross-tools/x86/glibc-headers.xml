@@ -23,9 +23,9 @@
     <title>Installation of Glibc Headers</title>
 
     <para os="s1">The following sed removes a dependency of gcc 3.4.x from
-    the glibc we are using in cross-lfs. The reason we are changing it is
-    because this only installs the headers, no compiling takes place. In the
-    next glibc chapter, we use the gcc that's built right after this chapter.</para>
+    the glibc used in cross-lfs. The reason it is changed is
+    because only the headers are being installed now; no compiling takes place.
+    In the next glibc build, the gcc that's built right after this section will be used.</para>
 
 <screen os="s2"><userinput>cp configure{,.orig}
 sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
@@ -74,7 +74,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
       <varlistentry os="ca1">
         <term><parameter>CC=gcc</parameter></term>
         <listitem>
-          <para>Tells GLIBC to use the hosts GCC compiler.</para>
+          <para>Tells Glibc to use the host's GCC compiler.</para>
         </listitem>
       </varlistentry>
 
@@ -122,7 +122,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
       <varlistentry os="ca7">
         <term><parameter>--with-binutils=/cross-tools/${LFS_TARGET}/bin</parameter></term>
         <listitem>
-          <para>This tells GLIBC to use the binutils for our specific target architecture.</para>
+          <para>This tells Glibc to use the binutils for the specific target architecture.</para>
         </listitem>
       </varlistentry>
 
@@ -132,23 +132,23 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
 <screen os="cd"><userinput>make install-headers</userinput></screen>
 
-    <para os="ce">Some files aren't installed by the above command, so we will copy the additional header files we need:</para>
+    <para os="ce">Some files aren't installed by the above command, so copy the additional header files that are needed:</para>
 
-    <para os="cf">First we will copy a common file over to <filename
+    <para os="cf">First copy a common file over to <filename
     class="directory">/tools/include</filename>:</para>
 
 <screen os="cg"><userinput>install -d /tools/include/bits
 cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
-    <para os="ch">Now we will create a blank stub file:</para>
+    <para os="ch">Now create a blank stub file:</para>
 
 <screen os="ci"><userinput>touch /tools/include/gnu/stubs.h</userinput></screen>
 
-    <para os="cj">For NPTL we use the following command:</para>
+    <para os="cj">For NPTL use the following command:</para>
 
 <screen os="ck"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/pthread/pthread.h /tools/include/</userinput></screen>
 
-    <para os="cl">Now we copy the architecture specific header over:</para>
+    <para os="cl">Now copy the architecture specific header over:</para>
 
 <screen os="cm"><userinput>cp ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
 
