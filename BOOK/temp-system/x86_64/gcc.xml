@@ -101,8 +101,8 @@ sed -e "/MULTILIBS/s@\$(GCC_FOR_TARGET)@/cross-tools/bin/${CC}@g" \
 <screen os="dc"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
     ../gcc-&gcc-version;/configure --prefix=/tools --libdir=/tools/lib64 \
     --build=${LFS_HOST} --host=${LFS_TARGET} --target=${LFS_TARGET} \
-    --libexecdir=/tools/lib64 --with-local-prefix=/tools --enable-long-long \
-    --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
+    --with-local-prefix=/tools --enable-long-long --enable-c99 \
+    --enable-shared --enable-threads=posix --enable-__cxa_atexit \
     --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
 
     <variablelist os="dd">
@@ -115,17 +115,9 @@ sed -e "/MULTILIBS/s@\$(GCC_FOR_TARGET)@/cross-tools/bin/${CC}@g" \
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dd2">
-        <term><parameter>--libexecdir=/tools/lib64</parameter></term>
-        <listitem>
-          <para>This puts all files that are installed using the libexecdir
-          variable into /tools/lib64.</para>
-        </listitem>
-      </varlistentry>
-
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../x86/gcc.xml"
-      xpointer="xpointer(//*[@os='cl2'])"/>
+      xpointer="xpointer(//*[@os='cl1'])"/>
 
     </variablelist>
 

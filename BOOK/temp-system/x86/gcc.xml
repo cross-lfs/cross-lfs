@@ -88,21 +88,14 @@ sed -e "s@\./xgcc@/cross-tools/bin/${CC}@g" \
 
 <screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
     --build=${LFS_HOST} --host=${LFS_TARGET} --target=${LFS_TARGET} \
-    --libexecdir=/tools/lib --with-local-prefix=/tools --enable-long-long \
-    --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
+    --with-local-prefix=/tools --enable-long-long --enable-c99 \
+    --enable-shared --enable-threads=posix --enable-__cxa_atexit \
     --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
 
     <variablelist os="cl">
       <title>The meaning of the new configure options:</title>
 
       <varlistentry os="cl1">
-        <term><parameter>--libexecdir=/tools/lib</parameter></term>
-        <listitem>
-          <para>This do ...</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="cl2">
         <term><parameter>--disable-libstdcxx-pch</parameter></term>
         <listitem>
           <para>Do not build the pre-compiled header (PCH) for
