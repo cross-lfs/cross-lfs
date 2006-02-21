@@ -15,21 +15,25 @@
 #
 ########################################################################
 #
-# known events are:
-# ac97 acpi block cpu drivers edd firmware graphics i2c-adapter i8259
-# ieee1394_protocol input ioapic irqrouter lapic mem misc module namespace
-# pci_bus pci_express pcmcia pcmcia_socket platform pnp printer scsi scsi_host
-# serio sound timer timer_pit tty usb usb_device usb_host vc
+# extract udev log messages from a syslog file
+# show_event_log <first> [<last> [<list of event types>] ]
 #
+# known events are:
+#   ac97 acpi block cpu drivers edd firmware graphics i2c-adapter i8259
+#   ieee1394_protocol input ioapic irqrouter lapic mem misc module namespace
+#   pci_bus pci_express pcmcia pcmcia_socket platform pnp printer scsi scsi_host
+#   serio sound timer timer_pit tty usb usb_device usb_host vc
+#
+# GPL, version 2
+# Christian Zoz <zoz@suse.de>
+#
+
 EXCLUDE_SUBS="acpi cpu edd mem namespace pci_bus tty vc"
-# EXCLUDE_SUBS="ac97 acpi cpu drivers edd graphics i2c-adapter mem i8259 ioapic irqrouter lapic mem module namespace platform pnp pci_bus tty vc"
 MESSAGES=${MESSAGES:-/var/log/messages}
-#grep udevd /var/log/messages | grep -v "pass_env\|geventrec\|hal.hot\|received"
 
 show_event() {
 	local SN PID SUBS
 	declare -i SN=$1 PID
-#	read PID ACT SUBS < <(sed -n "s/^.*seq $SN forked, pid \[\([0-9]*\)\], \([^,]*\),.*$/\1 \2/p;T;q" $MESSAGES)
 	read PID ACT SUBS < <(sed -n "s/^.*seq $SN forked, pid \[\([0-9]*\)\], '\([^']*\)' '\([^']*\)'.*$/\1 \2 \3/p;T;q" $MESSAGES)
 	if [ $PID == 0 ] ; then
 		echo event $SN not found 1>&2
@@ -56,7 +60,8 @@ show_event() {
 
 declare -i START=$1 STOP=$2
 if [ "$2" == last ] ; then
-	read STOP < <(grep -o "udev_done.*exit" $MESSAGES | cut -d" " -f3 | sort -n | tail -1)
+	read STOP_STRING < <(grep -o "udev_done.*exit" $MESSAGES | cut -d" " -f3 | sort -n | tail -1)
+	STOP=`echo $STOP_STRING | sed 's/^[^0-9]*\([0-9]\+\).*$/\1/'`
 fi
 test $START -lt 0 -a $STOP -gt 0 && START=$((STOP+START+1))
 test $START -gt $STOP && STOP=$START
@@ -64,7 +69,7 @@ shift; shift; WANTED_SUBS="$*"
 for n in `seq $START $STOP`; do
 	show_event $n
 done
-	
+
 exit
 
 # list all events

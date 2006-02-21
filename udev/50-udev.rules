@@ -60,7 +60,6 @@ KERNEL=="js*",			NAME="input/%k", MODE="0644"
 KERNEL=="ts*",			NAME="input/%k", MODE="0600"
 KERNEL=="uinput",		NAME="input/%k", MODE="0600"
 KERNEL=="lirc0",		NAME="%k", SYMLINK+="lirc"
-KERNEL=="input[0-9]*", 		ACTION=="add", RUN+="input.sh"
 
 # printer
 SUBSYSTEM=="usb",		KERNEL=="lp*", NAME="usb/%k", SYMLINK+="usb%k", GROUP="lp"
