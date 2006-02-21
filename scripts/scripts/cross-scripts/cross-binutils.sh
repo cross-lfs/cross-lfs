@@ -70,6 +70,9 @@ case ${BINUTILS_VER} in
    # Issue with HJL binutils 2.15.94.0.1 stripping needed information
    # one manifestation is with stripping TLS info from libc.a 
    2.15.94.0.1 ) apply_patch binutils-2.15.94.0.1-fix-strip-1 ;;
+
+   # fix sparcv8 aout
+   2.16.1 ) apply_patch binutils-2.16.1-sparc_aout-1 ;;
 esac
                                                                                 
 # Check if we have sysroot set
