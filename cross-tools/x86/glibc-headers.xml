@@ -46,6 +46,13 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='de'])"/>
 
+    <para os="df">Glibc has an issue cross-compiling the headers, where it can
+    misdetect the capabilities of Binutils and decide they are inadequate.  The
+    following line fixes this:</para>
+
+<screen os="dg"><userinput>echo "libc_cv_initfini_array=yes" &gt;&gt; config.cache
+</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
