@@ -45,20 +45,20 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para>Now we make sure the Glibc goes into
+    <para os="l1">Now we make sure the Glibc goes into
     <filename class="directory">/lib</filename>:</para>
 
-<screen><userinput>echo "slibdir=/lib" &gt;&gt; configparms</userinput></screen>
+<screen os="l2"><userinput>echo "slibdir=/lib" &gt;&gt; configparms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
+<screen os="h"><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
     --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
     --libexecdir=/usr/lib/glibc --libdir=/usr/lib</userinput></screen>
 
-    <variablelist>
+    <variablelist os="i">
       <title>The meaning of the new configure option:</title>
 
       <varlistentry>
@@ -122,11 +122,9 @@
     not only the 32-bit linker, but also /lib64 where it thinks the 64-bit linker
     is. The following <command>sed</command> will correct this.</para>
 
-    <screen><userinput>
-    rm /lib/ld-linux.so.2
+    <screen><userinput>rm /lib/ld-linux.so.2
     cp /usr/bin/ldd{,.bak}
-    sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd
-    </userinput></screen>
+    sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userinput></screen>
 
     <para>Check the script to make sure the sed worked correctly, then delete
     the backup.</para>
