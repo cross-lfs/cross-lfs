@@ -57,24 +57,26 @@
 
 <screen os="e"><userinput>make</userinput></screen>
 
-    <para os="f">Install the package:</para>
+    <para os="f">This package does not come with a test suite.</para>
 
-<screen os="g"><userinput>make install</userinput></screen>
+    <para os="g">Install the package:</para>
 
-    <para os="h">There is no reason for the <command>pstree</command> and
+<screen os="h"><userinput>make install</userinput></screen>
+
+    <para os="i">There is no reason for the <command>pstree</command> and
     <command>pstree.x11</command> programs to reside in <filename
     class="directory">/bin</filename>. Therefore, move them to <filename
     class="directory">/usr/bin</filename>:</para>
 
-<screen os="i"><userinput>mv -v /bin/pstree* /usr/bin</userinput></screen>
+<screen os="j"><userinput>mv -v /bin/pstree* /usr/bin</userinput></screen>
 
-    <para os="j">By default, Psmisc's <command>pidof</command> program is not installed.
+    <para os="k">By default, Psmisc's <command>pidof</command> program is not installed.
     This usually is not a problem because it is installed later in the Sysvinit
     package, which provides a better <command>pidof</command> program. If
     Sysvinit will not be used for a particular system, complete the installation
     of Psmisc by creating the following symlink:</para>
 
-<screen os="k"><userinput>ln -sv killall /bin/pidof</userinput></screen>
+<screen os="l"><userinput>ln -sv killall /bin/pidof</userinput></screen>
 
   </sect2>
 
