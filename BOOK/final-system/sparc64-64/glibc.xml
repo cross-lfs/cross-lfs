@@ -53,32 +53,34 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para>Now we make sure the Glibc goes into
-    <filename class="directory">/lib</filename>:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../sparc64/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='t1'])"/>
 
-<screen><userinput>echo "slibdir=/lib" &gt;&gt; configparms</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../sparc64/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='t2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/glibc.xml"
+    xpointer="xpointer(//*[@os='l2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/glibc.xml"
+    xpointer="xpointer(//*[@os='l2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
+<screen os="h"><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
     --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
-    --libexecdir=/usr/lib/glibc --libdir=/usr/lib</userinput></screen>
+    --libexecdir=/usr/lib/glibc --libdir=/usr/lib
+    --cache-file=config.cache</userinput></screen>
 
-    <variablelist>
-      <title>The meaning of the new configure option:</title>
-
-      <varlistentry>
-        <term><parameter>--libexecdir=/usr/lib/glibc</parameter></term>
-        <listitem>
-          <para>This changes the location of the <command>pt_chown</command>
-          program from its default of <filename
-          class="directory">/usr/libexec</filename> to <filename
-          class="directory">/usr/lib64/glibc</filename>.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/glibc.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"

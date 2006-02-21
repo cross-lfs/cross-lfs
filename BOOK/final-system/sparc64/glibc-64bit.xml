@@ -57,13 +57,20 @@
     href="../multilib/glibc-64bit.xml"
     xpointer="xpointer(//*[@os='m2'])"/>
 
+    <para os="t1">For TLS support on the Sparc64 we will need to add the following lines to
+    <filename>config.cache</filename>:</para>
+
+<screen os="t2"><userinput>echo "libc_cv_sparc64_tls=yes" &gt;&gt; config.cache</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../multilib/glibc-64bit.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+<screen os="h"><userinput>CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+    ../glibc-&glibc-version;/configure --prefix=/usr \
+    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
+    --libexecdir=/usr/lib64/glibc --libdir=/usr/lib64 \
+    --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../multilib/glibc-64bit.xml"
