@@ -10,25 +10,22 @@
 #
 ########################################################################
 
-# ALSA
-KERNEL=="controlC[0-9]*",		NAME="snd/%k", GROUP="audio"
-KERNEL=="hw[CD0-9]*",			NAME="snd/%k", GROUP="audio"
-KERNEL=="pcm[CD0-9cp]*",  		NAME="snd/%k", GROUP="audio"
-KERNEL=="midiC[D0-9]*",	 		NAME="snd/%k", GROUP="audio"
-KERNEL=="timer",			NAME="snd/%k", GROUP="audio"
-KERNEL=="seq",				NAME="snd/%k", GROUP="audio
+SUBSYSTEM="sound",		GROUP="audio"
+SUBSYSTEM="snd",		GROUP="audio"
 
-# Sound devices
-KERNEL=="admmidi*",			GROUP="audio"
-KERNEL=="adsp*",			GROUP="audio"
-KERNEL=="aload*",			GROUP="audio"
-KERNEL=="amidi*",			GROUP="audio"
-KERNEL=="amixer*",			GROUP="audio"
-KERNEL=="audio*",			GROUP="audio"
-KERNEL=="dmfm*",			GROUP="audio"
-KERNEL=="dmmidi*",			GROUP="audio"
-KERNEL=="dsp*",				GROUP="audio"
-KERNEL=="midi*",			GROUP="audio"
-KERNEL=="mixer*",			GROUP="audio"
-KERNEL=="music",			GROUP="audio"
-KERNEL=="sequencer*",			GROUP="audio"
+KERNEL=="controlC[0-9]*",	NAME="snd/%k", GROUP="audio"
+KERNEL=="hwC[D0-9]*",		NAME="snd/%k", GROUP="audio"
+KERNEL=="pcmC[D0-9cp]*",	NAME="snd/%k", GROUP="audio"
+KERNEL=="midiC[D0-9]*",		NAME="snd/%k", GROUP="audio"
+KERNEL=="timer",		NAME="snd/%k", GROUP="audio"
+KERNEL=="seq",			NAME="snd/%k", GROUP="audio"
+
+SUBSYSTEM=="usb", ACTION=="add", ENV{PRODUCT}=="1604/8000/*", RUN+="/sbin/fxload -s /usr/share/alsa/firmware/usx2yloader/tascam_loader.ihx -I /usr/share/alsa/firmware/usx2yloader/us428fw.ihx"
+SUBSYSTEM=="usb", ACTION=="add", ENV{PRODUCT}=="1604/8004/*", RUN+="/sbin/fxload -s /usr/share/alsa/firmware/usx2yloader/tascam_loader.ihx -I /usr/share/alsa/firmware/usx2yloader/us224fw.ihx"
+SUBSYSTEM=="usb", ACTION=="add", ENV{PRODUCT}=="1604/8006/*", RUN+="/sbin/fxload -s /usr/share/alsa/firmware/usx2yloader/tascam_loader.ihx -I /usr/share/alsa/firmware/usx2yloader/us122fw.ihx"
+SUBSYSTEM=="usb", ACTION=="add", ENV{PRODUCT}=="1604/8001/*", RUN+="/sbin/startproc /usr/bin/us428control"
+SUBSYSTEM=="usb", ACTION=="add", ENV{PRODUCT}=="1604/8005/*", RUN+="/sbin/startproc /usr/bin/us428control"
+
+SUBSYSTEM=="sound", KERNEL=="controlC?", RUN+="/usr/sbin/alsactl -F restore %n"
+SUBSYSTEM=="sound", KERNEL=="hwC?D2", DRIVER=="EMU10K1_Audigy", RUN+="/etc/alsa.d/udev-soundfont"
+
