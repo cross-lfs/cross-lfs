@@ -15,20 +15,16 @@ rules:
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 	install -m ${RULESMODE} 55-sound.rules ${DESTDIR}/etc/udev/rules.d/55-sound.rules
 	install -m ${RULESMODE} 60-persistent.rules ${DESTDIR}/etc/udev/rules.d/60-persistent.rules
-	install -m ${RULESMODE} 85-mount-fstab.rules ${DESTDIR}/etc/udev/rules.d/85-mount-fstab.rules
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
 
 scripts:
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
 	install -m ${SCRIPTMODE} input.sh ${DESTDIR}/lib/udev/input.sh
-	install -m ${SCRIPTMODE} mount.sh ${DESTDIR}/lib/udev/mount.sh
 
 boot:
 	install -d ${DESTDIR}/usr/share/udev
-	install -d ${DESTDIR}/etc/sysconfig
 	install -d ${DESTDIR}/etc/rc.d/rcsysinit.d
 	install -d ${DESTDIR}/etc/rc.d/init.d
-	install -m ${CONFMODE} sysconfig.storge ${DESTDIR}/etc/sysconfig/storage
 	install -m ${INITMODE} udev ${DESTDIR}/etc/rc.d/init.d/udev
 	install -m ${INITMODE} udev_retry ${DESTDIR}/etc/rc.d/init.d/udev_retry
 	install -m ${SCRIPTMODE} show_event_log ${DESTDIR}/usr/share/udev/show_event_log
