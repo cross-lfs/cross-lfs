@@ -71,11 +71,7 @@
 
     <para os="ad">Create needed symlinks for a bootable system:</para>
 
-<screen os="ae"><userinput>install -d ${LFS}/sbin
-cd ${LFS}/sbin
-ln -sf ../tools/sbin/fsck.ext2 .
-ln -sf ../tools/sbin/fsck.ext3 .
-ln -sf ../tools/sbin/e2fsck .</userinput></screen>
+<screen os="ae"><userinput>ln -s /tools/sbin/{fsck.ext2,fsck.ext3,e2fsck} ${LFS}/sbin</userinput></screen>
 
   </sect2>
 
