@@ -65,17 +65,9 @@
 
 <screen os="g"><userinput>make install</userinput></screen>
 
-    <warning os="h">
-      <para><emphasis>Do not</emphasis> remove the <filename
-      class="directory">tcl&tcl-version;</filename> source directory yet,
-      as the next package will need its internal headers.</para>
-    </warning>
+    <para os="i">Now we will install the TCL headers into /tools.</para>
 
-    <para os="i">Set a variable containing the full path of the current directory.
-    The next package, Expect, will use this variable to find Tcl's headers.</para>
-
-<screen os="j"><userinput>cd ..
-export TCLPATH=`pwd`</userinput></screen>
+<screen os="j"><userinput>make install-private-headers</userinput></screen>
 
     <para os="k">Now make a necessary symbolic link:</para>
 
