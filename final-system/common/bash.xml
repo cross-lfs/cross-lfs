@@ -40,17 +40,6 @@
 sed -i "s|htmldir = @htmldir@|htmldir = /usr/share/doc/bash-&bash-version;|" \
     Makefile.in</userinput></screen>
 
-    <para os="c">The following patch fixes various issues, including a problem where
-    Bash will sometimes only show 33 characters on a line, then wrap to the
-    next:</para>
-
-<screen os="d"><userinput>patch -Np1 -i ../&bash-fixes-patch;</userinput></screen>
-
-    <para os="e">Bash also has an issue when compiled against newer versions of Glibc.
-    The following patch resolves this problem:</para>
-
-<screen os="f"><userinput>patch -Np1 -i ../&bash-avoid_WCONTINUED-patch;</userinput></screen>
-
     <para os="g">Prepare Bash for compilation:</para>
 
 <screen os="h"><userinput>./configure --prefix=/usr --bindir=/bin \
