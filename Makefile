@@ -57,7 +57,7 @@ endef
 define TROUBLE
 	echo "Troubleshooting $$arch..." ; \
         xmllint --xinclude --nonet --postvalid $(PWD)/$$arch-index.xml > /tmp/dump-$$arch ; \
-	xmllint --xinclude --noout --nonet --valid /tmp/dump-$$ach ; \
+	xmllint --xinclude --noout --nonet --valid /tmp/dump-$$arch ; \
 	echo "You can now look at /tmp/dump-$$arch to see the errors"
 endef
 
