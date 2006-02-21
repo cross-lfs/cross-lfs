@@ -26,11 +26,14 @@ scripts:
 	install -m ${SCRIPTMODE) ${DESTDIR}/usr/bin/udev.count_events
 
 boot:
-	install -m ${INITMODE} ${DESTDIR}/etc/init.d/udev
-	install -m ${INITMODE} ${DESTDIR}/etc/init.d/udev_retry
+	install -d  ${DESTDIR}/usr/share/udev
+	install -m ${INITMODE} ${DESTDIR}/etc/rc.d/init.d/udev
+	install -m ${INITMODE} ${DESTDIR}/etc/rc.d/init.d/udev_retry
 	install -m ${CONFMODE} ${DESTDIR}/var/adm/fillup-templates/sysconfig.storage
-	install -m ${SCRIPTMODE) doc/show_event_log
-	install -m ${CONFMODE} doc/README.Logging
+	install -m ${SCRIPTMODE) ${DESTDIR}/usr/share/udev/show_event_log
+	install -m ${CONFMODE}  ${DESTDIR}/usr/share/udev/README.Logging
+	ln -sf ${DESTDIR}/rc.d/init.d/udev ${DESTDIR}/rc.d/rcsysinit.d/S10udev
+	ln -sf ${DESTDIR}/rc.d/init.d/udev_retry ${DESTDIR}/rc.d/rcsysinit.d/S15udev_retry
 
 device_dirs:
 	install -d -m ${DIRMODE} ${DESTDIR}/lib/udev/devices
