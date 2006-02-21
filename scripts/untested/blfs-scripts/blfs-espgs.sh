@@ -13,7 +13,7 @@ if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=/usr/${libdirname}"
 fi
 
-unpack_tarball espgs-${ESPGS_VER}
+unpack_tarball espgs-${ESPGS_VER}-source
 cd ${PKGDIR}
 
 # NOTE: check /usr/bin/cups-config(-32,-64} to ensure no rpaths are set 
@@ -23,7 +23,7 @@ CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \
 CXXFLAGS="${TGT_CFLAGS}" \
-./configure --prefix=/usr --without-gimp-print --without-omni ${extra_conf} \
+./configure --prefix=/usr --without-omni ${extra_conf} \
    --with-ijs \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" &&
@@ -47,6 +47,6 @@ install -m644 src/*.h /usr/include/ps
 
 # Now, install fonts
 cd /usr/share/ghostscript
-unpack_tarball ghostscript-fonts-std-${GS_FONTS_STD_VER}
-unpack_tarball gnu-gs-fonts-other-${GS_FONTS_OTHER_VER}
+unpack_tarball ghostscript-fonts-std-${GS_FONTS_STD_VER} -no-remove
+unpack_tarball gnu-gs-fonts-other-${GS_FONTS_OTHER_VER} -no-remove
 chown -R root:root *
