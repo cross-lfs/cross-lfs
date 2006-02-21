@@ -43,7 +43,7 @@ sed -e 's/miniperl/miniperl-cross/g' utils/Makefile.orig > utils/Makefile</useri
     <para os="e">Prepare Perl for compilation (make sure to get the 'Data/Dumper
     IO Fcntl POSIX' part of the command correct&mdash;they are all letters):</para>
 
-<screen os="f"><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX'</userinput></screen>
+<screen os="f"><userinput>CC="gcc" ./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX'</userinput></screen>
 
     <variablelist os="g">
       <title>The meaning of the configure option:</title>
