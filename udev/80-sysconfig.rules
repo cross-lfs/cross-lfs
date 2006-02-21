@@ -1,0 +1,24 @@
+########################################################################
+#
+# Description : Sysconfig Rules Set
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS
+#
+# Version     : 00.01
+#
+# Notes       :
+#
+########################################################################
+
+ENV{SYSCONFIG}=="no|off|0", GOTO="sysconfig_end"
+
+# network devices
+KERNEL=="tun", NAME="net/%k", MODE="0600"
+SUBSYSTEM=="net", ACTION=="add", RUN+="/sbin/ifup $env{INTERFACE} -o hotplug"
+SUBSYSTEM=="net", ACTION=="remove", RUN+="/sbin/ifdown %k -o hotplug"
+
+LABEL="sysconfig_end"

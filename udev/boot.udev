@@ -1,0 +1,121 @@
+#!/bin/sh
+########################################################################
+# Begin $rc_base/init.d/udev
+#
+# Description : Udev Boot Script
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS
+#
+# Version     : 00.00
+#
+# Notes       :
+#
+########################################################################
+
+. /etc/sysconfig/rc
+. ${rc_functions}
+
+PATH="/sbin:/bin"
+DAEMON=/sbin/udevd
+udevd_args="--daemon"
+
+function trigger_device_events() {
+	# generate events with the sysfs trigger
+	list=$(echo /sys/bus/*/devices/*/uevent)
+	list="$list $(echo /sys/class/*/*/uevent)"
+	list="$list $(echo /sys/block/*/uevent /sys/block/*/*/uevent)"
+	for i in $list; do
+	    case "$i" in
+		*/device/uevent)
+		    # skip followed device symlinks
+		    continue
+		    ;;
+
+		*/class/mem/*|*/class/tty/*)
+		    first="$first $i"
+		    ;;
+
+		*/block/md*)
+		    last="$last $i"
+		    ;;
+
+		*/*)
+		    default="$default $i"
+		    ;;
+	    esac
+	done
+
+	# trigger the sorted events
+	for i in $first $default $last; do
+	    echo "add" > "$i"
+	done
+}
+
+case "$1" in
+    start)
+
+	# disable hotplug helper, udevd listens to netlink
+	echo "" > /proc/sys/kernel/hotplug
+
+	# start udevd
+	boot_mesg "Starting udevd"
+	loadproc $DAEMON $udevd_args
+
+	# cleanup some stuff
+	rm -rf /events/*
+
+	# unlikely, but we may be faster than the first event
+	mkdir -p /dev/.udev/queue
+
+	# configure all devices
+	trigger_device_events
+
+	# until we know how to do better, we wait for all events to finish
+	loop=0
+	while test -d /dev/.udev/queue; do
+	    sleep 0.1;
+	    test "$loop" -gt 300 && break
+	    loop=$(($loop + 1))
+	done
+	;;
+
+    stop)
+	boot_mesg "Stopping udevd:"
+	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+	killproc $DAEMON
+	;;
+
+    restart)
+	${0} stop
+        sleep 1
+        ${0} start
+	;;
+
+    status)
+	statusproc /sbin/udevd
+	;;
+
+    reload)
+	boot_mesg "Reloading udev rules:"
+	udevcontrol reload_rules
+	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
+	evaluate_retval
+	;;
+
+    force-reload)
+	boot_mesg "Updating all available device nodes in /dev: "
+	udevcontrol reload_rules
+	rm -rf /dev/.udev /dev/disk
+	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
+	trigger_device_events
+	evaluate_retval
+	;;
+    *)
+	echo "Usage: $0 {start|stop|restart|status|reload|force-reload}"
+	exit 1
+	;;
+esac

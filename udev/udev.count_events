@@ -1,0 +1,24 @@
+#!/bin/sh
+########################################################################
+#
+# Description : udev.count_events
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS
+#
+# Version     : 00.00
+#
+# Notes       : Wait for all current udev events to finish
+#
+########################################################################
+
+loop=100
+while test -d /dev/.udev/queue; do
+    sleep 0.1;
+    test "$loop" -gt 0 || exit 1
+    loop=$(($loop - 1))
+done
+exit 0

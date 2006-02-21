@@ -1,0 +1,17 @@
+########################################################################
+#
+# Description : Wait for SYSFS
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS
+#
+# Version     : 00.01
+#
+# Notes       :
+#
+########################################################################
+
+ACTION=="add", DEVPATH=="/devices/*", ENV{PHYSDEVBUS}=="?*", WAIT_FOR_SYSFS="bus"
