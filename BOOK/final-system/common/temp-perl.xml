@@ -27,9 +27,13 @@
 
 <screen os="b"><userinput>patch -Np1 -i ../&perl-libc-patch;</userinput></screen>
 
-<screen os="c"><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX' -Dcc="gcc"</userinput></screen>
+<para os="c">Prepare Perl for compilation (make sure to get the 'Data/Dumper
+Fcntl IO POSIX' part of the command correct&mdash;they are all
+letters):</para>
 
-    <variablelist os="d">
+<screen os="d"><userinput>./configure.gnu --prefix=/tools -Dstatic_ext='Data/Dumper IO Fcntl POSIX' -Dcc="gcc"</userinput></screen>
+
+    <variablelist os="e">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -37,19 +41,19 @@
         <listitem>
           <para>This tells Perl to build the minimum set of static
           extensions needed for installing and testing the Coreutils
-          package in the next chapter.</para>
+          package later in this chapter.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
-  <para os="e">Now we are ready to make our perl utilities:</para>
+  <para os="f">Now we are ready to make our perl utilities:</para>
 
-<screen os="f"><userinput>make perl utilities</userinput></screen>
+<screen os="g"><userinput>make perl utilities</userinput></screen>
 
-    <para os="g">Install these tools and their libraries:</para>
+    <para os="h">Install these tools and their libraries:</para>
 
-<screen os="h"><userinput>cp perl pod/pod2man /tools/bin
+<screen os="i"><userinput>cp perl pod/pod2man /tools/bin
 install -d /tools/lib/perl5/&perl-version;
 cp -R lib/* /tools/lib/perl5/&perl-version;</userinput></screen>
 
