@@ -1,0 +1,1 @@
+blfs-libmng.sh

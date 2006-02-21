@@ -1,0 +1,1 @@
+blfs-lm_sensors.sh

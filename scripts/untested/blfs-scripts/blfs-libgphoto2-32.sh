@@ -1,0 +1,1 @@
+blfs-libgphoto2.sh
