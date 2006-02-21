@@ -1,0 +1,28 @@
+diff -uNr automake-1.5-orig/automake.in automake-1.5/automake.in
+--- automake-1.5-orig/automake.in	2001-08-23 15:26:53.000000000 +1000
++++ automake-1.5/automake.in	2005-07-30 16:32:40.000000000 +1000
+@@ -1940,7 +1940,9 @@
+         }
+ 
+ 	# Let the language do some special magic if required.
+-	$lang->target_hook ($aggregate, $object, $full);
++	if (defined $lang) {
++		$lang->target_hook ($aggregate, $object, $full);
++	}
+ 
+ 	if ($derived_source)
+ 	{
+diff -uNr automake-1.5-orig/m4/depout.m4 automake-1.5/m4/depout.m4
+--- automake-1.5-orig/m4/depout.m4	2001-05-14 10:01:09.000000000 +1000
++++ automake-1.5/m4/depout.m4	2005-07-30 16:32:59.000000000 +1000
+@@ -12,8 +12,8 @@
+ test x"$AMDEP_TRUE" != x"" ||
+ for mf in $CONFIG_FILES; do
+   case "$mf" in
+-  Makefile) dirpart=.;;
+-  */Makefile) dirpart=`echo "$mf" | sed -e 's|/[^/]*$||'`;;
++  Makefile|GNUmakefile) dirpart=.;;
++  */Makefile|*/GNUmakefile) dirpart=`echo "$mf" | sed -e 's|/[^/]*$||'`;;
+   *) continue;;
+   esac
+   grep '^DEP_FILES *= *[^ #]' < "$mf" > /dev/null || continue
