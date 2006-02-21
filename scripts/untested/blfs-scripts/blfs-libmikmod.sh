@@ -16,18 +16,37 @@ fi
 unpack_tarball libmikmod-${LIBMIKMOD_VER}
 cd ${PKGDIR}
 
-sed -i -e "s/VERSION=10/VERSION=11/" \
-       -e "s/sys_asoundlib/alsa_asoundlib/" \
-       -e "s/snd_cards/snd_card_load/g" \
-       -e "s|sys/asoundlib.h|alsa/asoundlib.h|g" \
-    configure.in &&
-autoconf &&
+# Edits required for 3.1.11 and 3.2.0 beta (except the VERSION edit w 3.2.0)
+case ${LIBMIKMOD_VER} in
+   3.1.11 )
+      apply_patch libmikmod-3.1.11-a
+
+      sed -i -e "s/VERSION=10/VERSION=11/" \
+             -e "s/sys_asoundlib/alsa_asoundlib/" \
+             -e "s/snd_cards/snd_card_load/g" \
+             -e "s|sys/asoundlib.h|alsa/asoundlib.h|g" \
+             -e "s/^LIBOBJS/#LIBOBJS/g" \
+         configure.in &&
+      autoconf || barf
+   ;;
+   3.2.* )
+      sed -i -e "s/sys_asoundlib/alsa_asoundlib/" \
+             -e "s/snd_cards/snd_card_load/g" \
+             -e "s|sys/asoundlib.h|alsa/asoundlib.h|g" \
+             -e "s/^LIBOBJS/#LIBOBJS/g" \
+         configure.in &&
+      autoconf || barf
+   ;;
+esac
+
+sed -i -e "/libdir=/s@/lib*@/${libdirname}@g" \
+   libmikmod-config.in
 
 max_log_init libmikmod ${LIBMIKMOD_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
-CFLAGS="${TGT_CFLAGS}" \
-CXXFLAGS="${TGT_CFLAGS}" \
+CFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
+CXXFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
 ./configure --prefix=/usr ${extra_conf} \
    --mandir=/usr/share/man \
    --infodir=/usr/share/info \
@@ -44,10 +63,11 @@ make install \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 
-# TODO: Need to edit /usr/bin/mxmkmf to set the correct libdir ...
-# (it really should be setup fom --libdir )
-if [ "Y" = "${MULTIARCH}" ]i; then
+if [ "Y" = "${MULTIARCH}" ]; then
    use_wrapper /usr/bin/libmikmod-config
 fi
 
-chmod 755 /usr/${libdir}/libmikmod.so.2.*
+case ${LIBMIKMOD_VER} in
+   3.1.* ) chmod 755 /usr/${libdirname}/libmikmod.so.2.* ;;
+   3.2.* ) chmod 755 /usr/${libdirname}/libmikmod.so.3.* ;;
+esac
