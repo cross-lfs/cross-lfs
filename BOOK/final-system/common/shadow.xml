@@ -82,25 +82,27 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
 
 <screen os="i"><userinput>make</userinput></screen>
 
-    <para os="j">Install the package:</para>
+    <para os="j">This package does not come with a test suite.</para>
 
-<screen os="k"><userinput>make install</userinput></screen>
+    <para os="k">Install the package:</para>
 
-    <para id="shadow-limits-login_access" os="l">Shadow uses two files to configure
+<screen os="l"><userinput>make install</userinput></screen>
+
+    <para id="shadow-limits-login_access" os="m">Shadow uses two files to configure
     authentication settings for the system. Install these two configuration
     files:</para>
 
-    <indexterm zone="shadow-limits-login_access" os="m">
+    <indexterm zone="shadow-limits-login_access" os="n">
       <primary sortas="e-/etc/limits">/etc/limits</primary>
     </indexterm>
 
-    <indexterm zone="shadow-limits-login_access" os="n">
+    <indexterm zone="shadow-limits-login_access" os="o">
       <primary sortas="e-/etc/login.access">/etc/login.access</primary>
     </indexterm>
 
-<screen os="o"><userinput>cp -v etc/{limits,login.access} /etc</userinput></screen>
+<screen os="p"><userinput>cp -v etc/{limits,login.access} /etc</userinput></screen>
 
-    <para id="shadow-login_defs" os="p">Instead of using the default
+    <para id="shadow-login_defs" os="q">Instead of using the default
     <emphasis>crypt</emphasis> method, use the more secure
     <emphasis>MD5</emphasis> method of password encryption, which also allows
     passwords longer than 8 characters. It is also necessary to change the
@@ -110,37 +112,37 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
     these can be accomplished by changing the relevant configuration file
     while copying it to its destination:</para>
 
-    <indexterm zone="shadow-login_defs" os="q">
+    <indexterm zone="shadow-login_defs" os="r">
       <primary sortas="e-/etc/login.defs">/etc/login.defs</primary>
     </indexterm>
 
-    <note os="r">
+    <note os="s">
       <para>If you built Shadow with Cracklib support, insert the following into
       the <command>sed</command> given below:</para>
 
 <screen><literal>-e 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@'</literal></screen>
     </note>
 
-<screen os="s"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
+<screen os="t"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
     -e 's@/var/spool/mail@/var/mail@' \
     etc/login.defs &gt; /etc/login.defs</userinput></screen>
 
-    <para os="t">Move a misplaced program to its proper location:</para>
+    <para os="u">Move a misplaced program to its proper location:</para>
 
-<screen os="u"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
+<screen os="v"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
-    <para os="v">Move Shadow's dynamic libraries to a more appropriate
+    <para os="w">Move Shadow's dynamic libraries to a more appropriate
     location:</para>
 
-<screen os="w"><userinput>mv -v /lib/libshadow.*a /usr/lib
+<screen os="x"><userinput>mv -v /lib/libshadow.*a /usr/lib
 rm -v /lib/libshadow.so
 ln -svf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
 
-    <para os="x">The <option>-D</option> option of the <command>useradd</command>
+    <para os="y">The <option>-D</option> option of the <command>useradd</command>
     program requires the <filename class="directory">/etc/default</filename>
     directory for it to work properly:</para>
 
-<screen os="y"><userinput>install -dv /etc/default</userinput></screen>
+<screen os="z"><userinput>install -dv /etc/default</userinput></screen>
 
   </sect2>
 
