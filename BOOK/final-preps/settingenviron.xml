@@ -47,7 +47,7 @@ PATH=/cross-tools/bin:/bin:/usr/bin
 export LFS LC_ALL PATH</literal>
 EOF</userinput></screen>
 
-  <para os=f">The <command>set +h</command> command turns off
+  <para os="f">The <command>set +h</command> command turns off
   <command>bash</command>'s hash function. Hashing is ordinarily a useful
   feature&mdash;<command>bash</command> uses a hash table to remember the
   full path of executable files to avoid searching the <envar>PATH</envar>
@@ -65,10 +65,10 @@ EOF</userinput></screen>
   used by the open(2) system call, new files will end up with permission
   mode 644 and directories with mode 755).</para>
 
-  <para os="g">The <envar>LFS</envar> variable should be set to the
+  <para os="h">The <envar>LFS</envar> variable should be set to the
   chosen mount point.</para>
 
-  <para os="h">TO BE REWRITTEN - The <envar>LC_ALL</envar> variable controls
+  <para os="i">TO BE REWRITTEN - The <envar>LC_ALL</envar> variable controls
   the localization of
   certain programs, making their messages follow the conventions of a
   specified country.  If the host system uses a version of Glibc older
@@ -79,16 +79,16 @@ EOF</userinput></screen>
   (the two are equivalent) ensures that everything will work as expected in
   the chroot environment.</para>
 
-  <para os="i">By putting <filename class="directory">/tools/bin</filename> ahead
+  <para os="j">By putting <filename class="directory">/tools/bin</filename> ahead
   of the standard <envar>PATH</envar>, all the programs installed in
   <xref linkend="chapter-temp-system"/> are picked up by the shell
   immediately after their installation. This, combined with turning off
   hashing, limits the risk that old programs are used from the host when
   the same programs are available in the temporary system.</para>
 
-  <para os="j">Finally, to have the environment fully prepared for building the
+  <para os="k">Finally, to have the environment fully prepared for building the
   temporary tools, source the just-created user profile:</para>
 
-<screen os="k"><userinput>source ~/.bash_profile</userinput></screen>
+<screen os="l"><userinput>source ~/.bash_profile</userinput></screen>
 
 </sect1>
