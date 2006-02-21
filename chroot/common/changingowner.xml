@@ -10,18 +10,32 @@
 
   <title>Changing Ownership</title>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../boot/common/changingowner.xml"
-  xpointer="xpointer(//*[@os='a'])"/>
+    <para>Currently, the <filename class="directory">/tools</filename>
+    and <filename class="directory">/cross-tools</filename> directories
+    are owned by the user <emphasis>lfs</emphasis>, a user that
+    exists only on the host system. Although the <filename
+    class="directory">/tools</filename> and <filename
+    class="directory">/cross-tools</filename> directories can be deleted
+    once the LFS system has been finished, they can be retained to build
+    additional LFS systems. If the <filename class="directory">/tools</filename>
+    and <filename class="directory">/cross-tools</filename> directories are
+    kept as is, the files are owned by a user ID without a corresponding
+    account. This is dangerous because a user account created later could
+    get this same user ID and would own the <filename
+    lass="directory">/tools</filename> directory and all the files therein,
+    thus exposing these files to possible malicious manipulation.</para>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../boot/common/changingowner.xml"
-  xpointer="xpointer(//*[@os='b'])"/>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../boot/common/changingowner.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
 
-<screen><userinput>chown -R 0:0 /tools</userinput></screen>
+    <screen><userinput>chown -R 0:0 /tools
+    chown -R 0:0 /cross-tools</userinput></screen>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../boot/common/changingowner.xml"
-  xpointer="xpointer(//*[@os='c'])"/>
+    <para>The commands use <parameter>0:0</parameter> instead of
+    <parameter>root:root</parameter>, because <command>chown</command>
+    is unable to resolve the name <quote>root</quote> until the password
+    file has been created. This book assumes you ran these
+    <command>chown</command> commands.</para>
 
 </sect1>
