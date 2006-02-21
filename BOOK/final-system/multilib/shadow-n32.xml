@@ -22,9 +22,20 @@
   <sect2 role="installation">
     <title>Installation of Shadow</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="shadow.xml"
-    xpointer="xpointer(//*[@os='a'])"/>
+    <note os="a">
+      <para>If you would like to enforce the use of strong passwords,
+      refer to <ulink url="&blfs-root;view/svn/postlfs/cracklib.html"/>
+      for installing Cracklib prior to building Shadow. Then add
+      <parameter>--with-libcrack</parameter> to the <command>configure</command>
+      command below.</para>
+
+      <para>You will also need to use the follow sed after the configuration command
+      to make sure the correct library is linked.</para>
+
+      <screen><userinput>sed -i libtool \
+	 -e 's@\(^sys_lib_search_path_spec=\).*@\1"/lib32 /usr/lib32 /usr/local/lib32"@g' \
+	 -e 's@\(^sys_lib_dlsearch_path_spec=\).*@\1"/lib32 /usr/lib32 /usr/local/lib32"@g'</userinput></screen>
+    </note>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="shadow.xml"
