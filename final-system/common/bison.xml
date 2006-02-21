@@ -37,6 +37,13 @@
 
 <screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
+    <para os="b1">The configure system causes bison to be built without support
+    for internationalization of error messages if a <command>bison</command>
+    program is not already in $PATH.  The following addition will correct
+    this.</para>
+
+<screen os="b2">echo '#define YYENABLE_NLS 1' >> config.h</screen>  
+
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
