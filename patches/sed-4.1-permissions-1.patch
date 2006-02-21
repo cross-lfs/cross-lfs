@@ -1,0 +1,22 @@
+Submitted By:            Matthew Burgess
+Date:                    2004-06-17
+Initial Package Version: 4.1
+Upstream Status:         Submitted and accepted upstream
+Origin:                  Bruce Dubbs
+                         (http://www.linuxfromscratch.org/pipermail/lfs-dev/2004-June/046773.html)
+Description:             When using the in-place function, sed 4.1 changes
+                         permissions. Specifically, when using sed on a bash
+                         script with permissions 755, the updated file has
+                         permissions 600.
+
+diff -Naur sed-4.1.orig/sed/execute.c sed-4.1/sed/execute.c
+--- sed-4.1.orig/sed/execute.c	2004-03-13 09:30:39.000000000 +0000
++++ sed-4.1/sed/execute.c	2004-06-17 20:05:20.000000000 +0000
+@@ -668,6 +668,7 @@
+       
+       input->in_file_name = name;
+       output_file.fp = ck_mkstemp (&input->out_file_name, tmpdir, "sed");
++      output_fd = fileno(output_file.fp);
+       free (tmpdir);
+ 
+       fstat (fileno (input->fp), &st);

@@ -1,0 +1,1 @@
+gnome-platform-atk.sh

@@ -1,0 +1,1 @@
+gnome-platform-libglade.sh

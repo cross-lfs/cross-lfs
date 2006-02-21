@@ -1,0 +1,97 @@
+#!/bin/sh
+
+# plfs-packages
+
+# Package Version Information - 20050325 build 
+#-----------------------------------------------
+#
+# Last Modified
+#	By     :	$LastChangedBy$
+#	Date   :	$LastChangedDate$
+#	Rev No :	$LastChangedRevision$
+#
+
+# There are 2 binutils listed here.
+# NATIVE_BINUTILS_VER is used only when building a native binutils
+# on a non linux system when BINUTILS_VER is non FSF (ie HJL)
+# This is sorted out at the end of this script.
+
+export AUTOCONF_VER=2.59		# chapter 6
+export AUTOMAKE_VER=1.9.5		# chapter 6
+export BASH_VER=3.0
+export BIN86_VER=0.16.11
+export BINUTILS_VER=2.16		# can be either FSF or HJL Binutils
+export BISON_VER=2.0
+export BZIP2_VER=1.0.3
+export COREUTILS_VER=5.2.1
+export DEJAGNU_VER=1.4.4
+export DIFFUTILS_VER=2.8.4
+export E2FSPROGS_VER=1.37		# chapter 6
+export ED_VER=0.2			# chapter 6
+export EXPECT_VER=5.43.0
+export FILE_VER=4.13			# chapter 6
+export FINDUTILS_VER=4.2.20
+export FLEX_VER=2.5.31
+export GAWK_VER=3.1.4
+export GCC_VER=4.0.0
+export GETTEXT_VER=0.14.3
+export GLIBC_VER=2.3.5
+export GREP_VER=2.5.1a
+export GROFF_VER=1.19.1			# chapter 6
+export GZIP_VER=1.3.5
+export HOTPLUG_VER=2004_09_23
+export IANA_ETC_VER=1.04
+export INETUTILS_VER=1.4.2		# chapter 6
+export IPROUTE2_VER=2.6.11-050314
+export KBD_VER=1.12			# chapter 6
+export KERNEL_VER=2.6.11-ac4
+export LESS_VER=382			# chapter 6
+export LFS_BS_VER=3.1.0			# chapter 6
+export LIBTOOL_VER=1.5.14		# chapter 6
+export LILO_VER=22.5.1
+export LINUX_LIBC_HDRS_VER=2.6.11.2
+export M4_VER=1.4.2
+export MAKEDEV_VER=1.7
+export MAKE_DEVICES_VER=1.2
+export MAKE_VER=3.80
+export MAN_VER=1.5p			# chapter 6
+export MODUTILS_VER=2.4.26		# chapter 6
+export MODINITTOOLS_VER=3.1		# chapter 6
+export NASM_VER=0.98.38
+export NATIVE_BINUTILS_VER=2.15		# FSF binutils versions only
+export NCURSES_VER=5.4
+export NETTOOLS_VER=1.60		# chapter 6
+export NFSUTILS_VER=1.0.6-ptx4
+export PATCH_VER=2.5.9
+export PERL_VER=5.8.6
+export PORTMAP_VER=5beta
+export PROCINFO_VER=18			# chapter 6
+export PROCPS_VER=3.2.5			# chapter 6
+export PSMISC_VER=21.6			# chapter 6
+export READLINE_VER=5.0
+export SED_VER=4.1.4
+export SHADOW_VER=4.0.7			# chapter 6
+#export STRACE_VER=4.5.11
+export SYSKLOGD_VER=1.4.1		# chapter 6
+export SYSVINIT_VER=2.86		# chapter 6
+export TAR_VER=1.15.1
+export TCPWRAP_VER=7.6
+export TCL_VER=8.4.9
+export TEXINFO_VER=4.8
+export UDEV_VER=056
+export UTILLINUX_VER=2.12q
+export VIM_VER=6.3			# chapter 6
+export ZLIB_VER=1.2.2
+
+# Sort out NATIVE_BINUTILS_VER for native builds
+hostos=`uname`
+if [ ! "${hostos}" = "Linux" ]; then
+   # Not linux, cannot use HJL
+   case ${BINUTILS_VER} in
+      *.9[0-9].[0-9]* )
+      ;;
+      * )
+         export NATIVE_BINUTILS_VER=${BINUTILS_VER}
+      ;;
+   esac
+fi

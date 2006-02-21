@@ -1,0 +1,22 @@
+diff -aur util-linux-2.12a-orig util-linux-2.12a
+--- util-linux-2.12a-orig/fdisk/fdiskbsdlabel.h	2002-11-01 00:45:34.000000000 +1100
++++ util-linux-2.12a/fdisk/fdiskbsdlabel.h	2004-06-19 14:43:31.771051000 +1000
+@@ -43,7 +43,7 @@
+ 
+ #define BSD_LINUX_BOOTDIR "/usr/ucb/mdec"
+ 
+-#if defined (i386) || defined (__sparc__) || defined (__arm__) || defined (__mips__) || defined (__s390__) || defined (__sh__) || defined(__x86_64__)
++#if defined (i386) || defined (__sparc__) || defined (__arm__) || defined (__mips__) || defined (__s390__) || defined (__sh__) || defined(__x86_64__) || defined (__mc68000__)
+ #define BSD_LABELSECTOR   1
+ #define BSD_LABELOFFSET   0
+ #elif defined (__alpha__) || defined (__powerpc__) || defined (__ia64__) || defined (__hppa__)
+--- util-linux-2.12a-orig/mount/swapon.c	2002-11-01 11:38:49.000000000 +1100
++++ util-linux-2.12a/mount/swapon.c	2004-06-19 14:31:52.020342000 +1000
+@@ -21,6 +21,7 @@
+ #include <mntent.h>
+ #include <errno.h>
+ #include <sys/stat.h>
++#include <unistd.h>
+ #include "swap_constants.h"
+ #include "swapargs.h"
+ #include "nls.h"

@@ -1,0 +1,36 @@
+Submitted By: Ryan Oliver <ryan.oliver AT pha.com.au>
+Date: 2004-10-24
+Initial Package Version: 4.2.52
+Origin: Ryan Oliver
+Description: This patch fixes issues with determining whether ld is gnu ld
+  on bi-arch systems (where an emulation type is also specified with LD)
+  For example, if LD="ld -m elf_x86_64", the checks will try to locate a
+  file with filename "ld -m elf_x86_64" (which does not exist) and will
+  conclude that gnu ld is not being used. 
+  If gnu ld is not being used, libtool attempts to link libraries without 
+  specifying -nostdlib, and the startfiles are linked in twice causing
+  duplicate _init and _fini errors.
+
+  See the following link at libtool-patches
+    http://lists.gnu.org/archive/html/libtool-patches/2003-06/msg00056.html
+
+--- db-4.2.52-ORIG/dist/configure	2003-12-04 08:10:02.000000000 +1100
++++ db-4.2.52/dist/configure	2004-10-24 18:36:58.204928008 +1000
+@@ -5657,7 +5657,7 @@
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   # I'd rather use --version here, but apparently some GNU ld's only accept -v.
+-case `"$LD" -v 2>&1 </dev/null` in
++case `$LD -v 2>&1 </dev/null` in
+ *GNU* | *'with BFD'*)
+   lt_cv_prog_gnu_ld=yes
+   ;;
+@@ -11135,7 +11135,7 @@
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   # I'd rather use --version here, but apparently some GNU ld's only accept -v.
+-case `"$LD" -v 2>&1 </dev/null` in
++case `$LD -v 2>&1 </dev/null` in
+ *GNU* | *'with BFD'*)
+   lt_cv_prog_gnu_ld=yes
+   ;;

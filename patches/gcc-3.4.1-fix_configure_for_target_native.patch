@@ -1,0 +1,94 @@
+Submitted By: Ryan Oliver (ryan dot oliver at pha dot com dot au)
+Origin: Ryan Oliver
+Date: 2004-07-15
+Initial Package Version: 3.4.1 (problem exists through 3.3 series)
+Description: There are issues with configure when attempting to cross-compile
+	a native gcc for target. During the last stage of make configure-host,
+	where host = target, the configury doesn't check if host != build.
+	Therefore it assumes that the build is a native build and performs
+	 binutils feature checks using either 
+	a) what the native compiler we are building would normally use.
+	   If a target-native binutils has already been built with the same
+	   prefix, this is the binutils which is used which of course will not
+	   work on host
+	b) the host os's assembler/linker/nm/as
+	which leads to bogus results.
+	This patch fixes this behaviour, so that if host = target and 
+	host != build the cross tools will be used for feature checks.
+
+--- gcc-3.4.1-ORIG/gcc/configure	2004-04-19 09:45:10.000000000 +1000
++++ gcc-3.4.1/gcc/configure	2004-07-15 02:01:17.000000000 +1000
+@@ -9518,7 +9518,9 @@
+ 	# If the loop below does not find an assembler, then use whatever
+ 	# one we can find in the users's path.
+ 	# user's path.
+-	if test "x$program_prefix" != xNONE; then
++	if test "x$host" = "x$target" -a "x$host" != "x$build"; then
++		gcc_cv_as=${target_alias}-as$host_exeext
++	elif test "x$gcc_cv_as" = x -a "x$program_prefix" != xNONE; then
+ 		gcc_cv_as=${program_prefix}as$host_exeext
+ 	else
+ 		gcc_cv_as=`echo as | sed ${program_transform_name}`$host_exeext
+@@ -9528,10 +9530,13 @@
+ 		   $test_prefix/libexec/gcc/$target_noncanonical \
+ 		   /usr/lib/gcc/$target_noncanonical/$gcc_version \
+ 		   /usr/lib/gcc/$target_noncanonical \
+-		   $test_prefix/$target_noncanonical/bin/$target_noncanonical/$gcc_version \
+-		   $test_prefix/$target_noncanonical/bin"
++		   $test_prefix/$target_noncanonical/bin/$target_noncanonical/$gcc_version"
++	if test "x$build" = "x$target" ; then 
++		test_dirs="$test_dirs \
++			   $test_prefix/$target_noncanonical/bin"
++	fi
+ 
+-	if test x$host = x$target; then
++	if test x$host = x$target -a x$host = x$build; then
+ 	    test_dirs="$test_dirs \
+ 		   /usr/libexec \
+ 		   /usr/ccs/gcc \
+@@ -9633,7 +9638,9 @@
+ 	# If the loop below does not find an linker, then use whatever
+ 	# one we can find in the users's path.
+ 	# user's path.
+-	if test "x$program_prefix" != xNONE; then
++	if test "x$host" = "x$target" -a "x$host" != "x$build"; then
++		gcc_cv_ld=${target_alias}-ld$host_exeext
++	elif test "x$gcc_cv_ld" = x -a "x$program_prefix" != xNONE; then
+ 		gcc_cv_ld=${program_prefix}ld$host_exeext
+ 	else
+ 		gcc_cv_ld=`echo ld | sed ${program_transform_name}`$host_exeext
+@@ -9643,10 +9650,13 @@
+ 		   $test_prefix/libexec/gcc/$target_noncanonical \
+ 		   /usr/lib/gcc/$target_noncanonical/$gcc_version \
+ 		   /usr/lib/gcc/$target_noncanonical \
+-		   $test_prefix/$target_noncanonical/bin/$target_noncanonical/$gcc_version \
+-		   $test_prefix/$target_noncanonical/bin"
++		   $test_prefix/$target_noncanonical/bin/$target_noncanonical/$gcc_version"
++	if test "x$build" = "x$target" ; then 
++		test_dirs="$test_dirs \
++			   $test_prefix/$target_noncanonical/bin"
++	fi
+ 
+-	if test x$host = x$target; then
++	if test x$host = x$target -a x$host = x$build; then
+ 	    test_dirs="$test_dirs \
+ 		   /usr/libexec \
+ 		   /usr/ccs/gcc \
+@@ -9692,6 +9702,8 @@
+ 	gcc_cv_nm=./nm$host_exeext
+ 	rm -f nm$host_exeext
+ 	$symbolic_link ../binutils/nm-new$host_exeext nm$host_exeext 2>/dev/null
++elif test "x$host" = "x$target" -a "x$host" != "x$build"; then
++	gcc_cv_nm=${target_alias}-nm$host_exeext
+ elif test "x$program_prefix" != xNONE; then
+ 	gcc_cv_nm=${program_prefix}nm$host_exeext
+ else
+@@ -9718,6 +9730,8 @@
+ 	rm -f objdump$host_exeext
+ 	$symbolic_link ../binutils/objdump$host_exeext \
+ 		objdump$host_exeext 2>/dev/null
++elif test "x$host" = "x$target" -a "x$host" != "x$build"; then
++	gcc_cv_objdump=${target_alias}-objdump$host_exeext
+ elif test "x$program_prefix" != xNONE; then
+ 	gcc_cv_objdump=${program_prefix}objdump$host_exeext
+ else

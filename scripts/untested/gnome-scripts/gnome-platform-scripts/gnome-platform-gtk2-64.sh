@@ -1,0 +1,1 @@
+gnome-platform-gtk2.sh

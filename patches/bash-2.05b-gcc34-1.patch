@@ -1,0 +1,34 @@
+Submitted By: Zack Winkles <winkie AT linuxfromscratch DOT org>
+Date: 2004-04-06
+Initial Package Version: 2.05b
+Origin: N/A
+Description: Fix some occurrences of syntax that GCC 3.4.0 doesn't like.
+
+--- bash-2.05b/lib/malloc/malloc.c.orig	2002-06-21 21:16:49.000000000 +0200
++++ bash-2.05b/lib/malloc/malloc.c	2004-03-01 10:07:19.749437536 +0100
+@@ -236,7 +236,7 @@
+ 	8192UL, 16384UL, 32768UL, 65536UL, 131072UL, 262144UL, 524288UL,
+ 	1048576UL, 2097152UL, 4194304UL, 8388608UL, 16777216UL, 33554432UL,
+ 	67108864UL, 134217728UL, 268435456UL, 536870912UL, 1073741824UL,
+-	2147483648UL, 4294967296UL-1
++	2147483648UL, 4294967295UL
+ };
+ 
+ /* binsizes[x] == (1 << ((x) + 3)) */
+@@ -290,7 +290,7 @@
+ 
+ #if !defined (botch)
+ static void
+-botch (s, file, line)
++botch (const char *s, const char *file, int line)
+ {
+   fprintf (stderr, "malloc: failed assertion: %s\n", s);
+   (void)fflush (stderr);
+@@ -879,6 +879,7 @@
+   busy[nunits] = 0;
+ 
+ free_return:
++  ((void)0);
+ 
+ #ifdef MALLOC_STATS
+   _mstats.nmalloc[nunits]--;

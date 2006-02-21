@@ -1,0 +1,104 @@
+diff -ru linux-2.6.11-rc4.clean/drivers/media/video/cx88/cx88-cards.c linux-2.6.11-rc4/drivers/media/video/cx88/cx88-cards.c
+--- linux-2.6.11-rc4.clean/drivers/media/video/cx88/cx88-cards.c	2005-02-13 13:07:18.000000000 +1000
++++ linux-2.6.11-rc4/drivers/media/video/cx88/cx88-cards.c	2005-02-15 08:15:47.000000000 +1000
+@@ -27,7 +27,12 @@
+ #include <linux/delay.h>
+ 
+ #if defined(CONFIG_VIDEO_CX88_DVB) || defined(CONFIG_VIDEO_CX88_DVB_MODULE)
+-# define WITH_DVB 1
++/*
++ * The Hauppauge and Conexant CX22702 based DVB-only cards enabled by this 
++ * are currently broken.
++ *
++ * # define WITH_DVB 1
++ */
+ #endif
+ 
+ #include "cx88.h"
+@@ -840,12 +845,14 @@
+ 		leadtek_eeprom(core,eeprom);
+ 		break;
+ 	case CX88_BOARD_DVICO_FUSIONHDTV_DVB_T1:
+-		/* Tuner reset is hooked to  the tuner out of reset */
++	case CX88_BOARD_DVICO_FUSIONHDTV_DVB_T_PLUS:
++		/* GPIO0:0 is hooked to mt352 reset pin */
+ 		cx_set(MO_GP0_IO, 0x00000101);
+ 		cx_clear(MO_GP0_IO, 0x00000001);
+ 		msleep(1);
+ 		cx_set(MO_GP0_IO, 0x00000101);
+ 		break;
++#if 0
+ #ifdef WITH_DVB
+ 	case CX88_BOARD_HAUPPAUGE_DVB_T1:
+ 		if (0 == core->i2c_rc)
+@@ -858,6 +865,13 @@
+ 		core->demod_addr = 0x43;
+ 		break;
+ #endif
++#else
++	case CX88_BOARD_HAUPPAUGE_DVB_T1:
++	case CX88_BOARD_CONEXANT_DVB_T1:
++		printk(KERN_NOTICE "Hauppauge and Conexant DVB-T cards not supported "
++		       "in this release\n");
++		break;
++#endif
+ 	}
+ 	if (cx88_boards[core->board].radio.type == CX88_RADIO)
+ 		core->has_radio = 1;
+diff -ru linux-2.6.11-rc4.clean/drivers/media/video/cx88/cx88-dvb.c linux-2.6.11-rc4/drivers/media/video/cx88/cx88-dvb.c
+--- linux-2.6.11-rc4.clean/drivers/media/video/cx88/cx88-dvb.c	2005-02-13 13:06:55.000000000 +1000
++++ linux-2.6.11-rc4/drivers/media/video/cx88/cx88-dvb.c	2005-02-15 08:10:48.000000000 +1000
+@@ -187,10 +187,15 @@
+ 	switch (dev->core->board) {
+ 	case CX88_BOARD_HAUPPAUGE_DVB_T1:
+ 	case CX88_BOARD_CONEXANT_DVB_T1:
++#if 0
+ 		dev->dvb.frontend = cx22702_create(&dev->core->i2c_adap,
+ 						   dev->core->pll_addr,
+ 						   dev->core->pll_type,
+ 						   dev->core->demod_addr);
++#else
++		printk(KERN_NOTICE "Hauppauge and Conexant DVB-T cards not supported "
++		       "in this release\n");
++#endif
+ 		break;
+ 	case CX88_BOARD_DVICO_FUSIONHDTV_DVB_T1:
+ 		dev->dvb.frontend = mt352_attach(&dvico_fusionhdtv_dvbt1,
+@@ -222,7 +227,7 @@
+ 		sizeof(dev->dvb.frontend->ops->info.name));
+ 
+ 	/* register everything */
+-	return videobuf_dvb_register(&dev->dvb);
++	return videobuf_dvb_register(&dev->dvb, THIS_MODULE, dev);
+ }
+ 
+ /* ----------------------------------------------------------- */
+diff -ru linux-2.6.11-rc4.clean/drivers/media/video/Kconfig linux-2.6.11-rc4/drivers/media/video/Kconfig
+--- linux-2.6.11-rc4.clean/drivers/media/video/Kconfig	2005-02-13 13:07:40.000000000 +1000
++++ linux-2.6.11-rc4/drivers/media/video/Kconfig	2005-02-15 08:20:46.000000000 +1000
+@@ -305,7 +305,7 @@
+ 
+ config VIDEO_CX88
+ 	tristate "Conexant 2388x (bt878 successor) support"
+-	depends on VIDEO_DEV && PCI && EXPERIMENTAL
++	depends on VIDEO_DEV && PCI && I2C && EXPERIMENTAL
+ 	select I2C_ALGOBIT
+ 	select VIDEO_BTCX
+ 	select VIDEO_BUF
+@@ -319,12 +319,15 @@
+ 
+ config VIDEO_CX88_DVB
+ 	tristate "DVB Support for cx2388x based TV cards"
+-	depends on VIDEO_CX88 && DVB_CORE && BROKEN
++	depends on VIDEO_CX88 && DVB_CORE
+ 	select VIDEO_BUF_DVB
++	select DVB_MT352
+ 	---help---
+ 	  This adds support for DVB cards based on the
+ 	  Connexant 2388x chip.
+ 
++	  As of this release only the DVICO DVB-T cards are supported.
++
+ config VIDEO_OVCAMCHIP
+ 	tristate "OmniVision Camera Chip support"
+ 	depends on VIDEO_DEV && I2C

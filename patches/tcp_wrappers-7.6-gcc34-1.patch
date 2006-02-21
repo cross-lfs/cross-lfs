@@ -1,0 +1,21 @@
+Submitted By: Jeremy Utley (jeremy@linuxfromscratch.org)
+Date: 2004-04-10
+Initial Package Version: 7.6
+Upstream Status: Not Submitted
+Origin: Self-created, with assistance from Zack Winkles
+Description: Fixes compile problem with GCC 3.4 Prerelease  - apply on
+	     top of current shared-lib-plus-plus patch
+
+$LastChangedBy: bdubbs $
+$Date: 2004-08-07 18:56:30 -0600 (Sat, 07 Aug 2004) $
+
+diff -aur tcp_wrappers_7.6/scaffold.c tcp_wrappers_7.6-new/scaffold.c
+--- tcp_wrappers_7.6/scaffold.c	1997-03-21 10:27:24.000000000 -0800
++++ tcp_wrappers_7.6-new/scaffold.c	2004-04-10 14:11:01.653193120 -0700
+@@ -25,7 +25,6 @@
+ #define	INADDR_NONE	(-1)		/* XXX should be 0xffffffff */
+ #endif
+ 
+-extern char *malloc();
+ 
+ /* Application-specific. */

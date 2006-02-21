@@ -1,0 +1,26 @@
+diff -Naur nas-1.7.orig/server/dia/main.c nas-1.7/server/dia/main.c
+--- nas-1.7.orig/server/dia/main.c	2004-11-22 19:05:15.391186001 -0800
++++ nas-1.7/server/dia/main.c	2004-11-22 19:04:02.640209930 -0800
+@@ -52,6 +52,7 @@
+  */
+ 
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <audio/audio.h>
+ #include <audio/Aproto.h>
+ #include "NasConfig.h"
+diff -Naur nas-1.7.orig/server/os/connection.c nas-1.7/server/os/connection.c
+--- nas-1.7.orig/server/os/connection.c	2004-02-14 15:12:22.000000000 -0800
++++ nas-1.7/server/os/connection.c	2004-11-22 19:06:41.434964865 -0800
+@@ -79,7 +79,10 @@
+ #include <netdb.h>
+ #endif 
+ 
+-
++#include <stdio.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
+ 
+ #include <audio/audio.h>
+ #include <audio/Aproto.h>

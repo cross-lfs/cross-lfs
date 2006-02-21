@@ -1,0 +1,42 @@
+Submitted By: Tushar Teredesai <tushar@linuxfromscratch.org>
+Date: 2003-09-22
+Initial Package Version: 5.50
+Origin: http://archive.linuxfromscratch.org/mail-archives/blfs-dev/2003-August/003213.html
+Description: When unzipping files, the unzip stub prints out lot of "useful" info messages.
+These messages can cause applications such as Midnight Commander to display strange behavior.
+This patch is useful for users linking unzip to the system zlib
+(i.e. installed as per the BLFS guidelines).
+
+$LastChangedBy: bdubbs $
+$Date: 2004-08-07 18:56:30 -0600 (Sat, 07 Aug 2004) $
+
+--- unzip-5.50/unzipstb.c.orig	2003-09-22 01:05:45.000000000 -0500
++++ unzip-5.50/unzipstb.c	2003-09-22 01:06:57.000000000 -0500
+@@ -30,27 +30,6 @@
+ 
+     pVersion = UzpVersion();
+ 
+-    printf("UnZip stub:  checking version numbers (DLL is dated %s)\n",
+-      pVersion->date);
+-    printf("   UnZip versions:    expecting %d.%d%d, using %d.%d%d%s\n",
+-      UZ_MAJORVER, UZ_MINORVER, UZ_PATCHLEVEL, pVersion->unzip.major,
+-      pVersion->unzip.minor, pVersion->unzip.patchlevel, pVersion->betalevel);
+-    printf("   ZipInfo versions:  expecting %d.%d%d, using %d.%d%d\n",
+-      ZI_MAJORVER, ZI_MINORVER, UZ_PATCHLEVEL, pVersion->zipinfo.major,
+-      pVersion->zipinfo.minor, pVersion->zipinfo.patchlevel);
+-
+-/*
+-    D2_M*VER and os2dll.* are obsolete, though retained for compatibility:
+-
+-    printf("   OS2 DLL versions:  expecting %d.%d%d, using %d.%d%d\n",
+-      D2_MAJORVER, D2_MINORVER, D2_PATCHLEVEL, pVersion->os2dll.major,
+-      pVersion->os2dll.minor, pVersion->os2dll.patchlevel);
+- */
+-
+-    if (pVersion->flag & 2)
+-        printf("   using zlib version %s\n", pVersion->zlib_version);
+-    printf("\n");
+-
+     /* call the actual UnZip routine (string-arguments version) */
+     return UzpMain(argc, argv);
+ }

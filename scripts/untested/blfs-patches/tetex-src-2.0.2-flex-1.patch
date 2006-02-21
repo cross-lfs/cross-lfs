@@ -1,0 +1,28 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2003-09-20
+Initial Package Version: 2.0.2
+Origin: Jim Gifford
+Description: Fixes Parse error in pl.l Flex Version 2.5.31
+
+Corrects
+ ./pl.l: In function `scan_string':
+ ./pl.l:462: `yytext_ptr' undeclared (first use in this function)
+ ./pl.l:462: (Each undeclared identifier is reported only once
+ ./pl.l:462: for each function it appears in.)
+
+ 
+$LastChangedBy: bdubbs $
+$Date: 2004-08-07 18:56:30 -0600 (Sat, 07 Aug 2004) $
+
+diff -Naur tetex-src-2.0.2.orig/texk/web2c/omegafonts/Makefile.in tetex-src-2.0.2/texk/web2c/omegafonts/Makefile.in
+--- tetex-src-2.0.2.orig/texk/web2c/omegafonts/Makefile.in	2001-11-10 13:42:37.000000000 +0000
++++ tetex-src-2.0.2/texk/web2c/omegafonts/Makefile.in	2003-09-21 07:41:29.000000000 +0000
+@@ -40,7 +40,7 @@
+ 	-test -f y.tab.h && mv -f y.tab.h y_tab.h
+ $(LEX_OUTPUT_ROOT).o: parser.h
+ $(LEX_OUTPUT_ROOT).c: pl.l
+-	$(LEX) $(srcdir)/pl.l
++	$(LEX) -l $(srcdir)/pl.l
+ 
+ 
+ 

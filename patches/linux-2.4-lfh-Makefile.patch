@@ -1,0 +1,38 @@
+# To allow us to cross build the kernel, we fixes calls to
+# expr and xargs that used linux syntax, and call a patched
+# depmod.pl instead of the target native depmod.
+
+--- linux-2.4.21/Makefile.orig	Wed Aug 20 20:07:06 2003
++++ linux-2.4.21/Makefile	Thu Aug 21 00:53:16 2003
+@@ -347,7 +347,7 @@
+ 	@rm -f .ver1
+ 
+ include/linux/version.h: ./Makefile
+-	@expr length "$(KERNELRELEASE)" \<= $(uts_len) > /dev/null || \
++	@expr "$(KERNELRELEASE)" : '.*' \<= $(uts_len) > /dev/null || \
+ 	  (echo KERNELRELEASE \"$(KERNELRELEASE)\" exceeds $(uts_len) characters >&2; false)
+ 	@echo \#define UTS_RELEASE \"$(KERNELRELEASE)\" > .ver
+ 	@echo \#define LINUX_VERSION_CODE `expr $(VERSION) \\* 65536 + $(PATCHLEVEL) \\* 256 + $(SUBLEVEL)` >> .ver
+@@ -410,11 +410,11 @@
+ ifeq "$(strip $(INSTALL_MOD_PATH))" ""
+ depmod_opts	:=
+ else
+-depmod_opts	:= -b $(INSTALL_MOD_PATH) -r
++depmod_opts	:= -b $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+ endif
+ .PHONY: _modinst_post
+ _modinst_post: _modinst_post_pcmcia
+-	if [ -r System.map ]; then $(DEPMOD) -ae -F System.map $(depmod_opts) $(KERNELRELEASE); fi
++	if [ -r System.map ]; then depmod.pl -F System.map $(depmod_opts) -k vmlinux; fi
+ 
+ # Backwards compatibilty symlinks for people still using old versions
+ # of pcmcia-cs with hard coded pathnames on insmod.  Remove
+@@ -423,7 +423,7 @@
+ _modinst_post_pcmcia:
+ 	cd $(MODLIB); \
+ 	mkdir -p pcmcia; \
+-	find kernel -path '*/pcmcia/*' -name '*.o' | xargs -i -r ln -sf ../{} pcmcia
++	find kernel -path '*/pcmcia/*' -name '*.o' -exec ln -sf '../{}' pcmcia \; 
+ 
+ .PHONY: $(patsubst %, _modinst_%, $(SUBDIRS))
+ $(patsubst %, _modinst_%, $(SUBDIRS)) :

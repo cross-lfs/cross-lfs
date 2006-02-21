@@ -1,0 +1,17 @@
+diff -uNr m4-1.4-orig/lib/regex.c m4-1.4/lib/regex.c
+--- m4-1.4-orig/lib/regex.c	1994-10-27 08:43:45.000000000 +1000
++++ m4-1.4/lib/regex.c	2004-06-22 21:52:42.000000000 +1000
+@@ -46,13 +46,7 @@
+ 
+ #else  /* not emacs */
+ 
+-#ifdef STDC_HEADERS
+ #include <stdlib.h>
+-#else
+-char *malloc ();
+-char *realloc ();
+-#endif
+-
+ 
+ /* We used to test for `BSTRING' here, but only GCC and Emacs define
+    `BSTRING', as far as I know, and neither of them use this code.  */

@@ -1,0 +1,51 @@
+*** build_win32/win_db.h	2004-12-23 13:59:15.000000000 +1100
+--- build_win32/win_db.h	2005-02-02 18:14:34.211471343 +1100
+***************
+*** 47,52 ****
+--- 47,58 ----
+  #define	vsnprintf		_vsnprintf
+  
+  /*
++  * Windows defines off_t to long (i.e., 32 bits).
++  */
++ #define	off_t	__db_off_t
++ typedef __int64 off_t;
++ 
++ /*
+   * Win32 does not define getopt and friends in any header file, so we must.
+   */
+  #if defined(__cplusplus)
+*** build_win64/win_db.h	2004-12-23 13:59:15.000000000 +1100
+--- build_win64/win_db.h	2005-02-02 18:14:34.216470661 +1100
+***************
+*** 47,52 ****
+--- 47,58 ----
+  #define	vsnprintf		_vsnprintf
+  
+  /*
++  * Windows defines off_t to long (i.e., 32 bits).
++  */
++ #define	off_t	__db_off_t
++ typedef __int64 off_t;
++ 
++ /*
+   * Win32 does not define getopt and friends in any header file, so we must.
+   */
+  #if defined(__cplusplus)
+*** dist/win_db.in	2004-10-08 04:41:35.000000000 +1000
+--- dist/win_db.in	2005-02-02 18:14:28.905194820 +1100
+***************
+*** 47,52 ****
+--- 47,58 ----
+  #define	vsnprintf		_vsnprintf
+  
+  /*
++  * Windows defines off_t to long (i.e., 32 bits).
++  */
++ #define	off_t	__db_off_t
++ typedef __int64 off_t;
++ 
++ /*
+   * Win32 does not define getopt and friends in any header file, so we must.
+   */
+  #if defined(__cplusplus)

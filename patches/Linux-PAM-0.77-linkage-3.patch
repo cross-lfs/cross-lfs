@@ -1,0 +1,56 @@
+Submitted By: DJ Lucas (dj_AT_lucasit_DOT_com)
+Date: 2004-05-03
+Initial Package Version: 0.77
+Origin: Mandrake CVS (Jim Gifford) + cracklib source
+Description: Fixes linking on PAM and updates cracklib check
+
+$LastChangedBy: bdubbs $
+$Date: 2004-08-07 18:56:30 -0600 (Sat, 07 Aug 2004) $
+
+diff -Naur Linux-PAM-0.77-orig/configure.in Linux-PAM-0.77/configure.in
+--- Linux-PAM-0.77-orig/configure.in	2002-07-09 01:17:13.000000000 -0500
++++ Linux-PAM-0.77/configure.in	2004-04-30 17:06:17.000000000 -0500
+@@ -257,7 +257,7 @@
+ 
+ dnl Look for cracklib dictionary
+ AC_MSG_CHECKING(path to cracklib dictionary)
+-DICT_DIR_CANDIDATES="/usr/lib /usr/share/dict /usr/share/lib \
++DICT_DIR_CANDIDATES="/lib /usr/lib /usr/share/dict /usr/share/lib \
+   /usr/local/lib /usr/local/share/lib"
+ DICT_FILE_CANDIDATES="pw_dict cracklib_dict"
+ CRACKLIB_DICTPATH=""
+diff -Naur Linux-PAM-0.77-orig/libpam_misc/Makefile Linux-PAM-0.77/libpam_misc/Makefile
+--- Linux-PAM-0.77-orig/libpam_misc/Makefile	2002-06-26 23:04:54.000000000 -0500
++++ Linux-PAM-0.77/libpam_misc/Makefile	2004-04-30 17:02:54.000000000 -0500
+@@ -38,6 +38,8 @@
+ SLIBOBJECTS = $(addprefix static/,$(LIBOBJECTS))
+ endif
+ 
++LINKLIBS += -L../libpam -lpam
++
+ # ---------------------------------------------
+ ## rules
+ 
+diff -Naur Linux-PAM-0.77-orig/modules/pam_cracklib/pam_cracklib.c Linux-PAM-0.77/modules/pam_cracklib/pam_cracklib.c
+--- Linux-PAM-0.77-orig/modules/pam_cracklib/pam_cracklib.c	2001-11-27 00:09:48.000000000 -0600
++++ Linux-PAM-0.77/modules/pam_cracklib/pam_cracklib.c	2004-04-30 17:04:05.000000000 -0500
+@@ -49,8 +49,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <ctype.h>
+-
+-extern char *FascistCheck(char *pw, const char *dictpath);
++#include <crack.h>
+ 
+ #ifndef CRACKLIB_DICTPATH
+ #define CRACKLIB_DICTPATH "/usr/share/dict/cracklib_dict"
+diff -Naur Linux-PAM-0.77-orig/modules/pam_lastlog/Makefile Linux-PAM-0.77/modules/pam_lastlog/Makefile
+--- Linux-PAM-0.77-orig/modules/pam_lastlog/Makefile	2001-02-10 16:33:10.000000000 -0600
++++ Linux-PAM-0.77/modules/pam_lastlog/Makefile	2004-04-30 17:02:54.000000000 -0500
+@@ -15,5 +15,6 @@
+ endif
+ 
+ TITLE=pam_lastlog
++MODULE_SIMPLE_EXTRALIBS=-lutil
+ 
+ include ../Simple.Rules

@@ -1,0 +1,67 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2004-05-24
+Initial Package Version: 2.0.2
+Origin: Jim Gifford
+Upstream Status: Not Sent
+Description: Removes Readlink. Readlink is also included in
+	     coreutils. Coreutils version is more robust.
+ 
+$LastChangedBy: bdubbs $
+$Date: 2004-08-07 18:56:30 -0600 (Sat, 07 Aug 2004) $
+
+--- tetex-src-2.0.2/texk/kpathsea/Makefile.in.orig	2004-05-24 07:58:14.501539043 +0000
++++ tetex-src-2.0.2/texk/kpathsea/Makefile.in	2004-05-24 07:58:42.672450852 +0000
+@@ -38,7 +38,7 @@
+ .c.lo:
+ 	$(KPATHSEA_CC) $< $(ALL_CFLAGS)
+ 
+-default all: kpsewhich kpsestat access readlink $(library).info manfiles
++default all: kpsewhich kpsestat access $(library).info manfiles
+ 
+ kpsewhich: $(kpathsea) kpsewhich.o
+ 	$(kpathsea_link) kpsewhich.o $(LOADLIBES)
+@@ -49,9 +49,6 @@
+ access: access.o
+ 	$(link_command) access.o
+ 
+-readlink: readlink.o
+-	$(link_command) readlink.o
+-
+ $(kpathsea): $(objects) klibtool.version
+ 	$(LIBTOOL) archive $(AR) $(ARFLAGS) $@ $(objects)
+ 
+@@ -184,7 +181,6 @@
+ 	$(INSTALL_LIBTOOL_PROG) $(bindir) kpsewhich
+ 	$(INSTALL_PROGRAM) kpsestat $(bindir)
+ 	$(INSTALL_PROGRAM) access $(bindir)
+-	$(INSTALL_PROGRAM) readlink $(bindir)
+ uninstall-exec:
+ 	rm -f $(bindir)/kpsewhich
+ 
+@@ -259,13 +255,13 @@
+ ac_include ../make/clean.mk
+ 
+ mostlyclean::
+-	rm -f kpsewhich kpsestat access readlink *.lo klibtool.version
++	rm -f kpsewhich kpsestat access *.lo klibtool.version
+ 	rm -rf PROF PROF_SHARED SHARED STATIC
+ distclean::
+ 	rm -f paths.h texmf.cnf texmf.sed stamp-paths
+ 
+ # The manual pages
+-manfiles = access.1 kpsestat.1 kpsewhich.1 readlink.1 \
++manfiles = access.1 kpsestat.1 kpsewhich.1 \
+            mktexlsr.1 mktexmf.1 mktextfm.1 mktexpk.1
+ 
+ ac_include ../make/man.mk
+--- tetex-src-2.0.2/Makefile.in.orig	2004-05-24 07:57:20.638371669 +0000
++++ tetex-src-2.0.2/Makefile.in	2004-05-24 07:57:33.008094276 +0000
+@@ -44,7 +44,7 @@
+   kpsewhich mag makeindex makeinfo mf mf-nowin mft mfw mpost mpto newer \
+   odvicopy odvips odvitype omega omfonts otangle otp2ocp outocp oxdvi.bin \
+   patgen pdfetex pdftex pfb2pfa pk2bm pktogf pktype pltotf pooltype ps2pk \
+-  readlink tangle tcdialog tex texindex tftopl tie ttf2afm vftovp vptovf \
++  tangle tcdialog tex texindex tftopl tie ttf2afm vftovp vptovf \
+   weave xdvi.bin
+ 
+ # Subdirectories that have makefiles

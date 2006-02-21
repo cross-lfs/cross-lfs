@@ -1,0 +1,115 @@
+diff -uNr binutils-2.14-orig/ld/genscripts.sh binutils-2.14/ld/genscripts.sh
+--- binutils-2.14-orig/ld/genscripts.sh	2003-02-08 01:21:03.000000000 +1100
++++ binutils-2.14/ld/genscripts.sh	2004-05-19 12:40:51.000000000 +1000
+@@ -50,8 +50,13 @@
+     if [ "x${host}" = "x${target}" ] ; then
+       NATIVE=yes
+       USE_LIBPATH=yes
++      skip_libdir=no
+     elif [ "x${use_sysroot}" = "xyes" ] ; then
+       USE_LIBPATH=yes
++      skip_libdir=no
++    elif [ "x${LIB_PATH}" != "x" ] ; then
++      USE_LIBPATH=yes
++      skip_libdir=yes
+     fi
+     ;;
+ esac
+@@ -72,13 +77,29 @@
+ #
+ # If the emulparams file set LIBPATH_SUFFIX, prepend an extra copy of
+ # the library path with the suffix applied.
++if [ "x${USE_LIBPATH}" = xyes ] ; then
++  LIB_PATH2=
++  if [ "x${LIB_PATH}" = "x" ] ; then
++    libs="${NATIVE_LIB_DIRS}"
++  else
++    libs=`echo ${LIB_PATH} | sed 's/:/ /g'`
++    LIB_PATH=
++  fi
+ 
+-if [ "x${LIB_PATH}" = "x" ] && [ "x${USE_LIBPATH}" = xyes ] ; then
+-  if [ x"$use_sysroot" != xyes ] ; then
+-    LIB_PATH=${libdir}
++  if [ "x${use_sysroot}" != "xyes" ] ; then
++    if [ "x${skip_libdir}" != "xyes" ] ; then
++      case " ${libs} " in
++        *" ${libdir} "*) ;;
++        *) libs="${libdir} ${libs}" ;;
++      esac
++    fi
++    case " ${libs} " in
++      *" ${tool_lib} "*) ;;
++      *) libs="${tool_lib} ${libs}" ;;
++    esac
+   fi
+-  LIB_PATH2=""
+-  for lib in ${NATIVE_LIB_DIRS}; do
++
++  for lib in ${libs}; do
+     # The "=" is harmless if we aren't using a sysroot, but also needless.
+     if [ "x${use_sysroot}" = "xyes" ] ; then
+       lib="=${lib}"
+@@ -91,34 +112,51 @@
+     esac
+     if test -n "$addsuffix"; then
+       case :${LIB_PATH}: in
+-	*:${lib}${LIBPATH_SUFFIX}:*) ;;
+-	::) LIB_PATH=${lib}${LIBPATH_SUFFIX} ;;
+-	*) LIB_PATH=${LIB_PATH}:${lib}${LIBPATH_SUFFIX} ;;
++        *:${lib}${LIBPATH_SUFFIX}:*) ;;
++        ::) LIB_PATH=${lib}${LIBPATH_SUFFIX} ;;
++        *) LIB_PATH=${LIB_PATH}:${lib}${LIBPATH_SUFFIX} ;;
+       esac
+-      case :${LIB_PATH}${LIB_PATH2}: in
+-	*:${lib}:*) ;;
++      case :${LIB_PATH}:${LIB_PATH2}: in
++        *:${lib}:*) ;;
++        *::) LIB_PATH2=${lib} ;;
+         *) LIB_PATH2=${LIB_PATH2}:${lib} ;;
+       esac
+     else
+-      case :${LIB_PATH}: in
++      case :${LIB_PATH2}: in
+         *:${lib}:*) ;;
+-        ::) LIB_PATH=${lib} ;;
+-        *) LIB_PATH=${LIB_PATH}:${lib} ;;
++        ::) LIB_PATH2=${lib} ;;
++        *) LIB_PATH2=${LIB_PATH2}:${lib} ;;
+       esac
+     fi
+   done
+-  LIB_PATH=${LIB_PATH}${LIB_PATH2}
+-fi
+ 
++  case :${LIB_PATH}:${LIB_PATH2}: in
++    *:: | ::*) LIB_PATH=${LIB_PATH}${LIB_PATH2} ;;
++    *) LIB_PATH=${LIB_PATH}:${LIB_PATH2} ;;
++  esac
++fi
+ 
+ # Always search $(tooldir)/lib, aka /usr/local/TARGET/lib, except for
+ # sysrooted configurations.
+ if [ "x${use_sysroot}" != "xyes" ] ; then
+-  LIB_PATH=${tool_lib}:${LIB_PATH}
++  case :${LIB_PATH}: in
++  ::: | *:${tool_lib}:*) ;;
++  ::) LIB_PATH=${tool_lib} ;;
++  *) LIB_PATH=${tool_lib}:${LIB_PATH} ;;
++  esac
+ fi
+ 
+ LIB_SEARCH_DIRS=`echo ${LIB_PATH} | sed -e 's/:/ /g' -e 's/\([^ ][^ ]*\)/SEARCH_DIR(\\"\1\\");/g'`
+ 
++# We need it for testsuite.
++case " $EMULATION_LIBPATH " in
++  *" ${EMULATION_NAME} "*)
++    test -d tmpdir || mkdir tmpdir
++    test -f tmpdir/libpath.exp || \
++    echo "set libpath \"${LIB_PATH}\"" | sed -e 's/:/ /g' > tmpdir/libpath.exp
++    ;;
++esac
++
+ # Generate 5 or 6 script files from a master script template in
+ # ${srcdir}/scripttempl/${SCRIPT_NAME}.sh.  Which one of the 5 or 6
+ # script files is actually used depends on command line options given

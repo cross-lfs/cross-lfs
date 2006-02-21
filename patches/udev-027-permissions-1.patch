@@ -1,0 +1,126 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2004-06-21
+Initial Package Version: 027
+Origin: Jim Gifford and Zack Winkles
+Upstream Status: N/A
+Description: Reverts tweak node unlink handling
+ 	http://linuxusb.bkbits.net:8080/udev/cset@1.759?nav=index.html|tags|ChangeSet@..1.7601
+
+	Symptons of problem: When cron executes a bash script, /dev/null changes from the
+	permissions lists in udev.rules to 600. This patch seems to correct the issue,
+	I am submitting it as a temporary fix util a better fix can be found.
+
+diff -Naur udev-027.orig/udev-add.c udev-027/udev-add.c
+--- udev-027.orig/udev-add.c	2004-06-14 16:38:35.000000000 -0400
++++ udev-027/udev-add.c	2004-06-21 12:44:15.422138488 -0400
+@@ -105,46 +105,29 @@
+ 	return 0;
+ }
+ 
+-static int make_node(char *file, int major, int minor, unsigned int mode, uid_t uid, gid_t gid)
++static int make_node(char *filename, int major, int minor, unsigned int mode, uid_t uid, gid_t gid)
+ {
+-	struct stat stats;
+-	int retval = 0;
+-
+-	if (stat(file, &stats) != 0)
+-		goto create;
+-
+-	/* preserve node with already correct numbers, to not change the inode number */
+-	if (((stats.st_mode & S_IFMT) == S_IFBLK || (stats.st_mode & S_IFMT) == S_IFCHR) &&
+-	    (stats.st_rdev == makedev(major, minor))) {
+-		dbg("preserve file '%s', cause it has correct dev_t", file);
+-		goto perms;
+-	}
+-
+-	if (unlink(file) != 0)
+-		dbg("unlink(%s) failed with error '%s'", file, strerror(errno));
+-	else
+-		dbg("already present file '%s' unlinked", file);
++	int retval;
+ 
+-create:
+-	retval = mknod(file, mode, makedev(major, minor));
++	retval = mknod(filename, mode, makedev(major, minor));
+ 	if (retval != 0) {
+ 		dbg("mknod(%s, %#o, %u, %u) failed with error '%s'",
+-		    file, mode, major, minor, strerror(errno));
++		    filename, mode, major, minor, strerror(errno));
+ 		goto exit;
+ 	}
+ 
+-perms:
+-	dbg("chmod(%s, %#o)", file, mode);
+-	if (chmod(file, mode) != 0) {
+-		dbg("chmod(%s, %#o) failed with error '%s'", file, mode, strerror(errno));
++	dbg("chmod(%s, %#o)", filename, mode);
++	if (chmod(filename, mode) != 0) {
++		dbg("chmod(%s, %#o) failed with error '%s'",
++		    filename, mode, strerror(errno));
+ 		goto exit;
+ 	}
+ 
+ 	if (uid != 0 || gid != 0) {
+-		dbg("chown(%s, %u, %u)", file, uid, gid);
+-		if (chown(file, uid, gid) != 0) {
++		dbg("chown(%s, %u, %u)", filename, uid, gid);
++		if (chown(filename, uid, gid) != 0) {
+ 			dbg("chown(%s, %u, %u) failed with error '%s'",
+-			    file, uid, gid, strerror(errno));
++			    filename, uid, gid, strerror(errno));
+ 			goto exit;
+ 		}
+ 	}
+@@ -184,6 +167,23 @@
+ 	endutent();
+ }
+ 
++static int unlink_entry(char *filename)
++{
++	struct stat stats;
++	int retval = 0;
++	
++	if (lstat(filename, &stats) == 0) {
++		if ((stats.st_mode & S_IFMT) != S_IFDIR) {
++			retval = unlink(filename);
++			if (retval) {
++				dbg("unlink(%s) failed with error '%s'",
++				    filename, strerror(errno));
++			}
++		}
++	}
++	return retval;
++}
++
+ static int create_node(struct udevice *dev, int fake)
+ {
+ 	char filename[NAME_SIZE];
+@@ -253,6 +253,7 @@
+ 	}
+ 
+ 	if (!fake) {
++		unlink_entry(filename);
+ 		info("creating device node '%s'", filename);
+ 		if (make_node(filename, dev->major, dev->minor, dev->mode, uid, gid) != 0)
+ 			goto error;
+@@ -269,6 +270,7 @@
+ 			for (i = 1; i <= dev->partitions; i++) {
+ 				strfieldcpy(partitionname, filename);
+ 				strintcat(partitionname, i);
++				unlink_entry(partitionname);
+ 				make_node(partitionname, dev->major,
+ 					  dev->minor + i, dev->mode, uid, gid);
+ 			}
+@@ -302,9 +304,11 @@
+ 
+ 		strfieldcat(linktarget, &dev->name[tail]);
+ 
++		if (!fake)
++			unlink_entry(filename);
++
+ 		dbg("symlink(%s, %s)", linktarget, filename);
+ 		if (!fake) {
+-			unlink(filename);
+ 			if (symlink(linktarget, filename) != 0)
+ 				dbg("symlink(%s, %s) failed with error '%s'",
+ 				    linktarget, filename, strerror(errno));

@@ -1,0 +1,154 @@
+diff -uNr libmpeg3-1.5.4-orig/mpeg3split.c libmpeg3-1.5.4/mpeg3split.c
+--- libmpeg3-1.5.4-orig/mpeg3split.c	2003-10-14 17:54:13.000000000 +1000
++++ libmpeg3-1.5.4/mpeg3split.c	2005-02-06 18:07:07.420359056 +1100
+@@ -2,6 +2,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#include "mpeg3private.h"
+ #include "mpeg3private.inc"
+ 
+ void copy_data(FILE *out, FILE *in, long bytes)
+--- libmpeg3-1.5.4-orig/Makefile	2003-10-29 20:53:02.000000000 +1100
++++ libmpeg3-1.5.4/Makefile	2005-02-06 19:20:57.473888552 +1100
+@@ -2,7 +2,10 @@
+ NASM = nasm
+ USE_MMX = 0
+ USE_CSS = 1
+-A52DIR := $(shell expr a52dec* )
++A52DIR := /usr
++PREFIX = /usr
++# override this to install to  lib64
++LIBDIR = lib
+ 
+ 
+ 
+@@ -52,6 +55,8 @@
+   CFLAGS += -DHAVE_MMX
+   ASMOBJS = $(OBJDIR)/video/mmxidct.o
+   NASMOBJS = $(OBJDIR)/video/reconmmx.o
++else
++  CFLAGS += -fPIC
+ endif
+ 
+ 
+@@ -61,8 +66,7 @@
+ 
+ CFLAGS += \
+ 	-I. \
+-	-I$(A52DIR)/include \
+-	-I$(A52DIR)/liba52
++	-I$(A52DIR)/include/a52dec \
+ 
+ #CFLAGS += -g
+ 
+@@ -108,6 +112,31 @@
+ 	$(OBJDIR)/video/vlc.o \
+ 	$(OBJDIR)/workarounds.o
+ 
++INSTALL_HEADERS = \
++	bitstream.h \
++	libmpeg3.h \
++	mpeg3atrack.h \
++	mpeg3css.h \
++	mpeg3demux.h \
++	mpeg3io.h \
++	mpeg3private.h \
++	mpeg3private.inc \
++	mpeg3protos.h \
++	mpeg3title.h \
++	mpeg3vtrack.h \
++	timecode.h \
++
++INSTALL_AHEADERS = \
++	audio/ac3.h \
++	audio/mpeg3audio.h \
++
++INSTALL_VHEADERS = \
++	video/idct.h \
++	video/slice.h \
++	video/mpeg3video.h
++
++
++
+ #OBJS = \
+ #	$(OBJDIR)/audio/ac3.o \
+ #	$(OBJDIR)/audio/bit_allocation.o \
+@@ -127,18 +156,15 @@
+ 	$(OBJDIR)/audio \
+ 	$(OBJDIR)/video
+ 
+-include Makefile.a52
+-
+ DIRS += $(A52DIRS)
+ 
+ 
+ OUTPUT = $(OBJDIR)/libmpeg3.a
+-UTILS = $(OBJDIR)/mpeg3dump $(OBJDIR)/mpeg3toc  $(OBJDIR)/mpeg3cat
+-
+-#$(OBJDIR)/mpeg3split
++SHAREDOUTPUT = $(OBJDIR)/libmpeg3.so
++UTILS = $(OBJDIR)/mpeg3dump $(OBJDIR)/mpeg3toc  $(OBJDIR)/mpeg3cat $(OBJDIR)/mpeg3split
+ 
+ 
+-LIBS = -lm -lpthread
++LIBS = -lm -lpthread -la52
+ 
+ $(shell if ! test -d $(OBJDIR) \; then mkdir -p $(OBJDIR) \; fi )
+ 
+@@ -147,13 +173,14 @@
+ $(shell echo $(OBJS) $(ASMOBJS) $(A52OBJS) $(NASMOBJS) > $(OBJDIR)/objs)
+ $(shell mkdir -p $(DIRS) )
+ 
+-all: $(OUTPUT) $(UTILS)
++all: $(OUTPUT) $(SHAREDOUTPUT) $(UTILS)
+ 
+ 
+ $(OUTPUT): $(OBJS) $(ASMOBJS) $(NASMOBJS) $(A52OBJS)
+ 	ar rcs $(OUTPUT) `cat $(OBJDIR)/objs`
+ 
+-
++$(SHAREDOUTPUT): $(OBJS) $(ASMOBJS) $(NASMOBJS)
++	$(CC) -shared -o $(SHAREDOUTPUT) $(OBJS) $(ASMOBJS) $(NASMOBJS) $(LIBS)
+ 
+ $(OBJDIR)/mpeg3dump: $(OUTPUT) mpeg3dump.c
+ 	$(CC) `cat $(OBJDIR)/c_flags` -o $(OBJDIR)/mpeg3dump mpeg3dump.c $(OUTPUT) $(LIBS)
+@@ -164,8 +191,8 @@
+ $(OBJDIR)/mpeg3cat: $(OUTPUT) mpeg3cat.c
+ 	$(CC) `cat $(OBJDIR)/c_flags` -o $(OBJDIR)/mpeg3cat mpeg3cat.c $(OUTPUT) $(LIBS)
+ 
+-#$(OBJDIR)/mpeg3split: $(OUTPUT)
+-#	$(CC) `cat $(OBJDIR)/c_flags` -o $(OBJDIR)/mpeg3split mpeg3split.c $(OUTPUT) $(LIBS)
++$(OBJDIR)/mpeg3split: $(OUTPUT)
++	$(CC) `cat $(OBJDIR)/c_flags` -o $(OBJDIR)/mpeg3split mpeg3split.c $(OUTPUT) $(LIBS)
+ 
+ $(OBJDIR)/mpeg2qt: $(OUTPUT)
+ 	$(CC) `cat $(OBJDIR)/c_flags` -o $(OBJDIR)/mpeg2qt mpeg2qt.c \
+@@ -179,7 +206,17 @@
+ 		-ldl
+ 
+ install: 
+-	cp $(UTILS) /usr/bin
++	install -d $(DESTDIR)${PREFIX}/bin
++	install -d $(DESTDIR)${PREFIX}/include/libmpeg3
++	install -d $(DESTDIR)${PREFIX}/include/libmpeg3/audio
++	install -d $(DESTDIR)${PREFIX}/include/libmpeg3/video
++	install -d $(DESTDIR)${PREFIX}/$(LIBDIR)
++	install $(UTILS) $(DESTDIR)${PREFIX}/bin
++	install -m 644 $(INSTALL_HEADERS) $(DESTDIR)${PREFIX}/include/libmpeg3
++	install -m 644 $(INSTALL_AHEADERS) $(DESTDIR)${PREFIX}/include/libmpeg3/audio
++	install -m 644 $(INSTALL_VHEADERS) $(DESTDIR)${PREFIX}/include/libmpeg3/video
++	install -m 644 $(OUTPUT) $(DESTDIR)${PREFIX}/$(LIBDIR)
++	install -m 644 $(SHAREDOUTPUT) $(DESTDIR)${PREFIX}/$(LIBDIR)
+ 
+ clean:
+ 	rm -rf $(OBJDIR)
+@@ -208,7 +245,7 @@
+ $(OBJDIR)/mpeg3demux.o: 			    mpeg3demux.c
+ $(OBJDIR)/mpeg3ifo.o: 				    mpeg3ifo.c
+ $(OBJDIR)/mpeg3io.o: 				    mpeg3io.c
+-#$(OBJDIR)/mpeg3split.o: 			    mpeg3split.c
++$(OBJDIR)/mpeg3split.o: 			    mpeg3split.c
+ $(OBJDIR)/mpeg3title.o: 			    mpeg3title.c
+ $(OBJDIR)/mpeg3toc.o: 				    mpeg3toc.c
+ $(OBJDIR)/mpeg3toc3.o:  			    mpeg3toc3.c

@@ -1,0 +1,13 @@
+--- binutils-2.15.91.0.1-ORIG/ld/genscripts.sh	2004-05-28 04:26:04.000000000 +1000
++++ binutils-2.15.91.0.1/ld/genscripts.sh	2004-07-14 23:52:12.000000000 +1000
+@@ -132,10 +132,6 @@
+   libs=${NATIVE_LIB_DIRS}
+   if [ "x${use_sysroot}" != "xyes" ] ; then
+     case " ${libs} " in
+-      *" ${libdir} "*) ;;
+-      *) libs="${libdir} ${libs}" ;;
+-    esac
+-    case " ${libs} " in
+       *" ${tool_lib} "*) ;;
+       *) libs="${tool_lib} ${libs}" ;;
+     esac

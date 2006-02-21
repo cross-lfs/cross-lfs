@@ -1,0 +1,40 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-06-02
+Initial Package Version: 2.3.4
+Origin: Similar to glibc cvs -r1.132 -r1.134
+Upstream Status: See Origin
+Description:
+
+2005-03-05  Jakub Jelinek  <jakub@redhat.com>
+
+        * sysdeps/i386/dl-machine.h (ELF_MACHINE_NO_RELA): Define
+        unconditionally to (defined RTLD_BOOTSTRAP).
+	* sysdeps/arm/dl-machine.h (ELF_MACHINE_NO_RELA): Likewise
+
+2005-02-16  Roland McGrath  <roland@redhat.com>
+
+        [BZ #721]
+        * sysdeps/i386/dl-machine.h (ELF_MACHINE_NO_RELA): Define this outside
+        of [RESOLVE_MAP].
+
+(though in this case, [RESOLVE])
+
+--- glibc-2.3.4/sysdeps/i386/dl-machine.h-orig	2004-09-28 14:54:41.000000000 +1000
++++ glibc-2.3.4/sysdeps/i386/dl-machine.h	2005-06-02 19:28:58.000000000 +1000
+@@ -377,13 +377,11 @@
+ 
+ #endif /* !dl_machine_h */
+ 
+-#ifdef RESOLVE
+-
+ /* The i386 never uses Elf32_Rela relocations for the dynamic linker.
+    Prelinked libraries may use Elf32_Rela though.  */
+-#ifdef RTLD_BOOTSTRAP
+-# define ELF_MACHINE_NO_RELA 1
+-#endif
++#define ELF_MACHINE_NO_RELA defined RTLD_BOOTSTRAP
++
++#ifdef RESOLVE
+ 
+ /* Perform the relocation specified by RELOC and SYM (which is fully resolved).
+    MAP is the object containing the reloc.  */

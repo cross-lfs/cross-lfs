@@ -1,0 +1,13 @@
+--- sysklogd-1.4.1/Makefile.orig	2004-06-27 01:29:41.337269648 +1000
++++ sysklogd-1.4.1/Makefile	2004-06-27 01:30:02.409650803 +1000
+@@ -112,8 +112,8 @@
+ 	rm -f syslogd klogd ksym syslog_tst oops_test TAGS tsyslogd tklogd
+ 
+ install_exec: syslogd klogd
+-	${INSTALL} -m 500 -s syslogd ${BINDIR}/syslogd
+-	${INSTALL} -m 500 -s klogd ${BINDIR}/klogd
++	${INSTALL} -m 500 syslogd ${BINDIR}/syslogd
++	${INSTALL} -m 500 klogd ${BINDIR}/klogd
+ 
+ install_man:
+ 	${INSTALL} -o ${MAN_OWNER} -g ${MAN_OWNER} -m 644 sysklogd.8 ${MANDIR}/man8/sysklogd.8

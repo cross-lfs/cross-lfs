@@ -1,0 +1,93 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2004-01-30
+Initial Package Version: 2.12
+Origin: Gentoo
+Description: Fixes Compile Issues with the 2.6 Kernel
+ 
+diff -Naur util-linux-2.12.orig/disk-utils/blockdev.c util-linux-2.12/disk-utils/blockdev.c
+--- util-linux-2.12.orig/disk-utils/blockdev.c	2002-03-08 22:57:02.000000000 +0000
++++ util-linux-2.12/disk-utils/blockdev.c	2004-01-30 19:49:39.000000000 +0000
+@@ -9,6 +9,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <sys/ioctl.h>
++#include <linux/version.h>
+ 
+ #include "nls.h"
+ 
+@@ -24,8 +25,13 @@
+ #define BLKRASET   _IO(0x12,98)
+ #define BLKRAGET   _IO(0x12,99)
+ #define BLKSSZGET  _IO(0x12,104)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
+ #define BLKBSZGET  _IOR(0x12,112,sizeof(int))
+ #define BLKBSZSET  _IOW(0x12,113,sizeof(int))
++#else
++#define BLKBSZGET  _IOR(0x12,112,int)
++#define BLKBSZSET  _IOW(0x12,113,int)
++#endif
+ #endif
+ 
+ /* Maybe <linux/hdreg.h> could be included */
+diff -Naur util-linux-2.12.orig/disk-utils/elvtune.c util-linux-2.12/disk-utils/elvtune.c
+--- util-linux-2.12.orig/disk-utils/elvtune.c	2002-03-08 22:57:49.000000000 +0000
++++ util-linux-2.12/disk-utils/elvtune.c	2004-01-30 19:49:39.000000000 +0000
+@@ -26,6 +26,8 @@
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+ #include <stdlib.h>
++#include <linux/version.h>
++
+ #include "nls.h"
+ 
+ /* this has to match with the kernel structure */
+@@ -37,8 +39,13 @@
+ 	int max_bomb_segments;
+ } blkelv_ioctl_arg_t;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
+ #define BLKELVGET   _IOR(0x12,106,sizeof(blkelv_ioctl_arg_t))
+ #define BLKELVSET   _IOW(0x12,107,sizeof(blkelv_ioctl_arg_t))
++#else
++#define BLKELVGET   _IOR(0x12,106,blkelv_ioctl_arg_t)
++#define BLKELVSET   _IOW(0x12,107,blkelv_ioctl_arg_t)
++#endif
+ 
+ static void
+ usage(void) {
+diff -Naur util-linux-2.12.orig/fdisk/common.h util-linux-2.12/fdisk/common.h
+--- util-linux-2.12.orig/fdisk/common.h	2003-07-13 13:59:53.000000000 +0000
++++ util-linux-2.12/fdisk/common.h	2004-01-30 19:49:39.000000000 +0000
+@@ -2,11 +2,18 @@
+ 
+ /* including <linux/fs.h> fails */
+ #include <sys/ioctl.h>
++#include <linux/version.h>
++
+ #define BLKRRPART    _IO(0x12,95)    /* re-read partition table */
+ #define BLKGETSIZE   _IO(0x12,96)    /* return device size */
+ #define BLKFLSBUF    _IO(0x12,97)    /* flush buffer cache */
+ #define BLKSSZGET    _IO(0x12,104)   /* get block device sector size */
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
+ #define BLKGETSIZE64 _IOR(0x12,114,8)	/* 8 = sizeof(u64) */
++#else
++#define BLKGETSIZE64 _IOR(0x12,114,unsigned long long)
++#endif
+ 
+ /* including <linux/hdreg.h> also fails */
+ struct hd_geometry {
+diff -Naur util-linux-2.12.orig/mount/my_dev_t.h util-linux-2.12/mount/my_dev_t.h
+--- util-linux-2.12.orig/mount/my_dev_t.h	2003-07-16 20:05:50.000000000 +0000
++++ util-linux-2.12/mount/my_dev_t.h	2004-01-30 19:49:39.000000000 +0000
+@@ -4,4 +4,10 @@
+ /* for ancient systems use "unsigned short" */
+ 
+ #include <linux/posix_types.h>
++#include <linux/version.h>
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
+ #define my_dev_t __kernel_dev_t
++#else
++#define my_dev_t int
++#endif

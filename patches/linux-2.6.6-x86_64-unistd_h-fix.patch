@@ -1,0 +1,30 @@
+Submitted by: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2004-05-10
+Initial Package Version: 2.6.4
+Origin: http://www.x86-64.org/lists/discuss/msg04963.html
+Description: Fixes issues with glibc compilation for x86_64
+             due to changes made in asm-x86_64/unistd.h between 
+             kernel 2.6.3 and 2.6.4, for full description check
+             the URL listed above.
+             Patch here taken against linux-2.6.6
+
+--- linux-2.6.6-ORIG/include/asm-x86_64/unistd.h	2004-05-10 13:32:17.000000000 +1000
++++ linux-2.6.6/include/asm-x86_64/unistd.h	2004-05-10 13:38:43.000000000 +1000
+@@ -731,7 +731,7 @@
+ 
+ #endif /* __KERNEL_SYSCALLS__ */
+ 
+-#ifndef __ASSEMBLY__
++#if ((!defined  __ASSEMBLY__) && (defined __KERNEL__))
+ 
+ #include <linux/linkage.h>
+ #include <linux/compiler.h>
+@@ -748,7 +748,7 @@
+ 				struct sigaction __user *oact,
+ 				size_t sigsetsize);
+ 
+-#endif	/* __ASSEMBLY__ */
++#endif	/* ((!defined __ASSEMBLY__) && (defined __KERNEL__) */
+ 
+ #endif /* __NO_STUBS */
+ 

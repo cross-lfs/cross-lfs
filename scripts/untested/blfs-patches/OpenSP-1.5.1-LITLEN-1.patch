@@ -1,0 +1,54 @@
+Submitted By: BLFS Book <blfs-book@linuxfromscratch.org>
+Date: 2003-10-05
+Initial Package Version: 1.5
+Origin: BLFS Book
+Description: Remove some annonying messages when running openjade.
+
+$LastChangedBy: bdubbs $
+$Date: 2004-08-07 18:56:30 -0600 (Sat, 07 Aug 2004) $
+
+diff -Naur OpenSP-1.5/lib/Syntax.cxx OpenSP-1.5-patched/lib/Syntax.cxx
+--- OpenSP-1.5/lib/Syntax.cxx	2000-03-14 23:17:25.000000000 +0000
++++ OpenSP-1.5-patched/lib/Syntax.cxx	2003-05-24 18:36:39.000000000
++0000
+@@ -24,7 +24,7 @@
+   16,
+   16,
+   16,
+-  32,
++  253,
+   96,
+   16,
+   240,
+diff -Naur OpenSP-1.5/unicode/gensyntax.pl
+OpenSP-1.5-patched/unicode/gensyntax.pl
+--- OpenSP-1.5/unicode/gensyntax.pl	1999-11-04 08:36:18.000000000
++0000
++++ OpenSP-1.5-patched/unicode/gensyntax.pl	2003-05-24
+18:39:53.000000000 +0000
+@@ -185,7 +185,7 @@
+ 
+ QUANTITY        SGMLREF         -- To be determined --
+         ATTSPLEN        1920    -- ?? --
+-        LITLEN          240     -- ?? --
++        LITLEN          8092    -- ?? --
+         NAMELEN         240     -- ?? --
+         PILEN           1920    -- ?? --
+         TAGLEN          1920    -- ?? --
+diff -Naur OpenSP-1.5/unicode/unicode.syn
+OpenSP-1.5-patched/unicode/unicode.syn
+--- OpenSP-1.5/unicode/unicode.syn	1999-11-04 08:36:18.000000000
++0000
++++ OpenSP-1.5-patched/unicode/unicode.syn	2003-05-24
+18:40:12.000000000 +0000
+@@ -1266,7 +1266,7 @@
+ 
+ QUANTITY        SGMLREF         -- To be determined --
+         ATTSPLEN        1920    -- ?? --
+-        LITLEN          240     -- ?? --
++        LITLEN          8092    -- ?? --
+         NAMELEN         240     -- ?? --
+         PILEN           1920    -- ?? --
+         TAGLEN          1920    -- ?? --
+
+

@@ -1,0 +1,11 @@
+--- glibc-20040423/sysdeps/unix/sysv/linux/kernel-features.h-orig	Tue Jun  8 00:00:18 2004
++++ glibc-20040423/sysdeps/unix/sysv/linux/kernel-features.h	Tue Jun  8 00:01:28 2004
+@@ -300,7 +300,7 @@
+ 
+ /* Beginning with 2.5.63 support for realtime and monotonic clocks and
+    timers based on them is available.  */
+-#if __LINUX_KERNEL_VERSION >= 132415
++#if __LINUX_KERNEL_VERSION >= 132415 && !defined __mc68000__
+ # define __ASSUME_POSIX_TIMERS		1
+ #endif
+ 

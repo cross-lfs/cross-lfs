@@ -1,0 +1,165 @@
+diff -uNr lesstif-0.94.0-orig/Makefile.in lesstif-0.94.0/Makefile.in
+--- lesstif-0.94.0-orig/Makefile.in	2004-12-04 08:09:35.000000000 +1100
++++ lesstif-0.94.0/Makefile.in	2005-02-10 14:28:57.481146336 +1100
+@@ -282,11 +282,11 @@
+ # Lets put the informational stuff in a sub directory to avoid 
+ # poluting /usr/local for default installs.
+ #
+-rootdir = $(prefix)/LessTif
++rootdir = $(prefix)/share/LessTif
+ dist_root_DATA = AUTHORS  BUG-REPORTING  COPYING  COPYING.LIB  CREDITS \
+                 FAQ  INSTALL.txt  README  ReleaseNotes.html ReleaseNotes.txt
+ 
+-htmldir = $(prefix)/LessTif/doc
++htmldir = $(prefix)/share/LessTif/doc
+ html_DATA = ReleaseNotes.html
+ 
+ #
+diff -uNr lesstif-0.94.0-orig/configure lesstif-0.94.0/configure
+--- lesstif-0.94.0-orig/configure	2004-12-04 08:09:22.000000000 +1100
++++ lesstif-0.94.0/configure	2005-02-10 14:41:49.382799448 +1100
+@@ -28275,6 +28275,7 @@
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
+ $ac_includes_default
++#include <ft2build.h>
+ #include <$ac_header>
+ _ACEOF
+ rm -f conftest.$ac_objext
+@@ -28319,6 +28320,7 @@
+ cat confdefs.h >>conftest.$ac_ext
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
++#include <ft2build.h>
+ #include <$ac_header>
+ _ACEOF
+ if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+diff -uNr lesstif-0.94.0-orig/doc/Makefile.in lesstif-0.94.0/doc/Makefile.in
+--- lesstif-0.94.0-orig/doc/Makefile.in	2004-12-04 08:09:30.000000000 +1100
++++ lesstif-0.94.0/doc/Makefile.in	2005-02-10 14:28:57.507142384 +1100
+@@ -259,7 +259,7 @@
+ # InsideLessTif/ shouldn't be touched:
+ # it has a stand-alone Makefile w/o auto* stuff
+ SUBDIRS = www.lesstif.org lessdox
+-rootdir = $(prefix)/LessTif/doc
++rootdir = $(prefix)/share/LessTif/doc
+ root_DATA = All.html Clipboard.txt DragAndDrop.txt Form.txt \
+ 		GeoUtils.txt Geometry.html SyntheticResources.txt \
+ 		UIL.txt XmStrings.txt thread.html
+diff -uNr lesstif-0.94.0-orig/doc/lessdox/clients/Makefile.in lesstif-0.94.0/doc/lessdox/clients/Makefile.in
+--- lesstif-0.94.0-orig/doc/lessdox/clients/Makefile.in	2004-12-04 08:09:30.000000000 +1100
++++ lesstif-0.94.0/doc/lessdox/clients/Makefile.in	2005-02-10 14:28:57.515141168 +1100
+@@ -257,7 +257,7 @@
+ manone_DATA = mwm.1 xmbind.1 lesstif.1 uil.1 ltversion.1
+ manthree_DATA = 
+ manfive_DATA = mwmrc.5 VirtualBindings.5
+-htmldir = $(prefix)/LessTif/doc/html
++htmldir = $(prefix)/share/LessTif/doc/html
+ html_DATA = mwm.html mwmrc.html xmbind.html lesstif.html uil.html \
+             VirtualBindings.html
+ 
+diff -uNr lesstif-0.94.0-orig/doc/lessdox/functions/Makefile.in lesstif-0.94.0/doc/lessdox/functions/Makefile.in
+--- lesstif-0.94.0-orig/doc/lessdox/functions/Makefile.in	2004-12-04 08:09:30.000000000 +1100
++++ lesstif-0.94.0/doc/lessdox/functions/Makefile.in	2005-02-10 14:28:57.519140560 +1100
+@@ -257,7 +257,7 @@
+ manone_DATA = 
+ manthree_DATA = 
+ manfive_DATA = 
+-htmldir = $(prefix)/LessTif/doc/html
++htmldir = $(prefix)/share/LessTif/doc/html
+ html_DATA = ${manone_DATA:.1=.html} ${manthree_DATA:.3=.html} \
+                 ${manfive_DATA:.5=.html}
+ 
+diff -uNr lesstif-0.94.0-orig/doc/lessdox/widgets/Makefile.in lesstif-0.94.0/doc/lessdox/widgets/Makefile.in
+--- lesstif-0.94.0-orig/doc/lessdox/widgets/Makefile.in	2004-12-04 08:09:31.000000000 +1100
++++ lesstif-0.94.0/doc/lessdox/widgets/Makefile.in	2005-02-10 14:28:57.517140864 +1100
+@@ -282,7 +282,7 @@
+ 	Rect.3 UnNamedObj.3 Constraint.3 VendorShell.3
+ 
+ manfive_DATA = 
+-htmldir = $(prefix)/LessTif/doc/html
++htmldir = $(prefix)/share/LessTif/doc/html
+ html_DATA = ${manone_DATA:.1=.html} ${manthree_DATA:.3=.html} \
+                 ${manfive_DATA:.5=.html}
+ 
+@@ -549,7 +549,7 @@
+ # in both the http://www.lesstif.org and the locally installed case.
+ #
+ install-data-hook:
+-	if [ ! -h $(DESTDIR)$(prefix)/LessTif/doc/Lessdox ]; then mkdir -p $(DESTDIR)$(prefix)/LessTif/doc && cd $(DESTDIR)$(prefix)/LessTif/doc && $(LN_S) html Lessdox; fi
++	if [ ! -h $(DESTDIR)$(prefix)/share/LessTif/doc/Lessdox ]; then mkdir -p $(DESTDIR)$(prefix)/share/LessTif/doc && cd $(DESTDIR)$(prefix)/share/LessTif/doc && $(LN_S) html Lessdox; fi
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -uNr lesstif-0.94.0-orig/doc/www.lesstif.org/Makefile.in lesstif-0.94.0/doc/www.lesstif.org/Makefile.in
+--- lesstif-0.94.0-orig/doc/www.lesstif.org/Makefile.in	2004-12-04 08:09:31.000000000 +1100
++++ lesstif-0.94.0/doc/www.lesstif.org/Makefile.in	2005-02-10 14:28:57.509142080 +1100
+@@ -263,7 +263,7 @@
+ # Lets put the informational stuff in a sub directory to avoid 
+ # polluting /usr/local for default installs.
+ #
+-docdir = $(prefix)/LessTif/doc
++docdir = $(prefix)/share/LessTif/doc
+ doc_DATA = \
+    Advocacy.html          contents.html          misc_frame.html \
+    BUG-HUNTING.html       core.html              news.html \
+diff -uNr lesstif-0.94.0-orig/doc/www.lesstif.org/images/Makefile.in lesstif-0.94.0/doc/www.lesstif.org/images/Makefile.in
+--- lesstif-0.94.0-orig/doc/www.lesstif.org/images/Makefile.in	2004-12-04 08:09:31.000000000 +1100
++++ lesstif-0.94.0/doc/www.lesstif.org/images/Makefile.in	2005-02-10 14:28:57.511141776 +1100
+@@ -253,7 +253,7 @@
+ # Lets put the informational stuff in a sub directory to avoid 
+ # poluting /usr/local for default installs.
+ #
+-rootdir = $(prefix)/LessTif/doc/images
++rootdir = $(prefix)/share/LessTif/doc/images
+ root_DATA = hungry.png \
+ 		lesstif-realsmall.png lesstif-small.png lesstif.png \
+ 		ltsunlogo.png lesstif.jpg ltsunlogo.jpg \
+diff -uNr lesstif-0.94.0-orig/lib/Dt/Makefile.in lesstif-0.94.0/lib/Dt/Makefile.in
+--- lesstif-0.94.0-orig/lib/Dt/Makefile.in	2004-12-04 08:09:33.000000000 +1100
++++ lesstif-0.94.0/lib/Dt/Makefile.in	2005-02-10 15:35:04.088130416 +1100
+@@ -248,7 +248,7 @@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ lib_version_suffix = @lib_version_suffix@
+-libdir = $(exec_prefix)/lib
++libdir = @libdir@
+ libexecdir = @libexecdir@
+ localstatedir = @localstatedir@
+ man2html_cmd = @man2html_cmd@
+diff -uNr lesstif-0.94.0-orig/lib/Mrm-2.1/Makefile.in lesstif-0.94.0/lib/Mrm-2.1/Makefile.in
+--- lesstif-0.94.0-orig/lib/Mrm-2.1/Makefile.in	2004-12-04 08:09:33.000000000 +1100
++++ lesstif-0.94.0/lib/Mrm-2.1/Makefile.in	2005-02-10 15:33:54.035779992 +1100
+@@ -235,7 +235,7 @@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ lib_version_suffix = @lib_version_suffix@
+-libdir = $(exec_prefix)/lib
++libdir = @libdir@
+ libexecdir = @libexecdir@
+ localstatedir = @localstatedir@
+ man2html_cmd = @man2html_cmd@
+diff -uNr lesstif-0.94.0-orig/lib/Uil-2.1/Makefile.in lesstif-0.94.0/lib/Uil-2.1/Makefile.in
+--- lesstif-0.94.0-orig/lib/Uil-2.1/Makefile.in	2004-12-04 08:09:33.000000000 +1100
++++ lesstif-0.94.0/lib/Uil-2.1/Makefile.in	2005-02-10 15:34:25.309025736 +1100
+@@ -238,7 +238,7 @@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ lib_version_suffix = @lib_version_suffix@
+-libdir = $(exec_prefix)/lib
++libdir = @libdir@
+ libexecdir = @libexecdir@
+ localstatedir = @localstatedir@
+ man2html_cmd = @man2html_cmd@
+diff -uNr lesstif-0.94.0-orig/lib/Xm-2.1/Makefile.in lesstif-0.94.0/lib/Xm-2.1/Makefile.in
+--- lesstif-0.94.0-orig/lib/Xm-2.1/Makefile.in	2004-12-04 08:09:34.000000000 +1100
++++ lesstif-0.94.0/lib/Xm-2.1/Makefile.in	2005-02-10 15:33:22.771532880 +1100
+@@ -297,7 +297,7 @@
+ infodir = @infodir@
+ install_sh = @install_sh@
+ lib_version_suffix = @lib_version_suffix@
+-libdir = $(exec_prefix)/lib
++libdir = @libdir@
+ libexecdir = @libexecdir@
+ localstatedir = @localstatedir@
+ man2html_cmd = @man2html_cmd@

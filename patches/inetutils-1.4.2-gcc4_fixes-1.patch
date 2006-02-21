@@ -1,0 +1,47 @@
+# DIY Linux Patch
+Date: 2005-03-29
+Author: Refer Description
+Origin: Refer Description
+Maker: Greg Schafer <gschafer@zip.com.au>
+Upstream Status: ftp changes submitted but not yet applied
+Description: Fix compilation with GCC4
+
+http://savannah.gnu.org/cgi-bin/viewcvs/inetutils/inetutils/libinetutils/ttymsg.c.diff?r1=1.14&r2=1.15&diff_format=u
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=300080
+
+diff -Naur inetutils-1.4.2.orig/ftp/cmdtab.c inetutils-1.4.2/ftp/cmdtab.c
+--- inetutils-1.4.2.orig/ftp/cmdtab.c	2000-07-06 04:21:07.000000000 +0000
++++ inetutils-1.4.2/ftp/cmdtab.c	2005-03-29 03:38:37.000000000 +0000
+@@ -109,7 +109,7 @@
+ char	userhelp[] =	"send new user information";
+ char	verbosehelp[] =	"toggle verbose mode";
+ 
+-struct cmd cmdtab[] = {
++struct cmd *cmdtab = {
+ 	{ "!",		shellhelp,	0,	0,	0,	shell },
+ 	{ "$",		domachelp,	1,	0,	0,	domacro },
+ 	{ "account",	accounthelp,	0,	1,	1,	account},
+diff -Naur inetutils-1.4.2.orig/ftp/extern.h inetutils-1.4.2/ftp/extern.h
+--- inetutils-1.4.2.orig/ftp/extern.h	2000-08-09 05:44:23.000000000 +0000
++++ inetutils-1.4.2/ftp/extern.h	2005-03-29 03:38:50.000000000 +0000
+@@ -137,7 +137,7 @@
+ 
+ extern jmp_buf	abortprox;
+ extern int	abrtflag;
+-extern struct	cmd cmdtab[];
++extern struct	cmd *cmdtab;
+ extern FILE	*cout;
+ extern int	data;
+ extern char    *home;
+diff -Naur inetutils-1.4.2.orig/libinetutils/ttymsg.c inetutils-1.4.2/libinetutils/ttymsg.c
+--- inetutils-1.4.2.orig/libinetutils/ttymsg.c	2001-11-01 15:52:19.000000000 +0000
++++ inetutils-1.4.2/libinetutils/ttymsg.c	2005-03-29 03:39:21.000000000 +0000
+@@ -132,7 +132,7 @@
+ 	    }
+ 	  if (wret)
+ 	    {
+-	      (char *)iov->iov_base += wret;
++	      iov->iov_base = (char *)iov->iov_base + wret;
+ 	      iov->iov_len -= wret;
+ 	    }
+ 	  continue;

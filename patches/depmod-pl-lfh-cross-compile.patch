@@ -1,0 +1,11 @@
+--- depmod.pl.orig	Thu Aug 21 00:31:27 2003
++++ depmod.pl	Thu Aug 21 00:32:15 2003
+@@ -82,7 +82,7 @@
+     warn "MODULE = $tgtname\n" if $verbose;
+ 
+     # get a list of symbols
+-	@output=`nm $obj`;
++	@output=`$ENV{CROSS_COMPILE}nm $obj`;
+ 	$ksymtab=grep m/ __ksymtab/, @output;
+ 
+     # gather the exported symbols
