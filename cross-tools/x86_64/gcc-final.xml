@@ -86,7 +86,7 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
+<screen os="bf"><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --target=${LFS_TARGET} --host=${LFS_HOST} \
     --with-local-prefix=/tools --disable-nls --enable-shared \
     --enable-languages=c,c++ --enable-__cxa_atexit \
@@ -94,16 +94,23 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/gcc-final.xml"
-    xpointer="xpointer(//*[@os='bf'])"/>
+    xpointer="xpointer(//*[@os='bg'])"/>
 
-    <para>Continue with compiling the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-final.xml"
+    xpointer="xpointer(//*[@os='bh'])"/>
 
-<screen><userinput>make AS_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-as" \
-   LD_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-ld"</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-final.xml"
+    xpointer="xpointer(//*[@os='bi'])"/>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-final.xml"
+    xpointer="xpointer(//*[@os='bj'])"/>
 
-<screen><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-final.xml"
+    xpointer="xpointer(//*[@os='bk'])"/>
 
   </sect2>
 

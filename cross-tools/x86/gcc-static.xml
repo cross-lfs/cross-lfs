@@ -71,12 +71,12 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
+<screen os="al"><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --host=${LFS_HOST} --target=${LFS_TARGET} \
     --with-local-prefix=/tools --disable-nls --disable-shared \
     --disable-threads --enable-languages=c</userinput></screen>
 
-    <variablelist os="al">
+    <variablelist os="am">
       <title>The meaning of the configure options:</title>
 
      <varlistentry>
@@ -116,13 +116,13 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
 
     </variablelist>
 
-    <para>Continue with compiling the package:</para>
+    <para os="an">Continue with compiling the package:</para>
 
-<screen><userinput>make all-gcc</userinput></screen>
+<screen os="ao"><userinput>make all-gcc</userinput></screen>
 
-    <para>Install the package:</para>
+    <para os="ap">Install the package:</para>
 
-<screen><userinput>make install-gcc</userinput></screen>
+<screen os="aq"><userinput>make install-gcc</userinput></screen>
 
   </sect2>
 

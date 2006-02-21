@@ -49,41 +49,37 @@ cd ../gcc-build</userinput></screen>
 
     <para os="h">Prepare GCC for compilation:</para>
 
-<screen><userinput>../gcc-&gcc-version;/configure --prefix=/usr \
+<screen os="i"><userinput>../gcc-&gcc-version;/configure --prefix=/usr \
     --libexecdir=/usr/lib --enable-shared --enable-threads=posix \
     --enable-__cxa_atexit --enable-c99 --enable-long-long \
     --enable-clocale=gnu --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
 
-    <para os="i">Compile the package:</para>
+    <para os="j">Compile the package:</para>
 
-<screen os="j"><userinput>make</userinput></screen>
+<screen os="k"><userinput>make</userinput></screen>
 
-    <important os="k">
+    <important os="l">
       <para>In this section, the test suite for GCC is considered
       critical. Do not skip it under any circumstance.</para>
     </important>
 
-    <para os="l">Test the results, but do not stop at errors:</para>
+    <para os="m">Test the results, but do not stop at errors:</para>
 
-<screen os="m"><userinput>make -k check</userinput></screen>
+<screen os="n"><userinput>make -k check</userinput></screen>
 
-    <para os="n">The <parameter>-k</parameter> flag is used to make the test suite
+    <para os="o">The <parameter>-k</parameter> flag is used to make the test suite
     run through to completion and not stop at the first failure. The GCC test
     suite is very comprehensive and is almost guaranteed to generate a few
     failures. To receive a summary of the test suite results, run:</para>
 
-<screen os="o"><userinput>../gcc-&gcc-version;/contrib/test_summary</userinput></screen>
+<screen os="p"><userinput>../gcc-&gcc-version;/contrib/test_summary</userinput></screen>
 
-    <para os="p">For only the summaries, pipe the output through
+    <para os="q">For only the summaries, pipe the output through
     <userinput>grep -A7 Summ</userinput>.</para>
-
-    <para os="q">Results can be compared with those located at <ulink
-    url="&test-results;"/>.</para>
 
     <para os="r">A few unexpected failures cannot always be avoided. The
     GCC developers are usually aware of these issues, but have not
-    resolved them yet. Unless the test results are vastly different from
-    those at the above URL, it is safe to continue.</para>
+    resolved them yet.</para>
 
     <para os="s">Install the package:</para>
 
@@ -111,7 +107,8 @@ cd ../gcc-build</userinput></screen>
 
       <seglistitem>
         <seg>c++, cc (link to gcc), cpp, g++, gcc, gccbug, and gcov</seg>
-        <seg>libgcc.a, libgcc_eh.a, libgcc_s.so, libstdc++.[a,so], and
+        <seg>libgcc.a, libgcc_eh.a, libgcc_s.so, libmudflap.[a,so], 
+        libmudflapth.[a,so], libstdc++.[a,so], and
         libsupc++.a</seg>
       </seglistitem>
     </segmentedlist>

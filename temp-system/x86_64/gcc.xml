@@ -98,50 +98,60 @@ sed -e "/MULTILIBS/s@\$(GCC_FOR_TARGET)@/cross-tools/bin/${CC}@g" \
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
+<screen os="dc"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
     ../gcc-&gcc-version;/configure --prefix=/tools --libdir=/tools/lib64 \
     --build=${LFS_HOST} --host=${LFS_TARGET} --target=${LFS_TARGET} \
     --libexecdir=/tools/lib64 --with-local-prefix=/tools --enable-long-long \
     --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
     --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
 
-    <variablelist os="dc">
+    <variablelist os="dd">
       <title>The meaning of the new configure options:</title>
 
-      <varlistentry os="dc1">
+      <varlistentry os="dd1">
         <term><parameter>CXX="${CXX} ${BUILD64}"</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This forces the C++ compiler to use our Build 64 FLAGS.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dc2">
+      <varlistentry os="dd2">
         <term><parameter>--libexecdir=/tools/lib64</parameter></term>
         <listitem>
-          <para>This do ...</para>
+          <para>This puts all files that are installed using the libexecdir
+          variable into /tools/lib64.</para>
         </listitem>
       </varlistentry>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../x86/gcc.xml"
-      xpointer="xpointer(//*[@os='ck2'])"/>
+      xpointer="xpointer(//*[@os='cl2'])"/>
 
     </variablelist>
 
-    <para>Compile the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='cm'])"/>
 
-<screen><userinput>make AS_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-as" \
-    LD_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-ld"</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='cn'])"/>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='co'])"/>
 
-<screen><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='cp'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen><userinput>ln -s gcc /tools/bin/cc</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='cq'])"/>
 
   </sect2>
 
