@@ -25,7 +25,7 @@
     <para os="s1">The following sed removes a dependency of gcc 3.4.x from
     the glibc we are using in cross-lfs. The reason we are changing it is
     because this only installs the headers, no compiling takes place. In the
-    next glibc chapter, we use the gcc that's build right after this chapter.</para>
+    next glibc chapter, we use the gcc that's built right after this chapter.</para>
 
 <screen os="s2"><userinput>cp configure{,.orig}
 sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
@@ -72,15 +72,6 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
       </varlistentry>
 
       <varlistentry os="ca2">
-        <term><parameter>--prefix=/tools</parameter></term>
-        <listitem>
-          <para>This tells the configure script to prepare to install the
-          package in the <filename class="directory">/tools</filename>
-          directory.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="ca3">
         <term><parameter>--build=${LFS_HOST}</parameter></term>
         <listitem>
           <para>When used with --host, this creates a cross-architecture
@@ -88,7 +79,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca4">
+      <varlistentry os="ca3">
         <term><parameter>--host=${LFS_TARGET}</parameter></term>
         <listitem>
           <para>When used with --build, this creates a cross-architecture
@@ -96,14 +87,14 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca5">
+      <varlistentry os="ca4">
         <term><parameter>--disable-sanity-checks</parameter></term>
         <listitem>
           <para>This switch disables any checks that are in place.</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca6">
+      <varlistentry os="ca5">
         <term><parameter>--enable-kernel=2.6.0</parameter></term>
         <listitem>
           <para>This tells Glibc to compile the library with support
@@ -111,7 +102,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca7">
+      <varlistentry os="ca6">
         <term><parameter>--with-headers=/tools/include</parameter></term>
         <listitem>
           <para>This tells Glibc to compile itself against the headers
@@ -121,7 +112,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ca8">
+      <varlistentry os="ca7">
         <term><parameter>--with-binutils=/cross-tools/${LFS_TARGET}/bin</parameter></term>
         <listitem>
           <para>This tells GLIBC to use the binutils for our specific target architecture.</para>
@@ -134,8 +125,7 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
 <screen os="cd"><userinput>make install-headers</userinput></screen>
 
-    <para os="ce">Some files aren't installed by the above command, then
-    we will copy the header files we need:</para>
+    <para os="ce">Some files aren't installed by the above command, so we will copy the additional header files we need:</para>
 
     <para os="cf">First we will copy a common file over to <filename
     class="directory">/tools/include</filename>:</para>
