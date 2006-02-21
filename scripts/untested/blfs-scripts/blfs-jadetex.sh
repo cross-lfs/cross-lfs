@@ -9,12 +9,11 @@ unpack_tarball jadetex-${JADETEX_VER}
 cd ${PKGDIR}
 
 max_log_init jadetex ${JADETEX_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
+(
 sed -i.orig -e "s/original texmf.cnf/modified texmf.cnf/" \
-   /usr/share/texmf/web2c/texmf.cnf
-# TODO: This needs to be added below "ConTeXt is a memory hog" in
-#       /usr/share/texmf/web2c/texmf.cnf
-#pool_size.context = 750000
-cat >> /usr/share/texmf/web2c/texmf.cnf << "EOF"
+            -e "s/memory hog.../&\npool_size.context = 750000/" \
+    $(kpsewhich texmf.cnf)
+cat >> $(kpsewhich texmf.cnf) << "EOF"
 
 % The following 3 sections added for JadeTeX
 
@@ -54,22 +53,50 @@ nest_size.pdfjadetex = 500
 save_size.pdfjadetex = 5000
 pool_size.pdfjadetex = 500000
 max_strings.pdfjadetex = 55000
+
 EOF
 
-cp -R /usr/share/texmf/tex/latex/config . &&
-cd config &&
-tex -ini -progname=latex latex.ini &&
-mv /usr/share/texmf/web2c/latex.fmt \
-   /usr/share/texmf/web2c/latex.fmt.orig &&
-install -m 644 latex.fmt /usr/share/texmf/web2c &&
-cd ..
+LATEX_FMT_DIR="$(kpsewhich -expand-var '$TEXMFSYSVAR')/web2c" &&
+mv -v $(kpsewhich latex.fmt) $(kpsewhich latex.fmt).orig &&
+mv -v ${LATEX_FMT_DIR}/latex.log ${LATEX_FMT_DIR}/latex.log.orig &&
+fmtutil-sys --byfmt latex
+) >> ${LOGFILE} 2>&1 &&
+echo " o Configure OK" || barf
+
+min_log_init ${BUILDLOGS} &&
+make \
+   >> ${LOGFILE} 2>&1 &&
+echo " o Build OK" || barf
 
 min_log_init ${INSTLOGS} &&
-make install \
-   >> ${LOGFILE} 2>&1 &&
-echo " o ALL OK" || barf
+(
+install -v -m755 -d \
+    $(kpsewhich -expand-var '$TEXMFLOCAL')/tex/jadetex/config &&
+install -v -m644 dsssl.def jadetex.ltx \
+    $(kpsewhich -expand-var '$TEXMFLOCAL')/tex/jadetex &&
+install -v -m644 {,pdf}jadetex.ini \
+    $(kpsewhich -expand-var '$TEXMFLOCAL')/tex/jadetex/config &&
+FMTUTIL_CNF="$(kpsewhich fmtutil.cnf)" &&
+mv ${FMTUTIL_CNF} ${FMTUTIL_CNF}.orig &&
 
-ln -sf tex /usr/bin/jadetex &&
-ln -sf pdftex /usr/bin/pdfjadetex &&
-mktexlsr
+cat ${FMTUTIL_CNF}.orig - >> ${FMTUTIL_CNF} << "EOF"
+
+# JadeTeX formats:
+jadetex		etex		-		"&latex"     jadetex.ini
+pdfjadetex	pdfetex		-		"&pdflatex"  pdfjadetex.ini
+
+EOF
+mv -v $(kpsewhich -expand-var '$TEXMFMAIN')/ls-R \
+      $(kpsewhich -expand-var '$TEXMFMAIN')/ls-R.orig &&
+mv -v $(kpsewhich -expand-var '$TEXMFSYSVAR')/ls-R \
+      $(kpsewhich -expand-var '$TEXMFSYSVAR')/ls-R.orig &&
+
+mktexlsr &&
+fmtutil-sys --byfmt jadetex &&
+fmtutil-sys --byfmt pdfjadetex &&
+mktexlsr &&
+ln -v -sf etex /usr/bin/jadetex &&
+ln -v -sf pdfetex /usr/bin/pdfjadetex
+) >> ${LOGFILE} 2>&1 &&
+echo " o Install OK" || barf
 
