@@ -25,6 +25,7 @@ CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CXX="${CXX-g++} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \
 CXXFLAGS="${TGT_CFLAGS}" \
+LDFLAGS="-L/usr/${libdirname}" \
 ./configure --prefix=/usr --sysconfdir=/etc ${extra_conf} \
    --with-libwrap \
    >> ${LOGFILE} 2>&1 &&
