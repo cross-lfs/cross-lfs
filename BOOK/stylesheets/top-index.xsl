@@ -229,9 +229,14 @@ hr {
   <xsl:template match="authorgroup">
     <div class="authorgroup">
       <h3 class="author">
-        <xsl:value-of select="author/firstname"/>
+        <xsl:value-of select="author[1]/firstname"/>
         <xsl:text> </xsl:text>
-        <xsl:value-of select="author/surname"/>
+        <xsl:value-of select="author[1]/surname"/>
+      </h3>
+      <h3 class="author">
+        <xsl:value-of select="author[2]/firstname"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="author[2]/surname"/>
       </h3>
     </div>
   </xsl:template>
@@ -251,6 +256,16 @@ hr {
 
   <xsl:template match="holder">
     <xsl:value-of select="."/>
+  </xsl:template>
+
+  <xsl:template match="bibliosource">
+    <div>
+      <p class="copyright">
+        <em>
+          <xsl:apply-templates/>
+        </em>
+      </p>
+    </div>
   </xsl:template>
 
   <xsl:template match="subtitle|author|firstname|surname|legalnotice"/>
