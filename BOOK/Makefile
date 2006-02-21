@@ -2,7 +2,6 @@ BASEDIR=~/cross-lfs-book
 DUMPDIR=~/cross-lfs-commands
 DLLISTDIR=~/cross-lfs-dllist
 CHUNK_QUIET=1
-JAVA_HOME=/opt/jdk/jdk-precompiled-1.5.0
 XSLROOTDIR=/usr/share/xml/docbook/xsl-stylesheets-current
 ARCH=x86 x86_64 x86_64-64 sparc sparc64 sparc64-64 mips mips64 mips64-64 ppc alpha
 
@@ -24,7 +23,7 @@ endef
 define HTML_RENDER2
 	echo "Rendering Single File HTML of $$arch..." ; \
 	xsltproc --xinclude --nonet -stringparam profile.condition html \
-	   --output $(BASEDIR)/LFS-BOOK-$$arch.html \
+	   --output $(BASEDIR)/CLFS-BOOK-$$arch.html \
 	   $(PWD)/stylesheets/lfs-nochunks.xsl $$arch-index.xml
 endef
 
@@ -34,7 +33,7 @@ define PDF_RENDER
         xsltproc --xinclude --nonet --output $(BASEDIR)/lfs-pdf.fo \
                 $(PWD)/stylesheets/lfs-pdf.xsl $$arch-index.xml ; \
         sed -i -e "s/inherit/all/" $(BASEDIR)/lfs-pdf.fo ; \
-        fop.sh -q $(BASEDIR)/lfs-pdf.fo -pdf $(BASEDIR)/LFS-BOOK-$$arch.pdf ; \
+        fop.sh -q $(BASEDIR)/lfs-pdf.fo -pdf $(BASEDIR)/CLFS-BOOK-$$arch.pdf ; \
         rm $(BASEDIR)/lfs-pdf.fo
 endef
 
@@ -44,7 +43,7 @@ define TEXT_RENDER
         xsltproc --xinclude --nonet --output $(BASEDIR)/lfs-pdf.fo \
                 $(PWD)/stylesheets/lfs-pdf.xsl $$arch-index.xml ; \
         sed -i -e "s/inherit/all/" $(BASEDIR)/lfs-pdf.fo ; \
-        fop.sh $(BASEDIR)/lfs-pdf.fo -txt $(BASEDIR)/LFS-BOOK-$$arch.txt ; \
+        fop.sh $(BASEDIR)/lfs-pdf.fo -txt $(BASEDIR)/CLFS-BOOK-$$arch.txt ; \
         rm $(BASEDIR)/lfs-pdf.fo
 endef
 
