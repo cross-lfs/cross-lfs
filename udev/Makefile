@@ -12,14 +12,13 @@ rules:
 	install -m ${RULESMODE} 05-udev-early.rules ${DESTDIR}/etc/udev/rules.d/05-udev-early.rules
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 	install -m ${RULESMODE} 60-persistent.rules ${DESTDIR}/etc/udev/rules.d/60-persistent.rules
-	install -m ${RULESMODE} 80-sysconfig.rules ${DESTDIR}/etc/udev/rules.d/80-sysconfig.rules
+	install -m ${RULESMODE} 85-mount-fstab.rules ${DESTDIR}/etc/udev/rules.d/85-mount-fstab.rules
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
 
 scripts:
 	install -m ${SCRIPTMODE} remove_floppy_devices.sh ${DESTDIR}/lib/udev/remove_floppy_devices.sh
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
 	install -m ${SCRIPTMODE} ide.sh ${DESTDIR}/lib/udev/ide.sh
-	install -m ${SCRIPTMODE} firmware.sh ${DESTDIR}/lib/udev/firmware.sh
 	install -m ${SCRIPTMODE} input.sh ${DESTDIR}/lib/udev/input.sh
 	install -m ${SCRIPTMODE} mount.sh ${DESTDIR}/lib/udev/mount.sh
 	install -m ${CONFMODE} scsi_id.config ${DESTDIR}/etc/scsi_id.config

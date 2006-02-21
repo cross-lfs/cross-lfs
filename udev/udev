@@ -26,7 +26,7 @@ trigger_device_events() {
 	list="$list $(echo /sys/block/*/uevent /sys/block/*/*/uevent)"
 	for i in $list; do
 	    case "$i" in
-		*/device/uevent)
+		*/device/uevent|*\**)
 		    # skip followed device symlinks
 		    continue
 		    ;;
@@ -73,12 +73,12 @@ case "$1" in
 	# configure all devices
 	trigger_device_events
 
-	# until we know how to do better, we wait for all events to finish
-	loop=0
+	# until we know how to do better, just wait for _all_ events to finish
+	loop=300
 	while test -d /dev/.udev/queue; do
 	    sleep 0.1;
-	    test "$loop" -gt 300 && break
-	    loop=$(($loop + 1))
+	    test "$loop" -gt 0 || break
+	    loop=$(($loop - 1))
 	done
 
 	echo_ok

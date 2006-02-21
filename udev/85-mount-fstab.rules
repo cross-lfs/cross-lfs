@@ -14,11 +14,4 @@
 #
 ########################################################################
 
-ENV{SYSCONFIG}=="no|off|0", GOTO="sysconfig_end"
-
-# network devices
-KERNEL=="tun", NAME="net/%k", MODE="0600"
-SUBSYSTEM=="net", ACTION=="add", RUN+="/sbin/ifup $env{INTERFACE} -o hotplug"
-SUBSYSTEM=="net", ACTION=="remove", RUN+="/sbin/ifdown %k -o hotplug"
-
-LABEL="sysconfig_end"
+SUBSYSTEM=="block", ACTION=="add", KERNEL=="sd*[0-9]|hd*[0-9]", RUN+="mount.sh"

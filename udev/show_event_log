@@ -68,6 +68,6 @@ done
 exit
 
 # list all events
-(read x; while read x s x x x c x; read x s2 x a d; do echo $s $s2 $a $c $d; done) < <( sed -n "s/^.*udev.*\(seq [0-9]* [qf].*$\)/\1/p" /var/log/messages | sort -n -k 2 | tr -d ',' )   
+(read x; while read x s x x x c x; read x s2 x a d; do echo $s $s2 $a $c $d; done) < <( sed -n "s/^.*udev.*\(seq [0-9]* [qf].*$\)/\1/p" /var/log/messages | sort -n -k 2 | tr -d ',' )
 
 ./show_event_log 1 last > boot.events.log.`date +%A_%H:%M` 2> boot.events.list.`date +%A_%H:%M`
