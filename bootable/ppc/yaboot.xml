@@ -14,6 +14,112 @@
     <primary sortas="a-Yaboot">Yaboot</primary>
   <secondary>configuring</secondary></indexterm>
 
-  <para>This is a place holder for configuring yaboot</para>
+  <para os="a">Your shiny new LFS system is almost complete. One of the last
+  things to do is to ensure that the system can be properly booted. The
+  instructions below apply only to NewWorld Macintoshes and (probably)
+  PegasosPPC.</para>
+
+  <para os="b">Boot loading can be a complex area, so a few cautionary words
+  are in order. Be familiar with the current boot loader and any other
+  operating systems present on the hard drive(s) that need to be bootable.
+  Make sure that an emergency CD is ready to <quote>rescue</quote> the
+  computer if it becomes un-bootable.</para>
+
+  <para os="c">Earlier, we compiled and installed the yaboot boot loader software
+  in preparation for this step. The procedure involves writing the bootloader
+  to a bootstrap partition and blessing it so that OpenFirmware will boot from
+  it.  This is all handled by <command>ybin</command> the yaboot installer.</para> 
+
+  <para os="d">Ybin assembles all the information it needs by reading yaboot.conf,
+  then writes the bootstrap. When booted, the bootstrap provides an initial menu to
+  choose between linux, boot from CD, and e.g. osx (depending on what was in yaboot.conf).
+  If you boot to 'linux', yaboot kicks in and lets you select which kernel to use.</para>
+
+  <para os="e">Images (kernels) are specified, together with any necessary path,
+  in yaboot.conf - the details are incorporated into the bootloader, but no attempt
+  is made to access or validate the paths until they are selected.  There are many
+  possible options that can be specified in yaboot.conf, see the man page for the
+  details.  Most people will be able to specify device=hd: (for a single hard disk),
+  but if you have multiple disks, or if you wish to be pedantic, you can specify the
+  full OF path to the device, obtained by running <command>ofpath</command>.</para>
+
+  <para os="f">Note that the man page mentions which filesystems yaboot can
+  navigate to find the images - the only linux filesystem type mentioned is ext2.
+  You can use ext3 because that can be read like ext2, but if you wish to use
+  reiserfs or any other filesystem you may need to create a separate boot partition
+  formatted as ext2.</para>
+
+  <para os="h">Using the above information, determine the appropriate designators
+  for the bootstrap partition and the root partition.  For the following example,
+  it is assumed that the bootstrap partition is <filename class="partition">hda2
+  </filename> and the root partition is <filename class="partition">hda7</filename>
+  .  We will also assume that you wish to be able to boot an OSX installation on
+  <filename class="partition">hda4</filename>.  Change these items as necessary
+  for your machine.</para>
+
+  <para os="k">Create a <quote>yaboot.conf</quote> file defining yaboot's boot
+  menu:</para>
+
+<screen os="l" role="nodump"><userinput>cat &gt; /etc/yaboot.conf &lt;&lt; "EOF"
+<literal># Begin /etc/yaboot.conf
+
+# By default, yaboot will boot the first menu entry.
+
+# Allow 10 seconds before booting the default.
+# this will also apply to the first-stage os selector
+timeout 100
+
+# These variables are global
+# first, where to put the bootstrap partition
+boot=/dev/hda2
+
+# Which disk to use
+device=hd:
+
+# Default partition for the kernel images
+partition=7
+
+# default root partition
+root=/dev/hda7
+
+# where ybin is to find yaboot and ofboot 
+install=/usr/lib/yaboot/yaboot
+magicboot=/usr/lib/yaboot/ofboot
+
+# allow the initial menu to offer CD as an option
+enablecdboot
+
+# allow the initial menu to boot from mac osx
+macosx=/dev/hda4
+
+# The first entry is for LFS.
+# For all images, the pathname is relative to the filesystem
+# on which they are mounted.
+image=/boot/lfskernel-&linux-ppc-version;
+    label=&version;
+    read-only</literal>
+EOF</userinput></screen>
+
+
+  <para os="n">Add an entry for the host distribution, if you have one. It might
+  look something like this if the kernel and initrd are in the host's '/'
+  directory on <filename class="partition">hda6</filename>:</para>
+
+<screen os="o" role="nodump"><userinput>cat &gt;&gt; /etc/yaboot.conf &lt;&lt; "EOF"
+<literal>title Debian
+image=/pci@f4000000/ata-6d/disk@0:6,/vmlinux
+    label=Debian
+    initrd=/pci@f4000000/ata-6d/disk@0:6,/initrd.gz
+    initrd-size=10000
+    append="root=/dev/hda7"
+    read-only</literal>
+EOF</userinput></screen>
+
+  <warning os="r">
+    <para>The following command will overwrite the current boot loader.
+    Do not run the command if this is not desired.</para>
+  </warning>
+
+<screen os="s" role="nodump"><userinput>ybin</userinput></screen>
 
 </sect1>
