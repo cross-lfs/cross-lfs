@@ -64,12 +64,18 @@ fi
 echo "loclibpth=\"\"" >> hints/linux.sh
 cd ${SRC}/${PKGDIR}
 
+# if not creating a shared libperl (ie useshrplib not true), still use pic
+sed -i -e "s@pldlflags=''@pldlflags=\"\$cccdlflags\"@g" \
+       -e "s@static_target='static'@static_target='static_pic'@g" \
+   Makefile.SH
+
 max_log_init Perl ${PERL_VER} "native (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 ./configure.gnu --prefix=/usr \
    -Doptimize="-O2 -pipe ${TGT_CFLAGS}" \
    -Dman1dir='/usr/share/man/perl/man1' \
    -Dman3dir='/usr/share/man/perl/man3' \
+   -Dcccdlflags='-fPIC' \
    >> ${LOGFILE} 2>&1 &&
 echo " o Configure OK" || barf
 
