@@ -29,6 +29,13 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
+<para os="l1">This architecture does not support NPTL. So we need to untar the
+<filename>glibc-ports-&glibc-ports-version;.tar.bz2</filename> and move the
+linuxthreads directories. The following commands will accomplish the task:</para>
+
+<screen os="l2"><userinput>tar jxvf glibc-ports-&glibc-ports-version;.tar.bz2 \
+--strip-components=1 glibc-&glibc-ports-version;/linuxthreads*</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='c'])"/>
@@ -36,13 +43,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='d'])"/>
-
-<para os="l1">This architecture does not support NPTL. So we need to untar the
-<filename>glibc-ports-&glibc-ports-version;.tar.bz2</filename> and move the
-linuxthreads directories. The following commands will accomplish the task:</para>
-
-<screen os="l2"><userinput>tar jxvf glibc-ports-&glibc-ports-version;.tar.bz2 \
---strip-components=1 glibc-&glibc-ports-version;/linuxthreads*</userinput></screen>
     
     <para os="l3">NPTL is not supported on Sparc v8 and below, so we need to remove the NPTL from our build.
     We do this by removing the NPTL directories:</para>
