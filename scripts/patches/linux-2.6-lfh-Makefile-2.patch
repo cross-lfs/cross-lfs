@@ -1,0 +1,15 @@
+--- linux-2.6.14.3/Makefile	Fri Nov 25 09:10:00 2005
++++ linux-2.6.14.3-patched/Makefile	Sun Dec  4 16:25:32 2005
+@@ -949,11 +949,11 @@
+ ifeq "$(strip $(INSTALL_MOD_PATH))" ""
+ depmod_opts	:=
+ else
+-depmod_opts	:= -b $(INSTALL_MOD_PATH) -r
++depmod_opts	:= -b $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+ endif
+ .PHONY: _modinst_post
+ _modinst_post: _modinst_
+-	if [ -r System.map -a -x $(DEPMOD) ]; then $(DEPMOD) -ae -F System.map $(depmod_opts) $(KERNELRELEASE); fi
++	if [ -r System.map -a -x $(DEPMOD) ]; then depmod.pl -F System.map $(depmod_opts) -k vmlinux; fi
+ 
+ else # CONFIG_MODULES
