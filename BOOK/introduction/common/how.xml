@@ -39,31 +39,31 @@
   discusses the setup for an appropriate working environment. Please read
   <xref linkend="chapter-final-preps"/> carefully as it explains several
   important issues the developer should be aware of before beginning to
-  work through <xref linkend="chapter-temporary-tools"/> and
+  work through <xref linkend="chapter-temp-system"/> and
   beyond.</para>
 
-  <para><xref linkend="chapter-temporary-tools"/> explains the
+  <para><xref linkend="chapter-temp-system"/> explains the
   installation of a number of packages that will form the basic
   development suite (or toolchain) which is used to build the actual
   system in <xref linkend="chapter-building-system"/>. Some of these
   packages are needed to resolve circular dependencies&mdash;for example,
   to compile a compiler, you need a compiler.</para>
 
-  <para><xref linkend="chapter-temporary-tools"/> also shows the user
+  <para><xref linkend="chapter-temp-system"/> also shows the user
   how to build a first pass of the toolchain, including Binutils and GCC
   (first pass basically means these two core packages will be re-installed
   a second time). The next step is to build Glibc, the C library. Glibc
   will be compiled by the toolchain programs built in the first pass. Then,
   a second pass of the toolchain will be built. This time, the toolchain
   will be dynamically linked against the newly built Glibc. The remaining
-  <xref linkend="chapter-temporary-tools"/> packages are built using this
+  <xref linkend="chapter-temp-system"/> packages are built using this
   second pass toolchain. When this is done, the LFS installation process
   will no longer depend on the host distribution, with the exception of the
   running kernel. </para>
 
   <para>This effort to isolate the new system from the host distribution
   may seem excessive, but a full technical explanation is provided at the
-  beginning of <xref linkend="chapter-temporary-tools"/>.</para>
+  beginning of <xref linkend="chapter-temp-system"/>.</para>
 
   <para>In <xref linkend="chapter-building-system"/>, the full LFS system is
   built. The <command>chroot</command> (change root) program is used to enter
