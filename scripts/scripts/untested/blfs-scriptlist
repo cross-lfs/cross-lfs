@@ -65,7 +65,9 @@ blfs-scripts/blfs-fltk-64.sh"
 
 script_list="${script_list}
 blfs-scripts/blfs-python-32.sh
-blfs-scripts/blfs-python-64.sh"
+blfs-scripts/blfs-python-64.sh
+blfs-scripts/blfs-pyrex-32.sh
+blfs-scripts/blfs-pyrex-64.sh"
 
 script_list="${script_list}
 gnome-scripts/gnome-setup.sh"
@@ -115,7 +117,8 @@ gnome-scripts/gnome-platform-scripts/gnome-platform-libIDL-64.sh"
 script_list="${script_list}
 blfs-scripts/blfs-shared-mime-info.sh
 blfs-scripts/blfs-desktop-file-utils.sh
-gnome-scripts/gnome-platform-scripts/gnome-platform-gnome-mime-data.sh"
+gnome-scripts/gnome-platform-scripts/gnome-platform-gnome-mime-data-32.sh
+gnome-scripts/gnome-platform-scripts/gnome-platform-gnome-mime-data-64.sh"
 
 script_list="${script_list}
 gnome-scripts/gnome-platform-scripts/gnome-platform-atk-32.sh
@@ -456,19 +459,34 @@ script_list="${script_list}
 blfs-scripts/blfs-ffmpeg-32.sh
 blfs-scripts/blfs-ffmpeg-64.sh"
 
-# libsamplerate
-# libpolypaudio
+# dbus (mono is an optional dep, but I can't be bothered building that... yet..)
+script_list="${script_list}
+blfs-scripts/blfs-dbus-32.sh
+blfs-scripts/blfs-dbus-64.sh
+blfs-scripts/blfs-hal-32.sh
+blfs-scripts/blfs-hal-64.sh
+blfs-scripts/blfs-howl-32.sh
+blfs-scripts/blfs-howl-64.sh"
 
-# pyrex
-# dbus
-# hal
-# howl
+script_list="${script_list}
+gnome-scripts/gnome-platform-scripts/gnome-platform-libbonobo-32.sh
+gnome-scripts/gnome-platform-scripts/gnome-platform-libbonobo-64.sh
+gnome-scripts/gnome-desktop-scripts/gnome-desktop-gtk-engines-32.sh
+gnome-scripts/gnome-desktop-scripts/gnome-desktop-gtk-engines-64.sh
+gnome-scripts/gnome-platform-scripts/gnome-platform-GConf-32.sh
+gnome-scripts/gnome-platform-scripts/gnome-platform-GConf-64.sh
+gnome-scripts/gnome-platform-scripts/gnome-platform-gnome-vfs-32.sh
+gnome-scripts/gnome-platform-scripts/gnome-platform-gnome-vfs-64.sh"
 
-# libbonobo
-# gtk-engines
-# GConf
-# Gnome-vfs
+script_list="${script_list}
+blfs-scripts/blfs-libdvdcss-32.sh
+blfs-scripts/blfs-libdvdcss-64.sh
+blfs-scripts/blfs-xine-lib-32.sh
+blfs-scripts/blfs-xine-lib-64.sh"
 
-
+# should build curl and LIRC
+script_list="${script_list}
+blfs-scripts/blfs-xine-ui-32.sh
+blfs-scripts/blfs-xine-ui-64.sh"
 
 # gtkam [ gtk2 libgphoto optional libexif bonobo gnome gimp ]
