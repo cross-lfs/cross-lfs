@@ -24,7 +24,7 @@
 
     <para os="aa">Fix a minor issue during the build when cross-compiling:</para>
 
-<screen os="ab"><userinput>cp Makefile.in Makefile.in.orig
+<screen os="ab"><userinput>cp -v Makefile.in Makefile.in.orig
 sed -e "s@size \$(Program)@${LFS_TARGET}-&amp;@g"  Makefile.in.orig > Makefile.in</userinput></screen>
 
     <para os="c1">Remove a test that causes the build to fail::</para>
@@ -73,7 +73,7 @@ sed -e "s@size \$(Program)@${LFS_TARGET}-&amp;@g"  Makefile.in.orig > Makefile.i
     <para os="ae">Make a link for the programs that use <command>sh</command> for
     a shell:</para>
 
-<screen os="af"><userinput>ln -s bash /tools/bin/sh</userinput></screen>
+<screen os="af"><userinput>ln -sv bash /tools/bin/sh</userinput></screen>
 
   </sect2>
 

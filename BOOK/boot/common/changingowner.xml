@@ -18,8 +18,8 @@
   $LFS root directory and all of it subdirectories should be owned by
   <systemitem class="username">root</systemitem>. Change the ownership for $LFS and its subdirectories by running these commands:</para>
 
-<screen><userinput>chown root:root ${LFS}
-chown -R root:root $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,srv,sys,tmp,usr,var}</userinput></screen>
+<screen><userinput>chown -v root:root ${LFS}
+chown -Rv root:root $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,srv,sys,tmp,usr,var}</userinput></screen>
 
   <para os="b">The same issue also exists with <filename class="directory">/tools</filename> and <filename class="directory">/cross-tools</filename>. Although these directories can be deleted once the
   LFS system has been finished, they can be retained to build additional
@@ -38,7 +38,7 @@ chown -R root:root $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,
   and <filename class="directory">/cross-tools</filename> directories to user <systemitem class="username">root</systemitem> by running
   the following commands:</para>
 
-<screen><userinput>chown -R root:root /tools
-chown -R root:root /cross-tools</userinput></screen>
+<screen><userinput>chown -Rv root:root /tools
+chown -Rv root:root /cross-tools</userinput></screen>
 
 </sect1>

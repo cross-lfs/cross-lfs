@@ -42,14 +42,14 @@
     libraries from the <filename class="directory">/tools</filename>
     directory by default. This is fixed by altering the configure script:</para>
 
-<screen os="bb"><userinput>cp configure{,.orig}
+<screen os="bb"><userinput>cp -v configure{,.orig}
 sed -e 's@/usr/include@/tools/include@g' configure.orig > configure</userinput></screen>
 
     <para os="bc">Util-linux installs uses <option>-o root</option>, the following
     <command>sed</command> removes that since we don't have users setup
     yet:</para>
 
-<screen os="bd"><userinput>cp MCONFIG{,.orig}
+<screen os="bd"><userinput>cp -v MCONFIG{,.orig}
 sed -e 's|-o root||' MCONFIG.orig > MCONFIG</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"

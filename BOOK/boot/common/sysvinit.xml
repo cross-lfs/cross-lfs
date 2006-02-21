@@ -25,7 +25,7 @@
     <para os="aa">Now we do some modifications so we can boot into this
     during our build:</para>
 
-<screen os="ab"><userinput>cp src/Makefile src/Makefile.orig
+<screen os="ab"><userinput>cp -v src/Makefile src/Makefile.orig
 sed -e 's@root@0@g' \
     -e "s@/dev/initctl@${LFS}&amp;@g" \
     -e 's@\(mknod \)-m \([0-9]* \)\(.* \)p@\1\3p; chmod \2\3@g' \
