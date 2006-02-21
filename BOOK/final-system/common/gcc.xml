@@ -41,6 +41,14 @@
 
 <screen os="e"><userinput>sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in</userinput></screen>
 
+    <para os="e1">GCC provides a <command>gccbug</command> script which detects at
+    compile time whether mktemp is present, and hardcodes the result in a test.
+    This will cause the script to fall back to using less random names for
+    temporary files.  We will be installing mktemp later, so the following sed
+    will simulate its presence.</para>
+
+<screen os="e2">sed -i 's/@have_mktemp_command@/yes/' gcc/gccbug.in</screen>
+
     <para os="f">The GCC documentation recommends building GCC outside of the source
     directory in a dedicated build directory:</para>
 
