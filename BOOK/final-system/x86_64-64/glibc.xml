@@ -123,8 +123,8 @@
     is. The following <command>sed</command> will correct this.</para>
 
     <screen><userinput>rm -v /lib/ld-linux.so.2
-    cp -v /usr/bin/ldd{,.bak}
-    sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userinput></screen>
+cp -v /usr/bin/ldd{,.bak}
+sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userinput></screen>
 
     <para>Check the script to make sure the sed worked correctly, then delete
     the backup.</para>
