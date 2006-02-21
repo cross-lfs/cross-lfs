@@ -42,7 +42,7 @@
     <para os="c">Now prepare Expect for compilation:</para>
 
 <screen><userinput>./configure --prefix=/tools --with-tcl=/tools/lib \
-   --with-tclinclude=$TCLPATH --with-x=no</userinput></screen>
+   --with-tclinclude=/tools/include --with-x=no</userinput></screen>
 
     <variablelist os="d">
       <title>The meaning of the configure options:</title>
@@ -56,10 +56,10 @@
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--with-tclinclude=$TCLPATH</parameter></term>
+        <term><parameter>--with-tclinclude=/tools/include</parameter></term>
         <listitem>
-          <para>This explicitly tells Expect where to find Tcl's source
-          directory and internal headers. Using this option avoids conditions
+          <para>This explicitly tells Expect where to find Tcl's internal headers.
+           Using this option avoids conditions
           where <command>configure</command> fails because it cannot
           automatically discover the location of the Tcl source directory.</para>
         </listitem>
@@ -103,13 +103,6 @@
       </varlistentry>
 
     </variablelist>
-
-    <para os="k">Now remove the <envar>TCLPATH</envar> variable:</para>
-
-<screen os="l"><userinput>unset TCLPATH</userinput></screen>
-
-    <para os="m">The source directories of both Tcl and Expect can now
-    be removed.</para>
 
   </sect2>
 
