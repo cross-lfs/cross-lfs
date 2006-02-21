@@ -4,8 +4,7 @@ SCRIPTMODE=755
 RULESMODE=644
 CONFMODE=644
 
-
-all: install
+all: help
 
 install: device_dirs device_links rules scripts boot mknod_devices
 
@@ -73,4 +72,27 @@ mknod_devices:
 		fi \
 	fi
 
-.PHONY: all install device_dirs device_links rules scripts boot mknod_devices
+help:
+	@echo "command				description"
+	@echo "---------------------------------------------------------------------------------------"
+	@echo "make install			install udev rules package and helper scripts"
+	@echo "make install-network		install network helper package"
+	@echo "make install-network-upgrade	upgrades current network helper package"
+	@echo "---------------------------------------------------------------------------------------"
+
+install-helper-functions:
+	install -m 644 contrib/common/helper.functions ${DESTDIR}/lib/udev/helper.functions
+	
+install-network: install-helper-functions
+	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/lib/udev/network_helper.sh
+	install -m ${INITMODE} contrib/network/network ${DESTDIR}/etc/rc.d/init.d/network
+	@echo "Adding rules to ${DESTDIR}/etc/udev/rules.d/35-helper.rules."
+	@cp ${DESTDIR}/etc/udev/rules.d/35-helper.rules /tmp/first
+	@cat /tmp/first contrib/network/rules > ${DESTDIR}/etc/udev/rules.d/35-helper.rules 2>&1
+
+install-network-update:
+	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/lib/udev/network_helper.sh
+	install -m ${INITMODE} contrib/network/network ${DESTDIR}/etc/rc.d/init.d/network
+
+.PHONY: all install device_dirs device_links rules scripts boot mknod_devices \
+	help install-helper-functions install-network install-network-update
