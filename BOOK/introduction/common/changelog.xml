@@ -2,7 +2,9 @@
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
+  <!ENTITY % patches-entities SYSTEM "../../patches.ent">
   %general-entities;
+  %patches-entities;
 ]>
 
 <sect1 id="ch-intro-changelog" xreflabel="Master Changelog">
@@ -27,201 +29,1157 @@
       <para>Date</para>
       <itemizedlist>
         <listitem>
-          <para>[name] - New changelog entry.</para>
+          <para>[name] - Changelog entry.</para>
         </listitem>
         <listitem>
-          <para>[name] - Previous changelog entry.</para>
+          <para>[name] - Another changelog entry.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 -->
 
+
     <listitem>
-      <para>November 23, 2005</para>
+      <para>November 24 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - For inetutils to utilize the Ncurses headers in
-          /tools/include.</para>
+          <para>[Matt Darcy] - Text updates to resources page </para> 
+        </listitem>
+          <para>[Matt Darcy] - Updated reference to LFS news server to
+          reflect that it no longer exists</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 21, 2005</para>
+      <para>October 30, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Updated to Udev 075.</para>
+          <para>[manuel] - Text updates ported from trunk up to r7102.</para>
         </listitem>
         <listitem>
-          <para>[jim] - Updated to Module Init Tools 3.2.1.</para>
+          <para>[jim] - Numerous bug reports on e2fsprogs multilib, that configure
+          wouldn't work, could not validate, but added the fix in. Thanx for the reports.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 27, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 5.92.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Glibc Snapshot 20051024. Fixes stability on MIPS/Sparc Platforms</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 26, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Fixed login.defs.linux to login.defs - renamed under 4.0.13.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated udev to make the firmware helper. Necessary for devices
+           that depend on firmware to be loaded.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated udev to 071.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated udev installation update based on information from
+          Alex Patrakov.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 24, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[ken] - add ${LFS} when creating passwd, group in chapter 7, and add
+          ${LFS}/etc/sysconfig/clock.  Thanks to Duncan Webb.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 18, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Updated to File 4.16.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated to Less 385.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 15, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Updated to Ncurses 5.5.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated to Man Pages 2.09.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated to Vim 6.4.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Updated to Shadow 4.0.13.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Added a sed to remove the glibc dependency on
+          a certain version of gcc. Thanx for the IRC bug report from andre.</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Made all the cross-tools, chroot, boot, and temp-system seds
+          follow the same format.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 13, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Changed permissions on btmp to current standards.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 12, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Updated users/groups for better functional udev system. Working
+          on removing hotplug from build.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 11, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[ken] - Tidy the text in multilib file-64bit.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 09, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[ken] - Remove 'sed -i' from multilib temp-system bzip2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 08, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Added patch to fix poor tempfile +creation in Texinfo-4.8
+          that can lead to a symlink attack. From LFS - Archaic</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 07, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[ken] - Removed the copy of libiberty.h at the end of binutils
+          in the temporary system</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 06, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[ken] - Reordered final-system so that coreutils is built before
+          findutils (sequence as in LFS).  This allows the findutils testsuite to
+          complete all three parts, and removes the reference to /tools/bin/sort
+          from the updatedb script installed in the final system.</para>
+        </listitem>
+        <listitem>
+           <para>[jim] - Added note to ignore error during glibc-headers build.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 05, 2005</para>
+      <itemizedlist>
+       <listitem>
+          <para>[jim] - Removed all GCC_TARGET_FLAGS. Tried to make the build
+          to use generic commands.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>October 03, 2005</para>
+      <itemizedlist>
+      <listitem>
+          <para>[jim] - Added patch for coreutils to improve echo's POSIX and bash
+          compatibility and to recognise "\xhh" syntax as required by the testsuite
+          in udev-069 and later. From LFS - Matthew Burgess</para>
+        </listitem>
+       <listitem>
+          <para>[jim] - Added Gawk Segfault patch. From LFS - Matthew Burgess</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 30, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Remove sed -i from parts III and IV where we use the host's sed.</para>
+        </listitem>
+        <listitem>
+          <para>[ken] - Move iana-etc in final-system to similar position as in regular LFS, so that it is there for perl's testsuite.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Various Glibc Updates. Added localedef segfault patch.
+          Fixed MIPS64 and Sparc NPTL builds.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 28, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to GCC 4.0.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Glibc 20050926.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 27, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Downgraded to Linux 2.6.12.6, to get ready for stable release of the book.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.0.8.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Made NPTL common to all architectures.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 25, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Util-Linux 2.12r.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Groff 1.19.2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 21, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Man 1.6b.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Bison 2.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Glibc Snapshot 20050919.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 20, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Corrected type in glibc-ports installation in cross-tools.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 19, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Removed LDFLAGS="-s" from sysvinit builds.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Patches typo fixes. Thank you Justin Knierim.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 17, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Udev 070.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.13.2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 16, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated gcc builds. GCC 4.x requires AS_FOR_TARGET and LD_FOR_TARGET. With this change the
+          __thread that has been seen has been elminated. Thanx Ryan Oliver.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 14, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Reverted the September 13th Change. Glibc NPTL will not build with out sparcv9 in the
+          target triplet.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 13, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Binutils no changed targets for sparc. Now it's sparc-unknown-linux-gnu.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 12, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Add patch to fix tar testsuite for gcc4.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 11, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Glibc 20050905 snapshot. Fixes many cross-compile build
+          issues with GCC 4 based cross-lfs. For details read
+          <ulink url="http://archives.linuxfromscratch.org/mail-archives/lfs-dev/2005-September/053261.html"/>.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 10, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Updates to glibc check instructions and linkages.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 2, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Specs file adjustment.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 2, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added: Reiser_Crash patch to util-linux build. Thank you Jürg Billeter.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Findutils 4.2.25.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Libtool 1.5.20.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 2, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Specs adjustment works on GCC 4. Same expression for all Architectures, except
+          for Alpha.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+   <listitem>
+      <para>September 1, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added information about the #cross-lfs IRC support channel.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 20, 2005</para>
+      <para>August 31, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Updated to Findutils 4.2.26.</para>
+          <para>[jim] - Updated to GCC 4.0.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.12.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Ncurses patch to 20050827.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added missing patch for 64 bit architectures for glibc.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 18, 2005</para>
+      <para>August 28, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[manuel] - Fixed the umpack of the module-init-tools-testsuite
-          package.</para>
+          <para>[jim] - Added another sanity check to prevent error during gcc compile.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 17, 2005</para>
+      <para>August 27, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Update to Man-Pages 2.14.</para>
+          <para>[manuel] - Install Udev's documentation relating to configuring
+          rules (fixes bug LFS 1622).</para>
         </listitem>
         <listitem>
-          <para>[jim] - Update to Linux 2.6.14.2. This includes changes for the MIPS
-          Architecture. New Patch added.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Added change to move /usr/bin/less to /bin/less.</para>
+          <para>[manuel] - Refrain from using the undocumented --print-file
+          switch for GCC's spec file edit. Use -print-file-name=specs instead
+          (Greg Schafer).</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 13, 2005</para>
+      <para>August 26, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[manuel] - Improve the heuristic for determining a locale that
-          is supported by both Glibc and packages outside LFS. Ported from
-          LFS-SVN.</para>
+          <para>[jim] - Stop moving some of coreutils binaries to /bin as
+          they aren't required to be there (fixes bug LFS 1620). Copied
+          from Matt's change to the LFS book.</para>
         </listitem>
         <listitem>
-          <para>[manuel] - Omit running Bzip2's testsuite as a separate step,
-          as make runs it automatically. Ported from LFS-SVN.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Updated TCL build to install headers. Thank you Greg Schafer.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Updated Expect to use the newly relocated TCL Headers. Thank you Greg Schafer.</para>
+          <para>[jim] - Updated to Man 1.6a.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 10, 2005</para>
+      <para>August 22, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[ken] - Added Data/Dumper to temp perl modules, for coreutils
-          testsuite. Ported from LFS-SVN.</para>
+          <para>[jim] - Updated to Shadow 4.0.12.</para>
         </listitem>
         <listitem>
-          <para>[ken] - Removed POSIX VERSION information from coreutils page Thank you G Moko.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Added text for multilib kernel build requirements.</para>
+          <para>[jim] - Updated to Gawk 3.1.5.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 9, 2005</para>
+      <para>August 19, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[manuel] - Stop Udev from killing udevd processes on the
-          system and removed udevdir=/dev. Ported from LFS-SVN.</para>
+          <para>[jim] - Updated to File 4.15.</para>
         </listitem>
         <listitem>
-          <para>[manuel] - Install the binaries from Less to /usr/bin instead
-          of /bin. Ported from LFS-SVN.</para>
+          <para>[jim] - Updated to IANA-ETC 2.00.</para>
         </listitem>
         <listitem>
-          <para>[manuel] - Removed SBUs and disk usage information.</para>
+          <para>[jim] - Updated to Linux 2.6.12.5.</para>
         </listitem>
         <listitem>
-          <para>[jim] - Added missing utmp group. Thank you William Zhou.</para>
+          <para>[jim] - Updated to Udev 068.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to IPRoute2 050816.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 8, 2005</para>
+      <para>August 18, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Removed make headers -C bfd from Binutils. Thank you Robert Day.</para>
+          <para>[manuel] - Added Bzip2 bzgrep patch.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Fixed the installation directory of Sed
+          documentation.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updates to temp-tools section for Pure 64 builds.
+          Thanx to Doug Ronne.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 7, 2005</para>
+      <para>August 16, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[manuel] - Remove the optimization related warnings from the
-          toolchain packages. Ported from LFS-SVN.</para>
+          <para>[manuel] - Text updates ported from trunk up to r6693.</para>
         </listitem>
         <listitem>
-          <para>[manuel] - Install Vim's documentation to <filename
-          class="directory">/usr/share/doc/vim-&vim-version;</filename> instead
-          of <filename class="directory">/usr/share/vim/vim64/doc</filename>.
-          Ported from LFS-SVN.</para>
-        </listitem>
-        <listitem>
-          <para>[manuel] - Correct the instructions for running the
-          Module-Init-Tools' testsuite. Ported from LFS-SVN.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Removed unnecessary linking libc sed in gcc-final in
-          cross-tools. Recommendation from Erik-Jan, via cross-lfs list.</para>
+          <para>[manuel] - Added Bzip2 documentation patch.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 6, 2005</para>
+      <para>August 9, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Updated to Coreutils 5.93.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Updated to Procps 3.2.6.</para>
-        </listitem>
-        <listitem>
-          <para>[jim] - Updated to Man-Pages 2.13.</para>
+          <para>[jim] - Export build variables in temp-tools to .bash_profile.
+          Change recommended by Christian Schneider.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 5, 2005</para>
+      <para>August 8, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Updated to psmisc 21.8.</para>
+          <para>[jim] - Updated to Udev 065.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.12.4.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>November 3, 2005</para>
+      <para>August 7, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Fixes added to coreutils. Coreutils was install locales to /locale.
-           Added fixes for dircolors and md5sum also.</para>
+          <para>[manuel] - Text updates ported fron trunk up to r6620.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Added Vim security fix patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to add Pure 64 bit build. Thanx Ryan Oliver
+          and Ken Moffat.</para>
         </listitem>
       </itemizedlist>
     </listitem>
 
     <listitem>
-      <para>October 31, 2005</para>
+      <para>August 6, 2005</para>
       <itemizedlist>
         <listitem>
-          <para>[jim] - Now an official project. Resetting all Changelogs.</para>
+          <para>[manuel] - Text updates ported fron trunk up to r6612.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Added Bash documentation package.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 29, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[manuel] - Text updates ported fron trunk up to r6596.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 23, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Removed security patch to Zlib, not needed with
+          new version.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 22, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Changed cross-tools to new build method.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.07.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Shadow 4.0.11.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Zlib 1.2.3.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Text updates ported fron trunk up to r6569.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 19, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Changed link from netboot hint to netboot mini-book.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Changed the name of the reboot section to boot. Updated
+          book directories to reflect the change.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 18, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Shadow 4.0.11.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.06.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.12.3.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 15, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[manuel] - Text updates ported fron trunk up to r6522.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 12, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Made temp-tools only make 1 perl, 1 expect, and 1 TCL.
+          Only one version is needed for the testsuites and glibc builds.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Reverted to multiple perls. They are needed for the glibc
+          builds for each ABI.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 11, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to automake 1.9.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to iana-etc to 1.10.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Downgraded to udev 058, build issue with non-x86
+          architectures.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 8, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated flex build in final-system on 64 bit machines
+          to create libfl.a for all ABI's.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added security patch to zlib.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to e2fsprogs 1.38.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to udev 062.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 7, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jhuntwork] - Removed patch for ncurses in final-system build,
+          only necessary when cross-compiling.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 6, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added missing binutils patch to final-system.
+          Need multlib scripts patch for all multiple ABI builds.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Upgraded to Linux-libc-headers 2.6.12.0.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 4, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Put in correct Sparc CPU Names into the target-triplet
+          table.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 1, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Fixed typos in final-system for multilib.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Upgraded to Udev 059.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Upgraded to Linux 2.6.12.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Changed configure to sh configure in iproute2.
+          The current release doesn't set permissions correctly on configure.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Corrected sparc32 variable in table.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 30, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Changed udev rules to an entity.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Text updates from trunk up tp r6251.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added CPPFLAGS=-D_GNU_SOURCE to patch in temp-system.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added testing of adjusting the toolchain to all
+          architectures.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated ld.so.conf to see all multilib directories.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 29, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Changed to flex-3 patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Fixed console access on MIPS and Sparc based
+          architectures. This allowed the removal of openssh and
+          openssl on MIPS.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to TCL 8.4.11.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 28, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Shadow 4.0.10.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.05.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated creatingdirs.xml in chroot to
+          reflect a multilib environment.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Build Flags to multilib builds in chroot.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Fixed linux-libc-headers install in sparc64 and x86_64.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 26, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Removed unnecessary bzip2 builds from temp-system build.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Man-pages to 2.04.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated File to 4.14.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Added errata page and small changes from trunk up
+          to r6189.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Removed export CC in udev during final-system.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added missing symlink in createfiles.xml for lib32 and lib64.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added missing directories in creatingdirs.xml for lib32 and lib64.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added missing DESTDIR=${LFS} in udev during reboot section build.
+          This change was only for x86_64, mips64, and sparc64.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 25, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[manuel] - Changed CC="${CC-gcc}" by CC=gcc.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Updated to the latest version of the
+          mktemp tempfile patch, which supports building outside
+          the source directory.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 24, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jhuntwork] - Slight edit to sed in variables page -
+          Old one broke on a powerpc triple-target.</para>
+        </listitem>
+        <listitem>
+          <para>[jhuntwork] - Changed echo of variables to be one command.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Added --with-tclinclude=$TCLPATH to
+          Expect instructions.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Ported text changes from trunk up to r6137.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Added the compress symlink to gzip.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 23, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[manuel] - Removed --without-cvs on Glibc cross-tools commands.
+          We aren't using Glibc CVS snapshots.</para>
+        </listitem>
+        <listitem>
+          <para>[manuel] - Started cross-lfs text revision.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 22, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[manuel] - Text and commands (when applicable) synchronized
+          with trunk up to r6115.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 21, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Removed --included-regex from all grep builds.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man 1.6.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 20, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated IRC Servers for resources page.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Removed using config.guess from binutils for
+          ${LFS_HOST}.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Findutils 4.2.23.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 16, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Findutils 4.2.22.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 13, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to IPRoute2 ss050607.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Changed cflags from export "" to unset.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 12, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.11.12.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Binutils 2.16.1.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 8, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Shadow 4.0.9.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to LFS Bootscripts 3.2.2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 7, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Perl 5.8.7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.0.3.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to TCL 8.4.10.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 058.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 28, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added Texinfo to temp-tools section, will allow Binutils
+          to make their info pages on the final-system build.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 27, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Adding ownership change to prevent issues during
+          reboot.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added a what's next to the last part of the reboot
+          section.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated linux to 2.6.11.11.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Removed flex, bison, and m4 from temp-system, since
+          we are using FSF binutils.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated gcc to 3.4.4.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 26, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Adding necessary changes to the reboot section.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Adding a modified devices page to reboot section.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Adding environment to the reboot section.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 24, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Finishing the reboot section.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 23, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated gettext to 0.14.5.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Changed changelogs to use entities.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - IPRoute2 removed patch and changed to a sed.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 22, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jhuntwork] - Fixed url for Bzip2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 19, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Fixed util-linux patch entity.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated libtool to 1.15.18.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated linux to 2.6.11.10.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated GRUB to 097.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added missing glibc-headers to cross-tools.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 16, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jhuntwork] - Changed sparc64 to use glibc-linuxthreads.xml
+          in multilib.</para>
+        </listitem>
+        <listitem>
+          <para>[jhuntwork] - Fixed setting of CC variable in
+          cross-tools/multilib/glibc-linuxthreads-64bit.xml</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 13, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jhuntwork] - Temp-System: Added multilib build instructions
+          for bzip2.</para>
+        </listitem>
+        <listitem>
+          <para>[jhuntwork] - Changed CC="${LFS_TARGET}-gcc buildflags" to
+          CC="${CC} buildflags".</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 10, 2005</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - This BOOK is an update of the cross-lfs book into a new
+          format style.</para>
         </listitem>
       </itemizedlist>
     </listitem>
