@@ -9,6 +9,7 @@ all: install
 install: device_dirs device_links rules scripts boot mknod_devices
 
 rules:
+	install -d ${DESTDIR}/etc/udev/rules.d
 	install -m ${RULESMODE} 05-udev-early.rules ${DESTDIR}/etc/udev/rules.d/05-udev-early.rules
 	install -m ${RULESMODE} 35-helper.rules ${DESTDIR}/etc/udev/rules.d/35-helper.rules
 	install -m ${RULESMODE} 40-modprobe.rules ${DESTDIR}/etc/udev/rules.d/40-modprobe.rules
