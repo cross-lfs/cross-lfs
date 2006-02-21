@@ -4,6 +4,7 @@ SCRIPTMODE=755
 RULESMODE=644
 CONFMODE=644
 
+
 all: install
 
 install: device_dirs device_links rules scripts boot mknod_devices
@@ -16,7 +17,6 @@ rules:
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 	install -m ${RULESMODE} 55-sound.rules ${DESTDIR}/etc/udev/rules.d/55-sound.rules
 	install -m ${RULESMODE} 60-persistent.rules ${DESTDIR}/etc/udev/rules.d/60-persistent.rules
-	install -m ${RULESMODE} 90-user.rules ${DESTDIR}/etc/udev/rules.d/90-user.rules
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
 
 scripts:
@@ -47,17 +47,30 @@ device_links:
 	ln -snf /proc/kcore ${DESTDIR}/lib/udev/devices/core
 
 mknod_devices:
-	@echo ""
-	@echo "This step will fail if your not installing as the root user"
-	@echo "If it does, you will need to create these devices manually."
-	@echo "If you get a message saying 'File exists', you can safely"
-	@echo "Ignore this step."
-	@echo ""
-	@echo "Here are the commands for you to run as the root user."
-	@echo ""
-	@echo "mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3"
-	@echo "mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1"
-	@mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3
-	@mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1
+	@if [ "$$UID" = "0" ]; then \
+		if ! [ -e ${DESTDIR}/lib/udev/devices/null ]; then \
+			mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3 ;\
+		fi \
+	fi
+	@if [ "$$UID" = "0" ]; then \
+		if ! [ -e ${DESTDIR}/lib/udev/devices/console ]; then \
+			mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1 ;\
+		fi \
+	fi
+	@if [ "$$UID" != "0" ]; then \
+		if ! [ -e ${DESTDIR}/lib/udev/devices/null ]; then \
+			echo "You will need to issue the following command as the root user" ;\
+			echo "" ;\
+			mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3 ;\
+			echo "" ;\
+		fi \
+	fi
+	@if [ "$$UID" != "0" ]; then \
+		if ! [ -e ${DESTDIR}/lib/udev/devices/console ]; then \
+			echo "You will need to issue the following command as the root user" ;\
+			echo "" ;\
+			mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1 ;\
+		fi \
+	fi
 
 .PHONY: all install device_dirs device_links rules scripts boot mknod_devices
