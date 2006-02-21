@@ -1,0 +1,587 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-06-08
+Initial Package Version: 4.2.4
+Upstream Status: Unknown
+Origin: Debian 
+   http://ftp.debian.org/debian/pool/main/n/ncompress/ncompress_4.2.4-15.diff.gz
+Description: Add bounds checking to fix buffer overflow
+
+--- ncompress-4.2.4.orig/debian/README.debian
++++ ncompress-4.2.4/debian/README.debian
+@@ -0,0 +1,138 @@
++General Notes
++-------------
++
++In this package, 'uncompress' is installed as 'uncompress.real' to avoid
++conflict with the gzip package.  Most of the utility scripts distributed with
++the source code (zdiff, zmore, zcmp) are not installed.
++
++The uncompress.real program installed to /usr/bin is just a symlink to the
++compress program.  Same goes for the uncompress.real manpage in
++/usr/share/man/man1.
++
++Please note that this version of ncompress does not support files larger than
++2GB.  I have toyed with increasing this limit, but I haven't been overly
++successful.  It looks to be possible to increase the limit up to 4GB, but
++that's still an arbitrary limit, and given my level of understanding of this
++code, I'm leery of doing it for no real gain.  If you need support for very
++large files, I suggest using gzip rather than compress.
++
++Also, note that prior to fixing bug #220820 (in November of 2003, version
++4.2.4-13), there was a data-corruption bug with 'compress -b9'.  If you created
++files using -b9 (maxbits of 9) prior to this version, your file was probably
++corrupted, and you will only be able to recover parts of it.  I have "fixed"
++this bug by disallowing maxbits less than 10.  The uncompress.real program will
++still decompress 9-bit files created by other compress programs (such as the
++ones from Solaris or AIX) but the compress program will not create 9-bit files.
++
++This package was moved to main in August of 2004.  Prior to that, it was kept
++out of main because it implements the patented LZW algorithm.  The consensus is
++that patents on that algorithm have expired as of July 2004.
++
++
++Upstream Source Code
++--------------------
++
++Christoph apparently downloaded the original tarball from:
++
++   ftp://sunsite.unc.edu/pub/linux/utils/compress/ncompress-4.2.4.tar.Z
++
++In the meantime, however, sunsite.unc.edu has disappeared, and has been
++replaced by ibiblio.org, so the current URL is:
++
++   ftp://ftp.ibiblio.org/pub/linux/utils/compress/ncompress-4.2.4.tar.Z
++
++This probably doesn't matter much at all, since there hasn't been a new
++"upstream" release in more than 10 years.  In any case, the contents of the
++packgae orig.tar.gz file match exactly with the contents of the file currently
++on ibiblio.org.
++
++
++Copyright and Patent Discussion
++-------------------------------
++
++The following article is from James A. Woods, one of the earlier authors of
++compress.  The article discusses the Unisys patent on the LZW compression
++method, and how that affects ncompress.
++
++From uunet!zephyr.ens.tek.com!uw-beaver!mit-eddie!wuarchive!usc!ucsd!ucbvax!agate!riacs!jaw Wed Aug  1 15:06:59 EDT 1990
++Article: 1282 of gnu.misc.discuss
++Path: alembic!uunet!zephyr.ens.tek.com!uw-beaver!mit-eddie!wuarchive!usc!ucsd!ucbvax!agate!riacs!jaw
++From: jaw@riacs.edu (James A. Woods)
++Newsgroups: gnu.misc.discuss
++Subject: Sperry patent #4,558,302 does *not* affect 'compress'
++Keywords: data compression, algorithm, patent
++Message-ID: <1990Jul31.220935.1424@riacs.edu>
++Date: 31 Jul 90 22:09:35 GMT
++Organization: RIACS, NASA Ames Research Center
++Lines: 69
++
++#  "The chief defect of Henry King
++    Was chewing little bits of string."
++
++        -- Hilaire Belloc, Cautionary Tales [1907]
++
++     As a co-author of 'compress' who has had contact with an attorney for
++Unisys (nee Sperry), I would like to relay a very basic admission from Unisys
++that noncommercial use of 'compress' is perfectly legal.  'Compress' is also
++commercially distributed by AT&T as part of Unix System 5 release 4,
++with no further restrictions placed upon the use of the binary, as far
++as I am aware.
++
++     From conversations with Professor Abraham Lempel and others, it 
++appears that neither AT&T, Sun Microsystems, Hewlett Packard, nor IBM
++are paying any sort of license fees to Unisys in conjunction with patent
++#4,558,302.  It may be true that some organizations are paying fees for
++data compression technology licensed from one or more of the many holders
++of compression patents, but this is all independent from 'compress'.
++
++     In particular, I received a letter at NASA dated October 1, 1987 from
++John B. Sowell of the Unisys law department, informing me for the first
++time that some form of LZW was patented.  I naturally expressed
++skepticism that an algorithm could be patented (a murky legal area
++which remains so), stated that 'compress' is not identical to LZW,
++and in fact was designed, developed, and distributed before the ink
++on the patent was dry.  Several telephone conversations later, Mr. Sowell
++intimated that they would *not* seek any fees from users of 'compress'
++but instead were signing licensees for hardware implementations of LZW.
++
++     So, regardless of what you believe about a shady legal area, if anyone
++from Unisys contacts you to extract tribute for the use of 'compress', please
++tell them that, first, it is not theirs to begin with, and, second, there is
++someone who will testify in court about the conversation above.
++It is not even clear if anyone can "own" 'compress', since original developer
++Spencer Thomas, myself, and others placed the code in the public domain
++long before the adoption of the Berne copyright convention.
++
++     In light of the events above, it seems that the Free Software
++Foundation is being unduly paranoid about the use of 'compress'.
++Now I can well believe that FSF is more likely to be a legal target
++than a behemoth like AT&T, but if they are simply redistributing
++untouched free software developed years ago in the public sector,
++I see no problem.
++
++     Aside:  I am investigating, possibly for a case history to be
++recycled to USENET, the particulars of data compression patents.
++I am aware of the following patents: IBM's Miller-Wegman LZ variant,
++those of Telcor and ACT [losing candidates for the British Telecom modem
++standard], James A. Storer's work on limited lookahead as explicated in his
++text "Data Compression (methods and theory)", Computer Science Press, 1988,
++and the various patents pending associated with the Fiala and Greene
++CACM article of April, 1989 on textual substitution methods.
++If you have any lore, send it this way.
++
++
++
++                    Sincerely,
++
++                    James A. Woods
++                    NASA Ames Research Center (RIACS)
++                    jaw@riacs.edu (or ames!jaw)
++
++
++P.S.  The algorithm patent issue certainly is a "topic A" at the moment.
++One useful reference is the review article by Anthony and Colwell --
++"Litigating the Validity and Infringement of Software Patents" in
++Washington and Lee Law Review, volume 41, fall 1984.  I know Robert Colwell
++personally.  As a practicing patent attorney, he tells me that, at a minimum,
++use of an invention "for research purposes" is legitimate.
++
+--- ncompress-4.2.4.orig/debian/changelog
++++ ncompress-4.2.4/debian/changelog
+@@ -0,0 +1,137 @@
++ncompress (4.2.4-15) unstable; urgency=low
++
++  * Move to main now that LZW patent has expired (closes: #261282).
++  * Update debian/copyright to be clearer about public domain status.
++  * Move James A. Woods letter from copyright file to README.Debian.
++  * Move detailed location information from copyright file to README.Debian.
++
++ -- Kenneth J. Pronovici <pronovic@debian.org>  Wed, 25 Aug 2004 13:38:42 -0500
++
++ncompress (4.2.4-14) unstable; urgency=low
++
++  * Bumped standards version to 3.6.1 (no package changes).
++  * Fix gcc-3.4 build problem (closes: #260723).
++    - Add -DNOFUNCDEFS to gcc command, to prevent custom prototypes for
++      standard functions from being used by the compiler.
++
++ -- Kenneth J. Pronovici <pronovic@debian.org>  Wed, 21 Jul 2004 20:49:01 -0500
++
++ncompress (4.2.4-13) unstable; urgency=low
++
++  * Disallow maxbits less than 10, to avoid data corruption (closes: #220820).
++  * Added note in debian/README.Debian about 9-bit corruption.
++
++ -- Kenneth J. Pronovici <pronovic@debian.org>  Fri, 14 Nov 2003 15:47:08 -0600
++
++ncompress (4.2.4-12) unstable; urgency=low
++
++  * Upstream source changed (ibiblio.org replaced sunsite.unc.edu).
++    - Updated debian/watch to use correct URL
++    - Updated debian/copyright to note new download location
++    - Updated debian/copyright to clarify packaging history
++
++ -- Kenneth J. Pronovici <pronovic@debian.org>  Fri, 19 Sep 2003 10:40:56 -0500
++
++ncompress (4.2.4-11) unstable; urgency=low
++
++  * Changed debian/README.debian to document (lack of) large file support.
++  * Changed section to 'optional' in debian/control to match overrides.
++
++ -- Kenneth J. Pronovici <pronovic@debian.org>  Mon, 14 Apr 2003 15:34:36 -0500
++
++ncompress (4.2.4-10) unstable; urgency=low
++
++  * New maintainer (closes: #182937).
++  * Updated debian/copyright to reflect new maintainer.
++  * Removed local variables from debian/changelog.
++  * Updated debian/control file.
++    - Reflect new maintainer.
++    - Change standards version to 3.5.9.
++    - Update debhelper depends to (>= 4.0.2).
++    - Rewrite and clarify short and long descriptions.
++    - Fix spelling error in long description (closes: #125169).
++  * Updated comments in debian/README.debian.
++  * Brought debian/rules up to "modern" standards.
++  * Updated debian/copyright to clarify download location.
++  * Added debian/watch file.
++  * Added debian/compat file at compatibility level 4.
++  * Changed prototype of main() in compress42.c, to quiet gcc.
++  * Updated compress.1 manpage (closes: #99585).
++    - Reference 'uncompress.real' rather than 'uncompress'.
++    - No longer reference zcat at all.
++
++ -- Kenneth J. Pronovici <pronovic@debian.org>  Mon,  7 Apr 2003 17:52:47 -0500
++
++ncompress (4.2.4-9.1) unstable; urgency=low
++
++  * NMU based on patch by Stephen Stafford <bagpuss@debian.org>:
++    - FHS transition (closes: #91011, #91596).
++    - Added build-depends on debhelper.
++    - Uncommented call to dh_installdeb so the debhelper postinst and prerm
++      files get installed with the FHS transition symlink stuff.
++    - Bumped standards to 3.5.0.
++
++ -- Colin Watson <cjwatson@debian.org>  Wed, 25 Jul 2001 11:52:18 +0100
++
++ncompress (4.2.4-9) frozen unstable; urgency=low
++
++  * Upload for frozen.
++
++ -- Adam Klein <aklein@debian.org>  Thu,  3 Dec 1998 19:57:56 -0800
++
++ncompress (4.2.4-8) unstable; urgency=low
++
++  * No longer segfaults on long file names. (closes: #26416)
++  * Standards version 2.5.0.0 (no changes).
++
++ -- Adam Klein <aklein@debian.org>  Wed,  2 Dec 1998 23:19:45 -0800
++
++ncompress (4.2.4-7) unstable; urgency=low
++
++  * Removed dh_du invocation from debian/rules 
++
++ -- Adam Klein <aklein@debian.org>  Wed, 11 Mar 1998 23:17:13 -0500
++
++ncompress (4.2.4-6) unstable; urgency=low
++
++  * Moved exit status info to DIAGNOSTICS section (closes: #16640)
++
++ -- Adam Klein <aklein@debian.org>  Tue, 10 Feb 1998 21:27:56 -0800
++
++ncompress (4.2.4-5) unstable; urgency=low
++
++  * New maintainer
++  * README.debian now mentions uncompress.real
++  * Treat argv[0] value of "uncompress.real" as "uncompress" (closes: #16621)
++  * Use debhelper (closes: #9674, #14503)
++  * Control file now lists section as non-free/utils
++  * Use standards version 2.4.0.0
++
++ -- Adam Klein <aklein@debian.org>  Tue, 27 Jan 1998 09:28:38 -0800
++
++ncompress (4.2.4-4) unstable; urgency=low
++
++  * Rebuilt for hamm
++
++ -- Christoph Lameter <clameter@waterf.org>  Mon, 29 Sep 1997 22:38:22 -0700
++
++ncompress (4.2.4-3) unstable; urgency=low
++
++  * new Maintainer
++
++ -- Helmut Geyer <Helmut.Geyer@iwr.uni-heidelberg.de>  Fri,  6 Jun 1997 07:31:46 +0200
++
++ncompress (4.2.4-2) unstable; urgency=low
++
++  * install uncompress as uncompress.real since gzip maintainer did not
++    want to use alternative and gzip already installs a link for uncompress
++    to gzip.
++
++ -- Christoph Lameter <clameter@debian.org>  Mon, 30 Dec 1996 16:24:03 -0800
++
++ncompress (4.2.4-1) unstable; urgency=low
++
++  * Initial Release.
++
++ -- Christoph Lameter <clameter@debian.org>  Sun, 22 Dec 1996 10:14:17 -0800
++
+--- ncompress-4.2.4.orig/debian/compat
++++ ncompress-4.2.4/debian/compat
+@@ -0,0 +1 @@
++4
+--- ncompress-4.2.4.orig/debian/control
++++ ncompress-4.2.4/debian/control
+@@ -0,0 +1,22 @@
++Source: ncompress
++Section: utils
++Priority: optional
++Maintainer: Kenneth J. Pronovici <pronovic@debian.org>
++Standards-Version: 3.6.1
++Build-Depends: debhelper (>= 4.0.2)
++
++Package: ncompress
++Architecture: any
++Depends: ${shlibs:Depends}
++Description: Original Lempel-Ziv compress/uncompress programs
++ This package provides the original programs that are the de facto standard, in
++ much of the UNIX community, for compressing and uncompressing files.  The
++ programs implement a fast, simple LZW file compression algorithm.  The LZW
++ algorithm does not have as high a rate of compression as some other
++ algorithms, but LZW implementations such as this one often compress files
++ faster than other, similar programs such as gzip.
++ .
++ For Debian, the standard uncompress program is installed as uncompress.real.
++ .
++ This package contains a copyright notice from one of the original authors in
++ the file /usr/doc/ncompress/README.Debian.
+--- ncompress-4.2.4.orig/debian/copyright
++++ ncompress-4.2.4/debian/copyright
+@@ -0,0 +1,15 @@
++This package was originally debianized by Christoph Lameter on 22 Dec 1996.
++Since then, it has been maintained by Helmut Geyer, Christoph Lameter and Adam
++Klein, and is currently maintained by Kenneth J. Pronovici <pronovic@debian.org>.
++
++It may be downloaded from: ftp://ftp.ibiblio.org/pub/linux/utils/compress/ncompress-4.2.4.tar.Z
++
++Upstream Authors: Spencer W. Thomas & James A. Woods, 
++                  Jim McKie, Steve Davies, Ken Turkowski, 
++                  Joe Orost, Dave Mack, Peter Jannesen
++
++Copyright: 
++
++   Placed in the public domain by Spencer W. Thomas and James A. Woods.  
++   See README.Debian for some more background information.
++
+--- ncompress-4.2.4.orig/debian/dirs
++++ ncompress-4.2.4/debian/dirs
+@@ -0,0 +1,2 @@
++usr/bin
++usr/share/man/man1
+--- ncompress-4.2.4.orig/debian/rules
++++ ncompress-4.2.4/debian/rules
+@@ -0,0 +1,45 @@
++#!/usr/bin/make -f
++
++binary: binary-arch
++
++binary-arch: build install
++	dh_testdir
++	dh_testroot
++	dh_installdocs Acknowleds README
++	dh_installchangelogs Changes
++	dh_strip
++	dh_fixperms
++	dh_compress
++	dh_installdeb
++	dh_shlibdeps
++	dh_gencontrol
++	dh_md5sums
++	dh_builddeb
++
++binary-indep: 
++
++install: build
++	dh_testdir
++	dh_testroot
++	dh_installdirs
++	install -o root -g root compress debian/ncompress/usr/bin
++	ln -s compress debian/ncompress/usr/bin/uncompress.real
++	install -o root -g root -m 644 compress.1 debian/ncompress/usr/share/man/man1
++	ln -s compress.1 debian/ncompress/usr/share/man/man1/uncompress.real.1
++
++build: build-stamp
++build-stamp:
++	dh_testdir
++	gcc -O2 -g -o compress -DNOFUNCDEF -DCOMPILE_DATE="\"`date`\"" compress42.c
++	touch build-stamp
++
++configure:
++
++clean:
++	dh_testdir
++	dh_testroot
++	rm -f build-stamp
++	rm -f compress
++	dh_clean
++
++.PHONY: binary binary-arch binary-indep install build configure clean
+--- ncompress-4.2.4.orig/debian/watch
++++ ncompress-4.2.4/debian/watch
+@@ -0,0 +1,2 @@
++version=2
++ftp://ftp.ibiblio.org/pub/linux/utils/compress/ncompress-(.*)\.tar.Z    debian   uupdate
+--- ncompress-4.2.4.orig/compress.1
++++ ncompress-4.2.4/compress.1
+@@ -1,7 +1,7 @@
+ .PU
+ .TH COMPRESS 1 local
+ .SH NAME
+-compress, uncompress, zcat \- compress and expand data (version 4.1)
++compress, uncompress.real \- compress and expand data (version 4.2)
+ .SH SYNOPSIS
+ .ll +8
+ .B compress
+@@ -23,7 +23,7 @@
+ ]
+ .ll -8
+ .br
+-.B uncompress
++.B uncompress.real
+ [
+ .B \-f
+ ] [
+@@ -36,13 +36,15 @@
+ .I "name \&..."
+ ]
+ .br
+-.B zcat
+-[
+-.B \-V
+-] [
+-.I "name \&..."
+-]
+ .SH DESCRIPTION
++.PP
++Note that the program that would normally be installed as
++.I uncompress
++is installed for Debian as 
++.I uncompress.real. 
++This has been done to avoid conflicting with the more-commonly-used
++program with the same name that is part of the gzip package.
++.PP
+ .I Compress
+ reduces the size of the named files using adaptive Lempel-Ziv coding.
+ Whenever possible,
+@@ -68,11 +70,9 @@
+ the user is prompted as to whether an existing file should be overwritten.
+ .PP
+ Compressed files can be restored to their original form using
+-.I uncompress
+-or
+-.I zcat.
++.I uncompress.real.
+ .PP
+-.I uncompress
++.I uncompress.real
+ takes a list of files on its command line and replaces each
+ file whose name ends with
+ .B "\&.Z"
+@@ -85,22 +85,9 @@
+ The
+ .B \-c
+ option makes
+-.I compress/uncompress
++.I compress/uncompress.real
+ write to the standard output; no files are changed.
+ .PP
+-.I zcat
+-is identical to
+-.I uncompress
+-.B \-c.
+-.I zcat
+-uncompresses either a list of files on the command line or its
+-standard input and writes the uncompressed data on standard output.
+-.I zcat
+-will uncompress files that have the correct magic number whether
+-they have a
+-.B "\&.Z"
+-suffix or not.
+-.PP
+ If the
+ .B \-r
+ flag is specified, 
+@@ -148,7 +135,7 @@
+ Note that the
+ .B \-b
+ flag is omitted for
+-.I uncompress,
++.I uncompress.real,
+ since the 
+ .I bits
+ parameter specified during compression
+@@ -175,13 +162,13 @@
+ option,
+ a message is printed yielding the percentage of
+ reduction for each file compressed.
+-.PP
+-Exit status is normally 0;
+-if the last file is larger after (attempted) compression, the status is 2;
+-if an error occurs, exit status is 1.
+ .SH "SEE ALSO"
+ pack(1), compact(1)
+ .SH "DIAGNOSTICS"
++Exit status is normally 0;
++if the last file is larger after (attempted) compression, the status is 2;
++if an error occurs, exit status is 1.
++.PP
+ Usage: compress [\-dfvcVr] [\-b maxbits] [file ...]
+ .in +8
+ Invalid options were specified on the command line.
+@@ -195,7 +182,7 @@
+ not in compressed format
+ .in +8
+ The file specified to
+-.I uncompress
++.I uncompress.real
+ has not been compressed.
+ .in -8
+ .IR file :
+@@ -272,13 +259,14 @@
+ a small process data space (64KB or less, as exhibited by the DEC PDP
+ series, the Intel 80286, etc.)
+ .PP
+-Invoking compress with a \-r
++Invoking compress with a 
++.BR \-r
+ flag will occasionally cause it to produce spurious error warnings of the form
+ .PP
+ .in 8
+ "<filename>.Z already has .Z suffix - ignored"
+ .in -8
+ .PP
+-These warnings can be ignored. See the comments in compress.c:compdir()
+-for an explanation.
++These warnings can be ignored. See the comments in compress42.c:compdir()
++in the source distribution for an explanation.
+ 
+--- ncompress-4.2.4.orig/compress42.c
++++ ncompress-4.2.4/compress42.c
+@@ -230,6 +230,8 @@
+ 
+ #define INIT_BITS 9			/* initial number of bits/code */
+ 
++#define MIN_MAXBITS 10		/* min value for -b maxbits (smaller causes corruption) */
++
+ #ifndef SACREDMEM
+ 	/*
+  	 * SACREDMEM is the amount of physical memory saved for others; compress
+@@ -638,7 +640,7 @@
+ 	} ;
+ #endif
+ 
+-void  	main			ARGS((int,char **));
++int   	main			ARGS((int,char **));
+ void  	Usage			ARGS((void));
+ void  	comprexx		ARGS((char **));
+ void  	compdir			ARGS((char *));
+@@ -691,7 +693,7 @@
+  *   deterministic, and can be done on the fly.  Thus, the decompression
+  *   procedure needs no input table, but tracks the way the table was built.
+  */ 
+-void
++int
+ main(argc, argv)
+ 	REG1	int 	 argc;
+ 	REG2	char	*argv[];
+@@ -719,7 +721,8 @@
+ 		else
+ 			progname = argv[0];
+ 
+-    	if (strcmp(progname, "uncompress") == 0)
++    	if (strcmp(progname, "uncompress") == 0
++	    || strcmp(progname, "uncompress.real") == 0)
+ 			do_decomp = 1;
+ 		else
+ 		if (strcmp(progname, "zcat") == 0)
+@@ -819,7 +822,7 @@
+ nextarg:	continue;
+     	}
+ 
+-    	if (maxbits < INIT_BITS)	maxbits = INIT_BITS;
++    	if (maxbits < MIN_MAXBITS)	maxbits = MIN_MAXBITS;
+     	if (maxbits > BITS) 		maxbits = BITS;
+ 
+     	if (*filelist != NULL)
+@@ -883,6 +886,10 @@
+ 		int		fdout;
+ 		char	tempname[MAXPATHLEN];
+ 
++		if (strlen(*fileptr) > (MAXPATHLEN - 1)) {
++			fprintf(stderr, "Pathname too long: %s\n", *fileptr);
++			return;
++		}
+ 		strcpy(tempname,*fileptr);
+ 		errno = 0;
+ 
