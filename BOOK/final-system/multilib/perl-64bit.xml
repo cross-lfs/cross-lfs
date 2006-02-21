@@ -16,28 +16,9 @@
     <primary sortas="a-Perl">Perl</primary>
   </indexterm>
 
-  <sect2 role="package">
-    <title/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/perl.xml"
-    xpointer="xpointer(//*[@role='package']/para[1])"/>
-
-    <segmentedlist>
-      <segtitle>&buildtime;</segtitle>
-      <segtitle>&diskspace;</segtitle>
-
-      <seglistitem>
-        <seg>Not checked yet</seg>
-        <seg>Not checked yet</seg>
-      </seglistitem>
-    </segmentedlist>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/perl.xml"
-    xpointer="xpointer(//*[@role='package']/segmentedlist[2])"/>
-
-  </sect2>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/perl.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Perl</title>
@@ -49,7 +30,7 @@
     32 bits, move it to a different name, and then install the 64-bit version, it is
     almost always invoked as just <command>perl</command>. That means only the
     libraries and modules for the last version installed will be accessible. We
-    therefore only install one version.</para> 
+    therefore only install one version.</para>
 
     <para>Perl does not, by default, know about library directories with names other
     than lib, such as lib64.  The following patch will allow it to install to lib64.</para>
