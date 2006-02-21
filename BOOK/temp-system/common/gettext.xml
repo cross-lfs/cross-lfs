@@ -25,14 +25,14 @@
     <para os="a">Gettext has an issue with cross-compiling where it
     can't find getline. So we fix it here:</para>
 
-<screen os="b"><userinput>echo "am_cv_func_working_getline=yes" &gt;&gt; config.cache</userinput></screen>
+<screen os="b"><userinput>cd gettext-tools
+echo "am_cv_func_working_getline=yes" &gt;&gt; config.cache</userinput></screen>
 
     <para os="c">Prepare Gettext for compilation:</para>
 
-<screen os="d"><userinput>cd gettext-tools
-   ./configure --prefix=/tools \
+<screen os="d"><userinput>./configure --prefix=/tools \
    --host=${LFS_TARGET} --disable-shared \
-   --cache-file=../config.cache</userinput></screen>
+   --cache-file=config.cache</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
