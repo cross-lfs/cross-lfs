@@ -88,6 +88,8 @@ install-network: install-helper-functions install-network-update
 	@echo "Adding rules to ${DESTDIR}/etc/udev/rules.d/35-helper.rules."
 	@cp ${DESTDIR}/etc/udev/rules.d/35-helper.rules /tmp/first
 	@cat /tmp/first contrib/network/rules > ${DESTDIR}/etc/udev/rules.d/35-helper.rules 2>&1
+	@rm ${DESTDIR}/etc/rc.d/rc2.d/K80network
+	@rm ${DESTDIR}/etc/rc.d/rc{3,4,5}.d/S20network
 
 install-network-update:
 	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/lib/udev/network_helper.sh
