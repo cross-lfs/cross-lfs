@@ -43,3 +43,6 @@ make install \
    >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 
+if [ "${MULTIARCH}" = "Y" ]; then
+   use_wrapper ${KDE_PREFIX}/bin/artsc-config
+fi
