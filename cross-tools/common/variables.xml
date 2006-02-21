@@ -13,64 +13,64 @@
   <bridgehead renderas="sect4">Configuration # 1 - Creating different
   architecture tools</bridgehead>
 
-  <para>This method is recommended for all LiveCD based distro's.</para>
+  <para os="a">This method is recommended for all LiveCD based distro's.</para>
 
-  <para>During the building of the cross-compile tools you will need to
+  <para os="b">During the building of the cross-compile tools you will need to
   set a few variables that will be dependent on your particular needs.
   The first variable will be the triplet of the <envar>HOST</envar> machine.
   You will need to set the <envar>CHOST</envar> triplet to match your
   particular needs. To set this information you can issue the following
   command:</para>
 
-<screen><userinput>export LFS_HOST="${MACHTYPE}"</userinput></screen>
+<screen os="c"><userinput>export LFS_HOST="${MACHTYPE}"</userinput></screen>
 
-  <para>Now you will need to set the target triplet for the target
-  architecure. You can do this by running the same command as above, just
+  <para os="d">Now you will need to set the target triplet for the target
+  architecture. You can do this by running the same command as above, just
   running it on the target machine. If you can't run the command on the
   target machine, you can use the table at the bottom of this page. Set
   the command using the method listed below:</para>
 
-<screen><userinput>export LFS_TARGET="{target triplet}"</userinput></screen>
+<screen os="e"><userinput>export LFS_TARGET="{target triplet}"</userinput></screen>
 
   <bridgehead renderas="sect4">Configuration # 2 - Creating same
   architecture tools</bridgehead>
 
-  <para>You can also create <quote>clean</quote> tools on your current
+  <para os="f">You can also create <quote>clean</quote> tools on your current
   distro. This will ensure that you have all the prerequisites for the
   LFS build.</para>
 
-  <para>You will need to set your host target triplet a little differently.
+  <para os="g">You will need to set your host target triplet a little differently.
   To set this information you can issue the following commands:</para>
 
-<screen><userinput>export LFS_HOST="`echo ${MACHTYPE} | sed -e 's/unknown/cross/g' -e 's/-pc-/-cross-/g'`"</userinput></screen>
+<screen os="h"><userinput>export LFS_HOST="`echo ${MACHTYPE} | sed -e 's/unknown/cross/g' -e 's/-pc-/-cross-/g'`"</userinput></screen>
 
-  <para>Now you will need to set the target triplet for the target, which
+  <para os="i">Now you will need to set the target triplet for the target, which
   in this case is very simple. Set the command using the method listed
   below:</para>
 
-<screen><userinput>export LFS_TARGET="${MACHTYPE}"</userinput></screen>
+<screen os="j"><userinput>export LFS_TARGET="${MACHTYPE}"</userinput></screen>
 
   <bridgehead renderas="sect4">Sanity Check</bridgehead>
 
-  <para>Let's perform a sanity check to prevent build issues. If our LFS_HOST matches our
+  <para os="k">Let's perform a sanity check to prevent build issues. If our LFS_HOST matches our
   target, we will get some failures during our cross-compile:</para>
 
-<screen><userinput>if [ "${LFS_HOST}" = "${LFS_TARGET}" ]; then \
+<screen os="l"><userinput>if [ "${LFS_HOST}" = "${LFS_TARGET}" ]; then \
   echo "Host and Target can't be the same." ; fi</userinput></screen>
  
-  <para>If you received an message, "Host and Target can't be the same."
+  <para os="m">If you received an message, "Host and Target can't be the same."
   You will need to use the other Configuration Method. This will prevent build
   issues during the early phases of the build.</para>
 
   <bridgehead renderas="sect4">Copy settings to Environment</bridgehead>
 
-  <para>Now we will add these to <filename>~/.bashrc</filename>, just in
+  <para os="n">Now we will add these to <filename>~/.bashrc</filename>, just in
   case you have to exit and restart building later:</para>
 
-<screen><userinput>echo export LFS_HOST=\""${LFS_HOST}\"" &gt;&gt; ~/.bashrc
+<screen os="o"><userinput>echo export LFS_HOST=\""${LFS_HOST}\"" &gt;&gt; ~/.bashrc
 echo export LFS_TARGET=\""${LFS_TARGET}\"" &gt;&gt; ~/.bashrc</userinput></screen>
 
-  <table>
+  <table os="p">
     <title>List of architectures, target triplets, and recommended book</title>
     <tgroup cols="2" align="center">
       <colspec colname="Processor"/>

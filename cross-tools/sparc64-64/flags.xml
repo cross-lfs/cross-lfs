@@ -9,23 +9,24 @@
   <title>Build Flags</title>
   <?dbhtml filename="flags.html"?>
 
-  <para>We will need to setup target specific flags for the compiler
-  and linkers. You can choose the appropriate BUILD32 and BUILD64
-  from the table at the bottom of the page.</para>
+   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+   href="../x86_64-64/flags.xml"
+   xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>export BUILD64="[BUILD64 entries]"
+<screen os="b"><userinput>export BUILD64="[BUILD64 entries]"
 export GCCTARGET="[GCCTARGET entries]"</userinput></screen>
 
-  <para>Lets add the build flags to <filename>~/.bashrc</filename> to
-  prevent issues if we stop and come back later.</para>
+   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+   href="../x86_64-64/flags.xml"
+   xpointer="xpointer(//*[@os='c'])"/>
 
-<screen><userinput>echo export BUILD64=\""${BUILD64}\"" &gt;&gt; ~/.bashrc
+<screen os="d"><userinput>echo export BUILD64=\""${BUILD64}\"" &gt;&gt; ~/.bashrc
 echo export GCCTARGET=\""${GCCTARGET}\"" &gt;&gt; ~/.bashrc</userinput></screen>
 
-  <para>The following table gives the entires for different Sparc 64 capable
+  <para os="e">The following table gives the entires for different Sparc 64 capable
   processors. Pick the processor that matches your system.</para>
 
-  <table>
+  <table os="f">
     <title>List of architectures, target triplets, and recommended book</title>
     <tgroup cols="2" align="center">
       <colspec colname="Processor"/>
