@@ -155,6 +155,11 @@ esac &&
 
 cp System.map ${LFS}/boot/System.map-${KERNEL_VER} &&
 cp .config ${LFS}/boot/config-${KERNEL_VER} &&
+
+# Create /usr/share/hwdata dir and populate with pci.ids (for hald)
+mkdir -p ${LFS}/usr/share/hwdata &
+cp -p drivers/pci/pci.ids ${LFS}/usr/share/hwdata &
+
 cd ${LFS}/boot &&
 ln -s System.map-${KERNEL_VER} System.map &&
 cd ${LFS} &&
