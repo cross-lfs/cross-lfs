@@ -33,9 +33,9 @@ export TGT_TOOLS=/tgt-tools
 
 export SRC=/home/lfs/src/sparcv8
 export TARBALLS=/mnt/tarballs
-export PATCHES=/home/lfs/cross-lfs/patches
-export SCRIPTS=/home/lfs/cross-lfs/scripts
-export CONFIGS=/home/lfs/cross-lfs/configs
+export PATCHES=/home/lfs/cross-lfs-scripts/patches
+export SCRIPTS=/home/lfs/cross-lfs-scripts/scripts
+export CONFIGS=/home/lfs/cross-lfs-scripts/configs
 
 # Logging
 # Set for base of logging tree
@@ -59,7 +59,7 @@ umask 0022
 
 # set to the target architecture
 export TGT_ARCH=sparc
-export TGT_CFLAGS="-mcpu=hypersparc -mtune=hpersparc"
+export TGT_CFLAGS="-mcpu=hypersparc -mtune=hypersparc"
 # Set to the target architectures target-triple
 export TARGET=sparc-sun-linux-gnu
 
@@ -123,6 +123,9 @@ export USE_NPTL=N
 
 # Are we building a multi-arch toolchain
 export MULTIARCH=N
+
+# Dont build shared libgcc prior to main glibc build
+export NO_GCC_EH=Y
 
 # MISC
 #------
