@@ -7,7 +7,7 @@ if [ ! -d /opt/gnome-${GNOME_REL} ]; then
    mkdir -p /opt/gnome-${GNOME_REL}
 fi
 echo " - creating gnome-${GNOME_REL_MAJ} -> gnome-${GNOME_REL} symlink"
-ln -sf gnome-${GNOME_REL} /opt/gnome-${GNOME_REL_MAJ}
+ln -sfn gnome-${GNOME_REL} /opt/gnome-${GNOME_REL_MAJ}
 
 
 export PATH=${PATH}:${GNOME_PREFIX}/bin

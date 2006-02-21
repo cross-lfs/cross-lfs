@@ -37,8 +37,7 @@ echo " o Build OK" &&
 min_log_init ${TESTLOGS} &&
 make check \
    >> ${LOGFILE} 2>&1 &&
-echo " o ALL OK" || barf
-
+echo " o Test OK" || barf
 
 min_log_init ${INSTLOGS} &&
 make install \

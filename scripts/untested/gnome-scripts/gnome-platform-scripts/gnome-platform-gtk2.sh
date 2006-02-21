@@ -16,7 +16,7 @@ fi
 # override TARBALLS to point at gnome/platform tree
 GNOME_REL_MAJ=`echo ${GNOME_REL} | sed 's@\([0-9]*\.[0-9]*\).*@\1@g'`
 export TARBALLS=${GNOME_TARBALLS}/platform/${GNOME_REL_MAJ}/${GNOME_REL}/sources
-unpack_tarball gtk+-${GTK2_VER}
+unpack_tarball gtk\\+-${GTK2_VER}
 cd ${PKGDIR}
 
 max_log_init gtk+ ${GTK2_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
