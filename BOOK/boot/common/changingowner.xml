@@ -20,8 +20,8 @@
   by the user <systemitem class="username">lfs</systemitem>,
   a user that exists only on the host system. For security reasons, the $LFS root directory and all of it subdirectories should be owned by <systemitem class="username">root</systemitem>. Change the ownership for $LFS and its subdirectories by running these commands:</para>
 
-<screen><userinput>chown 0:0 ${LFS}
-chown -R 0:0 $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,srv,sys,tmp,usr,var}</userinput></screen>
+<screen><userinput>chown root:root ${LFS}
+chown -R root:root $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,srv,sys,tmp,usr,var}</userinput></screen>
 
   <para os="c">The same issue also exists with <filename class="directory">/tools</filename> and <filename class="directory">/cross-tools</filename>. Although these directories can be deleted once the
   LFS system has been finished, they can be retained to build additional
@@ -38,17 +38,11 @@ chown -R 0:0 $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,srv,sy
   it the same user and group IDs as on the host system. Alternatively,
   assign the contents of the <filename class="directory">/tools</filename>
   and <filename class="directory">/cross-tools</filename> directories to user <systemitem class="username">root</systemitem> by running
-  the following command:</para>
+  the following commands:</para>
 
-<screen><userinput>chown -R 0:0 /tools
-chown -R 0:0 /cross-tools</userinput></screen>
+<screen><userinput>chown -R root:root /tools
+chown -R root:root /cross-tools</userinput></screen>
 
-<para os="e">This book assumes you ran these <command>chown</command> commands.</para>
-
-<!--  <para os="c">The command uses <parameter>0:0</parameter> instead of
-  <parameter>root:root</parameter>, because <command>chown</command>
-  is unable to resolve the name <quote>root</quote> until the password
-  file has been created. This book assumes you ran this
-  <command>chown</command> command.</para> -->
+  <para os="e">This book assumes you ran these <command>chown</command> commands.</para>
 
 </sect1>
