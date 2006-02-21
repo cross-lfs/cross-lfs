@@ -60,13 +60,6 @@
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para os="ac">Also, ensure that the kernel does not attempt to pass
-    hotplugging events to userspace until userspace specifies that it is
-    ready:</para>
-
-<screen os="ad"><userinput>cp kernel/kmod.c{,.bak}
-sed 's@/sbin/hotplug@/bin/true@' kernel/kmod.c.bak > kernel/kmod.c</userinput></screen>
-
     <para os="ae">Configure the kernel via a menu-driven interface:</para>
 
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${LFS_TARGET}- menuconfig</userinput></screen>
