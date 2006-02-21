@@ -45,7 +45,7 @@
             <li class="prev">
               <xsl:choose>
                 <xsl:when test="$prev[@id='ch-chroot-devices']
-                        or $prev[@id='ch-reboot-whatnext']">
+                        or $prev[@id='ch-boot-whatnext']">
                   <a accesskey="p">
                     <xsl:attribute name="href">
                       <xsl:call-template name="href.target">
@@ -90,7 +90,7 @@
             <li class="next">
               <xsl:choose>
                 <xsl:when test="$next[@id='chapter-chroot'] or
-                        $next[@id='chapter-reboot']">
+                        $next[@id='chapter-boot']">
                   <a accesskey="n">
                     <xsl:attribute name="href">
                       <xsl:call-template name="href.target">
@@ -207,7 +207,7 @@
             <li class="prev">
               <xsl:choose>
                 <xsl:when test="$prev[@id='ch-chroot-devices']
-                        or $prev[@id='ch-reboot-whatnext']">
+                        or $prev[@id='ch-boot-whatnext']">
                   <a accesskey="p">
                     <xsl:attribute name="href">
                       <xsl:call-template name="href.target">
@@ -253,7 +253,7 @@
             <li class="next">
               <xsl:choose>
                 <xsl:when test="$next[@id='chapter-chroot'] or
-                        $next[@id='chapter-reboot']">
+                        $next[@id='chapter-boot']">
                   <a accesskey="n">
                     <xsl:attribute name="href">
                       <xsl:call-template name="href.target">
