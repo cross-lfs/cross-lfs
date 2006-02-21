@@ -33,30 +33,30 @@
   <sect2 role="installation">
     <title>Installation of Tar</title>
 
-<para os="a">Apply a patch to fix some issues with the test suite when using
+<para os="p1">Apply a patch to fix some issues with the test suite when using
 GCC-&gcc-version;:</para>
 
-<screen os="a1"><userinput>patch -Np1 -i ../&tar-gcc4_fix-patch;</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&tar-gcc4_fix-patch;</userinput></screen>
 
-    <para os="b">Tar has a bug when the <option>-S</option> option is used with
+    <para os="p3">Tar has a bug when the <option>-S</option> option is used with
     files larger than 4 GB. The following patch properly fixes this issue:</para>
 
-<screen os="b1"><userinput>patch -Np1 -i ../&tar-sparse_fix-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&tar-sparse_fix-patch;</userinput></screen>
 
-    <para os="c">Prepare Tar for compilation:</para>
+    <para os="a">Prepare Tar for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin</userinput></screen>
 
-    <para os="d">Compile the package:</para>
+    <para os="c">Compile the package:</para>
 
-<screen os="e"><userinput>make</userinput></screen>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <para os="f">To test the results, issue:
+    <para os="e">To test the results, issue:
     <userinput>make check</userinput>.</para>
 
-    <para os="g">Install the package:</para>
+    <para os="f">Install the package:</para>
 
-<screen os="h"><userinput>make install</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
   </sect2>
 

@@ -30,12 +30,8 @@
     href="zlib.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure --prefix=/usr \
+<screen os="c"><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure --prefix=/usr \
    --shared --libdir=/lib32</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="zlib.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="zlib.xml"
@@ -53,30 +49,26 @@
     href="zlib.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para>The previous command installed a <filename
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
+
+    <para os="i">The previous command installed a <filename
     class="extension">.so</filename> file in <filename
     class="directory">/lib32</filename>. We will remove it and relink it into
     <filename class="directory">/usr/lib32</filename>:</para>
 
-<screen><userinput>rm /lib32/libz.so
+<screen os="j"><userinput>rm /lib32/libz.so
 ln -sf ../../lib32/libz.so.&zlib-version; /usr/lib32/libz.so</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="zlib.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
-
-<screen><userinput>make clean
-CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure \
-    --prefix=/usr --libdir=/usr/lib32
-make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="zlib.xml"
     xpointer="xpointer(//*[@os='k'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="zlib.xml"
-    xpointer="xpointer(//*[@os='l'])"/>
+<screen os="l"><userinput>make clean
+CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure \
+    --prefix=/usr --libdir=/usr/lib32
+make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="zlib.xml"
@@ -86,7 +78,15 @@ make</userinput></screen>
     href="zlib.xml"
     xpointer="xpointer(//*[@os='n'])"/>
 
-<screen><userinput>chmod 644 /usr/lib32/libz.a</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='o'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="zlib.xml"
+    xpointer="xpointer(//*[@os='p'])"/>
+
+<screen os="q"><userinput>chmod 644 /usr/lib32/libz.a</userinput></screen>
 
   </sect2>
 

@@ -36,9 +36,9 @@
 
     <para os="a">Prepare Psmisc for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr --exec-prefix=""</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --exec-prefix=""</userinput></screen>
 
-    <variablelist os="b">
+    <variablelist os="c">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -53,28 +53,28 @@
       </varlistentry>
     </variablelist>
 
-    <para os="c">Compile the package:</para>
+    <para os="d">Compile the package:</para>
 
-<screen os="d"><userinput>make</userinput></screen>
+<screen os="e"><userinput>make</userinput></screen>
 
-    <para os="e">Install the package:</para>
+    <para os="f">Install the package:</para>
 
-<screen os="f"><userinput>make install</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="g">There is no reason for the <command>pstree</command> and
+    <para os="h">There is no reason for the <command>pstree</command> and
     <command>pstree.x11</command> programs to reside in <filename
     class="directory">/bin</filename>. Therefore, move them to <filename
     class="directory">/usr/bin</filename>:</para>
 
-<screen os="h"><userinput>mv /bin/pstree* /usr/bin</userinput></screen>
+<screen os="i"><userinput>mv /bin/pstree* /usr/bin</userinput></screen>
 
-    <para os="i">By default, Psmisc's <command>pidof</command> program is not installed.
+    <para os="j">By default, Psmisc's <command>pidof</command> program is not installed.
     This usually is not a problem because it is installed later in the Sysvinit
     package, which provides a better <command>pidof</command> program. If
     Sysvinit will not be used for a particular system, complete the installation
     of Psmisc by creating the following symlink:</para>
 
-<screen os="j"><userinput>ln -s killall /bin/pidof</userinput></screen>
+<screen os="k"><userinput>ln -s killall /bin/pidof</userinput></screen>
 
   </sect2>
 

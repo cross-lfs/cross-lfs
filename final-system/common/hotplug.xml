@@ -37,25 +37,25 @@
   <sect2 role="installation">
     <title>Installation of Hotplug</title>
 
-    <para>Install the Hotplug package:</para>
+    <para os="a">Install the Hotplug package:</para>
 
-<screen><userinput>make install</userinput></screen>
+<screen os="b"><userinput>make install</userinput></screen>
 
-    <para>Remove the init script that Hotplug installs since we are going
+    <para os="c">Remove the init script that Hotplug installs since we are going
     to be using the script included in the LFS-Bootscripts package:</para>
 
-<screen><userinput>rm -rf /etc/init.d</userinput></screen>
+<screen os="d"><userinput>rm -rf /etc/init.d</userinput></screen>
 
-    <para>Network device hotplugging is not yet supported by the
+    <para os="e">Network device hotplugging is not yet supported by the
     LFS-Bootscripts package. For that reason, remove the network
     hotplug agent:</para>
 
-<screen><userinput>rm -f /etc/hotplug/net.agent</userinput></screen>
+<screen os="f"><userinput>rm -f /etc/hotplug/net.agent</userinput></screen>
 
-    <para>Create a directory for storing firmware that can be loaded by
+    <para os="g">Create a directory for storing firmware that can be loaded by
     <command>hotplug</command>:</para>
 
-<screen><userinput>mkdir /lib/firmware</userinput></screen>
+<screen os="h"><userinput>mkdir /lib/firmware</userinput></screen>
 
   </sect2>
 

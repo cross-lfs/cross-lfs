@@ -33,7 +33,7 @@
   <sect2 role="installation">
     <title>Installation of IPRoute2</title>
 
-    <para os="a">The <command>arpd</command> binary included in this package is
+    <para os="s1">The <command>arpd</command> binary included in this package is
     dependent on Berkeley DB.  Because <command>arpd</command> is not a
     very common requirement on a base Linux system, remove the dependency
     on Berkeley DB by applying the <command>sed</command> command below.
@@ -41,17 +41,17 @@
     compiling Berkeley DB can be found in the BLFS Book at <ulink
     url="&blfs-root;view/svn/server/databases.html#db"/>.</para>
 
-<screen os="b"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile</userinput></screen>
+<screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile</userinput></screen>
 
-    <para os="c">Prepare IPRoute2 for compilation:</para>
+    <para os="a">Prepare IPRoute2 for compilation:</para>
 
-<screen os="d"><userinput>sh configure </userinput></screen>
+<screen os="b"><userinput>sh configure </userinput></screen>
 
-    <para os="e">Compile the package:</para>
+    <para os="c">Compile the package:</para>
 
-<screen><userinput>make SBINDIR=/sbin</userinput></screen>
+<screen os="d"><userinput>make SBINDIR=/sbin</userinput></screen>
 
-    <variablelist os="f">
+    <variablelist os="e">
       <title>The meaning of the make option:</title>
 
       <varlistentry>
@@ -65,9 +65,9 @@
       </varlistentry>
     </variablelist>
 
-    <para os="g">Install the package:</para>
+    <para os="f">Install the package:</para>
 
-<screen os="h"><userinput>make SBINDIR=/sbin install</userinput></screen>
+<screen os="g"><userinput>make SBINDIR=/sbin install</userinput></screen>
 
   </sect2>
 

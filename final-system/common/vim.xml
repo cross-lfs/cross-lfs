@@ -50,11 +50,11 @@
 
 <screen os="b"><userinput>echo '#define SYS_VIMRC_FILE "/etc/vimrc"' &gt;&gt; src/feature.h</userinput></screen>
 
-    <para os="e">Prepare Vim for compilation:</para>
+    <para os="c">Prepare Vim for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr --enable-multibyte</userinput></screen>
+<screen os="d"><userinput>./configure --prefix=/usr --enable-multibyte</userinput></screen>
 
-    <variablelist os="f">
+    <variablelist os="e">
       <title>The meaning of the configure options:</title>
 
       <varlistentry>
@@ -71,20 +71,20 @@
 
     </variablelist>
 
-    <para os="g">Compile the package:</para>
+    <para os="f">Compile the package:</para>
 
-<screen os="h"><userinput>make</userinput></screen>
+<screen os="g"><userinput>make</userinput></screen>
 
-    <para os="i">To test the results, issue: <userinput>make test</userinput>.
+    <para os="h">To test the results, issue: <userinput>make test</userinput>.
     However, this test suite outputs a lot of binary data to the
     screen, which can cause issues with the settings of the current terminal.
     This can be resolved by redirecting the output to a log file.</para>
 
-    <para os="j">Install the package:</para>
+    <para os="i">Install the package:</para>
 
-<screen os="k"><userinput>make HELPSUBLOC=/usr/share/doc/vim-&vim-version; install</userinput></screen>
+<screen os="j"><userinput>make HELPSUBLOC=/usr/share/doc/vim-&vim-version; install</userinput></screen>
 
-    <variablelist os="k1">
+    <variablelist os="k">
       <title>The meaning of the make option:</title>
 
       <varlistentry>

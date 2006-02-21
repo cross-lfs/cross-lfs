@@ -22,10 +22,10 @@
   <sect2 role="installation">
     <title>Installation of E2fsprogs</title>
 
-    <para>Change the library directory to <filename
+    <para os="m3">Change the library directory to <filename
     class="directory">lib32</filename>:</para>
 
-<screen><userinput>sed -i '/libdir=.*\/lib/s@/lib@/lib32@g' configure</userinput></screen>
+<screen os="m4"><userinput>sed -i '/libdir=.*\/lib/s@/lib@/lib32@g' configure</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="e2fsprogs.xml"
@@ -39,24 +39,26 @@
     href="e2fsprogs.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen><userinput>CC="gcc ${BUILDN32}" ../configure --prefix=/usr \
+<screen os="d"><userinput>CC="gcc ${BUILDN32}" ../configure --prefix=/usr \
     --with-root-prefix="" --enable-elf-shlibs --disable-evms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="e2fsprogs.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-    <para>Compile the libraries:</para>
-
-<screen><userinput>make CC="gcc ${BUILDN32}" libs</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="e2fsprogs.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+    xpointer="xpointer(//*[@os='m1'])"/>
+
+<screen os="m2"><userinput>make CC="gcc ${BUILDN32}" libs</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="e2fsprogs.xml"
     xpointer="xpointer(//*[@os='k'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="e2fsprogs.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
 
   </sect2>
 

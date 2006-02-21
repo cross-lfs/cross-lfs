@@ -48,33 +48,33 @@
 
     <para os="e">Prepare Flex for compilation:</para>
 
-<screen><userinput>./configure --prefix=/usr</userinput></screen>
+<screen os="f"><userinput>./configure --prefix=/usr</userinput></screen>
 
-    <para os="f">Compile the package:</para>
+    <para os="g">Compile the package:</para>
 
-<screen os="g"><userinput>make</userinput></screen>
+<screen os="h"><userinput>make</userinput></screen>
 
-    <para os="h">To test the results, issue:
+    <para os="i">To test the results, issue:
     <userinput>make check</userinput>.</para>
 
-    <para os="i">Install the package:</para>
+    <para os="j">Install the package:</para>
 
-<screen os="j"><userinput>make install</userinput></screen>
+<screen os="k"><userinput>make install</userinput></screen>
 
-    <para os="k">There are some packages that expect to find the
+    <para os="l">There are some packages that expect to find the
     <filename class="libraryfile">lex</filename> library in <filename
     class="directory">/usr/lib</filename>. Create a symlink to account for
     this:</para>
 
-<screen os="l"><userinput>ln -s libfl.a /usr/lib/libl.a</userinput></screen>
+<screen os="m"><userinput>ln -s libfl.a /usr/lib/libl.a</userinput></screen>
 
-    <para os="m">A few programs do not know about <command>flex</command> yet and
+    <para os="n">A few programs do not know about <command>flex</command> yet and
     try to run its predecessor, <command>lex</command>. To support those
     programs, create a wrapper script named <filename>lex</filename> that
     calls <filename>flex</filename> in <command>lex</command> emulation
     mode:</para>
 
-<screen os="n"><userinput>cat &gt; /usr/bin/lex &lt;&lt; "EOF"
+<screen os="o"><userinput>cat &gt; /usr/bin/lex &lt;&lt; "EOF"
 <literal>#!/bin/sh
 # Begin /usr/bin/lex
 
