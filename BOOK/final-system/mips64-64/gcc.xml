@@ -29,10 +29,13 @@
     href="../64/gcc.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
-    <para os="ma">The following patch ensures that TLS is utilized by GCC
-    for MIPS:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/gcc.xml"
+    xpointer="xpointer(//*[@os='ma'])"/>
 
-<screen os="mb"><userinput>patch -Np1 -i ../&gcc-mips_tls-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/gcc.xml"
+    xpointer="xpointer(//*[@os='mb'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc.xml"
@@ -54,10 +57,11 @@
     href="../common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>../gcc-&gcc-version;/configure --prefix=/usr \
-    --libexecdir=/usr/lib --enable-shared --enable-threads=posix --with-abi=64 \
-    --enable-__cxa_atexit --enable-c99 --enable-long-long \
-    --enable-clocale=gnu --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
+<screen os="i"><userinput>../gcc-&gcc-version;/configure --prefix=/usr \
+    --libexecdir=/usr/lib --enable-shared --enable-threads=posix \
+    --enable-__cxa_atexit --enable-c99 --enable-long-long --with-abi=64 \
+    --enable-clocale=gnu --enable-languages=c,c++ --disable-libstdcxx-pch \
+    --disable-multilib</userinput></screen>
 
    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc.xml"

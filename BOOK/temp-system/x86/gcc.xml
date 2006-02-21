@@ -86,23 +86,23 @@ sed -e "s@\./xgcc@/cross-tools/bin/${CC}@g" \
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
+<screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
     --build=${LFS_HOST} --host=${LFS_TARGET} --target=${LFS_TARGET} \
     --libexecdir=/tools/lib --with-local-prefix=/tools --enable-long-long \
     --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
     --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
 
-    <variablelist os="ck">
+    <variablelist os="cl">
       <title>The meaning of the new configure options:</title>
 
-      <varlistentry os="ck1">
+      <varlistentry os="cl1">
         <term><parameter>--libexecdir=/tools/lib</parameter></term>
         <listitem>
           <para>This do ...</para>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="ck2">
+      <varlistentry os="cl2">
         <term><parameter>--disable-libstdcxx-pch</parameter></term>
         <listitem>
           <para>Do not build the pre-compiled header (PCH) for
@@ -113,20 +113,20 @@ sed -e "s@\./xgcc@/cross-tools/bin/${CC}@g" \
 
     </variablelist>
 
-    <para>Compile the package:</para>
+    <para os="cm">Compile the package:</para>
 
-<screen><userinput>make AS_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-as" \
+<screen os="cn"><userinput>make AS_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-as" \
 LD_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-ld"</userinput></screen>
 
-    <para>Install the package:</para>
+    <para os="co">Install the package:</para>
 
-<screen><userinput>make install</userinput></screen>
+<screen os="cp"><userinput>make install</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen><userinput>ln -s gcc /tools/bin/cc</userinput></screen>
+<screen os="cq"><userinput>ln -s gcc /tools/bin/cc</userinput></screen>
 
   </sect2>
 

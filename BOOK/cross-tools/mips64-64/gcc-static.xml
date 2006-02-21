@@ -27,7 +27,9 @@
     href="../x86/gcc-static.xml"
     xpointer="xpointer(//*[@os='aa'])"/>
 
-<screen os="ab"><userinput>patch -Np1 -i ../&gcc-specs_pure64-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ab'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/gcc-static.xml"
@@ -53,13 +55,9 @@
     href="../../final-system/mips/gcc.xml"
     xpointer="xpointer(//*[@os='mb'])"/>
 
-    <para os="al">This will allow us to build a 64 bit ABI compiler instead of the default
-    n32:</para>
-
-<screen os="am"><userinput>patch -Np1 -i ../&gcc-mips_pure64-patch;</userinput></screen>
-
-    <para os="ag">Now we will need to setup our StartFile Spec to the correct library
-    location:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ag'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/gcc-static.xml"
@@ -89,22 +87,26 @@
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
+<screen os="al"><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --host=${LFS_HOST} --target=${LFS_TARGET} --disable-mutlilib \
     --with-local-prefix=/tools --disable-nls --disable-shared \
     --disable-threads --enable-languages=c --with-abi=64</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/gcc-static.xml"
-    xpointer="xpointer(//*[@os='al'])"/>
+    xpointer="xpointer(//*[@os='am'])"/>
 
-    <para>Continue with compiling the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-static.xml"
+    xpointer="xpointer(//*[@os='an'])"/>
 
-<screen><userinput>make all-gcc</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ao'])"/>
 
-    <para>Install the package:</para>
-
-<screen><userinput>make install-gcc</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ap'])"/>
 
   </sect2>
 

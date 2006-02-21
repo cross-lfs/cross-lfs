@@ -98,51 +98,54 @@
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
-    ../gcc-&gcc-version;/configure --prefix=/tools --disable-multilib  \
-    --build=${LFS_HOST} --host=${LFS_TARGET} --target=${LFS_TARGET} \
-    --libexecdir=/tools/lib --with-local-prefix=/tools --enable-long-long \
-    --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
-    --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/gcc.xml"
+    xpointer="xpointer(//*[@os='ck'])"/>
 
     <variablelist>
       <title>The meaning of the new configure options:</title>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../x86_64/gcc.xml"
-      xpointer="xpointer(//*[@os='dc1'])"/>
+      xpointer="xpointer(//*[@os='dd1'])"/>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../x86/gcc.xml"
-      xpointer="xpointer(//*[@os='ck1'])"/>
+      xpointer="xpointer(//*[@os='cl1'])"/>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
       href="../x86/gcc.xml"
-      xpointer="xpointer(//*[@os='ck2'])"/>
+      xpointer="xpointer(//*[@os='cl2'])"/>
 
     </variablelist>
 
-    <para>Compile the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/gcc.xml"
+    xpointer="xpointer(//*[@os='cm'])"/>
 
-<screen><userinput>make CFLAGS_FOR_TARGET="${GCCTARGET}" CXXFLAGS_FOR_TARGET="${GCCTARGET}" \
-AS_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-as" LD_FOR_TARGET="/cross-tools/bin/${LFS_TARGET}-ld"</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../sparc64/gcc.xml"
+    xpointer="xpointer(//*[@os='cn'])"/>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='cp'])"/>
 
-<screen><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/gcc.xml"
+    xpointer="xpointer(//*[@os='dp'])"/>
 
-   <para>Now we copy the files that are placed in <filename class="directory">/tools/lib64
-   </filename> to <filename class="directory">/tools/lib</filename>.
-    We also delete the /tools/lib64 directory:</para>
-
-<screen><userinput>cp -ar /tools/lib64/* /tools/lib
-rm -rf /tools/lib64</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86_64-64/gcc.xml"
+    xpointer="xpointer(//*[@os='dq'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen><userinput>ln -s gcc /tools/bin/cc</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/gcc.xml"
+    xpointer="xpointer(//*[@os='cq'])"/>
 
   </sect2>
 
