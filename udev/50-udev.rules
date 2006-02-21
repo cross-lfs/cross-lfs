@@ -14,6 +14,9 @@
 #
 ########################################################################
 
+# block devices
+SUBSYSTEM=="block", 		GROUP="disk", MODE="0640"
+
 # console
 KERNEL=="pty[pqrstuvwxyzabcdef][0123456789abcdef]", 	NAME="%k", GROUP="tty", MODE="666", OPTIONS="last_rule"
 KERNEL=="tty[pqrstuvwxyzabcdef][0123456789abcdef]", 	NAME="%k", GROUP="tty", MODE="666", OPTIONS="last_rule"
@@ -120,11 +123,8 @@ KERNEL=="pktcdvd",		NAME="pktcdvd/control"
 KERNEL=="pktcdvd[0-9]*",	NAME="pktcdvd/%k"
 
 # fix floppy devices
-KERNEL=="fd[0-9]*", 		ACTION=="add", SYSFS{device/cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{device/cmos} -m %M /dev/%k"
+KERNEL=="fd[0-9]*", 		ACTION=="add", GROUP="floppy", SYSFS{device/cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{device/cmos} -m %M /dev/%k"
 KERNEL=="fd[0-9]*", 		ACTION=="remove", RUN+="/bin/rm -f $root/%k*"
-
-# block devices
-SUBSYSTEM=="block", 		GROUP="disk", MODE="0640"
 
 # sd:		0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
 # sr:		4 TYPE_WORM, 5 TYPE_ROM
