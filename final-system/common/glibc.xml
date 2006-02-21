@@ -156,7 +156,8 @@ cd ../glibc-build</userinput></screen>
 <screen><userinput>make localedata/install-locales</userinput></screen>
 
     <para>To save time, an alternative to running the previous command (which
-    generates and installs every locale Glibc is aware of) is to install only
+    generates and installs every locale listed in the
+    glibc-&glibc-version;/localedata/SUPPORTED file) is to install only
     those locales that are wanted and needed. This can be achieved by using
     the <command>localedef</command> command. Information on this command is
     located in the <filename>INSTALL</filename> file in the Glibc source.
@@ -188,11 +189,12 @@ localedef -i ja_JP -f EUC-JP ja_JP</userinput></screen>
     that utilize multibyte character sets (including UTF-8) or right-to-left
     writing order.  Numerous unofficial and unstable patches are required to
     fix these problems, and it has been decided by the LFS developers not to
-    support such complex locales.  This applies to the ja_JP and fa_IR locales
-    as well&mdash;they have been installed only for GCC and Gettext tests to
-    pass, and the <command>watch</command> program (part of the Procps package)
-    does not work properly in them. Various attempts to circumvent these
-    restrictions are documented in internationalization-related hints.</para>
+    support such complex locales at this time. This applies to the ja_JP and
+    fa_IR locales as well&mdash;they have been installed only for GCC and
+    Gettext tests to pass, and the <command>watch</command> program (part of
+    the Procps package) does not work properly in them. Various attempts to
+    circumvent these restrictions are documented in internationalization-related
+    hints.</para>
 
   </sect2>
 
