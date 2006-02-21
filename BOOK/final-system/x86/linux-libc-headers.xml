@@ -43,11 +43,11 @@
 
     <para os="b">Install the header files:</para>
 
-<screen><userinput>install -d /usr/include/asm
-cp -R include/asm-i386/* /usr/include/asm
-cp -R include/linux /usr/include
-cp -R include/mtd /usr/include
-cp -R include/scsi /usr/include</userinput></screen>
+<screen><userinput>install -dv /usr/include/{asm,linux,mtd,scsi}
+cp -arv include/asm-i386/* /usr/include/asm
+cp -arv include/linux /usr/include/linux
+cp -arv include/mtd /usr/include/mtd
+cp -arv include/scsi /usr/include/scsi</userinput></screen>
 
     <para os="c">Ensure that all the headers are owned by
     <systemitem class="username">root</systemitem>:</para>

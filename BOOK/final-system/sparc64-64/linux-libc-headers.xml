@@ -37,11 +37,11 @@
     href="../x86/linux-libc-headers.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>install -d /usr/include/asm
-cp -R include/asm-sparc64/* /usr/include/asm
-cp -R include/linux /usr/include
-cp -R include/mtd /usr/include
-cp -R include/scsi /usr/include</userinput></screen>
+<screen><userinput>install -dv /usr/include/{asm,linux,mtd,scsi}
+cp -arv include/asm-sparc64/* /usr/include/asm
+cp -arv include/linux /usr/include/linux
+cp -arv include/mtd /usr/include/mtd
+cp -arv include/scsi /usr/include/scsi</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/linux-libc-headers.xml"
