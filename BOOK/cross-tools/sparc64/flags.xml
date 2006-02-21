@@ -21,6 +21,9 @@ export GCCTARGET=[GCCTARGET entries]"</userinput></screen>
 
 <screen><userinput>export LFS_TARGET32="sparcv9-unknown-linux-gnu"</userinput></screen>
 
+  <para>Let's perform a sanity check to prevent build issues. If our LFS_HOST matches our
+  target, we will get some failures during our cross-compile:</para>
+
 <screen><userinput>if [ "${LFS_HOST}" = "${LFS_TARGET32}" ]; then \
   echo "Host and Target can't be the same." ; fi</userinput></screen>
 
