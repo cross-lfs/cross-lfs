@@ -47,25 +47,18 @@
 <screen os="d"><userinput>make</userinput></screen>
 
     <para os="e">To test the results, issue:
-    <userinput>sed -i '/ufs2/d' stage2/size_test &amp;&amp;
-    make check</userinput>.</para>
+    <userinput>make check</userinput>.</para>
 
-    <para os="f">The UFS test is known to fail due to a compiler issue. The failure
-    prevents the rest of the tests from being run, so the <command>sed</command>
-    command is used to avoid the failure. The UFS test failure can be ignored
-    unless you plan to boot from a UFS partition. The partitions are normally
-    only used by Sun workstations.</para>
+    <para os="f">Install the package:</para>
 
-    <para os="g">Install the package:</para>
-
-<screen os="h"><userinput>make install
+<screen os="g"><userinput>make install
 mkdir /boot/grub
 cp /usr/lib/grub/i386-pc/stage{1,2} /boot/grub</userinput></screen>
 
-    <para os="i">Replace <filename class="directory">i386-pc</filename> with whatever
+    <para os="h">Replace <filename class="directory">i386-pc</filename> with whatever
     directory is appropriate for the hardware in use.</para>
 
-    <para os="j">The <filename class="directory">i386-pc</filename> directory
+    <para os="i">The <filename class="directory">i386-pc</filename> directory
     contains a number of <filename>*stage1_5</filename> files, different
     ones for different file systems. Review the files available and copy
     the appropriate ones to the <filename
