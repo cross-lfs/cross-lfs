@@ -60,19 +60,23 @@
     href="readline.xml"
     xpointer="xpointer(//*[@os='j'])"/>
 
-<screen os="k"><userinput>chmod 755 /lib64/lib{readline,history}.so*</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="readline.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+<screen os="l"><userinput>chmod 755 /lib64/lib{readline,history}.so*</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="readline.xml"
-    xpointer="xpointer(//*[@os='l'])"/>
+    xpointer="xpointer(//*[@os='m'])"/>
 
-<screen os="m"><userinput>mv /lib64/lib{readline,history}.a /usr/lib64</userinput></screen>
+<screen os="n"><userinput>mv /lib64/lib{readline,history}.a /usr/lib64</userinput></screen>
 
-    <para os="n">Next, remove the <filename class="extension">.so</filename>
+    <para os="o">Next, remove the <filename class="extension">.so</filename>
     files in <filename class="directory">/lib64</filename> and relink them into
     <filename class="directory">/usr/lib64</filename>.</para>
 
-<screen os="o"><userinput>rm /lib64/lib{readline,history}.so
+<screen os="p"><userinput>rm /lib64/lib{readline,history}.so
 ln -sf ../../lib64/libreadline.so.5 /usr/lib64/libreadline.so
 ln -sf ../../lib64/libhistory.so.5 /usr/lib64/libhistory.so</userinput></screen>
 
