@@ -83,12 +83,19 @@ esac
 # see funcs/glibc_funcs.sh
 apply_glibc_patches
 
+
 # HACK: nptl for sparc64 wont build
 case ${TGT_ARCH} in
    sparc64 )
       USE_NPTL=N
    ;;
 esac
+
+if [ "Y" = "${NO_GCC_EH}" ]; then
+   cd ${SRC}/${PKGDIR}
+   if [ ! -f Makeconfig-ORIG ]; then cp -p Makeconfig Makeconfig-ORIG ; fi
+   sed 's/-lgcc_eh//g' Makeconfig-ORIG > Makeconfig
+fi
 
 if [ "Y" = "${USE_NPTL}" ]; then
    # remove linuxthreads dirs if they exist

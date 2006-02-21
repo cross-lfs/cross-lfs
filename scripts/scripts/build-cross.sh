@@ -89,39 +89,42 @@ cross-san-kern-hdrs.sh"
    script_list="cross-kern-hdrs.sh"
 }
 
-test "Y" = "${MULTIARCH}" &&
-{
-   script_list="${script_list}
+script_list="${script_list}
 cross-binutils.sh
 cross-glibc-hdrs.sh
-cross-gcc-static.sh
+cross-gcc-static.sh"
+
+if [ ! "Y" = "${NO_GCC_EH}" ]; then
+   if [ "Y" = "${MULTIARCH}" ]; then
+      script_list="${script_list}
 cross-glibc-crtobjs-32.sh
 cross-glibc-crtobjs-64.sh
 cross-gcc-shared.sh"
-
-   test "N" = "${DEFAULT_64}" &&
-   {
+   else
       script_list="${script_list}
-cross-glibc-full-64.sh
-cross-glibc-full-32.sh
-cross-gcc-final.sh"
-   } || {
-      script_list="${script_list}
-cross-glibc-full-32.sh
-cross-glibc-full-64.sh
-cross-gcc-final.sh"
-   }
-
-} || {
-   script_list="${script_list}
-cross-binutils.sh
-cross-glibc-hdrs.sh
-cross-gcc-static.sh
 cross-glibc-crtobjs.sh
-cross-gcc-shared.sh
+cross-gcc-shared.sh"
+   fi
+fi
+
+
+if [ "Y" = "${MULTIARCH}" ]; then
+   if [ "N" = "${DEFAULT_64}" ]; then 
+      script_list="${script_list}
+cross-glibc-full-64.sh
+cross-glibc-full-32.sh
+cross-gcc-final.sh"
+   else
+      script_list="${script_list}
+cross-glibc-full-32.sh
+cross-glibc-full-64.sh
+cross-gcc-final.sh"
+   fi
+else
+   script_list="${script_list}
 cross-glibc-full.sh
 cross-gcc-final.sh"
-}
+fi
 
 SCRIPTLIST=`echo "${script_list}" | \
   sed "s@\(.*\)@${scripts_dir}/\1@"`
