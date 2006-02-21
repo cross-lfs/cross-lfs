@@ -1,0 +1,98 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-07-31
+Initial Package Version: 1.2.8
+Upstream Status: Unknown
+Origin: Gentoo
+Description: Combined gentoo patches for SDL-1.2.8
+
+diff -uNr SDL-1.2.8/include/SDL_endian.h SDL-1.2.8-gentoo-fixes/include/SDL_endian.h
+--- SDL-1.2.8/include/SDL_endian.h	2004-12-13 18:54:30.000000000 +1100
++++ SDL-1.2.8-gentoo-fixes/include/SDL_endian.h	2005-07-31 14:10:53.000000000 +1000
+@@ -68,7 +68,7 @@
+ #elif defined(__GNUC__) && defined(__x86_64__)
+ static __inline__ Uint16 SDL_Swap16(Uint16 x)
+ {
+-	__asm__("xchgb %b0,%h0" : "=q" (x) :  "0" (x));
++	__asm__("xchgb %b0,%h0" : "=Q" (x) :  "0" (x));
+ 	return x;
+ }
+ #elif defined(__GNUC__) && (defined(__powerpc__) || defined(__ppc__))
+diff -uNr SDL-1.2.8/src/events/SDL_keyboard.c SDL-1.2.8-gentoo-fixes/src/events/SDL_keyboard.c
+--- SDL-1.2.8/src/events/SDL_keyboard.c	2004-02-19 04:22:00.000000000 +1100
++++ SDL-1.2.8-gentoo-fixes/src/events/SDL_keyboard.c	2005-07-31 14:10:21.000000000 +1000
+@@ -491,7 +491,8 @@
+ 			/*
+ 			 * jk 991215 - Added
+ 			 */
+-			if ( SDL_KeyRepeat.timestamp ) {
++			if ( SDL_KeyRepeat.timestamp &&
++			     SDL_KeyRepeat.evt.key.keysym.sym == keysym->sym ) {
+ 				SDL_KeyRepeat.timestamp = 0;
+ 			}
+ 			break;
+diff -uNr SDL-1.2.8/src/video/directfb/SDL_DirectFB_video.c SDL-1.2.8-gentoo-fixes/src/video/directfb/SDL_DirectFB_video.c
+--- SDL-1.2.8/src/video/directfb/SDL_DirectFB_video.c	2004-12-13 18:54:35.000000000 +1100
++++ SDL-1.2.8-gentoo-fixes/src/video/directfb/SDL_DirectFB_video.c	2005-07-31 14:09:41.000000000 +1000
+@@ -468,6 +468,9 @@
+   
+   if (HIDDEN->enable_mga_crtc2)
+     {
++      DFBDisplayLayerConfig      dlc;
++      DFBDisplayLayerConfigFlags failed;
++
+       ret = dfb->GetDisplayLayer (dfb, 2, &HIDDEN->c2layer);
+       if (ret)
+         {
+@@ -492,8 +495,6 @@
+       HIDDEN->c2layer->SetOpacity(HIDDEN->c2layer, 0x0);
+ 
+       /* Init the surface here as it got a fixed size */
+-      DFBDisplayLayerConfig      dlc;
+-      DFBDisplayLayerConfigFlags failed;
+     
+       dlc.flags      = DLCONF_PIXELFORMAT | DLCONF_BUFFERMODE | DLCONF_OPTIONS;
+       dlc.buffermode = DLBM_BACKVIDEO;
+diff -uNr SDL-1.2.8/src/video/fbcon/SDL_fbevents.c SDL-1.2.8-gentoo-fixes/src/video/fbcon/SDL_fbevents.c
+--- SDL-1.2.8/src/video/fbcon/SDL_fbevents.c	2004-02-19 04:22:06.000000000 +1100
++++ SDL-1.2.8-gentoo-fixes/src/video/fbcon/SDL_fbevents.c	2005-07-31 14:10:37.000000000 +1000
+@@ -835,7 +835,7 @@
+ static void switch_vt(_THIS, unsigned short which)
+ {
+ 	struct vt_stat vtstate;
+-	unsigned short current;
++	unsigned short v_active;
+ 	SDL_Surface *screen;
+ 	__u16 saved_pal[3*256];
+ 	Uint32 screen_arealen;
+@@ -846,7 +846,7 @@
+ 	     (which == vtstate.v_active) ) {
+ 		return;
+ 	}
+-	current = vtstate.v_active;
++	v_active = vtstate.v_active;
+ 
+ 	/* Save the contents of the screen, and go to text mode */
+ 	SDL_mutexP(hw_lock);
+@@ -864,7 +864,7 @@
+ 	if ( ioctl(keyboard_fd, VT_ACTIVATE, which) == 0 ) {
+ 		/* Wait for our console to be activated again */
+ 		ioctl(keyboard_fd, VT_WAITACTIVE, which);
+-		while ( ioctl(keyboard_fd, VT_WAITACTIVE, current) < 0 ) {
++		while ( ioctl(keyboard_fd, VT_WAITACTIVE, v_active) < 0 ) {
+ 			if ( (errno != EINTR) && (errno != EAGAIN) ) {
+ 				/* Unknown VT error - cancel this */
+ 				break;
+diff -uNr SDL-1.2.8/src/video/x11/SDL_x11modes.c SDL-1.2.8-gentoo-fixes/src/video/x11/SDL_x11modes.c
+--- SDL-1.2.8/src/video/x11/SDL_x11modes.c	2004-12-13 18:54:37.000000000 +1100
++++ SDL-1.2.8-gentoo-fixes/src/video/x11/SDL_x11modes.c	2005-07-31 14:08:57.000000000 +1000
+@@ -324,10 +324,6 @@
+             fclose(metro_fp);
+         }
+     }
+-#if defined(__alpha__) || defined(__sparc64__) || defined(__powerpc__)
+-    /* The alpha, sparc64 and PPC XFree86 servers are also buggy */
+-    buggy_X11 = 1;
+-#endif
+     /* Enumerate the available fullscreen modes */
+     if ( ! buggy_X11 ) {
+         if ( SDL_NAME(XF86VidModeQueryExtension)(SDL_Display, &vm_event, &vm_error) &&

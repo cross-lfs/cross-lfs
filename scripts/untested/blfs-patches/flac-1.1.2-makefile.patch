@@ -1,0 +1,24 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-07-24
+Initial Package Version: 1.1.2
+Upstream Status: Unknown
+Origin: Gentoo
+Description:
+
+--- src.orig/libFLAC/Makefile.am	2005-02-03 05:58:13.000000000 +0100
++++ src/libFLAC/Makefile.am	2005-02-19 14:35:39.397097392 +0100
+@@ -59,12 +59,13 @@
+ ARCH_SUBDIRS = ppc
+ if FLaC__HAS_AS__TEMPORARILY_DISABLED
+ libFLAC_la_LIBADD = ppc/as/libFLAC-asm.la
++LOCAL_EXTRA_LDFLAGS = "-Wl,-read_only_relocs,warning"
+ else
+ if FLaC__HAS_GAS__TEMPORARILY_DISABLED
+ libFLAC_la_LIBADD = ppc/gas/libFLAC-asm.la
++LOCAL_EXTRA_LDFLAGS = ""
+ endif
+ endif
+-LOCAL_EXTRA_LDFLAGS = "-Wl,-read_only_relocs,warning"
+ endif
+ endif
+ 

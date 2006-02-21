@@ -1,0 +1,58 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-07-24
+Initial Package Version: 1.1.2
+Upstream Status: Unknown
+Origin: Gentoo
+Description:
+
+--- configure.in.old	2005-06-12 06:42:52.000000000 +0000
++++ configure.in	2005-06-12 08:36:15.000000000 +0000
+@@ -35,6 +35,7 @@
+ AM_PROG_AS
+ AC_PROG_CXX
+ AC_PROG_MAKE_SET
++AC_PATH_PROG(PKGCONFIG, pkg-config)
+ 
+ AC_CHECK_TYPES(socklen_t, [], [])
+ 
+@@ -151,10 +152,36 @@
+ fi
+ 
+ dnl check for ogg library
+-XIPH_PATH_OGG(have_ogg=yes, AC_MSG_WARN([*** Ogg development enviroment not installed - Ogg support will not be built]))
+-AM_CONDITIONAL(FLaC__HAS_OGG, [test x$have_ogg = xyes])
+-if test x$have_ogg = xyes ; then
+-AC_DEFINE(FLAC__HAS_OGG)
++AC_ARG_ENABLE([ogg],
++	      AC_HELP_STRING([--disable-ogg], [Disable ogg support (default:test)]),
++	      [want_ogg=$enableval ], [ want_ogg=yes ] )
++
++AM_CONDITIONAL(FLaC__HAS_OGG, test x$want_ogg = xyes)
++
++if test "x$want_ogg" = "xyes"; then
++	AC_CHECK_HEADER(ogg/ogg.h, 
++	[ogg_ok=yes
++	OGG_CFLAGS="`$PKGCONFIG ogg --cflags`"
++	OGG_LIBS="`$PKGCONFIG ogg --libs`"
++	AC_SUBST(OGG_CFLAGS)
++	AC_SUBST(OGG_LIBS)
++	], [ogg_ok=no
++	OGG_CFLAGS=""
++	OGG_LIBS=""
++	AC_SUBST(OGG_CFLAGS)
++	AC_SUBST(OGG_LIBS)
++	])
++	if test "x$ogg_ok" = "xyes"; then
++		AC_DEFINE(FLAC__HAS_OGG)
++	else
++		AC_MSG_WARN(*** Ogg headers not found.  Ogg support disabled.)
++	fi
++else
++	AC_MSG_RESULT([checking for ogg support... disabled])
++	OGG_CFLAGS=""
++	OGG_LIBS=""
++	AC_SUBST(OGG_CFLAGS)
++	AC_SUBST(OGG_LIBS)
+ fi
+ 
+ AM_PATH_XMMS(0.9.5.1, , AC_MSG_WARN([*** XMMS >= 0.9.5.1 not installed - xmms support will not be built]))

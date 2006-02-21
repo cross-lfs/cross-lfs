@@ -1,0 +1,193 @@
+--- esound-0.2.35-orig/libtool	2005-02-01 00:30:40.242673038 +1100
++++ esound-0.2.35/libtool	2005-02-01 00:38:58.192609620 +1100
+@@ -4057,125 +4057,6 @@
+ 	  fi
+ 	fi
+ 
+-	if test "X$skipped_export" != "X:" && len=`expr "X$test_cmds" : ".*"` &&
+-	   test "$len" -le "$max_cmd_len" || test "$max_cmd_len" -le -1; then
+-	  :
+-	else
+-	  # The command line is too long to link in one step, link piecewise.
+-	  $echo "creating reloadable object files..."
+-
+-	  # Save the value of $output and $libobjs because we want to
+-	  # use them later.  If we have whole_archive_flag_spec, we
+-	  # want to use save_libobjs as it was before
+-	  # whole_archive_flag_spec was expanded, because we can't
+-	  # assume the linker understands whole_archive_flag_spec.
+-	  # This may have to be revisited, in case too many
+-	  # convenience libraries get linked in and end up exceeding
+-	  # the spec.
+-	  if test -z "$convenience" || test -z "$whole_archive_flag_spec"; then
+-	    save_libobjs=$libobjs
+-	  fi
+-	  save_output=$output
+-
+-	  # Clear the reloadable object creation command queue and
+-	  # initialize k to one.
+-	  test_cmds=
+-	  concat_cmds=
+-	  objlist=
+-	  delfiles=
+-	  last_robj=
+-	  k=1
+-	  output=$output_objdir/$save_output-${k}.$objext
+-	  # Loop over the list of objects to be linked.
+-	  for obj in $save_libobjs
+-	  do
+-	    eval test_cmds=\"$reload_cmds $objlist $last_robj\"
+-	    if test "X$objlist" = X ||
+-	       { len=`expr "X$test_cmds" : ".*"` &&
+-		 test "$len" -le "$max_cmd_len"; }; then
+-	      objlist="$objlist $obj"
+-	    else
+-	      # The command $test_cmds is almost too long, add a
+-	      # command to the queue.
+-	      if test "$k" -eq 1 ; then
+-		# The first file doesn't have a previous command to add.
+-		eval concat_cmds=\"$reload_cmds $objlist $last_robj\"
+-	      else
+-		# All subsequent reloadable object files will link in
+-		# the last one created.
+-		eval concat_cmds=\"\$concat_cmds~$reload_cmds $objlist $last_robj\"
+-	      fi
+-	      last_robj=$output_objdir/$save_output-${k}.$objext
+-	      k=`expr $k + 1`
+-	      output=$output_objdir/$save_output-${k}.$objext
+-	      objlist=$obj
+-	      len=1
+-	    fi
+-	  done
+-	  # Handle the remaining objects by creating one last
+-	  # reloadable object file.  All subsequent reloadable object
+-	  # files will link in the last one created.
+-	  test -z "$concat_cmds" || concat_cmds=$concat_cmds~
+-	  eval concat_cmds=\"\${concat_cmds}$reload_cmds $objlist $last_robj\"
+-
+-	  if ${skipped_export-false}; then
+-	    $show "generating symbol list for \`$libname.la'"
+-	    export_symbols="$output_objdir/$libname.exp"
+-	    $run $rm $export_symbols
+-	    libobjs=$output
+-	    # Append the command to create the export file.
+-	    eval concat_cmds=\"\$concat_cmds~$export_symbols_cmds\"
+-          fi
+-
+-	  # Set up a command to remove the reloadale object files
+-	  # after they are used.
+-	  i=0
+-	  while test "$i" -lt "$k"
+-	  do
+-	    i=`expr $i + 1`
+-	    delfiles="$delfiles $output_objdir/$save_output-${i}.$objext"
+-	  done
+-
+-	  $echo "creating a temporary reloadable object file: $output"
+-
+-	  # Loop through the commands generated above and execute them.
+-	  save_ifs="$IFS"; IFS='~'
+-	  for cmd in $concat_cmds; do
+-	    IFS="$save_ifs"
+-	    $show "$cmd"
+-	    $run eval "$cmd" || exit $?
+-	  done
+-	  IFS="$save_ifs"
+-
+-	  libobjs=$output
+-	  # Restore the value of output.
+-	  output=$save_output
+-
+-	  if test -n "$convenience" && test -n "$whole_archive_flag_spec"; then
+-	    eval libobjs=\"\$libobjs $whole_archive_flag_spec\"
+-	  fi
+-	  # Expand the library linking commands again to reset the
+-	  # value of $libobjs for piecewise linking.
+-
+-	  # Do each of the archive commands.
+-	  if test "$module" = yes && test -n "$module_cmds" ; then
+-	    if test -n "$export_symbols" && test -n "$module_expsym_cmds"; then
+-	      cmds=$module_expsym_cmds
+-	    else
+-	      cmds=$module_cmds
+-	    fi
+-	  else
+-	  if test -n "$export_symbols" && test -n "$archive_expsym_cmds"; then
+-	    cmds=$archive_expsym_cmds
+-	  else
+-	    cmds=$archive_cmds
+-	    fi
+-	  fi
+-
+-	  # Append the command to remove the reloadable object files
+-	  # to the just-reset $cmds.
+-	  eval cmds=\"\$cmds~\$rm $delfiles\"
+-	fi
+ 	save_ifs="$IFS"; IFS='~'
+ 	for cmd in $cmds; do
+ 	  IFS="$save_ifs"
+@@ -5347,63 +5228,7 @@
+       else
+ 	eval cmds=\"$old_archive_cmds\"
+ 
+-	if len=`expr "X$cmds" : ".*"` &&
+-	     test "$len" -le "$max_cmd_len" || test "$max_cmd_len" -le -1; then
+-	  cmds=$old_archive_cmds
+-	else
+-	  # the command line is too long to link in one step, link in parts
+-	  $echo "using piecewise archive linking..."
+-	  save_RANLIB=$RANLIB
+-	  RANLIB=:
+-	  objlist=
+-	  concat_cmds=
+-	  save_oldobjs=$oldobjs
+-	  # GNU ar 2.10+ was changed to match POSIX; thus no paths are
+-	  # encoded into archives.  This makes 'ar r' malfunction in
+-	  # this piecewise linking case whenever conflicting object
+-	  # names appear in distinct ar calls; check, warn and compensate.
+-	    if (for obj in $save_oldobjs
+-	    do
+-	      $echo "X$obj" | $Xsed -e 's%^.*/%%'
+-	    done | sort | sort -uc >/dev/null 2>&1); then
+-	    :
+-	  else
+-	    $echo "$modename: warning: object name conflicts; overriding AR_FLAGS to 'cq'" 1>&2
+-	    $echo "$modename: warning: to ensure that POSIX-compatible ar will work" 1>&2
+-	    AR_FLAGS=cq
+-	  fi
+-	  # Is there a better way of finding the last object in the list?
+-	  for obj in $save_oldobjs
+-	  do
+-	    last_oldobj=$obj
+-	  done
+-	  for obj in $save_oldobjs
+-	  do
+-	    oldobjs="$objlist $obj"
+-	    objlist="$objlist $obj"
+-	    eval test_cmds=\"$old_archive_cmds\"
+-	    if len=`expr "X$test_cmds" : ".*"` &&
+-	       test "$len" -le "$max_cmd_len"; then
+-	      :
+-	    else
+-	      # the above command should be used before it gets too long
+-	      oldobjs=$objlist
+-	      if test "$obj" = "$last_oldobj" ; then
+-	        RANLIB=$save_RANLIB
+-	      fi
+-	      test -z "$concat_cmds" || concat_cmds=$concat_cmds~
+-	      eval concat_cmds=\"\${concat_cmds}$old_archive_cmds\"
+-	      objlist=
+-	    fi
+-	  done
+-	  RANLIB=$save_RANLIB
+-	  oldobjs=$objlist
+-	  if test "X$oldobjs" = "X" ; then
+-	    eval cmds=\"\$concat_cmds\"
+-	  else
+-	    eval cmds=\"\$concat_cmds~\$old_archive_cmds\"
+-	  fi
+-	fi
++	cmds=$old_archive_cmds
+       fi
+       save_ifs="$IFS"; IFS='~'
+       for cmd in $cmds; do

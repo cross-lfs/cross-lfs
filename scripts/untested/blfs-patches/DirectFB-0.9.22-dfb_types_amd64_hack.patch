@@ -1,0 +1,33 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-07-31
+Initial Package Version: 0.9.22
+Origin: Based upon a debian hack
+Description: Hack to fix integer type redefinition errors on amd64.
+
+ gcc -m64 -DHAVE_CONFIG_H -I. -I. -I../.. -I../../include -I../../lib -I../../lib -I../../src -D_REENTRANT -Wall -O3 -ffast-math -pipe -O2 -pipe -march=athlon64 -D_GNU_SOURCE -Werror-implicit-function-declaration -MT ati128.lo -MD -MP -MF .deps/ati128.Tpo -c ati128.c  -fPIC -DPIC -o .libs/ati128.o
+In file included from /usr/include/asm/types.h:5,
+                 from /usr/include/linux/fb.h:4,
+                 from ati128.c:38:
+/usr/include/asm-x86_64/types.h:22: error: conflicting types for 'int64_t'
+/usr/include/sys/types.h:194: error: previous declaration of 'int64_t' was here
+/usr/include/asm-x86_64/types.h:23: error: conflicting types for 'u_int64_t'
+/usr/include/sys/types.h:200: error: previous declaration of 'u_int64_t' was here
+--- DirectFB-0.9.22/include/dfb_types.h	2004-04-30 05:08:37.000000000 +1000
++++ DirectFB-0.9.22-amd64hack/include/dfb_types.h	2005-07-31 12:09:56.000000000 +1000
+@@ -2,15 +2,6 @@
+ #define __DFB_TYPES_H__
+ 
+ #include <sys/types.h>
+-
+-#define __u8  u_int8_t
+-#define __u16 u_int16_t
+-#define __u32 u_int32_t
+-#define __u64 u_int64_t
+-
+-#define __s8  int8_t
+-#define __s16 int16_t
+-#define __s32 int32_t
+-#define __s64 int64_t
++#include <asm/types.h>
+ 
+ #endif

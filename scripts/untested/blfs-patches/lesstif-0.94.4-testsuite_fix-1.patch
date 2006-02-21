@@ -1,0 +1,162 @@
+Submitted By:            Randy McMurchy <randy_at_linuxfromscratch_dot_org>
+Date:                    2005-04-16
+Initial Package Version: 0.94.4
+Upstream Status:         Not submitted (LFS specific)
+Origin:                  Randy McMurchy
+Description:             Add minor changes to the testsuite so that something
+                         meaningful can be made by running the tests
+
+$LastChangedBy: randy $
+$Date: 2005-04-17 15:02:50 -0600 (Sun, 17 Apr 2005) $
+
+diff -Naur lesstif-0.94.4-orig/test/Xm/failed.known lesstif-0.94.4/test/Xm/failed.known
+--- lesstif-0.94.4-orig/test/Xm/failed.known	1970-01-01 00:00:00.000000000 +0000
++++ lesstif-0.94.4/test/Xm/failed.known	2005-04-16 22:19:30.000000000 +0000
+@@ -0,0 +1,100 @@
++
++bulletinboard/test1 1
++bulletinboard/test2 1
++bulletinboard/test4 1
++cascadebutton/test2 1
++cascadebutton/test7 1
++cascadebuttong/test3 78
++cascadebuttong/test4 1
++cascadebuttong/test7 1
++drawnbutton/test10 1
++drawnbutton/test6 78
++filesb/test1 1
++filesb/test10 1
++filesb/test13 30
++filesb/test2 1
++filesb/test20 1
++filesb/test3 1
++filesb/test4 1
++filesb/test6 1
++filesb/test8 1
++filesb/test9 1
++form/test4 1
++form/test50 1
++form/test53 8
++form/test56 1
++form/test58 1
++form/test6 1
++frame/test10 1
++frame/test8 2
++frame/test9 1
++label/test1 1
++label/test10 1
++label/test3 1
++label/test4 1
++labelg/test2 1
++labelg/test4 78
++list/test16 1
++list/test21 3
++mainw/test12 2
++mainw/test13 1
++mainw/test17 1
++mainw/test9 1
++menushell/test9 1
++messagebox/test12 1
++messagebox/test19 2
++messagebox/test8 1
++misc/test8 1
++panedw/test1 1
++panedw/test6 1
++panedw/test7 3
++panedw/test8 1
++pushbg/test2 1
++pushbg/test5 1
++pushbg/test6 1
++pushbg/test7 1
++pushbg/test9 78
++pushbutton/test13 1
++pushbutton/test2 1
++pushbutton/test6 1
++pushbutton/test7 1
++reptype/test1 2
++resconvert/test2 139
++rowcolumn/test18 1
++rowcolumn/test50 7
++rowcolumn/test51 100
++rowcolumn/test58 1
++rowcolumn/test60 1
++rowcolumn/test62 1
++rowcolumn/test63 2
++rowcolumn/test65 1
++scale/test17 78
++scrolledwindow/test1 1
++scrolledwindow/test13 1
++scrolledwindow/test19 1
++scrolledwindow/test20 1
++scrolledwindow/test21 1
++selectionbox/test11 1
++selectionbox/test13 1
++selectionbox/test9 145
++text/test1 1
++text/test10 1
++text/test13 1
++text/test16 55
++text/test2 1
++text/test22 1
++text/test23 1
++text/test7 1
++text/test8 1
++textf/test15 1
++textf/test17 139
++textf/test2 1
++textf/test3 1
++textf/test7 1
++togglebg/test2 78
++togglebutton/test7 78
++tracking/test1 1
++traversal/test1 1
++traversal/test4 1
++vendor/test5 1
++xmstring/test8 139
+
+diff -Naur lesstif-0.94.4-orig/test/testall.in lesstif-0.94.4/test/testall.in
+--- lesstif-0.94.4-orig/test/testall.in	2001-11-21 12:55:04.000000000 +0000
++++ lesstif-0.94.4/test/testall.in	2005-04-16 22:43:17.000000000 +0000
+@@ -127,7 +127,7 @@
+             if [ $status -ne 0 ]
+             then
+                echo "failed $status"
+-               echo "status" >>failed
++               echo "$dir/$file $status" >>../failed
+                FAILED=`expr $FAILED + 1`
+             else
+                echo "okay"
+@@ -156,7 +156,7 @@
+    echo ""
+    diff failed failed.known
+ else
+-   echo "No change in the tests"
++   echo "All failed tests were expected"
+ fi
+ 
+ # Exiting. Return number of broken tests (?!)
+
+diff -Naur lesstif-0.94.4-orig/test/Xm/fonts/test3.c lesstif-0.94.4/test/Xm/fonts/test3.c
+--- lesstif-0.94.4-orig/test/Xm/fonts/test3.c	2003-08-24 12:55:45.000000000 +0000
++++ lesstif-0.94.4/test/Xm/fonts/test3.c	2005-04-17 02:27:15.000000000 +0000
+@@ -33,7 +33,7 @@
+ 
+ 	XtRealizeWidget(toplevel);
+ 
+-	for (i=0; i<100; i++) {
++	for (i=0; i<50; i++) {
+ 		fontlist = _XmGetDefaultFontList(label, XmBUTTON_FONTLIST);
+ 		XmFontListFree(fontlist);
+ 		sleep(1);
+
+diff -Naur lesstif-0.94.4-orig/test/Xm/pushbutton/test18.c lesstif-0.94.4/test/Xm/pushbutton/test18.c
+--- lesstif-0.94.4-orig/test/Xm/pushbutton/test18.c	2004-10-03 13:26:50.000000000 +0000
++++ lesstif-0.94.4/test/Xm/pushbutton/test18.c	2005-04-17 02:27:58.000000000 +0000
+@@ -72,6 +72,6 @@
+     /* End */
+     fprintf(stderr, "Finishing up\n");
+ 
+-    sleep(300);
++    sleep(10);
+     exit(0);
+ }

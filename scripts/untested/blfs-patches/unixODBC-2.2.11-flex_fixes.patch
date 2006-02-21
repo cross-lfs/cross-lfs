@@ -1,0 +1,19 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-06-23
+Initial Package Version: 2.2.11
+Upstream Status: Unknown
+Origin: Self Created
+Description:
+   fix flex issues with yy_flush_buffer
+
+--- unixODBC-2.2.11-orig/sqp/lex.l	2001-10-18 02:40:32.000000000 +1000
++++ unixODBC-2.2.11/sqp/lex.l	2005-06-23 20:45:40.000000000 +1000
+@@ -237,7 +237,7 @@
+ {
+ 	sprintf( g_szError, "%s processing '%s' on line %d", s, yytext, g_nLineNo );
+ 	
+-	YY_FLUSH_BUFFER;
++	yy_flush_buffer(YY_CURRENT_BUFFER);
+ }
+ 
+ /**********************************************************************

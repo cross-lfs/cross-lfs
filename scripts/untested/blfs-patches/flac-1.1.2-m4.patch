@@ -1,0 +1,40 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-07-24
+Initial Package Version: 1.1.2
+Upstream Status: Unknown
+Origin: Gentoo
+Description:
+
+diff -Naur flac-1.1.1.orig/configure flac-1.1.1/configure
+--- flac-1.1.1.orig/configure	2004-09-30 19:14:14.393540000 -0700
++++ flac-1.1.1/configure	2004-09-30 19:15:24.279997712 -0700
+@@ -9040,7 +9040,7 @@
+   elif test "x$ogg_prefix" != "x" ; then
+     OGG_LIBS="-L$ogg_prefix/lib"
+   elif test "x$prefix" != "xNONE" ; then
+-    OGG_LIBS="-L$prefix/lib"
++    OGG_LIBS="-L$libdir"
+   fi
+ 
+   OGG_LIBS="$OGG_LIBS -logg"
+@@ -9050,7 +9050,7 @@
+   elif test "x$ogg_prefix" != "x" ; then
+     OGG_CFLAGS="-I$ogg_prefix/include"
+   elif test "x$prefix" != "xNONE"; then
+-    OGG_CFLAGS="-I$prefix/include"
++    OGG_CFLAGS=""
+   fi
+ 
+   echo "$as_me:$LINENO: checking for Ogg" >&5
+diff -Naur flac-1.1.1.orig/src/libFLAC/libFLAC.m4 flac-1.1.1/src/libFLAC/libFLAC.m4
+--- flac-1.1.1.orig/src/libFLAC/libFLAC.m4	2004-07-19 17:22:39.000000000 -0700
++++ flac-1.1.1/src/libFLAC/libFLAC.m4	2004-09-30 19:16:01.147908537 -0700
+@@ -28,7 +28,7 @@
+   elif test "x$libFLAC_prefix" != "x" ; then
+     LIBFLAC_CFLAGS="-I$libFLAC_prefix/include"
+   elif test "$prefix" != "xNONE"; then
+-    LIBFLAC_CFLAGS="-I$prefix/include"
++    LIBFLAC_CFLAGS="-I$libdir"
+   fi
+ 
+   AC_MSG_CHECKING(for libFLAC)

@@ -1,0 +1,37 @@
+Submitted By: Ryan Oliver <ryan.oliver@pha.com.au>
+Date: 2005-07-31
+Initial Package Version: svn-20050731
+Upstream Status: Not Submitted
+Origin: Self Created
+Description: Add some vars to override defaults so we can build bi-arch
+
+--- x264-svn-20050731/configure	2005-07-31 21:44:21.000000000 +1000
++++ x264-svn-20050731-mod/configure	2005-07-31 23:20:43.000000000 +1000
+@@ -32,7 +32,7 @@
+ vfw="no"
+ vis="no"
+ 
+-CC="gcc"
++CC="${CC-gcc}"
+ CFLAGS="-Wall -I. -O4 -ffast-math -D__X264__"
+ LDFLAGS=""
+ HAVE_GETOPT_LONG=1
+@@ -91,6 +91,9 @@
+ esac
+ 
+ UNAMEM="`uname -m`"
++# Override UNAMEM if ARCH is passed on the environment
++UNAMEM="${TGT_ARCH-${UNAMEM}}"
++
+ case "$UNAMEM" in
+   i386|i486|i586|i686|BePC)
+     ARCH="X86"
+@@ -191,7 +194,7 @@
+             vfw="yes"
+             ;;
+         --enable-visualize)
+-            LDFLAGS="$LDFLAGS -L/usr/X11R6/lib -lX11"
++            LDFLAGS="$LDFLAGS -L${XLIBS-/usr/X11R6/lib} -lX11"
+             CFLAGS="$CFLAGS -DVISUALIZE=1"
+             vis="yes"
+             ;;
