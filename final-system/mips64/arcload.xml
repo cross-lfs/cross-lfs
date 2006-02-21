@@ -5,45 +5,54 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-colo" role="wrap">
-  <?dbhtml filename="colo.html"?>
+<sect1 id="ch-system-arcload" role="wrap">
+  <?dbhtml filename="arcload.html"?>
 
-  <title>Colo-&colo-version;</title>
+  <title>Arcload-&arcload-version;</title>
 
-  <indexterm zone="ch-system-colo">
-    <primary sortas="a-Colo">Colo</primary>
+  <indexterm zone="ch-system-arcload">
+    <primary sortas="a-Arcload">Arcload</primary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../mips/colo.xml"
+  href="../mips/arcload.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
-    <title>Installation of Colo</title>
+    <title>Installation of Arcload</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../mips/colo.xml"
+    href="../mips/arcload.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../mips/colo.xml"
+    href="../mips/arcload.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>make CC="gcc ${BUILD32}" binary
-make CC="gcc ${BUILD64}" tooldirs</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../mips/colo.xml"
+    href="../mips/arcload.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../mips/colo.xml"
+    href="../mips/arcload.xml"
     xpointer="xpointer(//*[@os='d'])"/>
+
+<screen><userinput>make MODE=M64 clean
+make CC="gcc" LD="ld" MODE=M64</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../mips/arcload.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
+
+<screen><userinput>install -d /usr/lib/arcload
+cp arcload /usr/lib/arcload/sash64</userinput></screen>
 
   </sect2>
 
+<!--
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../mips/colo.xml"
-  xpointer="xpointer(id('contents-colo'))"/>
+  href="../mips/arcload.xml"
+  xpointer="xpointer(id('contents-arcload'))"/>
+-->
 
 </sect1>
