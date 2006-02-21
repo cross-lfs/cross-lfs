@@ -59,12 +59,6 @@
       Unicode, therefore libiconv is not required on an LFS system.</para>
     </note>
 
-    <para os="a">This package is known to behave badly when you change its default
-    optimization flags (including the <option>-march</option> and
-    <option>-mcpu</option> options). Therefore, if you have defined any
-    environment variables that override default optimizations, such as CFLAGS
-    and CXXFLAGS, we recommend un-setting them when building Glibc.</para>
-
     <para os="b">The Glibc build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
     pointing at <filename class="directory">/tools</filename>. The specs
@@ -76,7 +70,7 @@
     segfaulting:</para>
 
 <screen os="d"><userinput>patch -Np1 -i ../&glibc-localedef_segfault-patch;</userinput></screen>
- 
+
     <para os="e">The Glibc documentation recommends building Glibc outside of the
     source directory in a dedicated build directory:</para>
 
@@ -127,11 +121,11 @@ cd ../glibc-build</userinput></screen>
     <itemizedlist os="p">
       <listitem>
         <para>The <emphasis>math</emphasis> tests, at least on i686, fail in
-	the <emphasis>test-double</emphasis> and <emphasis>test-idouble</emphasis>
-	tests with gcc-&gcc-version;, the <command>grep</command> command will
-	also report an expected (ignored) failure in <emphasis>posix/annexc
-	</emphasis>. These two failures in the math tests appear to be harmless.
-	The math tests may also fail    
+  the <emphasis>test-double</emphasis> and <emphasis>test-idouble</emphasis>
+  tests with gcc-&gcc-version;, the <command>grep</command> command will
+  also report an expected (ignored) failure in <emphasis>posix/annexc
+  </emphasis>. These two failures in the math tests appear to be harmless.
+  The math tests may also fail
         on systems where the CPU is not a relatively new genuine Intel or
         authentic AMD. Certain optimization settings are also known to be a
         factor here.</para>
