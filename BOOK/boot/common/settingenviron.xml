@@ -10,28 +10,22 @@
 
   <title>Setting Up the Environment</title>
 
-  <para>The new instance of the shell is a <emphasis>non-login</emphasis>
-  shell, will read <filename>.bash_profile</filename> file. Create the
-  <filename>.bash_profile</filename> file now:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../final-preps/settingenviron.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>cat &gt; ${LFS}/root/.bash_profile &lt;&lt; "EOF"
+<screen os="b"><userinput>cat &gt; ${LFS}/root/.bash_profile &lt;&lt; "EOF"
 <literal>PS1='\u:\w\$ '
 LC_ALL=POSIX
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin:/tools/sbin
 export LC_ALL PATH PS1</literal>
 EOF</userinput></screen>
 
-  <para>The <envar>LC_ALL</envar> variable controls the localization of
-  certain programs, making their messages follow the conventions of a
-  specified country. If the host system uses a version of Glibc older
-  than 2.2.4, having <envar>LC_ALL</envar> set to something other than
-  <quote>POSIX</quote> or <quote>C</quote> (during this chapter) may cause
-  issues if you exit the chroot environment and wish to return later.
-  Setting <envar>LC_ALL</envar> to <quote>POSIX</quote> or <quote>C</quote>
-  (the two are equivalent) ensures that everything will work as expected
-  in the chroot environment.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../final-preps/settingenviron.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
 
-  <para>By putting <filename class="directory">/tools/bin</filename> ahead
+  <para os="i">By putting <filename class="directory">/tools/bin</filename> ahead
   of the standard <envar>PATH</envar>, all the programs installed in
   <xref linkend="chapter-temporary-tools"/> are picked up by the shell
   immediately after their installation. This, combined with turning off
