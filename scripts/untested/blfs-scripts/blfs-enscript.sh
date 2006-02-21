@@ -5,15 +5,16 @@
 cd ${SRC}
 LOG=enscript-blfs.log
 
-set_libdirname
-setup_multiarch
+# ARGHH cannot set ARCH_CFLAGS or configure barfs... grrrrr
+#set_libdirname
+#setup_multiarch
 
 unpack_tarball enscript-${ENSCRIPT_VER}
 cd ${PKGDIR}
 
 max_log_init enscript ${ENSCRIPT_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
-CC="${CC-gcc} ${ARCH_CFLAGS}" \
-CFLAGS="${TGT_CFLAGS}" \
+#CC="${CC-gcc} ${ARCH_CFLAGS}" \
+#CFLAGS="${TGT_CFLAGS}" \
 ./configure --prefix=/usr \
    --sysconfdir=/etc/enscript \
    --localstatedir=/var \
