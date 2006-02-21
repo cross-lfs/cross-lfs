@@ -79,12 +79,12 @@ EOF</userinput></screen>
   (the two are equivalent) ensures that everything will work as expected in
   the chroot environment.</para>
 
-  <para os="j">By putting <filename class="directory">/tools/bin</filename> ahead
+  <para os="j">By putting <filename class="directory">/cross-tools/bin</filename> ahead
   of the standard <envar>PATH</envar>, all the programs installed in
-  <xref linkend="chapter-temp-system"/> are picked up by the shell
+  <xref linkend="chapter-temp-system"/> are created up by the cross-compiler
   immediately after their installation. This, combined with turning off
   hashing, limits the risk that old programs are used from the host when
-  the same programs are available in the temporary system.</para>
+  when building a sane set of cross-compiler tools.</para>
 
   <para os="k">Finally, to have the environment fully prepared for building the
   temporary tools, source the just-created user profile:</para>
