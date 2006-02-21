@@ -53,6 +53,14 @@ define VALIDATE
         xmllint --xinclude --noout --nonet --postvalid $(PWD)/$$arch-index.xml
 endef
 
+# TroubleShoot
+define TROUBLE
+	echo "Troubleshooting $$arch..." ; \
+        xmllint --xinclude --nonet --postvalid $(PWD)/$$arch-index.xml > /tmp/dump-$$arch ; \
+	xmllint --xinclude --noout --nonet --valid /tmp/dump-$$ach ; \
+	echo "You can now look at /tmp/dump-$$arch to see the errors"
+endef
+
 # Dump commands
 define DUMP
 	echo "Extracting commands from $$arch..." ; \
@@ -108,6 +116,11 @@ validate:
 	$(VALIDATE) ; \
 	done
 
+trouble:
+	@for arch in $(ARCH) ; do \
+	$(TROUBLE) ; \
+	done
+
 dump-commands:
 	@for arch in $(ARCH) ; do \
 	$(DUMP) ; \
@@ -118,4 +131,4 @@ download-list:
 	$(DLLIST) ; \
 	done
 
-.PHONY: lfs toplevel common render nochunk nochunk_render pdf text validate dump-commands download-list
+.PHONY: lfs toplevel common render nochunk nochunk_render pdf text validate trouble dump-commands download-list
