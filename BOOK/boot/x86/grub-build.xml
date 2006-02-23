@@ -30,7 +30,7 @@
     href="../../final-system/x86/grub.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen os="aa"><userinput>./configure --prefix=${LFS}/usr \
+<screen os="aa"><userinput>./configure --prefix=/usr \
    --host=${LFS_TARGET}</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -45,13 +45,9 @@
     href="../../final-system/x86/grub.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-<screen os="ab"><userinput>make install
+<screen os="ab"><userinput>make DESTDIR=${LFS} install
 mkdir ${LFS}/boot/grub
 cp ${LFS}/usr/lib/grub/i386-pc/stage{1,2} ${LFS}/boot/grub</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/x86/grub.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
 
     <para os="ac">The <filename class="directory">i386-pc</filename> directory
     contains a number of <filename>*stage1_5</filename> files, different
