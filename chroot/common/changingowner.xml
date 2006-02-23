@@ -10,7 +10,7 @@
 
   <title>Changing Ownership</title>
 
-    <para>Currently, the <filename class="directory">/tools</filename>
+    <para os="a">Currently, the <filename class="directory">/tools</filename>
     and <filename class="directory">/cross-tools</filename> directories
     are owned by the user <emphasis>lfs</emphasis>, a user that
     exists only on the host system. Although the <filename
@@ -25,14 +25,19 @@
     class="directory">/tools</filename> directory and all the files therein,
     thus exposing these files to possible malicious manipulation.</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../boot/common/changingowner.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+    <para os="b">To avoid this issue, add the <systemitem
+    class="username">lfs</systemitem> user to the new LFS system later when
+    creating the <filename>/etc/passwd</filename> file, taking care to assign
+    it the same user and group IDs as on the host system. Alternatively,
+    assign the contents of the <filename class="directory">/tools</filename>
+    and <filename class="directory">/cross-tools</filename> directories to
+    user <systemitem class="username">root</systemitem> by running the
+    following commands:</para>
 
-<screen><userinput>chown -Rv 0:0 /tools
+<screen os="c"><userinput>chown -Rv 0:0 /tools
 chown -Rv 0:0 /cross-tools</userinput></screen>
 
-    <para>The commands use <parameter>0:0</parameter> instead of
+    <para os="d">The commands use <parameter>0:0</parameter> instead of
     <parameter>root:root</parameter>, because <command>chown</command>
     is unable to resolve the name <quote>root</quote> until the
     <filename>passwd</filename> file has been created.</para>

@@ -10,35 +10,14 @@
 
   <title>Changing Ownership</title>
 
-  <para os="a">Currently, the <filename class="directory">/tools</filename>
-  directory, <filename class="directory">/cross-tools</filename> directory, and
-  <filename class="directory">$LFS</filename> directory are owned
-  by the user <systemitem class="username">lfs</systemitem>,
-  a user that exists only on the host system. For security reasons, the
-  $LFS root directory and all of it subdirectories should be owned by
-  <systemitem class="username">root</systemitem>. Change the ownership for $LFS and its subdirectories by running these commands:</para>
+  <para os="a">Currently, the <filename class="directory">$LFS</filename>
+  directory and all of its subdirectories  are owned by the user
+  <systemitem class="username">lfs</systemitem>, a user that exists only
+  on the host system. For security reasons, the $LFS root directory and
+  all of it subdirectories should be owned by
+  <systemitem class="username">root</systemitem>. Change the ownership
+  for $LFS and its subdirectories by running this command:</para>
 
-<screen><userinput>chown -v root:root ${LFS}
-chown -Rv root:root $LFS/{bin,boot,dev,etc,home,lib,media,mnt,opt,proc,root,sbin,srv,sys,tmp,usr,var}</userinput></screen>
-
-  <para os="b">The same issue also exists with <filename class="directory">/tools</filename> and <filename class="directory">/cross-tools</filename>. Although these directories can be deleted once the
-  LFS system has been finished, they can be retained to build additional
-  LFS systems. If the <filename class="directory">/tools</filename> and <filename class="directory">/cross-tools</filename>
-  directories are kept as is, the files are owned by a user ID without a
-  corresponding account. This is dangerous because a user account created
-  later could get this same user ID and would own the <filename
-  class="directory">/tools</filename> and <filename class="directory">/cross-tools</filename> directories and all the files therein,
-  thus exposing these files to possible malicious manipulation.</para>
-
-  <para os="c">To avoid this issue, add the <systemitem
-  class="username">lfs</systemitem> user to the new LFS system later when
-  creating the <filename>/etc/passwd</filename> file, taking care to assign
-  it the same user and group IDs as on the host system. Alternatively,
-  assign the contents of the <filename class="directory">/tools</filename>
-  and <filename class="directory">/cross-tools</filename> directories to user <systemitem class="username">root</systemitem> by running
-  the following commands:</para>
-
-<screen><userinput>chown -Rv root:root /tools
-chown -Rv root:root /cross-tools</userinput></screen>
+<screen os="b"><userinput>chown -Rv root:root ${LFS}</userinput></screen>
 
 </sect1>
