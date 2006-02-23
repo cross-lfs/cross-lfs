@@ -30,7 +30,7 @@
     href="../x86/grub-build.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen os="aa"><userinput>CC="${CC} ${BUILD32}" ./configure --prefix=${LFS}/usr \
+<screen os="aa"><userinput>CC="${CC} ${BUILD32}" ./configure --prefix=/usr \
    --host=${LFS_TARGET}</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -45,7 +45,7 @@
     href="../x86/grub-build.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-<screen os="ab"><userinput>make install
+<screen os="ab"><userinput>make DESTDIR=${LFS} install
 mkdir ${LFS}/boot/grub
 cp ${LFS}/usr/lib/grub/x86_64-pc/stage{1,2} ${LFS}/boot/grub</userinput></screen>
 
@@ -53,9 +53,13 @@ cp ${LFS}/usr/lib/grub/x86_64-pc/stage{1,2} ${LFS}/boot/grub</userinput></screen
     href="../../final-system/x86_64/grub.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/x86_64/grub.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+    <para os="j">The <filename class="directory">x86_64-pc</filename>
+    directory contains a number of <filename>*stage1_5</filename>
+    files, different ones for different file systems. Review the files
+    available and copy the appropriate ones to the <filename
+    class="directory">${LFS}/boot/grub</filename> directory. Most
+    users will copy the <filename>e2fs_stage1_5</filename> and/or
+    <filename>reiserfs_stage1_5</filename> files.</para>
 
   </sect2>
 
