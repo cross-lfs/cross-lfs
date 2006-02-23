@@ -51,15 +51,21 @@ letters):</para>
 
 <screen os="g"><userinput>make perl utilities</userinput></screen>
 
-    <para os="h">Install these tools and their libraries:</para>
+  <para os="h">Although Perl comes with a test suite, it is not recommended
+  to run it at this point. Only part of Perl was built and running
+  <command>make test</command> now will cause the rest of Perl to be built
+  as well, which is unnecessary at this point. The test suite can be run
+  later in this chapter if desired.</para>
 
-<screen os="i"><userinput>cp -v perl pod/pod2man /tools/bin
+    <para os="i">Install these tools and their libraries:</para>
+
+<screen os="j"><userinput>cp -v perl pod/pod2man /tools/bin
 install -dv /tools/lib/perl5/&perl-version;
 cp -Rv lib/* /tools/lib/perl5/&perl-version;</userinput></screen>
 
-    <para os="j">Finally, create a necessary symlink:</para>
+    <para os="k">Finally, create a necessary symlink:</para>
 
-<screen os="k"><userinput>ln -sv /tools/bin/perl /usr/bin</userinput></screen>
+<screen os="l"><userinput>ln -sv /tools/bin/perl /usr/bin</userinput></screen>
 
   </sect2>
 
