@@ -62,8 +62,9 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='aj'])"/>
 
-    <para os="bd">Finally, disable <option>-B</option> in <filename>configure</filename>,
-    so wrong architecture libraries are not picked up as -B is not expanded by the multilib spec.:</para>
+    <para os="bd">Finally, disable <option>-B</option> in
+    <filename>configure</filename> so wrong architecture libraries are not
+    picked up, as -B is not expanded by the multilib spec:</para>
 
 <screen os="be"><userinput>cp -v configure{,.orig}
 sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig >configure</userinput></screen>
