@@ -145,11 +145,15 @@ sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
     <para os="cj">For NPTL use the following command:</para>
 
-<screen os="ck"><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/pthread/pthread.h /tools/include/</userinput></screen>
+<screen os="ck"><userinput>cp -v \
+../glibc-&glibc-version;/nptl/sysdeps/pthread/pthread.h \
+/tools/include</userinput></screen>
 
     <para os="cl">Now copy the architecture specific header over:</para>
 
-<screen os="cm"><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
+<screen os="cm"><userinput>cp -v \
+../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h \
+/tools/include/bits</userinput></screen>
 
   </sect2>
 
