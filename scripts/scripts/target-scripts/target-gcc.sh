@@ -209,8 +209,7 @@ case ${target_gcc_ver} in
       apply_patch gcc-3.4.1-fix_configure_for_target_native
    ;;
    4.* )
-      # Testing only... set AS_FOR_TARGET and LD_FOR_TARGET so these are used
-      # for feature checks... will have to check for unintended side effects
+      # set AS_FOR_TARGET and LD_FOR_TARGET so these are used for feature checks... 
       extra_makeopts="${extra_makeopts} AS_FOR_TARGET=${HST_TOOLS}/bin/${TARGET}-as"
       extra_makeopts="${extra_makeopts} LD_FOR_TARGET=${HST_TOOLS}/bin/${TARGET}-ld"
    ;;
