@@ -52,7 +52,7 @@ echo " o Configure OK" &&
 
 min_log_init ${BUILDLOGS} &&
 #make ${PMFLAGS} LDFLAGS="-s" \
-make ${PMFLAGS} LDFLAGS="-s" \
+make LDFLAGS="-s" \
    >> ${LOGFILE} 2>&1 &&
 echo " o Build OK" &&
 

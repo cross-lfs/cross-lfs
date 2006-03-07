@@ -1,0 +1,78 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2006-01-03
+Initial Package Version: 4.0.14
+Origin: Jim Gifford
+Upstream Status: Submitted
+Description: Fixed default values
+	     As released libpam libselinux and audit are
+	     turned on by default. This patch corrects
+	     the issue.
+ 
+diff -Naur shadow-4.0.14.orig/configure shadow-4.0.14/configure
+--- shadow-4.0.14.orig/configure	2006-01-03 16:12:36.000000000 +0000
++++ shadow-4.0.14/configure	2006-01-03 23:22:25.000000000 +0000
+@@ -1048,10 +1048,9 @@
+                           both]
+   --with-tags[=TAGS]
+                           include additional configurations [automatic]
+-  --with-audit            use auditing support [default=yes if found]
+-  --with-libpam           use libpam for PAM support [default=yes if
+-                          found]
+-  --with-selinux          use SELinux support [default=autodetect]
++  --with-audit            use auditing support [default=no]
++  --with-libpam           use libpam for PAM support [default=no]
++  --with-selinux          use SELinux support [default=no]
+   --with-skey             use S/Key support [default=no]
+   --with-libcrack         use libcrack [default=yes if found and if PAM not
+                           enabled]
+@@ -22185,7 +22184,7 @@
+   withval="$with_audit"
+   with_audit=$withval
+ else
+-  with_audit=yes
++  with_audit=no
+ fi;
+ 
+ # Check whether --with-libpam or --without-libpam was given.
+@@ -22193,7 +22192,7 @@
+   withval="$with_libpam"
+   with_libpam=$withval
+ else
+-  with_libpam=yes
++  with_libpam=no
+ fi;
+ 
+ # Check whether --with-selinux or --without-selinux was given.
+@@ -22201,7 +22200,7 @@
+   withval="$with_selinux"
+   with_selinux=$withval
+ else
+-  with_selinux=yes
++  with_selinux=no
+ fi;
+ 
+ # Check whether --with-skey or --without-skey was given.
+diff -Naur shadow-4.0.14.orig/configure.in shadow-4.0.14/configure.in
+--- shadow-4.0.14.orig/configure.in	2006-01-02 23:51:44.000000000 +0000
++++ shadow-4.0.14/configure.in	2006-01-03 23:23:48.000000000 +0000
+@@ -219,14 +219,14 @@
+ )
+ 
+ AC_ARG_WITH(audit, 
+-	[AC_HELP_STRING([--with-audit], [use auditing support @<:@default=yes if found@:>@])],
+-	[with_audit=$withval], [with_audit=yes])
++	[AC_HELP_STRING([--with-audit], [use auditing support @<:@default=no@:>@])],
++	[with_audit=$withval], [with_audit=no])
+ AC_ARG_WITH(libpam,
+-	[AC_HELP_STRING([--with-libpam], [use libpam for PAM support @<:@default=yes if found@:>@])],
+-	[with_libpam=$withval], [with_libpam=yes])
++	[AC_HELP_STRING([--with-libpam], [use libpam for PAM support @<:@default=no@:>@])],
++	[with_libpam=$withval], [with_libpam=no])
+ AC_ARG_WITH(selinux,
+-	[AC_HELP_STRING([--with-selinux], [use SELinux support @<:@default=autodetect@:>@])],
+-	[with_selinux=$withval], [with_selinux=yes])
++	[AC_HELP_STRING([--with-selinux], [use SELinux support @<:@default=not@:>@])],
++	[with_selinux=$withval], [with_selinux=no])
+ AC_ARG_WITH(skey,
+ 	[AC_HELP_STRING([--with-skey], [use S/Key support @<:@default=no@:>@])],
+ 	[with_skey=$withval], [with_skey=no])

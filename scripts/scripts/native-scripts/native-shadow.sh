@@ -31,10 +31,13 @@ test -f libmisc/xmalloc.c-ORIG ||
 sed 's@^extern char \*malloc ();@/* & */@g' \
    libmisc/xmalloc.c-ORIG > libmisc/xmalloc.c
 
-# fix lastlog for shadow-4.0.7
 case ${SHADOW_VER} in
    4.0.7 )
+      # fix lastlog for shadow-4.0.7
       apply_patch shadow-4.0.7-fix_lastlog-1
+   ;;
+   4.0.14 )
+      apply_patch shadow-4.0.14-configure_fix-1
    ;;
 esac
 

@@ -56,7 +56,16 @@ echo " o Test OK" &&
 min_log_init ${INSTLOGS} &&
 make install \
    >> ${LOGFILE} 2>&1 &&
-echo " o ALL OK" || barf
+echo " o Install OK" || barf
+
+# Following for ~tcl 8.4.12
+case ${TCL_VER} in
+   8.4.1[2-9]* )
+      make install-private-headers \
+         >>  ${LOGFILE} 2>&1 &&
+      echo " o install-private-headers OK" || barf
+   ;;
+esac
 
 # Create symlink for tclsh
 TCLSH=$(basename $(find ${BUILD_PREFIX}/bin -type f -name tclsh\*))

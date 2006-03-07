@@ -62,9 +62,14 @@ case ${KERNEL_VER} in
       #                         /gcc-4 <- gcc ver specific
 
       # fix issues with kernel concerning 2.16 binutils
-      # checked against 2.6.11, need to check against 2.6.12
-      case ${target_gas_ver} in
-         2.16* ) apply_patch linux-2.6-seg-5 ;;
+      # checked against 2.6.11, need to check against 2.6.12 and earlier
+      # Patch does not apply to 2.6.15
+      case ${KERNEL_VER} in
+         2.6.1[01]* )
+            case ${target_gas_ver} in
+               2.16* ) apply_patch linux-2.6-seg-5 ;;
+            esac
+         ;;
       esac
 
       # fix gcc4 compilation issues

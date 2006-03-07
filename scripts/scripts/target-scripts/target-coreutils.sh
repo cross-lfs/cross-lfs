@@ -67,7 +67,7 @@ CFLAGS="-O2 -pipe ${TGT_CFLAGS}" DEFAULT_POSIX2_VERSION=199209 \
 echo " o Configure OK" &&
 
 min_log_init ${BUILDLOGS} &&
-make ${PMFLAGS} LDFLAGS="-s" \
+make LDFLAGS="-s" \
    >> ${LOGFILE} 2>&1 &&
 echo " o Build OK" &&
 
