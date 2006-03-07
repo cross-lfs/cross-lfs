@@ -15,6 +15,23 @@
     <secondary>boot, configuring</secondary>
   </indexterm>
 
-  <para os="a">This is section is to be written..</para>
+  <para os="a">Create a <filename>aboot.conf</filename> file defining aboot's boot
+  menu:</para>
+
+<screen><userinput>cat &gt; /etc/aboot.conf &lt;&lt; "EOF"
+<literal># Begin /etc/aboot.conf
+0:1/boot/lfskernel-&linux-version; root=/dev/sda1
+# End /etc/aboot.conf</literal>
+EOF</userinput></screen>
+
+   <para os="b">If you already have aboot installed on your target system, you do
+   not need to reinstall it. aboot is just a chain loader and has no bearing on
+   the system build.</para>
+
+   <para os="c">After you get the build copied to when you can boot, you will need
+   to issue the following command:</para>
+
+<screen><userinput>swriteboot -f3 /dev/sda /boot/bootlx
+abootconf /dev/sda 1</userinput></screen>
 
 </sect1>
