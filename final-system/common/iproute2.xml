@@ -44,15 +44,11 @@
 
 <screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile</userinput></screen>
 
-    <para os="a">Prepare IPRoute2 for compilation:</para>
+    <para os="a">Compile the package:</para>
 
-<screen os="b"><userinput>sh configure </userinput></screen>
+<screen os="b"><userinput>make SBINDIR=/sbin</userinput></screen>
 
-    <para os="c">Compile the package:</para>
-
-<screen os="d"><userinput>make SBINDIR=/sbin</userinput></screen>
-
-    <variablelist os="e">
+    <variablelist os="c">
       <title>The meaning of the make option:</title>
 
       <varlistentry>
@@ -66,11 +62,11 @@
       </varlistentry>
     </variablelist>
 
-    <para os="f">This package does not come with a test suite.</para>
+    <para os="d">This package does not come with a test suite.</para>
 
-    <para os="g">Install the package:</para>
+    <para os="e">Install the package:</para>
 
-<screen os="h"><userinput>make SBINDIR=/sbin install</userinput></screen>
+<screen os="f"><userinput>make SBINDIR=/sbin install</userinput></screen>
 
   </sect2>
 
