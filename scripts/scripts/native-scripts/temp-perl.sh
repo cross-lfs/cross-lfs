@@ -77,6 +77,7 @@ make utilities \
 
 min_log_init ${INSTLOGS} &&
 {
+   rm -f ${TGT_TOOLS}/bin/perl
    cp perl ${TGT_TOOLS}/bin/perl &&
    cp pod/pod2man ${TGT_TOOLS}/bin &&
    mkdir -p ${TGT_TOOLS}/${libdirname}/perl5/${PERL_VER} &&
@@ -84,3 +85,6 @@ min_log_init ${INSTLOGS} &&
 }  >> ${LOGFILE} 2>&1 &&
 echo " o ALL OK" || barf
 
+if [ "${MULTIARCH}" = "Y" ]; then
+   use_wrapper ${TGT_TOOLS}/bin/perl
+fi
