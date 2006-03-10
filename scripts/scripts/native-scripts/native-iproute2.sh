@@ -23,6 +23,9 @@ chmod 666 misc/Makefile
 sed -e '/^TARGETS/s@arpd@@g' \
     misc/Makefile-ORIG > misc/Makefile
 
+# gah, configure wasn't executable
+chmod 775 configure
+
 max_log_init iproute2 ${IPROUTE2_VER} "native (shared)" ${CONFLOGS} ${LOG}
 ./configure \
    >> ${LOGFILE} 2>&1 &&
