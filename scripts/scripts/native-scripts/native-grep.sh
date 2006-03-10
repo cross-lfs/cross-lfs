@@ -17,6 +17,10 @@ setup_multiarch
 unpack_tarball grep-${GREP_VER} &&
 cd ${PKGDIR}
 
+case ${GREP_VER} in
+   2.5.1a ) apply_patch grep-2.5.1a-redhat_fixes-2.patch ;;
+esac
+
 max_log_init Grep ${GREP_VER} "native (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CFLAGS="-O2 -pipe ${TGT_CFLAGS}" \

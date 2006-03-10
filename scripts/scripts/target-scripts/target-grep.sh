@@ -27,6 +27,10 @@ else
    INSTALL_OPTIONS=""
 fi
 
+case ${GREP_VER} in
+   2.5.1a ) apply_patch grep-2.5.1a-redhat_fixes-2.patch ;;
+esac
+
 max_log_init Grep ${GREP_VER} "target (shared)" ${CONFLOGS} ${LOG}
 CC="${TARGET}-gcc ${ARCH_CFLAGS}" \
 CFLAGS="-O2 -pipe ${TGT_CFLAGS}" \
