@@ -21,6 +21,14 @@ if [ ! "${libdirname}" = "lib" ]; then
    sed '/TCL_LIBRARY/s@\$(prefix)/lib@$(libdir)@g' Makefile.in-ORIG > Makefile.in
 fi
 
+# Fix brokenness in configure with bash-3.1
+case ${TCL_VER} in
+   8.4.1[12] )
+      if [ ! -f configure-ORIG ]; then cp configure configure-ORIG ; fi
+      sed "s/relid'/relid/" < configure-ORIG > configure
+   ;;
+esac
+
 max_log_init Tcl ${TCL_VER} "blfs (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 CFLAGS="${TGT_CFLAGS}" \

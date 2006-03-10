@@ -36,6 +36,13 @@ if [ ! "${libdirname}" = "lib" ]; then
       Makefile.in-ORIG > Makefile.in
 fi
 
+# Fix brokenness in configure with bash-3.1
+case ${TCL_VER} in
+   8.4.1[12] )
+      if [ ! -f configure-ORIG ]; then cp configure configure-ORIG ; fi
+      sed "s/relid'/relid/" < configure-ORIG > configure
+   ;;
+esac
 max_log_init Tcl ${TCL_VER} "temp (shared)" ${CONFLOGS} ${LOG}
 CC="${CC-gcc} ${ARCH_CFLAGS}" \
 ./configure --prefix=${BUILD_PREFIX} ${extra_conf} \
