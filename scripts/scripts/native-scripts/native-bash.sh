@@ -36,6 +36,9 @@ case ${BASH_VER} in
       apply_patch bash-3.0-fixes-1
       apply_patch bash-3.0-avoid_WCONTINUED-1
    ;;
+   3.1 )
+      apply_patch bash-3.1-fixes-5
+   ;;
 esac
 
 if [ "${USE_READLINE}" = "Y" ]; then

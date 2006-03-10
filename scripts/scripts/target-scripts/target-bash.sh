@@ -71,6 +71,9 @@ END
       apply_patch bash-3.0-fixes-1
       apply_patch bash-3.0-avoid_WCONTINUED-1
    ;;
+   3.1 )
+      apply_patch bash-3.1-fixes-5
+   ;;
 esac
 
 # Patch Makefile.in to use ${TARGET}-size instead of size
