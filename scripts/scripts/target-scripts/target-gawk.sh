@@ -33,6 +33,10 @@ if [ "${TARGET}" = "${BUILD}" ]; then
    BUILD=`echo ${BUILD} | sed 's@\([_a-zA-Z0-9]*\)\(-[_a-zA-Z0-9]*\)\(.*\)@\1\2x\3@'`
 fi
 
+case ${GAWK_VER} in
+   3.1.5 )  apply_patch gawk-3.1.5-segfault_fix-1 ;;
+esac
+
 # gawk is braindead for setting version information
 # during install while cross compiling, here we will use
 # gawk-$(PACKAGE_VERSION) instead of trying to run gawk --version

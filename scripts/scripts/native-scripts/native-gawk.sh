@@ -17,6 +17,10 @@ setup_multiarch
 unpack_tarball gawk-${GAWK_VER} &&
 cd ${PKGDIR}
 
+case ${GAWK_VER} in
+   3.1.5 )  apply_patch gawk-3.1.5-segfault_fix-1 ;;
+esac
+
 # Following mimics gawk patch
 files="Makefile.in awklib/Makefile.in"
 for file in ${files}; do
