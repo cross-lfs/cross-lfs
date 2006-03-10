@@ -24,8 +24,8 @@ cd ${PKGDIR}
 
 case ${READLINE_VER} in
    4.3 ) apply_patch readline-4.3-gnu_fixes-1 ;;
-   # Should be fixed next release
    5.0 ) apply_patch readline-5.0-fixes-1 ;;
+   5.1 ) apply_patch readline-5.1-fixes-2 ;;
 esac
 
 max_log_init readline ${READLINE_VER} "native (shared)" ${CONFLOGS} ${LOG}
