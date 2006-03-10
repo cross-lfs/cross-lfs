@@ -13,6 +13,17 @@ cd ${SRC}
 
 LOG="gcc-cross-final.log"
 
+# we cannot assume what the default env for the the host system is,
+# so we just set libdirname to "lib"
+libdirname="lib"
+
+#set_libdirname
+#setup_multiarch
+#
+#if [ ! "${libdirname}" = "lib" ]; then
+#   extra_conf="--libdir=${HST_TOOLS}/${libdirname}"
+#fi
+
 if [ "Y" = "${MULTIARCH}" ]; then
    vendor_os=`echo ${TARGET} | sed 's@\([^-]*\)-\(.*\)@\2@'`
    case ${TGT_ARCH} in
@@ -38,7 +49,7 @@ if [ "Y" = "${MULTIARCH}" ]; then
 
 else
    # If we are not multi-arch, disable multilib
-   extra_conf="--enable-multilib=no"
+   extra_conf="${extra_conf} --enable-multilib=no"
 
    # HACK: this sets abi to n32 with mips... this should be handled
    # by the multiarch funcs somehow... and set according to DEFAULTENV
@@ -78,15 +89,20 @@ fi
 # Apply linkonce patch for gcc (should be fixed come gcc 3.4.4)
 cd ${SRC}/${PKGDIR}
 case ${target_gcc_ver} in
-   3.4.3 ) apply_patch gcc-3.4.3-linkonce-1
-           apply_patch gcc-3.4.0-arm-bigendian
-           apply_patch gcc-3.4.0-arm-nolibfloat
-           apply_patch gcc-3.4.0-arm-lib1asm
-           apply_patch gcc-3.4.3-clean_exec_and_lib_search_paths_when_cross-1
+   3.4.3 )
+      apply_patch gcc-3.4.3-linkonce-1
+      apply_patch gcc-3.4.0-arm-bigendian
+      apply_patch gcc-3.4.0-arm-nolibfloat
+      apply_patch gcc-3.4.0-arm-lib1asm
+      apply_patch gcc-3.4.3-clean_exec_and_lib_search_paths_when_cross-1
    ;;
-   4.0.0 ) apply_patch gcc-4.0.0-fix_tree_optimisation_PR21173
-           apply_patch gcc-4.0.0-reload_check_uninitialized_pseudos_PR20973
-           apply_patch gcc-4.0.0-clean_exec_and_lib_search_paths_when_cross-1
+   4.0.0 )
+      apply_patch gcc-4.0.0-fix_tree_optimisation_PR21173
+      apply_patch gcc-4.0.0-reload_check_uninitialized_pseudos_PR20973
+      apply_patch gcc-4.0.0-clean_exec_and_lib_search_paths_when_cross-1
+   ;;
+   4.0.* | 4.1.* )
+      apply_patch gcc-4.0.0-clean_exec_and_lib_search_paths_when_cross-1
    ;;
 esac
 

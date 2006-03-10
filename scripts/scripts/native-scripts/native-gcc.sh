@@ -82,12 +82,12 @@ case ${target_gcc_ver} in
       apply_patch gcc-3.4.0-arm-nolibfloat
       apply_patch gcc-3.4.0-arm-lib1asm
    ;;
-   4.0.1 | 4.1.* )
-      apply_patch gcc-4.0.0-remove_standard_startfile_prefix_from_startfile_prefixes-1
-   ;;
    4.0.0 )
       apply_patch gcc-4.0.0-fix_tree_optimisation_PR21173
       apply_patch gcc-4.0.0-reload_check_uninitialized_pseudos_PR20973
+      apply_patch gcc-4.0.0-remove_standard_startfile_prefix_from_startfile_prefixes-1
+   ;;
+   4.0.* | 4.1.* )
       apply_patch gcc-4.0.0-remove_standard_startfile_prefix_from_startfile_prefixes-1
    ;;
 esac
