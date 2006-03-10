@@ -27,8 +27,8 @@ case ${UTILLINUX_VER} in
          ;;
       esac
    ;;
-   2.12[k-q] )
-      # fix cramfs
+   2.12[k-r] )
+      # fix cramfs (issue w llh)
       apply_patch util-linux-2.12q-cramfs-1
    ;;
 esac
