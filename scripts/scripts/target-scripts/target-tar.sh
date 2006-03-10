@@ -29,7 +29,8 @@ fi
 
 case ${TAR_VER} in
    1.13 )   apply_patch tar-${TAR_VER} ;;
-   1.15.1 ) apply_patch tar-1.15.1-sparse_fix-1 ;;
+   1.15.1 ) apply_patch tar-1.15.1-sparse_fix-1
+            apply_patch tar-1.15.1-gcc4_fix_tests ;;
 esac
 
 # getline again
