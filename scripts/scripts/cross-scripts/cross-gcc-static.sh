@@ -89,6 +89,10 @@ case ${target_gcc_ver} in
       apply_patch gcc-4.0.0-reload_check_uninitialized_pseudos_PR20973
       apply_patch gcc-4.0.0-clean_exec_and_lib_search_paths_when_cross-1
    ;;
+   4.1.0 )
+      apply_patch gcc-4.0.0-clean_exec_and_lib_search_paths_when_cross-1
+      apply_patch gcc-4.1.0-fix_PR20425
+   ;;
    4.0.* | 4.1.* )
       apply_patch gcc-4.0.0-clean_exec_and_lib_search_paths_when_cross-1
    ;;
