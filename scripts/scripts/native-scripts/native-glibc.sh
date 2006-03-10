@@ -60,12 +60,18 @@ kernver=`grep UTS_RELEASE ${KERN_HDR_DIR}/linux/version.h | \
 
 # if we don't have linuxthreads dirs (ie: a glibc release), then
 # unpack the linuxthreads tarball
-if [ ! -d linuxthreads -o ! -d linuxthreads_db ]; then
-   OLDPKGDIR=${PKGDIR} ; unpack_tarball glibc-linuxthreads-${GLIBC_VER}
-   PKGDIR=${OLDPKGDIR}
-fi
+case ${GLIBC_VER} in
+   2.4 | 2.4.* ) ;;
+   * )
+      if [ ! -d linuxthreads -o ! -d linuxthreads_db ]; then
+         OLDPKGDIR=${PKGDIR} ; unpack_tarball glibc-linuxthreads-${GLIBC_VER}
+         PKGDIR=${OLDPKGDIR}
+      fi
+   ;;
+esac
 
 # unpack libidn add-on if required (should be supplied with cvs versions)
+if [ "${USE_LIBIDN}" = "Y" ]; then
 case ${target_glibc_ver} in
    2.3.[4-9]* | 2.4* )
       cd ${SRC}/${PKGDIR}
@@ -75,10 +81,19 @@ case ${target_glibc_ver} in
       fi
    ;;
 esac
+fi
 
 # apply glibc patches as required depending on the above gcc/kernel versions
 # see funcs/glibc_funcs.sh
 apply_glibc_patches
+
+# Ensure sanity check uses correct glibc
+cd ${SRC}/${PKGDIR}
+ld_so=`gcc ${ARCH_CFLAGS} -dumpspecs | grep dynamic-linker | \
+   sed -e "s@.*-dynamic-linker \([-._a-zA-Z0-9/]*/${libdirname}/[-._a-zA-Z0-9/]*\).*@\1@g" \
+       -e 's@^.*/\(.*\)@\1@g'`
+sed -i "s@link_libs -o@link_libs -L/usr/${libdirname} -Wl,-dynamic-linker=/${libdirname}/${ld_so} -o@" \
+   scripts/test-installation.pl
 
 # configuration for pthread type
 #-------------------------------

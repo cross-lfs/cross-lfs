@@ -63,12 +63,18 @@ kernver=`grep UTS_RELEASE ${KERN_HDR_DIR}/linux/version.h | \
 
 # if we don't have linuxthreads dirs (ie: a glibc release), then
 # unpack the linuxthreads tarball
-if [ ! -d linuxthreads -o ! -d linuxthreads_db ]; then
-   OLDPKGDIR=${PKGDIR} ; unpack_tarball glibc-linuxthreads-${GLIBC_VER}
-   PKGDIR=${OLDPKGDIR}
-fi
+case ${GLIBC_VER} in
+   2.4 | 2.4.* ) ;;
+   * )
+      if [ ! -d linuxthreads -o ! -d linuxthreads_db ]; then
+         OLDPKGDIR=${PKGDIR} ; unpack_tarball glibc-linuxthreads-${GLIBC_VER}
+         PKGDIR=${OLDPKGDIR}
+      fi
+   ;;
+esac
 
 # unpack libidn add-on if required (should be supplied with cvs versions)
+if [ "${USE_LIBIDN}" = "Y" ]; then
 case ${target_glibc_ver} in
    2.3.[4-9]* | 2.4* )
       cd ${SRC}/${PKGDIR}
@@ -78,6 +84,7 @@ case ${target_glibc_ver} in
       fi
    ;;
 esac
+fi
 
 # apply glibc patches as required depending on the above gcc/kernel versions
 # see funcs/glibc_funcs.sh

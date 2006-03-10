@@ -24,7 +24,7 @@ apply_glibc_patches() {
       4.* )
          echo " o compiling with gcc 4.x"
          case ${target_glibc_ver} in
-            2.3.[7-9]* | 2.4.* ) ;;
+            2.3.[7-9]* | 2.4 | 2.4.* ) ;;
             2.3.6 )
                apply_patch glibc-20051024-localedef_segfault-1
 
