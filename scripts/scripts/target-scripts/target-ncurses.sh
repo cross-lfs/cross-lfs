@@ -36,6 +36,10 @@ export LD="${TARGET}-ld"
 unpack_tarball ncurses-${NCURSES_VER} &&
 cd ${PKGDIR}
 
+case ${NCURSES_VER} in
+   5.5 ) apply_patch ncurses-5.5-fixes-1 ;;
+esac
+
 if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=${BUILD_PREFIX}/${libdirname}"
 
@@ -71,8 +75,8 @@ test 5.2 = "${NCURSES_VER}" &&
 # Force xterm to always be colour
 # ( thanks Alexander Patrakov ;-) )
 # TODO: this is the default w ncurses-20040711
-sed -i -e '/^xterm|/,+1s,^\(.use\)=xterm-r6,\1=xterm-xfree86,' \
-   misc/terminfo.src
+#sed -i -e '/^xterm|/,+1s,^\(.use\)=xterm-r6,\1=xterm-xfree86,' \
+#   misc/terminfo.src
 
 max_log_init Ncurses ${NCURSES_VER} "target (shared)" ${CONFLOGS} ${LOG}
 ./configure --prefix=${BUILD_PREFIX} --with-shared \

@@ -20,6 +20,10 @@ setup_multiarch
 unpack_tarball ncurses-${NCURSES_VER} &&
 cd ${PKGDIR}
 
+case ${NCURSES_VER} in
+   5.5 ) apply_patch ncurses-5.5-fixes-1 ;;
+esac
+
 if [ ! "${libdirname}" = "lib" ]; then
    extra_conf="--libdir=/usr/${libdirname}"
 
@@ -40,7 +44,6 @@ sed 's/include <strstream.h>/include <sstream>/g' c++/cursesw.h-ORIG > c++/curse
 
 # CHECK THIS... Should only affect ncurses 5.2 and less, 
 # must check whether vsscanf is picked up or not in 5.3
-
 test 5.2 = "${NCURSES_VER}" &&
 {
    # Apply cursesw.cc vsscanf patch
