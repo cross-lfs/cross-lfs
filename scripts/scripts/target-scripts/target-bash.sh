@@ -73,6 +73,9 @@ END
    ;;
    3.1 )
       apply_patch bash-3.1-fixes-5
+      cat >config.cache <<END
+ac_cv_func_setvbuf_reversed=${ac_cv_func_setvbuf_reversed=no}
+END
    ;;
 esac
 
