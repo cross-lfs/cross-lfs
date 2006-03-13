@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-building-a-bootloader" role="wrap">
+  <?dbhtml filename="building-a-bootloader.html"?>
+
+  <title>Building a bootloader</title>
+
+    <para>On x86 and x86_64 (multilib) architectures, the preferred
+      bootloader is Grub.  Unfortunately, Grub doesn&quot;t work on x86_64
+      Pure64 - the stage2 files can be correctly built as 32-bit, but the
+      grub shell is a 64-bit program, and tries to execute some of the
+      stage2 routines - this results in a segmentation fault. Therefore,
+      in the final system we use Lilo as the bootloader.
+    </para>
+
+    <para>If you already have a bootloader, such as Grub, installed on
+      the system then you should use that to make your new kernel bootable.
+   </para>
+
+  <note>
+    <para>We will now cross-compile Bin86 and Lilo - these instructions 
+      assume you are using an x86_64 machine (e.g. booted fron a Live CD),
+      either pure64 or multilib. This approach will not work if you are
+      running the machine as i686, because a 32-bit kernel will not be
+      able to execute a 64-bit binary to install the bootloader.  If that
+      is the case, you will need to install an i686 bootloader on the
+      host system. 
+    </para>
+  </note>
+
+</sect1>
