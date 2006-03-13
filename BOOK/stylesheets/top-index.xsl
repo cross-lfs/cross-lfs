@@ -149,7 +149,7 @@ hr {
         </h3>
 	<ul>
           <h3>
-            <xsl:text>This is experimental. Bootloaders do not work.</xsl:text>
+            <xsl:text>Working. Testers and comments welcomed.</xsl:text>
           </h3>
           <li>
             <h4>
