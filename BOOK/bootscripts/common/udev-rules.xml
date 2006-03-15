@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-scripts-udev-rules" role="wrap">
+  <?dbhtml filename="udev-rules.html"?>
+
+  <title>Udev Rules-&udev-cross-lfs-version;</title>
+
+  <indexterm zone="ch-scripts-udev-rules">
+    <primary sortas="a-Udev Rules">Udev Rules</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>The Udev Cross-LFS rules package contains the necessary
+    rules set for a basic functional system.</para>
+
+    <segmentedlist>
+      <segtitle>&dependencies;</segtitle>
+
+      <seglistitem>
+        <seg>Bash, Coreutils, Make, Sed, and Udev.</seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Udev-Rules</title>
+
+    <para>When you installed udev, it installed a set of rules, this package 
+    replaces these rules. So we must first remove all the old rules sets.</para>
+
+<screen><userinput>rm -vf /etc/udev/rules.d/*</userinput></screen>
+
+    <para>Install the package:</para>
+
+<screen><userinput>make install</userinput></screen>
+
+  </sect2>
+
+<!--
+  <sect2 id="contents-udev-rules" role="content">
+    <title>Contents of Udev Rules</title>
+
+    <segmentedlist>
+      <segtitle>Installed Rules</segtitle>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Bootscripts</segtitle>
+
+      <seglistitem>
+        <seg>05-udev-early.rules, 35-helper.rules, 40-modprobe.rules,
+	50-udev.rules, 55-sound.rules, 60-persistent-disk.rules,
+	61-persistent-input.rules, 90-user.rules, 95-debug.rules,
+	load_floppy_module.sh, show_event_log, udev, and udev_retry</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="05-udev-early.rules-udev-rules">
+        <term><command>05-udev-early.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 05-udev-early.rules-udev-rules">
+            <primary sortas="d-05-udev-early.rules">05-udev-early.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="35-helper.rules-udev-rules">
+        <term><command>35-helper.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 35-helper.rules-udev-rules">
+            <primary sortas="d-35-helper.rules">35-helper.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="40-modprobe.rules">
+        <term><command>40-modprobe.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 40-modprobe.rules">
+            <primary sortas="d-40-modprobe.rules">40-modprobe.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="50-udev.rules">
+        <term><command>50-udev.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 50-udev.rules">
+            <primary sortas="d-50-udev.rules">50-udev.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="55-sound.rules">
+        <term><command>55-sound.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 55-sound.rules">
+            <primary sortas="d-55-sound.rules">55-sound.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="60-persistent-disk.rules">
+        <term><command>60-persistent-disk.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 60-persistent-disk.rules">
+            <primary sortas="d-60-persistent-disk.rules">60-persistent-disk.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="61-persistent-input.rules">
+        <term><command>61-persistent-input.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 61-persistent-input.rules">
+            <primary sortas="d-61-persistent-input.rules">61-persistent-input.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="90-user.rules">
+        <term><command>90-user.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 90-user.rules">
+            <primary sortas="d-90-user.rules">90-user.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="95-debug.rules">
+        <term><command>95-debug.rules</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules 95-debug.rules">
+            <primary sortas="d-95-debug.rules">95-debug.rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="load_floppy_module.sh">
+        <term><command>load_floppy_module.sh</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules load_floppy_module.sh">
+            <primary sortas="d-load_floppy_module.sh">load_floppy_module.sh</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="show_event_log">
+        <term><command>show_event_log</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules show_event_log">
+            <primary sortas="d-show_event_log">show_event_log</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="udev">
+        <term><command>udev</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules udev">
+            <primary sortas="d-udev">udev</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="udev_retry">
+        <term><command>udev_retry</command></term>
+        <listitem>
+          <para>To be Written.</para>
+          <indexterm zone="ch-scripts-udev-rules udev_retry">
+            <primary sortas="d-udev_retry">udev_retry</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+-->
+</sect1>

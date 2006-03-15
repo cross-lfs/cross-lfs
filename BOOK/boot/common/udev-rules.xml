@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-udev-rules" role="wrap">
+  <?dbhtml filename="udev-rules.html"?>
+
+  <title>Udev Rules-&udev-cross-lfs-version;</title>
+
+  <indexterm zone="ch-boot-udev-rules">
+    <primary sortas="a-Udev Rules">Udev Rules</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>The Udev Cross-LFS rules package contains the necessary
+    rules set for a basic functional system.</para>
+
+    <segmentedlist>
+      <segtitle>&dependencies;</segtitle>
+
+      <seglistitem>
+        <seg>Bash, Coreutils, Make, Sed, and Udev.</seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Udev-Rules</title>
+
+    <para>When you installed udev, it installed a set of rules, this package 
+    replaces these rules. So we must first remove all the old rules sets.</para>
+
+<screen><userinput>rm -vf /etc/udev/rules.d/*</userinput></screen>
+
+    <para>Install the package:</para>
+
+<screen><userinput>make DESTDIR=${LFS} install</userinput></screen>
+
+  </sect2>
+<!--
+  <sect2 role="content">
+    <title/>
+
+  <para>Details on this package are located in <xref
+  linkend="contents-udev-rules" role="."/></para>
+
+  </sect2>
+-->
+</sect1>
+
