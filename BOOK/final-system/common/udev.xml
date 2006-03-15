@@ -35,13 +35,15 @@
 
     <para os="a">Compile the package:</para>
 
-<screen os="b"><userinput>make EXTRAS="extras/firmware extras/run_directory"</userinput></screen>
+<screen os="b"><userinput>make EXTRAS="extra/cdrom_id extras/firmware extras/scsi_id extras/volume_id
+            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
-      <term><parameter>EXTRAS="extras/firmware extras/run_directory"</parameter></term>
+      <term><parameter>EXTRAS="extra/cdrom_id extras/firmware extras/scsi_id extras/volume_id
+            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id"</parameter></term>
         <listitem>
           <para>This builds the <command>udev_run_devd</command> and
           <command>udev_run_hotplugd</command> binaries, which are required for
@@ -62,7 +64,9 @@
 
     <para os="g">Install the package:</para>
 
-<screen os="h"><userinput>make DESTDIR=/ EXTRAS="extras/firmware extras/run_directory" install</userinput></screen>
+<screen os="h"><userinput>make DESTDIR=/ \
+    EXTRAS="extra/cdrom_id extras/firmware extras/scsi_id extras/volume_id
+            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev install</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the make parameter:</title>
@@ -78,20 +82,15 @@
 
     </variablelist>
 
-    <para os="j">Udev's configuration is far from ideal by default, so install
-    the configuration file here:</para>
+    <para os="i">Install necessary helpers.</para>
 
-<screen os="k"><userinput>cp -v ../&udev-config-file; /etc/udev/rules.d/25-lfs.rules</userinput></screen>
+<screen os="j"><userinput>install -D extras/path_id /sbin/path_id
+install -D extras/eventrecorder.sh /lib/udev/eventrecorder.sh</userinput></screen>
 
     <para os="l">Install the documentation that explains how to create
     Udev rules:</para>
 
 <screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
-
-    <para os="n">Run the <command>udevstart</command> program to create our full
-    complement of device nodes.</para>
-
-<screen os="o"><userinput>/sbin/udevstart</userinput></screen>
 
   </sect2>
 
@@ -103,8 +102,8 @@
       <segtitle>Installed directory</segtitle>
 
       <seglistitem>
-        <seg>udev, udevcontrol, udevd, udevinfo, udevmonitor, udevsend,
-        udevstart and udevtest</seg>
+        <seg>udevcontrol, udevd, udevinfo, udevmonitor, udevsend,
+        and udevtest</seg>
         <seg>/etc/udev</seg>
       </seglistitem>
     </segmentedlist>
@@ -113,18 +112,6 @@
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
-
-      <varlistentry id="udev">
-        <term><command>udev</command></term>
-        <listitem>
-          <para>Creates device nodes in <filename
-          class="directory">/dev</filename> or renames network interfaces (not
-          in LFS) in response to hotplug events</para>
-          <indexterm zone="ch-system-udev udev">
-            <primary sortas="b-udev">udev</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
 
       <varlistentry id="udevcontrol">
         <term><command>udevcontrol</command></term>
@@ -174,31 +161,6 @@
         </listitem>
       </varlistentry>
 
-      <varlistentry id="udevsend">
-        <term><command>udevsend</command></term>
-        <listitem>
-          <para>Delivers hotplug events to <command>udevd</command></para>
-          <indexterm zone="ch-system-udev udevsend">
-            <primary sortas="b-udevsend">udevsend</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="udevstart">
-        <term><command>udevstart</command></term>
-        <listitem>
-          <para>Creates device nodes in <filename class="directory">/dev</filename>
-          that correspond to drivers compiled directly into the kernel; it
-          performs that task by simulating hotplug events presumably dropped by
-          the kernel before invocation of this program (e.g., because the root
-          filesystem has not been mounted) and submitting such synthetic hotplug
-          events to <command>udev</command></para>
-          <indexterm zone="ch-system-udev udevstart">
-            <primary sortas="b-udevstart">udevstart</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="udevtest">
         <term><command>udevtest</command></term>
         <listitem>
@@ -208,6 +170,86 @@
           interface</para>
           <indexterm zone="ch-system-udev udevtest">
             <primary sortas="b-udevtest">udevtest</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="cdrom_id">
+        <term><command>cdrom_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev cdrom_id">
+            <primary sortas="b-cdrom_id">cdrom_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="firmware_helper">
+        <term><command>firmware_helper</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev firmware_helper">
+            <primary sortas="b-firmware_helper">firmware_helper</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="scsi_id">
+        <term><command>scsi_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev scsi_id">
+            <primary sortas="b-scsi_id">scsi_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="volume_id">
+        <term><command>volume_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev volume_id">
+            <primary sortas="b-volume_id">volume_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ata_id">
+        <term><command>ata_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev ata_id">
+            <primary sortas="b-volume_id">ata_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="usb_id">
+        <term><command>usb_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev usb_id">
+            <primary sortas="b-usb_id">usb_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="edd_id">
+        <term><command>edd_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev edd_id">
+            <primary sortas="b-edd_id">edd_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="dasd_id">
+        <term><command>dasd_id</command></term>
+        <listitem>
+	  <para>To be written</para>  
+          <indexterm zone="ch-system-udev dasd_id">
+            <primary sortas="b-dasd_id">dasd_id</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -223,6 +265,16 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry id="lib-udev">
+        <term><filename class="directory">/lib/udev</filename></term>
+        <listitem>
+          <para>Contains <command>udev</command> helper programs
+          and static devices which get copied to /dev when booted.</para>
+          <indexterm zone="ch-system-udev lib-udev">
+            <primary sortas="e-/lib/udev">/lib/udev</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </sect2>
