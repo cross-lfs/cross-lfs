@@ -92,18 +92,19 @@ install-service-mtu: create-service-dir
 	install -m ${MODE} contrib/sysconfig/network-devices/services/mtu ${EXTDIR}/sysconfig/network-devices/services
 
 minimal: create-dirs create-service-dir
-	install -m ${MODE} lfs/init.d/checkfs       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/cleanfs       ${EXTDIR}/rc.d/init.d/
-	install -m ${CONFMODE} lfs/init.d/functions ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/halt          ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/localnet      ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/mountfs       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/mountkernfs   ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/rc            ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/reboot        ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/sendsignals   ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/setclock      ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/swap          ${EXTDIR}/rc.d/init.d/
+	sed -e 's|/bin:/usr/bin:/sbin:/usr/sbin|/tools/bin:/tools/sbin:/bin:/sbin|g' lfs/init.d/functions > lfs/init.d/functions.minimal
+	install -m ${MODE} lfs/init.d/checkfs       		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/cleanfs       		${EXTDIR}/rc.d/init.d/
+	install -m ${CONFMODE} lfs/init.d/functions.minimal	${EXTDIR}/rc.d/init.d/functions
+	install -m ${MODE} lfs/init.d/halt          		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/localnet      		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/mountfs       		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/mountkernfs   		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/rc            		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/reboot        		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/sendsignals   		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/setclock      		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} lfs/init.d/swap          		${EXTDIR}/rc.d/init.d/
 	ln -sf ../init.d/sendsignals ${EXTDIR}/rc.d/rc0.d/S60sendsignals
 	ln -sf ../init.d/mountfs     ${EXTDIR}/rc.d/rc0.d/S70mountfs
 	ln -sf ../init.d/swap        ${EXTDIR}/rc.d/rc0.d/S80swap
