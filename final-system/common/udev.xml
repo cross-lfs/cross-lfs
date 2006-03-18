@@ -35,18 +35,18 @@
 
     <para os="a">Compile the package:</para>
 
-<screen os="b"><userinput>make EXTRAS="extra/cdrom_id extras/firmware extras/scsi_id extras/volume_id
+<screen os="b"><userinput>make EXTRAS="extras/cdrom_id extras/firmware extras/scsi_id extras/volume_id \
             extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
-      <term><parameter>EXTRAS="extra/cdrom_id extras/firmware extras/scsi_id extras/volume_id
+      <term><parameter>EXTRAS="extras/cdrom_id extras/firmware extras/scsi_id extras/volume_id \
             extras/ata_id extras/usb_id extras/edd_id extras/dasd_id"</parameter></term>
         <listitem>
-          <para>This builds the help applications that are used with udev. This
-          helper program assist in correct handling of devices.</para>
+          <para>This builds the helper applications that are used with
+          udev. The helper programs assist in correct handling of devices.</para>
         </listitem>
       </varlistentry>
 
@@ -64,7 +64,7 @@
     <para os="g">Install the package:</para>
 
 <screen os="h"><userinput>make DESTDIR=/ \
-    EXTRAS="extra/cdrom_id extras/firmware extras/scsi_id extras/volume_id
+    EXTRAS="extras/cdrom_id extras/firmware extras/scsi_id extras/volume_id \
             extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev install</userinput></screen>
 
     <variablelist os="i">
@@ -90,6 +90,11 @@ install -D extras/eventrecorder.sh /lib/udev/eventrecorder.sh</userinput></scree
     Udev rules:</para>
 
 <screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
+
+    <para os="n">Create a directory for storing firmware that can be
+    loaded by <command>udev</command>:</para>
+
+<screen os="o"><userinput>install -dv /lib/firmware</userinput></screen>
 
   </sect2>
 
