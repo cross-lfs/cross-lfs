@@ -30,7 +30,16 @@ case "$1" in
 		test -e $device && echo "add" > $device
 	    done
 	fi
-	evaluate_retval
+	loop=300
+	confirm=0
+	while true ; do
+	    sleep 0.1
+	    test -d /dev/.udev/queue && confirm=0 || confirm=$(( $confirm + 1 ))
+	    loop=$(( $loop - 1 ))
+	    test $loop -gt 0 || break
+	    test $confirm -lt 10 || break
+	done
+	echo_ok
 	;;
     *)
 	echo "Usage: $0 {start}"
