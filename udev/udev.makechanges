@@ -2,17 +2,13 @@ I know this is a topic a lot of people are interested in. How
 to get udev hotplugging working. It's not a simple procedure,
 but I got it to work on a Sparc so it should work for everyone.
 
-First off, you will need to patch the kernel. 2.6.15 is not all
-the way there, but GregKH has the necessary patches available to
-make it work. I used
+You will need the 2.6.16 kernel.
 
-http://www.kernel.org/pub/linux/kernel/people/gregkh/gregkh-2.6/old/gregkh-all-2.6.15.patch
-
-Second, you will need to use udev 079 or above, here is the build instructions
+Second, you will need to use udev 088 or above, here is the build instructions
 you must use to get full functionality.
-make EXTRAS="extras/firmware extras/cdrom_id extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev
+make EXTRAS="extras/firmware extras/floppy extras/cdrom_id extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev
 
-make EXTRAS="extras/firmware extras/cdrom_id extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev install
+make EXTRAS="extras/firmware extras/floppy extras/cdrom_id extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id" udevdir=/dev install
 cp extras/path_id /sbin
 cp extras/eventrecorder.sh /lib/udev
 rm -rf /etc/udev/rules.d/*
