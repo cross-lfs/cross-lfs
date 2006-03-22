@@ -35,10 +35,8 @@ boot:
 	install -d ${DESTDIR}/etc/rc.d/rcsysinit.d
 	install -d ${DESTDIR}/etc/rc.d/init.d
 	install -m ${INITMODE} udev ${DESTDIR}/etc/rc.d/init.d/udev
-	install -m ${INITMODE} udev_retry ${DESTDIR}/etc/rc.d/init.d/udev_retry
 	install -m ${SCRIPTMODE} show_event_log ${DESTDIR}/usr/share/udev/show_event_log
 	ln -sf ../init.d/udev ${DESTDIR}/etc/rc.d/rcsysinit.d/S10udev
-	ln -sf ../init.d/udev_retry ${DESTDIR}/etc/rc.d/rcsysinit.d/S45udev_retry
 
 device_dirs:
 	install -d -m ${DIRMODE} ${DESTDIR}/lib/udev/devices
