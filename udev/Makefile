@@ -16,7 +16,6 @@ rules:
 	install -m ${RULESMODE} 35-helper.rules ${DESTDIR}/etc/udev/rules.d/35-helper.rules
 	install -m ${RULESMODE} 40-modprobe.rules ${DESTDIR}/etc/udev/rules.d/40-modprobe.rules
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
-	install -m ${RULESMODE} 55-sound.rules ${DESTDIR}/etc/udev/rules.d/55-sound.rules
 	install -m ${RULESMODE} 60-persistent-disk.rules ${DESTDIR}/etc/udev/rules.d/60-persistent-disk.rules
 	install -m ${RULESMODE} 61-persistent-input.rules ${DESTDIR}/etc/udev/rules.d/60-persistent-input.rules
 	install -m ${RULESMODE} 90-user.rules ${DESTDIR}/etc/udev/rules.d/90-user.rules
@@ -83,6 +82,7 @@ help:
 	@echo "make install-netboot		install udev rules package for netboot"
 	@echo "make install-network		install network helper package"
 	@echo "make install-network-upgrade	upgrades current network helper package"
+	@echo "make install-sound		install sound rules"
 	@echo "---------------------------------------------------------------------------------------"
 
 install-helper-functions:
@@ -96,8 +96,13 @@ install-network: install-helper-functions install-network-update
 	@echo "Adding rules to ${DESTDIR}/etc/udev/rules.d/35-helper.rules."
 	@cp ${DESTDIR}/etc/udev/rules.d/35-helper.rules /tmp/first
 	@cat /tmp/first contrib/network/rules > ${DESTDIR}/etc/udev/rules.d/35-helper.rules 2>&1
-	@rm -f ${DESTDIR}/etc/rc.d/rc2.d/K80network
-	@rm -f ${DESTDIR}/etc/rc.d/rc{3,4,5}.d/S20network
+	@rm -f ${DESTDIR}/etc/rc.d/rc2.d/*network
+	@rm -f ${DESTDIR}/etc/rc.d/rc{3,4,5}.d/*network
+
+install-sound:
+	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/etc/rc.d/init.d
+	install -m ${RULESMODE} 55-sound.rules ${DESTDIR}/etc/udev/rules.d/55-sound.rules
 
 install-network-update:
 	install -d ${DESTDIR}/lib/udev

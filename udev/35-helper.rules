@@ -29,9 +29,5 @@ ENV{ID_CDROM_CD_RW}=="?*",	SYMLINK+="cdrw%m"
 ENV{ID_CDROM_DVD}=="?*",	SYMLINK+="dvd%m"
 ENV{ID_CDROM_DVD_R}=="?*",	SYMLINK+="dvdrw%m"
 
-# Run network stuff when the network device is loaded
-ACTION=="add", SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="network_helper.sh"
-ACTION=="remove", SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="network_helper.sh"
-
 # adds floppy devices
 KERNEL=="fd[0-9]*", ACTION=="add", SYSFS{cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{cmos} -m %M /dev/%k"t
