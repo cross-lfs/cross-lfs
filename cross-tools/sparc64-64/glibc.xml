@@ -106,6 +106,12 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='dn'])"/>
 
+    <para os="do">The stubs.h header installed by glibc looks for stubs-32.h
+    and stubs-64.h. This configuration of glibc only generates stubs-64.h. Fix
+    this with the following:</para>
+
+    <screen os="dp"><userinput>mv -v /tools/include/gnu/stubs{-64,}.h</userinput></screen>
+
   </sect2>
 
   <sect2 role="content">
