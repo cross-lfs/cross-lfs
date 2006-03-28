@@ -73,7 +73,7 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="h"><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
+<screen os="h"><userinput>CC="gcc ${BUILD64}" ../glibc-&glibc-version;/configure --prefix=/usr \
     --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
     --libexecdir=/usr/lib/glibc --libdir=/usr/lib \
     --cache-file=config.cache</userinput></screen>
@@ -118,6 +118,12 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='t'])"/>
+
+    <para os="u">The stubs.h header installed by glibc looks for stubs-32.h
+    and stubs-64.h. This configuration of glibc only generates stubs-64.h. Fix
+    this with the following:</para>
+
+    <screen os="v"><userinput>mv -v /usr/include/gnu/stubs{-64,}.h</userinput></screen>
 
   </sect2>
 
