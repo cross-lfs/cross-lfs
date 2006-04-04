@@ -17,7 +17,7 @@ rules:
 	install -m ${RULESMODE} 40-modprobe.rules ${DESTDIR}/etc/udev/rules.d/40-modprobe.rules
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 	install -m ${RULESMODE} 60-persistent-disk.rules ${DESTDIR}/etc/udev/rules.d/60-persistent-disk.rules
-	install -m ${RULESMODE} 61-persistent-input.rules ${DESTDIR}/etc/udev/rules.d/60-persistent-input.rules
+	install -m ${RULESMODE} 61-persistent-input.rules ${DESTDIR}/etc/udev/rules.d/61-persistent-input.rules
 	install -m ${RULESMODE} 90-user.rules ${DESTDIR}/etc/udev/rules.d/90-user.rules
 	install -m ${RULESMODE} 95-debug.rules ${DESTDIR}/etc/udev/rules.d/95-debug.rules
 
