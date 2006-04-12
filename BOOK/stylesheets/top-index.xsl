@@ -131,15 +131,8 @@ hr {
           </li>
           <li>
             <h4>
-              <a href="sparcv8">
-                <xsl:text>Sparc v8</xsl:text>
-              </a>
-            </h4>
-          </li>
-          <li>
-            <h4>
               <a href="sparc">
-                <xsl:text>Sparc v9 and above</xsl:text>
+                <xsl:text>Sparc v8 and above</xsl:text>
               </a>
             </h4>
           </li>
