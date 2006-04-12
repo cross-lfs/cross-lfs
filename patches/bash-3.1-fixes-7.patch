@@ -1,13 +1,13 @@
-Submitted By: Matthew Burgess (matthew at linuxfromscratch dot org)
-Date: 2006-03-18
+Submitted By: Jeremy Huntwork (jhuntwork at linuxfromscratch dot org)
+Date: 2006-04-11
 Initial Package Version: 3.1
 Origin: http://ftp.gnu.org/gnu/bash/bash-3.1-patches/
-Upstream Status: From Upstream 
-Description: Contains patches 001-014 from upstream
+Upstream Status: From Upstream
+Description: Contains patches 001-016 from upstream
 
 diff -Naur bash-3.1.orig/doc/bash.1 bash-3.1/doc/bash.1
---- bash-3.1.orig/doc/bash.1	2005-10-12 15:40:52.000000000 +0000
-+++ bash-3.1/doc/bash.1	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/doc/bash.1	2005-10-12 11:40:52.000000000 -0400
++++ bash-3.1/doc/bash.1	2006-04-11 11:36:54.702393214 -0400
 @@ -6,12 +6,12 @@
  .\"	Case Western Reserve University
  .\"	chet@po.cwru.edu
@@ -87,8 +87,8 @@ diff -Naur bash-3.1.orig/doc/bash.1 bash-3.1/doc/bash.1
  .PP
  If
 diff -Naur bash-3.1.orig/doc/bashref.texi bash-3.1/doc/bashref.texi
---- bash-3.1.orig/doc/bashref.texi	2005-10-03 19:07:21.000000000 +0000
-+++ bash-3.1/doc/bashref.texi	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/doc/bashref.texi	2005-10-03 15:07:21.000000000 -0400
++++ bash-3.1/doc/bashref.texi	2006-04-11 11:36:54.709392515 -0400
 @@ -961,8 +961,8 @@
  (see the description of @code{shopt} in @ref{Bash Builtins})
  is enabled, the match is performed without regard to the case
@@ -160,8 +160,8 @@ diff -Naur bash-3.1.orig/doc/bashref.texi bash-3.1/doc/bashref.texi
  expanded and before they are executed.  The value of the @env{PS4}
  variable is expanded and the resultant value is printed before
 diff -Naur bash-3.1.orig/doc/version.texi bash-3.1/doc/version.texi
---- bash-3.1.orig/doc/version.texi	2005-09-20 18:52:56.000000000 +0000
-+++ bash-3.1/doc/version.texi	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/doc/version.texi	2005-09-20 14:52:56.000000000 -0400
++++ bash-3.1/doc/version.texi	2006-04-11 11:36:54.710392415 -0400
 @@ -2,9 +2,9 @@
  Copyright (C) 1988-2005 Free Software Foundation, Inc.
  @end ignore
@@ -178,8 +178,8 @@ diff -Naur bash-3.1.orig/doc/version.texi bash-3.1/doc/version.texi
 +@set UPDATED 30 December 2005
 +@set UPDATED-MONTH December 2005
 diff -Naur bash-3.1.orig/jobs.c bash-3.1/jobs.c
---- bash-3.1.orig/jobs.c	2005-11-12 04:13:27.000000000 +0000
-+++ bash-3.1/jobs.c	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/jobs.c	2005-11-11 23:13:27.000000000 -0500
++++ bash-3.1/jobs.c	2006-04-11 11:36:54.713392115 -0400
 @@ -619,8 +619,11 @@
  	   * once in the parent and once in each child.  This is where
  	   * the parent gives it away.
@@ -284,9 +284,85 @@ diff -Naur bash-3.1.orig/jobs.c bash-3.1/jobs.c
  
    termination_state = last_command_exit_value;
  
+diff -Naur bash-3.1.orig/lib/glob/glob.c bash-3.1/lib/glob/glob.c
+--- bash-3.1.orig/lib/glob/glob.c	2005-03-24 12:42:27.000000000 -0500
++++ bash-3.1/lib/glob/glob.c	2006-04-11 11:37:12.868577740 -0400
+@@ -360,6 +360,7 @@
+   count = lose = skip = 0;
+ 
+   firstmalloc = 0;
++  nalloca = 0;
+ 
+   /* If PAT is empty, skip the loop, but return one (empty) filename. */
+   if (pat == 0 || *pat == '\0')
+@@ -546,6 +547,8 @@
+ 		firstmalloc = 0;
+ 	      tmplink = lastlink;
+ 	    }
++	  else
++	    tmplink = 0;
+ 	  free (lastlink->name);
+ 	  lastlink = lastlink->next;
+ 	  FREE (tmplink);
+diff -Naur bash-3.1.orig/lib/glob/sm_loop.c bash-3.1/lib/glob/sm_loop.c
+--- bash-3.1.orig/lib/glob/sm_loop.c	2005-10-16 21:21:04.000000000 -0400
++++ bash-3.1/lib/glob/sm_loop.c	2006-04-11 11:37:09.500914295 -0400
+@@ -638,12 +638,13 @@
+   CHAR *psub;			/* pointer to sub-pattern */
+   CHAR *pnext;			/* pointer to next sub-pattern */
+   CHAR *srest;			/* pointer to rest of string */
+-  int m1, m2;
++  int m1, m2, xflags;		/* xflags = flags passed to recursive matches */
+ 
+ #if DEBUG_MATCHING
+ fprintf(stderr, "extmatch: xc = %c\n", xc);
+ fprintf(stderr, "extmatch: s = %s; se = %s\n", s, se);
+ fprintf(stderr, "extmatch: p = %s; pe = %s\n", p, pe);
++fprintf(stderr, "extmatch: flags = %d\n", flags);
+ #endif
+ 
+   prest = PATSCAN (p + (*p == L('(')), pe, 0); /* ) */
+@@ -677,8 +678,12 @@
+ 		 string matches the rest of the pattern.  Also handle
+ 		 multiple matches of the pattern. */
+ 	      if (m1)
+-		m2 = (GMATCH (srest, se, prest, pe, flags) == 0) ||
+-		      (s != srest && GMATCH (srest, se, p - 1, pe, flags) == 0);
++		{
++		  /* if srest > s, we are not at start of string */
++		  xflags = (srest > s) ? (flags & ~FNM_PERIOD) : flags;
++		  m2 = (GMATCH (srest, se, prest, pe, xflags) == 0) ||
++			(s != srest && GMATCH (srest, se, p - 1, pe, xflags) == 0);
++		}
+ 	      if (m1 && m2)
+ 		return (0);
+ 	    }
+@@ -704,8 +709,10 @@
+ 	  srest = (prest == pe) ? se : s;
+ 	  for ( ; srest <= se; srest++)
+ 	    {
++	      /* if srest > s, we are not at start of string */
++	      xflags = (srest > s) ? (flags & ~FNM_PERIOD) : flags;
+ 	      if (GMATCH (s, srest, psub, pnext - 1, flags) == 0 &&
+-		  GMATCH (srest, se, prest, pe, flags) == 0)
++		  GMATCH (srest, se, prest, pe, xflags) == 0)
+ 		return (0);
+ 	    }
+ 	  if (pnext == prest)
+@@ -726,7 +733,9 @@
+ 	      if (pnext == prest)
+ 		break;
+ 	    }
+-	  if (m1 == 0 && GMATCH (srest, se, prest, pe, flags) == 0)
++	  /* if srest > s, we are not at start of string */
++	  xflags = (srest > s) ? (flags & ~FNM_PERIOD) : flags;
++	  if (m1 == 0 && GMATCH (srest, se, prest, pe, xflags) == 0)
+ 	    return (0);
+ 	}
+       return (FNM_NOMATCH);
 diff -Naur bash-3.1.orig/lib/readline/display.c bash-3.1/lib/readline/display.c
---- bash-3.1.orig/lib/readline/display.c	2005-11-30 19:05:02.000000000 +0000
-+++ bash-3.1/lib/readline/display.c	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/lib/readline/display.c	2005-11-30 14:05:02.000000000 -0500
++++ bash-3.1/lib/readline/display.c	2006-04-11 11:36:54.716391815 -0400
 @@ -1983,11 +1983,15 @@
       int pchar;
  {
@@ -331,8 +407,8 @@ diff -Naur bash-3.1.orig/lib/readline/display.c bash-3.1/lib/readline/display.c
  }
  
 diff -Naur bash-3.1.orig/lib/readline/readline.c bash-3.1/lib/readline/readline.c
---- bash-3.1.orig/lib/readline/readline.c	2005-07-05 02:29:35.000000000 +0000
-+++ bash-3.1/lib/readline/readline.c	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/lib/readline/readline.c	2005-07-04 22:29:35.000000000 -0400
++++ bash-3.1/lib/readline/readline.c	2006-04-11 11:36:54.717391715 -0400
 @@ -282,6 +282,7 @@
  {
    FREE (rl_prompt);
@@ -342,8 +418,8 @@ diff -Naur bash-3.1.orig/lib/readline/readline.c bash-3.1/lib/readline/readline.
    rl_visible_prompt_length = rl_expand_prompt (rl_prompt);
    return 0;
 diff -Naur bash-3.1.orig/lib/readline/terminal.c bash-3.1/lib/readline/terminal.c
---- bash-3.1.orig/lib/readline/terminal.c	2005-11-13 01:46:54.000000000 +0000
-+++ bash-3.1/lib/readline/terminal.c	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/lib/readline/terminal.c	2005-11-12 20:46:54.000000000 -0500
++++ bash-3.1/lib/readline/terminal.c	2006-04-11 11:36:54.718391615 -0400
 @@ -122,7 +122,7 @@
  static char *_rl_visible_bell;
  
@@ -364,8 +440,8 @@ diff -Naur bash-3.1.orig/lib/readline/terminal.c bash-3.1/lib/readline/terminal.
      _rl_screenheight = rows;
    if (cols > 0)
 diff -Naur bash-3.1.orig/parse.y bash-3.1/parse.y
---- bash-3.1.orig/parse.y	2005-11-12 04:14:18.000000000 +0000
-+++ bash-3.1/parse.y	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/parse.y	2005-11-11 23:14:18.000000000 -0500
++++ bash-3.1/parse.y	2006-04-11 11:36:54.722391216 -0400
 @@ -2716,6 +2716,7 @@
  #define P_ALLOWESC	0x02
  #define P_DQUOTE	0x04
@@ -516,19 +592,19 @@ diff -Naur bash-3.1.orig/parse.y bash-3.1/parse.y
  }
  
 diff -Naur bash-3.1.orig/patchlevel.h bash-3.1/patchlevel.h
---- bash-3.1.orig/patchlevel.h	2005-07-20 17:58:20.000000000 +0000
-+++ bash-3.1/patchlevel.h	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/patchlevel.h	2005-07-20 13:58:20.000000000 -0400
++++ bash-3.1/patchlevel.h	2006-04-11 11:37:12.869577641 -0400
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 14
++#define PATCHLEVEL 16
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-3.1.orig/subst.c bash-3.1/subst.c
---- bash-3.1.orig/subst.c	2005-10-24 13:51:13.000000000 +0000
-+++ bash-3.1/subst.c	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/subst.c	2005-10-24 09:51:13.000000000 -0400
++++ bash-3.1/subst.c	2006-04-11 11:36:54.727390716 -0400
 @@ -2187,7 +2187,7 @@
    if (mklocal && variable_context)
      {
@@ -552,8 +628,8 @@ diff -Naur bash-3.1.orig/subst.c bash-3.1/subst.c
  	      temp = temp1;
  	      sindex += t_index;
 diff -Naur bash-3.1.orig/variables.c bash-3.1/variables.c
---- bash-3.1.orig/variables.c	2005-11-13 02:22:37.000000000 +0000
-+++ bash-3.1/variables.c	2006-03-18 09:23:33.000000000 +0000
+--- bash-3.1.orig/variables.c	2005-11-12 21:22:37.000000000 -0500
++++ bash-3.1/variables.c	2006-04-11 11:36:54.731390316 -0400
 @@ -860,9 +860,11 @@
  {
    char val[INT_STRLEN_BOUND(int) + 1], *v;
