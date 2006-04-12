@@ -1,0 +1,33 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-07-01
+Initial Package Version: 1.12
+Origin: Gentoo CVS
+Upstream Status: Unknown
+Description: Sparc have not yet fixed struct kbd_rate to use 'period' and not 'rate'
+ 
+diff -Naur kbd-1.12.orig/src/kbdrate.c kbd-1.12/src/kbdrate.c
+--- kbd-1.12.orig/src/kbdrate.c	2004-01-16 19:45:31.000000000 +0000
++++ kbd-1.12/src/kbdrate.c	2005-07-02 06:52:54.000000000 +0000
+@@ -164,10 +164,10 @@
+ 		exit( 1 );
+ 	}
+ 
+-	kbdrate_s.period = (int) (rate + 0.5);  /* round up */
++	kbdrate_s.rate = (int) (rate + 0.5);  /* round up */
+ 	kbdrate_s.delay = delay * HZ / 1000;  /* convert ms to Hz */
+-	if (kbdrate_s.period > 50)
+-		kbdrate_s.period = 50;
++	if (kbdrate_s.rate > 50)
++		kbdrate_s.rate = 50;
+ 
+ 	if (ioctl( fd, KIOCSRATE, &kbdrate_s )) {
+ 		perror( "ioctl(KIOCSRATE)" );
+@@ -177,7 +177,7 @@
+ 
+ 	if (!silent)
+ 		printf( "Typematic Rate set to %d cps (delay = %d ms)\n",
+-			kbdrate_s.period, kbdrate_s.delay * 1000 / HZ );
++			kbdrate_s.rate, kbdrate_s.delay * 1000 / HZ );
+ 
+ 	return 1;
+ #else /* no KIOCSRATE */

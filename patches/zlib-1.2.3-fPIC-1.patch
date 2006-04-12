@@ -1,0 +1,93 @@
+Submitted By: Tushar Teredesai <tushar@linuxfromscratch.org>
+Date: 2005-06-14
+Initial Package Version: 1.2.2
+Origin: Gentoo ebuild?
+Upstream Status: Not submitted
+Description:
+ 1. Build shared and static lib in one pass
+ 2. Always add -fPIC when building shared lib, don't expect the user to set it.
+
+To build the shared and static library:
+	./configure --prefix=<prefix> --shared &&
+	make &&
+	make install
+Remove the --shared if you don't want the shared lib.
+
+diff -Naur zlib-1.2.2.orig/configure zlib-1.2.2/configure
+--- zlib-1.2.2.orig/configure	2004-09-07 00:50:06.000000000 -0500
++++ zlib-1.2.2/configure	2005-02-05 01:34:08.553292416 -0600
+@@ -73,7 +73,11 @@
+ 
+ if test "$gcc" -eq 1 && ($cc -c $cflags $test.c) 2>/dev/null; then
+   CC="$cc"
+-  SFLAGS=${CFLAGS-"-fPIC -O3"}
++  #SFLAGS=${CFLAGS-"-fPIC -O3"}
++  # the above is horribly wrong on a few archs where -fPIC should ALWAYS be
++  # used in the creation of shared libraries. without the following, the
++  # shared lib test will sometimes fail even when shared libs -can- be created.
++  SFLAGS="${CFLAGS-"-O3"} -fPIC"
+   CFLAGS="$cflags"
+   case `(uname -s || echo unknown) 2>/dev/null` in
+   Linux | linux | GNU | GNU/*) LDSHARED=${LDSHARED-"$cc -shared -Wl,-soname,libz.so.1"};;
+@@ -158,7 +162,7 @@
+   if test "`($CC -c $SFLAGS $test.c) 2>&1`" = "" &&
+      test "`($LDSHARED -o $test$shared_ext $test.o) 2>&1`" = ""; then
+     CFLAGS="$SFLAGS"
+-    LIBS="$SHAREDLIBV"
++    LIBS="$LIBS $SHAREDLIBV"
+     echo Building shared library $SHAREDLIBV with $CC.
+   elif test -z "$old_cc" -a -z "$old_cflags"; then
+     echo No shared library support.
+diff -Naur zlib-1.2.2.orig/Makefile.in zlib-1.2.2/Makefile.in
+--- zlib-1.2.2.orig/Makefile.in	2004-09-15 09:27:20.000000000 -0500
++++ zlib-1.2.2/Makefile.in	2005-02-05 01:33:49.703158072 -0600
+@@ -49,6 +49,8 @@
+ OBJS = adler32.o compress.o crc32.o gzio.o uncompr.o deflate.o trees.o \
+        zutil.o inflate.o infback.o inftrees.o inffast.o
+ 
++PIC_OBJS = $(OBJS:%.o=%.lo)
++
+ OBJA =
+ # to use the asm code: make OBJA=match.o
+ 
+@@ -77,8 +79,11 @@
+ 	mv _match.o match.o
+ 	rm -f _match.s
+ 
+-$(SHAREDLIBV): $(OBJS)
+-	$(LDSHARED) -o $@ $(OBJS)
++%.lo: %.c
++	$(CC) $(CFLAGS) -DPIC -fPIC -c $< -o $@
++
++$(SHAREDLIBV): $(PIC_OBJS)
++	$(LDSHARED) -o $@ $(PIC_OBJS) -lc
+ 	rm -f $(SHAREDLIB) $(SHAREDLIBM)
+ 	ln -s $@ $(SHAREDLIB)
+ 	ln -s $@ $(SHAREDLIBM)
+@@ -89,13 +94,10 @@
+ minigzip$(EXE): minigzip.o $(LIBS)
+ 	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS)
+ 
+-install: $(LIBS)
++install-libs: $(LIBS)
+ 	-@if [ ! -d $(exec_prefix) ]; then mkdir -p $(exec_prefix); fi
+-	-@if [ ! -d $(includedir)  ]; then mkdir -p $(includedir); fi
+ 	-@if [ ! -d $(libdir)      ]; then mkdir -p $(libdir); fi
+ 	-@if [ ! -d $(man3dir)     ]; then mkdir -p $(man3dir); fi
+-	cp zlib.h zconf.h $(includedir)
+-	chmod 644 $(includedir)/zlib.h $(includedir)/zconf.h
+ 	cp $(LIBS) $(libdir)
+ 	cd $(libdir); chmod 755 $(LIBS)
+ 	-@(cd $(libdir); $(RANLIB) libz.a || true) >/dev/null 2>&1
+@@ -110,6 +112,11 @@
+ # The ranlib in install is needed on NeXTSTEP which checks file times
+ # ldconfig is for Linux
+ 
++install: install-libs
++	-@if [ ! -d $(includedir)  ]; then mkdir $(includedir); fi
++	cp zlib.h zconf.h $(includedir)
++	chmod 644 $(includedir)/zlib.h $(includedir)/zconf.h
++
+ uninstall:
+ 	cd $(includedir); \
+ 	cd $(libdir); rm -f libz.a; \

@@ -1,0 +1,26 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-08-28
+Initial Package Version: 2.12q
+Origin: Joe Ciccone 
+Upstream Status: Sent
+Description: Fixes GCC4 Compile Issues
+ 
+diff -Naur util-linux-2.12q.orig/mount/umount.c util-linux-2.12q/mount/umount.c
+--- util-linux-2.12q.orig/mount/umount.c	2004-12-20 22:03:45.000000000 +0000
++++ util-linux-2.12q/mount/umount.c	2005-08-29 04:11:27.000000000 +0000
+@@ -40,13 +40,13 @@
+ #include <linux/unistd.h>
+ #ifdef __NR_umount2
+ 
+-static int umount2(const char *path, int flags);
++int umount2(const char *path, int flags);
+ 
+ _syscall2(int, umount2, const char *, path, int, flags);
+ 
+ #else /* __NR_umount2 */
+ 
+-static int
++int
+ umount2(const char *path, int flags) {
+ 	fprintf(stderr, _("umount: compiled without support for -f\n"));
+ 	errno = ENOSYS;

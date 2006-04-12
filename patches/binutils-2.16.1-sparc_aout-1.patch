@@ -1,0 +1,24 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-11-08
+Initial Package Version: 2.16.1
+Origin: HJL - Binutils CVS
+Upstream Status: Applied
+Description: Allows Sparc aout to handle different sparc versions
+ 
+diff -Naur binutils-2.16.1.orig/bfd/aoutx.h binutils-2.16.1/bfd/aoutx.h
+--- binutils-2.16.1.orig/bfd/aoutx.h	2005-03-03 11:40:55.000000000 +0000
++++ binutils-2.16.1/bfd/aoutx.h	2005-11-08 17:28:48.000000000 +0000
+@@ -733,7 +733,12 @@
+ 	  || machine == bfd_mach_sparc
+ 	  || machine == bfd_mach_sparc_sparclite
+ 	  || machine == bfd_mach_sparc_sparclite_le
+-	  || machine == bfd_mach_sparc_v9)
++	  || machine == bfd_mach_sparc_v8plus
++	  || machine == bfd_mach_sparc_v8plusa
++	  || machine == bfd_mach_sparc_v8plusb
++	  || machine == bfd_mach_sparc_v9
++	  || machine == bfd_mach_sparc_v9a
++	  || machine == bfd_mach_sparc_v9b)
+ 	arch_flags = M_SPARC;
+       else if (machine == bfd_mach_sparc_sparclet)
+ 	arch_flags = M_SPARCLET;

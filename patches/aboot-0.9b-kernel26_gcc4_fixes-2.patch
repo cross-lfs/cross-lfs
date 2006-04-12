@@ -1,0 +1,1579 @@
+Submitted By: Joe Ciccone <joeciccone@crazyeyesoft.com
+Date: 2005-09-16
+Initial Package Version: 0.9b
+Upstream Status: NONE
+Origin: Joe Ciccone
+Description: This patch fixes compilation issues with aboot-0.9b.
+	This patch creates kernel headers that the makefile would
+	normaly take out of the kernel source, which is not desired.
+
+diff -Naur aboot-0.9b.orig/cons.c aboot-0.9b/cons.c
+--- aboot-0.9b.orig/cons.c	2006-01-16 14:00:09.000000000 +0000
++++ aboot-0.9b/cons.c	2006-01-16 14:04:02.000000000 +0000
+@@ -12,7 +12,7 @@
+ #include <utils.h>
+ 
+ long cons_dev;			/* console device */
+-extern long int dispatch();	/* Need the full 64 bit return here...*/
++long dispatch(long proc, ...);	/* Need the full 64 bit return here...*/
+ 
+ long
+ cons_puts(const char *str, long len)
+diff -Naur aboot-0.9b.orig/disk.c aboot-0.9b/disk.c
+--- aboot-0.9b.orig/disk.c	2006-01-16 14:00:09.000000000 +0000
++++ aboot-0.9b/disk.c	2006-01-16 14:04:26.000000000 +0000
+@@ -480,9 +480,7 @@
+ 				} else {
+ 					*d++ = *p;
+ 				}
+-				break;
+-
+-			      default:
++				break;			
+ 			}
+ 			p++;
+ 		}
+diff -Naur aboot-0.9b.orig/include/asm/auxvec.h aboot-0.9b/include/asm/auxvec.h
+--- aboot-0.9b.orig/include/asm/auxvec.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/asm/auxvec.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,24 @@
++#ifndef __ASM_ALPHA_AUXVEC_H
++#define __ASM_ALPHA_AUXVEC_H
++
++/* Reserve these numbers for any future use of a VDSO.  */
++#if 0
++#define AT_SYSINFO		32
++#define AT_SYSINFO_EHDR		33
++#endif
++
++/* More complete cache descriptions than AT_[DIU]CACHEBSIZE.  If the
++   value is -1, then the cache doesn't exist.  Otherwise:
++
++      bit 0-3:	  Cache set-associativity; 0 means fully associative.
++      bit 4-7:	  Log2 of cacheline size.
++      bit 8-31:	  Size of the entire cache >> 8.
++      bit 32-63:  Reserved.
++*/
++
++#define AT_L1I_CACHESHAPE	34
++#define AT_L1D_CACHESHAPE	35
++#define AT_L2_CACHESHAPE	36
++#define AT_L3_CACHESHAPE	37
++
++#endif /* __ASM_ALPHA_AUXVEC_H */
+diff -Naur aboot-0.9b.orig/include/asm/barrier.h aboot-0.9b/include/asm/barrier.h
+--- aboot-0.9b.orig/include/asm/barrier.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/asm/barrier.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,34 @@
++#ifndef __BARRIER_H
++#define __BARRIER_H
++
++#define mb() \
++__asm__ __volatile__("mb": : :"memory")
++
++#define rmb() \
++__asm__ __volatile__("mb": : :"memory")
++
++#define wmb() \
++__asm__ __volatile__("wmb": : :"memory")
++
++#define read_barrier_depends() \
++__asm__ __volatile__("mb": : :"memory")
++
++#ifdef CONFIG_SMP
++#define smp_mb()	mb()
++#define smp_rmb()	rmb()
++#define smp_wmb()	wmb()
++#define smp_read_barrier_depends()	read_barrier_depends()
++#else
++#define smp_mb()	barrier()
++#define smp_rmb()	barrier()
++#define smp_wmb()	barrier()
++#define smp_read_barrier_depends()	barrier()
++#endif
++
++#define set_mb(var, value) \
++do { var = value; mb(); } while (0)
++
++#define set_wmb(var, value) \
++do { var = value; wmb(); } while (0)
++
++#endif		/* __BARRIER_H */
+diff -Naur aboot-0.9b.orig/include/asm/page.h aboot-0.9b/include/asm/page.h
+--- aboot-0.9b.orig/include/asm/page.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/asm/page.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,103 @@
++#ifndef _ALPHA_PAGE_H
++#define _ALPHA_PAGE_H
++
++#include <linux/config.h>
++#include <asm/pal.h>
++
++/* PAGE_SHIFT determines the page size */
++#define PAGE_SHIFT	13
++#define PAGE_SIZE	(1UL << PAGE_SHIFT)
++#define PAGE_MASK	(~(PAGE_SIZE-1))
++
++#ifdef __KERNEL__
++
++#ifndef __ASSEMBLY__
++
++#define STRICT_MM_TYPECHECKS
++
++extern void clear_page(void *page);
++#define clear_user_page(page, vaddr, pg)	clear_page(page)
++
++#define alloc_zeroed_user_highpage(vma, vaddr) alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO, vma, vmaddr)
++#define __HAVE_ARCH_ALLOC_ZEROED_USER_HIGHPAGE
++
++extern void copy_page(void * _to, void * _from);
++#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
++
++#ifdef STRICT_MM_TYPECHECKS
++/*
++ * These are used to make use of C type-checking..
++ */
++typedef struct { unsigned long pte; } pte_t;
++typedef struct { unsigned long pmd; } pmd_t;
++typedef struct { unsigned long pgd; } pgd_t;
++typedef struct { unsigned long pgprot; } pgprot_t;
++
++#define pte_val(x)	((x).pte)
++#define pmd_val(x)	((x).pmd)
++#define pgd_val(x)	((x).pgd)
++#define pgprot_val(x)	((x).pgprot)
++
++#define __pte(x)	((pte_t) { (x) } )
++#define __pmd(x)	((pmd_t) { (x) } )
++#define __pgd(x)	((pgd_t) { (x) } )
++#define __pgprot(x)	((pgprot_t) { (x) } )
++
++#else
++/*
++ * .. while these make it easier on the compiler
++ */
++typedef unsigned long pte_t;
++typedef unsigned long pmd_t;
++typedef unsigned long pgd_t;
++typedef unsigned long pgprot_t;
++
++#define pte_val(x)	(x)
++#define pmd_val(x)	(x)
++#define pgd_val(x)	(x)
++#define pgprot_val(x)	(x)
++
++#define __pte(x)	(x)
++#define __pgd(x)	(x)
++#define __pgprot(x)	(x)
++
++#endif /* STRICT_MM_TYPECHECKS */
++
++#ifdef USE_48_BIT_KSEG
++#define PAGE_OFFSET		0xffff800000000000UL
++#else
++#define PAGE_OFFSET		0xfffffc0000000000UL
++#endif
++
++#else
++
++#ifdef USE_48_BIT_KSEG
++#define PAGE_OFFSET		0xffff800000000000
++#else
++#define PAGE_OFFSET		0xfffffc0000000000
++#endif
++
++#endif /* !__ASSEMBLY__ */
++
++/* to align the pointer to the (next) page boundary */
++#define PAGE_ALIGN(addr)	(((addr)+PAGE_SIZE-1)&PAGE_MASK)
++
++#define __pa(x)			((unsigned long) (x) - PAGE_OFFSET)
++#define __va(x)			((void *)((unsigned long) (x) + PAGE_OFFSET))
++#ifndef CONFIG_DISCONTIGMEM
++#define pfn_to_page(pfn)	(mem_map + (pfn))
++#define page_to_pfn(page)	((unsigned long)((page) - mem_map))
++#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
++
++#define pfn_valid(pfn)		((pfn) < max_mapnr)
++#define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
++#endif /* CONFIG_DISCONTIGMEM */
++
++#define VM_DATA_DEFAULT_FLAGS		(VM_READ | VM_WRITE | VM_EXEC | \
++					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++
++#endif /* __KERNEL__ */
++
++#include <asm-generic/page.h>
++
++#endif /* _ALPHA_PAGE_H */
+diff -Naur aboot-0.9b.orig/include/asm/string.h aboot-0.9b/include/asm/string.h
+--- aboot-0.9b.orig/include/asm/string.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/asm/string.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,68 @@
++#ifndef __ALPHA_STRING_H__
++#define __ALPHA_STRING_H__
++
++#ifdef __KERNEL__
++
++/*
++ * GCC of any recent vintage doesn't do stupid things with bcopy.
++ * EGCS 1.1 knows all about expanding memcpy inline, others don't.
++ *
++ * Similarly for a memset with data = 0.
++ */
++
++#define __HAVE_ARCH_MEMCPY
++extern void * memcpy(void *, const void *, size_t);
++#define __HAVE_ARCH_MEMMOVE
++extern void * memmove(void *, const void *, size_t);
++
++/* For backward compatibility with modules.  Unused otherwise.  */
++extern void * __memcpy(void *, const void *, size_t);
++
++#define memcpy __builtin_memcpy
++
++#define __HAVE_ARCH_MEMSET
++extern void * __constant_c_memset(void *, unsigned long, size_t);
++extern void * __memset(void *, int, size_t);
++extern void * memset(void *, int, size_t);
++
++#define memset(s, c, n)							    \
++(__builtin_constant_p(c)						    \
++ ? (__builtin_constant_p(n) && (c) == 0					    \
++    ? __builtin_memset((s),0,(n)) 					    \
++    : __constant_c_memset((s),0x0101010101010101UL*(unsigned char)(c),(n))) \
++ : __memset((s),(c),(n)))
++
++#define __HAVE_ARCH_STRCPY
++extern char * strcpy(char *,const char *);
++#define __HAVE_ARCH_STRNCPY
++extern char * strncpy(char *, const char *, size_t);
++#define __HAVE_ARCH_STRCAT
++extern char * strcat(char *, const char *);
++#define __HAVE_ARCH_STRNCAT
++extern char * strncat(char *, const char *, size_t);
++#define __HAVE_ARCH_STRCHR
++extern char * strchr(const char *,int);
++#define __HAVE_ARCH_STRRCHR
++extern char * strrchr(const char *,int);
++#define __HAVE_ARCH_STRLEN
++extern size_t strlen(const char *);
++#define __HAVE_ARCH_MEMCHR
++extern void * memchr(const void *, int, size_t);
++
++/* The following routine is like memset except that it writes 16-bit
++   aligned values.  The DEST and COUNT parameters must be even for 
++   correct operation.  */
++
++#define __HAVE_ARCH_MEMSETW
++extern void * __memsetw(void *dest, unsigned short, size_t count);
++
++#define memsetw(s, c, n)						 \
++(__builtin_constant_p(c)						 \
++ ? __constant_c_memset((s),0x0001000100010001UL*(unsigned short)(c),(n)) \
++ : __memsetw((s),(c),(n)))
++
++extern int strcasecmp(const char *, const char *);
++
++#endif /* __KERNEL__ */
++
++#endif /* __ALPHA_STRING_H__ */
+diff -Naur aboot-0.9b.orig/include/asm/system.h aboot-0.9b/include/asm/system.h
+--- aboot-0.9b.orig/include/asm/system.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/asm/system.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,594 @@
++#ifndef __ALPHA_SYSTEM_H
++#define __ALPHA_SYSTEM_H
++
++#include <linux/config.h>
++#include <asm/pal.h>
++#include <asm/page.h>
++#include <asm/barrier.h>
++
++/*
++ * System defines.. Note that this is included both from .c and .S
++ * files, so it does only defines, not any C code.
++ */
++
++/*
++ * We leave one page for the initial stack page, and one page for
++ * the initial process structure. Also, the console eats 3 MB for
++ * the initial bootloader (one of which we can reclaim later).
++ */
++#define BOOT_PCB	0x20000000
++#define BOOT_ADDR	0x20000000
++/* Remove when official MILO sources have ELF support: */
++#define BOOT_SIZE	(16*1024)
++
++#ifdef CONFIG_ALPHA_LEGACY_START_ADDRESS
++#define KERNEL_START_PHYS	0x300000 /* Old bootloaders hardcoded this.  */
++#else
++#define KERNEL_START_PHYS	0x1000000 /* required: Wildfire/Titan/Marvel */
++#endif
++
++#define KERNEL_START	(PAGE_OFFSET+KERNEL_START_PHYS)
++#define SWAPPER_PGD	KERNEL_START
++#define INIT_STACK	(PAGE_OFFSET+KERNEL_START_PHYS+0x02000)
++#define EMPTY_PGT	(PAGE_OFFSET+KERNEL_START_PHYS+0x04000)
++#define EMPTY_PGE	(PAGE_OFFSET+KERNEL_START_PHYS+0x08000)
++#define ZERO_PGE	(PAGE_OFFSET+KERNEL_START_PHYS+0x0A000)
++
++#define START_ADDR	(PAGE_OFFSET+KERNEL_START_PHYS+0x10000)
++
++/*
++ * This is setup by the secondary bootstrap loader.  Because
++ * the zero page is zeroed out as soon as the vm system is
++ * initialized, we need to copy things out into a more permanent
++ * place.
++ */
++#define PARAM			ZERO_PGE
++#define COMMAND_LINE		((char*)(PARAM + 0x0000))
++#define INITRD_START		(*(unsigned long *) (PARAM+0x100))
++#define INITRD_SIZE		(*(unsigned long *) (PARAM+0x108))
++
++#ifndef __ASSEMBLY__
++#include <linux/kernel.h>
++
++/*
++ * This is the logout header that should be common to all platforms
++ * (assuming they are running OSF/1 PALcode, I guess).
++ */
++struct el_common {
++	unsigned int	size;		/* size in bytes of logout area */
++	unsigned int	sbz1	: 30;	/* should be zero */
++	unsigned int	err2	:  1;	/* second error */
++	unsigned int	retry	:  1;	/* retry flag */
++	unsigned int	proc_offset;	/* processor-specific offset */
++	unsigned int	sys_offset;	/* system-specific offset */
++	unsigned int	code;		/* machine check code */
++	unsigned int	frame_rev;	/* frame revision */
++};
++
++/* Machine Check Frame for uncorrectable errors (Large format)
++ *      --- This is used to log uncorrectable errors such as
++ *          double bit ECC errors.
++ *      --- These errors are detected by both processor and systems.
++ */
++struct el_common_EV5_uncorrectable_mcheck {
++        unsigned long   shadow[8];        /* Shadow reg. 8-14, 25           */
++        unsigned long   paltemp[24];      /* PAL TEMP REGS.                 */
++        unsigned long   exc_addr;         /* Address of excepting instruction*/
++        unsigned long   exc_sum;          /* Summary of arithmetic traps.   */
++        unsigned long   exc_mask;         /* Exception mask (from exc_sum). */
++        unsigned long   pal_base;         /* Base address for PALcode.      */
++        unsigned long   isr;              /* Interrupt Status Reg.          */
++        unsigned long   icsr;             /* CURRENT SETUP OF EV5 IBOX      */
++        unsigned long   ic_perr_stat;     /* I-CACHE Reg. <11> set Data parity
++                                                         <12> set TAG parity*/
++        unsigned long   dc_perr_stat;     /* D-CACHE error Reg. Bits set to 1:
++                                                     <2> Data error in bank 0
++                                                     <3> Data error in bank 1
++                                                     <4> Tag error in bank 0
++                                                     <5> Tag error in bank 1 */
++        unsigned long   va;               /* Effective VA of fault or miss. */
++        unsigned long   mm_stat;          /* Holds the reason for D-stream 
++                                             fault or D-cache parity errors */
++        unsigned long   sc_addr;          /* Address that was being accessed
++                                             when EV5 detected Secondary cache
++                                             failure.                 */
++        unsigned long   sc_stat;          /* Helps determine if the error was
++                                             TAG/Data parity(Secondary Cache)*/
++        unsigned long   bc_tag_addr;      /* Contents of EV5 BC_TAG_ADDR    */
++        unsigned long   ei_addr;          /* Physical address of any transfer
++                                             that is logged in EV5 EI_STAT */
++        unsigned long   fill_syndrome;    /* For correcting ECC errors.     */
++        unsigned long   ei_stat;          /* Helps identify reason of any 
++                                             processor uncorrectable error
++                                             at its external interface.     */
++        unsigned long   ld_lock;          /* Contents of EV5 LD_LOCK register*/
++};
++
++struct el_common_EV6_mcheck {
++	unsigned int FrameSize;		/* Bytes, including this field */
++	unsigned int FrameFlags;	/* <31> = Retry, <30> = Second Error */
++	unsigned int CpuOffset;		/* Offset to CPU-specific info */
++	unsigned int SystemOffset;	/* Offset to system-specific info */
++	unsigned int MCHK_Code;
++	unsigned int MCHK_Frame_Rev;
++	unsigned long I_STAT;		/* EV6 Internal Processor Registers */
++	unsigned long DC_STAT;		/* (See the 21264 Spec) */
++	unsigned long C_ADDR;
++	unsigned long DC1_SYNDROME;
++	unsigned long DC0_SYNDROME;
++	unsigned long C_STAT;
++	unsigned long C_STS;
++	unsigned long MM_STAT;
++	unsigned long EXC_ADDR;
++	unsigned long IER_CM;
++	unsigned long ISUM;
++	unsigned long RESERVED0;
++	unsigned long PAL_BASE;
++	unsigned long I_CTL;
++	unsigned long PCTX;
++};
++
++extern void halt(void) __attribute__((noreturn));
++#define __halt() __asm__ __volatile__ ("call_pal %0 #halt" : : "i" (PAL_halt))
++
++#define switch_to(P,N,L)						\
++  do {									\
++    (L) = alpha_switch_to(virt_to_phys(&(N)->thread_info->pcb), (P));	\
++    check_mmu_context();						\
++  } while (0)
++
++struct task_struct;
++extern struct task_struct *alpha_switch_to(unsigned long, struct task_struct*);
++
++#define imb() \
++__asm__ __volatile__ ("call_pal %0 #imb" : : "i" (PAL_imb) : "memory")
++
++#define draina() \
++__asm__ __volatile__ ("call_pal %0 #draina" : : "i" (PAL_draina) : "memory")
++
++enum implver_enum {
++	IMPLVER_EV4,
++	IMPLVER_EV5,
++	IMPLVER_EV6
++};
++
++#ifdef CONFIG_ALPHA_GENERIC
++#define implver()				\
++({ unsigned long __implver;			\
++   __asm__ ("implver %0" : "=r"(__implver));	\
++   (enum implver_enum) __implver; })
++#else
++/* Try to eliminate some dead code.  */
++#ifdef CONFIG_ALPHA_EV4
++#define implver() IMPLVER_EV4
++#endif
++#ifdef CONFIG_ALPHA_EV5
++#define implver() IMPLVER_EV5
++#endif
++#if defined(CONFIG_ALPHA_EV6)
++#define implver() IMPLVER_EV6
++#endif
++#endif
++
++enum amask_enum {
++	AMASK_BWX = (1UL << 0),
++	AMASK_FIX = (1UL << 1),
++	AMASK_CIX = (1UL << 2),
++	AMASK_MAX = (1UL << 8),
++	AMASK_PRECISE_TRAP = (1UL << 9),
++};
++
++#define amask(mask)						\
++({ unsigned long __amask, __input = (mask);			\
++   __asm__ ("amask %1,%0" : "=r"(__amask) : "rI"(__input));	\
++   __amask; })
++
++#define __CALL_PAL_R0(NAME, TYPE)				\
++static inline TYPE NAME(void)					\
++{								\
++	register TYPE __r0 __asm__("$0");			\
++	__asm__ __volatile__(					\
++		"call_pal %1 # " #NAME				\
++		:"=r" (__r0)					\
++		:"i" (PAL_ ## NAME)				\
++		:"$1", "$16", "$22", "$23", "$24", "$25");	\
++	return __r0;						\
++}
++
++#define __CALL_PAL_W1(NAME, TYPE0)				\
++static inline void NAME(TYPE0 arg0)				\
++{								\
++	register TYPE0 __r16 __asm__("$16") = arg0;		\
++	__asm__ __volatile__(					\
++		"call_pal %1 # "#NAME				\
++		: "=r"(__r16)					\
++		: "i"(PAL_ ## NAME), "0"(__r16)			\
++		: "$1", "$22", "$23", "$24", "$25");		\
++}
++
++#define __CALL_PAL_W2(NAME, TYPE0, TYPE1)			\
++static inline void NAME(TYPE0 arg0, TYPE1 arg1)			\
++{								\
++	register TYPE0 __r16 __asm__("$16") = arg0;		\
++	register TYPE1 __r17 __asm__("$17") = arg1;		\
++	__asm__ __volatile__(					\
++		"call_pal %2 # "#NAME				\
++		: "=r"(__r16), "=r"(__r17)			\
++		: "i"(PAL_ ## NAME), "0"(__r16), "1"(__r17)	\
++		: "$1", "$22", "$23", "$24", "$25");		\
++}
++
++#define __CALL_PAL_RW1(NAME, RTYPE, TYPE0)			\
++static inline RTYPE NAME(TYPE0 arg0)				\
++{								\
++	register RTYPE __r0 __asm__("$0");			\
++	register TYPE0 __r16 __asm__("$16") = arg0;		\
++	__asm__ __volatile__(					\
++		"call_pal %2 # "#NAME				\
++		: "=r"(__r16), "=r"(__r0)			\
++		: "i"(PAL_ ## NAME), "0"(__r16)			\
++		: "$1", "$22", "$23", "$24", "$25");		\
++	return __r0;						\
++}
++
++#define __CALL_PAL_RW2(NAME, RTYPE, TYPE0, TYPE1)		\
++static inline RTYPE NAME(TYPE0 arg0, TYPE1 arg1)		\
++{								\
++	register RTYPE __r0 __asm__("$0");			\
++	register TYPE0 __r16 __asm__("$16") = arg0;		\
++	register TYPE1 __r17 __asm__("$17") = arg1;		\
++	__asm__ __volatile__(					\
++		"call_pal %3 # "#NAME				\
++		: "=r"(__r16), "=r"(__r17), "=r"(__r0)		\
++		: "i"(PAL_ ## NAME), "0"(__r16), "1"(__r17)	\
++		: "$1", "$22", "$23", "$24", "$25");		\
++	return __r0;						\
++}
++
++__CALL_PAL_W1(cflush, unsigned long);
++__CALL_PAL_R0(rdmces, unsigned long);
++__CALL_PAL_R0(rdps, unsigned long);
++__CALL_PAL_R0(rdusp, unsigned long);
++__CALL_PAL_RW1(swpipl, unsigned long, unsigned long);
++__CALL_PAL_R0(whami, unsigned long);
++__CALL_PAL_W2(wrent, void*, unsigned long);
++__CALL_PAL_W1(wripir, unsigned long);
++__CALL_PAL_W1(wrkgp, unsigned long);
++__CALL_PAL_W1(wrmces, unsigned long);
++__CALL_PAL_RW2(wrperfmon, unsigned long, unsigned long, unsigned long);
++__CALL_PAL_W1(wrusp, unsigned long);
++__CALL_PAL_W1(wrvptptr, unsigned long);
++
++#define IPL_MIN		0
++#define IPL_SW0		1
++#define IPL_SW1		2
++#define IPL_DEV0	3
++#define IPL_DEV1	4
++#define IPL_TIMER	5
++#define IPL_PERF	6
++#define IPL_POWERFAIL	6
++#define IPL_MCHECK	7
++#define IPL_MAX		7
++
++#ifdef CONFIG_ALPHA_BROKEN_IRQ_MASK
++#undef IPL_MIN
++#define IPL_MIN		__min_ipl
++extern int __min_ipl;
++#endif
++
++#define getipl()		(rdps() & 7)
++#define setipl(ipl)		((void) swpipl(ipl))
++
++#define local_irq_disable()			do { setipl(IPL_MAX); barrier(); } while(0)
++#define local_irq_enable()			do { barrier(); setipl(IPL_MIN); } while(0)
++#define local_save_flags(flags)	((flags) = rdps())
++#define local_irq_save(flags)	do { (flags) = swpipl(IPL_MAX); barrier(); } while(0)
++#define local_irq_restore(flags)	do { barrier(); setipl(flags); barrier(); } while(0)
++
++#define irqs_disabled()	(getipl() == IPL_MAX)
++
++/*
++ * TB routines..
++ */
++#define __tbi(nr,arg,arg1...)					\
++({								\
++	register unsigned long __r16 __asm__("$16") = (nr);	\
++	register unsigned long __r17 __asm__("$17"); arg;	\
++	__asm__ __volatile__(					\
++		"call_pal %3 #__tbi"				\
++		:"=r" (__r16),"=r" (__r17)			\
++		:"0" (__r16),"i" (PAL_tbi) ,##arg1		\
++		:"$0", "$1", "$22", "$23", "$24", "$25");	\
++})
++
++#define tbi(x,y)	__tbi(x,__r17=(y),"1" (__r17))
++#define tbisi(x)	__tbi(1,__r17=(x),"1" (__r17))
++#define tbisd(x)	__tbi(2,__r17=(x),"1" (__r17))
++#define tbis(x)		__tbi(3,__r17=(x),"1" (__r17))
++#define tbiap()		__tbi(-1, /* no second argument */)
++#define tbia()		__tbi(-2, /* no second argument */)
++
++/*
++ * Atomic exchange.
++ * Since it can be used to implement critical sections
++ * it must clobber "memory" (also for interrupts in UP).
++ */
++
++static inline unsigned long
++__xchg_u8(volatile char *m, unsigned long val)
++{
++	unsigned long ret, tmp, addr64;
++
++	__asm__ __volatile__(
++	"	andnot	%4,7,%3\n"
++	"	insbl	%1,%4,%1\n"
++	"1:	ldq_l	%2,0(%3)\n"
++	"	extbl	%2,%4,%0\n"
++	"	mskbl	%2,%4,%2\n"
++	"	or	%1,%2,%2\n"
++	"	stq_c	%2,0(%3)\n"
++	"	beq	%2,2f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	".subsection 2\n"
++	"2:	br	1b\n"
++	".previous"
++	: "=&r" (ret), "=&r" (val), "=&r" (tmp), "=&r" (addr64)
++	: "r" ((long)m), "1" (val) : "memory");
++
++	return ret;
++}
++
++static inline unsigned long
++__xchg_u16(volatile short *m, unsigned long val)
++{
++	unsigned long ret, tmp, addr64;
++
++	__asm__ __volatile__(
++	"	andnot	%4,7,%3\n"
++	"	inswl	%1,%4,%1\n"
++	"1:	ldq_l	%2,0(%3)\n"
++	"	extwl	%2,%4,%0\n"
++	"	mskwl	%2,%4,%2\n"
++	"	or	%1,%2,%2\n"
++	"	stq_c	%2,0(%3)\n"
++	"	beq	%2,2f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	".subsection 2\n"
++	"2:	br	1b\n"
++	".previous"
++	: "=&r" (ret), "=&r" (val), "=&r" (tmp), "=&r" (addr64)
++	: "r" ((long)m), "1" (val) : "memory");
++
++	return ret;
++}
++
++static inline unsigned long
++__xchg_u32(volatile int *m, unsigned long val)
++{
++	unsigned long dummy;
++
++	__asm__ __volatile__(
++	"1:	ldl_l %0,%4\n"
++	"	bis $31,%3,%1\n"
++	"	stl_c %1,%2\n"
++	"	beq %1,2f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	".subsection 2\n"
++	"2:	br 1b\n"
++	".previous"
++	: "=&r" (val), "=&r" (dummy), "=m" (*m)
++	: "rI" (val), "m" (*m) : "memory");
++
++	return val;
++}
++
++static inline unsigned long
++__xchg_u64(volatile long *m, unsigned long val)
++{
++	unsigned long dummy;
++
++	__asm__ __volatile__(
++	"1:	ldq_l %0,%4\n"
++	"	bis $31,%3,%1\n"
++	"	stq_c %1,%2\n"
++	"	beq %1,2f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	".subsection 2\n"
++	"2:	br 1b\n"
++	".previous"
++	: "=&r" (val), "=&r" (dummy), "=m" (*m)
++	: "rI" (val), "m" (*m) : "memory");
++
++	return val;
++}
++
++/* This function doesn't exist, so you'll get a linker error
++   if something tries to do an invalid xchg().  */
++extern void __xchg_called_with_bad_pointer(void);
++
++#define __xchg(ptr, x, size) \
++({ \
++	unsigned long __xchg__res; \
++	volatile void *__xchg__ptr = (ptr); \
++	switch (size) { \
++		case 1: __xchg__res = __xchg_u8(__xchg__ptr, x); break; \
++		case 2: __xchg__res = __xchg_u16(__xchg__ptr, x); break; \
++		case 4: __xchg__res = __xchg_u32(__xchg__ptr, x); break; \
++		case 8: __xchg__res = __xchg_u64(__xchg__ptr, x); break; \
++		default: __xchg_called_with_bad_pointer(); __xchg__res = x; \
++	} \
++	__xchg__res; \
++})
++
++#define xchg(ptr,x)							     \
++  ({									     \
++     __typeof__(*(ptr)) _x_ = (x);					     \
++     (__typeof__(*(ptr))) __xchg((ptr), (unsigned long)_x_, sizeof(*(ptr))); \
++  })
++
++#define tas(ptr) (xchg((ptr),1))
++
++
++/* 
++ * Atomic compare and exchange.  Compare OLD with MEM, if identical,
++ * store NEW in MEM.  Return the initial value in MEM.  Success is
++ * indicated by comparing RETURN with OLD.
++ *
++ * The memory barrier should be placed in SMP only when we actually
++ * make the change. If we don't change anything (so if the returned
++ * prev is equal to old) then we aren't acquiring anything new and
++ * we don't need any memory barrier as far I can tell.
++ */
++
++#define __HAVE_ARCH_CMPXCHG 1
++
++static inline unsigned long
++__cmpxchg_u8(volatile char *m, long old, long new)
++{
++	unsigned long prev, tmp, cmp, addr64;
++
++	__asm__ __volatile__(
++	"	andnot	%5,7,%4\n"
++	"	insbl	%1,%5,%1\n"
++	"1:	ldq_l	%2,0(%4)\n"
++	"	extbl	%2,%5,%0\n"
++	"	cmpeq	%0,%6,%3\n"
++	"	beq	%3,2f\n"
++	"	mskbl	%2,%5,%2\n"
++	"	or	%1,%2,%2\n"
++	"	stq_c	%2,0(%4)\n"
++	"	beq	%2,3f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	"2:\n"
++	".subsection 2\n"
++	"3:	br	1b\n"
++	".previous"
++	: "=&r" (prev), "=&r" (new), "=&r" (tmp), "=&r" (cmp), "=&r" (addr64)
++	: "r" ((long)m), "Ir" (old), "1" (new) : "memory");
++
++	return prev;
++}
++
++static inline unsigned long
++__cmpxchg_u16(volatile short *m, long old, long new)
++{
++	unsigned long prev, tmp, cmp, addr64;
++
++	__asm__ __volatile__(
++	"	andnot	%5,7,%4\n"
++	"	inswl	%1,%5,%1\n"
++	"1:	ldq_l	%2,0(%4)\n"
++	"	extwl	%2,%5,%0\n"
++	"	cmpeq	%0,%6,%3\n"
++	"	beq	%3,2f\n"
++	"	mskwl	%2,%5,%2\n"
++	"	or	%1,%2,%2\n"
++	"	stq_c	%2,0(%4)\n"
++	"	beq	%2,3f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	"2:\n"
++	".subsection 2\n"
++	"3:	br	1b\n"
++	".previous"
++	: "=&r" (prev), "=&r" (new), "=&r" (tmp), "=&r" (cmp), "=&r" (addr64)
++	: "r" ((long)m), "Ir" (old), "1" (new) : "memory");
++
++	return prev;
++}
++
++static inline unsigned long
++__cmpxchg_u32(volatile int *m, int old, int new)
++{
++	unsigned long prev, cmp;
++
++	__asm__ __volatile__(
++	"1:	ldl_l %0,%5\n"
++	"	cmpeq %0,%3,%1\n"
++	"	beq %1,2f\n"
++	"	mov %4,%1\n"
++	"	stl_c %1,%2\n"
++	"	beq %1,3f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	"2:\n"
++	".subsection 2\n"
++	"3:	br 1b\n"
++	".previous"
++	: "=&r"(prev), "=&r"(cmp), "=m"(*m)
++	: "r"((long) old), "r"(new), "m"(*m) : "memory");
++
++	return prev;
++}
++
++static inline unsigned long
++__cmpxchg_u64(volatile long *m, unsigned long old, unsigned long new)
++{
++	unsigned long prev, cmp;
++
++	__asm__ __volatile__(
++	"1:	ldq_l %0,%5\n"
++	"	cmpeq %0,%3,%1\n"
++	"	beq %1,2f\n"
++	"	mov %4,%1\n"
++	"	stq_c %1,%2\n"
++	"	beq %1,3f\n"
++#ifdef CONFIG_SMP
++	"	mb\n"
++#endif
++	"2:\n"
++	".subsection 2\n"
++	"3:	br 1b\n"
++	".previous"
++	: "=&r"(prev), "=&r"(cmp), "=m"(*m)
++	: "r"((long) old), "r"(new), "m"(*m) : "memory");
++
++	return prev;
++}
++
++/* This function doesn't exist, so you'll get a linker error
++   if something tries to do an invalid cmpxchg().  */
++extern void __cmpxchg_called_with_bad_pointer(void);
++
++static inline unsigned long
++__cmpxchg(volatile void *ptr, unsigned long old, unsigned long new, int size)
++{
++	switch (size) {
++		case 1:
++			return __cmpxchg_u8(ptr, old, new);
++		case 2:
++			return __cmpxchg_u16(ptr, old, new);
++		case 4:
++			return __cmpxchg_u32(ptr, old, new);
++		case 8:
++			return __cmpxchg_u64(ptr, old, new);
++	}
++	__cmpxchg_called_with_bad_pointer();
++	return old;
++}
++
++#define cmpxchg(ptr,o,n)						 \
++  ({									 \
++     __typeof__(*(ptr)) _o_ = (o);					 \
++     __typeof__(*(ptr)) _n_ = (n);					 \
++     (__typeof__(*(ptr))) __cmpxchg((ptr), (unsigned long)_o_,		 \
++				    (unsigned long)_n_, sizeof(*(ptr))); \
++  })
++
++#endif /* __ASSEMBLY__ */
++
++#define arch_align_stack(x) (x)
++
++#endif
+diff -Naur aboot-0.9b.orig/include/asm-generic/page.h aboot-0.9b/include/asm-generic/page.h
+--- aboot-0.9b.orig/include/asm-generic/page.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/asm-generic/page.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,27 @@
++#ifndef _ASM_GENERIC_PAGE_H
++#define _ASM_GENERIC_PAGE_H
++
++#ifdef __KERNEL__
++#ifndef __ASSEMBLY__
++
++#include <linux/compiler.h>
++
++/* Pure 2^n version of get_order */
++/*
++static int get_order(unsigned long size)
++{
++	int order;
++
++	size = (size - 1) >> (PAGE_SHIFT - 1);
++	order = -1;
++	do {
++		size >>= 1;
++		order++;
++	} while (size);
++	return order;
++}*/
++
++#endif	/* __ASSEMBLY__ */
++#endif	/* __KERNEL__ */
++
++#endif	/* _ASM_GENERIC_PAGE_H */
+diff -Naur aboot-0.9b.orig/include/linux/auxvec.h aboot-0.9b/include/linux/auxvec.h
+--- aboot-0.9b.orig/include/linux/auxvec.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/linux/auxvec.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,31 @@
++#ifndef _LINUX_AUXVEC_H
++#define _LINUX_AUXVEC_H
++
++#include <asm/auxvec.h>
++
++/* Symbolic values for the entries in the auxiliary table
++   put on the initial stack */
++#define AT_NULL   0	/* end of vector */
++#define AT_IGNORE 1	/* entry should be ignored */
++#define AT_EXECFD 2	/* file descriptor of program */
++#define AT_PHDR   3	/* program headers for program */
++#define AT_PHENT  4	/* size of program header entry */
++#define AT_PHNUM  5	/* number of program headers */
++#define AT_PAGESZ 6	/* system page size */
++#define AT_BASE   7	/* base address of interpreter */
++#define AT_FLAGS  8	/* flags */
++#define AT_ENTRY  9	/* entry point of program */
++#define AT_NOTELF 10	/* program is not ELF */
++#define AT_UID    11	/* real uid */
++#define AT_EUID   12	/* effective uid */
++#define AT_GID    13	/* real gid */
++#define AT_EGID   14	/* effective gid */
++#define AT_PLATFORM 15  /* string identifying CPU for optimizations */
++#define AT_HWCAP  16    /* arch dependent hints at CPU capabilities */
++#define AT_CLKTCK 17	/* frequency at which times() increments */
++
++#define AT_SECURE 23   /* secure mode boolean */
++
++#define AT_VECTOR_SIZE  42 /* Size of auxiliary table.  */
++
++#endif /* _LINUX_AUXVEC_H */
+diff -Naur aboot-0.9b.orig/include/linux/elf.h aboot-0.9b/include/linux/elf.h
+--- aboot-0.9b.orig/include/linux/elf.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/linux/elf.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,427 @@
++#ifndef _LINUX_ELF_H
++#define _LINUX_ELF_H
++
++#include <linux/types.h>
++#include <linux/auxvec.h>
++#include <asm/elf.h>
++
++#ifndef elf_read_implies_exec
++  /* Executables for which elf_read_implies_exec() returns TRUE will
++     have the READ_IMPLIES_EXEC personality flag set automatically.
++     Override in asm/elf.h as needed.  */
++# define elf_read_implies_exec(ex, have_pt_gnu_stack)	0
++#endif
++
++/* 32-bit ELF base types. */
++typedef __u32	Elf32_Addr;
++typedef __u16	Elf32_Half;
++typedef __u32	Elf32_Off;
++typedef __s32	Elf32_Sword;
++typedef __u32	Elf32_Word;
++
++/* 64-bit ELF base types. */
++typedef __u64	Elf64_Addr;
++typedef __u16	Elf64_Half;
++typedef __s16	Elf64_SHalf;
++typedef __u64	Elf64_Off;
++typedef __s32	Elf64_Sword;
++typedef __u32	Elf64_Word;
++typedef __u64	Elf64_Xword;
++typedef __s64	Elf64_Sxword;
++
++/* These constants are for the segment types stored in the image headers */
++#define PT_NULL    0
++#define PT_LOAD    1
++#define PT_DYNAMIC 2
++#define PT_INTERP  3
++#define PT_NOTE    4
++#define PT_SHLIB   5
++#define PT_PHDR    6
++#define PT_TLS     7               /* Thread local storage segment */
++#define PT_LOOS    0x60000000      /* OS-specific */
++#define PT_HIOS    0x6fffffff      /* OS-specific */
++#define PT_LOPROC  0x70000000
++#define PT_HIPROC  0x7fffffff
++#define PT_GNU_EH_FRAME		0x6474e550
++
++#define PT_GNU_STACK	(PT_LOOS + 0x474e551)
++
++/* These constants define the different elf file types */
++#define ET_NONE   0
++#define ET_REL    1
++#define ET_EXEC   2
++#define ET_DYN    3
++#define ET_CORE   4
++#define ET_LOPROC 0xff00
++#define ET_HIPROC 0xffff
++
++/* These constants define the various ELF target machines */
++#define EM_NONE  0
++#define EM_M32   1
++#define EM_SPARC 2
++#define EM_386   3
++#define EM_68K   4
++#define EM_88K   5
++#define EM_486   6   /* Perhaps disused */
++#define EM_860   7
++
++#define EM_MIPS		8	/* MIPS R3000 (officially, big-endian only) */
++
++#define EM_MIPS_RS4_BE 10	/* MIPS R4000 big-endian */
++
++#define EM_PARISC      15	/* HPPA */
++
++#define EM_SPARC32PLUS 18	/* Sun's "v8plus" */
++
++#define EM_PPC	       20	/* PowerPC */
++#define EM_PPC64       21       /* PowerPC64 */
++
++#define EM_SH	       42	/* SuperH */
++
++#define EM_SPARCV9     43	/* SPARC v9 64-bit */
++
++#define EM_IA_64	50	/* HP/Intel IA-64 */
++
++#define EM_X86_64	62	/* AMD x86-64 */
++
++#define EM_S390		22	/* IBM S/390 */
++
++#define EM_CRIS         76      /* Axis Communications 32-bit embedded processor */
++
++#define EM_V850		87	/* NEC v850 */
++
++#define EM_M32R		88	/* Renesas M32R */
++
++#define EM_H8_300       46      /* Renesas H8/300,300H,H8S */
++
++/*
++ * This is an interim value that we will use until the committee comes
++ * up with a final number.
++ */
++#define EM_ALPHA	0x9026
++
++/* Bogus old v850 magic number, used by old tools.  */
++#define EM_CYGNUS_V850	0x9080
++
++/* Bogus old m32r magic number, used by old tools.  */
++#define EM_CYGNUS_M32R	0x9041
++
++/*
++ * This is the old interim value for S/390 architecture
++ */
++#define EM_S390_OLD     0xA390
++
++#define EM_FRV		0x5441		/* Fujitsu FR-V */
++
++/* This is the info that is needed to parse the dynamic section of the file */
++#define DT_NULL		0
++#define DT_NEEDED	1
++#define DT_PLTRELSZ	2
++#define DT_PLTGOT	3
++#define DT_HASH		4
++#define DT_STRTAB	5
++#define DT_SYMTAB	6
++#define DT_RELA		7
++#define DT_RELASZ	8
++#define DT_RELAENT	9
++#define DT_STRSZ	10
++#define DT_SYMENT	11
++#define DT_INIT		12
++#define DT_FINI		13
++#define DT_SONAME	14
++#define DT_RPATH 	15
++#define DT_SYMBOLIC	16
++#define DT_REL	        17
++#define DT_RELSZ	18
++#define DT_RELENT	19
++#define DT_PLTREL	20
++#define DT_DEBUG	21
++#define DT_TEXTREL	22
++#define DT_JMPREL	23
++#define DT_LOPROC	0x70000000
++#define DT_HIPROC	0x7fffffff
++
++/* This info is needed when parsing the symbol table */
++#define STB_LOCAL  0
++#define STB_GLOBAL 1
++#define STB_WEAK   2
++
++#define STT_NOTYPE  0
++#define STT_OBJECT  1
++#define STT_FUNC    2
++#define STT_SECTION 3
++#define STT_FILE    4
++
++#define ELF_ST_BIND(x)		((x) >> 4)
++#define ELF_ST_TYPE(x)		(((unsigned int) x) & 0xf)
++#define ELF32_ST_BIND(x)	ELF_ST_BIND(x)
++#define ELF32_ST_TYPE(x)	ELF_ST_TYPE(x)
++#define ELF64_ST_BIND(x)	ELF_ST_BIND(x)
++#define ELF64_ST_TYPE(x)	ELF_ST_TYPE(x)
++
++typedef struct dynamic{
++  Elf32_Sword d_tag;
++  union{
++    Elf32_Sword	d_val;
++    Elf32_Addr	d_ptr;
++  } d_un;
++} Elf32_Dyn;
++
++typedef struct {
++  Elf64_Sxword d_tag;		/* entry tag value */
++  union {
++    Elf64_Xword d_val;
++    Elf64_Addr d_ptr;
++  } d_un;
++} Elf64_Dyn;
++
++/* The following are used with relocations */
++#define ELF32_R_SYM(x) ((x) >> 8)
++#define ELF32_R_TYPE(x) ((x) & 0xff)
++
++#define ELF64_R_SYM(i)			((i) >> 32)
++#define ELF64_R_TYPE(i)			((i) & 0xffffffff)
++
++typedef struct elf32_rel {
++  Elf32_Addr	r_offset;
++  Elf32_Word	r_info;
++} Elf32_Rel;
++
++typedef struct elf64_rel {
++  Elf64_Addr r_offset;	/* Location at which to apply the action */
++  Elf64_Xword r_info;	/* index and type of relocation */
++} Elf64_Rel;
++
++typedef struct elf32_rela{
++  Elf32_Addr	r_offset;
++  Elf32_Word	r_info;
++  Elf32_Sword	r_addend;
++} Elf32_Rela;
++
++typedef struct elf64_rela {
++  Elf64_Addr r_offset;	/* Location at which to apply the action */
++  Elf64_Xword r_info;	/* index and type of relocation */
++  Elf64_Sxword r_addend;	/* Constant addend used to compute value */
++} Elf64_Rela;
++
++typedef struct elf32_sym{
++  Elf32_Word	st_name;
++  Elf32_Addr	st_value;
++  Elf32_Word	st_size;
++  unsigned char	st_info;
++  unsigned char	st_other;
++  Elf32_Half	st_shndx;
++} Elf32_Sym;
++
++typedef struct elf64_sym {
++  Elf64_Word st_name;		/* Symbol name, index in string tbl */
++  unsigned char	st_info;	/* Type and binding attributes */
++  unsigned char	st_other;	/* No defined meaning, 0 */
++  Elf64_Half st_shndx;		/* Associated section index */
++  Elf64_Addr st_value;		/* Value of the symbol */
++  Elf64_Xword st_size;		/* Associated symbol size */
++} Elf64_Sym;
++
++
++#define EI_NIDENT	16
++
++typedef struct elf32_hdr{
++  unsigned char	e_ident[EI_NIDENT];
++  Elf32_Half	e_type;
++  Elf32_Half	e_machine;
++  Elf32_Word	e_version;
++  Elf32_Addr	e_entry;  /* Entry point */
++  Elf32_Off	e_phoff;
++  Elf32_Off	e_shoff;
++  Elf32_Word	e_flags;
++  Elf32_Half	e_ehsize;
++  Elf32_Half	e_phentsize;
++  Elf32_Half	e_phnum;
++  Elf32_Half	e_shentsize;
++  Elf32_Half	e_shnum;
++  Elf32_Half	e_shstrndx;
++} Elf32_Ehdr;
++
++typedef struct elf64_hdr {
++  unsigned char	e_ident[16];		/* ELF "magic number" */
++  Elf64_Half e_type;
++  Elf64_Half e_machine;
++  Elf64_Word e_version;
++  Elf64_Addr e_entry;		/* Entry point virtual address */
++  Elf64_Off e_phoff;		/* Program header table file offset */
++  Elf64_Off e_shoff;		/* Section header table file offset */
++  Elf64_Word e_flags;
++  Elf64_Half e_ehsize;
++  Elf64_Half e_phentsize;
++  Elf64_Half e_phnum;
++  Elf64_Half e_shentsize;
++  Elf64_Half e_shnum;
++  Elf64_Half e_shstrndx;
++} Elf64_Ehdr;
++
++/* These constants define the permissions on sections in the program
++   header, p_flags. */
++#define PF_R		0x4
++#define PF_W		0x2
++#define PF_X		0x1
++
++typedef struct elf32_phdr{
++  Elf32_Word	p_type;
++  Elf32_Off	p_offset;
++  Elf32_Addr	p_vaddr;
++  Elf32_Addr	p_paddr;
++  Elf32_Word	p_filesz;
++  Elf32_Word	p_memsz;
++  Elf32_Word	p_flags;
++  Elf32_Word	p_align;
++} Elf32_Phdr;
++
++typedef struct elf64_phdr {
++  Elf64_Word p_type;
++  Elf64_Word p_flags;
++  Elf64_Off p_offset;		/* Segment file offset */
++  Elf64_Addr p_vaddr;		/* Segment virtual address */
++  Elf64_Addr p_paddr;		/* Segment physical address */
++  Elf64_Xword p_filesz;		/* Segment size in file */
++  Elf64_Xword p_memsz;		/* Segment size in memory */
++  Elf64_Xword p_align;		/* Segment alignment, file & memory */
++} Elf64_Phdr;
++
++/* sh_type */
++#define SHT_NULL	0
++#define SHT_PROGBITS	1
++#define SHT_SYMTAB	2
++#define SHT_STRTAB	3
++#define SHT_RELA	4
++#define SHT_HASH	5
++#define SHT_DYNAMIC	6
++#define SHT_NOTE	7
++#define SHT_NOBITS	8
++#define SHT_REL		9
++#define SHT_SHLIB	10
++#define SHT_DYNSYM	11
++#define SHT_NUM		12
++#define SHT_LOPROC	0x70000000
++#define SHT_HIPROC	0x7fffffff
++#define SHT_LOUSER	0x80000000
++#define SHT_HIUSER	0xffffffff
++
++/* sh_flags */
++#define SHF_WRITE	0x1
++#define SHF_ALLOC	0x2
++#define SHF_EXECINSTR	0x4
++#define SHF_MASKPROC	0xf0000000
++
++/* special section indexes */
++#define SHN_UNDEF	0
++#define SHN_LORESERVE	0xff00
++#define SHN_LOPROC	0xff00
++#define SHN_HIPROC	0xff1f
++#define SHN_ABS		0xfff1
++#define SHN_COMMON	0xfff2
++#define SHN_HIRESERVE	0xffff
++ 
++typedef struct {
++  Elf32_Word	sh_name;
++  Elf32_Word	sh_type;
++  Elf32_Word	sh_flags;
++  Elf32_Addr	sh_addr;
++  Elf32_Off	sh_offset;
++  Elf32_Word	sh_size;
++  Elf32_Word	sh_link;
++  Elf32_Word	sh_info;
++  Elf32_Word	sh_addralign;
++  Elf32_Word	sh_entsize;
++} Elf32_Shdr;
++
++typedef struct elf64_shdr {
++  Elf64_Word sh_name;		/* Section name, index in string tbl */
++  Elf64_Word sh_type;		/* Type of section */
++  Elf64_Xword sh_flags;		/* Miscellaneous section attributes */
++  Elf64_Addr sh_addr;		/* Section virtual addr at execution */
++  Elf64_Off sh_offset;		/* Section file offset */
++  Elf64_Xword sh_size;		/* Size of section in bytes */
++  Elf64_Word sh_link;		/* Index of another section */
++  Elf64_Word sh_info;		/* Additional section information */
++  Elf64_Xword sh_addralign;	/* Section alignment */
++  Elf64_Xword sh_entsize;	/* Entry size if section holds table */
++} Elf64_Shdr;
++
++#define	EI_MAG0		0		/* e_ident[] indexes */
++#define	EI_MAG1		1
++#define	EI_MAG2		2
++#define	EI_MAG3		3
++#define	EI_CLASS	4
++#define	EI_DATA		5
++#define	EI_VERSION	6
++#define	EI_OSABI	7
++#define	EI_PAD		8
++
++#define	ELFMAG0		0x7f		/* EI_MAG */
++#define	ELFMAG1		'E'
++#define	ELFMAG2		'L'
++#define	ELFMAG3		'F'
++#define	ELFMAG		"\177ELF"
++#define	SELFMAG		4
++
++#define	ELFCLASSNONE	0		/* EI_CLASS */
++#define	ELFCLASS32	1
++#define	ELFCLASS64	2
++#define	ELFCLASSNUM	3
++
++#define ELFDATANONE	0		/* e_ident[EI_DATA] */
++#define ELFDATA2LSB	1
++#define ELFDATA2MSB	2
++
++#define EV_NONE		0		/* e_version, EI_VERSION */
++#define EV_CURRENT	1
++#define EV_NUM		2
++
++#define ELFOSABI_NONE	0
++#define ELFOSABI_LINUX	3
++
++#ifndef ELF_OSABI
++#define ELF_OSABI ELFOSABI_NONE
++#endif
++
++/* Notes used in ET_CORE */
++#define NT_PRSTATUS	1
++#define NT_PRFPREG	2
++#define NT_PRPSINFO	3
++#define NT_TASKSTRUCT	4
++#define NT_AUXV		6
++#define NT_PRXFPREG     0x46e62b7f      /* copied from gdb5.1/include/elf/common.h */
++
++
++/* Note header in a PT_NOTE section */
++typedef struct elf32_note {
++  Elf32_Word	n_namesz;	/* Name size */
++  Elf32_Word	n_descsz;	/* Content size */
++  Elf32_Word	n_type;		/* Content type */
++} Elf32_Nhdr;
++
++/* Note header in a PT_NOTE section */
++typedef struct elf64_note {
++  Elf64_Word n_namesz;	/* Name size */
++  Elf64_Word n_descsz;	/* Content size */
++  Elf64_Word n_type;	/* Content type */
++} Elf64_Nhdr;
++
++#if ELF_CLASS == ELFCLASS32
++
++extern Elf32_Dyn _DYNAMIC [];
++#define elfhdr		elf32_hdr
++#define elf_phdr	elf32_phdr
++#define elf_note	elf32_note
++
++#else
++
++extern Elf64_Dyn _DYNAMIC [];
++#define elfhdr		elf64_hdr
++#define elf_phdr	elf64_phdr
++#define elf_note	elf64_note
++
++#endif
++
++
++#endif /* _LINUX_ELF_H */
+diff -Naur aboot-0.9b.orig/include/linux/stat.h aboot-0.9b/include/linux/stat.h
+--- aboot-0.9b.orig/include/linux/stat.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/linux/stat.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,77 @@
++#ifndef _LINUX_STAT_H
++#define _LINUX_STAT_H
++
++#ifdef __KERNEL__
++
++#include <asm/stat.h>
++
++#endif
++
++#if defined(__KERNEL__) || !defined(__GLIBC__) || (__GLIBC__ < 2)
++
++#define S_IFMT  00170000
++#define S_IFSOCK 0140000
++#define S_IFLNK	 0120000
++#define S_IFREG  0100000
++#define S_IFBLK  0060000
++#define S_IFDIR  0040000
++#define S_IFCHR  0020000
++#define S_IFIFO  0010000
++#define S_ISUID  0004000
++#define S_ISGID  0002000
++#define S_ISVTX  0001000
++
++#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
++#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
++#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
++#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
++#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
++#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
++#define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
++
++#define S_IRWXU 00700
++#define S_IRUSR 00400
++#define S_IWUSR 00200
++#define S_IXUSR 00100
++
++#define S_IRWXG 00070
++#define S_IRGRP 00040
++#define S_IWGRP 00020
++#define S_IXGRP 00010
++
++#define S_IRWXO 00007
++#define S_IROTH 00004
++#define S_IWOTH 00002
++#define S_IXOTH 00001
++
++#endif
++
++#ifdef __KERNEL__
++#define S_IRWXUGO	(S_IRWXU|S_IRWXG|S_IRWXO)
++#define S_IALLUGO	(S_ISUID|S_ISGID|S_ISVTX|S_IRWXUGO)
++#define S_IRUGO		(S_IRUSR|S_IRGRP|S_IROTH)
++#define S_IWUGO		(S_IWUSR|S_IWGRP|S_IWOTH)
++#define S_IXUGO		(S_IXUSR|S_IXGRP|S_IXOTH)
++
++#include <linux/types.h>
++#include <sys/time.h>
++
++struct kstat {
++	unsigned long	ino;
++	dev_t		dev;
++	umode_t		mode;
++	unsigned int	nlink;
++	uid_t		uid;
++	gid_t		gid;
++	dev_t		rdev;
++	loff_t		size;
++	struct timespec  atime;
++	struct timespec	mtime;
++	struct timespec	ctime;
++	unsigned long	blksize;
++	unsigned long	blocks;
++};
++
++#endif
++
++#endif
+diff -Naur aboot-0.9b.orig/include/linux/string.h aboot-0.9b/include/linux/string.h
+--- aboot-0.9b.orig/include/linux/string.h	1970-01-01 00:00:00.000000000 +0000
++++ aboot-0.9b/include/linux/string.h	2006-01-16 14:00:50.000000000 +0000
+@@ -0,0 +1,100 @@
++#ifndef _LINUX_STRING_H_
++#define _LINUX_STRING_H_
++
++/* We don't want strings.h stuff being user by user stuff by accident */
++
++#ifdef __KERNEL__
++
++typedef unsigned gfp_t;
++
++#include <linux/compiler.h>	/* for inline */
++#include <linux/types.h>	/* for size_t */
++#include <linux/stddef.h>	/* for NULL */
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++extern char * strpbrk(const char *,const char *);
++extern char * strsep(char **,const char *);
++extern __kernel_size_t strspn(const char *,const char *);
++extern __kernel_size_t strcspn(const char *,const char *);
++
++/*
++ * Include machine specific inline routines
++ */
++#include <asm/string.h>
++
++#ifndef __HAVE_ARCH_STRCPY
++extern char * strcpy(char *,const char *);
++#endif
++#ifndef __HAVE_ARCH_STRNCPY
++extern char * strncpy(char *,const char *, __kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_STRLCPY
++size_t strlcpy(char *, const char *, size_t);
++#endif
++#ifndef __HAVE_ARCH_STRCAT
++extern char * strcat(char *, const char *);
++#endif
++#ifndef __HAVE_ARCH_STRNCAT
++extern char * strncat(char *, const char *, __kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_STRLCAT
++extern size_t strlcat(char *, const char *, __kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_STRCMP
++extern int strcmp(const char *,const char *);
++#endif
++#ifndef __HAVE_ARCH_STRNCMP
++extern int strncmp(const char *,const char *,__kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_STRNICMP
++extern int strnicmp(const char *, const char *, __kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_STRCHR
++extern char * strchr(const char *,int);
++#endif
++#ifndef __HAVE_ARCH_STRNCHR
++extern char * strnchr(const char *, size_t, int);
++#endif
++#ifndef __HAVE_ARCH_STRRCHR
++extern char * strrchr(const char *,int);
++#endif
++#ifndef __HAVE_ARCH_STRSTR
++extern char * strstr(const char *,const char *);
++#endif
++#ifndef __HAVE_ARCH_STRLEN
++extern __kernel_size_t strlen(const char *);
++#endif
++#ifndef __HAVE_ARCH_STRNLEN
++extern __kernel_size_t strnlen(const char *,__kernel_size_t);
++#endif
++
++#ifndef __HAVE_ARCH_MEMSET
++extern void * memset(void *,int,__kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_MEMCPY
++extern void * memcpy(void *,const void *,__kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_MEMMOVE
++extern void * memmove(void *,const void *,__kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_MEMSCAN
++extern void * memscan(void *,int,__kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_MEMCMP
++extern int memcmp(const void *,const void *,__kernel_size_t);
++#endif
++#ifndef __HAVE_ARCH_MEMCHR
++extern void * memchr(const void *,int,__kernel_size_t);
++#endif
++
++extern char *kstrdup(const char *s, gfp_t gfp);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
++#endif /* _LINUX_STRING_H_ */
+diff -Naur aboot-0.9b.orig/lib/isolib.c aboot-0.9b/lib/isolib.c
+--- aboot-0.9b.orig/lib/isolib.c	2006-01-16 14:00:10.000000000 +0000
++++ aboot-0.9b/lib/isolib.c	2006-01-16 14:05:20.000000000 +0000
+@@ -6,6 +6,7 @@
+  * functionality to the Linux bootstrapper.  All we can do is
+  * open and read files... but that's all we need 8-)
+  */
++#define __KERNEL__
+ #ifndef TESTING
+ #  include <linux/string.h>
+ #endif
+@@ -1520,6 +1521,7 @@
+ #ifdef DEBUG_ROCK
+ 	   printf("Symlink component flag not implemented (%d)\n",slen);
+ #endif
++	   break;
+ 	 };
+ 	 slen -= slp->len + 2;
+ 	 oldslp = slp;

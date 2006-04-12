@@ -1,0 +1,1707 @@
+Submitted By: Jeremy Huntwork (jhuntwork at linuxfromscratch dot org)
+Date: 2005-05-08
+Initial Package Version: 2.6.11.2
+Origin: Created for Cross-LFS
+Upstream Status: Not submitted - LFS Specific
+Description: Creates kernel header stubs for biarch builds, specific to sparc arch.
+             Based on cross-lfs scripts by Ryan Oliver
+
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/a.out.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/a.out.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/a.out.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/a.out.h	2005-05-08 23:33:21.279196726 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__A_OUT_H__
++#define __STUB__A_OUT_H__
++#ifdef __arch64__
++#include <asm-sparc64/a.out.h>
++#else
++#include <asm-sparc/a.out.h>
++#endif
++#endif /* __STUB__A_OUT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/agp.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/agp.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/agp.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/agp.h	2005-05-08 23:33:21.297194377 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__AGP_H__
++#define __STUB__AGP_H__
++#ifdef __arch64__
++#include <asm-sparc64/agp.h>
++#endif
++#endif /* __STUB__AGP_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/apb.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/apb.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/apb.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/apb.h	2005-05-08 23:33:21.315192029 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__APB_H__
++#define __STUB__APB_H__
++#ifdef __arch64__
++#include <asm-sparc64/apb.h>
++#endif
++#endif /* __STUB__APB_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/apc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/apc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/apc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/apc.h	2005-05-08 23:33:18.984496193 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__APC_H__
++#define __STUB__APC_H__
++#ifndef __arch64__
++#include <asm-sparc/apc.h>
++#endif
++#endif /* __STUB__APC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/asi.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/asi.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/asi.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/asi.h	2005-05-08 23:33:21.334189549 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__ASI_H__
++#define __STUB__ASI_H__
++#ifdef __arch64__
++#include <asm-sparc64/asi.h>
++#else
++#include <asm-sparc/asi.h>
++#endif
++#endif /* __STUB__ASI_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/asmmacro.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/asmmacro.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/asmmacro.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/asmmacro.h	2005-05-08 23:33:19.021491365 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__ASMMACRO_H__
++#define __STUB__ASMMACRO_H__
++#ifndef __arch64__
++#include <asm-sparc/asmmacro.h>
++#endif
++#endif /* __STUB__ASMMACRO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/atomic.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/atomic.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/atomic.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/atomic.h	2005-05-08 23:33:21.354186940 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__ATOMIC_H__
++#define __STUB__ATOMIC_H__
++#ifdef __arch64__
++#include <asm-sparc64/atomic.h>
++#else
++#include <asm-sparc/atomic.h>
++#endif
++#endif /* __STUB__ATOMIC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/audioio.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/audioio.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/audioio.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/audioio.h	2005-05-08 23:33:21.373184460 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__AUDIOIO_H__
++#define __STUB__AUDIOIO_H__
++#ifdef __arch64__
++#include <asm-sparc64/audioio.h>
++#else
++#include <asm-sparc/audioio.h>
++#endif
++#endif /* __STUB__AUDIOIO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/auxio.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/auxio.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/auxio.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/auxio.h	2005-05-08 23:33:21.392181981 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__AUXIO_H__
++#define __STUB__AUXIO_H__
++#ifdef __arch64__
++#include <asm-sparc64/auxio.h>
++#else
++#include <asm-sparc/auxio.h>
++#endif
++#endif /* __STUB__AUXIO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bbc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bbc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bbc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bbc.h	2005-05-08 23:33:21.412179371 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__BBC_H__
++#define __STUB__BBC_H__
++#ifdef __arch64__
++#include <asm-sparc64/bbc.h>
++#endif
++#endif /* __STUB__BBC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bitext.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bitext.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bitext.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bitext.h	2005-05-08 23:33:19.096481579 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__BITEXT_H__
++#define __STUB__BITEXT_H__
++#ifndef __arch64__
++#include <asm-sparc/bitext.h>
++#endif
++#endif /* __STUB__BITEXT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bitops.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bitops.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bitops.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bitops.h	2005-05-08 23:33:21.430177023 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__BITOPS_H__
++#define __STUB__BITOPS_H__
++#ifdef __arch64__
++#include <asm-sparc64/bitops.h>
++#else
++#include <asm-sparc/bitops.h>
++#endif
++#endif /* __STUB__BITOPS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bpp.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bpp.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bpp.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bpp.h	2005-05-08 23:33:21.448174674 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__BPP_H__
++#define __STUB__BPP_H__
++#ifdef __arch64__
++#include <asm-sparc64/bpp.h>
++#else
++#include <asm-sparc/bpp.h>
++#endif
++#endif /* __STUB__BPP_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bsderrno.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bsderrno.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/bsderrno.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/bsderrno.h	2005-05-08 23:33:21.468172064 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__BSDERRNO_H__
++#define __STUB__BSDERRNO_H__
++#ifdef __arch64__
++#include <asm-sparc64/bsderrno.h>
++#else
++#include <asm-sparc/bsderrno.h>
++#endif
++#endif /* __STUB__BSDERRNO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/btfixup.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/btfixup.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/btfixup.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/btfixup.h	2005-05-08 23:33:19.172471662 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__BTFIXUP_H__
++#define __STUB__BTFIXUP_H__
++#ifndef __arch64__
++#include <asm-sparc/btfixup.h>
++#endif
++#endif /* __STUB__BTFIXUP_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/byteorder.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/byteorder.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/byteorder.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/byteorder.h	2005-05-08 23:33:21.487169585 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__BYTEORDER_H__
++#define __STUB__BYTEORDER_H__
++#ifdef __arch64__
++#include <asm-sparc64/byteorder.h>
++#else
++#include <asm-sparc/byteorder.h>
++#endif
++#endif /* __STUB__BYTEORDER_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cache.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cache.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cache.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cache.h	2005-05-08 23:33:21.509166714 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__CACHE_H__
++#define __STUB__CACHE_H__
++#ifdef __arch64__
++#include <asm-sparc64/cache.h>
++#else
++#include <asm-sparc/cache.h>
++#endif
++#endif /* __STUB__CACHE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cacheflush.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cacheflush.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cacheflush.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cacheflush.h	2005-05-08 23:33:21.544162147 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__CACHEFLUSH_H__
++#define __STUB__CACHEFLUSH_H__
++#ifdef __arch64__
++#include <asm-sparc64/cacheflush.h>
++#else
++#include <asm-sparc/cacheflush.h>
++#endif
++#endif /* __STUB__CACHEFLUSH_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/chafsr.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/chafsr.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/chafsr.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/chafsr.h	2005-05-08 23:33:21.564159537 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__CHAFSR_H__
++#define __STUB__CHAFSR_H__
++#ifdef __arch64__
++#include <asm-sparc64/chafsr.h>
++#endif
++#endif /* __STUB__CHAFSR_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/checksum.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/checksum.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/checksum.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/checksum.h	2005-05-08 23:33:21.583157058 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__CHECKSUM_H__
++#define __STUB__CHECKSUM_H__
++#ifdef __arch64__
++#include <asm-sparc64/checksum.h>
++#else
++#include <asm-sparc/checksum.h>
++#endif
++#endif /* __STUB__CHECKSUM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/chmctrl.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/chmctrl.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/chmctrl.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/chmctrl.h	2005-05-08 23:33:21.601154709 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__CHMCTRL_H__
++#define __STUB__CHMCTRL_H__
++#ifdef __arch64__
++#include <asm-sparc64/chmctrl.h>
++#endif
++#endif /* __STUB__CHMCTRL_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/clock.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/clock.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/clock.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/clock.h	2005-05-08 23:33:19.266459396 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__CLOCK_H__
++#define __STUB__CLOCK_H__
++#ifndef __arch64__
++#include <asm-sparc/clock.h>
++#endif
++#endif /* __STUB__CLOCK_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/compat.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/compat.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/compat.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/compat.h	2005-05-08 23:33:21.620152230 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__COMPAT_H__
++#define __STUB__COMPAT_H__
++#ifdef __arch64__
++#include <asm-sparc64/compat.h>
++#endif
++#endif /* __STUB__COMPAT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/const.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/const.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/const.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/const.h	2005-05-08 23:33:21.640149620 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__CONST_H__
++#define __STUB__CONST_H__
++#ifdef __arch64__
++#include <asm-sparc64/const.h>
++#endif
++#endif /* __STUB__CONST_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/contregs.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/contregs.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/contregs.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/contregs.h	2005-05-08 23:33:19.285456917 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__CONTREGS_H__
++#define __STUB__CONTREGS_H__
++#ifndef __arch64__
++#include <asm-sparc/contregs.h>
++#endif
++#endif /* __STUB__CONTREGS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cpudata.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cpudata.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cpudata.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cpudata.h	2005-05-08 23:33:21.658147272 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__CPUDATA_H__
++#define __STUB__CPUDATA_H__
++#ifdef __arch64__
++#include <asm-sparc64/cpudata.h>
++#else
++#include <asm-sparc/cpudata.h>
++#endif
++#endif /* __STUB__CPUDATA_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cypress.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cypress.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/cypress.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/cypress.h	2005-05-08 23:33:19.323451958 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__CYPRESS_H__
++#define __STUB__CYPRESS_H__
++#ifndef __arch64__
++#include <asm-sparc/cypress.h>
++#endif
++#endif /* __STUB__CYPRESS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/dcr.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/dcr.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/dcr.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/dcr.h	2005-05-08 23:33:21.678144662 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__DCR_H__
++#define __STUB__DCR_H__
++#ifdef __arch64__
++#include <asm-sparc64/dcr.h>
++#endif
++#endif /* __STUB__DCR_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/dcu.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/dcu.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/dcu.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/dcu.h	2005-05-08 23:33:21.697142183 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__DCU_H__
++#define __STUB__DCU_H__
++#ifdef __arch64__
++#include <asm-sparc64/dcu.h>
++#endif
++#endif /* __STUB__DCU_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/display7seg.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/display7seg.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/display7seg.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/display7seg.h	2005-05-08 23:33:21.715139834 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__DISPLAY7SEG_H__
++#define __STUB__DISPLAY7SEG_H__
++#ifdef __arch64__
++#include <asm-sparc64/display7seg.h>
++#endif
++#endif /* __STUB__DISPLAY7SEG_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/dma.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/dma.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/dma.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/dma.h	2005-05-08 23:33:21.733137485 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__DMA_H__
++#define __STUB__DMA_H__
++#ifdef __arch64__
++#include <asm-sparc64/dma.h>
++#else
++#include <asm-sparc/dma.h>
++#endif
++#endif /* __STUB__DMA_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ebus.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ebus.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ebus.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ebus.h	2005-05-08 23:33:21.751135136 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__EBUS_H__
++#define __STUB__EBUS_H__
++#ifdef __arch64__
++#include <asm-sparc64/ebus.h>
++#else
++#include <asm-sparc/ebus.h>
++#endif
++#endif /* __STUB__EBUS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ecc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ecc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ecc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ecc.h	2005-05-08 23:33:19.381444390 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__ECC_H__
++#define __STUB__ECC_H__
++#ifndef __arch64__
++#include <asm-sparc/ecc.h>
++#endif
++#endif /* __STUB__ECC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/eeprom.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/eeprom.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/eeprom.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/eeprom.h	2005-05-08 23:33:19.399442041 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__EEPROM_H__
++#define __STUB__EEPROM_H__
++#ifndef __arch64__
++#include <asm-sparc/eeprom.h>
++#endif
++#endif /* __STUB__EEPROM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/elf.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/elf.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/elf.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/elf.h	2005-05-08 23:33:21.770132657 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__ELF_H__
++#define __STUB__ELF_H__
++#ifdef __arch64__
++#include <asm-sparc64/elf.h>
++#else
++#include <asm-sparc/elf.h>
++#endif
++#endif /* __STUB__ELF_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/envctrl.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/envctrl.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/envctrl.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/envctrl.h	2005-05-08 23:33:21.789130178 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__ENVCTRL_H__
++#define __STUB__ENVCTRL_H__
++#ifdef __arch64__
++#include <asm-sparc64/envctrl.h>
++#endif
++#endif /* __STUB__ENVCTRL_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/errno.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/errno.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/errno.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/errno.h	2005-05-08 23:33:21.808127699 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__ERRNO_H__
++#define __STUB__ERRNO_H__
++#ifdef __arch64__
++#include <asm-sparc64/errno.h>
++#else
++#include <asm-sparc/errno.h>
++#endif
++#endif /* __STUB__ERRNO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/estate.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/estate.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/estate.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/estate.h	2005-05-08 23:33:21.826125350 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__ESTATE_H__
++#define __STUB__ESTATE_H__
++#ifdef __arch64__
++#include <asm-sparc64/estate.h>
++#endif
++#endif /* __STUB__ESTATE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fbio.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fbio.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fbio.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fbio.h	2005-05-08 23:33:21.846122740 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__FBIO_H__
++#define __STUB__FBIO_H__
++#ifdef __arch64__
++#include <asm-sparc64/fbio.h>
++#else
++#include <asm-sparc/fbio.h>
++#endif
++#endif /* __STUB__FBIO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fcntl.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fcntl.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fcntl.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fcntl.h	2005-05-08 23:33:21.864120391 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__FCNTL_H__
++#define __STUB__FCNTL_H__
++#ifdef __arch64__
++#include <asm-sparc64/fcntl.h>
++#else
++#include <asm-sparc/fcntl.h>
++#endif
++#endif /* __STUB__FCNTL_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fhc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fhc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fhc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fhc.h	2005-05-08 23:33:21.882118043 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__FHC_H__
++#define __STUB__FHC_H__
++#ifdef __arch64__
++#include <asm-sparc64/fhc.h>
++#endif
++#endif /* __STUB__FHC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/floppy.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/floppy.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/floppy.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/floppy.h	2005-05-08 23:33:21.901115563 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__FLOPPY_H__
++#define __STUB__FLOPPY_H__
++#ifdef __arch64__
++#include <asm-sparc64/floppy.h>
++#else
++#include <asm-sparc/floppy.h>
++#endif
++#endif /* __STUB__FLOPPY_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fpumacro.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fpumacro.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/fpumacro.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/fpumacro.h	2005-05-08 23:33:21.919113215 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__FPUMACRO_H__
++#define __STUB__FPUMACRO_H__
++#ifdef __arch64__
++#include <asm-sparc64/fpumacro.h>
++#endif
++#endif /* __STUB__FPUMACRO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/hardirq.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/hardirq.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/hardirq.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/hardirq.h	2005-05-08 23:33:21.939110605 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__HARDIRQ_H__
++#define __STUB__HARDIRQ_H__
++#ifdef __arch64__
++#include <asm-sparc64/hardirq.h>
++#else
++#include <asm-sparc/hardirq.h>
++#endif
++#endif /* __STUB__HARDIRQ_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/hdreg.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/hdreg.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/hdreg.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/hdreg.h	2005-05-08 23:33:21.958108126 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__HDREG_H__
++#define __STUB__HDREG_H__
++#ifdef __arch64__
++#include <asm-sparc64/hdreg.h>
++#else
++#include <asm-sparc/hdreg.h>
++#endif
++#endif /* __STUB__HDREG_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/head.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/head.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/head.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/head.h	2005-05-08 23:33:21.976105777 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__HEAD_H__
++#define __STUB__HEAD_H__
++#ifdef __arch64__
++#include <asm-sparc64/head.h>
++#else
++#include <asm-sparc/head.h>
++#endif
++#endif /* __STUB__HEAD_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/hw_irq.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/hw_irq.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/hw_irq.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/hw_irq.h	2005-05-08 23:33:21.995103298 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__HW_IRQ_H__
++#define __STUB__HW_IRQ_H__
++#ifdef __arch64__
++#include <asm-sparc64/hw_irq.h>
++#else
++#include <asm-sparc/hw_irq.h>
++#endif
++#endif /* __STUB__HW_IRQ_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/idprom.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/idprom.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/idprom.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/idprom.h	2005-05-08 23:33:22.014100818 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IDPROM_H__
++#define __STUB__IDPROM_H__
++#ifdef __arch64__
++#include <asm-sparc64/idprom.h>
++#else
++#include <asm-sparc/idprom.h>
++#endif
++#endif /* __STUB__IDPROM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/init.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/init.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/init.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/init.h	2005-05-08 23:33:22.035098078 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__INIT_H__
++#define __STUB__INIT_H__
++#ifdef __arch64__
++#include <asm-sparc64/init.h>
++#else
++#include <asm-sparc/init.h>
++#endif
++#endif /* __STUB__INIT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/io-unit.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/io-unit.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/io-unit.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/io-unit.h	2005-05-08 23:33:19.625412551 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__IO-UNIT_H__
++#define __STUB__IO-UNIT_H__
++#ifndef __arch64__
++#include <asm-sparc/io-unit.h>
++#endif
++#endif /* __STUB__IO-UNIT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/io.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/io.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/io.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/io.h	2005-05-08 23:33:22.053095729 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IO_H__
++#define __STUB__IO_H__
++#ifdef __arch64__
++#include <asm-sparc64/io.h>
++#else
++#include <asm-sparc/io.h>
++#endif
++#endif /* __STUB__IO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ioctl.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ioctl.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ioctl.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ioctl.h	2005-05-08 23:33:22.074092989 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IOCTL_H__
++#define __STUB__IOCTL_H__
++#ifdef __arch64__
++#include <asm-sparc64/ioctl.h>
++#else
++#include <asm-sparc/ioctl.h>
++#endif
++#endif /* __STUB__IOCTL_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ioctls.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ioctls.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ioctls.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ioctls.h	2005-05-08 23:33:22.095090249 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IOCTLS_H__
++#define __STUB__IOCTLS_H__
++#ifdef __arch64__
++#include <asm-sparc64/ioctls.h>
++#else
++#include <asm-sparc/ioctls.h>
++#endif
++#endif /* __STUB__IOCTLS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/iommu.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/iommu.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/iommu.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/iommu.h	2005-05-08 23:33:22.113087900 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IOMMU_H__
++#define __STUB__IOMMU_H__
++#ifdef __arch64__
++#include <asm-sparc64/iommu.h>
++#else
++#include <asm-sparc/iommu.h>
++#endif
++#endif /* __STUB__IOMMU_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ipc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ipc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ipc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ipc.h	2005-05-08 23:33:22.132085421 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IPC_H__
++#define __STUB__IPC_H__
++#ifdef __arch64__
++#include <asm-sparc64/ipc.h>
++#else
++#include <asm-sparc/ipc.h>
++#endif
++#endif /* __STUB__IPC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ipcbuf.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ipcbuf.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ipcbuf.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ipcbuf.h	2005-05-08 23:33:22.151082942 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IPCBUF_H__
++#define __STUB__IPCBUF_H__
++#ifdef __arch64__
++#include <asm-sparc64/ipcbuf.h>
++#else
++#include <asm-sparc/ipcbuf.h>
++#endif
++#endif /* __STUB__IPCBUF_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/irq.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/irq.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/irq.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/irq.h	2005-05-08 23:33:22.170080462 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__IRQ_H__
++#define __STUB__IRQ_H__
++#ifdef __arch64__
++#include <asm-sparc64/irq.h>
++#else
++#include <asm-sparc/irq.h>
++#endif
++#endif /* __STUB__IRQ_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/isa.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/isa.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/isa.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/isa.h	2005-05-08 23:33:22.188078114 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__ISA_H__
++#define __STUB__ISA_H__
++#ifdef __arch64__
++#include <asm-sparc64/isa.h>
++#endif
++#endif /* __STUB__ISA_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/jsflash.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/jsflash.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/jsflash.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/jsflash.h	2005-05-08 23:33:19.776392848 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__JSFLASH_H__
++#define __STUB__JSFLASH_H__
++#ifndef __arch64__
++#include <asm-sparc/jsflash.h>
++#endif
++#endif /* __STUB__JSFLASH_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/kbio.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/kbio.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/kbio.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/kbio.h	2005-05-08 23:33:22.207075634 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__KBIO_H__
++#define __STUB__KBIO_H__
++#ifdef __arch64__
++#include <asm-sparc64/kbio.h>
++#else
++#include <asm-sparc/kbio.h>
++#endif
++#endif /* __STUB__KBIO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/kdebug.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/kdebug.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/kdebug.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/kdebug.h	2005-05-08 23:33:22.226073155 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__KDEBUG_H__
++#define __STUB__KDEBUG_H__
++#ifdef __arch64__
++#include <asm-sparc64/kdebug.h>
++#else
++#include <asm-sparc/kdebug.h>
++#endif
++#endif /* __STUB__KDEBUG_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/kprobes.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/kprobes.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/kprobes.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/kprobes.h	2005-05-08 23:33:22.245070676 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__KPROBES_H__
++#define __STUB__KPROBES_H__
++#ifdef __arch64__
++#include <asm-sparc64/kprobes.h>
++#endif
++#endif /* __STUB__KPROBES_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/linkage.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/linkage.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/linkage.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/linkage.h	2005-05-08 23:33:22.264068197 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__LINKAGE_H__
++#define __STUB__LINKAGE_H__
++#ifdef __arch64__
++#include <asm-sparc64/linkage.h>
++#else
++#include <asm-sparc/linkage.h>
++#endif
++#endif /* __STUB__LINKAGE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/lsu.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/lsu.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/lsu.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/lsu.h	2005-05-08 23:33:22.283065717 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__LSU_H__
++#define __STUB__LSU_H__
++#ifdef __arch64__
++#include <asm-sparc64/lsu.h>
++#endif
++#endif /* __STUB__LSU_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/machines.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/machines.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/machines.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/machines.h	2005-05-08 23:33:19.853382800 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__MACHINES_H__
++#define __STUB__MACHINES_H__
++#ifndef __arch64__
++#include <asm-sparc/machines.h>
++#endif
++#endif /* __STUB__MACHINES_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mbus.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mbus.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mbus.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mbus.h	2005-05-08 23:33:19.873380191 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__MBUS_H__
++#define __STUB__MBUS_H__
++#ifndef __arch64__
++#include <asm-sparc/mbus.h>
++#endif
++#endif /* __STUB__MBUS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/memreg.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/memreg.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/memreg.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/memreg.h	2005-05-08 23:33:19.891377842 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__MEMREG_H__
++#define __STUB__MEMREG_H__
++#ifndef __arch64__
++#include <asm-sparc/memreg.h>
++#endif
++#endif /* __STUB__MEMREG_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mman.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mman.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mman.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mman.h	2005-05-08 23:33:22.302063238 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__MMAN_H__
++#define __STUB__MMAN_H__
++#ifdef __arch64__
++#include <asm-sparc64/mman.h>
++#else
++#include <asm-sparc/mman.h>
++#endif
++#endif /* __STUB__MMAN_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mmu.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mmu.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mmu.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mmu.h	2005-05-08 23:33:22.321060759 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__MMU_H__
++#define __STUB__MMU_H__
++#ifdef __arch64__
++#include <asm-sparc64/mmu.h>
++#else
++#include <asm-sparc/mmu.h>
++#endif
++#endif /* __STUB__MMU_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mmu_context.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mmu_context.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mmu_context.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mmu_context.h	2005-05-08 23:33:22.340058280 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__MMU_CONTEXT_H__
++#define __STUB__MMU_CONTEXT_H__
++#ifdef __arch64__
++#include <asm-sparc64/mmu_context.h>
++#else
++#include <asm-sparc/mmu_context.h>
++#endif
++#endif /* __STUB__MMU_CONTEXT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/module.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/module.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/module.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/module.h	2005-05-08 23:33:22.358055931 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__MODULE_H__
++#define __STUB__MODULE_H__
++#ifdef __arch64__
++#include <asm-sparc64/module.h>
++#else
++#include <asm-sparc/module.h>
++#endif
++#endif /* __STUB__MODULE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mostek.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mostek.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mostek.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mostek.h	2005-05-08 23:33:22.376053582 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__MOSTEK_H__
++#define __STUB__MOSTEK_H__
++#ifdef __arch64__
++#include <asm-sparc64/mostek.h>
++#else
++#include <asm-sparc/mostek.h>
++#endif
++#endif /* __STUB__MOSTEK_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mpmbox.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mpmbox.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mpmbox.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mpmbox.h	2005-05-08 23:33:20.008362575 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__MPMBOX_H__
++#define __STUB__MPMBOX_H__
++#ifndef __arch64__
++#include <asm-sparc/mpmbox.h>
++#endif
++#endif /* __STUB__MPMBOX_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/msgbuf.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/msgbuf.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/msgbuf.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/msgbuf.h	2005-05-08 23:33:22.395051103 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__MSGBUF_H__
++#define __STUB__MSGBUF_H__
++#ifdef __arch64__
++#include <asm-sparc64/msgbuf.h>
++#else
++#include <asm-sparc/msgbuf.h>
++#endif
++#endif /* __STUB__MSGBUF_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/msi.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/msi.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/msi.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/msi.h	2005-05-08 23:33:20.045357747 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__MSI_H__
++#define __STUB__MSI_H__
++#ifndef __arch64__
++#include <asm-sparc/msi.h>
++#endif
++#endif /* __STUB__MSI_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mxcc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mxcc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/mxcc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/mxcc.h	2005-05-08 23:33:20.065355137 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__MXCC_H__
++#define __STUB__MXCC_H__
++#ifndef __arch64__
++#include <asm-sparc/mxcc.h>
++#endif
++#endif /* __STUB__MXCC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/namei.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/namei.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/namei.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/namei.h	2005-05-08 23:33:22.415048493 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__NAMEI_H__
++#define __STUB__NAMEI_H__
++#ifdef __arch64__
++#include <asm-sparc64/namei.h>
++#else
++#include <asm-sparc/namei.h>
++#endif
++#endif /* __STUB__NAMEI_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ns87303.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ns87303.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ns87303.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ns87303.h	2005-05-08 23:33:22.433046144 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__NS87303_H__
++#define __STUB__NS87303_H__
++#ifdef __arch64__
++#include <asm-sparc64/ns87303.h>
++#endif
++#endif /* __STUB__NS87303_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/obio.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/obio.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/obio.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/obio.h	2005-05-08 23:33:20.102350309 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__OBIO_H__
++#define __STUB__OBIO_H__
++#ifndef __arch64__
++#include <asm-sparc/obio.h>
++#endif
++#endif /* __STUB__OBIO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/openprom.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/openprom.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/openprom.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/openprom.h	2005-05-08 23:33:22.453043535 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__OPENPROM_H__
++#define __STUB__OPENPROM_H__
++#ifdef __arch64__
++#include <asm-sparc64/openprom.h>
++#else
++#include <asm-sparc/openprom.h>
++#endif
++#endif /* __STUB__OPENPROM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/openpromio.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/openpromio.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/openpromio.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/openpromio.h	2005-05-08 23:33:22.472041055 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__OPENPROMIO_H__
++#define __STUB__OPENPROMIO_H__
++#ifdef __arch64__
++#include <asm-sparc64/openpromio.h>
++#else
++#include <asm-sparc/openpromio.h>
++#endif
++#endif /* __STUB__OPENPROMIO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/oplib.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/oplib.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/oplib.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/oplib.h	2005-05-08 23:33:22.491038576 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__OPLIB_H__
++#define __STUB__OPLIB_H__
++#ifdef __arch64__
++#include <asm-sparc64/oplib.h>
++#else
++#include <asm-sparc/oplib.h>
++#endif
++#endif /* __STUB__OPLIB_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/page.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/page.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/page.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/page.h	2005-05-08 23:33:22.509036227 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PAGE_H__
++#define __STUB__PAGE_H__
++#ifdef __arch64__
++#include <asm-sparc64/page.h>
++#else
++#include <asm-sparc/page.h>
++#endif
++#endif /* __STUB__PAGE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/param.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/param.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/param.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/param.h	2005-05-08 23:33:22.527033879 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PARAM_H__
++#define __STUB__PARAM_H__
++#ifdef __arch64__
++#include <asm-sparc64/param.h>
++#else
++#include <asm-sparc/param.h>
++#endif
++#endif /* __STUB__PARAM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/parport.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/parport.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/parport.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/parport.h	2005-05-08 23:33:22.547031269 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PARPORT_H__
++#define __STUB__PARPORT_H__
++#ifdef __arch64__
++#include <asm-sparc64/parport.h>
++#endif
++#endif /* __STUB__PARPORT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pbm.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pbm.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pbm.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pbm.h	2005-05-08 23:33:22.566028790 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PBM_H__
++#define __STUB__PBM_H__
++#ifdef __arch64__
++#include <asm-sparc64/pbm.h>
++#else
++#include <asm-sparc/pbm.h>
++#endif
++#endif /* __STUB__PBM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pcic.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pcic.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pcic.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pcic.h	2005-05-08 23:33:20.235332954 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PCIC_H__
++#define __STUB__PCIC_H__
++#ifndef __arch64__
++#include <asm-sparc/pcic.h>
++#endif
++#endif /* __STUB__PCIC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pconf.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pconf.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pconf.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pconf.h	2005-05-08 23:33:22.586026180 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PCONF_H__
++#define __STUB__PCONF_H__
++#ifdef __arch64__
++#include <asm-sparc64/pconf.h>
++#else
++#include <asm-sparc/pconf.h>
++#endif
++#endif /* __STUB__PCONF_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/perfctr.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/perfctr.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/perfctr.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/perfctr.h	2005-05-08 23:33:22.606023570 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PERFCTR_H__
++#define __STUB__PERFCTR_H__
++#ifdef __arch64__
++#include <asm-sparc64/perfctr.h>
++#else
++#include <asm-sparc/perfctr.h>
++#endif
++#endif /* __STUB__PERFCTR_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgalloc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgalloc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgalloc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgalloc.h	2005-05-08 23:33:22.625021091 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PGALLOC_H__
++#define __STUB__PGALLOC_H__
++#ifdef __arch64__
++#include <asm-sparc64/pgalloc.h>
++#else
++#include <asm-sparc/pgalloc.h>
++#endif
++#endif /* __STUB__PGALLOC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgtsrmmu.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgtsrmmu.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgtsrmmu.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgtsrmmu.h	2005-05-08 23:33:20.310323168 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PGTSRMMU_H__
++#define __STUB__PGTSRMMU_H__
++#ifndef __arch64__
++#include <asm-sparc/pgtsrmmu.h>
++#endif
++#endif /* __STUB__PGTSRMMU_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgtsun4.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgtsun4.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgtsun4.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgtsun4.h	2005-05-08 23:33:20.328320819 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PGTSUN4_H__
++#define __STUB__PGTSUN4_H__
++#ifndef __arch64__
++#include <asm-sparc/pgtsun4.h>
++#endif
++#endif /* __STUB__PGTSUN4_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgtsun4c.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgtsun4c.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pgtsun4c.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pgtsun4c.h	2005-05-08 23:33:20.346318470 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PGTSUN4C_H__
++#define __STUB__PGTSUN4C_H__
++#ifndef __arch64__
++#include <asm-sparc/pgtsun4c.h>
++#endif
++#endif /* __STUB__PGTSUN4C_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pil.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pil.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pil.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pil.h	2005-05-08 23:33:22.644018612 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PIL_H__
++#define __STUB__PIL_H__
++#ifdef __arch64__
++#include <asm-sparc64/pil.h>
++#endif
++#endif /* __STUB__PIL_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/poll.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/poll.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/poll.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/poll.h	2005-05-08 23:33:22.663016132 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__POLL_H__
++#define __STUB__POLL_H__
++#ifdef __arch64__
++#include <asm-sparc64/poll.h>
++#else
++#include <asm-sparc/poll.h>
++#endif
++#endif /* __STUB__POLL_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/posix_types.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/posix_types.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/posix_types.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/posix_types.h	2005-05-08 23:33:22.682013653 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__POSIX_TYPES_H__
++#define __STUB__POSIX_TYPES_H__
++#ifdef __arch64__
++#include <asm-sparc64/posix_types.h>
++#else
++#include <asm-sparc/posix_types.h>
++#endif
++#endif /* __STUB__POSIX_TYPES_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/processor.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/processor.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/processor.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/processor.h	2005-05-08 23:33:22.700011304 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PROCESSOR_H__
++#define __STUB__PROCESSOR_H__
++#ifdef __arch64__
++#include <asm-sparc64/processor.h>
++#else
++#include <asm-sparc/processor.h>
++#endif
++#endif /* __STUB__PROCESSOR_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/psr.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/psr.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/psr.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/psr.h	2005-05-08 23:33:20.422308553 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PSR_H__
++#define __STUB__PSR_H__
++#ifndef __arch64__
++#include <asm-sparc/psr.h>
++#endif
++#endif /* __STUB__PSR_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/psrcompat.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/psrcompat.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/psrcompat.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/psrcompat.h	2005-05-08 23:33:22.719008825 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PSRCOMPAT_H__
++#define __STUB__PSRCOMPAT_H__
++#ifdef __arch64__
++#include <asm-sparc64/psrcompat.h>
++#endif
++#endif /* __STUB__PSRCOMPAT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pstate.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pstate.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/pstate.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/pstate.h	2005-05-08 23:33:22.737006476 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__PSTATE_H__
++#define __STUB__PSTATE_H__
++#ifdef __arch64__
++#include <asm-sparc64/pstate.h>
++#endif
++#endif /* __STUB__PSTATE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ptrace.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ptrace.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ptrace.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ptrace.h	2005-05-08 23:33:22.757003867 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__PTRACE_H__
++#define __STUB__PTRACE_H__
++#ifdef __arch64__
++#include <asm-sparc64/ptrace.h>
++#else
++#include <asm-sparc/ptrace.h>
++#endif
++#endif /* __STUB__PTRACE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/reg.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/reg.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/reg.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/reg.h	2005-05-08 23:33:22.775001518 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__REG_H__
++#define __STUB__REG_H__
++#ifdef __arch64__
++#include <asm-sparc64/reg.h>
++#else
++#include <asm-sparc/reg.h>
++#endif
++#endif /* __STUB__REG_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ross.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ross.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ross.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ross.h	2005-05-08 23:33:20.478301246 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__ROSS_H__
++#define __STUB__ROSS_H__
++#ifndef __arch64__
++#include <asm-sparc/ross.h>
++#endif
++#endif /* __STUB__ROSS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sbi.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sbi.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sbi.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sbi.h	2005-05-08 23:33:20.496298897 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SBI_H__
++#define __STUB__SBI_H__
++#ifndef __arch64__
++#include <asm-sparc/sbi.h>
++#endif
++#endif /* __STUB__SBI_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sbus.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sbus.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sbus.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sbus.h	2005-05-08 23:33:22.794998908 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SBUS_H__
++#define __STUB__SBUS_H__
++#ifdef __arch64__
++#include <asm-sparc64/sbus.h>
++#else
++#include <asm-sparc/sbus.h>
++#endif
++#endif /* __STUB__SBUS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/segment.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/segment.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/segment.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/segment.h	2005-05-08 23:33:22.812996559 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SEGMENT_H__
++#define __STUB__SEGMENT_H__
++#ifdef __arch64__
++#include <asm-sparc64/segment.h>
++#else
++#include <asm-sparc/segment.h>
++#endif
++#endif /* __STUB__SEGMENT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/semaphore.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/semaphore.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/semaphore.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/semaphore.h	2005-05-08 23:33:22.832993950 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SEMAPHORE_H__
++#define __STUB__SEMAPHORE_H__
++#ifdef __arch64__
++#include <asm-sparc64/semaphore.h>
++#else
++#include <asm-sparc/semaphore.h>
++#endif
++#endif /* __STUB__SEMAPHORE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sembuf.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sembuf.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sembuf.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sembuf.h	2005-05-08 23:33:22.852991340 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SEMBUF_H__
++#define __STUB__SEMBUF_H__
++#ifdef __arch64__
++#include <asm-sparc64/sembuf.h>
++#else
++#include <asm-sparc/sembuf.h>
++#endif
++#endif /* __STUB__SEMBUF_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sfp-machine.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sfp-machine.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sfp-machine.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sfp-machine.h	2005-05-08 23:33:22.871988861 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SFP-MACHINE_H__
++#define __STUB__SFP-MACHINE_H__
++#ifdef __arch64__
++#include <asm-sparc64/sfp-machine.h>
++#else
++#include <asm-sparc/sfp-machine.h>
++#endif
++#endif /* __STUB__SFP-MACHINE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/shmbuf.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/shmbuf.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/shmbuf.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/shmbuf.h	2005-05-08 23:33:22.890986381 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SHMBUF_H__
++#define __STUB__SHMBUF_H__
++#ifdef __arch64__
++#include <asm-sparc64/shmbuf.h>
++#else
++#include <asm-sparc/shmbuf.h>
++#endif
++#endif /* __STUB__SHMBUF_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/shmparam.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/shmparam.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/shmparam.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/shmparam.h	2005-05-08 23:33:22.909983902 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SHMPARAM_H__
++#define __STUB__SHMPARAM_H__
++#ifdef __arch64__
++#include <asm-sparc64/shmparam.h>
++#else
++#include <asm-sparc/shmparam.h>
++#endif
++#endif /* __STUB__SHMPARAM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sigcontext.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sigcontext.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sigcontext.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sigcontext.h	2005-05-08 23:33:22.928981423 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SIGCONTEXT_H__
++#define __STUB__SIGCONTEXT_H__
++#ifdef __arch64__
++#include <asm-sparc64/sigcontext.h>
++#else
++#include <asm-sparc/sigcontext.h>
++#endif
++#endif /* __STUB__SIGCONTEXT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/siginfo.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/siginfo.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/siginfo.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/siginfo.h	2005-05-08 23:33:22.946979074 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SIGINFO_H__
++#define __STUB__SIGINFO_H__
++#ifdef __arch64__
++#include <asm-sparc64/siginfo.h>
++#else
++#include <asm-sparc/siginfo.h>
++#endif
++#endif /* __STUB__SIGINFO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/smpprim.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/smpprim.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/smpprim.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/smpprim.h	2005-05-08 23:33:20.689273713 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SMPPRIM_H__
++#define __STUB__SMPPRIM_H__
++#ifndef __arch64__
++#include <asm-sparc/smpprim.h>
++#endif
++#endif /* __STUB__SMPPRIM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/socket.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/socket.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/socket.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/socket.h	2005-05-08 23:33:22.965976595 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SOCKET_H__
++#define __STUB__SOCKET_H__
++#ifdef __arch64__
++#include <asm-sparc64/socket.h>
++#else
++#include <asm-sparc/socket.h>
++#endif
++#endif /* __STUB__SOCKET_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sockios.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sockios.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sockios.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sockios.h	2005-05-08 23:33:22.985973985 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SOCKIOS_H__
++#define __STUB__SOCKIOS_H__
++#ifdef __arch64__
++#include <asm-sparc64/sockios.h>
++#else
++#include <asm-sparc/sockios.h>
++#endif
++#endif /* __STUB__SOCKIOS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/solerrno.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/solerrno.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/solerrno.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/solerrno.h	2005-05-08 23:33:23.003971636 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SOLERRNO_H__
++#define __STUB__SOLERRNO_H__
++#ifdef __arch64__
++#include <asm-sparc64/solerrno.h>
++#else
++#include <asm-sparc/solerrno.h>
++#endif
++#endif /* __STUB__SOLERRNO_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/spinlock.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/spinlock.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/spinlock.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/spinlock.h	2005-05-08 23:33:23.022969157 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SPINLOCK_H__
++#define __STUB__SPINLOCK_H__
++#ifdef __arch64__
++#include <asm-sparc64/spinlock.h>
++#else
++#include <asm-sparc/spinlock.h>
++#endif
++#endif /* __STUB__SPINLOCK_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/spitfire.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/spitfire.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/spitfire.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/spitfire.h	2005-05-08 23:33:23.041966678 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SPITFIRE_H__
++#define __STUB__SPITFIRE_H__
++#ifdef __arch64__
++#include <asm-sparc64/spitfire.h>
++#endif
++#endif /* __STUB__SPITFIRE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/starfire.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/starfire.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/starfire.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/starfire.h	2005-05-08 23:33:23.059964329 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__STARFIRE_H__
++#define __STUB__STARFIRE_H__
++#ifdef __arch64__
++#include <asm-sparc64/starfire.h>
++#endif
++#endif /* __STUB__STARFIRE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/stat.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/stat.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/stat.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/stat.h	2005-05-08 23:33:23.078961850 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__STAT_H__
++#define __STUB__STAT_H__
++#ifdef __arch64__
++#include <asm-sparc64/stat.h>
++#else
++#include <asm-sparc/stat.h>
++#endif
++#endif /* __STUB__STAT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sun4paddr.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sun4paddr.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sun4paddr.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sun4paddr.h	2005-05-08 23:33:20.801259099 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SUN4PADDR_H__
++#define __STUB__SUN4PADDR_H__
++#ifndef __arch64__
++#include <asm-sparc/sun4paddr.h>
++#endif
++#endif /* __STUB__SUN4PADDR_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sun4prom.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sun4prom.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sun4prom.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sun4prom.h	2005-05-08 23:33:20.819256750 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SUN4PROM_H__
++#define __STUB__SUN4PROM_H__
++#ifndef __arch64__
++#include <asm-sparc/sun4prom.h>
++#endif
++#endif /* __STUB__SUN4PROM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sunbpp.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sunbpp.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sunbpp.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sunbpp.h	2005-05-08 23:33:23.096959501 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SUNBPP_H__
++#define __STUB__SUNBPP_H__
++#ifdef __arch64__
++#include <asm-sparc64/sunbpp.h>
++#else
++#include <asm-sparc/sunbpp.h>
++#endif
++#endif /* __STUB__SUNBPP_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/svr4.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/svr4.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/svr4.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/svr4.h	2005-05-08 23:33:23.115957022 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SVR4_H__
++#define __STUB__SVR4_H__
++#ifdef __arch64__
++#include <asm-sparc64/svr4.h>
++#else
++#include <asm-sparc/svr4.h>
++#endif
++#endif /* __STUB__SVR4_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/swift.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/swift.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/swift.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/swift.h	2005-05-08 23:33:20.878249051 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SWIFT_H__
++#define __STUB__SWIFT_H__
++#ifndef __arch64__
++#include <asm-sparc/swift.h>
++#endif
++#endif /* __STUB__SWIFT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sysen.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sysen.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/sysen.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/sysen.h	2005-05-08 23:33:20.897246572 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__SYSEN_H__
++#define __STUB__SYSEN_H__
++#ifndef __arch64__
++#include <asm-sparc/sysen.h>
++#endif
++#endif /* __STUB__SYSEN_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/system.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/system.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/system.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/system.h	2005-05-08 23:33:23.135954412 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__SYSTEM_H__
++#define __STUB__SYSTEM_H__
++#ifdef __arch64__
++#include <asm-sparc64/system.h>
++#else
++#include <asm-sparc/system.h>
++#endif
++#endif /* __STUB__SYSTEM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/termbits.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/termbits.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/termbits.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/termbits.h	2005-05-08 23:33:23.155951802 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__TERMBITS_H__
++#define __STUB__TERMBITS_H__
++#ifdef __arch64__
++#include <asm-sparc64/termbits.h>
++#else
++#include <asm-sparc/termbits.h>
++#endif
++#endif /* __STUB__TERMBITS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/termios.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/termios.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/termios.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/termios.h	2005-05-08 23:33:23.174949323 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__TERMIOS_H__
++#define __STUB__TERMIOS_H__
++#ifdef __arch64__
++#include <asm-sparc64/termios.h>
++#else
++#include <asm-sparc/termios.h>
++#endif
++#endif /* __STUB__TERMIOS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/timer.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/timer.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/timer.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/timer.h	2005-05-08 23:33:23.193946844 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__TIMER_H__
++#define __STUB__TIMER_H__
++#ifdef __arch64__
++#include <asm-sparc64/timer.h>
++#else
++#include <asm-sparc/timer.h>
++#endif
++#endif /* __STUB__TIMER_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/timex.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/timex.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/timex.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/timex.h	2005-05-08 23:33:23.212944365 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__TIMEX_H__
++#define __STUB__TIMEX_H__
++#ifdef __arch64__
++#include <asm-sparc64/timex.h>
++#else
++#include <asm-sparc/timex.h>
++#endif
++#endif /* __STUB__TIMEX_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/tlbflush.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/tlbflush.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/tlbflush.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/tlbflush.h	2005-05-08 23:33:23.231941885 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__TLBFLUSH_H__
++#define __STUB__TLBFLUSH_H__
++#ifdef __arch64__
++#include <asm-sparc64/tlbflush.h>
++#else
++#include <asm-sparc/tlbflush.h>
++#endif
++#endif /* __STUB__TLBFLUSH_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/traps.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/traps.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/traps.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/traps.h	2005-05-08 23:33:21.033228826 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__TRAPS_H__
++#define __STUB__TRAPS_H__
++#ifndef __arch64__
++#include <asm-sparc/traps.h>
++#endif
++#endif /* __STUB__TRAPS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/tsunami.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/tsunami.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/tsunami.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/tsunami.h	2005-05-08 23:33:21.051226477 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__TSUNAMI_H__
++#define __STUB__TSUNAMI_H__
++#ifndef __arch64__
++#include <asm-sparc/tsunami.h>
++#endif
++#endif /* __STUB__TSUNAMI_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ttable.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ttable.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/ttable.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/ttable.h	2005-05-08 23:33:23.253939015 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__TTABLE_H__
++#define __STUB__TTABLE_H__
++#ifdef __arch64__
++#include <asm-sparc64/ttable.h>
++#endif
++#endif /* __STUB__TTABLE_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/turbosparc.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/turbosparc.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/turbosparc.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/turbosparc.h	2005-05-08 23:33:21.071223867 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__TURBOSPARC_H__
++#define __STUB__TURBOSPARC_H__
++#ifndef __arch64__
++#include <asm-sparc/turbosparc.h>
++#endif
++#endif /* __STUB__TURBOSPARC_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/types.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/types.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/types.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/types.h	2005-05-08 23:33:23.271936666 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__TYPES_H__
++#define __STUB__TYPES_H__
++#ifdef __arch64__
++#include <asm-sparc64/types.h>
++#else
++#include <asm-sparc/types.h>
++#endif
++#endif /* __STUB__TYPES_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/uctx.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/uctx.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/uctx.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/uctx.h	2005-05-08 23:33:23.291934056 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__UCTX_H__
++#define __STUB__UCTX_H__
++#ifdef __arch64__
++#include <asm-sparc64/uctx.h>
++#endif
++#endif /* __STUB__UCTX_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/unaligned.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/unaligned.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/unaligned.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/unaligned.h	2005-05-08 23:33:23.311931446 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__UNALIGNED_H__
++#define __STUB__UNALIGNED_H__
++#ifdef __arch64__
++#include <asm-sparc64/unaligned.h>
++#else
++#include <asm-sparc/unaligned.h>
++#endif
++#endif /* __STUB__UNALIGNED_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/unistd.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/unistd.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/unistd.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/unistd.h	2005-05-08 23:33:23.332928706 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__UNISTD_H__
++#define __STUB__UNISTD_H__
++#ifdef __arch64__
++#include <asm-sparc64/unistd.h>
++#else
++#include <asm-sparc/unistd.h>
++#endif
++#endif /* __STUB__UNISTD_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/upa.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/upa.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/upa.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/upa.h	2005-05-08 23:33:23.350926357 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__UPA_H__
++#define __STUB__UPA_H__
++#ifdef __arch64__
++#include <asm-sparc64/upa.h>
++#endif
++#endif /* __STUB__UPA_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/user.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/user.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/user.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/user.h	2005-05-08 23:33:23.368924009 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__USER_H__
++#define __STUB__USER_H__
++#ifdef __arch64__
++#include <asm-sparc64/user.h>
++#else
++#include <asm-sparc/user.h>
++#endif
++#endif /* __STUB__USER_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/utrap.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/utrap.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/utrap.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/utrap.h	2005-05-08 23:33:23.387921529 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__UTRAP_H__
++#define __STUB__UTRAP_H__
++#ifdef __arch64__
++#include <asm-sparc64/utrap.h>
++#endif
++#endif /* __STUB__UTRAP_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vac-ops.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vac-ops.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vac-ops.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vac-ops.h	2005-05-08 23:33:21.165211602 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__VAC-OPS_H__
++#define __STUB__VAC-OPS_H__
++#ifndef __arch64__
++#include <asm-sparc/vac-ops.h>
++#endif
++#endif /* __STUB__VAC-OPS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vaddrs.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vaddrs.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vaddrs.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vaddrs.h	2005-05-08 23:33:21.185208992 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__VADDRS_H__
++#define __STUB__VADDRS_H__
++#ifndef __arch64__
++#include <asm-sparc/vaddrs.h>
++#endif
++#endif /* __STUB__VADDRS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vfc_ioctls.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vfc_ioctls.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vfc_ioctls.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vfc_ioctls.h	2005-05-08 23:33:21.204206513 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__VFC_IOCTLS_H__
++#define __STUB__VFC_IOCTLS_H__
++#ifndef __arch64__
++#include <asm-sparc/vfc_ioctls.h>
++#endif
++#endif /* __STUB__VFC_IOCTLS_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vga.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vga.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vga.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vga.h	2005-05-08 23:33:23.406919050 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__VGA_H__
++#define __STUB__VGA_H__
++#ifdef __arch64__
++#include <asm-sparc64/vga.h>
++#endif
++#endif /* __STUB__VGA_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/viking.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/viking.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/viking.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/viking.h	2005-05-08 23:33:21.223204033 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__VIKING_H__
++#define __STUB__VIKING_H__
++#ifndef __arch64__
++#include <asm-sparc/viking.h>
++#endif
++#endif /* __STUB__VIKING_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/visasm.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/visasm.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/visasm.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/visasm.h	2005-05-08 23:33:23.425916571 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__VISASM_H__
++#define __STUB__VISASM_H__
++#ifdef __arch64__
++#include <asm-sparc64/visasm.h>
++#endif
++#endif /* __STUB__VISASM_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vuid_event.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vuid_event.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/vuid_event.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/vuid_event.h	2005-05-08 23:33:23.443914222 -0400
+@@ -0,0 +1,8 @@
++#ifndef __STUB__VUID_EVENT_H__
++#define __STUB__VUID_EVENT_H__
++#ifdef __arch64__
++#include <asm-sparc64/vuid_event.h>
++#else
++#include <asm-sparc/vuid_event.h>
++#endif
++#endif /* __STUB__VUID_EVENT_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/watchdog.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/watchdog.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/watchdog.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/watchdog.h	2005-05-08 23:33:23.462911743 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__WATCHDOG_H__
++#define __STUB__WATCHDOG_H__
++#ifdef __arch64__
++#include <asm-sparc64/watchdog.h>
++#endif
++#endif /* __STUB__WATCHDOG_H__ */
+diff -Naur linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/winmacro.h linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/winmacro.h
+--- linux-libc-headers-2.6.11.2-ORIG/include/asm-sparc-biarch/winmacro.h	1969-12-31 19:00:00.000000000 -0500
++++ linux-libc-headers-2.6.11.2/include/asm-sparc-biarch/winmacro.h	2005-05-08 23:33:21.259199336 -0400
+@@ -0,0 +1,6 @@
++#ifndef __STUB__WINMACRO_H__
++#define __STUB__WINMACRO_H__
++#ifndef __arch64__
++#include <asm-sparc/winmacro.h>
++#endif
++#endif /* __STUB__WINMACRO_H__ */
+

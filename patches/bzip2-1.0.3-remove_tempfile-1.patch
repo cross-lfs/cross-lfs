@@ -1,0 +1,46 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2006-02-19
+Initial Package Version: 1.0.3
+Origin: Jim Gifford
+Upstream Status: Sent
+Description: Removes Dependency of tempfile
+ 
+--- bzip2-1.0.3/bzdiff.orig	2004-10-09 11:29:42.000000000 +0000
++++ bzip2-1.0.3/bzdiff	2006-02-20 07:43:08.000000000 +0000
+@@ -37,10 +37,6 @@
+ 	echo "Usage: $prog [${comp}_options] file [file]"
+ 	exit 1
+ fi
+-tmp=`tempfile -d /tmp -p bz` || {
+-      echo 'cannot create a temporary file' >&2
+-      exit 1
+-}
+ set $FILES
+ if test $# -eq 1; then
+ 	FILE=`echo "$1" | sed 's/.bz2$//'`
+@@ -53,19 +49,20 @@
+                 case "$2" in
+ 	        *.bz2)
+ 			F=`echo "$2" | sed 's|.*/||;s|.bz2$||'`
+-                        bzip2 -cdfq "$2" > $tmp
+-                        bzip2 -cdfq "$1" | $comp $OPTIONS - $tmp
++                        bzip2 -cdfq "$2"  > /tmp/"$F".$$
++                        bzip2 -cdfq "$1" | $comp $OPTIONS - /tmp/"$F".$$ | sed -e "s|Files - and /tmp/"$F".$$|Files $1 and $2|g"
+                         STAT="$?"
+-			/bin/rm -f $tmp;;
++			/bin/rm -f /tmp/"$F".$$;;
+ 
+-                *)      bzip2 -cdfq "$1" | $comp $OPTIONS - "$2"
++                *)      bzip2 -cdfq "$1" | $comp $OPTIONS - "$2" | sed -e "s|Files - and /tmp/"$F".$$|Files $1 and $2|g"
+                         STAT="$?";;
+                 esac;;
+         *)      case "$2" in
+ 	        *.bz2)
+                         bzip2 -cdfq "$2" | $comp $OPTIONS "$1" -
+                         STAT="$?";;
+-                *)      $comp $OPTIONS "$1" "$2"
++                *)      $comp $OPTIONS "$1" "$2" | sed -e "s|Files - and /tmp/"$F".$$|Files $1 and $2|g"
++
+                         STAT="$?";;
+                 esac;;
+ 	esac
