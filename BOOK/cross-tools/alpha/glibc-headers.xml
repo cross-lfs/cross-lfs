@@ -22,13 +22,13 @@
   <sect2 role="installation">
     <title>Installation of Glibc Headers</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='s1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='s2'])"/>
+    <para os="s1">The following sed removes a dependency of gcc 3.4.x from
+    the glibc we are using in cross-lfs. The reason we are changing it is
+    because this only installs the headers, no compiling takes place. In the
+    next glibc chapter, we use the gcc that's build right after this chapter.</para>
+ 	
+<screen os="s2"><userinput>cp configure{,.orig}
+sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/glibc.xml"
@@ -42,74 +42,114 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='dd'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='de'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='df'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='dg'])"/>
+<screen os="de"><userinput>echo "libc_cv_forced_unwind=yes" &gt; config.cache
+echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache
+echo "libc_cv_mlong_double_128=yes" &gt;&gt; config.cache
+echo "ibc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='s3'])"/>
+<screen os="s3"><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
+   --host=${LFS_TARGET} --build=${LFS_HOST} \
+   --disable-sanity-checks --enable-kernel=2.6.0 \
+   --with-headers=/tools/include --cache-file=config.cache \
+   --with-binutils=/cross-tools/${LFS_TARGET}/bin</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='e1'])"/>
+    <warning os="e1">
+      <para><emphasis>Any</emphasis> error message you see about nptl at this point
+      can safely be ignored.</para>
+   </warning>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='ca'])"/>
+    <variablelist os="ca">
+       <title>The meaning of the configure options:</title>
+ 	
+          <varlistentry os="ca1">
+             <term><parameter>CC=gcc</parameter></term>
+             <listitem>
+                <para>Tells GLIBC to use the hosts GCC compiler.</para>
+             </listitem>
+          </varlistentry>
+ 	
+         <varlistentry os="ca2">
+            <term><parameter>--prefix=/tools</parameter></term>
+            <listitem>
+               <para>This tells the configure script to prepare to install the
+ 	          package in the <filename class="directory">/tools</filename>
+ 	          directory.</para>
+             </listitem>
+         </varlistentry>
+	
+         <varlistentry os="ca3">
+            <term><parameter>--build=${LFS_HOST}</parameter></term>
+            <listitem>
+               <para>When used with --host, this creates a cross-architecture
+                  executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
+            </listitem>
+        </varlistentry>
+ 	
+        <varlistentry os="ca4">
+           <term><parameter>--host=${LFS_TARGET}</parameter></term>
+           <listitem>
+               <para>When used with --build, this creates a cross-architecture
+                  executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
+           </listitem>
+        </varlistentry>
+ 	
+       <varlistentry os="ca5">
+          <term><parameter>--disable-sanity-checks</parameter></term>
+          <listitem>
+             <para>This switch disables any checks that are in place.</para>
+           </listitem>
+       </varlistentry>
+ 	
+       <varlistentry os="ca6">
+            <term><parameter>--enable-kernel=2.6.0</parameter></term>
+            <listitem>
+               <para>This tells Glibc to compile the library with support
+               for 2.6.x Linux kernels.</para>
+            </listitem>
+       </varlistentry>
+ 	
+       <varlistentry os="ca7">
+           <term><parameter>--with-headers=/tools/include</parameter></term>
+           <listitem>
+              <para>This tells Glibc to compile itself against the headers
+              recently installed to the <filename class="directory">/tools</filename>
+              directory, so that it knows exactly what features the kernel has
+              and can optimize itself accordingly.</para>
+           </listitem>
+       </varlistentry>
+ 	
+       <varlistentry os="ca8">
+           <term><parameter>--with-binutils=/cross-tools/${LFS_TARGET}/bin</parameter></term>
+           <listitem>
+              <para>This tells GLIBC to use the binutils for our specific target architecture.</para>
+            </listitem>
+       </varlistentry>
+ 	
+       </variablelist>
+ 	
+   <para os="cb">Now, install the headers:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cb'])"/>
+<screen os="cd"><userinput>make install-headers</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cd'])"/>
+   <para os="ce">Some files aren't installed by the above command, then
+    we will copy the header files we need:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='ce'])"/>
+   <para os="cf">First we will copy a common file over to <filename 
+   class="directory">/tools/include</filename>:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cf'])"/>
+<screen os="cg"><userinput>install -d /tools/include/bits
+cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cg'])"/>
+   <para os="ch">Now we will create a blank stub file:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='ch'])"/>
+<screen os="ci"><userinput>touch /tools/include/gnu/stubs.h</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='ci'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cj'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='ck'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cl'])"/>
-
+   <para os="cj">For NPTL we use the following command:</para>
+   
 <screen><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/alpha/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
 
   </sect2>
