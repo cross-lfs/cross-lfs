@@ -35,15 +35,17 @@
 
     <para os="a">Compile the package:</para>
 
-<screen os="b"><userinput>make EXTRAS="extras/floppy extras/cdrom_id extras/firmware extras/scsi_id extras/volume_id \
-            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/path_id" udevdir=/dev</userinput></screen>
+<screen os="b"><userinput>make EXTRAS="extras/floppy extras/cdrom_id extras/firmware \
+    extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id \
+    extras/path_id" udevdir=/dev</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
-      <term><parameter>EXTRAS="extras/floppy extras/cdrom_id extras/firmware extras/scsi_id extras/volume_id \
-            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/path_id"</parameter></term>
+      <term><parameter>EXTRAS="extras/floppy extras/cdrom_id extras/firmware
+      extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id
+      extras/dasd_id extras/path_id"</parameter></term>
         <listitem>
           <para>This builds the helper applications that are used with
           udev. The helper programs assist in correct handling of devices.</para>
@@ -64,8 +66,9 @@
     <para os="g">Install the package:</para>
 
 <screen os="h"><userinput>make DESTDIR=/ \
-    EXTRAS="extras/floppy extras/cdrom_id extras/firmware extras/scsi_id extras/volume_id \
-            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/path_id" udevdir=/dev install</userinput></screen>
+    EXTRAS="extras/floppy extras/cdrom_id extras/firmware extras/scsi_id \
+    extras/volume_id extras/ata_id extras/usb_id extras/edd_id extras/dasd_id \
+    extras/path_id" udevdir=/dev install</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the make parameter:</title>
@@ -83,12 +86,13 @@
 
     <para os="i">Install necessary helpers.</para>
 
-<screen os="j"><userinput>install -D extras/eventrecorder.sh /lib/udev/eventrecorder.sh</userinput></screen>
+<screen os="j"><userinput>install -Dv extras/eventrecorder.sh /lib/udev</userinput></screen>
 
     <para os="l">Install the documentation that explains how to create
     Udev rules:</para>
 
-<screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
+<screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html \
+    /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
 
     <para os="n">Create a directory for storing firmware that can be
     loaded by <command>udev</command>:</para>
