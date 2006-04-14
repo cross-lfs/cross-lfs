@@ -8,7 +8,7 @@ all: help
 
 install: device_dirs device_links rules scripts boot mknod_devices
 
-install-minimal: install-netboot
+install-minimal: install-netboot boot
 
 install-netboot: device_dirs device_links rules-netboot mknod_devices
 
