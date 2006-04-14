@@ -2,6 +2,7 @@ Submitted by: Ryan Oliver <ryan.oliver@pha.com.au>
 Date: 2005-05-02
 Initial Package Version: 4.0.1
 Origin: Ryan Oliver (issue reported by Erik-Jan Post)
+        Rediffed against 4.1.0 by Chris Staub
 Upstream Status: N/A
 Description:
   Removes standard_exec_prefix_2 from library search path when cross-compiling.
@@ -17,10 +18,10 @@ Description:
   This avoids the possibility of linking in libraries from the host if they
   exist under those directories.
  
-diff -Naur gcc-4.0.1.orig/gcc/gcc.c gcc-4.0.1/gcc/gcc.c
---- gcc-4.0.1.orig/gcc/gcc.c	2005-06-06 19:20:29.000000000 +0000
-+++ gcc-4.0.1/gcc/gcc.c	2005-08-27 21:16:02.000000000 +0000
-@@ -3797,16 +3797,22 @@
+diff -Naur gcc-4.1.0.orig/gcc/gcc.c gcc-4.1.0/gcc/gcc.c
+--- gcc-4.1.0.orig/gcc/gcc.c	2006-01-21 13:29:08.000000000 -0500
++++ gcc-4.1.0/gcc/gcc.c	2006-02-28 22:20:05.000000000 -0500
+@@ -3818,16 +3818,22 @@
  	      PREFIX_PRIORITY_LAST, 2, 0);
    add_prefix (&exec_prefixes, standard_exec_prefix, "BINUTILS",
  	      PREFIX_PRIORITY_LAST, 2, 0);
