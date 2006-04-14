@@ -38,8 +38,8 @@
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-    <para os="s1">The following sed fixes a build issue with Glibc, this will prevent nscd from trying
-to link to libraries, that don't exist:</para>
+    <para os="s1">The following sed fixes a build issue with Glibc. This will
+    prevent nscd from trying to link to libraries that don't exist:</para>
 
 <screen os="s2"><userinput>cp nscd/Makefile{,.orig}
 sed -e "/nscd_stat.o: sysincludes = # nothing/d" nscd/Makefile.orig > nscd/Makefile</userinput></screen>

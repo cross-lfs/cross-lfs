@@ -10,27 +10,20 @@
 
   <title>Introduction</title>
 
-  <para>This chapter shows how to complete the temporary tools to create
-  a minimal system that will be used to boot the target machine and to build
-  the final system packages.</para>
+  <para>This chapter shows how to complete the build of temporary tools to
+  create a minimal system that will be used to boot the target machine and to
+  build the final system packages.</para>
 
   <para>There are a few additional packages that will need to be
-installed to allow you to boot the minimal system. Most of these
-packages will be installed onto the root or in /usr on the LFS
-partition ($LFS/bin, $LFS/usr/lib, etc...), rather than /tools.
-However, since you are still installing these packages from the host
-system, these packages will need to be installed using the "DESTDIR"
-option with make.</para>
-
-<para>More detailed info about DESTDIR needed here...</para>
-
-<para>Also, since you will need to create directories and install
-packages in them in $LFS (and of course don't want to use root to do
-this, to avoid damage to the host system), outside of /tools and
-/cross-tools, you will need to temporarily change the ownership of
-$LFS to the <systemitem class="username">lfs</systemitem> user. Run
-the following command as <systemitem
-class="username">root</systemitem>:</para>
+  installed to allow you to boot the minimal system. Some of these
+  packages will be installed onto the root or in /usr on the LFS
+  partition ($LFS/bin, $LFS/usr/lib, etc...), rather than /tools, using the
+  "DESTDIR" option with make. This will require the
+  <systemitem class="username">lfs</systemitem> user to have write access to
+  the rest of the $LFS partition, so you will need to temporarily change the
+  ownership of $LFS to the <systemitem class="username">lfs</systemitem> user.
+  Run the following command as <systemitem
+  class="username">root</systemitem>:</para>
 
 <screen><userinput>chown -v lfs $LFS</userinput></screen>
 
