@@ -60,6 +60,11 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
 <screen os="p4"><userinput>patch -Np1 -i ../&util-linux-gcc4_fixes-patch;</userinput></screen>
 
+    <para os="p5">Util-linux does not compute the checksum of a sun disklabel
+    properly with gcc-&gcc-version;. The following patch fixes this issue:</para>
+
+<screen os="p6"><userinput>patch -Np1 -i ../&util-linux-gcc41_sun_disklabel_fixes.patch;</userinput></screen>
+
     <para os="a">Prepare Util-linux for compilation:</para>
 
 <screen os="b"><userinput>./configure</userinput></screen>
