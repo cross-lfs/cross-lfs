@@ -31,6 +31,11 @@
   <sect2 role="installation">
     <title>Installation of the kernel</title>
 
+    <para os="p1">Util-linux does not compute the checksum of a sun disklabel
+    properly with gcc-&gcc-version;. The following patch fixes this issue:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&linux-sun_disklabel_fix.patch;</userinput></screen>
+
     <para os="a">Building the kernel involves a few steps&mdash;configuration,
     compilation, and installation. Read the <filename>README</filename>
     file in the kernel source tree for alternative methods to the way this
