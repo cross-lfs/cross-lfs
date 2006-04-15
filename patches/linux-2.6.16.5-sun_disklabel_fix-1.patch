@@ -1,0 +1,19 @@
+Submitted By: Joe Ciccone <joeciccone at crazyeyesoft dot com>
+Date: 2006-04-14
+Initial Package Version: 2.6.16
+Upstream Status: Sent
+Origin: Joe Ciccone
+Description: This patch fixes fdisk so that it can properly calculate the
+             checksum of a sun disklabel
+
+--- linux-2.6.16.orig/fs/partitions/sun.c	2006-04-14 18:12:32.000000000 -0400
++++ linux-2.6.16/fs/partitions/sun.c	2006-04-14 18:13:14.000000000 -0400
+@@ -61,7 +61,7 @@
+ 	}
+ 	/* Look at the checksum */
+ 	ush = ((__be16 *) (label+1)) - 1;
+-	for (csum = 0; ush >= ((__be16 *) label);)
++	while (ush < (__be16 *) label)
+ 		csum ^= *ush--;
+ 	if (csum) {
+ 		printk("Dev %s Sun disklabel: Csum bad, label corrupted\n",

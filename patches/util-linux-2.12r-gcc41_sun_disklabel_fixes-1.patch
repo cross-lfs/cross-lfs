@@ -1,0 +1,28 @@
+Submitted By: Joe Ciccone <joeciccone at crazyeyesoft dot com>
+Date: 2006-04-14
+Initial Package Version: 2.12r
+Upstream Status: Sent
+Origin: Joe Ciccone
+Description: This patch fixes fdisk so that it can properly calculate the
+             checksum of a sun disklabel.
+
+--- util-linux-2.12r.orig/fdisk/fdisksunlabel.c	2004-12-22 10:36:24.000000000 -0500
++++ util-linux-2.12r/fdisk/fdisksunlabel.c	2006-04-14 17:50:53.000000000 -0400
+@@ -118,7 +118,7 @@
+ int
+ check_sun_label(void) {
+ 	unsigned short *ush;
+-	int csum;
++	int csum = 0;
+ 
+ 	if (sunlabel->magic != SUN_LABEL_MAGIC &&
+ 	    sunlabel->magic != SUN_LABEL_MAGIC_SWAPPED) {
+@@ -128,7 +128,7 @@
+ 	}
+ 	other_endian = (sunlabel->magic == SUN_LABEL_MAGIC_SWAPPED);
+ 	ush = ((unsigned short *) (sunlabel + 1)) - 1;
+-	for (csum = 0; ush >= (unsigned short *)sunlabel;) csum ^= *ush--;
++	while (ush < (unsigned short *)sunlabel) csum ^= *ush--;
+ 	if (csum) {
+ 		fprintf(stderr,_("Detected sun disklabel with wrong checksum.\n"
+ 				"Probably you'll have to set all the values,\n"
