@@ -22,12 +22,6 @@
   <sect2 role="installation">
     <title>Installation of Bash</title>
 
-    <para os="aa">Fix a minor issue during the build when cross-compiling:</para>
-
-<screen os="ab"><userinput>cp -v Makefile.in Makefile.in.orig
-sed -e "s@size \$(Program)@${LFS_TARGET}-&amp;@g" \
-   Makefile.in.orig > Makefile.in</userinput></screen>
-
     <para os="c1">Remove a test that causes the build to fail:</para>
 
 <screen os="c2"><userinput>echo "ac_cv_func_setvbuf_reversed=no" >> config.cache</userinput></screen>
