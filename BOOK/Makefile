@@ -2,7 +2,7 @@ BASEDIR=~/cross-lfs-book
 DUMPDIR=~/cross-lfs-commands
 DLLISTDIR=~/cross-lfs-dllist
 CHUNK_QUIET=1
-XSLROOTDIR=/usr/share/xml/docbook/xsl-stylesheets-current
+XSLROOTDIR=/usr/share/xml/docbook/xsl-stylesheets-1.69.1
 ARCH=x86 x86_64 x86_64-64 sparc sparc64 sparc64-64 mips mips64 mips64-64 ppc ppc64 alpha
 
 # HTML Rendering Chunked
