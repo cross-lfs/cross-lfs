@@ -48,15 +48,10 @@ case "$1" in
 
 	# configure all devices
 	/sbin/udevtrigger
+	
+	# this replaces the old loop, exits after all devices are done
+	/sbin/udevsettle
 
-        # until we know how to do better, just wait for _all_ events to finish  	 	 
-	loop=300 		 
-	while test -d /dev/.udev/queue; do 		 
-	    sleep 0.1; 		 
-	    test "$loop" -gt 0 || break 		 
-	    loop=$(($loop - 1)) 		 
-	done 		 
-  		 
 	echo_ok
 	;;
 
