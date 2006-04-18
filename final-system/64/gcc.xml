@@ -21,10 +21,18 @@
   <sect2 role="installation">
     <title>Installation of GCC</title>
 
-    <para os="p1">Apply the following patch to so that linking to /lib64 is now set
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <para os="p3">Apply the following patch to so that linking to /lib64 is now set
     to /lib.</para>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&gcc-pure64-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&gcc-pure64-patch;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc.xml"
