@@ -35,7 +35,7 @@
     <title>Installation of GCC</title>
 
     <para os="p1">The following patch fixes an issue where gcc doesn't generate
-    some code properly.</para>
+    some code properly:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&gcc-fold_const-patch;</userinput></screen>
 
@@ -48,9 +48,9 @@
 
     <para os="e1">GCC provides a <command>gccbug</command> script which detects at
     compile time whether mktemp is present, and hardcodes the result in a test.
-    This will cause the script to fall back to using less random names for
-    temporary files.  We will be installing mktemp later, so the following sed
-    will simulate its presence.</para>
+    If mktemp is not found, the script will fall back to using less
+    random names for temporary files.  We will be installing mktemp
+    later, so the following sed will simulate its presence:</para>
 
 <screen os="e2"><userinput>sed -i 's/@have_mktemp_command@/yes/' gcc/gccbug.in</userinput></screen>
 

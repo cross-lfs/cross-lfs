@@ -39,7 +39,7 @@
     reassuring, if not essential, to know that the most important tools are
     working properly.</para>
 
-    <para os="c1">First, fix a syntax error in the configure script.</para>
+    <para os="c1">First, fix a syntax error in the configure script:</para>
 
 <screen os="c2"><userinput>cd unix
 sed -i "s/relid'/relid/" configure</userinput></screen>
@@ -56,7 +56,8 @@ sed -i "s/relid'/relid/" configure</userinput></screen>
 
 <screen os="h"><userinput>make install</userinput></screen>
 
-    <para os="i">Now we will install the TCL headers into /tools.</para>
+    <para os="i">Tcl's private headers files are needed for the next
+    package, Expect. Install them into /tools:</para>
 
 <screen os="j"><userinput>make install-private-headers</userinput></screen>
 
