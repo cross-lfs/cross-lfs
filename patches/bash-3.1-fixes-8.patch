@@ -3,11 +3,27 @@ Date: 2006-04-11
 Initial Package Version: 3.1
 Origin: http://ftp.gnu.org/gnu/bash/bash-3.1-patches/
 Upstream Status: From Upstream
-Description: Contains patches 001-016 from upstream
+Description: Contains patches 001-017 from upstream
 
+diff -Naur bash-3.1.orig/arrayfunc.c bash-3.1/arrayfunc.c
+--- bash-3.1.orig/arrayfunc.c	2005-07-04 17:25:58.000000000 -0700
++++ bash-3.1/arrayfunc.c	2006-04-19 15:59:29.000000000 -0700
+@@ -592,11 +592,7 @@
+   exp = (char *)xmalloc (len);
+   strncpy (exp, s, len - 1);
+   exp[len - 1] = '\0';
+-#if 0
+-  t = expand_string_to_string (exp, 0);
+-#else 
+-  t = expand_string_to_string (exp, Q_DOUBLE_QUOTES);
+-#endif
++  t = expand_arith_string (exp, 0);
+   this_command_name = (char *)NULL;
+   val = evalexp (t, &expok);
+   free (t);
 diff -Naur bash-3.1.orig/doc/bash.1 bash-3.1/doc/bash.1
---- bash-3.1.orig/doc/bash.1	2005-10-12 11:40:52.000000000 -0400
-+++ bash-3.1/doc/bash.1	2006-04-11 11:36:54.702393214 -0400
+--- bash-3.1.orig/doc/bash.1	2005-10-12 08:40:52.000000000 -0700
++++ bash-3.1/doc/bash.1	2006-04-19 15:58:34.000000000 -0700
 @@ -6,12 +6,12 @@
  .\"	Case Western Reserve University
  .\"	chet@po.cwru.edu
@@ -87,8 +103,8 @@ diff -Naur bash-3.1.orig/doc/bash.1 bash-3.1/doc/bash.1
  .PP
  If
 diff -Naur bash-3.1.orig/doc/bashref.texi bash-3.1/doc/bashref.texi
---- bash-3.1.orig/doc/bashref.texi	2005-10-03 15:07:21.000000000 -0400
-+++ bash-3.1/doc/bashref.texi	2006-04-11 11:36:54.709392515 -0400
+--- bash-3.1.orig/doc/bashref.texi	2005-10-03 12:07:21.000000000 -0700
++++ bash-3.1/doc/bashref.texi	2006-04-19 15:58:34.000000000 -0700
 @@ -961,8 +961,8 @@
  (see the description of @code{shopt} in @ref{Bash Builtins})
  is enabled, the match is performed without regard to the case
@@ -160,8 +176,8 @@ diff -Naur bash-3.1.orig/doc/bashref.texi bash-3.1/doc/bashref.texi
  expanded and before they are executed.  The value of the @env{PS4}
  variable is expanded and the resultant value is printed before
 diff -Naur bash-3.1.orig/doc/version.texi bash-3.1/doc/version.texi
---- bash-3.1.orig/doc/version.texi	2005-09-20 14:52:56.000000000 -0400
-+++ bash-3.1/doc/version.texi	2006-04-11 11:36:54.710392415 -0400
+--- bash-3.1.orig/doc/version.texi	2005-09-20 11:52:56.000000000 -0700
++++ bash-3.1/doc/version.texi	2006-04-19 15:58:34.000000000 -0700
 @@ -2,9 +2,9 @@
  Copyright (C) 1988-2005 Free Software Foundation, Inc.
  @end ignore
@@ -178,8 +194,8 @@ diff -Naur bash-3.1.orig/doc/version.texi bash-3.1/doc/version.texi
 +@set UPDATED 30 December 2005
 +@set UPDATED-MONTH December 2005
 diff -Naur bash-3.1.orig/jobs.c bash-3.1/jobs.c
---- bash-3.1.orig/jobs.c	2005-11-11 23:13:27.000000000 -0500
-+++ bash-3.1/jobs.c	2006-04-11 11:36:54.713392115 -0400
+--- bash-3.1.orig/jobs.c	2005-11-11 20:13:27.000000000 -0800
++++ bash-3.1/jobs.c	2006-04-19 15:58:34.000000000 -0700
 @@ -619,8 +619,11 @@
  	   * once in the parent and once in each child.  This is where
  	   * the parent gives it away.
@@ -285,8 +301,8 @@ diff -Naur bash-3.1.orig/jobs.c bash-3.1/jobs.c
    termination_state = last_command_exit_value;
  
 diff -Naur bash-3.1.orig/lib/glob/glob.c bash-3.1/lib/glob/glob.c
---- bash-3.1.orig/lib/glob/glob.c	2005-03-24 12:42:27.000000000 -0500
-+++ bash-3.1/lib/glob/glob.c	2006-04-11 11:37:12.868577740 -0400
+--- bash-3.1.orig/lib/glob/glob.c	2005-03-24 09:42:27.000000000 -0800
++++ bash-3.1/lib/glob/glob.c	2006-04-19 15:58:34.000000000 -0700
 @@ -360,6 +360,7 @@
    count = lose = skip = 0;
  
@@ -305,8 +321,8 @@ diff -Naur bash-3.1.orig/lib/glob/glob.c bash-3.1/lib/glob/glob.c
  	  lastlink = lastlink->next;
  	  FREE (tmplink);
 diff -Naur bash-3.1.orig/lib/glob/sm_loop.c bash-3.1/lib/glob/sm_loop.c
---- bash-3.1.orig/lib/glob/sm_loop.c	2005-10-16 21:21:04.000000000 -0400
-+++ bash-3.1/lib/glob/sm_loop.c	2006-04-11 11:37:09.500914295 -0400
+--- bash-3.1.orig/lib/glob/sm_loop.c	2005-10-16 18:21:04.000000000 -0700
++++ bash-3.1/lib/glob/sm_loop.c	2006-04-19 15:58:34.000000000 -0700
 @@ -638,12 +638,13 @@
    CHAR *psub;			/* pointer to sub-pattern */
    CHAR *pnext;			/* pointer to next sub-pattern */
@@ -361,8 +377,8 @@ diff -Naur bash-3.1.orig/lib/glob/sm_loop.c bash-3.1/lib/glob/sm_loop.c
  	}
        return (FNM_NOMATCH);
 diff -Naur bash-3.1.orig/lib/readline/display.c bash-3.1/lib/readline/display.c
---- bash-3.1.orig/lib/readline/display.c	2005-11-30 14:05:02.000000000 -0500
-+++ bash-3.1/lib/readline/display.c	2006-04-11 11:36:54.716391815 -0400
+--- bash-3.1.orig/lib/readline/display.c	2005-11-30 11:05:02.000000000 -0800
++++ bash-3.1/lib/readline/display.c	2006-04-19 15:58:34.000000000 -0700
 @@ -1983,11 +1983,15 @@
       int pchar;
  {
@@ -407,8 +423,8 @@ diff -Naur bash-3.1.orig/lib/readline/display.c bash-3.1/lib/readline/display.c
  }
  
 diff -Naur bash-3.1.orig/lib/readline/readline.c bash-3.1/lib/readline/readline.c
---- bash-3.1.orig/lib/readline/readline.c	2005-07-04 22:29:35.000000000 -0400
-+++ bash-3.1/lib/readline/readline.c	2006-04-11 11:36:54.717391715 -0400
+--- bash-3.1.orig/lib/readline/readline.c	2005-07-04 19:29:35.000000000 -0700
++++ bash-3.1/lib/readline/readline.c	2006-04-19 15:58:34.000000000 -0700
 @@ -282,6 +282,7 @@
  {
    FREE (rl_prompt);
@@ -418,8 +434,8 @@ diff -Naur bash-3.1.orig/lib/readline/readline.c bash-3.1/lib/readline/readline.
    rl_visible_prompt_length = rl_expand_prompt (rl_prompt);
    return 0;
 diff -Naur bash-3.1.orig/lib/readline/terminal.c bash-3.1/lib/readline/terminal.c
---- bash-3.1.orig/lib/readline/terminal.c	2005-11-12 20:46:54.000000000 -0500
-+++ bash-3.1/lib/readline/terminal.c	2006-04-11 11:36:54.718391615 -0400
+--- bash-3.1.orig/lib/readline/terminal.c	2005-11-12 17:46:54.000000000 -0800
++++ bash-3.1/lib/readline/terminal.c	2006-04-19 15:58:34.000000000 -0700
 @@ -122,7 +122,7 @@
  static char *_rl_visible_bell;
  
@@ -440,8 +456,8 @@ diff -Naur bash-3.1.orig/lib/readline/terminal.c bash-3.1/lib/readline/terminal.
      _rl_screenheight = rows;
    if (cols > 0)
 diff -Naur bash-3.1.orig/parse.y bash-3.1/parse.y
---- bash-3.1.orig/parse.y	2005-11-11 23:14:18.000000000 -0500
-+++ bash-3.1/parse.y	2006-04-11 11:36:54.722391216 -0400
+--- bash-3.1.orig/parse.y	2005-11-11 20:14:18.000000000 -0800
++++ bash-3.1/parse.y	2006-04-19 15:58:34.000000000 -0700
 @@ -2716,6 +2716,7 @@
  #define P_ALLOWESC	0x02
  #define P_DQUOTE	0x04
@@ -592,19 +608,19 @@ diff -Naur bash-3.1.orig/parse.y bash-3.1/parse.y
  }
  
 diff -Naur bash-3.1.orig/patchlevel.h bash-3.1/patchlevel.h
---- bash-3.1.orig/patchlevel.h	2005-07-20 13:58:20.000000000 -0400
-+++ bash-3.1/patchlevel.h	2006-04-11 11:37:12.869577641 -0400
+--- bash-3.1.orig/patchlevel.h	2005-07-20 10:58:20.000000000 -0700
++++ bash-3.1/patchlevel.h	2006-04-19 15:59:29.000000000 -0700
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 16
++#define PATCHLEVEL 17
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-3.1.orig/subst.c bash-3.1/subst.c
---- bash-3.1.orig/subst.c	2005-10-24 09:51:13.000000000 -0400
-+++ bash-3.1/subst.c	2006-04-11 11:36:54.727390716 -0400
+--- bash-3.1.orig/subst.c	2005-10-24 06:51:13.000000000 -0700
++++ bash-3.1/subst.c	2006-04-19 15:59:29.000000000 -0700
 @@ -2187,7 +2187,7 @@
    if (mklocal && variable_context)
      {
@@ -614,7 +630,57 @@ diff -Naur bash-3.1.orig/subst.c bash-3.1/subst.c
          v = make_local_array_variable (name);
        v = assign_array_var_from_string (v, value, flags);
      }
-@@ -6795,6 +6795,12 @@
+@@ -2575,6 +2575,13 @@
+   return (expand_string_to_string_internal (string, quoted, expand_string_assignment));
+ }
+ 
++char *
++expand_arith_string (string, quoted)
++     char *string;
++{
++  return (expand_string_if_necessary (string, quoted, expand_string));
++}
++
+ #if defined (COND_COMMAND)
+ /* Just remove backslashes in STRING.  Returns a new string. */
+ char *
+@@ -5248,7 +5255,7 @@
+   else
+     t = (char *)0;
+ 
+-  temp1 = expand_string_if_necessary (substr, Q_DOUBLE_QUOTES, expand_string);
++  temp1 = expand_arith_string (substr, Q_DOUBLE_QUOTES);
+   *e1p = evalexp (temp1, &expok);
+   free (temp1);
+   if (expok == 0)
+@@ -5293,7 +5300,7 @@
+     {
+       t++;
+       temp2 = savestring (t);
+-      temp1 = expand_string_if_necessary (temp2, Q_DOUBLE_QUOTES, expand_string);
++      temp1 = expand_arith_string (temp2, Q_DOUBLE_QUOTES);
+       free (temp2);
+       t[-1] = ':';
+       *e2p = evalexp (temp1, &expok);
+@@ -6435,7 +6442,7 @@
+ 	  temp2[t_index] = '\0';
+ 
+ 	  /* Expand variables found inside the expression. */
+-	  temp1 = expand_string_if_necessary (temp2, Q_DOUBLE_QUOTES, expand_string);
++	  temp1 = expand_arith_string (temp2, Q_DOUBLE_QUOTES);
+ 	  free (temp2);
+ 
+ arithsub:
+@@ -6477,7 +6484,7 @@
+       zindex = t_index;
+ 
+        /* Do initial variable expansion. */
+-      temp1 = expand_string_if_necessary (temp, Q_DOUBLE_QUOTES, expand_string);
++      temp1 = expand_arith_string (temp, Q_DOUBLE_QUOTES);
+ 
+       goto arithsub;
+ 
+@@ -6795,6 +6802,12 @@
  	  if (temp && *temp && t_index > 0)
  	    {
  	      temp1 = bash_tilde_expand (temp, tflag);
@@ -627,9 +693,22 @@ diff -Naur bash-3.1.orig/subst.c bash-3.1/subst.c
  	      free (temp);
  	      temp = temp1;
  	      sindex += t_index;
+diff -Naur bash-3.1.orig/subst.h bash-3.1/subst.h
+--- bash-3.1.orig/subst.h	2004-11-07 12:12:28.000000000 -0800
++++ bash-3.1/subst.h	2006-04-19 15:59:29.000000000 -0700
+@@ -151,6 +151,9 @@
+ extern char *expand_string_unsplit_to_string __P((char *, int));
+ extern char *expand_assignment_string_to_string __P((char *, int));
+ 
++/* Expand an arithmetic expression string */
++extern char *expand_arith_string __P((char *, int));
++
+ /* De-quoted quoted characters in STRING. */
+ extern char *dequote_string __P((char *));
+ 
 diff -Naur bash-3.1.orig/variables.c bash-3.1/variables.c
---- bash-3.1.orig/variables.c	2005-11-12 21:22:37.000000000 -0500
-+++ bash-3.1/variables.c	2006-04-11 11:36:54.731390316 -0400
+--- bash-3.1.orig/variables.c	2005-11-12 18:22:37.000000000 -0800
++++ bash-3.1/variables.c	2006-04-19 15:58:34.000000000 -0700
 @@ -860,9 +860,11 @@
  {
    char val[INT_STRLEN_BOUND(int) + 1], *v;
