@@ -29,28 +29,30 @@
     href="../x86/linux-headers.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen><userinput>install -dv /usr/include/{asm,asm-sparc64,asm-sparc,linux,mtd,net,scsi,sound}
-cp -av include/asm-sparc64/* /usr/include/asm-sparc64
-cp -av include/asm-sparc/* /usr/include/asm-sparc
-cp -av include/asm-sparc-biarch/* /usr/include/asm
-cp -av include/linux/* /usr/include/linux
-cp -av include/mtd/* /usr/include/mtd
-cp -av include/net/* /usr/include/net
-cp -av include/scsi/* /usr/include/scsi
-cp -av include/sound/* /usr/include/sound</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/linux-headers.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen><userinput>chown -Rv root:root /usr/include/{asm,asm-sparc,asm-sparc64,linux,mtd,scsi}</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/linux-headers.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
+
+<screen><userinput>install -dv /usr/include/{asm-sparc64,asm-sparc}
+cp -av include/asm-sparc64/* /usr/include/asm-sparc64
+cp -av include/asm-sparc/* /usr/include/asm-sparc</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/linux-headers.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
-<screen><userinput>find /usr/include/{asm,asm-sparc,asm-sparc64,linux,mtd,scsi} -type d -exec chmod -v 755 {} \;
-find /usr/include/{asm,asm-sparc,asm-sparc64,linux,mtd,scsi} -type f -exec chmod -v 644 {} \;</userinput></screen>
+<screen><userinput>chown -Rv root:root /usr/include/{asm,asm-generic,asm-sparc,asm-sparc64,linux,mtd,scsi}</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../x86/linux-headers.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
+
+<screen><userinput>find /usr/include/{asm,asm-generic,asm-sparc,asm-sparc64,linux,mtd,scsi} -type d -exec chmod -v 755 {} \;
+find /usr/include/{asm,asm-generic,asm-sparc,asm-sparc64,linux,mtd,scsi} -type f -exec chmod -v 644 {} \;</userinput></screen>
 
   </sect2>
 

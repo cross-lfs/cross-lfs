@@ -43,25 +43,29 @@
     decided to come up with our own santized headers and placed them in
     the book.</para>
 
-    <para os="b">Install the header files:</para>
+    <para os="b">Install the header files that are common to all architectures:</para>
 
-<screen><userinput>install -dv /usr/include/{asm,linux,mtd,scsi}
-cp -av include/asm-i386/* /usr/include/asm
+<screen os="c"><userinput>install -dv /usr/include/{asm,asm-generic,linux,net,mtd,scsi,sound}
+cp -av include/asm-generic/* /usr/include/asm-generic
 cp -av include/linux/* /usr/include/linux
 cp -av include/mtd/* /usr/include/mtd
 cp -av include/net/* /usr/include/net
 cp -av include/scsi/* /usr/include/scsi
 cp -av include/sound/* /usr/include/sound</userinput></screen>
 
-    <para os="c">Ensure that all the headers are owned by
+    <para os="d">Install the header files that are specific to this architecture:</para>
+
+<screen><userinput>cp -av include/asm-i386/* /usr/include/asm</userinput></screen>
+
+    <para os="e">Ensure that all the headers are owned by
     <systemitem class="username">root</systemitem>:</para>
 
-<screen os="d"><userinput>chown -Rv root:root /usr/include/{asm,linux,mtd,net,scsi,sound}</userinput></screen>
+<screen os="f"><userinput>chown -Rv root:root /usr/include/{asm,linux,mtd,net,scsi,sound}</userinput></screen>
 
-    <para os="e">Make sure the users can read the headers:</para>
+    <para os="g">Make sure the users can read the headers:</para>
 
-<screen os="f"><userinput>find /usr/include/{asm,linux,mtd,net,scsi,sound} -type d -exec chmod -v 755 {} \;
-find /usr/include/{asm,linux,mtd,net,scsi,sound} -type f -exec chmod -v 644 {} \;</userinput></screen>
+<screen os="h"><userinput>find /usr/include/{asm,asm-generic-linux,mtd,net,scsi,sound} -type d -exec chmod -v 755 {} \;
+find /usr/include/{asm,asm-generic,linux,mtd,net,scsi,sound} -type f -exec chmod -v 644 {} \;</userinput></screen>
 
   </sect2>
 
