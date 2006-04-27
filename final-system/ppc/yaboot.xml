@@ -39,6 +39,11 @@
 
 <screen><userinput>patch -Np1 -i ../yaboot-&yaboot-version;-fix-1.patch</userinput></screen>
 
+    <para>The supplied man pages have <filename class="directory">/usr/local
+    </filename> in the text.  This sed will correct that:</para>
+
+<screen><userinput>sed -i 's%/usr/local%/usr%' man/*</userinput></screen>
+
     <para>Compile the Yaboot package:</para>
 
 <screen><userinput>make PREFIX=/usr</userinput></screen>
