@@ -46,6 +46,19 @@
     href="../ppc/glibc.xml"
     xpointer="xpointer(//*[@os='de'])"/>
 
+    <para>We need to persuade <command>configure</command> that the host's
+    compiler has all the necessary modern powerpc64 extensions.  It will still
+    pass flags such as <literal>-mnew-abi</literal> which are likely to trigger
+    error messages on a non-ppc host, but the headers can be built.  We do this
+    by adding the following lines to <filename>config.cache</filename>. Note
+    that one of these has three consecutive underscores.</para>
+
+<screen><userinput>echo "libc_cv_mlong_double_128ibm=yes" >> config.cache
+echo "libc_cv_mlong_double_128=yes" >> config.cache
+echo "libc_cv_powerpc64_tls=yes" >> config.cache
+echo "libc_cv_initfini_array=yes" >>config.cache
+echo "libc_cv_gcc___thread=yes" >>config.cache</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
