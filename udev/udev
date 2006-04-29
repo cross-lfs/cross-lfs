@@ -83,7 +83,8 @@ case "$1" in
 	udevcontrol reload_rules
 	rm -rf /dev/.udev /dev/disk
 	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
-	trigger_device_events
+	/sbin/udevtrigger
+	/sbin/udevsettle
 	evaluate_retval
 	;;
 
