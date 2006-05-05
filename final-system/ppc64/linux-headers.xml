@@ -45,17 +45,15 @@ cp -av include/asm-ppc/* /usr/include/asm-ppc</userinput></screen>
     href="../x86/linux-headers.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/linux-headers.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+<screen os="f"><userinput>chown -Rv root:root /usr/include/{asm,asm-generic,asm-ppc,linux,mtd,net,scsi,sound}</userinput></screen>
+
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../x86/linux-headers.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/linux-headers.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+<screen os="h"><userinput>find /usr/include/{asm,asm-generic,asm-ppc,linux,mtd,net,scsi,sound} -type d -exec chmod -v 755 {} \;
+find /usr/include/{asm,asm-generic,asm-ppc,linux,mtd,net,scsi,sound} -type f -exec chmod -v 644 {} \;</userinput></screen>
 
   </sect2>
 

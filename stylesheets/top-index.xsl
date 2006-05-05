@@ -203,7 +203,7 @@ hr {
           </li>
 	  <br />
           <h3>
-             <xsl:text>Totally broken. Development in progress.</xsl:text>
+             <xsl:text>Working from chroot, except for the bootloader. Development in progress.</xsl:text>
           </h3>
           <li>
             <h4>
