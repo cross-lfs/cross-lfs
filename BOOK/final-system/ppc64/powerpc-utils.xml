@@ -14,95 +14,39 @@
     <primary sortas="a-Powerpc-Utils">Powerpc-Utils</primary>
   </indexterm>
 
-  <sect2 role="package">
-    <title/>
-
-    <!--- this starts with a straight copy of the ppc version, we can replace
-    the duplicate text with links after the build works -->
-
-    <para>The Powerpc-Utils package contains a number of utilities for Power
-    Macintoshes and other similar machines.  Most of these utilities are now
-    obsolete, but <command>nvsetenv</command> is needed by <command>ybin</command>
-    to install the bootloader on an hfs partition.</para>
-
-    <segmentedlist>
-      <segtitle>&dependencies;</segtitle>
-
-      <seglistitem>
-        <seg>GCC, Gzip, Make, and Patch</seg>
-      </seglistitem>
-    </segmentedlist>
-
-  </sect2>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../ppc/powerpc-utils.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Powerpc-Utils</title>
 
-  <caution>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/powerpc-utils.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
 
-    <para>There is a question mark hanging over this package -
-    until we can get the bootloader to work, we cannot be certain
-    if any of the issues are in fact within this package's build.
-    </para>
-
-  </caution>
-
-    <para>This package, originally pmac-utils, has issues with
-    NewWorld Macintoshes. The following patch fixes these issues
-    and generally allows us to pass the required flags to the
-    compiler:</para>
-
+ <!-- this patch *probably* works on ppc32, but I haven't tested it there,
+   so for the moment it does little harm to use a separate version -->
 <screen><userinput>patch -Np1 -i ../&powerpcutils64-patch;</userinput></screen>
 
-    <para>Compile the needed programs:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/powerpc-utils.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
 <screen><userinput>EXTRACFLAGS="${BUILD32}" make nvsetenv nvsetvol</userinput></screen>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/powerpc-utils.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
 
-<screen><userinput>install -m755 nvsetenv nvsetvol /usr/sbin
-install -m644 nvsetenv.8 nvsetvol.8 /usr/share/man/man8</userinput></screen>
-
-  </sect2>
-
-  <sect2 id="contents-powerpc-utils" role="content">
-    <title>Contents of Powerpc-Utils</title>
-
-    <segmentedlist>
-      <segtitle>Installed programs</segtitle>
-
-      <seglistitem>
-        <seg>nvsetenv, nvsetvol</seg>
-      </seglistitem>
-    </segmentedlist>
-
-    <variablelist>
-      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
-      <?dbfo list-presentation="list"?>
-      <?dbhtml list-presentation="table"?>
-
-      <varlistentry id="nvsetenv">
-        <term><command>nvsetenv</command></term>
-        <listitem>
-          <para>Manipulate variables in the non-volatile RAM.</para>
-          <indexterm zone="ch-system-powerpc-utils nvsetenv">
-            <primary sortas="b-nvsetenv">nvsetenv</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="nvsetvol">
-        <term><command>nvsetvol</command></term>
-        <listitem>
-          <para>Adjust the volume of the boot-up chime on Macintoshes.</para>
-          <indexterm zone="ch-system-powerpc-utils nvsetvol">
-            <primary sortas="b-nvsetvol">nvsetvol</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-    </variablelist>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/powerpc-utils.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
 
   </sect2>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../ppc/powerpc-utils.xml"
+  xpointer="xpointer(id('contents-powerpc-utils'))"/>
 
 </sect1>

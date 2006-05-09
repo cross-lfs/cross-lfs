@@ -35,19 +35,19 @@
   <sect2 role="installation">
     <title>Installation of Powerpc-Utils</title>
 
-    <para>This package, originally pmac-utils, has issues with
+    <para os="a">This package, originally pmac-utils, has issues with
     NewWorld Macintoshes. The following patch fixes these issues
     and generally updates the package:</para>
 
-<screen><userinput>patch -Np1 -i ../&powerpcutils-patch;</userinput></screen>
+<screen os="b"><userinput>patch -Np1 -i ../&powerpcutils-patch;</userinput></screen>
 
-    <para>Compile the needed programs:</para>
+    <para os="c">Compile the needed programs:</para>
 
-<screen><userinput>make nvsetenv nvsetvol</userinput></screen>
+<screen os="d"><userinput>make nvsetenv nvsetvol</userinput></screen>
 
-    <para>Install the package:</para>
+    <para os="e">Install the package:</para>
 
-<screen><userinput>install -m755 nvsetenv nvsetvol /usr/sbin
+<screen os="f"><userinput>install -m755 nvsetenv nvsetvol /usr/sbin
 install -m644 nvsetenv.8 nvsetvol.8 /usr/share/man/man8</userinput></screen>
 
   </sect2>
