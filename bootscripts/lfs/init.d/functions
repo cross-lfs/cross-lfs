@@ -13,6 +13,10 @@
 #
 ########################################################################
 
+if [ -e /etc/sysconfig/lcd ]; then
+	source /etc/sysconfig/lcd
+fi
+
 ## Environmental setup
 # Setup default values for environment
 umask 022
@@ -81,6 +85,11 @@ boot_mesg()
 {
 	local ECHOPARM=""
 
+	if [ "$LCD_PROG" ]; then
+		LCD_OUT1="${1:0:$LCD_CHAR}"
+		$LCD_PROG "$LCD_OUT1"
+	fi
+
 	while true
 	do
 		case "${1}" in
@@ -125,6 +134,10 @@ echo_ok()
 	echo -n -e "${CURS_UP}${SET_COL}${BRACKET}[${SUCCESS}  OK  ${BRACKET}]"
 	echo -e "${NORMAL}"
 	boot_mesg_flush "[  OK  ]"
+	if [ "$LCD_PROG" ]; then
+		LCD_OUT2="[  OK  ]"
+		$LCD_PROG $LCD_OPTIONS "$LCD_OUT1" "$LCD_OUT2"
+	fi
 }
 
 echo_failure()
@@ -132,12 +145,20 @@ echo_failure()
 	echo -n -e "${CURS_UP}${SET_COL}${BRACKET}[${FAILURE} FAIL ${BRACKET}]"
 	echo -e "${NORMAL}"
 	boot_mesg_flush "[ FAIL ]"
+	if [ "$LCD_PROG" ]; then
+		LCD_OUT2="[  FAIL  ]"
+		$LCD_PROG $LCD_OPTIONS "$LCD_OUT1" "$LCD_OUT2"
+	fi
 }
 
 echo_warning()
 {
 	echo -n -e "${CURS_UP}${SET_COL}${BRACKET}[${WARNING} WARN ${BRACKET}]"
 	echo -e "${NORMAL}"
+	if [ "$LCD_PROG" ]; then
+		LCD_OUT2="[  WARN  ]"
+		$LCD_PROG $LCD_OPTIONS "$LCD_OUT1" "$LCD_OUT2"
+	fi
 	boot_mesg_flush "[ WARN ]"
 }
 
@@ -159,7 +180,11 @@ print_error_msg()
 	boot_mesg_flush
 	boot_mesg -n "Press Enter to continue..." ${INFO}
 	boot_mesg "" ${NORMAL}
-	read ENTER
+	if [ "$LCD_PROG" ]; then
+		sleep 10
+	else
+		read ENTER
+	fi
 }
 
 check_script_status()

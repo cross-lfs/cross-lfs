@@ -122,5 +122,16 @@ minimal: create-dirs create-service-dir
 	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} lfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
 	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} lfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
 
-.PHONY: all create-dirs create-service-dir \
-	install install-service-mtu
+install-raq2: 
+	install -m ${MODE} lfs/init.d/paneld        ${EXTDIR}/rc.d/init.d/
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc0.d/K01paneld
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc1.d/S99paneld
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc2.d/S99paneld
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc3.d/S99paneld
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc4.d/S99paneld
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc5.d/S99paneld
+	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc6.d/K01paneld
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq2          ${EXTDIR}/sysconfig/lcd; fi
+
+.PHONY: all create-dirs create-service-dir install install-consolelog \
+	install-service-mtu minimal install-raq2
