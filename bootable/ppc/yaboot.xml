@@ -16,19 +16,19 @@
 
   <para os="a">Your shiny new LFS system is almost complete. One of the last
   things to do is to ensure that the system can be properly booted. The
-  instructions below apply only to NewWorld Macintoshes and (probably)
-  PegasosPPC.</para>
+  instructions below apply only to NewWorld Macintoshes.</para>
 
   <para os="b">Boot loading can be a complex area, so a few cautionary words
   are in order. Be familiar with the current boot loader and any other
   operating systems present on the hard drive(s) that need to be bootable.
   Make sure that an emergency CD is ready to <quote>rescue</quote> the
-  computer if it becomes un-bootable.</para>
+  computer if it becomes un-bootable.  It is also a good idea to enable booting
+  from Open Firmware in case things go really wrong.</para>
 
   <para os="c">Earlier, we compiled and installed the yaboot boot loader software
   in preparation for this step. The procedure involves writing the bootloader
-  to a bootstrap partition and blessing it so that OpenFirmware will boot from
-  it.  This is all handled by <command>ybin</command> the yaboot installer.</para> 
+  to a bootstrap partition and blessing it so that Open Firmware will boot from
+  it.  This is all handled by <command>ybin</command> the yaboot installer.</para>
 
   <para os="d">Ybin assembles all the information it needs by reading yaboot.conf,
   then writes the bootstrap. When booted, the bootstrap provides an initial menu to
@@ -41,7 +41,8 @@
   possible options that can be specified in yaboot.conf, see the man page for the
   details.  Most people will be able to specify device=hd: (for a single hard disk),
   but if you have multiple disks, or if you wish to be pedantic, you can specify the
-  full OF path to the device, obtained by running <command>ofpath</command>.</para>
+  full OF path to the device, obtained by running <command>ofpath /dev/hdX</command>
+  .</para>
 
   <para os="f">Note that the man page mentions which filesystems yaboot can
   navigate to find the images - the only linux filesystem type mentioned is ext2.
@@ -56,6 +57,15 @@
   .  We will also assume that you wish to be able to boot an OSX installation on
   <filename class="partition">hda4</filename>.  Change these items as necessary
   for your machine.</para>
+
+  <para os="i">If your machine has a SATA disk, specify the partitions using
+  <filename class="devicefile">/dev/sda7</filename> and so forth in the usual
+  way.  At least some of the distros specify a full OF path to the 'device' and
+  to the image(s), such as
+  <filename class="devicefile">device=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:
+  </filename> for the disk, and
+  <filename class="partition">image=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:9,/boot/lfskernel-&linux-version;
+  </filename> which definitely works.</para>
 
   <para os="k">Create a <quote>yaboot.conf</quote> file defining yaboot's boot
   menu:</para>
@@ -89,12 +99,21 @@ magicboot=/usr/lib/yaboot/ofboot
 # allow the initial menu to offer CD as an option
 enablecdboot
 
+# allow the initial menu to offer booting from Open Firmware
+enableofboot
+
 # allow the initial menu to boot from mac osx
 macosx=/dev/hda4
 
+# white on black is boring!
+# note  the spellings : 'fgcolor' but 'light'
+# in this context, light means 'without high intensity'
+fgcolor=light-green
+
 # The first entry is for LFS.
 # For all images, the pathname is relative to the filesystem
-# on which they are mounted.
+# on which they are situated and can include at most one
+# directory
 image=/boot/lfskernel-&linux-version;
     label=&version;
     read-only</literal>
