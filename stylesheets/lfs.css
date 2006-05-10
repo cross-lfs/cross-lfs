@@ -172,6 +172,10 @@ div.important tt, div.warning tt, div.caution tt {
   font-weight: bold;
 }
 
+div.important tt.literal, div.warning tt.literal, div.caution tt.literal {
+  font-weight: normal;
+}
+
 /* variablelist & segmentedlist */
 dl {
   margin: 0;
@@ -213,6 +217,9 @@ div.variablelist dd {
 
 div.variablelist dd p {
   margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 div.materials dd {
@@ -225,13 +232,23 @@ div.package div.seg {
   clear: left;
 }
 
-div.package span.segtitle {
+div.package span.segtitle, div.appendix span.segtitle {
   float: left;
 }
 
-div.package span.seg {
+div.package span.seg, div.appendix span.seg {
   display: block;
   padding-left: 14em;
+}
+
+div.appendix div.segmentedlist {
+  padding-left: 1em;
+}
+
+div.appendix h2 {
+  font-size: 133%;
+  margin-top: 1em;
+  margin-bottom: 0.2em;
 }
 
 div.content div.seg {
@@ -253,6 +270,20 @@ div.content span.seg {
 
 div.itemizedlist {
   margin-left: 1em;
+}
+
+ul[compact="compact"] {
+  list-style: none;
+}
+
+ul[compact="compact"] li {
+  margin: 0em;
+  padding: 0em;
+}
+
+ul[compact="compact"] li p {
+  padding: 0.3em;
+  margin: 0em;
 }
 
 /*table */
