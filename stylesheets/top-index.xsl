@@ -201,10 +201,6 @@ hr {
              </a>
             </h4>
           </li>
-	  <br />
-          <h3>
-             <xsl:text>Working from chroot, except for the bootloader. Development in progress.</xsl:text>
-          </h3>
           <li>
             <h4>
               <a href="ppc64">
