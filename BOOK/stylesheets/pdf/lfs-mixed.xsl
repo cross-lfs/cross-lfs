@@ -12,7 +12,8 @@
     <fo:block break-after="page"/>
   </xsl:template>
 
-    <!-- Allow forced line breaks inside paragraphs emulating literallayout. -->
+    <!-- Allow forced line breaks inside paragraphs emulating literallayout
+    and to remove vertical space in pachages and patches pages. -->
  <xsl:template match="para">
     <xsl:choose>
       <xsl:when test="./@remap='verbatim'">
@@ -21,6 +22,15 @@
                     white-space-treatment="preserve"
                     text-align="start"
                     linefeed-treatment="preserve">
+          <xsl:call-template name="anchor"/>
+          <xsl:apply-templates/>
+        </fo:block>
+      </xsl:when>
+      <xsl:when test="ancestor::variablelist/@role = 'materials'">
+        <fo:block>
+          <xsl:attribute name="space-before.optimum">0.1em</xsl:attribute>
+          <xsl:attribute name="space-before.minimum">0em</xsl:attribute>
+          <xsl:attribute name="space-before.maximum">0.2em</xsl:attribute>
           <xsl:call-template name="anchor"/>
           <xsl:apply-templates/>
         </fo:block>
