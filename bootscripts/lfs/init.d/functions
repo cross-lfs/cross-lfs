@@ -136,7 +136,7 @@ echo_ok()
 	boot_mesg_flush "[  OK  ]"
 	if [ "$LCD_PROG" ]; then
 		LCD_OUT2="[  OK  ]"
-		$LCD_PROG $LCD_OPTIONS "$LCD_OUT1" "$LCD_OUT2"
+		$LCD_PROG "$LCD_OUT1" "$LCD_OUT2"
 	fi
 }
 
@@ -147,7 +147,7 @@ echo_failure()
 	boot_mesg_flush "[ FAIL ]"
 	if [ "$LCD_PROG" ]; then
 		LCD_OUT2="[  FAIL  ]"
-		$LCD_PROG $LCD_OPTIONS "$LCD_OUT1" "$LCD_OUT2"
+		$LCD_PROG "$LCD_OUT1" "$LCD_OUT2"
 	fi
 }
 
@@ -157,7 +157,7 @@ echo_warning()
 	echo -e "${NORMAL}"
 	if [ "$LCD_PROG" ]; then
 		LCD_OUT2="[  WARN  ]"
-		$LCD_PROG $LCD_OPTIONS "$LCD_OUT1" "$LCD_OUT2"
+		$LCD_PROG "$LCD_OUT1" "$LCD_OUT2"
 	fi
 	boot_mesg_flush "[ WARN ]"
 }

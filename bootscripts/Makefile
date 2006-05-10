@@ -133,5 +133,16 @@ install-raq2:
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc6.d/K01paneld
 	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq2          ${EXTDIR}/sysconfig/lcd; fi
 
+install-raq3: 
+	install -m ${MODE} lfs/init.d/setlcd        ${EXTDIR}/rc.d/init.d/
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc0.d/K01setlcd
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc1.d/S99setlcd
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc2.d/S99setlcd
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc3.d/S99setlcd
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc4.d/S99setlcd
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc5.d/S99setlcd
+	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc6.d/K01setlcd
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq3          ${EXTDIR}/sysconfig/lcd; fi
+
 .PHONY: all create-dirs create-service-dir install install-consolelog \
-	install-service-mtu minimal install-raq2
+	install-service-mtu minimal install-raq2 install-raq3
