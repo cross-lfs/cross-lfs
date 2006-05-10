@@ -20,7 +20,7 @@ SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware_helper"
 # check cdrom helper
 BUS=="ide",	KERNEL=="hd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
 BUS=="scsi",	KERNEL=="sr[0-9]*", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
-BUS=="scsi",	KERNEL="scd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
+BUS=="scsi",	KERNEL=="scd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
 BUS=="scsi",	KERNEL=="sg[0-9]*", ACTION=="add", DRIVER=="sr", GROUP="cdrom"
 
 ENV{ID_CDROM}=="?*",		SYMLINK+="cdrom%m", GROUP="cdrom"
