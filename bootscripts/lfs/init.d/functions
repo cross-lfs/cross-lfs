@@ -14,6 +14,9 @@
 ########################################################################
 
 if [ -e /etc/sysconfig/lcd ]; then
+	if [ -e /dev/lcd ]; then
+		source /etc/sysconfig/lcd
+	fi
 	source /etc/sysconfig/lcd
 fi
 
