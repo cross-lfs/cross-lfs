@@ -14,163 +14,97 @@
     <primary sortas="a-Yaboot">Yaboot</primary>
   </indexterm>
 
-  <sect2 role="package">
-    <title/>
-
-   <!-- this is a copy of the ppc version.  once it is working, the text needs to
-   be fixed to refer to the master text instead of copying it -->
-
-    <para>The Yaboot package contains a PowerPC Boot Loader for machines using
-    OpenFirmware such as NewWorld Macintoshes.</para>
-
-    <segmentedlist>
-      <segtitle>&dependencies;</segtitle>
-
-      <seglistitem>
-        <seg>Bash, Binutils, Coreutils, Diffutils, GCC, Glibc, Grep,
-        Make, Ncurses, and Sed</seg>
-      </seglistitem>
-    </segmentedlist>
-
-  </sect2>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../ppc/yaboot.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Yaboot</title>
 
-  <caution>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
 
-    <para>This does not work!  For now, if you have an existing system, use
-    yaboot from that system.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
 
-  </caution>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
-    <para>Yaboot has a compilation error. The following patch properly fixes
-    the issue:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
 
-<screen><userinput>patch -Np1 -i ../yaboot-&yaboot-version;-fix-1.patch</userinput></screen>
+    <para>Existing multilib distributions alter gcc to default to 32-bit
+    output.  Because our gcc defaults to 64-bit, we need to pass appropriate
+    options to both the compiler and the linker.  The Makefile already
+    overrides any CC and ignores LDFLAGS in favour of its own variables, so we
+    need to use the following seds for a successful compile and install.</para>
 
-    <para>The supplied man pages have <filename class="directory">/usr/local
-    </filename> in the text.  This sed will correct that:</para>
+<screen><userinput>sed -i -e "s/\(-print-libgcc-file-name\)/${BUILD32} \1/" \
+    -e "s/\(-Bstatic\)/-melf32ppclinux \1/" Makefile
+</userinput></screen>
 
-<screen><userinput>sed -i 's%/usr/local%/usr%' man/*</userinput></screen>
+    <variablelist os="j">
+      <title>The meaning of the sed parameters:</title>
 
-    <para>Compile the Yaboot package:</para>
-
-<screen><userinput>make PREFIX=/usr</userinput></screen>
-
-    <para>Install the package:</para>
-
-<screen><userinput>make PREFIX=/usr install</userinput></screen>
-
-  </sect2>
-
-  <sect2 id="contents-yaboot" role="content">
-    <title>Contents of Yaboot</title>
-
-    <segmentedlist>
-      <segtitle>Installed programs</segtitle>
-      <segtitle>Installed files</segtitle>
-
-      <seglistitem>
-        <seg>addnote, mkofboot (link to ybin), ofboot, ofpath, yaboot,
-        yabootconfig, ybin</seg>
-        <seg>yaboot.conf</seg>
-      </seglistitem>
-    </segmentedlist>
-
-    <variablelist>
-      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
-      <?dbfo list-presentation="list"?>
-      <?dbhtml list-presentation="table"?>
-
-      <varlistentry id="addnote">
-        <term><command>addnote</command></term>
-  <listitem>
-    <para>For IBM CHRP machines, add a PT_NOTE program header
-    entry to an elf file so that it can be booted.</para>
-    <indexterm zone="ch-system-yaboot addnote">
-      <primary sortas="b-addnote">addnote</primary>
-    </indexterm>
-  </listitem>
-      </varlistentry>
-
-      <varlistentry id="mkofboot">
-        <term><command>mkofboot</command></term>
+      <varlistentry>
+        <term><parameter>"s/\(-print-libgcc-file-name\)/${BUILD32} \1/"</parameter></term>
         <listitem>
-          <para>Format the bootstrap partition and install the yaboot
-          boot loader.</para>
-          <indexterm zone="ch-system-yaboot mkofboot">
-            <primary sortas="b-mkofboot">mkofboot</primary>
-          </indexterm>
+          <para>This picks a convenient place within the Makefile's lgcc
+	  variable and inserts the flag to force <command>gcc</command> to
+          create 32-bit code when compiling yaboot.</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry id="ofboot">
-        <term><command>ofboot</command></term>
+      <varlistentry>
+        <term><parameter>"s/\(-Bstatic\)/-melf32ppclinux \1/"</parameter></term>
         <listitem>
-          <para>Script to format the boot menu using yaboot.conf and
-    write the resulting OpenFirmware code to the bootstrap.</para>
-          <indexterm zone="ch-system-yaboot ofboot">
-            <primary sortas="b-ofboot">ofboot</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ofpath">
-        <term><command>ofpath</command></term>
-        <listitem>
-          <para>Determine OpenFirmware path corresponding to a device
-    node.</para>
-          <indexterm zone="ch-system-yaboot ofpath">
-            <primary sortas="b-ofpath">ofpath</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="yaboot">
-        <term><command>yaboot</command></term>
-        <listitem>
-          <para>OpenFirmware boot loader.</para>
-          <indexterm zone="ch-system-yaboot yaboot">
-            <primary sortas="b-yaboot">yaboot</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="yabootconfig">
-        <term><command>yabootconfig</command></term>
-        <listitem>
-          <para>Generate and install a simple yaboot.conf.</para>
-          <indexterm zone="ch-system-yaboot yabootconfig">
-            <primary sortas="b-yabootconfig">yabootconfig</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ybin">
-        <term><command>ybin</command></term>
-        <listitem>
-          <para>Shell script to update or install the boot loader
-    on a bootstrap partition.</para>
-          <indexterm zone="ch-system-yaboot ybin">
-            <primary sortas="b-ybin">ybin</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="yaboot.conf">
-        <term><filename>yaboot.conf</filename></term>
-        <listitem>
-          <para>Configuration file used by <command>ybin</command> to determine
-    how to install <command>yaboot</command> on the bootstrap partition.</para>
-          <indexterm zone="ch-system-yaboot yaboot.conf">
-            <primary sortas="e-yaboot.conf">yaboot.conf</primary>
-          </indexterm>
+          <para>This picks the end of the LFLAGS which the Makefile passes to
+	  the linker to create the second-stage linux loader, and inserts a
+	  flag to force <command>ld</command> to use a suitable 32-bit
+	  emulation picked from the output of <command>'ld -V'</command>.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
+    <important>
+      <para>The above patches and seds are critical in ensuring a
+      successful build. In particular, the package will appear to install
+      correctly without the second sed, but will fail to load linux,
+      requiring you to use OF or a rescue disk to boot.</para>
+    </important>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='j'])"/>
+
   </sect2>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../ppc/yaboot.xml"
+  xpointer="xpointer(id('contents-yaboot'))"/>
 
 </sect1>
