@@ -20,7 +20,7 @@ if [ "$KERN_NAME" = "" ]; then
 	mesg Bad invocation: \$1 is not set
 	exit 1
 fi
-echo "here" > /tmp/cdrom
+
 FILES="`ls /sys/bus/ide/drivers/ide-cdrom | grep 1.`"
 	for file in $FILES; do
 		TEST="`ls /sys/bus/ide/drivers/ide-cdrom/$file | grep -c $KERN_NAME`"
