@@ -27,6 +27,5 @@ FILES="`ls /sys/bus/ide/drivers/ide-cdrom | grep 1.`"
 		if [ "$TEST" = "1" ]; then
 			link="`echo $file | cut -f2 -d.`"
 			echo $link
-			echo "link = $link" >> /tmp/cdrom
 		fi
 	done
