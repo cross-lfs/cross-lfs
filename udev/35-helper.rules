@@ -23,11 +23,18 @@ BUS=="scsi",	KERNEL=="sr[0-9]*", ACTION=="add", IMPORT="cdrom_id --export $tempn
 BUS=="scsi",	KERNEL=="scd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
 BUS=="scsi",	KERNEL=="sg[0-9]*", ACTION=="add", DRIVER=="sr", GROUP="cdrom"
 
-ENV{ID_CDROM}=="?*",		SYMLINK+="cdrom%m", GROUP="cdrom"
-ENV{ID_CDROM_CD_R}=="?*",	SYMLINK+="cdr%m"
-ENV{ID_CDROM_CD_RW}=="?*",	SYMLINK+="cdrw%m"
-ENV{ID_CDROM_DVD}=="?*",	SYMLINK+="dvd%m"
-ENV{ID_CDROM_DVD_R}=="?*",	SYMLINK+="dvdrw%m"
+BUS=="ide", 	ENV{ID_CDROM}=="?*", SYMLINK+="cdrom-temp", GROUP="cdrom"
+BUS=="ide",	ENV{ID_CDROM_CD_R}=="?*", SYMLINK+="cdr-temp"
+BUS=="ide",	ENV{ID_CDROM_CD_RW}=="?*", SYMLINK+="cdrw-temp"
+BUS=="ide",	ENV{ID_CDROM_DVD}=="?*", SYMLINK+="dvd-temp"
+BUS=="ide",	ENV{ID_CDROM_DVD_R}=="?*", SYMLINK+="dvdrw-temp"
+BUS=="ide",	KERNEL=="hd[a-z]", ACTION=="add", RUN+="cdsymlink_helper.sh %k"
+
+BUS=="scsi", 	ENV{ID_CDROM}=="?*", SYMLINK+="cdrom%n", GROUP="cdrom"
+BUS=="scsi",	ENV{ID_CDROM_CD_R}=="?*", SYMLINK+="cdr%n"
+BUS=="scsi",	ENV{ID_CDROM_CD_RW}=="?*", SYMLINK+="cdrw%n"
+BUS=="scsi",	ENV{ID_CDROM_DVD}=="?*", SYMLINK+="dvd%n"
+BUS=="scsi",	ENV{ID_CDROM_DVD_R}=="?*", SYMLINK+="dvdrw%n"
 
 # adds floppy devices
 KERNEL=="fd[0-9]*", ACTION=="add", SYSFS{cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{cmos} -m %M /dev/%k"t

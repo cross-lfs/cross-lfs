@@ -30,6 +30,7 @@ rules-netboot:
 
 scripts:
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
+	install -m ${SCRIPTMODE} cdsymlink_helper.sh ${DESTDIR}/lib/udev/cdsymlink_helper.sh
 
 boot:
 	install -d ${DESTDIR}/usr/share/udev
