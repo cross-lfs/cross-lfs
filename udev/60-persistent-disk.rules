@@ -24,7 +24,7 @@ SUBSYSTEM!="block",	GOTO="persistent_end"
 KERNEL=="ram*|loop*|fd*|nbd*",	GOTO="persistent_end"
 
 # never access removable ide devices, the drivers are causing event loops on open()
-BUS=="ide",	DRIVER!="ide-cdrom", SYSFS{removable}="1", GOTO="persistent_end"
+BUS=="ide",	DRIVER!="ide-cdrom", SYSFS{removable}=="1", GOTO="persistent_end"
 
 # by-id (hardware serial number)
 KERNEL=="hd*[!0-9]",	IMPORT{program}="ata_id --export $tempnode"
