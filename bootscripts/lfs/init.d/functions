@@ -89,7 +89,7 @@ boot_mesg()
 
 	if [ "$LCD_PROG" ]; then
 		LCD_OUT1="${1:0:$LCD_CHAR}"
-		$LCD_PROG "$LCD_OUT1"
+		$LCD_PROG "$LCD_OUT1" > /dev/null 2>&1
 	fi
 
 	while true
@@ -137,8 +137,13 @@ echo_ok()
 	echo -e "${NORMAL}"
 	boot_mesg_flush "[  OK  ]"
 	if [ "$LCD_PROG" ]; then
-		LCD_OUT2="[  OK  ]"
-		$LCD_PROG "$LCD_OUT1" "$LCD_OUT2"
+		if [ "$LCD_LINES" = "2" ]; then
+			LCD_OUT2="[  OK  ]"
+			$LCD_PROG "$LCD_OUT1" "$LCD_OUT2" > /dev/null 2>&1
+		else
+			LCD_OUT2="${LCD_OUT1:0:12} OK"
+			$LCD_PROG "$LCD_OUT2" > /dev/null 2>&1
+		fi			
 	fi
 }
 
@@ -148,8 +153,13 @@ echo_failure()
 	echo -e "${NORMAL}"
 	boot_mesg_flush "[ FAIL ]"
 	if [ "$LCD_PROG" ]; then
-		LCD_OUT2="[  FAIL  ]"
-		$LCD_PROG "$LCD_OUT1" "$LCD_OUT2"
+		if [ "$LCD_LINES" = "2" ]; then
+			LCD_OUT2="[ FAIL  ]"
+			$LCD_PROG "$LCD_OUT1" "$LCD_OUT2" > /dev/null 2>&1
+		else
+			LCD_OUT2="${LCD_OUT1:0:10} FAIL"
+			$LCD_PROG "$LCD_OUT2" > /dev/null 2>&1
+		fi
 	fi
 }
 
@@ -158,8 +168,13 @@ echo_warning()
 	echo -n -e "${CURS_UP}${SET_COL}${BRACKET}[${WARNING} WARN ${BRACKET}]"
 	echo -e "${NORMAL}"
 	if [ "$LCD_PROG" ]; then
-		LCD_OUT2="[  WARN  ]"
-		$LCD_PROG "$LCD_OUT1" "$LCD_OUT2"
+		if [ "$LCD_LINES" = "2" ]; then
+			LCD_OUT2="[ WARN  ]"
+			$LCD_PROG "$LCD_OUT1" "$LCD_OUT2" > /dev/null 2>&1
+		else
+			LCD_OUT2="${LCD_OUT1:0:10} WARN"
+			$LCD_PROG "$LCD_OUT2" > /dev/null 2>&1
+		fi			
 	fi
 	boot_mesg_flush "[ WARN ]"
 }

@@ -144,5 +144,8 @@ install-raq3:
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc6.d/K01setlcd
 	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq3          ${EXTDIR}/sysconfig/lcd; fi
 
+install-lcd: 
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd              ${EXTDIR}/sysconfig/lcd; fi
+
 .PHONY: all create-dirs create-service-dir install install-consolelog \
-	install-service-mtu minimal install-raq2 install-raq3
+	install-service-mtu minimal install-lcd install-raq2 install-raq3
