@@ -29,12 +29,13 @@ BUS=="ide",	ENV{ID_CDROM_CD_RW}=="?*", PROGRAM="cdsymlink_helper.sh %k ide", SYM
 BUS=="ide",	ENV{ID_CDROM_DVD}=="?*", PROGRAM="cdsymlink_helper.sh %k ide", SYMLINK+="dvd%c"
 BUS=="ide",	ENV{ID_CDROM_DVD_R}=="?*", PROGRAM="cdsymlink_helper.sh %k ide", SYMLINK+="dvdrw%c"
 
-BUS=="scsi",	ENV{ID_CDROM}=="?*", PROGRAM="cdsymlink_helper.sh %k scsi", SYMLINK+="cdrom%c"
-BUS=="scsi",	ENV{ID_CDROM_CD_R}=="?*", PROGRAM="cdsymlink_helper.sh %k scsi", SYMLINK+="cdr%c"
-BUS=="scsi",	ENV{ID_CDROM_CD_RW}=="?*", PROGRAM="cdsymlink_helper.sh %k scsi", SYMLINK+="cdrw%c"
-BUS=="scsi",	ENV{ID_CDROM_DVD}=="?*", PROGRAM="cdsymlink_helper.sh %k scsi", SYMLINK+="dvd%c"
-BUS=="scsi",	ENV{ID_CDROM_DVD_R}=="?*", PROGRAM="cdsymlink_helper.sh %k scsi", SYMLINK+="dvdrw%c"
+BUS=="scsi",	ENV{ID_CDROM}=="?*", PROGRAM="cdsymlink_helper.sh %n scsi", SYMLINK+="cdrom%c"
+BUS=="scsi",	ENV{ID_CDROM_CD_R}=="?*", PROGRAM="cdsymlink_helper.sh %n scsi", SYMLINK+="cdr%c"
+BUS=="scsi",	ENV{ID_CDROM_CD_RW}=="?*", PROGRAM="cdsymlink_helper.sh %n scsi", SYMLINK+="cdrw%c"
+BUS=="scsi",	ENV{ID_CDROM_DVD}=="?*", PROGRAM="cdsymlink_helper.sh %n scsi", SYMLINK+="dvd%c"
+BUS=="scsi",	ENV{ID_CDROM_DVD_R}=="?*", PROGRAM="cdsymlink_helper.sh %n scsi", SYMLINK+="dvdrw%c"
 
 # adds floppy devices
 KERNEL=="fd[0-9]*", ACTION=="add", SYSFS{cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{cmos} -m %M /dev/%k"t
+
 
