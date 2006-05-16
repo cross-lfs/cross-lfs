@@ -37,7 +37,10 @@
     this package is built. If the defaults it auto-detects are suitable,
     prepare Perl for compilation with:</para>
 
-<screen os="b"><userinput>./configure.gnu --prefix=/usr -Dpager="/bin/less -isR"</userinput></screen>
+<screen os="b"><userinput>./configure.gnu --prefix=/usr \
+   -Dman1dir=/usr/share/man/man1 \
+   -Dman3dir=/usr/share/man/man3 \
+   -Dpager="/bin/less -isR"</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure option:</title>
@@ -47,6 +50,14 @@
         <listitem>
           <para>This corrects an error in the way that <command>perldoc</command>
           invokes the <command>less</command> program.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry os="c2">
+        <term><parameter>-Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3</parameter></term>
+        <listitem>
+          <para>Since Groff is not installed yet,
+          <command>configure.gnu</command> thinks that we do not want
+          man pages for Perl. Issuing these parameters overrides this decision.</para>
         </listitem>
       </varlistentry>
     </variablelist>
