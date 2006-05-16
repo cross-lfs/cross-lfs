@@ -8,9 +8,9 @@
 <sect1 id="ch-intro-how">
   <?dbhtml filename="how.html"?>
 
-  <title>How to Build an LFS System</title>
+  <title>How to Build a CLFS System</title>
 
-  <para>The LFS system will be built by using a previously installed
+  <para>The CLFS system will be built by using a previously installed
   Linux distribution (such as Debian, Mandrake, Red Hat, or SuSE). This
   existing Linux system (the host) will be used as a starting point to
   provide necessary programs, including a compiler, linker, and shell,
@@ -32,9 +32,9 @@
 
   <para><xref linkend="chapter-partitioning"/> of this book describes how
   to create a new Linux native partition and file system, the place
-  where the new LFS system will be compiled and installed. <xref
+  where the new CLFS system will be compiled and installed. <xref
   linkend="chapter-getting-materials"/> explains which packages and
-  patches need to be downloaded to build an LFS system and how to store
+  patches need to be downloaded to build a CLFS system and how to store
   them on the new file system. <xref linkend="chapter-final-preps"/>
   discusses the setup for an appropriate working environment. Please read
   <xref linkend="chapter-final-preps"/> carefully as it explains several
@@ -46,7 +46,7 @@
   cross-compile tools which will be built on the host but be able to compile
   programs that run on the target machine. These cross-compile tools will
   be used to create a temporary, minimal system that will be the basis for
-  building the final LFS system. Some of these packages are needed to resolve
+  building the final CLFS system. Some of these packages are needed to resolve
   circular dependencies&mdash;for example, to compile a compiler, you need a
   compiler.</para>
 
@@ -70,33 +70,38 @@ explanation, especially the reasoning for compiling gcc statically then dynamica
   may seem excessive, but a full technical explanation is provided at the
   beginning of <xref linkend="chapter-temp-system"/>.</para>
 
-  <para>In <xref linkend="chapter-building-system"/>, the full LFS system is
+  <para>In <xref linkend="chapter-building-system"/>, the full CLFS system is
   built. Depending on the system you are cross-compiling for, either you will
   boot the minimal temp-system on the target machine, or chroot into it.</para>
 
   <para>The <command>chroot</command> (change root) program is used to enter
   a virtual environment and start a new shell whose root directory will be set
-  to the LFS partition. This is very similar to rebooting and instructing the
-  kernel to mount the LFS partition as the root partition.
+  to the CLFS partition. This is very similar to rebooting and instructing the
+  kernel to mount the CLFS partition as the root partition.
   The major advantage is that <quote>chrooting</quote> allows the builder to
-  continue using the host while LFS is being built. While waiting for package
+  continue using the host while CLFS is being built. While waiting for package
   compilation to complete, a user can switch to a different virtual console
   (VC) or X desktop and continue using the computer as normal.</para>
 
-  <para>Some systems cannot be built by chrooting so they must be booted instead. Generally, if you building for a different arch than the host system, you must reboot because the kernel will likely not support the target machine. Booting involves installing a few additional packages that are needed for bootup, installing bootscripts, and building a miminal kernel.</para>
+  <para>Some systems cannot be built by chrooting so they must be
+  booted instead. Generally, if you building for a different arch than
+  the host system, you must reboot because the kernel will likely not
+  support the target machine. Booting involves installing a few
+  additional packages that are needed for bootup, installing
+  bootscripts, and building a miminal kernel.</para>
 
-  <para>To finish the installation, the LFS-Bootscripts are set up in <xref
+  <para>To finish the installation, the CLFS-Bootscripts are set up in <xref
   linkend="chapter-bootscripts"/>, and the kernel and boot loader are set
   up in <xref linkend="chapter-bootable"/>. <xref
   linkend="chapter-finalizing"/> contains information on furthering the
-  LFS experience beyond this book.  After the steps in this book have
+  CLFS experience beyond this book.  After the steps in this book have
   been implemented, the computer will be ready to reboot into the new
-  LFS system.</para>
+  CLFS system.</para>
   <!-- -->
 
   <para>This is the process in a nutshell. Detailed information on each
   step is discussed in the following chapters and package descriptions.
   Items that may seem complicated will be clarified, and everything will
-  fall into place as the reader embarks on the LFS adventure.</para>
+  fall into place as the reader embarks on the CLFS adventure.</para>
 
 </sect1>
