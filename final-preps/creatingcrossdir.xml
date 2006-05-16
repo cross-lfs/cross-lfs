@@ -10,12 +10,13 @@
 
   <title>Creating the $LFS/cross-tools Directory</title>
 
-  <para>All programs compiled in <xref linkend="chapter-cross-tools"/> will
-  be installed under <filename class="directory">$LFS/cross-tools</filename>
-  to keep them separate from the host programs. The programs compiled here are
-  cross tools and will not be a part of the final LFS system. By keeping these
-  programs in a separate directory, they can easily be discarded later after
-  their use.</para>
+  <para>The cross-binutils and cross-compiler built in
+  <xref linkend="chapter-cross-tools"/> will be installed under
+  <filename class="directory">$LFS/cross-tools</filename> to keep them
+  separate from the host prograrms. The programs compiled here are
+  cross-tools and will not be a part of the final CLFS system or the
+  temp-system. By keeping these programs in a separate directory, they
+  can easily be discarded later after their use.</para>
 
   <para>Create the required directory by running the following as
   <systemitem class="username">root</systemitem>:</para>
@@ -24,7 +25,7 @@
 
   <para>The next step is to create a <filename
   class="symlink">/cross-tools</filename> symlink on the host system.
-  This will point to the newly-created directory on the LFS partition.
+  This will point to the newly-created directory on the CLFS partition.
   Run this command as  <systemitem class="username">root</systemitem> as well:</para>
 
 <screen><userinput>ln -sv $LFS/cross-tools /</userinput></screen>
@@ -32,6 +33,6 @@
   <para>The symlink isn't technically necessary (though the book's
   instructions do assume its existence), but is there mainly for
   consistency (because /tools is also symlinked to $LFS/tools) and to
-  somewhat simplify the installation of the cross-compile tools.</para>
+  simplify the installation of the cross-compile tools.</para>
 
 </sect1>
