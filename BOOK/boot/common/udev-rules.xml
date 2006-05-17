@@ -21,12 +21,15 @@
   <sect2 role="installation">
     <title>Installation of Udev-Rules</title>
 
-    <para>When you installed udev, it installed a set of rules, this package
-    replaces these rules. So we must first remove all the old rules sets.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../bootscripts/common/udev-rules.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
 
 <screen><userinput>rm -vf ${LFS}/etc/udev/rules.d/*</userinput></screen>
 
-    <para>Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../bootscripts/common/udev-rules.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
 <screen><userinput>make DESTDIR=${LFS} install-minimal</userinput></screen>
 
