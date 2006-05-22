@@ -107,16 +107,16 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
       <primary sortas="e-/etc/login.defs">/etc/login.defs</primary>
     </indexterm>
 
-    <note os="s">
+<screen os="s"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
+    -e 's@/var/spool/mail@/var/mail@' \
+    etc/login.defs &gt; /etc/login.defs</userinput></screen>
+
+    <note os="t">
       <para>If you built Shadow with Cracklib support, insert the following into
       the <command>sed</command> given below:</para>
 
-<screen><literal>-e 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@'</literal></screen>
+<screen><literal>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</literal></screen>
     </note>
-
-<screen os="t"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
-    -e 's@/var/spool/mail@/var/mail@' \
-    etc/login.defs &gt; /etc/login.defs</userinput></screen>
 
     <para os="u">Move a misplaced program to its proper location:</para>
 
