@@ -89,17 +89,28 @@
     href="../ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../ppc/yaboot.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+<screen os="h"><userinput>CFLAGS="${BUILD32}" make PREFIX=/usr</userinput></screen>
+
+    <important>
+      <para>The CFLAGS on the above command are equally critical
+      for a successful install.</para>
+    </important>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../ppc/yaboot.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+<screen><userinput>make PREFIX=/usr install 2&gt;&amp;1 &gt;instlog</userinput></screen>
+
+    <para os='k'>To ensure that the install was successful, run the following
+    command:</para>
+
+<screen os='l'><userinput>grep 'powerpc:common64' instlog</userinput></screen>
+
+    <para os='m'>If the command gave you <emphasis>any</emphasis> output
+    (... is incompatible with powerpc:common output) the build is broken and
+    you will have to repeat it with <emphasis>all</emphasis> of the items
+    marked as important.</para>
 
   </sect2>
 
