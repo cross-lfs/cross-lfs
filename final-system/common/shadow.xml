@@ -112,10 +112,11 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
     etc/login.defs &gt; /etc/login.defs</userinput></screen>
 
     <note os="t">
-      <para>If you built Shadow with Cracklib support, insert the following into
-      the <command>sed</command> given below:</para>
+      <para>If you built Shadow with Cracklib support, execute
+      this <command>sed</command> to correct the path to the Cracklib
+      dictionary:</para>
 
-<screen><literal>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</literal></screen>
+<screen><userinput>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</userinput></screen>
     </note>
 
     <para os="u">Move a misplaced program to its proper location:</para>
