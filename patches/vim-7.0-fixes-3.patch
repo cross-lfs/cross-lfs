@@ -1,14 +1,14 @@
-Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2006-05-12
+Submitted By: Jeremy Huntwork (jhuntwork at linuxfromscratch dot org)
+Date: 2006-05-25
 Initial Package Version: 7.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains Patch 001-004 and 006-015 from Upstream
+Description: Contains Patch 001-004 and 006-017 from Upstream
         005 is for the extras and Windows 32 only
 
-diff -Naur vim70.orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccomplete.vim
---- vim70.orig/runtime/autoload/ccomplete.vim	2006-05-03 07:35:56.000000000 -0700
-+++ vim70/runtime/autoload/ccomplete.vim	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccomplete.vim
+--- vim70-orig/runtime/autoload/ccomplete.vim	2006-05-03 10:35:56.000000000 -0400
++++ vim70/runtime/autoload/ccomplete.vim	2006-05-25 09:13:10.000000000 -0400
 @@ -1,7 +1,7 @@
  " Vim completion script
  " Language:	C
@@ -27,9 +27,9 @@ diff -Naur vim70.orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccom
    if fnames == ''
      return []
    endif
-diff -Naur vim70.orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spellfile.vim
---- vim70.orig/runtime/autoload/spellfile.vim	2006-02-01 04:12:24.000000000 -0800
-+++ vim70/runtime/autoload/spellfile.vim	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spellfile.vim
+--- vim70-orig/runtime/autoload/spellfile.vim	2006-02-01 07:12:24.000000000 -0500
++++ vim70/runtime/autoload/spellfile.vim	2006-05-25 09:13:12.000000000 -0400
 @@ -1,9 +1,9 @@
  " Vim script to download a missing spell file
  " Maintainer:	Bram Moolenaar <Bram@vim.org>
@@ -78,9 +78,9 @@ diff -Naur vim70.orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spel
 +  let dir = substitute(g:spellfile_URL, 'ftp://[^/]*/\(.*\)', '\1', '')
 +  exe 'Nread "' . machine . ' anonymous vim7user ' . dir . '/' . a:fname . '"'
 +endfunc
-diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchparen.vim
---- vim70.orig/runtime/plugin/matchparen.vim	2006-04-27 06:31:26.000000000 -0700
-+++ vim70/runtime/plugin/matchparen.vim	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchparen.vim
+--- vim70-orig/runtime/plugin/matchparen.vim	2006-04-27 09:31:26.000000000 -0400
++++ vim70/runtime/plugin/matchparen.vim	2006-05-25 09:13:12.000000000 -0400
 @@ -1,6 +1,6 @@
  " Vim plugin for showing matching parens
  " Maintainer:  Bram Moolenaar <Bram@vim.org>
@@ -107,9 +107,9 @@ diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchpa
    endif
  
    " If a match is found setup match highlighting.
-diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
---- vim70.orig/src/edit.c	2006-05-07 04:48:51.000000000 -0700
-+++ vim70/src/edit.c	2006-05-12 13:15:43.000000000 -0700
+diff -Naur vim70-orig/src/edit.c vim70/src/edit.c
+--- vim70-orig/src/edit.c	2006-05-07 07:48:51.000000000 -0400
++++ vim70/src/edit.c	2006-05-25 09:13:12.000000000 -0400
 @@ -751,7 +751,7 @@
  		    continue;
  		}
@@ -200,9 +200,9 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      }
  
      if (allow_get_expansion && insert_match
-diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
---- vim70.orig/src/eval.c	2006-05-05 10:15:26.000000000 -0700
-+++ vim70/src/eval.c	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/eval.c vim70/src/eval.c
+--- vim70-orig/src/eval.c	2006-05-05 13:15:26.000000000 -0400
++++ vim70/src/eval.c	2006-05-25 09:13:11.000000000 -0400
 @@ -11372,7 +11372,7 @@
  	    if (argvars[2].v_type != VAR_UNKNOWN)
  	    {
@@ -222,9 +222,9 @@ diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
  	{
  	    /* It's "s:" or "<SID>" */
  	    if (current_SID <= 0)
-diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
---- vim70.orig/src/ex_docmd.c	2006-05-05 09:33:19.000000000 -0700
-+++ vim70/src/ex_docmd.c	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/ex_docmd.c vim70/src/ex_docmd.c
+--- vim70-orig/src/ex_docmd.c	2006-05-05 12:33:19.000000000 -0400
++++ vim70/src/ex_docmd.c	2006-05-25 09:13:10.000000000 -0400
 @@ -833,7 +833,7 @@
       * If requested, store and reset the global values controlling the
       * exception handling (used when debugging).
@@ -234,9 +234,9 @@ diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
  	save_dbg_stuff(&debug_saved);
  
      initial_trylevel = trylevel;
-diff -Naur vim70.orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
---- vim70.orig/src/gui_at_fs.c	2005-07-09 04:30:17.000000000 -0700
-+++ vim70/src/gui_at_fs.c	2006-05-12 13:18:22.000000000 -0700
+diff -Naur vim70-orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
+--- vim70-orig/src/gui_at_fs.c	2005-07-09 07:30:17.000000000 -0400
++++ vim70/src/gui_at_fs.c	2006-05-25 09:13:13.000000000 -0400
 @@ -1861,27 +1861,27 @@
      XtPointer	pnew;
  {
@@ -350,9 +350,9 @@ diff -Naur vim70.orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
  
      if (nw > SFdirEnd - 3)
  	nw = SFdirEnd - 3;
-diff -Naur vim70.orig/src/gui.c vim70/src/gui.c
---- vim70.orig/src/gui.c	2006-05-03 04:00:59.000000000 -0700
-+++ vim70/src/gui.c	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/gui.c vim70/src/gui.c
+--- vim70-orig/src/gui.c	2006-05-03 07:00:59.000000000 -0400
++++ vim70/src/gui.c	2006-05-25 09:13:10.000000000 -0400
 @@ -4603,11 +4603,11 @@
      /* Don't move the mouse when it's left or right of the Vim window */
      if (x < 0 || x > Columns * gui.char_width)
@@ -368,9 +368,25 @@ diff -Naur vim70.orig/src/gui.c vim70/src/gui.c
  	wp = xy2win(x, y);
      if (wp != curwin && wp != NULL)	/* If in other than current window */
      {
-diff -Naur vim70.orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
---- vim70.orig/src/gui_xmebw.c	2006-04-30 08:32:32.000000000 -0700
-+++ vim70/src/gui_xmebw.c	2006-05-12 13:17:21.000000000 -0700
+diff -Naur vim70-orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
+--- vim70-orig/src/gui_xmebw.c	2006-04-30 11:32:32.000000000 -0400
++++ vim70/src/gui_xmebw.c	2006-05-25 09:13:13.000000000 -0400
+@@ -47,13 +47,13 @@
+ #include "gui_xmebwp.h"
+ 
+ /* Provide some missing wrappers, which are missed from the LessTif
+- * implementation.
++ * implementation.  Also missing in Motif 1.2 and earlier.
+  *
+  * We neither use XmeGetPixmapData or _XmGetPixmapData, since with LessTif the
+  * pixmap will not appear in it's caches properly. We cache the interresting
+  * values in XmEnhancedButtonPart instead ourself.
+  */
+-#ifdef LESSTIF_VERSION
++#if defined(LESSTIF_VERSION) || (XmVersion <= 1002)
+ # ifndef Lab_IsMenupane
+ #  define Lab_IsMenupane(w) (Lab_MenuType(w) == (int)XmMENU_POPUP || \
+ 		    Lab_MenuType(w) == (int)XmMENU_PULLDOWN)
 @@ -480,7 +480,7 @@
  	    || (eb->core.height <= 2 * eb->primitive.highlight_thickness))
  	return;
@@ -452,9 +468,9 @@ diff -Naur vim70.orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
  		/*
  		 * Compute location of bounding box to contain the
  		 * defaultButtonShadow.
-diff -Naur vim70.orig/src/Makefile vim70/src/Makefile
---- vim70.orig/src/Makefile	2006-05-07 06:25:27.000000000 -0700
-+++ vim70/src/Makefile	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/Makefile vim70/src/Makefile
+--- vim70-orig/src/Makefile	2006-05-07 09:25:27.000000000 -0400
++++ vim70/src/Makefile	2006-05-25 09:13:11.000000000 -0400
 @@ -2177,6 +2177,7 @@
  	cd $(SHADOWDIR)/xxd; ln -s ../../xxd/*.[ch] ../../xxd/Make* .
  	if test -d $(RSRC_DIR); then \
@@ -463,9 +479,33 @@ diff -Naur vim70.orig/src/Makefile vim70/src/Makefile
  		ln -s ../$(RSRC_DIR) ../os_mac.rsr.hqx ../dehqx.py .; \
  	fi
  	mkdir $(SHADOWDIR)/testdir
-diff -Naur vim70.orig/src/message.c vim70/src/message.c
---- vim70.orig/src/message.c	2006-05-06 13:07:37.000000000 -0700
-+++ vim70/src/message.c	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/mbyte.c vim70/src/mbyte.c
+--- vim70-orig/src/mbyte.c	2006-04-30 07:51:01.000000000 -0400
++++ vim70/src/mbyte.c	2006-05-25 09:13:13.000000000 -0400
+@@ -311,7 +311,11 @@
+ 
+ #define IDX_MACROMAN	57
+     {"macroman",	ENC_8BIT + ENC_MACROMAN, 0},	/* Mac OS */
+-#define IDX_COUNT	58
++#define IDX_DECMCS	58
++    {"dec-mcs",		ENC_8BIT,		0},	/* DEC MCS */
++#define IDX_HPROMAN8	59
++    {"hp-roman8",	ENC_8BIT,		0},	/* HP Roman8 */
++#define IDX_COUNT	60
+ };
+ 
+ /*
+@@ -386,6 +390,7 @@
+     {"950",		IDX_BIG5},
+ #endif
+     {"mac",		IDX_MACROMAN},
++    {"mac-roman",	IDX_MACROMAN},
+     {NULL,		0}
+ };
+ 
+diff -Naur vim70-orig/src/message.c vim70/src/message.c
+--- vim70-orig/src/message.c	2006-05-06 16:07:37.000000000 -0400
++++ vim70/src/message.c	2006-05-25 09:13:11.000000000 -0400
 @@ -4175,15 +4175,16 @@
  			str_arg_l = 0;
  		    else
@@ -489,9 +529,9 @@ diff -Naur vim70.orig/src/message.c vim70/src/message.c
  			str_arg_l = (q == NULL) ? precision : q - str_arg;
  		    }
  		    break;
-diff -Naur vim70.orig/src/option.c vim70/src/option.c
---- vim70.orig/src/option.c	2006-05-03 10:32:28.000000000 -0700
-+++ vim70/src/option.c	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/option.c vim70/src/option.c
+--- vim70-orig/src/option.c	2006-05-03 13:32:28.000000000 -0400
++++ vim70/src/option.c	2006-05-25 09:13:12.000000000 -0400
 @@ -2294,7 +2294,7 @@
  			    {(char_u *)0L, (char_u *)0L}
  #endif
@@ -517,9 +557,9 @@ diff -Naur vim70.orig/src/option.c vim70/src/option.c
  # if defined(FEAT_CINDENT)
  	    case PV_INDE:	return &curbuf->b_p_inde_flags;
  # endif
-diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
---- vim70.orig/src/spell.c	2006-05-05 00:49:58.000000000 -0700
-+++ vim70/src/spell.c	2006-05-12 13:14:48.000000000 -0700
+diff -Naur vim70-orig/src/spell.c vim70/src/spell.c
+--- vim70-orig/src/spell.c	2006-05-05 03:49:58.000000000 -0400
++++ vim70/src/spell.c	2006-05-25 09:13:11.000000000 -0400
 @@ -2108,7 +2108,8 @@
  	 * possible. */
  	STRCPY(buf, line);
@@ -530,13 +570,17 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  
  	p = buf + skip;
  	endp = buf + len;
-diff -Naur vim70.orig/src/version.c vim70/src/version.c
---- vim70.orig/src/version.c	2006-05-03 00:50:42.000000000 -0700
-+++ vim70/src/version.c	2006-05-12 13:18:22.000000000 -0700
-@@ -667,6 +667,34 @@
+diff -Naur vim70-orig/src/version.c vim70/src/version.c
+--- vim70-orig/src/version.c	2006-05-03 03:50:42.000000000 -0400
++++ vim70/src/version.c	2006-05-25 09:13:13.000000000 -0400
+@@ -667,6 +667,38 @@
  static int included_patches[] =
  {   /* Add new patch number below this line */
  /**/
++    17,
++/**/
++    16,
++/**/
 +    15,
 +/**/
 +    14,
