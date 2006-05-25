@@ -1,0 +1,73 @@
+The following port needs to open on your firewall.
+873/tcp
+
+The Following modules will need to be added to your apache
+
+LoadModule proxy_module lib/apache/mod_proxy.so
+LoadModule proxy_http_module lib/apache/mod_proxy_http.so
+
+Along with the svn ones.
+
+LoadModule dav_svn_module     lib/apache/mod_dav_svn.so
+LoadModule authz_svn_module   lib/apache/mod_authz_svn.so
+
+Copy from your subversion tarballs tools/xslt/svnindex.* to your
+/srv/www/htdocs directory.
+
+Apache httpd.conf file
+<Location /svn/repos>
+  <Limit CHECKOUT DELETE GET PROPFIND PUT OPTIONS REPORT>
+	DAV svn
+	SVNParentPath /srv/svn
+	SVNIndexXSLT /svnindex.xsl
+	AuthzSVNAccessFile /etc/svn/svn_auths
+	Satisfy Any
+	Require valid-user
+	AuthType Basic
+	AuthName "Subversion Repository"
+	AuthUserFile /etc/svn/svn_users
+  </Limit>
+   RewriteEngine On
+   RewriteCond %{REQUEST_METHOD} !^(GET|PROPFIND|OPTIONS|REPORT)$
+   RewriteRule /svn/repos(.*) http://svn.cross-lfs.org/svn/repos$1 [P]
+   ProxyPassReverse http://svn.cross-lfs.org/svn/repos
+</Location>
+
+
+Follow the BLFS instructions to install rsync daemon
+
+You will need to setup rsyncd to allow files to be transferred in
+after a commit.
+
+Here is a our /etc/rsyncd.conf
+
+---start
+motd file = /home/rsync/welcome.msg
+use chroot = yes
+
+uid = rsync
+gid = rsync
+
+[clfs]
+	path = /srv/svn/cross-lfs
+	comment = CLFS svn rsync module
+	read only = no
+	list = yes
+	hosts allow = 209.172.44.8
+	secrets file = /etc/rsyncd.secrets
+---end
+
+Here is an the /etc/rsyncd.secrets
+
+---start
+clfs:clfs
+---end
+
+After you get that setup you will need to run the following commands
+to make your repo active.
+
+install -d /srv/svn
+svnadmin create cross-lfs
+chown apache:root cross-lfs -R
+
+rsync -avz cross-lfs.org::clfs /srv/svn/cross-lfs/db
