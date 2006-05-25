@@ -5,6 +5,8 @@ Origin: GCC SVN Revision 108635 (diffed against 4.1.0 release)
 Upstream Status: In GCC trunk
 Description: Fix for PR20425
 
+Modified by Jim Gifford for 4.1.1
+
 From http://gcc.gnu.org/ml/gcc-patches/2005-12/msg00818.html
 ---------------------------------8<------------------------------------
 This gives the gcc driver a new path iteration function, for_each_path,
@@ -88,41 +90,6 @@ a previous iteration of this patch missing is_directory fixes.
 Currently running tests on this patch.
 ---------------------------------8<------------------------------------
 
-diff -uNr gcc-4.1.0/gcc/ChangeLog gcc-4.1.0-PR20425/gcc/ChangeLog
---- gcc-4.1.0/gcc/ChangeLog	2006-02-28 19:28:30.000000000 +1100
-+++ gcc-4.1.0-PR20425/gcc/ChangeLog	2006-03-10 23:56:57.000000000 +1100
-@@ -1,3 +1,31 @@
-+2006-03-10  Ryan Oliver <ryan@linuxfromscratch.org>
-+	Backport:
-+	2005-12-16  Alan Modra  <amodra@bigpond.net.au>
-+	PR driver/20425
-+	* gcc.c (for_each_path): New function.
-+	(add_to_obstack, file_at_path): New functions.
-+	(struct file_at_path_info, struct add_to_obstack_info): New.
-+	(build_search_list): Rewrite using for_each_path.  Constify struct
-+	path_prefix pointer.  Add do_multi param.  Adjust all callers.
-+	(find_a_file): Similarly, but just change existing param to bool.
-+	(putenv_from_prefixes): Add do_multi param, make "paths" const.
-+	(do_spec_path): Delete.
-+	(struct spec_path_info): New.
-+	(spec_path): New function.
-+	(do_spec_1): Use for_each_path for %D and %I.
-+	(find_file): Adjust for find_a_file changes.
-+	(main): Search multilibs for specs.  Print multilib lib path for
-+	-print-search-dirs.  Likewise add multilibs to LIBRARY_PATH_ENV.
-+	(read_specs): Search multilibs for %include and %include_noerr.
-+	(is_directory): Remove second string param.  Change last param
-+	to a bool.  Don't use concat.  Remove SMALL_ARG_MAX test, always
-+	check path is a dir.  Update all callers.
-+	* doc/hostconfig.texi (SMALL_ARG_MAX): Remove mention.
-+	* system.h (SMALL_ARG_MAX): Poison.
-+	* config.gcc: Don't define SMALL_ARG_MAX.
-+	* config.host: Likewise.
-+	* config.build: Likewise.
-+
- 2006-02-28  Release Manager
- 
- 	* GCC 4.1.0 released.
 diff -uNr gcc-4.1.0/gcc/config.build gcc-4.1.0-PR20425/gcc/config.build
 --- gcc-4.1.0/gcc/config.build	2005-06-25 12:02:01.000000000 +1000
 +++ gcc-4.1.0-PR20425/gcc/config.build	2006-03-10 23:47:02.000000000 +1100
