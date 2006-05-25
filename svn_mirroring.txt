@@ -16,7 +16,7 @@ Copy from your subversion tarballs tools/xslt/svnindex.* to your
 
 Apache httpd.conf file
 <Location /svn/repos>
-  <Limit CHECKOUT DELETE GET PROPFIND PUT OPTIONS REPORT>
+  <Limit CHECKOUT DELETE GET MERGE PROPFIND PUT OPTIONS REPORT>
 	DAV svn
 	SVNParentPath /srv/svn
 	SVNIndexXSLT /svnindex.xsl
@@ -28,7 +28,7 @@ Apache httpd.conf file
 	AuthUserFile /etc/svn/svn_users
   </Limit>
    RewriteEngine On
-   RewriteCond %{REQUEST_METHOD} !^(GET|PROPFIND|OPTIONS|REPORT)$
+   RewriteCond %{REQUEST_METHOD} !^(CHECKOUT|DELETE|GET|MERGE|PROPFIND|PUT|OPTIONS|REPORT)$   
    RewriteRule /svn/repos(.*) http://svn.cross-lfs.org/svn/repos$1 [P]
    ProxyPassReverse http://svn.cross-lfs.org/svn/repos
 </Location>
@@ -51,6 +51,7 @@ gid = rsync
 [clfs]
 	path = /srv/svn/cross-lfs
 	comment = CLFS svn rsync module
+	uid = apache
 	read only = no
 	list = yes
 	hosts allow = 209.172.44.8
