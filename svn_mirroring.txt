@@ -1,7 +1,9 @@
 The following port needs to open on your firewall.
 873/tcp
 
-The Following modules will need to be added to your apache
+The Following modules will need to be added to your apache, you
+will need to make sure your apache was compiled with --enable-proxy.
+If it has not, you will need to recompile it.
 
 LoadModule proxy_module lib/apache/mod_proxy.so
 LoadModule proxy_http_module lib/apache/mod_proxy_http.so
