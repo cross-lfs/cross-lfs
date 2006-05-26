@@ -27,10 +27,11 @@ Apache httpd.conf file
 	AuthName "Subversion Repository"
 	AuthUserFile /etc/svn/svn_users
   </Limit>
-   RewriteEngine On
-   RewriteCond %{REQUEST_METHOD} !^(CHECKOUT|DELETE|GET|MERGE|PROPFIND|PUT|OPTIONS|REPORT)$   
-   RewriteRule /svn/repos(.*) http://svn.cross-lfs.org/svn/repos$1 [P]
-   ProxyPassReverse http://svn.cross-lfs.org/svn/repos
+ <LimitExcept CHECKOUT GET MERGE PROFIND PUT OPTIONS REPORT>
+       ProxyPass http://svn.cross-lfs.org/svn/repos
+       ProxyPassReverse http://svn.cross-lfs.org/svn/repos
+</LimitExcept>
+</Location>
 </Location>
 
 
@@ -51,9 +52,9 @@ gid = rsync
 [clfs]
 	path = /srv/svn/cross-lfs
 	comment = CLFS svn rsync module
-	uid = apache
 	read only = no
 	list = yes
+	uid = apache
 	hosts allow = 209.172.44.8
 	secrets file = /etc/rsyncd.secrets
 ---end
