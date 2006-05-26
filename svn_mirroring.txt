@@ -27,7 +27,7 @@ Apache httpd.conf file
 	AuthName "Subversion Repository"
 	AuthUserFile /etc/svn/svn_users
   </Limit>
- <LimitExcept CHECKOUT GET MERGE PROFIND PUT OPTIONS REPORT>
+ <LimitExcept CHECKOUT DELETE GET MERGE PROFIND PUT OPTIONS REPORT>
        ProxyPass http://svn.cross-lfs.org/svn/repos
        ProxyPassReverse http://svn.cross-lfs.org/svn/repos
 </LimitExcept>
