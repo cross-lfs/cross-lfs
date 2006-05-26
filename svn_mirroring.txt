@@ -40,7 +40,8 @@ Follow the BLFS instructions to install rsync daemon
 You will need to setup rsyncd to allow files to be transferred in
 after a commit.
 
-Here is a our /etc/rsyncd.conf
+Here is a our /etc/rsyncd.conf. You will need to change the uid = apache to
+what ever user is running apache.
 
 ---start
 motd file = /home/rsync/welcome.msg
@@ -66,7 +67,8 @@ clfs:clfs
 ---end
 
 After you get that setup you will need to run the following commands
-to make your repo active.
+to make your repo active. You will need to change the apache:root to
+whatever user is running apache.
 
 install -d /srv/svn
 svnadmin create cross-lfs
