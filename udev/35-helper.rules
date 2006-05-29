@@ -15,7 +15,7 @@
 ########################################################################
 
 # kernel firmware loader
-SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware_helper"
+SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware.sh"
 
 # check cdrom helper
 BUS=="ide",	KERNEL=="hd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
