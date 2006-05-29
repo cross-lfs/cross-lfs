@@ -23,6 +23,12 @@
   <sect2 role="installation">
     <title>Installation of GRUB</title>
 
+   <para os="p1">Sometimes grub under Linux 2.6 doesn't detect the disk geometry correctly,
+   which will result in an error message. The error message is
+   Error 24: Attempt to access block outside partition. The following patch fixes this issue:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&grub-disk-patch;</userinput></screen>
+
     <para os="a">This package is known to have issues when its default optimization
     flags (including the <option>-march</option> and <option>-mcpu</option>
     options) are changed. If any environment variables that override default
