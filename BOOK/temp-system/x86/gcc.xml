@@ -59,14 +59,14 @@
 
 <screen os="ce"><userinput>cp -v gcc/cppdefault.c{,.orig}
 sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
-   gcc/cppdefault.c.orig > gcc/cppdefault.c</userinput></screen>
+    gcc/cppdefault.c.orig > gcc/cppdefault.c</userinput></screen>
 
     <para os="cf">Also, we need to set the directory searched by the fixincludes
     process for system headers, so it won't look at the host's headers:</para>
 
 <screen os="cg"><userinput>cp -v gcc/Makefile.in{,.orig}
 sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
-   gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
+    gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../cross-tools/x86/gcc-static.xml"
@@ -110,7 +110,7 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
     <para os="cm">Compile the package:</para>
 
 <screen os="cn"><userinput>make AS_FOR_TARGET="${AS}" \
-LD_FOR_TARGET="${LD}"</userinput></screen>
+    LD_FOR_TARGET="${LD}"</userinput></screen>
 
     <para os="co">Install the package:</para>
 
