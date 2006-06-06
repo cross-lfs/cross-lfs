@@ -14,31 +14,31 @@
   href="../common/creatingdirs.xml"
   xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>install -d ${LFS}/{bin,boot,dev,etc/opt,home,lib,mnt}
-install -d ${LFS}/{sbin,srv,usr/local,var,opt,proc,sys}
-install -d ${LFS}/root -m 0750
-install -d ${LFS}/tmp ${LFS}/var/tmp -m 1777
-install -d ${LFS}/media/{floppy,cdrom}
-install -d ${LFS}/usr/{bin,include,lib,sbin,share,src}
-ln -s share/{man,doc,info} ${LFS}/usr
-install -d ${LFS}/usr/share/{doc,info,locale,man}
-install -d ${LFS}/usr/share/{misc,terminfo,zoneinfo}
-install -d ${LFS}/usr/share/man/man{1,2,3,4,5,6,7,8}
-install -d ${LFS}/usr/local/{bin,etc,include,lib,sbin,share,src}
-ln -s share/{man,doc,info} ${LFS}/usr/local
-install -d ${LFS}/usr/local/share/{doc,info,locale,man}
-install -d ${LFS}/usr/local/share/{misc,terminfo,zoneinfo}
-install -d ${LFS}/usr/local/share/man/man{1,2,3,4,5,6,7,8}
-install -d ${LFS}/var/{lock,log,mail,run,spool}
-install -d ${LFS}/var/{opt,cache,lib/{misc,locate},local}
-install -d ${LFS}/opt/{bin,doc,include,info}
-install -d ${LFS}/opt/{lib,man/man{1,2,3,4,5,6,7,8}}</userinput></screen>
+<screen><userinput>install -dv ${LFS}/{bin,boot,dev,etc/opt,home,lib,mnt}
+install -dv ${LFS}/{sbin,srv,usr/local,var,opt,proc,sys}
+install -dv ${LFS}/root -m 0750
+install -dv ${LFS}/tmp ${LFS}/var/tmp -m 1777
+install -dv ${LFS}/media/{floppy,cdrom}
+install -dv ${LFS}/usr/{bin,include,lib,sbin,share,src}
+ln -sv share/{man,doc,info} ${LFS}/usr
+install -dv ${LFS}/usr/share/{doc,info,locale,man}
+install -dv ${LFS}/usr/share/{misc,terminfo,zoneinfo}
+install -dv ${LFS}/usr/share/man/man{1,2,3,4,5,6,7,8}
+install -dv ${LFS}/usr/local/{bin,etc,include,lib,sbin,share,src}
+ln -sv share/{man,doc,info} ${LFS}/usr/local
+install -dv ${LFS}/usr/local/share/{doc,info,locale,man}
+install -dv ${LFS}/usr/local/share/{misc,terminfo,zoneinfo}
+install -dv ${LFS}/usr/local/share/man/man{1,2,3,4,5,6,7,8}
+install -dv ${LFS}/var/{lock,log,mail,run,spool}
+install -dv ${LFS}/var/{opt,cache,lib/{misc,locate},local}
+install -dv ${LFS}/opt/{bin,doc,include,info}
+install -dv ${LFS}/opt/{lib,man/man{1,2,3,4,5,6,7,8}}</userinput></screen>
 
    <para>These entries are needed for the RaQ2 bootloader. Only use these
    if you are utilizing the Colo bootloader:</para>
 
 <screen><userinput>cd /${LFS}/boot 
-ln -sf . boot</userinput></screen>
+ln -svf . boot</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../common/creatingdirs.xml"

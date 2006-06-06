@@ -27,7 +27,7 @@
     because this only installs the headers, no compiling takes place. In the
     next glibc chapter, we use the gcc that's build right after this chapter.</para>
  	
-<screen os="s2"><userinput>cp configure{,.orig}
+<screen os="s2"><userinput>cp -v configure{,.orig}
 sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -141,8 +141,8 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
    <para os="cf">First we will copy a common file over to <filename 
    class="directory">/tools/include</filename>:</para>
 
-<screen os="cg"><userinput>install -d /tools/include/bits
-cp bits/stdio_lim.h /tools/include/bits</userinput></screen>
+<screen os="cg"><userinput>install -dv /tools/include/bits
+cp -v bits/stdio_lim.h /tools/include/bits</userinput></screen>
 
    <para os="ch">Now we will create a blank stub file:</para>
 

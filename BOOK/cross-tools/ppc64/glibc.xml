@@ -62,7 +62,7 @@
     following sed will correct this, we need to repeat it every time we install
     either size of glibc.</para>
 
-<screen os="t2"><userinput>cp sysdeps/unix/sysv/linux/powerpc/sys/procfs.h{,.orig}
+<screen os="t2"><userinput>cp -v sysdeps/unix/sysv/linux/powerpc/sys/procfs.h{,.orig}
 sed 's/__PPC64_ELF_H/__powerpc64__/' \
     sysdeps/unix/sysv/linux/powerpc/sys/procfs.h.orig \
     > sysdeps/unix/sysv/linux/powerpc/sys/procfs.h</userinput></screen>
