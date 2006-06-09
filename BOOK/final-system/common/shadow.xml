@@ -35,7 +35,7 @@
 
     <para os="b">Prepare Shadow for compilation:</para>
 
-<screen os="c"><userinput>./configure --libdir=/lib --enable-shared \
+<screen os="c"><userinput>./configure --libdir=/lib --sysconfdir=/etc --enable-shared \
     --without-libpam --without-audit --without-selinux</userinput></screen>
 
 <para os="d">The meaning of the configure options:</para>
@@ -79,21 +79,7 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
 
 <screen os="l"><userinput>make install</userinput></screen>
 
-    <para id="shadow-limits-login_access" os="m">Shadow uses two files to configure
-    authentication settings for the system. Install these two configuration
-    files:</para>
-
-    <indexterm zone="shadow-limits-login_access" os="n">
-      <primary sortas="e-/etc/limits">/etc/limits</primary>
-    </indexterm>
-
-    <indexterm zone="shadow-limits-login_access" os="o">
-      <primary sortas="e-/etc/login.access">/etc/login.access</primary>
-    </indexterm>
-
-<screen os="p"><userinput>cp -v etc/{limits,login.access} /etc</userinput></screen>
-
-    <para id="shadow-login_defs" os="q">Instead of using the default
+    <para id="shadow-login_defs">Instead of using the default
     <emphasis>crypt</emphasis> method, use the more secure
     <emphasis>MD5</emphasis> method of password encryption, which also allows
     passwords longer than 8 characters. It is also necessary to change the
@@ -103,13 +89,13 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
     these can be accomplished by changing the relevant configuration file
     while copying it to its destination:</para>
 
-    <indexterm zone="shadow-login_defs" os="r">
+    <indexterm zone="shadow-login_defs">
       <primary sortas="e-/etc/login.defs">/etc/login.defs</primary>
     </indexterm>
 
-<screen os="s"><userinput>sed -e's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
-    -e 's@/var/spool/mail@/var/mail@' \
-    etc/login.defs &gt; /etc/login.defs</userinput></screen>
+<screen os="s"><userinput>sed -i /etc/login.defs \
+    -e 's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
+    -e 's@/var/spool/mail@/var/mail@'</userinput></screen>
 
     <note os="t">
       <para>If you built Shadow with Cracklib support, execute
