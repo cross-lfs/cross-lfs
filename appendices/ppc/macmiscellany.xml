@@ -43,18 +43,21 @@
 	<para>Macintoshes use their own partition format - this means that other
 	machines are unlikely to be able to read or write to macintosh partitions
 	(in particular, fdisk does not understand them). The format allows a large
-	number of individual partitions, and the native Mac tools have a tendency
+	number of individual partitions, and the native Mac tools had a tendency
 	to insert small "filler" partitions between the real partitions. Under
 	linux, using more than 15 partitions can be problematic (shortage of device
 	nodes), so the normal approach is to use the Mac tools to create an area
 	of freespace at the <emphasis>front</emphasis> of the disk, then put the
 	Mac OS partition(s) after it and (re-)install the Mac OS.  The
 	freespace can then be partitioned using <command>parted</command> or the
-	older <command>mac-fdisk</command>.</para>
+	older <command>mac-fdisk</command>.  It seems that recent versions of the
+	Mac tools may no longer insert the filler partitions, so it may be
+	possible to do all the partitioning before installing OSX.</para>
 
 	<warning>
-	<para>The Macintosh resizing and partitioning tools are destructive and will
-	delete all data when a partition is resized.</para>
+	<para>The Macintosh resizing and partitioning tools are destructive and may
+	delete all data when a partition is resized, even on unaltered partitions.
+	</para>
 	</warning>
 
 	<para>For the Linux partitions, you will need a bootstrap partition - this
@@ -65,11 +68,17 @@
 	be confused with a <literal>/boot</literal> partition.  Other partitions
 	are as normal (at least one rootfs, perhaps swap, perhaps others).</para>
 
-	<para>If you follow this advice, partition 1 will be the apple partition
+	<para>According to the lfs-from-osx hint, the Mac partitioning tools
+	can create an apple_bootstrap partition and therefore there is no need
+	to use a Linux CD to create the desired partitions from freespace, but
+	using a Linux CD to create the partitions is a more widely tested approach.
+	</para>
+
+	<para>If you follow this approach, partition 1 will be the apple partition
 	map, partition 2 will be the bootstrap at the start of the disk, the
 	linux partitions will follow, and then the mac partition(s) - under OSX
 	the first mac partition will be number 3, under OS9 it would have a higher
-	number.</para>
+	number and there would be some apple driver partitions.</para>
       </listitem>
     </varlistentry>
 

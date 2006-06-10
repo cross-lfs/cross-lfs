@@ -30,10 +30,12 @@
   to a bootstrap partition and blessing it so that Open Firmware will boot from
   it.  This is all handled by <command>ybin</command> the yaboot installer.</para>
 
-  <para os="d">Ybin assembles all the information it needs by reading yaboot.conf,
-  then writes the bootstrap. When booted, the bootstrap provides an initial menu to
-  choose between linux, boot from CD, and e.g. osx (depending on what was in yaboot.conf).
-  If you boot to 'linux', yaboot kicks in and lets you select which kernel to use.</para>
+  <para os="d">Ybin writes an optional 'OS selector' menu into Open Firmware,
+  then writes yaboot and yaboot.conf to the bootstrap partition, blesses this,
+  and updates the boot device recorded in nvram. When booted, the OF provides
+  the initial menu to choose between linux, boot from CD, and e.g. OSX
+  (depending on what was in yaboot.conf). If you boot to 'linux', yaboot is
+  executed and lets you select which kernel to use.</para>
 
   <para os="e">Images (kernels) are specified, together with any necessary path,
   in yaboot.conf - the details are incorporated into the bootloader, but no attempt
@@ -43,12 +45,6 @@
   but if you have multiple disks, or if you wish to be pedantic, you can specify the
   full OF path to the device, obtained by running <command>ofpath /dev/hdX</command>
   .</para>
-
-  <para os="f">Note that the man page mentions which filesystems yaboot can
-  navigate to find the images - the only linux filesystem type mentioned is ext2.
-  You can use ext3 because that can be read like ext2, but if you wish to use
-  reiserfs or any other filesystem you may need to create a separate boot partition
-  formatted as ext2.</para>
 
   <para os="h">Using the above information, determine the appropriate designators
   for the bootstrap partition and the root partition.  For the following example,
@@ -135,8 +131,9 @@ image=/pci@f4000000/ata-6d/disk@0:6,/vmlinux
 EOF</userinput></screen>
 
   <warning os="r">
-    <para>The following command will overwrite the current boot loader.
-    Do not run the command if this is not desired.</para>
+    <para>The following command will update the bootstrap partition and the
+    boot variable in Open Firmware. Do not run the command if this is not
+    desired.</para>
   </warning>
 
 <screen os="s" role="nodump"><userinput>ybin</userinput></screen>
