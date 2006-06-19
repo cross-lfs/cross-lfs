@@ -70,13 +70,6 @@
 
     </variablelist>
 
-    <important>
-      <para>The above patches and seds are critical in ensuring a
-      successful build. In particular, the package will appear to install
-      correctly without the second sed, but will fail to load linux,
-      requiring you to use OF or a rescue disk to boot.</para>
-    </important>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='e'])"/>
@@ -91,16 +84,19 @@
 
 <screen os="h"><userinput>CFLAGS="${BUILD32}" make PREFIX=/usr</userinput></screen>
 
-    <important>
-      <para>The CFLAGS on the above command are equally critical
-      for a successful install.</para>
-    </important>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen><userinput>make PREFIX=/usr install 2&gt;&amp;1 &gt;instlog</userinput></screen>
+    <important os="j0">
+      <para>The multilib install of yaboot can fail if you miss any of the
+      patches or seds, or omit the CFLAGS variable. <command>ld</command> will
+      issue warnings, but the install will appear to complete successfully.
+      That would result in an unbootable system, so you need to log the output
+      to check it.</para>
+    </important>
+
+<screen><userinput>make PREFIX=/usr install 2&gt;&amp;1 | tee instlog</userinput></screen>
 
     <para os='k'>To ensure that the install was successful, run the following
     command:</para>
@@ -108,9 +104,8 @@
 <screen os='l'><userinput>grep 'powerpc:common64' instlog</userinput></screen>
 
     <para os='m'>If the command gave you <emphasis>any</emphasis> output
-    (... is incompatible with powerpc:common output) the build is broken and
-    you will have to repeat it with <emphasis>all</emphasis> of the items
-    marked as important.</para>
+    (... is incompatible with powerpc:common output) the build of yaboot is
+    broken and you will have to correct your error(s) and repeat it.</para>
 
   </sect2>
 
