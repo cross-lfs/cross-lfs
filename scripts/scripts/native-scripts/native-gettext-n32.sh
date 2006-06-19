@@ -1,1 +1,0 @@
-native-gettext.sh

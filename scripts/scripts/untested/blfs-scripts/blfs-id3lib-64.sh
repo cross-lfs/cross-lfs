@@ -1,1 +1,0 @@
-blfs-id3lib.sh

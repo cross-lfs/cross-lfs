@@ -1,1 +1,0 @@
-blfs-gd.sh

@@ -1,1 +1,0 @@
-target-ncurses.sh

@@ -1,1 +1,0 @@
-blfs-gimp-print.sh

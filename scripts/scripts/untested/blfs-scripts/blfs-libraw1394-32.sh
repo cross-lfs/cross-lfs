@@ -1,1 +1,0 @@
-blfs-libraw1394.sh

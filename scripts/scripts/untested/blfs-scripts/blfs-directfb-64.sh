@@ -1,1 +1,0 @@
-blfs-directfb.sh

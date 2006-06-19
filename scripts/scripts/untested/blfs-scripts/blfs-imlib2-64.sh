@@ -1,1 +1,0 @@
-blfs-imlib2.sh

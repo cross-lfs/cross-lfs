@@ -1,1 +1,0 @@
-blfs-cyrus-sasl.sh

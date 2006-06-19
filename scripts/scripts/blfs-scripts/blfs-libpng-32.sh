@@ -1,1 +1,0 @@
-blfs-libpng.sh

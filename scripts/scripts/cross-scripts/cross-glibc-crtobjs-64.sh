@@ -1,1 +1,0 @@
-cross-glibc-crtobjs.sh

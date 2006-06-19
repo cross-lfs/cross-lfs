@@ -1,1 +1,0 @@
-blfs-gtk12.sh

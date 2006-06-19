@@ -1,1 +1,0 @@
-native-ncurses.sh

@@ -1,1 +1,0 @@
-gnome-platform-at-spi.sh

@@ -1,1 +1,0 @@
-gnome-platform-libbonobo.sh

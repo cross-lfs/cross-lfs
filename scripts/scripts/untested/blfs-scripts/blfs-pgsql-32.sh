@@ -1,1 +1,0 @@
-blfs-pgsql.sh

@@ -1,1 +1,0 @@
-blfs-libieee1284.sh

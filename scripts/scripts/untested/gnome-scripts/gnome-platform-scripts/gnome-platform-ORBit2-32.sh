@@ -1,1 +1,0 @@
-gnome-platform-ORBit2.sh

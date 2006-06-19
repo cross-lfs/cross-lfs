@@ -1,1 +1,0 @@
-blfs-espgs.sh

@@ -1,1 +1,0 @@
-blfs-libtool.sh
