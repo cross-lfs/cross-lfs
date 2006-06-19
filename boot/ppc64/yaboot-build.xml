@@ -38,34 +38,55 @@
     href="../../final-system/ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-    <para os="p1">The following patch allows <command>ofpath</command> to use
-    <literal>PATH_PREFIX</literal> like the other
-    <filename class="directory">ybin</filename> scripts:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot-build.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&yaboot-ofpath_path-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../ppc/yaboot-build.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
 
     <para>The Makefile is already set to do kernel-style cross-compiling,
     but it will try to use <command>strip</command> to strip the second-stage
     loader.  It also expects to be running as root for the install, and to
-    install for the root user, which user LFS cannot do.  The following command
-    will fix this:</para>
+    install for the root user, which user LFS cannot do.  We also need to use
+    the 32-bit compiler, and to force <command>ld</command> to use a 32-bit
+    emulation. The following commands will fix and achieve this:</para>
 
 <screen><userinput>cp Makefile,{.orig}
-sed -e "s/\(strip \)/${LFS_TARGET}-\1/" \
-    -e 's/-o root -g root//' \
+sed -e "s/\(-print-libgcc-file-name\)/${BUILD32} \1/" \
+            -e "s/\(-Bstatic\)/-melf32ppclinux \1/" \
+            -e "s/\(strip \)/${LFS_TARGET}-\1/" \
+            -e 's/-o root -g root//' \
     Makefile.orig > Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>make CROSS=${LFS_TARGET}-</userinput></screen>
+<screen><userinput>CFLAGS=${BUILD32} make CROSS=${LFS_TARGET}-</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen><userinput>make CROSS=${LFS_TARGET}- ROOT=/tools PREFIX= install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/ppc64/yaboot.xml"
+    xpointer="xpointer(//*[@os='j0'])"/>
+
+<screen><userinput>make CROSS=${LFS_TARGET}- ROOT=/tools PREFIX= install 2&gt;&amp;1 | tee instlog</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/ppc64/yaboot.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/ppc64/yaboot.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/ppc64/yaboot.xml"
+    xpointer="xpointer(//*[@os='m'])"/>
 
   </sect2>
 
