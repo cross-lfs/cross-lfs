@@ -60,7 +60,7 @@ diff -Naur glibc-2.4.orig/timezone/Makefile glibc-2.4/timezone/Makefile
 +ifeq ($(cross-compiling),no)
  zic-cmd = $(built-program-cmd) -d $(inst_zonedir)
 +else
-+zic-cmd = $(firstword $(filter /%,$(objpfx)zic-host $(shell pwd)/$(objpfx)zic-host)) -d $(inst_zonedir)
++zic-cmd = $(common-objpfx)/timezone/zic-host -d $(inst_zonedir)
 +endif
  tzcompile = $(zic-cmd)$(target-zone-flavor) -L $(word 3,$^) \
  	    -y $(dir $(word 4,$^))$(notdir $(word 4,$^)) $<
