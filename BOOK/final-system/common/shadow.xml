@@ -44,7 +44,7 @@
     <varlistentry>
       <term><parameter>--without-libpam</parameter></term>
       <listitem><para>Support for Linux-PAM is enabled by default in Shadow,
-      however PAM is not installed on a base LFS system, so this switch
+      however PAM is not installed on a base CLFS system, so this switch
       disables PAM support in Shadow. For instructions to install PAM and
       link Shadow to it, you can look at
       <ulink url="&blfs-root;view/svn/postlfs/shadow.html"/>.</para></listitem>
@@ -52,13 +52,13 @@
     <varlistentry>
       <term><parameter>--without-audit</parameter></term>
       <listitem><para>Support for auditing is enabled by default, but a
-      library that it needs is not installed in a base LFS system. This
+      library that it needs is not installed in a base CLFS system. This
       switch disables auditing support.</para></listitem>
     </varlistentry>
     <varlistentry>
       <term><parameter>--without-selinux</parameter></term>
       <listitem><para>Support for selinux is enabled by default, but selinux
-      is not built in a base LFS system and configure will fail without this
+      is not built in a base CLFS system and configure will fail without this
       switch.</para></listitem>
     </varlistentry>
   </variablelist>
@@ -85,9 +85,9 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
     passwords longer than 8 characters. It is also necessary to change the
     obsolete <filename class="directory">/var/spool/mail</filename> location
     for user mailboxes that Shadow uses by default to the <filename
-    class="directory">/var/mail</filename> location used currently. Both of
-    these can be accomplished by changing the relevant configuration file
-    while copying it to its destination:</para>
+    class="directory">/var/mail</filename> location used currently. Use the
+    following sed command to make these changes to the appropriate
+    configuration file:</para>
 
     <indexterm zone="shadow-login_defs">
       <primary sortas="e-/etc/login.defs">/etc/login.defs</primary>
@@ -116,12 +116,6 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
 rm -v /lib/libshadow.so
 ln -svf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
 
-    <para os="y">The <option>-D</option> option of the <command>useradd</command>
-    program requires the <filename class="directory">/etc/default</filename>
-    directory for it to work properly:</para>
-
-<screen os="z"><userinput>install -dv /etc/default</userinput></screen>
-
   </sect2>
 
   <sect2 id="conf-shadow" role="configuration">
@@ -148,6 +142,12 @@ ln -svf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
     <para>To enable shadowed group passwords, run:</para>
 
 <screen role="nodump"><userinput>grpconv</userinput></screen>
+
+    <para>To view or change the default settings for new user accounts that
+    you create, you can edit <filename>/etc/default/useradd</filename>. See 
+    <command>man useradd</command> or
+    <ulink url="&blfs-root;view/svn/postlfs/skel.html"/> for more
+    information.</para>
 
   </sect2>
 
