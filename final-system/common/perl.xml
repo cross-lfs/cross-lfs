@@ -40,7 +40,8 @@
 <screen os="b"><userinput>./configure.gnu --prefix=/usr \
    -Dman1dir=/usr/share/man/man1 \
    -Dman3dir=/usr/share/man/man3 \
-   -Dpager="/bin/less -isR"</userinput></screen>
+   -Dpager="/bin/less -isR" \
+   -Dusethreads</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure option:</title>
@@ -58,6 +59,12 @@
           <para>Since Groff is not installed yet,
           <command>configure.gnu</command> thinks that we do not want
           man pages for Perl. Issuing these parameters overrides this decision.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry os="c3">
+        <term><parameter>-Dusethreads</parameter></term>
+        <listitem>
+          <para>This tells Perl to use threads.</para>
         </listitem>
       </varlistentry>
     </variablelist>
