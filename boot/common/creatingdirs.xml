@@ -13,25 +13,19 @@
   <para os="a">It is time to create some structure in the LFS file system. Create a
   standard directory tree by issuing the following commands:</para>
 
-<screen><userinput>install -dv ${LFS}/{bin,boot,dev,etc/opt,home,lib,mnt}
-install -dv ${LFS}/{sbin,srv,usr/local,var,opt,proc,sys}
-install -dv ${LFS}/root -m 0750
-install -dv ${LFS}/tmp ${LFS}/var/tmp -m 1777
-install -dv ${LFS}/media/{floppy,cdrom}
-install -dv ${LFS}/usr/{bin,include,lib,sbin,share,src}
-ln -sv share/{man,doc,info} ${LFS}/usr
-install -dv ${LFS}/usr/share/{doc,info,locale,man}
-install -dv ${LFS}/usr/share/{misc,terminfo,zoneinfo}
-install -dv ${LFS}/usr/share/man/man{1,2,3,4,5,6,7,8}
-install -dv ${LFS}/usr/local/{bin,etc,include,lib,sbin,share,src}
-ln -sv share/{man,doc,info} ${LFS}/usr/local
-install -dv ${LFS}/usr/local/share/{doc,info,locale,man}
-install -dv ${LFS}/usr/local/share/{misc,terminfo,zoneinfo}
-install -dv ${LFS}/usr/local/share/man/man{1,2,3,4,5,6,7,8}
-install -dv ${LFS}/var/{lock,log,mail,run,spool}
-install -dv ${LFS}/var/{opt,cache,lib/{misc,locate},local}
-install -dv ${LFS}/opt/{bin,doc,include,info}
-install -dv ${LFS}/opt/{lib,man/man{1,2,3,4,5,6,7,8}}</userinput></screen>
+<screen><userinput>mkdir -pv ${LFS}/{bin,boot,dev,etc/opt,home,lib,mnt,opt}
+mkdir -pv ${LFS}/{proc,media/{floppy,cdrom},sbin,srv,sys,var}
+install -dv -m 0750 ${LFS}/root
+install -dv -m 1777 ${LFS}{/var,}/tmp
+mkdir -pv ${LFS}/usr/{,local/}{bin,include,lib,sbin,src}
+mkdir -pv ${LFS}/usr/{,local/}share/{doc,info,locale,man}
+mkdir -v  ${LFS}/usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -pv ${LFS}/usr/{,local/}share/man/man{1..8}
+for dir in ${LFS}/usr{,/local}; do
+  ln -sv share/{man,doc,info} $dir
+done
+mkdir -v ${LFS}/var/{lock,log,mail,run,spool}
+mkdir -pv ${LFS}/var/{opt,cache,lib/{misc,locate},local}</userinput></screen>
 
   <para os="b">Directories are, by default, created with permission mode 755,
   but this is not desirable for all directories. In the commands above,
