@@ -124,11 +124,11 @@ cd ../glibc-build</userinput></screen>
         host system issues. The exact reasons are not yet clear.</para>
       </listitem>
       <listitem>
-        <para>If you have mounted the LFS partition with the
+        <para>If you have mounted the CLFS partition with the
         <parameter>noatime</parameter> option, the <emphasis>atime</emphasis> test
         will fail. As mentioned in <xref linkend="ch-partitioning-mounting"/>,
         do not use the <parameter>noatime</parameter> option while building
-        LFS.</para>
+        CLFS.</para>
       </listitem>
       <listitem>
         <para>When running on older and slower hardware, some tests
@@ -185,12 +185,12 @@ localedef -i ja_JP -f EUC-JP ja_JP</userinput></screen>
 
     <para>Some locales installed by the <command>make
     localedata/install-locales</command> command above are not properly
-    supported by some applications that are in the LFS and BLFS books. Because
+    supported by some applications that are in the CLFS and BLFS books. Because
     of the various problems that arise due to application programmers making
-    assumptions that break in such locales, LFS should not be used in locales
+    assumptions that break in such locales, CLFS should not be used in locales
     that utilize multibyte character sets (including UTF-8) or right-to-left
     writing order.  Numerous unofficial and unstable patches are required to
-    fix these problems, and it has been decided by the LFS developers not to
+    fix these problems, and it has been decided by the CLFS developers not to
     support such complex locales at this time. This applies to the ja_JP and
     fa_IR locales as well&mdash;they have been installed only for GCC and
     Gettext tests to pass, and the <command>watch</command> program (part of

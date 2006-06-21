@@ -8,14 +8,14 @@
 <sect1 id="ch-bootable-grub">
   <?dbhtml filename="grub.html"?>
 
-  <title>Making the LFS System Bootable</title>
+  <title>Making the CLFS System Bootable</title>
 
   <indexterm zone="ch-bootable-grub">
     <primary sortas="a-GRUB">GRUB</primary>
     <secondary>configuring</secondary>
   </indexterm>
 
-  <para os="a">Your shiny new LFS system is almost complete. One of the last
+  <para os="a">Your shiny new CLFS system is almost complete. One of the last
   things to do is to ensure that the system can be properly booted. The
   instructions below apply only to computers of IA-32 architecture,
   meaning mainstream PCs. Information on <quote>boot loading</quote> for
@@ -70,7 +70,7 @@ dd if=/boot/grub/stage2 of=/dev/fd0 bs=512 seek=1</userinput></screen>
     Do not run the command if this is not desired, for example, if using
     a third party boot manager to manage the Master Boot Record (MBR).
     In this scenario, it would make more sense to install GRUB into the
-    <quote>boot sector</quote> of the LFS partition. In this case, this
+    <quote>boot sector</quote> of the CLFS partition. In this case, this
     next command would become <userinput>setup (hd0,3)</userinput>.</para>
   </warning>
 
@@ -100,8 +100,8 @@ timeout 30
 # Use prettier colors.
 color green/black light-green/black
 
-# The first entry is for LFS.
-title LFS &version;
+# The first entry is for CLFS.
+title CLFS &version;
 root (hd0,3)
 kernel /boot/lfskernel-&linux-version; root=/dev/hda4</literal>
 EOF</userinput></screen>

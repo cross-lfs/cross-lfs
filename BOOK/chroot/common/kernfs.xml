@@ -29,7 +29,7 @@
 <screen><userinput>mount -vt proc proc $LFS/proc
 mount -vt sysfs sysfs $LFS/sys</userinput></screen>
 
-  <para>Remember that if for any reason you stop working on the LFS system
+  <para>Remember that if for any reason you stop working on the CLFS system
   and start again later, it is important to check that these file systems
   are mounted again before entering the chroot environment.</para>
 
@@ -43,9 +43,9 @@ mknod -m 666 $LFS/dev/null c 1 3</userinput></screen>
   <para>Once the system is complete and booting, the rest of our device
   nodes are created by the Udev package.  Since this package is not
   available to us right now, we must take other steps to provide device
-  nodes under on the LFS filesystem.  We will use the <quote>bind</quote>
+  nodes under on the CLFS filesystem.  We will use the <quote>bind</quote>
   option in the mount command to make our host system's /dev structure
-  appear in the new LFS filesystem:</para>
+  appear in the new CLFS filesystem:</para>
 
 <screen><userinput>/tools/bin/mount -o bind /dev $LFS/dev</userinput></screen>
 
