@@ -1,14 +1,14 @@
-Submitted By: Jeremy Huntwork (jhuntwork at linuxfromscratch dot org)
-Date: 2006-05-25
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2006-06-21
 Initial Package Version: 7.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains Patch 001-004 and 006-017 from Upstream
+Description: Contains Patch 001-004 and 006-022 from Upstream
         005 is for the extras and Windows 32 only
 
-diff -Naur vim70-orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccomplete.vim
---- vim70-orig/runtime/autoload/ccomplete.vim	2006-05-03 10:35:56.000000000 -0400
-+++ vim70/runtime/autoload/ccomplete.vim	2006-05-25 09:13:10.000000000 -0400
+diff -Naur vim70.orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccomplete.vim
+--- vim70.orig/runtime/autoload/ccomplete.vim	2006-05-03 07:35:56.000000000 -0700
++++ vim70/runtime/autoload/ccomplete.vim	2006-06-21 23:50:50.000000000 -0700
 @@ -1,7 +1,7 @@
  " Vim completion script
  " Language:	C
@@ -27,9 +27,9 @@ diff -Naur vim70-orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccom
    if fnames == ''
      return []
    endif
-diff -Naur vim70-orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spellfile.vim
---- vim70-orig/runtime/autoload/spellfile.vim	2006-02-01 07:12:24.000000000 -0500
-+++ vim70/runtime/autoload/spellfile.vim	2006-05-25 09:13:12.000000000 -0400
+diff -Naur vim70.orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spellfile.vim
+--- vim70.orig/runtime/autoload/spellfile.vim	2006-02-01 04:12:24.000000000 -0800
++++ vim70/runtime/autoload/spellfile.vim	2006-06-21 23:50:50.000000000 -0700
 @@ -1,9 +1,9 @@
  " Vim script to download a missing spell file
  " Maintainer:	Bram Moolenaar <Bram@vim.org>
@@ -78,9 +78,9 @@ diff -Naur vim70-orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spel
 +  let dir = substitute(g:spellfile_URL, 'ftp://[^/]*/\(.*\)', '\1', '')
 +  exe 'Nread "' . machine . ' anonymous vim7user ' . dir . '/' . a:fname . '"'
 +endfunc
-diff -Naur vim70-orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchparen.vim
---- vim70-orig/runtime/plugin/matchparen.vim	2006-04-27 09:31:26.000000000 -0400
-+++ vim70/runtime/plugin/matchparen.vim	2006-05-25 09:13:12.000000000 -0400
+diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchparen.vim
+--- vim70.orig/runtime/plugin/matchparen.vim	2006-04-27 06:31:26.000000000 -0700
++++ vim70/runtime/plugin/matchparen.vim	2006-06-21 23:50:50.000000000 -0700
 @@ -1,6 +1,6 @@
  " Vim plugin for showing matching parens
  " Maintainer:  Bram Moolenaar <Bram@vim.org>
@@ -107,9 +107,9 @@ diff -Naur vim70-orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchpa
    endif
  
    " If a match is found setup match highlighting.
-diff -Naur vim70-orig/src/edit.c vim70/src/edit.c
---- vim70-orig/src/edit.c	2006-05-07 07:48:51.000000000 -0400
-+++ vim70/src/edit.c	2006-05-25 09:13:12.000000000 -0400
+diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
+--- vim70.orig/src/edit.c	2006-05-07 04:48:51.000000000 -0700
++++ vim70/src/edit.c	2006-06-21 23:50:50.000000000 -0700
 @@ -751,7 +751,7 @@
  		    continue;
  		}
@@ -200,9 +200,9 @@ diff -Naur vim70-orig/src/edit.c vim70/src/edit.c
      }
  
      if (allow_get_expansion && insert_match
-diff -Naur vim70-orig/src/eval.c vim70/src/eval.c
---- vim70-orig/src/eval.c	2006-05-05 13:15:26.000000000 -0400
-+++ vim70/src/eval.c	2006-05-25 09:13:11.000000000 -0400
+diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
+--- vim70.orig/src/eval.c	2006-05-05 10:15:26.000000000 -0700
++++ vim70/src/eval.c	2006-06-21 23:50:50.000000000 -0700
 @@ -11372,7 +11372,7 @@
  	    if (argvars[2].v_type != VAR_UNKNOWN)
  	    {
@@ -222,9 +222,9 @@ diff -Naur vim70-orig/src/eval.c vim70/src/eval.c
  	{
  	    /* It's "s:" or "<SID>" */
  	    if (current_SID <= 0)
-diff -Naur vim70-orig/src/ex_docmd.c vim70/src/ex_docmd.c
---- vim70-orig/src/ex_docmd.c	2006-05-05 12:33:19.000000000 -0400
-+++ vim70/src/ex_docmd.c	2006-05-25 09:13:10.000000000 -0400
+diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
+--- vim70.orig/src/ex_docmd.c	2006-05-05 09:33:19.000000000 -0700
++++ vim70/src/ex_docmd.c	2006-06-21 23:50:50.000000000 -0700
 @@ -833,7 +833,7 @@
       * If requested, store and reset the global values controlling the
       * exception handling (used when debugging).
@@ -234,9 +234,9 @@ diff -Naur vim70-orig/src/ex_docmd.c vim70/src/ex_docmd.c
  	save_dbg_stuff(&debug_saved);
  
      initial_trylevel = trylevel;
-diff -Naur vim70-orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
---- vim70-orig/src/gui_at_fs.c	2005-07-09 07:30:17.000000000 -0400
-+++ vim70/src/gui_at_fs.c	2006-05-25 09:13:13.000000000 -0400
+diff -Naur vim70.orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
+--- vim70.orig/src/gui_at_fs.c	2005-07-09 04:30:17.000000000 -0700
++++ vim70/src/gui_at_fs.c	2006-06-21 23:50:50.000000000 -0700
 @@ -1861,27 +1861,27 @@
      XtPointer	pnew;
  {
@@ -350,9 +350,18 @@ diff -Naur vim70-orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
  
      if (nw > SFdirEnd - 3)
  	nw = SFdirEnd - 3;
-diff -Naur vim70-orig/src/gui.c vim70/src/gui.c
---- vim70-orig/src/gui.c	2006-05-03 07:00:59.000000000 -0400
-+++ vim70/src/gui.c	2006-05-25 09:13:10.000000000 -0400
+diff -Naur vim70.orig/src/gui.c vim70/src/gui.c
+--- vim70.orig/src/gui.c	2006-05-03 04:00:59.000000000 -0700
++++ vim70/src/gui.c	2006-06-21 23:52:38.000000000 -0700
+@@ -4515,7 +4515,7 @@
+     int		y;
+ {
+     win_T	*wp;
+-    char_u	st[6];
++    char_u	st[8];
+ 
+     /* Ignore this while still starting up. */
+     if (!gui.in_use || gui.starting)
 @@ -4603,11 +4603,11 @@
      /* Don't move the mouse when it's left or right of the Vim window */
      if (x < 0 || x > Columns * gui.char_width)
@@ -368,9 +377,9 @@ diff -Naur vim70-orig/src/gui.c vim70/src/gui.c
  	wp = xy2win(x, y);
      if (wp != curwin && wp != NULL)	/* If in other than current window */
      {
-diff -Naur vim70-orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
---- vim70-orig/src/gui_xmebw.c	2006-04-30 11:32:32.000000000 -0400
-+++ vim70/src/gui_xmebw.c	2006-05-25 09:13:13.000000000 -0400
+diff -Naur vim70.orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
+--- vim70.orig/src/gui_xmebw.c	2006-04-30 08:32:32.000000000 -0700
++++ vim70/src/gui_xmebw.c	2006-06-21 23:50:50.000000000 -0700
 @@ -47,13 +47,13 @@
  #include "gui_xmebwp.h"
  
@@ -468,9 +477,175 @@ diff -Naur vim70-orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
  		/*
  		 * Compute location of bounding box to contain the
  		 * defaultButtonShadow.
-diff -Naur vim70-orig/src/Makefile vim70/src/Makefile
---- vim70-orig/src/Makefile	2006-05-07 09:25:27.000000000 -0400
-+++ vim70/src/Makefile	2006-05-25 09:13:11.000000000 -0400
+diff -Naur vim70.orig/src/if_ruby.c vim70/src/if_ruby.c
+--- vim70.orig/src/if_ruby.c	2006-04-30 08:37:52.000000000 -0700
++++ vim70/src/if_ruby.c	2006-06-21 23:56:28.000000000 -0700
+@@ -643,11 +643,23 @@
+ 
+ static VALUE set_buffer_line(buf_T *buf, linenr_T n, VALUE str)
+ {
+-    buf_T *savebuf = curbuf;
+-    char *line = STR2CSTR(str);
++    char	*line = STR2CSTR(str);
++#ifdef FEAT_AUTOCMD
++    aco_save_T	aco;
++#else
++    buf_T	*save_curbuf = curbuf;
++#endif
+ 
+-    if (n > 0 && n <= buf->b_ml.ml_line_count && line != NULL) {
++    if (n > 0 && n <= buf->b_ml.ml_line_count && line != NULL)
++    {
++#ifdef FEAT_AUTOCMD
++	/* set curwin/curbuf for "buf" and save some things */
++	aucmd_prepbuf(&aco, buf);
++#else
+ 	curbuf = buf;
++	curwin->w_buffer = buf;
++#endif
++
+ 	if (u_savesub(n) == OK) {
+ 	    ml_replace(n, (char_u *)line, TRUE);
+ 	    changed();
+@@ -655,10 +667,19 @@
+ 	    syn_changed(n); /* recompute syntax hl. for this line */
+ #endif
+ 	}
+-	curbuf = savebuf;
++
++#ifdef FEAT_AUTOCMD
++	/* restore curwin/curbuf and a few other things */
++	aucmd_restbuf(&aco);
++	/* Careful: autocommands may have made "buf" invalid! */
++#else
++	curwin->w_buffer = save_curbuf;
++	curbuf = save_curbuf;
++#endif
+ 	update_curbuf(NOT_VALID);
+     }
+-    else {
++    else
++    {
+ 	rb_raise(rb_eIndexError, "index %d out of buffer", n);
+ 	return Qnil; /* For stop warning */
+     }
+@@ -676,12 +697,24 @@
+ 
+ static VALUE buffer_delete(VALUE self, VALUE num)
+ {
+-    buf_T *buf = get_buf(self);
+-    buf_T *savebuf = curbuf;
+-    long n = NUM2LONG(num);
++    buf_T	*buf = get_buf(self);
++    long	n = NUM2LONG(num);
++#ifdef FEAT_AUTOCMD
++    aco_save_T	aco;
++#else
++    buf_T	*save_curbuf = curbuf;
++#endif
+ 
+-    if (n > 0 && n <= buf->b_ml.ml_line_count) {
++    if (n > 0 && n <= buf->b_ml.ml_line_count)
++    {
++#ifdef FEAT_AUTOCMD
++	/* set curwin/curbuf for "buf" and save some things */
++	aucmd_prepbuf(&aco, buf);
++#else
+ 	curbuf = buf;
++	curwin->w_buffer = buf;
++#endif
++
+ 	if (u_savedel(n, 1) == OK) {
+ 	    ml_delete(n, 0);
+ 
+@@ -691,10 +724,19 @@
+ 
+ 	    changed();
+ 	}
+-	curbuf = savebuf;
++
++#ifdef FEAT_AUTOCMD
++	/* restore curwin/curbuf and a few other things */
++	aucmd_restbuf(&aco);
++	/* Careful: autocommands may have made "buf" invalid! */
++#else
++	curwin->w_buffer = save_curbuf;
++	curbuf = save_curbuf;
++#endif
+ 	update_curbuf(NOT_VALID);
+     }
+-    else {
++    else
++    {
+ 	rb_raise(rb_eIndexError, "index %d out of buffer", n);
+     }
+     return Qnil;
+@@ -702,13 +744,25 @@
+ 
+ static VALUE buffer_append(VALUE self, VALUE num, VALUE str)
+ {
+-    buf_T *buf = get_buf(self);
+-    buf_T *savebuf = curbuf;
+-    char *line = STR2CSTR(str);
+-    long n = NUM2LONG(num);
++    buf_T	*buf = get_buf(self);
++    char	*line = STR2CSTR(str);
++    long	n = NUM2LONG(num);
++#ifdef FEAT_AUTOCMD
++    aco_save_T	aco;
++#else
++    buf_T	*save_curbuf = curbuf;
++#endif
+ 
+-    if (n >= 0 && n <= buf->b_ml.ml_line_count && line != NULL) {
++    if (n >= 0 && n <= buf->b_ml.ml_line_count && line != NULL)
++    {
++#ifdef FEAT_AUTOCMD
++	/* set curwin/curbuf for "buf" and save some things */
++	aucmd_prepbuf(&aco, buf);
++#else
+ 	curbuf = buf;
++	curwin->w_buffer = buf;
++#endif
++
+ 	if (u_inssub(n + 1) == OK) {
+ 	    ml_append(n, (char_u *) line, (colnr_T) 0, FALSE);
+ 
+@@ -718,7 +772,15 @@
+ 
+ 	    changed();
+ 	}
+-	curbuf = savebuf;
++
++#ifdef FEAT_AUTOCMD
++	/* restore curwin/curbuf and a few other things */
++	aucmd_restbuf(&aco);
++	/* Careful: autocommands may have made "buf" invalid! */
++#else
++	curwin->w_buffer = save_curbuf;
++	curbuf = save_curbuf;
++#endif
+ 	update_curbuf(NOT_VALID);
+     }
+     else {
+diff -Naur vim70.orig/src/main.c vim70/src/main.c
+--- vim70.orig/src/main.c	2006-05-03 10:36:44.000000000 -0700
++++ vim70/src/main.c	2006-06-21 23:51:37.000000000 -0700
+@@ -564,7 +564,11 @@
+      */
+     if (p_lpl)
+     {
++# ifdef VMS	/* Somehow VMS doesn't handle the "**". */
++	source_runtime((char_u *)"plugin/*.vim", TRUE);
++# else
+ 	source_runtime((char_u *)"plugin/**/*.vim", TRUE);
++# endif
+ 	TIME_MSG("loading plugins");
+     }
+ #endif
+diff -Naur vim70.orig/src/Makefile vim70/src/Makefile
+--- vim70.orig/src/Makefile	2006-05-07 06:25:27.000000000 -0700
++++ vim70/src/Makefile	2006-06-21 23:50:50.000000000 -0700
 @@ -2177,6 +2177,7 @@
  	cd $(SHADOWDIR)/xxd; ln -s ../../xxd/*.[ch] ../../xxd/Make* .
  	if test -d $(RSRC_DIR); then \
@@ -479,9 +654,9 @@ diff -Naur vim70-orig/src/Makefile vim70/src/Makefile
  		ln -s ../$(RSRC_DIR) ../os_mac.rsr.hqx ../dehqx.py .; \
  	fi
  	mkdir $(SHADOWDIR)/testdir
-diff -Naur vim70-orig/src/mbyte.c vim70/src/mbyte.c
---- vim70-orig/src/mbyte.c	2006-04-30 07:51:01.000000000 -0400
-+++ vim70/src/mbyte.c	2006-05-25 09:13:13.000000000 -0400
+diff -Naur vim70.orig/src/mbyte.c vim70/src/mbyte.c
+--- vim70.orig/src/mbyte.c	2006-04-30 04:51:01.000000000 -0700
++++ vim70/src/mbyte.c	2006-06-21 23:50:50.000000000 -0700
 @@ -311,7 +311,11 @@
  
  #define IDX_MACROMAN	57
@@ -503,9 +678,9 @@ diff -Naur vim70-orig/src/mbyte.c vim70/src/mbyte.c
      {NULL,		0}
  };
  
-diff -Naur vim70-orig/src/message.c vim70/src/message.c
---- vim70-orig/src/message.c	2006-05-06 16:07:37.000000000 -0400
-+++ vim70/src/message.c	2006-05-25 09:13:11.000000000 -0400
+diff -Naur vim70.orig/src/message.c vim70/src/message.c
+--- vim70.orig/src/message.c	2006-05-06 13:07:37.000000000 -0700
++++ vim70/src/message.c	2006-06-21 23:50:50.000000000 -0700
 @@ -4175,15 +4175,16 @@
  			str_arg_l = 0;
  		    else
@@ -529,9 +704,20 @@ diff -Naur vim70-orig/src/message.c vim70/src/message.c
  			str_arg_l = (q == NULL) ? precision : q - str_arg;
  		    }
  		    break;
-diff -Naur vim70-orig/src/option.c vim70/src/option.c
---- vim70-orig/src/option.c	2006-05-03 13:32:28.000000000 -0400
-+++ vim70/src/option.c	2006-05-25 09:13:12.000000000 -0400
+diff -Naur vim70.orig/src/ops.c vim70/src/ops.c
+--- vim70.orig/src/ops.c	2006-04-30 08:13:44.000000000 -0700
++++ vim70/src/ops.c	2006-06-21 23:52:03.000000000 -0700
+@@ -2413,6 +2413,7 @@
+ 	else
+ 	{
+ 	    curwin->w_cursor = oap->end;
++	    check_cursor_col();
+ 
+ 	    /* Works just like an 'i'nsert on the next character. */
+ 	    if (!lineempty(curwin->w_cursor.lnum)
+diff -Naur vim70.orig/src/option.c vim70/src/option.c
+--- vim70.orig/src/option.c	2006-05-03 10:32:28.000000000 -0700
++++ vim70/src/option.c	2006-06-21 23:50:50.000000000 -0700
 @@ -2294,7 +2294,7 @@
  			    {(char_u *)0L, (char_u *)0L}
  #endif
@@ -557,9 +743,98 @@ diff -Naur vim70-orig/src/option.c vim70/src/option.c
  # if defined(FEAT_CINDENT)
  	    case PV_INDE:	return &curbuf->b_p_inde_flags;
  # endif
-diff -Naur vim70-orig/src/spell.c vim70/src/spell.c
---- vim70-orig/src/spell.c	2006-05-05 03:49:58.000000000 -0400
-+++ vim70/src/spell.c	2006-05-25 09:13:11.000000000 -0400
+diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
+--- vim70.orig/src/quickfix.c	2006-05-03 00:47:42.000000000 -0700
++++ vim70/src/quickfix.c	2006-06-21 23:54:05.000000000 -0700
+@@ -602,13 +602,19 @@
+ 		else
+ 		    type = 0;
+ 		/*
+-		 * Extract error message data from matched line
++		 * Extract error message data from matched line.
++		 * We check for an actual submatch, because "\[" and "\]" in
++		 * the 'errorformat' may cause the wrong submatch to be used.
+ 		 */
+ 		if ((i = (int)fmt_ptr->addr[0]) > 0)		/* %f */
+ 		{
+-		    int c = *regmatch.endp[i];
++		    int c;
++
++		    if (regmatch.startp[i] == NULL || regmatch.endp[i] == NULL)
++			continue;
+ 
+ 		    /* Expand ~/file and $HOME/file to full path. */
++		    c = *regmatch.endp[i];
+ 		    *regmatch.endp[i] = NUL;
+ 		    expand_env(regmatch.startp[i], namebuf, CMDBUFFSIZE);
+ 		    *regmatch.endp[i] = c;
+@@ -618,35 +624,63 @@
+ 			continue;
+ 		}
+ 		if ((i = (int)fmt_ptr->addr[1]) > 0)		/* %n */
++		{
++		    if (regmatch.startp[i] == NULL)
++			continue;
+ 		    enr = (int)atol((char *)regmatch.startp[i]);
++		}
+ 		if ((i = (int)fmt_ptr->addr[2]) > 0)		/* %l */
++		{
++		    if (regmatch.startp[i] == NULL)
++			continue;
+ 		    lnum = atol((char *)regmatch.startp[i]);
++		}
+ 		if ((i = (int)fmt_ptr->addr[3]) > 0)		/* %c */
++		{
++		    if (regmatch.startp[i] == NULL)
++			continue;
+ 		    col = (int)atol((char *)regmatch.startp[i]);
++		}
+ 		if ((i = (int)fmt_ptr->addr[4]) > 0)		/* %t */
++		{
++		    if (regmatch.startp[i] == NULL)
++			continue;
+ 		    type = *regmatch.startp[i];
++		}
+ 		if (fmt_ptr->flags == '+' && !multiscan)	/* %+ */
+ 		    STRCPY(errmsg, IObuff);
+ 		else if ((i = (int)fmt_ptr->addr[5]) > 0)	/* %m */
+ 		{
++		    if (regmatch.startp[i] == NULL || regmatch.endp[i] == NULL)
++			continue;
+ 		    len = (int)(regmatch.endp[i] - regmatch.startp[i]);
+ 		    vim_strncpy(errmsg, regmatch.startp[i], len);
+ 		}
+ 		if ((i = (int)fmt_ptr->addr[6]) > 0)		/* %r */
++		{
++		    if (regmatch.startp[i] == NULL)
++			continue;
+ 		    tail = regmatch.startp[i];
++		}
+ 		if ((i = (int)fmt_ptr->addr[7]) > 0)		/* %p */
+ 		{
++		    if (regmatch.startp[i] == NULL || regmatch.endp[i] == NULL)
++			continue;
+ 		    col = (int)(regmatch.endp[i] - regmatch.startp[i] + 1);
+ 		    if (*((char_u *)regmatch.startp[i]) != TAB)
+ 			use_viscol = TRUE;
+ 		}
+ 		if ((i = (int)fmt_ptr->addr[8]) > 0)		/* %v */
+ 		{
++		    if (regmatch.startp[i] == NULL)
++			continue;
+ 		    col = (int)atol((char *)regmatch.startp[i]);
+ 		    use_viscol = TRUE;
+ 		}
+ 		if ((i = (int)fmt_ptr->addr[9]) > 0)		/* %s */
+ 		{
++		    if (regmatch.startp[i] == NULL || regmatch.endp[i] == NULL)
++			continue;
+ 		    len = (int)(regmatch.endp[i] - regmatch.startp[i]);
+ 		    if (len > CMDBUFFSIZE - 5)
+ 			len = CMDBUFFSIZE - 5;
+diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
+--- vim70.orig/src/spell.c	2006-05-05 00:49:58.000000000 -0700
++++ vim70/src/spell.c	2006-06-21 23:50:50.000000000 -0700
 @@ -2108,7 +2108,8 @@
  	 * possible. */
  	STRCPY(buf, line);
@@ -570,13 +845,23 @@ diff -Naur vim70-orig/src/spell.c vim70/src/spell.c
  
  	p = buf + skip;
  	endp = buf + len;
-diff -Naur vim70-orig/src/version.c vim70/src/version.c
---- vim70-orig/src/version.c	2006-05-03 03:50:42.000000000 -0400
-+++ vim70/src/version.c	2006-05-25 09:13:13.000000000 -0400
-@@ -667,6 +667,38 @@
+diff -Naur vim70.orig/src/version.c vim70/src/version.c
+--- vim70.orig/src/version.c	2006-05-03 00:50:42.000000000 -0700
++++ vim70/src/version.c	2006-06-21 23:56:28.000000000 -0700
+@@ -667,6 +667,48 @@
  static int included_patches[] =
  {   /* Add new patch number below this line */
  /**/
++    22,
++/**/
++    21,
++/**/
++    20,
++/**/
++    19,
++/**/
++    18,
++/**/
 +    17,
 +/**/
 +    16,
@@ -611,4 +896,5 @@ diff -Naur vim70-orig/src/version.c vim70/src/version.c
 +/**/
      0
  };
+ 
  
