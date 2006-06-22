@@ -1,10 +1,10 @@
 Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
-Date: 2006-06-21
+Date: 2006-06-22
 Initial Package Version: 7.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains Patch 001-004 and 006-022 from Upstream
-        005 is for the extras and Windows 32 only
+Description: Contains Patch 001-004, 006-026, and 028 from Upstream
+        005 and 027 is for the extras and Windows 32 only
 
 diff -Naur vim70.orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccomplete.vim
 --- vim70.orig/runtime/autoload/ccomplete.vim	2006-05-03 07:35:56.000000000 -0700
@@ -109,8 +109,25 @@ diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchpa
    " If a match is found setup match highlighting.
 diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
 --- vim70.orig/src/edit.c	2006-05-07 04:48:51.000000000 -0700
-+++ vim70/src/edit.c	2006-06-21 23:50:50.000000000 -0700
-@@ -751,7 +751,7 @@
++++ vim70/src/edit.c	2006-06-22 11:03:06.000000000 -0700
+@@ -719,9 +719,14 @@
+ #ifdef FEAT_INS_EXPAND
+ 	/*
+ 	 * Special handling of keys while the popup menu is visible or wanted
+-	 * and the cursor is still in the completed word.
++	 * and the cursor is still in the completed word.  Only when there is
++	 * a match, skip this when no matches were found.
+ 	 */
+-	if (compl_started && pum_wanted() && curwin->w_cursor.col >= compl_col)
++	if (compl_started
++		&& pum_wanted()
++		&& curwin->w_cursor.col >= compl_col
++		&& (compl_shown_match == NULL
++		    || compl_shown_match != compl_shown_match->cp_next))
+ 	{
+ 	    /* BS: Delete one character from "compl_leader". */
+ 	    if ((c == K_BS || c == Ctrl_H)
+@@ -751,7 +756,7 @@
  		    continue;
  		}
  
@@ -119,7 +136,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  		 * compl_enter_selects is set the Enter key does the same. */
  		if (c == Ctrl_Y || (compl_enter_selects
  				   && (c == CAR || c == K_KENTER || c == NL)))
-@@ -3046,7 +3046,6 @@
+@@ -3046,7 +3051,6 @@
      ins_compl_delete();
      ins_bytes(compl_leader + curwin->w_cursor.col - compl_col);
      compl_used_match = FALSE;
@@ -127,7 +144,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  
      if (compl_started)
  	ins_compl_set_original_text(compl_leader);
-@@ -3076,6 +3075,7 @@
+@@ -3076,6 +3080,7 @@
  	compl_restarting = FALSE;
      }
  
@@ -135,7 +152,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      if (!compl_used_match)
      {
  	/* Go to the original text, since none of the matches is inserted. */
-@@ -3087,6 +3087,8 @@
+@@ -3087,6 +3092,8 @@
  	compl_curr_match = compl_shown_match;
  	compl_shows_dir = compl_direction;
      }
@@ -144,7 +161,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  
      /* Show the popup menu with a different set of matches. */
      ins_compl_show_pum();
-@@ -3175,10 +3177,32 @@
+@@ -3175,10 +3182,32 @@
      char_u	*p;
      int		len = curwin->w_cursor.col - compl_col;
      int		c;
@@ -178,7 +195,37 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      p += len;
  #ifdef FEAT_MBYTE
      c = mb_ptr2char(p);
-@@ -4100,6 +4124,21 @@
+@@ -3369,16 +3398,21 @@
+ 		    ptr = compl_leader;
+ 		else
+ 		    ptr = compl_orig_text;
+-		p = compl_orig_text;
+-		for (temp = 0; p[temp] != NUL && p[temp] == ptr[temp]; ++temp)
+-		    ;
++		if (compl_orig_text != NULL)
++		{
++		    p = compl_orig_text;
++		    for (temp = 0; p[temp] != NUL && p[temp] == ptr[temp];
++								       ++temp)
++			;
+ #ifdef FEAT_MBYTE
+-		if (temp > 0)
+-		    temp -= (*mb_head_off)(compl_orig_text, p + temp);
++		    if (temp > 0)
++			temp -= (*mb_head_off)(compl_orig_text, p + temp);
+ #endif
+-		for (p += temp; *p != NUL; mb_ptr_adv(p))
+-		    AppendCharToRedobuff(K_BS);
+-		AppendToRedobuffLit(ptr + temp, -1);
++		    for (p += temp; *p != NUL; mb_ptr_adv(p))
++			AppendCharToRedobuff(K_BS);
++		}
++		if (ptr != NULL)
++		    AppendToRedobuffLit(ptr + temp, -1);
+ 	    }
+ 
+ #ifdef FEAT_CINDENT
+@@ -4100,6 +4134,21 @@
  		&& compl_shown_match->cp_next != NULL
  		&& compl_shown_match->cp_next != compl_first_match)
  	    compl_shown_match = compl_shown_match->cp_next;
@@ -200,9 +247,53 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      }
  
      if (allow_get_expansion && insert_match
+@@ -4611,10 +4660,18 @@
+ 				     (int)STRLEN(compl_pattern), curs_col);
+ 	    if (compl_xp.xp_context == EXPAND_UNSUCCESSFUL
+ 		    || compl_xp.xp_context == EXPAND_NOTHING)
+-		return FAIL;
+-	    startcol = (int)(compl_xp.xp_pattern - compl_pattern);
+-	    compl_col = startcol;
+-	    compl_length = curs_col - startcol;
++	    {
++		compl_col = curs_col;
++		compl_length = 0;
++		vim_free(compl_pattern);
++		compl_pattern = NULL;
++	    }
++	    else
++	    {
++		startcol = (int)(compl_xp.xp_pattern - compl_pattern);
++		compl_col = startcol;
++		compl_length = curs_col - startcol;
++	    }
+ 	}
+ 	else if (ctrl_x_mode == CTRL_X_FUNCTION || ctrl_x_mode == CTRL_X_OMNI)
+ 	{
+@@ -4668,11 +4725,17 @@
+ 	    else
+ 		compl_col = spell_word_start(startcol);
+ 	    if (compl_col >= (colnr_T)startcol)
+-		return FAIL;
+-	    spell_expand_check_cap(compl_col);
++	    {
++		compl_length = 0;
++		compl_col = curs_col;
++	    }
++	    else
++	    {
++		spell_expand_check_cap(compl_col);
++		compl_length = (int)curs_col - compl_col;
++	    }
+ 	    /* Need to obtain "line" again, it may have become invalid. */
+ 	    line = ml_get(curwin->w_cursor.lnum);
+-	    compl_length = (int)curs_col - compl_col;
+ 	    compl_pattern = vim_strnsave(line + compl_col, compl_length);
+ 	    if (compl_pattern == NULL)
+ #endif
 diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
 --- vim70.orig/src/eval.c	2006-05-05 10:15:26.000000000 -0700
-+++ vim70/src/eval.c	2006-06-21 23:50:50.000000000 -0700
++++ vim70/src/eval.c	2006-06-22 11:03:59.000000000 -0700
 @@ -11372,7 +11372,7 @@
  	    if (argvars[2].v_type != VAR_UNKNOWN)
  	    {
@@ -212,7 +303,39 @@ diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
  		long	argt;
  
  		rettv->vval.v_string = NULL;
-@@ -18963,7 +18963,8 @@
+@@ -13250,7 +13250,7 @@
+ 	if (argvars[2].v_type != VAR_UNKNOWN)
+ 	    EMSG2(_(e_toomanyarg), "remove()");
+ 	else if ((d = argvars[0].vval.v_dict) != NULL
+-		&& !tv_check_lock(d->dv_lock, (char_u *)"remove()"))
++		&& !tv_check_lock(d->dv_lock, (char_u *)"remove() argument"))
+ 	{
+ 	    key = get_tv_string_chk(&argvars[1]);
+ 	    if (key != NULL)
+@@ -13270,7 +13270,7 @@
+     else if (argvars[0].v_type != VAR_LIST)
+ 	EMSG2(_(e_listdictarg), "remove()");
+     else if ((l = argvars[0].vval.v_list) != NULL
+-	    && !tv_check_lock(l->lv_lock, (char_u *)"remove()"))
++	    && !tv_check_lock(l->lv_lock, (char_u *)"remove() argument"))
+     {
+ 	int	    error = FALSE;
+ 
+@@ -17759,6 +17759,13 @@
+     }
+     else		    /* add a new variable */
+     {
++	/* Can't add "v:" variable. */
++	if (ht == &vimvarht)
++	{
++	    EMSG2(_(e_illvar), name);
++	    return;
++	}
++
+ 	/* Make sure the variable name is valid. */
+ 	for (p = varname; *p != NUL; ++p)
+ 	    if (!eval_isnamec1(*p) && (p == varname || !VIM_ISDIGIT(*p))
+@@ -18963,7 +18970,8 @@
      else if (lead > 0)
      {
  	lead = 3;
@@ -222,6 +345,14 @@ diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
  	{
  	    /* It's "s:" or "<SID>" */
  	    if (current_SID <= 0)
+@@ -19685,6 +19693,7 @@
+     v->di_tv.vval.v_list = &fc.l_varlist;
+     vim_memset(&fc.l_varlist, 0, sizeof(list_T));
+     fc.l_varlist.lv_refcount = 99999;
++    fc.l_varlist.lv_lock = VAR_FIXED;
+ 
+     /*
+      * Set a:firstline to "firstline" and a:lastline to "lastline".
 diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
 --- vim70.orig/src/ex_docmd.c	2006-05-05 09:33:19.000000000 -0700
 +++ vim70/src/ex_docmd.c	2006-06-21 23:50:50.000000000 -0700
@@ -743,6 +874,34 @@ diff -Naur vim70.orig/src/option.c vim70/src/option.c
  # if defined(FEAT_CINDENT)
  	    case PV_INDE:	return &curbuf->b_p_inde_flags;
  # endif
+diff -Naur vim70.orig/src/os_unix.c vim70/src/os_unix.c
+--- vim70.orig/src/os_unix.c	2006-05-01 01:13:15.000000000 -0700
++++ vim70/src/os_unix.c	2006-06-22 11:06:09.000000000 -0700
+@@ -4971,7 +4971,8 @@
+ 		    if (((*file)[*num_file] = alloc(len + 2)) != NULL)
+ 		    {
+ 			STRCPY((*file)[*num_file], p);
+-			if (!after_pathsep((*file)[*num_file] + len))
++			if (!after_pathsep((*file)[*num_file],
++						    (*file)[*num_file] + len))
+ 			{
+ 			    (*file)[*num_file][len] = psepc;
+ 			    (*file)[*num_file][len + 1] = NUL;
+@@ -5757,8 +5758,13 @@
+     int		retval_int = 0;
+     int		success = FALSE;
+ 
+-    /* Get a handle to the DLL module. */
++    /*
++     * Get a handle to the DLL module.
++     */
+ # if defined(USE_DLOPEN)
++    /* First clear any error, it's not cleared by the dlopen() call. */
++    (void)dlerror();
++
+     hinstLib = dlopen((char *)libname, RTLD_LAZY
+ #  ifdef RTLD_LOCAL
+ 	    | RTLD_LOCAL
 diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
 --- vim70.orig/src/quickfix.c	2006-05-03 00:47:42.000000000 -0700
 +++ vim70/src/quickfix.c	2006-06-21 23:54:05.000000000 -0700
@@ -847,11 +1006,21 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  	endp = buf + len;
 diff -Naur vim70.orig/src/version.c vim70/src/version.c
 --- vim70.orig/src/version.c	2006-05-03 00:50:42.000000000 -0700
-+++ vim70/src/version.c	2006-06-21 23:56:28.000000000 -0700
-@@ -667,6 +667,48 @@
++++ vim70/src/version.c	2006-06-22 11:06:13.000000000 -0700
+@@ -667,6 +667,58 @@
  static int included_patches[] =
  {   /* Add new patch number below this line */
  /**/
++    28,
++/**/
++    26,
++/**/
++    25,
++/**/
++    24,
++/**/
++    23,
++/**/
 +    22,
 +/**/
 +    21,
@@ -897,4 +1066,16 @@ diff -Naur vim70.orig/src/version.c vim70/src/version.c
      0
  };
  
+diff -Naur vim70.orig/src/vim.h vim70/src/vim.h
+--- vim70.orig/src/vim.h	2006-04-30 08:32:38.000000000 -0700
++++ vim70/src/vim.h	2006-06-22 11:06:09.000000000 -0700
+@@ -1983,7 +1983,7 @@
+ /* values for vim_handle_signal() that are not a signal */
+ #define SIGNAL_BLOCK	-1
+ #define SIGNAL_UNBLOCK  -2
+-#if !defined(UNIX) && !defined(VMS)
++#if !defined(UNIX) && !defined(VMS) && !defined(OS2)
+ # define vim_handle_signal(x) 0
+ #endif
  
+
