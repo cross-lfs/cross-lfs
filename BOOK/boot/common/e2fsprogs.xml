@@ -59,12 +59,22 @@
     href="../../final-system/common/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para os="i">The installation for e2fsprogs hard-codes a path to the 
-    <emphasis>mke2fs.conf</emphasis> file, causing the installation to fail
-    unless the DESTDIR parameter is used.  Install the binaries and
-    documentation with the following command:</para>
+    <para os="h">Install the binaries and documentation:</para>
 
-<screen os="j"><userinput>make DESTDIR=${LFS} install</userinput></screen>
+<screen os="i"><userinput>make DESTDIR=${LFS} install</userinput></screen>
+
+    <variablelist os="j">
+      <title>The meaning of the make option:</title>
+
+      <varlistentry>
+        <term><parameter>SHLIB_XLDFLAGS=-lncurses</parameter></term>
+        <listitem>
+          <para>The Makefile for e2fsprogs hard-codes a path to the 
+          <filename>mke2fs.conf</filename> file, causing the installation to
+          fail unless the DESTDIR parameter is used.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/e2fsprogs.xml"
