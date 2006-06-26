@@ -1,0 +1,31 @@
+Submitted By: Joe Ciccone <jciccone@linuxfromscratch.org>
+Date: 2006-06-25
+Initial Package Version: 2.6.17.1
+Origin: Joe Ciccone
+Upstream Status: Unknown
+Description: Fixes a build issue with alpha on some processors. The
+             instructions being modified are specific to ev56/ev6.
+
+--- linux-2.6.17.1.orig/include/asm-alpha/compiler.h	2006-06-20 05:31:55.000000000 -0400
++++ linux-2.6.17.1/include/asm-alpha/compiler.h	2006-06-25 16:13:22.000000000 -0400
+@@ -78,16 +78,16 @@
+ #else
+ #define __kernel_ldbu(mem)				\
+   ({ unsigned char __kir;				\
+-     __asm__("ldbu %0,%1" : "=r"(__kir) : "m"(mem));	\
++     __asm__(".arch ev6; ldbu %0,%1" : "=r"(__kir) : "m"(mem));	\
+      __kir; })
+ #define __kernel_ldwu(mem)				\
+   ({ unsigned short __kir;				\
+-     __asm__("ldwu %0,%1" : "=r"(__kir) : "m"(mem));	\
++     __asm__(".arch ev6; ldwu %0,%1" : "=r"(__kir) : "m"(mem));	\
+      __kir; })
+ #define __kernel_stb(val,mem) \
+-  __asm__("stb %1,%0" : "=m"(mem) : "r"(val))
++  __asm__(".arch ev6; stb %1,%0" : "=m"(mem) : "r"(val))
+ #define __kernel_stw(val,mem) \
+-  __asm__("stw %1,%0" : "=m"(mem) : "r"(val))
++  __asm__(".arch ev6; stw %1,%0" : "=m"(mem) : "r"(val))
+ #endif
+ 
+ /* Some idiots over in <linux/compiler.h> thought inline should imply
