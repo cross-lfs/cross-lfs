@@ -73,19 +73,19 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
 
     <para os="r">Move programs to the locations specified by the FHS:</para>
 
-<screen os="s"><userinput>mv -v /usr/bin/{[,basename,cat,chgrp,chmod,chown,cp} /bin
-mv -v /usr/bin/{date,dd,df,echo,false,hostname,install,ln} /bin
-mv -v /usr/bin/{ls,mkdir,mknod,mv,nice,pwd,readlink,rm,rmdir,sync} /bin
-mv -v /usr/bin/{stty,test,touch,true,uname} /bin
-mv -v /usr/bin/chroot /usr/sbin
-ln -svf ../../bin/install /usr/bin</userinput></screen>
+<screen os="s"><userinput>mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date} /bin
+mv -v /usr/bin/{dd,df,echo,false,hostname,ln,ls,mkdir,mknod} /bin
+mv -v /usr/bin/{mv,pwd,rm,rmdir,stty,true,uname} /bin
+mv -v /usr/bin/chroot /usr/sbin</userinput></screen>
 
-    <para os="t">Some of the scripts in the CLFS-Bootscripts package depend on
-    <command>head</command> and <command>sleep</command>. As <filename
+    <para os="t">Other Coreutils programs are used by some of the scripts
+    in the CLFS-Bootscripts package. As <filename
     class="directory">/usr</filename> may not be available during the early
     stages of booting, those binaries need to be on the root partition:</para>
 
-<screen os="u"><userinput>mv -v /usr/bin/{head,sleep} /bin</userinput></screen>
+<screen os="u"><userinput>mv -v /usr/bin/{[,basename,head,install,nice} /bin
+mv -v /usr/bin/{readlink,sleep,sync,test,touch} /bin
+ln -svf ../../bin/install /usr/bin</userinput></screen>
 
   </sect2>
 
