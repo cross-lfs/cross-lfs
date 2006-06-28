@@ -22,13 +22,12 @@
   <sect2 role="installation">
     <title>Installation of Bzip2</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/multilib/bzip2-64bit.xml"
-    xpointer="xpointer(//*[@os='m1'])"/>
+    <para os="m1">We need to remove the tests since they won't work on
+    a multi-architecture build, and change the default lib path
+    to <filename class="directory">lib64</filename>:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/multilib/bzip2-64bit.xml"
-    xpointer="xpointer(//*[@os='m2'])"/>
+<screen os="m2"><userinput>sed -i -e 's@^\(all:.*\) test@\1@g' \
+    -e 's@/lib\(/\| \|$\)@/lib64\1@g' Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/bzip2.xml"

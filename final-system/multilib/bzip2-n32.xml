@@ -22,12 +22,10 @@
   <sect2 role="installation">
     <title>Installation of Bzip2</title>
 
-    <para os="m1">We need to remove the tests since they won't work on
-    a multi-architecture build, and change the default lib path
+    <para os="m1">We need to change the default lib path
     to <filename class="directory">lib32</filename>:</para>
 
-<screen os="m2"><userinput>sed -i -e 's@^\(all:.*\) test@\1@g' \
-    -e 's@/lib\(/\| \|$\)@/lib32\1@g' Makefile</userinput></screen>
+<screen os="m2"><userinput>sed -i 's@/lib\(/\| \|$\)@/lib32\1@g' Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="bzip2.xml"
