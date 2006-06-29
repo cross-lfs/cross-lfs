@@ -19,6 +19,10 @@ if [ -e /etc/sysconfig/lcd ]; then
 	fi
 fi
 
+if [ -e /etc/sysconfig/bootscripts ]; then
+	source /etc/sysconfig/bootscripts
+fi
+
 ## Environmental setup
 # Setup default values for environment
 umask 022
@@ -195,12 +199,14 @@ print_error_msg()
 	boot_mesg -n " the LFS book, please be so kind to inform us at"
 	boot_mesg " lfs-dev@linuxfromscratch.org.\n"
 	boot_mesg_flush
-	boot_mesg -n "Press Enter to continue..." ${INFO}
-	boot_mesg "" ${NORMAL}
-	if [ "$LCD_PROG" ]; then
-		sleep 10
-	else
-		read ENTER
+	if [ "$INTERACTIVE" ]; then
+		boot_mesg -n "Press Enter to continue..." ${INFO}
+		boot_mesg "" ${NORMAL}
+		if [ "$LCD_PROG" ]; then
+			sleep 10
+		else
+			read ENTER
+		fi
 	fi
 }
 
