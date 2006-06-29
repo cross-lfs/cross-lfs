@@ -9,51 +9,9 @@ Description: This patch fixes compilation issues with aboot-0.9b.
         included with the linux-headers package installed in the
         system.
 
-diff -Naur aboot-0.9b.orig/Makefile aboot-0.9b/Makefile
---- aboot-0.9b.orig/Makefile	2002-09-18 15:48:21.000000000 -0400
-+++ aboot-0.9b/Makefile	2006-06-25 18:22:04.000000000 -0400
-@@ -23,7 +23,7 @@
- root		=
- bindir		= $(root)/sbin
- bootdir		= $(root)/boot
--mandir		= /usr/man
-+mandir		= $(root)/usr/man
- 
- #
- # There shouldn't be any need to change anything below this line.
-@@ -82,10 +82,10 @@
- 	tools/objstrip -vb aboot bootlx
- 
- install-man: 
--	make -C doc/man install
-+	$(MAKE) -C doc/man install
- 
- install-man-gz:
--	make -C doc/man install-gz
-+	$(MAKE) -C doc/man install-gz
- 
- install: tools/abootconf tools/e2writeboot tools/isomarkboot \
- 	sdisklabel/swriteboot install-man
-@@ -128,13 +128,13 @@
- 	find . -name \*~ | xargs rm -f
- 
- lib/%:
--	make -C lib $* CPPFLAGS="$(CPPFLAGS)" TESTING="$(TESTING)"
-+	$(MAKE) -C lib $* CPPFLAGS="$(CPPFLAGS)" TESTING="$(TESTING)"
- 
- tools/%:
--	make -C tools $* CPPFLAGS="$(CPPFLAGS)"
-+	$(MAKE) -C tools $* CPPFLAGS="$(CPPFLAGS)"
- 
- sdisklabel/%:
--	make -C sdisklabel $* CPPFLAGS="$(CPPFLAGS)"
-+	$(MAKE) -C sdisklabel $* CPPFLAGS="$(CPPFLAGS)"
- 
- vmlinux.nh: $(VMLINUX) tools/objstrip
- 	tools/objstrip -vb $(VMLINUX) vmlinux.nh
 diff -Naur aboot-0.9b.orig/cons.c aboot-0.9b/cons.c
---- aboot-0.9b.orig/cons.c	2001-10-08 19:03:50.000000000 -0400
-+++ aboot-0.9b/cons.c	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/cons.c	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/cons.c	2006-06-27 22:02:47.000000000 -0400
 @@ -12,7 +12,7 @@
  #include <utils.h>
  
@@ -64,8 +22,8 @@ diff -Naur aboot-0.9b.orig/cons.c aboot-0.9b/cons.c
  long
  cons_puts(const char *str, long len)
 diff -Naur aboot-0.9b.orig/disk.c aboot-0.9b/disk.c
---- aboot-0.9b.orig/disk.c	2001-10-09 16:45:57.000000000 -0400
-+++ aboot-0.9b/disk.c	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/disk.c	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/disk.c	2006-06-27 22:02:47.000000000 -0400
 @@ -480,9 +480,7 @@
  				} else {
  					*d++ = *p;
@@ -78,8 +36,8 @@ diff -Naur aboot-0.9b.orig/disk.c aboot-0.9b/disk.c
  			p++;
  		}
 diff -Naur aboot-0.9b.orig/doc/man/Makefile aboot-0.9b/doc/man/Makefile
---- aboot-0.9b.orig/doc/man/Makefile	2003-01-14 15:12:14.000000000 -0500
-+++ aboot-0.9b/doc/man/Makefile	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/doc/man/Makefile	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/doc/man/Makefile	2006-06-27 22:02:47.000000000 -0400
 @@ -6,7 +6,7 @@
  # use that value. Otherwise default to /usr/man.
  
@@ -91,7 +49,7 @@ diff -Naur aboot-0.9b.orig/doc/man/Makefile aboot-0.9b/doc/man/Makefile
  endif
 diff -Naur aboot-0.9b.orig/include/asm/a.out.h aboot-0.9b/include/asm/a.out.h
 --- aboot-0.9b.orig/include/asm/a.out.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/a.out.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/a.out.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,91 @@
 +#ifndef __ALPHA_A_OUT_H__
 +#define __ALPHA_A_OUT_H__
@@ -186,7 +144,7 @@ diff -Naur aboot-0.9b.orig/include/asm/a.out.h aboot-0.9b/include/asm/a.out.h
 +#endif /* __A_OUT_GNU_H__ */
 diff -Naur aboot-0.9b.orig/include/asm/auxvec.h aboot-0.9b/include/asm/auxvec.h
 --- aboot-0.9b.orig/include/asm/auxvec.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/auxvec.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/auxvec.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,24 @@
 +#ifndef __ASM_ALPHA_AUXVEC_H
 +#define __ASM_ALPHA_AUXVEC_H
@@ -214,7 +172,7 @@ diff -Naur aboot-0.9b.orig/include/asm/auxvec.h aboot-0.9b/include/asm/auxvec.h
 +#endif /* __ASM_ALPHA_AUXVEC_H */
 diff -Naur aboot-0.9b.orig/include/asm/barrier.h aboot-0.9b/include/asm/barrier.h
 --- aboot-0.9b.orig/include/asm/barrier.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/barrier.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/barrier.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,34 @@
 +#ifndef __BARRIER_H
 +#define __BARRIER_H
@@ -252,7 +210,7 @@ diff -Naur aboot-0.9b.orig/include/asm/barrier.h aboot-0.9b/include/asm/barrier.
 +#endif		/* __BARRIER_H */
 diff -Naur aboot-0.9b.orig/include/asm/hwrpb.h aboot-0.9b/include/asm/hwrpb.h
 --- aboot-0.9b.orig/include/asm/hwrpb.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/hwrpb.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/hwrpb.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,205 @@
 +#ifndef __ALPHA_HWRPB_H
 +#define __ALPHA_HWRPB_H
@@ -461,7 +419,7 @@ diff -Naur aboot-0.9b.orig/include/asm/hwrpb.h aboot-0.9b/include/asm/hwrpb.h
 +#endif /* __ALPHA_HWRPB_H */
 diff -Naur aboot-0.9b.orig/include/asm/page.h aboot-0.9b/include/asm/page.h
 --- aboot-0.9b.orig/include/asm/page.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/page.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/page.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,103 @@
 +#ifndef _ALPHA_PAGE_H
 +#define _ALPHA_PAGE_H
@@ -568,7 +526,7 @@ diff -Naur aboot-0.9b.orig/include/asm/page.h aboot-0.9b/include/asm/page.h
 +#endif /* _ALPHA_PAGE_H */
 diff -Naur aboot-0.9b.orig/include/asm/pal.h aboot-0.9b/include/asm/pal.h
 --- aboot-0.9b.orig/include/asm/pal.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/pal.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/pal.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,51 @@
 +#ifndef __ALPHA_PAL_H
 +#define __ALPHA_PAL_H
@@ -623,7 +581,7 @@ diff -Naur aboot-0.9b.orig/include/asm/pal.h aboot-0.9b/include/asm/pal.h
 +#endif /* __ALPHA_PAL_H */
 diff -Naur aboot-0.9b.orig/include/asm/spinlock.h aboot-0.9b/include/asm/spinlock.h
 --- aboot-0.9b.orig/include/asm/spinlock.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/spinlock.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/spinlock.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,170 @@
 +#ifndef _ALPHA_SPINLOCK_H
 +#define _ALPHA_SPINLOCK_H
@@ -797,7 +755,7 @@ diff -Naur aboot-0.9b.orig/include/asm/spinlock.h aboot-0.9b/include/asm/spinloc
 +#endif /* _ALPHA_SPINLOCK_H */
 diff -Naur aboot-0.9b.orig/include/asm/spinlock_types.h aboot-0.9b/include/asm/spinlock_types.h
 --- aboot-0.9b.orig/include/asm/spinlock_types.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/spinlock_types.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/spinlock_types.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,20 @@
 +#ifndef _ALPHA_SPINLOCK_TYPES_H
 +#define _ALPHA_SPINLOCK_TYPES_H
@@ -821,7 +779,7 @@ diff -Naur aboot-0.9b.orig/include/asm/spinlock_types.h aboot-0.9b/include/asm/s
 +#endif
 diff -Naur aboot-0.9b.orig/include/asm/string.h aboot-0.9b/include/asm/string.h
 --- aboot-0.9b.orig/include/asm/string.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/string.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/string.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,68 @@
 +#ifndef __ALPHA_STRING_H__
 +#define __ALPHA_STRING_H__
@@ -893,7 +851,7 @@ diff -Naur aboot-0.9b.orig/include/asm/string.h aboot-0.9b/include/asm/string.h
 +#endif /* __ALPHA_STRING_H__ */
 diff -Naur aboot-0.9b.orig/include/asm/system.h aboot-0.9b/include/asm/system.h
 --- aboot-0.9b.orig/include/asm/system.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/system.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/system.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,594 @@
 +#ifndef __ALPHA_SYSTEM_H
 +#define __ALPHA_SYSTEM_H
@@ -1491,7 +1449,7 @@ diff -Naur aboot-0.9b.orig/include/asm/system.h aboot-0.9b/include/asm/system.h
 +#endif
 diff -Naur aboot-0.9b.orig/include/asm/thread_info.h aboot-0.9b/include/asm/thread_info.h
 --- aboot-0.9b.orig/include/asm/thread_info.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm/thread_info.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm/thread_info.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,96 @@
 +#ifndef _ALPHA_THREAD_INFO_H
 +#define _ALPHA_THREAD_INFO_H
@@ -1589,9 +1547,14 @@ diff -Naur aboot-0.9b.orig/include/asm/thread_info.h aboot-0.9b/include/asm/thre
 +
 +#endif /* __KERNEL__ */
 +#endif /* _ALPHA_THREAD_INFO_H */
+diff -Naur aboot-0.9b.orig/include/asm-generic/bitops/find.h aboot-0.9b/include/asm-generic/bitops/find.h
+--- aboot-0.9b.orig/include/asm-generic/bitops/find.h	1969-12-31 19:00:00.000000000 -0500
++++ aboot-0.9b/include/asm-generic/bitops/find.h	2006-06-27 22:02:02.000000000 -0400
+@@ -0,0 +1 @@
++/* Dummy Header */
 diff -Naur aboot-0.9b.orig/include/asm-generic/page.h aboot-0.9b/include/asm-generic/page.h
 --- aboot-0.9b.orig/include/asm-generic/page.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/asm-generic/page.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/asm-generic/page.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,27 @@
 +#ifndef _ASM_GENERIC_PAGE_H
 +#define _ASM_GENERIC_PAGE_H
@@ -1622,7 +1585,7 @@ diff -Naur aboot-0.9b.orig/include/asm-generic/page.h aboot-0.9b/include/asm-gen
 +#endif	/* _ASM_GENERIC_PAGE_H */
 diff -Naur aboot-0.9b.orig/include/linux/auxvec.h aboot-0.9b/include/linux/auxvec.h
 --- aboot-0.9b.orig/include/linux/auxvec.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/auxvec.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/auxvec.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,31 @@
 +#ifndef _LINUX_AUXVEC_H
 +#define _LINUX_AUXVEC_H
@@ -1657,7 +1620,7 @@ diff -Naur aboot-0.9b.orig/include/linux/auxvec.h aboot-0.9b/include/linux/auxve
 +#endif /* _LINUX_AUXVEC_H */
 diff -Naur aboot-0.9b.orig/include/linux/blockgroup_lock.h aboot-0.9b/include/linux/blockgroup_lock.h
 --- aboot-0.9b.orig/include/linux/blockgroup_lock.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/blockgroup_lock.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/blockgroup_lock.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,60 @@
 +#ifndef _LINUX_BLOCKGROUP_LOCK_H
 +#define _LINUX_BLOCKGROUP_LOCK_H
@@ -1721,12 +1684,12 @@ diff -Naur aboot-0.9b.orig/include/linux/blockgroup_lock.h aboot-0.9b/include/li
 +#endif
 diff -Naur aboot-0.9b.orig/include/linux/config.h aboot-0.9b/include/linux/config.h
 --- aboot-0.9b.orig/include/linux/config.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/config.h	2006-06-25 18:22:38.000000000 -0400
++++ aboot-0.9b/include/linux/config.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1 @@
 +/* Dummy Config.h */
 diff -Naur aboot-0.9b.orig/include/linux/elf.h aboot-0.9b/include/linux/elf.h
 --- aboot-0.9b.orig/include/linux/elf.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/elf.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/elf.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,427 @@
 +#ifndef _LINUX_ELF_H
 +#define _LINUX_ELF_H
@@ -2155,9 +2118,154 @@ diff -Naur aboot-0.9b.orig/include/linux/elf.h aboot-0.9b/include/linux/elf.h
 +
 +
 +#endif /* _LINUX_ELF_H */
+diff -Naur aboot-0.9b.orig/include/linux/spinlock_api_smp.h aboot-0.9b/include/linux/spinlock_api_smp.h
+--- aboot-0.9b.orig/include/linux/spinlock_api_smp.h	1969-12-31 19:00:00.000000000 -0500
++++ aboot-0.9b/include/linux/spinlock_api_smp.h	2006-06-27 22:02:47.000000000 -0400
+@@ -0,0 +1,57 @@
++#ifndef __LINUX_SPINLOCK_API_SMP_H
++#define __LINUX_SPINLOCK_API_SMP_H
++
++#ifndef __LINUX_SPINLOCK_H
++# error "please don't include this file directly"
++#endif
++
++/*
++ * include/linux/spinlock_api_smp.h
++ *
++ * spinlock API declarations on SMP (and debug)
++ * (implemented in kernel/spinlock.c)
++ *
++ * portions Copyright 2005, Red Hat, Inc., Ingo Molnar
++ * Released under the General Public License (GPL).
++ */
++
++int in_lock_functions(unsigned long addr);
++
++#define assert_spin_locked(x)	BUG_ON(!spin_is_locked(x))
++
++void __lockfunc _spin_lock(spinlock_t *lock)		__acquires(spinlock_t);
++void __lockfunc _read_lock(rwlock_t *lock)		__acquires(rwlock_t);
++void __lockfunc _write_lock(rwlock_t *lock)		__acquires(rwlock_t);
++void __lockfunc _spin_lock_bh(spinlock_t *lock)		__acquires(spinlock_t);
++void __lockfunc _read_lock_bh(rwlock_t *lock)		__acquires(rwlock_t);
++void __lockfunc _write_lock_bh(rwlock_t *lock)		__acquires(rwlock_t);
++void __lockfunc _spin_lock_irq(spinlock_t *lock)	__acquires(spinlock_t);
++void __lockfunc _read_lock_irq(rwlock_t *lock)		__acquires(rwlock_t);
++void __lockfunc _write_lock_irq(rwlock_t *lock)		__acquires(rwlock_t);
++unsigned long __lockfunc _spin_lock_irqsave(spinlock_t *lock)
++							__acquires(spinlock_t);
++unsigned long __lockfunc _read_lock_irqsave(rwlock_t *lock)
++							__acquires(rwlock_t);
++unsigned long __lockfunc _write_lock_irqsave(rwlock_t *lock)
++							__acquires(rwlock_t);
++int __lockfunc _spin_trylock(spinlock_t *lock);
++int __lockfunc _read_trylock(rwlock_t *lock);
++int __lockfunc _write_trylock(rwlock_t *lock);
++int __lockfunc _spin_trylock_bh(spinlock_t *lock);
++void __lockfunc _spin_unlock(spinlock_t *lock)		__releases(spinlock_t);
++void __lockfunc _read_unlock(rwlock_t *lock)		__releases(rwlock_t);
++void __lockfunc _write_unlock(rwlock_t *lock)		__releases(rwlock_t);
++void __lockfunc _spin_unlock_bh(spinlock_t *lock)	__releases(spinlock_t);
++void __lockfunc _read_unlock_bh(rwlock_t *lock)		__releases(rwlock_t);
++void __lockfunc _write_unlock_bh(rwlock_t *lock)	__releases(rwlock_t);
++void __lockfunc _spin_unlock_irq(spinlock_t *lock)	__releases(spinlock_t);
++void __lockfunc _read_unlock_irq(rwlock_t *lock)	__releases(rwlock_t);
++void __lockfunc _write_unlock_irq(rwlock_t *lock)	__releases(rwlock_t);
++void __lockfunc _spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags)
++							__releases(spinlock_t);
++void __lockfunc _read_unlock_irqrestore(rwlock_t *lock, unsigned long flags)
++							__releases(rwlock_t);
++void __lockfunc _write_unlock_irqrestore(rwlock_t *lock, unsigned long flags)
++							__releases(rwlock_t);
++
++#endif /* __LINUX_SPINLOCK_API_SMP_H */
+diff -Naur aboot-0.9b.orig/include/linux/spinlock_api_up.h aboot-0.9b/include/linux/spinlock_api_up.h
+--- aboot-0.9b.orig/include/linux/spinlock_api_up.h	1969-12-31 19:00:00.000000000 -0500
++++ aboot-0.9b/include/linux/spinlock_api_up.h	2006-06-27 22:02:47.000000000 -0400
+@@ -0,0 +1,80 @@
++#ifndef __LINUX_SPINLOCK_API_UP_H
++#define __LINUX_SPINLOCK_API_UP_H
++
++#ifndef __LINUX_SPINLOCK_H
++# error "please don't include this file directly"
++#endif
++
++/*
++ * include/linux/spinlock_api_up.h
++ *
++ * spinlock API implementation on UP-nondebug (inlined implementation)
++ *
++ * portions Copyright 2005, Red Hat, Inc., Ingo Molnar
++ * Released under the General Public License (GPL).
++ */
++
++#define in_lock_functions(ADDR)		0
++
++#define assert_spin_locked(lock)	do { (void)(lock); } while (0)
++
++/*
++ * In the UP-nondebug case there's no real locking going on, so the
++ * only thing we have to do is to keep the preempt counts and irq
++ * flags straight, to supress compiler warnings of unused lock
++ * variables, and to add the proper checker annotations:
++ */
++#define __LOCK(lock) \
++  do { preempt_disable(); __acquire(lock); (void)(lock); } while (0)
++
++#define __LOCK_BH(lock) \
++  do { local_bh_disable(); __LOCK(lock); } while (0)
++
++#define __LOCK_IRQ(lock) \
++  do { local_irq_disable(); __LOCK(lock); } while (0)
++
++#define __LOCK_IRQSAVE(lock, flags) \
++  do { local_irq_save(flags); __LOCK(lock); } while (0)
++
++#define __UNLOCK(lock) \
++  do { preempt_enable(); __release(lock); (void)(lock); } while (0)
++
++#define __UNLOCK_BH(lock) \
++  do { preempt_enable_no_resched(); local_bh_enable(); __release(lock); (void)(lock); } while (0)
++
++#define __UNLOCK_IRQ(lock) \
++  do { local_irq_enable(); __UNLOCK(lock); } while (0)
++
++#define __UNLOCK_IRQRESTORE(lock, flags) \
++  do { local_irq_restore(flags); __UNLOCK(lock); } while (0)
++
++#define _spin_lock(lock)			__LOCK(lock)
++#define _read_lock(lock)			__LOCK(lock)
++#define _write_lock(lock)			__LOCK(lock)
++#define _spin_lock_bh(lock)			__LOCK_BH(lock)
++#define _read_lock_bh(lock)			__LOCK_BH(lock)
++#define _write_lock_bh(lock)			__LOCK_BH(lock)
++#define _spin_lock_irq(lock)			__LOCK_IRQ(lock)
++#define _read_lock_irq(lock)			__LOCK_IRQ(lock)
++#define _write_lock_irq(lock)			__LOCK_IRQ(lock)
++#define _spin_lock_irqsave(lock, flags)		__LOCK_IRQSAVE(lock, flags)
++#define _read_lock_irqsave(lock, flags)		__LOCK_IRQSAVE(lock, flags)
++#define _write_lock_irqsave(lock, flags)	__LOCK_IRQSAVE(lock, flags)
++#define _spin_trylock(lock)			({ __LOCK(lock); 1; })
++#define _read_trylock(lock)			({ __LOCK(lock); 1; })
++#define _write_trylock(lock)			({ __LOCK(lock); 1; })
++#define _spin_trylock_bh(lock)			({ __LOCK_BH(lock); 1; })
++#define _spin_unlock(lock)			__UNLOCK(lock)
++#define _read_unlock(lock)			__UNLOCK(lock)
++#define _write_unlock(lock)			__UNLOCK(lock)
++#define _spin_unlock_bh(lock)			__UNLOCK_BH(lock)
++#define _write_unlock_bh(lock)			__UNLOCK_BH(lock)
++#define _read_unlock_bh(lock)			__UNLOCK_BH(lock)
++#define _spin_unlock_irq(lock)			__UNLOCK_IRQ(lock)
++#define _read_unlock_irq(lock)			__UNLOCK_IRQ(lock)
++#define _write_unlock_irq(lock)			__UNLOCK_IRQ(lock)
++#define _spin_unlock_irqrestore(lock, flags)	__UNLOCK_IRQRESTORE(lock, flags)
++#define _read_unlock_irqrestore(lock, flags)	__UNLOCK_IRQRESTORE(lock, flags)
++#define _write_unlock_irqrestore(lock, flags)	__UNLOCK_IRQRESTORE(lock, flags)
++
++#endif /* __LINUX_SPINLOCK_API_UP_H */
 diff -Naur aboot-0.9b.orig/include/linux/spinlock.h aboot-0.9b/include/linux/spinlock.h
 --- aboot-0.9b.orig/include/linux/spinlock.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/spinlock.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/spinlock.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,247 @@
 +#ifndef __LINUX_SPINLOCK_H
 +#define __LINUX_SPINLOCK_H
@@ -2406,154 +2514,9 @@ diff -Naur aboot-0.9b.orig/include/linux/spinlock.h aboot-0.9b/include/linux/spi
 +#define spin_can_lock(lock)	(!spin_is_locked(lock))
 +
 +#endif /* __LINUX_SPINLOCK_H */
-diff -Naur aboot-0.9b.orig/include/linux/spinlock_api_smp.h aboot-0.9b/include/linux/spinlock_api_smp.h
---- aboot-0.9b.orig/include/linux/spinlock_api_smp.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/spinlock_api_smp.h	2006-06-25 18:22:04.000000000 -0400
-@@ -0,0 +1,57 @@
-+#ifndef __LINUX_SPINLOCK_API_SMP_H
-+#define __LINUX_SPINLOCK_API_SMP_H
-+
-+#ifndef __LINUX_SPINLOCK_H
-+# error "please don't include this file directly"
-+#endif
-+
-+/*
-+ * include/linux/spinlock_api_smp.h
-+ *
-+ * spinlock API declarations on SMP (and debug)
-+ * (implemented in kernel/spinlock.c)
-+ *
-+ * portions Copyright 2005, Red Hat, Inc., Ingo Molnar
-+ * Released under the General Public License (GPL).
-+ */
-+
-+int in_lock_functions(unsigned long addr);
-+
-+#define assert_spin_locked(x)	BUG_ON(!spin_is_locked(x))
-+
-+void __lockfunc _spin_lock(spinlock_t *lock)		__acquires(spinlock_t);
-+void __lockfunc _read_lock(rwlock_t *lock)		__acquires(rwlock_t);
-+void __lockfunc _write_lock(rwlock_t *lock)		__acquires(rwlock_t);
-+void __lockfunc _spin_lock_bh(spinlock_t *lock)		__acquires(spinlock_t);
-+void __lockfunc _read_lock_bh(rwlock_t *lock)		__acquires(rwlock_t);
-+void __lockfunc _write_lock_bh(rwlock_t *lock)		__acquires(rwlock_t);
-+void __lockfunc _spin_lock_irq(spinlock_t *lock)	__acquires(spinlock_t);
-+void __lockfunc _read_lock_irq(rwlock_t *lock)		__acquires(rwlock_t);
-+void __lockfunc _write_lock_irq(rwlock_t *lock)		__acquires(rwlock_t);
-+unsigned long __lockfunc _spin_lock_irqsave(spinlock_t *lock)
-+							__acquires(spinlock_t);
-+unsigned long __lockfunc _read_lock_irqsave(rwlock_t *lock)
-+							__acquires(rwlock_t);
-+unsigned long __lockfunc _write_lock_irqsave(rwlock_t *lock)
-+							__acquires(rwlock_t);
-+int __lockfunc _spin_trylock(spinlock_t *lock);
-+int __lockfunc _read_trylock(rwlock_t *lock);
-+int __lockfunc _write_trylock(rwlock_t *lock);
-+int __lockfunc _spin_trylock_bh(spinlock_t *lock);
-+void __lockfunc _spin_unlock(spinlock_t *lock)		__releases(spinlock_t);
-+void __lockfunc _read_unlock(rwlock_t *lock)		__releases(rwlock_t);
-+void __lockfunc _write_unlock(rwlock_t *lock)		__releases(rwlock_t);
-+void __lockfunc _spin_unlock_bh(spinlock_t *lock)	__releases(spinlock_t);
-+void __lockfunc _read_unlock_bh(rwlock_t *lock)		__releases(rwlock_t);
-+void __lockfunc _write_unlock_bh(rwlock_t *lock)	__releases(rwlock_t);
-+void __lockfunc _spin_unlock_irq(spinlock_t *lock)	__releases(spinlock_t);
-+void __lockfunc _read_unlock_irq(rwlock_t *lock)	__releases(rwlock_t);
-+void __lockfunc _write_unlock_irq(rwlock_t *lock)	__releases(rwlock_t);
-+void __lockfunc _spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags)
-+							__releases(spinlock_t);
-+void __lockfunc _read_unlock_irqrestore(rwlock_t *lock, unsigned long flags)
-+							__releases(rwlock_t);
-+void __lockfunc _write_unlock_irqrestore(rwlock_t *lock, unsigned long flags)
-+							__releases(rwlock_t);
-+
-+#endif /* __LINUX_SPINLOCK_API_SMP_H */
-diff -Naur aboot-0.9b.orig/include/linux/spinlock_api_up.h aboot-0.9b/include/linux/spinlock_api_up.h
---- aboot-0.9b.orig/include/linux/spinlock_api_up.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/spinlock_api_up.h	2006-06-25 18:22:04.000000000 -0400
-@@ -0,0 +1,80 @@
-+#ifndef __LINUX_SPINLOCK_API_UP_H
-+#define __LINUX_SPINLOCK_API_UP_H
-+
-+#ifndef __LINUX_SPINLOCK_H
-+# error "please don't include this file directly"
-+#endif
-+
-+/*
-+ * include/linux/spinlock_api_up.h
-+ *
-+ * spinlock API implementation on UP-nondebug (inlined implementation)
-+ *
-+ * portions Copyright 2005, Red Hat, Inc., Ingo Molnar
-+ * Released under the General Public License (GPL).
-+ */
-+
-+#define in_lock_functions(ADDR)		0
-+
-+#define assert_spin_locked(lock)	do { (void)(lock); } while (0)
-+
-+/*
-+ * In the UP-nondebug case there's no real locking going on, so the
-+ * only thing we have to do is to keep the preempt counts and irq
-+ * flags straight, to supress compiler warnings of unused lock
-+ * variables, and to add the proper checker annotations:
-+ */
-+#define __LOCK(lock) \
-+  do { preempt_disable(); __acquire(lock); (void)(lock); } while (0)
-+
-+#define __LOCK_BH(lock) \
-+  do { local_bh_disable(); __LOCK(lock); } while (0)
-+
-+#define __LOCK_IRQ(lock) \
-+  do { local_irq_disable(); __LOCK(lock); } while (0)
-+
-+#define __LOCK_IRQSAVE(lock, flags) \
-+  do { local_irq_save(flags); __LOCK(lock); } while (0)
-+
-+#define __UNLOCK(lock) \
-+  do { preempt_enable(); __release(lock); (void)(lock); } while (0)
-+
-+#define __UNLOCK_BH(lock) \
-+  do { preempt_enable_no_resched(); local_bh_enable(); __release(lock); (void)(lock); } while (0)
-+
-+#define __UNLOCK_IRQ(lock) \
-+  do { local_irq_enable(); __UNLOCK(lock); } while (0)
-+
-+#define __UNLOCK_IRQRESTORE(lock, flags) \
-+  do { local_irq_restore(flags); __UNLOCK(lock); } while (0)
-+
-+#define _spin_lock(lock)			__LOCK(lock)
-+#define _read_lock(lock)			__LOCK(lock)
-+#define _write_lock(lock)			__LOCK(lock)
-+#define _spin_lock_bh(lock)			__LOCK_BH(lock)
-+#define _read_lock_bh(lock)			__LOCK_BH(lock)
-+#define _write_lock_bh(lock)			__LOCK_BH(lock)
-+#define _spin_lock_irq(lock)			__LOCK_IRQ(lock)
-+#define _read_lock_irq(lock)			__LOCK_IRQ(lock)
-+#define _write_lock_irq(lock)			__LOCK_IRQ(lock)
-+#define _spin_lock_irqsave(lock, flags)		__LOCK_IRQSAVE(lock, flags)
-+#define _read_lock_irqsave(lock, flags)		__LOCK_IRQSAVE(lock, flags)
-+#define _write_lock_irqsave(lock, flags)	__LOCK_IRQSAVE(lock, flags)
-+#define _spin_trylock(lock)			({ __LOCK(lock); 1; })
-+#define _read_trylock(lock)			({ __LOCK(lock); 1; })
-+#define _write_trylock(lock)			({ __LOCK(lock); 1; })
-+#define _spin_trylock_bh(lock)			({ __LOCK_BH(lock); 1; })
-+#define _spin_unlock(lock)			__UNLOCK(lock)
-+#define _read_unlock(lock)			__UNLOCK(lock)
-+#define _write_unlock(lock)			__UNLOCK(lock)
-+#define _spin_unlock_bh(lock)			__UNLOCK_BH(lock)
-+#define _write_unlock_bh(lock)			__UNLOCK_BH(lock)
-+#define _read_unlock_bh(lock)			__UNLOCK_BH(lock)
-+#define _spin_unlock_irq(lock)			__UNLOCK_IRQ(lock)
-+#define _read_unlock_irq(lock)			__UNLOCK_IRQ(lock)
-+#define _write_unlock_irq(lock)			__UNLOCK_IRQ(lock)
-+#define _spin_unlock_irqrestore(lock, flags)	__UNLOCK_IRQRESTORE(lock, flags)
-+#define _read_unlock_irqrestore(lock, flags)	__UNLOCK_IRQRESTORE(lock, flags)
-+#define _write_unlock_irqrestore(lock, flags)	__UNLOCK_IRQRESTORE(lock, flags)
-+
-+#endif /* __LINUX_SPINLOCK_API_UP_H */
 diff -Naur aboot-0.9b.orig/include/linux/spinlock_types.h aboot-0.9b/include/linux/spinlock_types.h
 --- aboot-0.9b.orig/include/linux/spinlock_types.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/spinlock_types.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/spinlock_types.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,67 @@
 +#ifndef __LINUX_SPINLOCK_TYPES_H
 +#define __LINUX_SPINLOCK_TYPES_H
@@ -2624,7 +2587,7 @@ diff -Naur aboot-0.9b.orig/include/linux/spinlock_types.h aboot-0.9b/include/lin
 +#endif /* __LINUX_SPINLOCK_TYPES_H */
 diff -Naur aboot-0.9b.orig/include/linux/spinlock_types_up.h aboot-0.9b/include/linux/spinlock_types_up.h
 --- aboot-0.9b.orig/include/linux/spinlock_types_up.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/spinlock_types_up.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/spinlock_types_up.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,37 @@
 +#ifndef __LINUX_SPINLOCK_TYPES_UP_H
 +#define __LINUX_SPINLOCK_TYPES_UP_H
@@ -2665,7 +2628,7 @@ diff -Naur aboot-0.9b.orig/include/linux/spinlock_types_up.h aboot-0.9b/include/
 +#endif /* __LINUX_SPINLOCK_TYPES_UP_H */
 diff -Naur aboot-0.9b.orig/include/linux/spinlock_up.h aboot-0.9b/include/linux/spinlock_up.h
 --- aboot-0.9b.orig/include/linux/spinlock_up.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/spinlock_up.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/spinlock_up.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,74 @@
 +#ifndef __LINUX_SPINLOCK_UP_H
 +#define __LINUX_SPINLOCK_UP_H
@@ -2743,7 +2706,7 @@ diff -Naur aboot-0.9b.orig/include/linux/spinlock_up.h aboot-0.9b/include/linux/
 +#endif /* __LINUX_SPINLOCK_UP_H */
 diff -Naur aboot-0.9b.orig/include/linux/stat.h aboot-0.9b/include/linux/stat.h
 --- aboot-0.9b.orig/include/linux/stat.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/stat.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/stat.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,77 @@
 +#ifndef _LINUX_STAT_H
 +#define _LINUX_STAT_H
@@ -2824,7 +2787,7 @@ diff -Naur aboot-0.9b.orig/include/linux/stat.h aboot-0.9b/include/linux/stat.h
 +#endif
 diff -Naur aboot-0.9b.orig/include/linux/string.h aboot-0.9b/include/linux/string.h
 --- aboot-0.9b.orig/include/linux/string.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/string.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/string.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,100 @@
 +#ifndef _LINUX_STRING_H_
 +#define _LINUX_STRING_H_
@@ -2928,7 +2891,7 @@ diff -Naur aboot-0.9b.orig/include/linux/string.h aboot-0.9b/include/linux/strin
 +#endif /* _LINUX_STRING_H_ */
 diff -Naur aboot-0.9b.orig/include/linux/thread_info.h aboot-0.9b/include/linux/thread_info.h
 --- aboot-0.9b.orig/include/linux/thread_info.h	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/include/linux/thread_info.h	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/include/linux/thread_info.h	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,71 @@
 +/* thread_info.h: common low-level thread information accessors
 + *
@@ -3002,8 +2965,8 @@ diff -Naur aboot-0.9b.orig/include/linux/thread_info.h aboot-0.9b/include/linux/
 +
 +#endif /* _LINUX_THREAD_INFO_H */
 diff -Naur aboot-0.9b.orig/lib/isolib.c aboot-0.9b/lib/isolib.c
---- aboot-0.9b.orig/lib/isolib.c	2001-10-08 19:03:53.000000000 -0400
-+++ aboot-0.9b/lib/isolib.c	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/lib/isolib.c	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/lib/isolib.c	2006-06-27 22:02:47.000000000 -0400
 @@ -6,6 +6,7 @@
   * functionality to the Linux bootstrapper.  All we can do is
   * open and read files... but that's all we need 8-)
@@ -3020,9 +2983,51 @@ diff -Naur aboot-0.9b.orig/lib/isolib.c aboot-0.9b/lib/isolib.c
  	 };
  	 slen -= slp->len + 2;
  	 oldslp = slp;
+diff -Naur aboot-0.9b.orig/Makefile aboot-0.9b/Makefile
+--- aboot-0.9b.orig/Makefile	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/Makefile	2006-06-27 22:02:47.000000000 -0400
+@@ -23,7 +23,7 @@
+ root		=
+ bindir		= $(root)/sbin
+ bootdir		= $(root)/boot
+-mandir		= /usr/man
++mandir		= $(root)/usr/man
+ 
+ #
+ # There shouldn't be any need to change anything below this line.
+@@ -82,10 +82,10 @@
+ 	tools/objstrip -vb aboot bootlx
+ 
+ install-man: 
+-	make -C doc/man install
++	$(MAKE) -C doc/man install
+ 
+ install-man-gz:
+-	make -C doc/man install-gz
++	$(MAKE) -C doc/man install-gz
+ 
+ install: tools/abootconf tools/e2writeboot tools/isomarkboot \
+ 	sdisklabel/swriteboot install-man
+@@ -128,13 +128,13 @@
+ 	find . -name \*~ | xargs rm -f
+ 
+ lib/%:
+-	make -C lib $* CPPFLAGS="$(CPPFLAGS)" TESTING="$(TESTING)"
++	$(MAKE) -C lib $* CPPFLAGS="$(CPPFLAGS)" TESTING="$(TESTING)"
+ 
+ tools/%:
+-	make -C tools $* CPPFLAGS="$(CPPFLAGS)"
++	$(MAKE) -C tools $* CPPFLAGS="$(CPPFLAGS)"
+ 
+ sdisklabel/%:
+-	make -C sdisklabel $* CPPFLAGS="$(CPPFLAGS)"
++	$(MAKE) -C sdisklabel $* CPPFLAGS="$(CPPFLAGS)"
+ 
+ vmlinux.nh: $(VMLINUX) tools/objstrip
+ 	tools/objstrip -vb $(VMLINUX) vmlinux.nh
 diff -Naur aboot-0.9b.orig/sdisklabel/Makefile aboot-0.9b/sdisklabel/Makefile
---- aboot-0.9b.orig/sdisklabel/Makefile	2001-10-08 19:03:53.000000000 -0400
-+++ aboot-0.9b/sdisklabel/Makefile	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/sdisklabel/Makefile	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/sdisklabel/Makefile	2006-06-27 22:02:47.000000000 -0400
 @@ -1,13 +1,16 @@
 -CC = gcc -O2
 +HOST_CC = gcc -O2
@@ -3044,8 +3049,8 @@ diff -Naur aboot-0.9b.orig/sdisklabel/Makefile aboot-0.9b/sdisklabel/Makefile
  clean:
  	rm -f sdisklabel swriteboot *.o
 diff -Naur aboot-0.9b.orig/tools/Makefile aboot-0.9b/tools/Makefile
---- aboot-0.9b.orig/tools/Makefile	2001-10-08 19:03:53.000000000 -0400
-+++ aboot-0.9b/tools/Makefile	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/tools/Makefile	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/tools/Makefile	2006-06-27 22:02:47.000000000 -0400
 @@ -1,20 +1,32 @@
 -CC	= gcc
 +HOST_CC	= gcc
@@ -3089,7 +3094,7 @@ diff -Naur aboot-0.9b.orig/tools/Makefile aboot-0.9b/tools/Makefile
 +	$(HOST_CC) $(CFLAGS) $(LDFLAGS) $(@:%=%.c) -o $@
 diff -Naur aboot-0.9b.orig/tools/Makefile.orig aboot-0.9b/tools/Makefile.orig
 --- aboot-0.9b.orig/tools/Makefile.orig	1969-12-31 19:00:00.000000000 -0500
-+++ aboot-0.9b/tools/Makefile.orig	2006-06-25 18:22:04.000000000 -0400
++++ aboot-0.9b/tools/Makefile.orig	2006-06-27 22:02:47.000000000 -0400
 @@ -0,0 +1,20 @@
 +CC	= gcc
 +CFLAGS	= -g -O2 -Wall -I. -I../include $(CPPFLAGS)
@@ -3112,8 +3117,8 @@ diff -Naur aboot-0.9b.orig/tools/Makefile.orig aboot-0.9b/tools/Makefile.orig
 +e2writeboot.o:	e2lib.h
 +e2lib.o: e2lib.h
 diff -Naur aboot-0.9b.orig/tools/objstrip.c aboot-0.9b/tools/objstrip.c
---- aboot-0.9b.orig/tools/objstrip.c	2002-09-18 15:48:22.000000000 -0400
-+++ aboot-0.9b/tools/objstrip.c	2006-06-25 18:22:04.000000000 -0400
+--- aboot-0.9b.orig/tools/objstrip.c	2006-06-27 22:01:25.000000000 -0400
++++ aboot-0.9b/tools/objstrip.c	2006-06-27 22:02:47.000000000 -0400
 @@ -7,15 +7,17 @@
   */
  /*
