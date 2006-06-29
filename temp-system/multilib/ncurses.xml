@@ -28,8 +28,10 @@
 
 <screen os="b"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
    ./configure --prefix=/tools --with-shared \
-   --host=${LFS_TARGET} --without-debug --without-ada \
-   --enable-overwrite --with-build-cc=gcc --libdir=/tools/lib64</userinput></screen>
+   --build=${LFS_HOST} --host=${LFS_TARGET} \
+   --without-debug --without-ada \
+   --enable-overwrite --with-build-cc=gcc \
+   --libdir=/tools/lib64</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ncurses.xml"
