@@ -132,7 +132,7 @@ hr {
           <li>
             <h4>
               <a href="sparc">
-                <xsl:text>Sparc v8 and above</xsl:text>
+                <xsl:text>Sparc v8</xsl:text>
               </a>
             </h4>
           </li>
@@ -161,7 +161,7 @@ hr {
           <li>
             <h4>
              <a href="sparc64-64">
-                <xsl:text>Sparc/UltraSPARC</xsl:text>
+                <xsl:text>Sparc v9/Ultrasparc</xsl:text>
              </a>
             </h4>
           </li>
@@ -197,7 +197,7 @@ hr {
           <li>
             <h4>
              <a href="sparc64">
-                <xsl:text>Sparc/UltraSPARC</xsl:text>
+                <xsl:text>Sparc v9/Ultrasparc</xsl:text>
              </a>
             </h4>
           </li>
