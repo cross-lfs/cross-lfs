@@ -12,14 +12,14 @@
 
   <para os="a">Set up a good working environment by creating two new startup
   files for the <command>bash</command> shell. While logged in as user
-  <systemitem class="username">lfs</systemitem>, issue the following
+  <systemitem class="username">clfs</systemitem>, issue the following
   command to create a new <filename>.bash_profile</filename>:</para>
 
 <screen os="b"><userinput>cat &gt; ~/.bash_profile &lt;&lt; "EOF"
 <literal>exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash</literal>
 EOF</userinput></screen>
 
-  <para os="c">When logged on as user <systemitem class="username">lfs</systemitem>,
+  <para os="c">When logged on as user <systemitem class="username">clfs</systemitem>,
   the initial shell is usually a <emphasis>login</emphasis> shell which
   reads the <filename>/etc/profile</filename> of the host (probably
   containing some settings and environment variables) and then
@@ -41,10 +41,10 @@ EOF</userinput></screen>
 <screen os="e"><userinput>cat &gt; ~/.bashrc &lt;&lt; "EOF"
 <literal>set +h
 umask 022
-LFS=/mnt/lfs
+CLFS=/mnt/clfs
 LC_ALL=POSIX
 PATH=/cross-tools/bin:/bin:/usr/bin
-export LFS LC_ALL PATH</literal>
+export CLFS LC_ALL PATH</literal>
 EOF</userinput></screen>
 
   <para os="f">The <command>set +h</command> command turns off
@@ -65,7 +65,7 @@ EOF</userinput></screen>
   used by the open(2) system call, new files will end up with permission
   mode 644 and directories with mode 755).</para>
 
-  <para os="h">The <envar>LFS</envar> variable should be set to the
+  <para os="h">The <envar>CLFS</envar> variable should be set to the
   chosen mount point.</para>
 
   <para os="i">TO BE REWRITTEN - The <envar>LC_ALL</envar> variable controls
