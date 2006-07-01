@@ -64,10 +64,10 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="df"><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc" \
-    AR="${LFS_TARGET}-ar" RANLIB="${LFS_TARGET}-ranlib" \
+<screen os="df"><userinput>BUILD_CC="gcc" CC="${CLFS_TARGET}-gcc" \
+    AR="${CLFS_TARGET}-ar" RANLIB="${CLFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
-    --host=${LFS_TARGET} --build=${LFS_HOST} \
+    --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
@@ -85,7 +85,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg2">
-        <term><parameter>CC="${LFS_TARGET}-gcc"</parameter></term>
+        <term><parameter>CC="${CLFS_TARGET}-gcc"</parameter></term>
         <listitem>
           <para>This forces Glibc to use the GCC compiler that we made for our target
           architecture.</para>
@@ -93,7 +93,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg3">
-        <term><parameter>AR="${LFS_TARGET}-ar"</parameter></term>
+        <term><parameter>AR="${CLFS_TARGET}-ar"</parameter></term>
         <listitem>
           <para>This forces Glibc to use the <command>ar</command> utility
           we made for our target architecture.</para>
@@ -101,7 +101,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg4">
-        <term><parameter>RANLIB="${LFS_TARGET}-ranlib"</parameter></term>
+        <term><parameter>RANLIB="${CLFS_TARGET}-ranlib"</parameter></term>
         <listitem>
           <para>This forces Glibc to use the <command>ranlib</command> utility
           we made for our target architecture.</para>

@@ -51,7 +51,7 @@
     will fix this:</para>
 
 <screen><userinput>cp Makefile,{.orig}
-sed -e "s/\(strip \)/${LFS_TARGET}-\1/" \
+sed -e "s/\(strip \)/${CLFS_TARGET}-\1/" \
     -e 's/-o root -g root//' \
     Makefile.orig > Makefile</userinput></screen>
 
@@ -59,13 +59,13 @@ sed -e "s/\(strip \)/${LFS_TARGET}-\1/" \
     href="../../final-system/ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen><userinput>make CROSS=${LFS_TARGET}-</userinput></screen>
+<screen><userinput>make CROSS=${CLFS_TARGET}-</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/ppc/yaboot.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen><userinput>make CROSS=${LFS_TARGET}- ROOT=/tools PREFIX= install</userinput></screen>
+<screen><userinput>make CROSS=${CLFS_TARGET}- ROOT=/tools PREFIX= install</userinput></screen>
 
   </sect2>
 

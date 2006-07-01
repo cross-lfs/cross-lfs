@@ -93,7 +93,7 @@ sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig >configure
     xpointer="xpointer(//*[@os='h'])"/>
 
 <screen os="bf"><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --target=${LFS_TARGET} --host=${LFS_HOST} --disable-multilib \
+    --target=${CLFS_TARGET} --host=${CLFS_HOST} --disable-multilib \
     --with-local-prefix=/tools --disable-nls --enable-shared \
     --enable-languages=c,c++ --enable-__cxa_atexit \
     --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
@@ -144,8 +144,8 @@ sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig >configure
 
     <para os="bh">Continue with compiling the package:</para>
 
-<screen os="bi"><userinput>make AS_FOR_TARGET="${LFS_TARGET}-as" \
-    LD_FOR_TARGET="${LFS_TARGET}-ld"</userinput></screen>
+<screen os="bi"><userinput>make AS_FOR_TARGET="${CLFS_TARGET}-as" \
+    LD_FOR_TARGET="${CLFS_TARGET}-ld"</userinput></screen>
 
     <para os="bj">Install the package:</para>
 

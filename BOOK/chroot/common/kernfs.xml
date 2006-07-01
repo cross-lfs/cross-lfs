@@ -22,12 +22,12 @@
   <para>Begin by creating directories onto which the file systems will
   be mounted:</para>
 
-<screen><userinput>mkdir -pv $LFS/{dev,proc,sys}</userinput></screen>
+<screen><userinput>mkdir -pv $CLFS/{dev,proc,sys}</userinput></screen>
 
   <para>Now mount the file systems:</para>
 
-<screen><userinput>mount -vt proc proc $LFS/proc
-mount -vt sysfs sysfs $LFS/sys</userinput></screen>
+<screen><userinput>mount -vt proc proc $CLFS/proc
+mount -vt sysfs sysfs $CLFS/sys</userinput></screen>
 
   <para>Remember that if for any reason you stop working on the CLFS system
   and start again later, it is important to check that these file systems
@@ -37,8 +37,8 @@ mount -vt sysfs sysfs $LFS/sys</userinput></screen>
   present on the filesystem.  These are needed by the kernel even before
   starting Udev early in the boot process, so we create them here:</para>
 
-<screen><userinput>mknod -m 600 $LFS/dev/console c 5 1
-mknod -m 666 $LFS/dev/null c 1 3</userinput></screen>
+<screen><userinput>mknod -m 600 $CLFS/dev/console c 5 1
+mknod -m 666 $CLFS/dev/null c 1 3</userinput></screen>
 
   <para>Once the system is complete and booting, the rest of our device
   nodes are created by the Udev package.  Since this package is not
@@ -47,13 +47,13 @@ mknod -m 666 $LFS/dev/null c 1 3</userinput></screen>
   option in the mount command to make our host system's /dev structure
   appear in the new CLFS filesystem:</para>
 
-<screen><userinput>/tools/bin/mount -o bind /dev $LFS/dev</userinput></screen>
+<screen><userinput>/tools/bin/mount -o bind /dev $CLFS/dev</userinput></screen>
 
   <para>Additional file systems will soon be mounted from within the chroot 
   environment. To keep the host up to date, perform a <quote>fake mount</quote>
   for each of these now:</para>
 
-<screen><userinput>mount -f -vt tmpfs tmpfs $LFS/dev/shm
-mount -f -vt devpts -o gid=10,mode=620 devpts $LFS/dev/pts</userinput></screen>
+<screen><userinput>mount -f -vt tmpfs tmpfs $CLFS/dev/shm
+mount -f -vt devpts -o gid=10,mode=620 devpts $CLFS/dev/pts</userinput></screen>
 
 </sect1>

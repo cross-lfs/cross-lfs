@@ -8,14 +8,14 @@
 <sect1 id="ch-final-preps-aboutlfs">
   <?dbhtml filename="aboutlfs.html"?>
 
-  <title>About $LFS</title>
+  <title>About $CLFS</title>
 
   <para>Throughout this book, the environment variable <envar>LFS</envar> will
   be used several times. It is paramount that this variable is always defined.
   It should be set to the mount point chosen for the CLFS partition.
   Check that the <envar>LFS</envar> variable is set up properly with:</para>
 
-<screen><userinput>echo $LFS</userinput></screen>
+<screen><userinput>echo $CLFS</userinput></screen>
 
   <para>Make sure the output shows the path to the CLFS partition's mount
   point, which is <filename class="directory">/mnt/lfs</filename> if the
@@ -25,17 +25,17 @@
 <screen><userinput>export LFS=/mnt/lfs</userinput></screen>
 
   <para>Having this variable set is beneficial in that commands such as
-  <command>install -dv $LFS/tools</command> can be typed literally. The shell
-  will automatically replace <quote>$LFS</quote> with
+  <command>install -dv $CLFS/tools</command> can be typed literally. The shell
+  will automatically replace <quote>$CLFS</quote> with
   <quote>/mnt/lfs</quote> (or whatever the variable was set to) when it
   processes the command line.</para>
 
-  <para>If you haven't created the <filename class="directory">$LFS</filename>
+  <para>If you haven't created the <filename class="directory">$CLFS</filename>
   directory, do so at this time by issuing the following commands:</para>
 
-<screen><userinput>install -dv $LFS</userinput></screen>
+<screen><userinput>install -dv $CLFS</userinput></screen>
 
-  <para>Do not forget to check that <envar>$LFS</envar> is set whenever
+  <para>Do not forget to check that <envar>$CLFS</envar> is set whenever
   you leave and reenter the current working environment (as when doing a
   <quote>su</quote> to <systemitem class="username">root</systemitem> or
   another user).</para>

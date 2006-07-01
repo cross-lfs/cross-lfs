@@ -75,7 +75,7 @@ define DLLIST
 	   $(PWD)/stylesheets/wget.xsl $$arch-index.xml
 endef
 
-lfs: toplevel render common
+clfs: toplevel render common
 
 toplevel:
 	@xsltproc --nonet --output $(BASEDIR)/index.html $(PWD)/stylesheets/top-index.xsl $(PWD)/index.xml
@@ -131,4 +131,42 @@ download-list:
 	$(DLLIST) ; \
 	done
 
-.PHONY: lfs toplevel common render nochunk nochunk_render pdf text validate trouble dump-commands download-list
+target-list:
+	@printf "%-15s %-10s\n" "Architecture" "Build Type" ;\
+	for arch in $(ARCH) ; do \
+	MULTILIB=0 ;\
+	PURE64=0 ;\
+	TEST="`echo $$arch | grep -c -e '-64'`" ;\
+	if [ "$$TEST" = "1" ]; then \
+		PURE64=1 ;\
+	else \
+		TEST="`echo $$arch | grep -c -e '64'`" ;\
+		if [ "$$TEST" = "1" ]; then \
+			MULTILIB=1 ;\
+		fi; \
+	fi; \
+	if [ "$$PURE64" = "1" ]; then \
+		printf "%-15s %-10s\n" $$arch "Pure 64" ;\
+	else \
+		if [ "$$MULTILIB" = "1" ]; then \
+			printf "%-15s %-10s\n" $$arch "Multilib" ;\
+		else \
+			printf "%-15s %-10s\n" $$arch "Default" ;\
+		fi; \
+	fi; \
+	done
+
+help:
+	@printf "%-25s %-20s\n" "Command" "Function"
+	@printf "%-25s %-20s\n" "make download-list" "Create download file lists"
+	@printf "%-25s %-20s\n" "make dump-commands" "Dump all the commands from the book"
+	@printf "%-25s %-20s\n" "make clfs" "Make the standard multilib page book"
+	@printf "%-25s %-20s\n" "make nochunks" "Make single html file book"
+	@printf "%-25s %-20s\n" "make pdf" "Make pdf copy of the book"
+	@printf "%-25s %-20s\n" "make target-list" "Get List of Architecture targets"
+	@printf "%-25s %-20s\n" "make test" "Make a text copy of the book"
+	@printf "%-25s %-20s\n" "make trouble" "Make a copy tha's easy to troubleshoot"
+	@printf "%-25s %-20s\n" "make validate" "Run book validation"
+
+.PHONY: clfs toplevel common render nochunks nochunk_render pdf text validate trouble dump-commands download-list \
+	target-list help
