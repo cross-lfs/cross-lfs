@@ -52,10 +52,10 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
     xpointer="xpointer(//*[@os='g'])"/>
 
 <screen os="s3"><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
-   --host=${LFS_TARGET} --build=${LFS_HOST} \
+   --host=${CLFS_TARGET} --build=${CLFS_HOST} \
    --disable-sanity-checks --enable-kernel=2.6.0 \
    --with-headers=/tools/include --cache-file=config.cache \
-   --with-binutils=/cross-tools/${LFS_TARGET}/bin</userinput></screen>
+   --with-binutils=/cross-tools/${CLFS_TARGET}/bin</userinput></screen>
 
     <warning os="e1">
       <para><emphasis>Any</emphasis> error message you see about nptl at this point
@@ -82,18 +82,18 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
          </varlistentry>
 	
          <varlistentry os="ca3">
-            <term><parameter>--build=${LFS_HOST}</parameter></term>
+            <term><parameter>--build=${CLFS_HOST}</parameter></term>
             <listitem>
                <para>When used with --host, this creates a cross-architecture
-                  executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
+                  executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST).</para>
             </listitem>
         </varlistentry>
  	
         <varlistentry os="ca4">
-           <term><parameter>--host=${LFS_TARGET}</parameter></term>
+           <term><parameter>--host=${CLFS_TARGET}</parameter></term>
            <listitem>
                <para>When used with --build, this creates a cross-architecture
-                  executable that creates files for ${LFS_TARGET} but runs on ${LFS_HOST).</para>
+                  executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST).</para>
            </listitem>
         </varlistentry>
  	
@@ -123,7 +123,7 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
        </varlistentry>
  	
        <varlistentry os="ca8">
-           <term><parameter>--with-binutils=/cross-tools/${LFS_TARGET}/bin</parameter></term>
+           <term><parameter>--with-binutils=/cross-tools/${CLFS_TARGET}/bin</parameter></term>
            <listitem>
               <para>This tells GLIBC to use the binutils for our specific target architecture.</para>
             </listitem>

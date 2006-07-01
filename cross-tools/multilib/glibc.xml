@@ -70,10 +70,10 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="df"><userinput>BUILD_CC="gcc" CC="${LFS_TARGET}-gcc ${BUILD32}" \
-    AR="${LFS_TARGET}-ar" RANLIB="${LFS_TARGET}-ranlib" \
+<screen os="df"><userinput>BUILD_CC="gcc" CC="${CLFS_TARGET}-gcc ${BUILD32}" \
+    AR="${CLFS_TARGET}-ar" RANLIB="${CLFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
-    --host=${LFS_TARGET32} --build=${LFS_HOST} \
+    --host=${CLFS_TARGET32} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
@@ -87,7 +87,7 @@
       xpointer="xpointer(//*[@os='dg1'])"/>
 
       <varlistentry os="ea1">
-        <term><parameter>CC="${LFS_TARGET}-gcc ${BUILD32}"</parameter></term>
+        <term><parameter>CC="${CLFS_TARGET}-gcc ${BUILD32}"</parameter></term>
         <listitem>
           <para>Forces Glibc to utilize our target architecture GCC utilizing
           the 32 Bit flags.</para>
