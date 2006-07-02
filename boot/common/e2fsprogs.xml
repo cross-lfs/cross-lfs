@@ -61,13 +61,13 @@
 
     <para os="h">Install the binaries and documentation:</para>
 
-<screen os="i"><userinput>make DESTDIR=${LFS} install</userinput></screen>
+<screen os="i"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
 
     <variablelist os="j">
       <title>The meaning of the make option:</title>
 
       <varlistentry>
-        <term><parameter>DESTDIR=${LFS}</parameter></term>
+        <term><parameter>DESTDIR=${CLFS}</parameter></term>
         <listitem>
           <para>The Makefile for e2fsprogs hard-codes a path to the 
           <filename>mke2fs.conf</filename> file, causing the installation to
@@ -86,7 +86,7 @@
 
     <para os="ad">Create needed symlinks for a bootable system:</para>
 
-<screen os="ae"><userinput>ln -sv /tools/sbin/{fsck.ext2,fsck.ext3,e2fsck} ${LFS}/sbin</userinput></screen>
+<screen os="ae"><userinput>ln -sv /tools/sbin/{fsck.ext2,fsck.ext3,e2fsck} ${CLFS}/sbin</userinput></screen>
 
   </sect2>
 
