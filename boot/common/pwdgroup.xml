@@ -46,21 +46,75 @@
 <literal>root:x:0:0:root:/root:/bin/bash</literal>
 EOF</userinput></screen>
 
-<para os="a">TO BE WRITTEN: more text describing additional users
-bin:x:1:1:bin:/bin:/bin/false
-daemon:x:2:6:daemon:/sbin:/bin/false
-adm:x:3:16:adm:/var/adm:/bin/false
-lp:x:10:9:lp:/var/spool/lp:/bin/false
-mail:x:30:30:mail:/var/spool/mail:/bin/false
-news:x:31:31:news:/var/spool/news:/bin/false
-uucp:x:32:32:uucp:/var/spool/uucp:/bin/false
-operator:x:50:0:operator:/root:/bin/bash
-postmaster:x:51:30:postmaster:/var/spool/mail:/bin/false
-nobody:x:65534:65534:nobody:/:/bin/false</para>
-
-  <para os="b">The actual password for <systemitem class="username">root</systemitem>
+  <para os="a">The actual password for <systemitem class="username">root</systemitem>
   (the <quote>x</quote> used here is just a placeholder) will be set
   later.</para>
+
+  <variablelist os="b">TO BE WRITTEN: more text describing additional users
+  
+    <title>Additional users you may want to add:</title>
+
+    <varlistentry>
+      <term><literal>bin:x:1:1:bin:/bin:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>daemon:x:2:6:daemon:/sbin:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>adm:x:3:16:adm:/var/adm:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>lp:x:10:9:lp:/var/spool/lp:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>mail:x:30:30:mail:/var/mail:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>news:x:31:31:news:/var/spool/news:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>uucp:x:32:32:uucp:/var/spool/uucp:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>operator:x:50:0:operator:/root:/bin/bash</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>postmaster:x:51:30:postmaster:/var/spool/mail:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>nobody:x:65534:65534:nobody:/:/bin/false</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
 
   <para>Create the <filename>${LFS}/etc/group</filename> file by running
   the following command:</para>
@@ -84,16 +138,65 @@ usb:x:14:
 cdrom:x:15:</literal>
 EOF</userinput></screen>
 
-<para os="c">TO BE WRITTEN: more text describing additional groups
-adm::16:root,adm,daemon
-console::17:
-cdrw::18:
-mail::30:mail
-news::31:news
-uucp::32:uucp
-users::100:
-nogroup::65533:
-nobody::65534:</para>
+  <variablelist os="c">
+
+    <title>Additional groups you may want to add</title>
+
+    <varlistentry>
+      <term><literal>adm:x:16:root,adm,daemon</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>console:x:17:</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>cdrw:x:18:</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>mail:x:30:mail</literal></term>
+      <listitem>
+        <para>Used by MTAs (Mail Transport Agents)</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>news:x:31:news</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>uucp:x:32:uucp</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>users:x:100:</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>nogroup:x:65533:</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><literal>nobody:x:65534:</literal></term>
+      <listitem>
+        <para>To be written</para>
+      </listitem>
+    </varlistentry>
+    </variablelist>
 
   <para os="d">The created groups are not part of any standard&mdash;they are
   groups decided on in part by the requirements of the Udev configuration
