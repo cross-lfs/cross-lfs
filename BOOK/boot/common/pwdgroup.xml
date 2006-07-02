@@ -11,38 +11,38 @@
   <title>Creating the passwd, group, and log Files</title>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${LFS}/etc/passwd">${LFS}/etc/passwd</primary>
+    <primary sortas="e-${CLFS}/etc/passwd">${CLFS}/etc/passwd</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${LFS}/etc/group">${LFS}/etc/group</primary>
+    <primary sortas="e-${CLFS}/etc/group">${CLFS}/etc/group</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${LFS}/var/run/utmp">${LFS}/var/run/utmp</primary>
+    <primary sortas="e-${CLFS}/var/run/utmp">${CLFS}/var/run/utmp</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${LFS}/var/log/btmp">${LFS}/var/log/btmp</primary>
+    <primary sortas="e-${CLFS}/var/log/btmp">${CLFS}/var/log/btmp</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${LFS}/var/log/lastlog">${LFS}/var/log/lastlog</primary>
+    <primary sortas="e-${CLFS}/var/log/lastlog">${CLFS}/var/log/lastlog</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${LFS}/var/log/wtmp">${LFS}/var/log/wtmp</primary>
+    <primary sortas="e-${CLFS}/var/log/wtmp">${CLFS}/var/log/wtmp</primary>
   </indexterm>
 
   <para>In order for user <systemitem class="username">root</systemitem> to
   be able to login and for the name <quote>root</quote> to be recognized,
-  there must be relevant entries in the <filename>${LFS}/etc/passwd</filename>
-  and <filename>${LFS}/etc/group</filename> files.</para>
+  there must be relevant entries in the <filename>${CLFS}/etc/passwd</filename>
+  and <filename>${CLFS}/etc/group</filename> files.</para>
 
-  <para>Create the <filename>${LFS}/etc/passwd</filename> file by running
+  <para>Create the <filename>${CLFS}/etc/passwd</filename> file by running
   the following command:</para>
 
-<screen><userinput>cat &gt; ${LFS}/etc/passwd &lt;&lt; "EOF"
+<screen><userinput>cat &gt; ${CLFS}/etc/passwd &lt;&lt; "EOF"
 <literal>root:x:0:0:root:/root:/bin/bash</literal>
 EOF</userinput></screen>
 
@@ -50,76 +50,10 @@ EOF</userinput></screen>
   (the <quote>x</quote> used here is just a placeholder) will be set
   later.</para>
 
-  <variablelist os="b">
-  
-    <title>Additional users you may want to add:</title>
-
-    <varlistentry>
-      <term><literal>bin:x:1:1:bin:/bin:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>daemon:x:2:6:daemon:/sbin:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>adm:x:3:16:adm:/var/adm:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>lp:x:10:9:lp:/var/spool/lp:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>mail:x:30:30:mail:/var/mail:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>news:x:31:31:news:/var/spool/news:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>uucp:x:32:32:uucp:/var/spool/uucp:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>operator:x:50:0:operator:/root:/bin/bash</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>postmaster:x:51:30:postmaster:/var/spool/mail:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>nobody:x:65534:65534:nobody:/:/bin/false</literal></term>
-      <listitem>
-        <para>To be written</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <para>Create the <filename>${LFS}/etc/group</filename> file by running
+  <para>Create the <filename>${CLFS}/etc/group</filename> file by running
   the following command:</para>
 
-<screen><userinput>cat &gt; ${LFS}/etc/group &lt;&lt; "EOF"
+<screen><userinput>cat &gt; ${CLFS}/etc/group &lt;&lt; "EOF"
 <literal>root:x:0:
 bin:x:1:
 sys:x:2:
@@ -216,15 +150,15 @@ EOF</userinput></screen>
   do not already exist. Initialize the log files and give them
   proper permissions:</para>
 
-<screen><userinput>touch ${LFS}/var/run/utmp ${LFS}/var/log/{btmp,lastlog,wtmp}
-chmod -v 664 ${LFS}/var/run/utmp ${LFS}/var/log/lastlog
-chmod -v 600 ${LFS}/var/log/btmp</userinput></screen>
+<screen><userinput>touch ${CLFS}/var/run/utmp ${CLFS}/var/log/{btmp,lastlog,wtmp}
+chmod -v 664 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
+chmod -v 600 ${CLFS}/var/log/btmp</userinput></screen>
 
-  <para>The <filename>${LFS}/var/run/utmp</filename> file records the users
-  that are currently logged in. The <filename>${LFS}/var/log/wtmp</filename>
+  <para>The <filename>${CLFS}/var/run/utmp</filename> file records the users
+  that are currently logged in. The <filename>${CLFS}/var/log/wtmp</filename>
   file records all logins and logouts. The
-  <filename>${LFS}/var/log/lastlog</filename> file records when
-  each user last logged in. The <filename>${LFS}/var/log/btmp</filename> file
+  <filename>${CLFS}/var/log/lastlog</filename> file records when
+  each user last logged in. The <filename>${CLFS}/var/log/btmp</filename> file
   records the bad login attempts.</para>
 
 </sect1>

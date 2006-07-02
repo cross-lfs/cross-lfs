@@ -71,7 +71,7 @@
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${CLFS_TARGET}-</userinput></screen>
 
     <para os="af">If the use of kernel modules can't be avoided, an
-    <filename>${LFS}/etc/modprobe.conf</filename> file may be needed.
+    <filename>${CLFS}/etc/modprobe.conf</filename> file may be needed.
     Information pertaining to modules and kernel configuration is
     located in the kernel documentation in the <filename
     class="directory">Documentation</filename> directory of the kernel
@@ -91,29 +91,29 @@
     xpointer="xpointer(//*[@os='s'])"/>
 
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${CLFS_TARGET}- \
-    INSTALL_MOD_PATH=${LFS} modules_install</userinput></screen>
+    INSTALL_MOD_PATH=${CLFS} modules_install</userinput></screen>
 
     <para os="u">After kernel compilation is complete, additional steps are
     required to complete the installation. Some files need to be copied to
-    the <filename class="directory">${LFS}/boot</filename> directory.</para>
+    the <filename class="directory">${CLFS}/boot</filename> directory.</para>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='v'])"/>
 
-<screen><userinput>cp -v arch/i386/boot/bzImage ${LFS}/boot/lfskernel-&linux-version;</userinput></screen>
+<screen><userinput>cp -v arch/i386/boot/bzImage ${CLFS}/boot/clfskernel-&linux-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen os="w1"><userinput>cp -v System.map ${LFS}/boot/System.map-&linux-version;</userinput></screen>
+<screen os="w1"><userinput>cp -v System.map ${CLFS}/boot/System.map-&linux-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='x'])"/>
 
-<screen os="x1"><userinput>cp -v .config ${LFS}/boot/config-&linux-version;</userinput></screen>
+<screen os="x1"><userinput>cp -v .config ${CLFS}/boot/config-&linux-version;</userinput></screen>
 
   </sect2>
 

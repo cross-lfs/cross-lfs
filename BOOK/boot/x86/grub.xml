@@ -23,8 +23,8 @@
   href="../../bootable/x86/grub.xml"
   xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="d"><userinput>dd if=${LFS}/boot/grub/stage1 of=/dev/fd0 bs=512 count=1
-dd if=${LFS}/boot/grub/stage2 of=/dev/fd0 bs=512 seek=1</userinput></screen>
+<screen os="d"><userinput>dd if=${CLFS}/boot/grub/stage1 of=/dev/fd0 bs=512 count=1
+dd if=${CLFS}/boot/grub/stage2 of=/dev/fd0 bs=512 seek=1</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../../bootable/x86/grub.xml"
@@ -63,7 +63,7 @@ dd if=${LFS}/boot/grub/stage2 of=/dev/fd0 bs=512 seek=1</userinput></screen>
   xpointer="xpointer(//*[@os='m'])"/>
 
   <para os="n">If all went well, GRUB will have reported finding its files
-  in <filename class="directory">${LFS}/boot/grub</filename>. That's
+  in <filename class="directory">${CLFS}/boot/grub</filename>. That's
   all there is to it. Quit the <command>grub</command> shell:</para>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -74,7 +74,7 @@ dd if=${LFS}/boot/grub/stage2 of=/dev/fd0 bs=512 seek=1</userinput></screen>
   href="../../bootable/x86/grub.xml"
   xpointer="xpointer(//*[@os='p'])"/>
 
-<screen><userinput>cat &gt; ${LFS}/boot/grub/menu.lst &lt;&lt; "EOF"
+<screen><userinput>cat &gt; ${CLFS}/boot/grub/menu.lst &lt;&lt; "EOF"
 <literal># Begin /boot/grub/menu.lst
 
 # By default boot the first menu entry.
@@ -89,14 +89,14 @@ color green/black light-green/black
 # The first entry is for CLFS.
 title CLFS &version;
 root (hd0,3)
-kernel /boot/lfskernel-&linux-version; root=/dev/hda4</literal>
+kernel /boot/clfskernel-&linux-version; root=/dev/hda4</literal>
 EOF</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../../bootable/x86/grub.xml"
   xpointer="xpointer(//*[@os='q'])"/>
 
-<screen os="r"><userinput>cat &gt;&gt; ${LFS}/boot/grub/menu.lst &lt;&lt; "EOF"
+<screen os="r"><userinput>cat &gt;&gt; ${CLFS}/boot/grub/menu.lst &lt;&lt; "EOF"
 <literal>title Red Hat
 root (hd0,2)
 kernel /boot/kernel-2.6.5 root=/dev/hda3

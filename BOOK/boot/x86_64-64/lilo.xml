@@ -53,7 +53,7 @@
   key layout.  For a British keyboard layout, the following command will
   achieve this:</para> 
 
-<screen os="f" role="nodump"><userinput>keytab-lilo.pl uk >i${LFS}/boot/uk.ktl</userinput></screen>
+<screen os="f" role="nodump"><userinput>keytab-lilo.pl uk >i${CLFS}/boot/uk.ktl</userinput></screen>
 
   <para os="g">The argument to the command is the name of the keymap, or if
     necessary you can specify the full path to the keymap.  Use whatever
@@ -61,7 +61,7 @@
 
   <para os="i">The next step is to create /etc/lilo.conf</para>
 
-<screen os="j" role="nodump"><userinput>cat &gt; ${LFS}/etc/lilo.conf &lt;&lt; "EOF"
+<screen os="j" role="nodump"><userinput>cat &gt; ${CLFS}/etc/lilo.conf &lt;&lt; "EOF"
 <literal># Begin /etc/lilo.conf
 # lilo.conf
 #
@@ -73,11 +73,11 @@ map=/boot/map
 prompt
 
 # set the name of the default image to boot
-default=lfs
+default=clfs
 
 # define an image
-image=/boot/lfskernel
-    label=lfs
+image=/boot/clfskernel
+    label=clfs
     root=/dev/&lt;partition&gt;
     read-only
 # optionally add parameters to pass, e.g.

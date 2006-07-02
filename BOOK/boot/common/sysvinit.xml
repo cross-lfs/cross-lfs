@@ -27,7 +27,7 @@
 
 <screen os="ab"><userinput>cp -v src/Makefile src/Makefile.orig
 sed -e 's@root@0@g' \
-    -e "s@/dev/initctl@${LFS}&amp;@g" \
+    -e "s@/dev/initctl@${CLFS}&amp;@g" \
     -e 's@\(mknod \)-m \([0-9]* \)\(.* \)p@\1\3p; chmod \2\3@g' \
     -e "s@/usr/lib@/tools/lib@" \
     src/Makefile.orig > src/Makefile</userinput></screen>
@@ -43,7 +43,7 @@ make -C src CC="${CC}"</userinput></screen>
     href="../../final-system/common/sysvinit.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
-<screen os="ad"><userinput>make -C src install INSTALL="install" ROOT="${LFS}"</userinput></screen>
+<screen os="ad"><userinput>make -C src install INSTALL="install" ROOT="${CLFS}"</userinput></screen>
 
   </sect2>
 
@@ -56,13 +56,13 @@ make -C src CC="${CC}"</userinput></screen>
     </indexterm>
 
     <indexterm zone="conf-tools-sysvinit">
-      <primary sortas="e-${LFS}/etc/inittab">${LFS}/etc/inittab</primary>
+      <primary sortas="e-${CLFS}/etc/inittab">${CLFS}/etc/inittab</primary>
     </indexterm>
 
-    <para os="ae">Create a new file <filename>${LFS}/etc/inittab</filename> by
+    <para os="ae">Create a new file <filename>${CLFS}/etc/inittab</filename> by
     running the following:</para>
 
-<screen os="af"><userinput>cat &gt; ${LFS}/etc/inittab &lt;&lt; "EOF"
+<screen os="af"><userinput>cat &gt; ${CLFS}/etc/inittab &lt;&lt; "EOF"
 <literal># Begin /etc/inittab
 
 id:3:initdefault:
