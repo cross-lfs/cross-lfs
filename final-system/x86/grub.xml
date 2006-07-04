@@ -26,9 +26,11 @@
    <para os="p1">GRUB has an issue where it sometimes doesn't detect
    the disk geometry correctly when used with Linux 2.6. This results
    in the error message <literal>Error 24: Attempt to access block outside
-   partition</literal>. The following patch fixes this issue:</para>
+   partition</literal>. This patch also contains various fixes for raid
+   controllers along with support for the new Intel Mac. Apply the
+   following patch using the command below:</para>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&grub-disk-patch;</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&grub-fixes-patch;</userinput></screen>
 
     <para os="a">This package is known to have issues when its default optimization
     flags (including the <option>-march</option> and <option>-mcpu</option>
