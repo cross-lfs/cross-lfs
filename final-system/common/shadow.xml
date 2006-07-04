@@ -102,7 +102,7 @@ sed -i '/groups/d' man/Makefile</userinput></screen>
       this <command>sed</command> to correct the path to the Cracklib
       dictionary:</para>
 
-<screen><userinput>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</userinput></screen>
+<screen role="nodump"><userinput>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</userinput></screen>
     </note>
 
     <para os="u">Move a misplaced program to its proper location:</para>
@@ -144,7 +144,7 @@ ln -svf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
 <screen role="nodump"><userinput>grpconv</userinput></screen>
 
     <para>To view or change the default settings for new user accounts that
-    you create, you can edit <filename>/etc/default/useradd</filename>. See 
+    you create, you can edit <filename>/etc/default/useradd</filename>. See
     <command>man useradd</command> or
     <ulink url="&blfs-root;view/svn/postlfs/skel.html"/> for more
     information.</para>
