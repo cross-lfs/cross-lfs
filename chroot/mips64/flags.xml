@@ -19,7 +19,7 @@ export BUILD64="-mabi=64"</userinput></screen>
 
   <para>You will need to set your host target triplet for o32 bit:</para>
 
-<screen><userinput>export CLFS_TARGET32="`echo ${MACH_TYPE}| sed -e 's/64//g'`"</userinput></screen>
+<screen><userinput>export CLFS_TARGET32="$(echo ${MACH_TYPE}| sed -e 's/64//g')"</userinput></screen>
 
    <para>To prevent errors when you come back to your build, we will export these
    variables to prevent any build issues in the future:</para>
