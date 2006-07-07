@@ -24,7 +24,7 @@ SUBSYSTEM!="block",	GOTO="persistent_end"
 KERNEL=="ram*|loop*|fd*|nbd*",	GOTO="persistent_end"
 
 # never access removable ide devices, the drivers are causing event loops on open()
-BUS=="ide",     DRIVER=="ide-cdrom", SYSFS{removable}=="1", GROUP="cdrom"
+BUS=="ide",     DRIVER=="ide-cdrom", SYSFS{removable}=="1", GROUP="cdrom", MODE="660"
 BUS=="ide",	DRIVER!="ide-cdrom", SYSFS{removable}=="1", GOTO="persistent_end"
 
 # by-id (hardware serial number)
