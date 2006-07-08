@@ -14,31 +14,21 @@
   href="../common/creatingdirs.xml"
   xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>install -dv ${CLFS}/{bin,boot,dev,etc/opt,home,lib{,64},mnt}
-install -dv ${CLFS}/{sbin,srv,usr/local,var,opt,proc,sys}
+<screen os="b"><userinput>mkdir -pv ${CLFS}/{bin,boot,dev,etc/opt,home,lib{,64},mnt,opt}
+mkdir -pv ${CLFS}/{proc,media/{floppy,cdrom},sbin,srv,sys,var}
 install -dv ${CLFS}/root -m 0750
-install -dv ${CLFS}/tmp ${CLFS}/var/tmp -m 1777
-install -dv ${CLFS}/media/{floppy,cdrom}
-install -dv ${CLFS}/usr/{bin,include,lib{,64},sbin,share,src}
-ln -sv share/{man,doc,info} ${CLFS}/usr
-install -dv ${CLFS}/usr/share/{doc,info,locale,man}
-install -dv ${CLFS}/usr/share/{misc,terminfo,zoneinfo}
-install -dv ${CLFS}/usr/share/man/man{1,2,3,4,5,6,7,8}
-install -dv ${CLFS}/usr/local/{bin,etc,include,lib{,64},sbin,share,src}
-ln -sv share/{man,doc,info} ${CLFS}/usr/local
-install -dv ${CLFS}/usr/local/share/{doc,info,locale,man}
-install -dv ${CLFS}/usr/local/share/{misc,terminfo,zoneinfo}
-install -dv ${CLFS}/usr/local/share/man/man{1,2,3,4,5,6,7,8}
-install -dv ${CLFS}/var/{lock,log,mail,run,spool}
-install -dv ${CLFS}/var/{opt,cache,lib{,64}/{misc,locate},local}
-install -dv ${CLFS}/opt/{bin,doc,include,info}
-install -dv ${CLFS}/opt/{lib{,64},man/man{1,2,3,4,5,6,7,8}}
+install -dv ${CLFS}{/var,}/tmp -m 1777
+mkdir -pv ${CLFS}/usr/{,local/}{bin,include,lib{,64},sbin,src}
+mkdir -pv ${CLFS}/usr/{,local/}share/{doc,info,locale,man}
+mkdir -pv ${CLFS}/usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -pv ${CLFS}/usr/{,local/}share/man/man{1,2,3,4,5,6,7,8}
+for dir in /usr{,/local}; do
+  ln -sv share/{man,doc,info} $dir
+done
+mkdir -pv ${CLFS}/var/{lock,log,mail,run,spool}
+mkdir -pv ${CLFS}/var/{opt,cache,lib{,64}/{misc,locate},local}
 install -dv ${CLFS}/usr/lib/locale
 ln -sv ../lib/locale ${CLFS}/usr/lib64</userinput></screen>
-
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/creatingdirs.xml"
-  xpointer="xpointer(//*[@os='b'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../common/creatingdirs.xml"
@@ -47,5 +37,9 @@ ln -sv ../lib/locale ${CLFS}/usr/lib64</userinput></screen>
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../common/creatingdirs.xml"
   xpointer="xpointer(//*[@os='d'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/creatingdirs.xml"
+  xpointer="xpointer(//*[@os='e'])"/>
 
 </sect1>
