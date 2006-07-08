@@ -11,33 +11,33 @@
   <title>Creating the passwd, group, and log Files</title>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${CLFS}/etc/passwd">${CLFS}/etc/passwd</primary>
+    <primary sortas="e-/etc/passwd">/etc/passwd</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${CLFS}/etc/group">${CLFS}/etc/group</primary>
+    <primary sortas="e-/etc/group">/etc/group</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${CLFS}/var/run/utmp">${CLFS}/var/run/utmp</primary>
+    <primary sortas="e-/var/run/utmp">/var/run/utmp</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${CLFS}/var/log/btmp">${CLFS}/var/log/btmp</primary>
+    <primary sortas="e-/var/log/btmp">/var/log/btmp</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${CLFS}/var/log/lastlog">${CLFS}/var/log/lastlog</primary>
+    <primary sortas="e-/var/log/lastlog">/var/log/lastlog</primary>
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-${CLFS}/var/log/wtmp">${CLFS}/var/log/wtmp</primary>
+    <primary sortas="e-/var/log/wtmp">/var/log/wtmp</primary>
   </indexterm>
 
   <para>In order for user <systemitem class="username">root</systemitem> to
   be able to login and for the name <quote>root</quote> to be recognized,
-  there must be relevant entries in the <filename>${CLFS}/etc/passwd</filename>
-  and <filename>${CLFS}/etc/group</filename> files.</para>
+  there must be relevant entries in the <filename>/etc/passwd</filename>
+  and <filename>/etc/group</filename> files.</para>
 
   <para>Create the <filename>${CLFS}/etc/passwd</filename> file by running
   the following command:</para>
@@ -220,11 +220,11 @@ EOF</userinput></screen>
 chmod -v 664 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
 chmod -v 600 ${CLFS}/var/log/btmp</userinput></screen>
 
-  <para>The <filename>${CLFS}/var/run/utmp</filename> file records the users
-  that are currently logged in. The <filename>${CLFS}/var/log/wtmp</filename>
+  <para>The <filename>/var/run/utmp</filename> file records the users
+  that are currently logged in. The <filename>/var/log/wtmp</filename>
   file records all logins and logouts. The
-  <filename>${CLFS}/var/log/lastlog</filename> file records when
-  each user last logged in. The <filename>${CLFS}/var/log/btmp</filename> file
+  <filename>/var/log/lastlog</filename> file records when
+  each user last logged in. The <filename>/var/log/btmp</filename> file
   records the bad login attempts.</para>
 
 </sect1>
