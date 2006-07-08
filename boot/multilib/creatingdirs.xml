@@ -14,8 +14,10 @@
   href="../common/creatingdirs.xml"
   xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>mkdir -pv ${CLFS}/{bin,boot,dev,etc/opt,home,lib{,64},mnt,opt}
-mkdir -pv ${CLFS}/{proc,media/{floppy,cdrom},sbin,srv,sys,var}
+<screen os="b"><userinput>mkdir -pv ${CLFS}/{bin,boot,dev,{etc/,}opt,home,lib{,64},mnt}
+mkdir -pv ${CLFS}/{proc,media/{floppy,cdrom},sbin,srv,sys}
+mkdir -pv ${CLFS}/var/{lock,log,mail,run,spool}
+mkdir -pv ${CLFS}/var/{opt,cache,lib{,64}/{misc,locate},local}
 install -dv ${CLFS}/root -m 0750
 install -dv ${CLFS}{/var,}/tmp -m 1777
 mkdir -pv ${CLFS}/usr/{,local/}{bin,include,lib{,64},sbin,src}
@@ -25,8 +27,6 @@ mkdir -pv ${CLFS}/usr/{,local/}share/man/man{1,2,3,4,5,6,7,8}
 for dir in /usr{,/local}; do
   ln -sv share/{man,doc,info} $dir
 done
-mkdir -pv ${CLFS}/var/{lock,log,mail,run,spool}
-mkdir -pv ${CLFS}/var/{opt,cache,lib{,64}/{misc,locate},local}
 install -dv ${CLFS}/usr/lib/locale
 ln -sv ../lib/locale ${CLFS}/usr/lib64</userinput></screen>
 
