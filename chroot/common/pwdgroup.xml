@@ -34,11 +34,10 @@
     <primary sortas="e-/var/log/wtmp">/var/log/wtmp</primary>
   </indexterm>
 
-  <para>In order for user <systemitem class="username">root</systemitem> to
-  be able to login and for the name <quote>root</quote> to be recognized,
-  there must be relevant entries in the <filename>/etc/passwd</filename>
-  and <filename>/etc/group</filename> files.</para>
-
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='a'])"/>
+  
   <para>Create the <filename>/etc/passwd</filename> file by running the
   following command:</para>
 
@@ -46,13 +45,13 @@
 <literal>root:x:0:0:root:/root:/bin/bash</literal>
 EOF</userinput></screen>
 
-  <para os="a">The actual password for
+  <para os="b">The actual password for
   <systemitem class="username">root</systemitem> (the <quote>x</quote>
   used here is just a placeholder) will be set later.</para>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../../boot/common/pwdgroup.xml"
-  xpointer="xpointer(//*[@os='b'])"/>
+  xpointer="xpointer(//*[@os='c'])"/>
 
   <para>Create the <filename>/etc/group</filename> file by running the
   following command:</para>
@@ -78,15 +77,15 @@ EOF</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../../boot/common/pwdgroup.xml"
-  xpointer="xpointer(//*[@os='c'])"/>
-
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../boot/common/pwdgroup.xml"
   xpointer="xpointer(//*[@os='d'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../../boot/common/pwdgroup.xml"
   xpointer="xpointer(//*[@os='e'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='f'])"/>
 
   <para>To remove the <quote>I have no name!</quote> prompt, start a
   new shell. Since a full Glibc was installed in <xref
