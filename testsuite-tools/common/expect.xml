@@ -25,7 +25,12 @@
   <sect2 role="installation">
     <title>Installation of Expect</title>
 
-    <para os="a">First, fix a bug that can result in false failures during the GCC
+    <para os="s1">The following sed prevents searching for libraries in
+    /tools/lib. It will now search in ${libdir}:</para>
+
+<screen os="s2"><userinput>sed -i '/EXP_LIB_SPEC=/s@${exec_prefix}/lib@${libdir}@' configure</userinput></screen>
+
+    <para os="a">Fix a bug that can result in false failures during the GCC
     test suite run:</para>
 
 <screen os="b"><userinput>patch -Np1 -i ../&expect-spawn-patch;</userinput></screen>
