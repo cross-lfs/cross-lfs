@@ -29,10 +29,13 @@
   href="../x86/grub.xml"
   xpointer="xpointer(//*[@os='b'])"/>
 
-  <para os="c">If you have multiple systems on your machine using a different
-  bootloader such as GRUB, you may prefer to use that instead - consult the
-  appropriate documentation.  The rest of this section assumes you are going
-  to use Lilo.</para> 
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='c'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='c'])"/>
 
   <para os="d">Earlier, we compiled and installed the Lilo boot loader software
   in preparation for this step. The procedure involves writing a boot image to
@@ -41,25 +44,19 @@
   mkrescue to create a Lilo boot floppy, or CD (using e.g. dvdrecord from
   dvdrtools) as a test and as a backup.</para>
 
-  <para os="e">Normally, you interact with Lilo by using the cursor and enter
-  keys to select from the available option(s), but sometimes it is necessary to
-  add other boot options, such as e.g. 'init=/bin/bash' to debug boot failures.
-  The more your keyboard layout differs from the US qwerty layout, the harder
-  it will be to type boot options unless Lilo knows about your keyboard layout.
-  So, we will create a key table for Lilo (.ktl) file - at one point in the
-  documentation these are referred to as .klt files, which may be a typo, but
-  has been followed by some distros.  The name, and location, are not important
-  but it is conventional to put these in /boot with the name representing the
-  key layout.  For a British keyboard layout, the following command will
-  achieve this:</para> 
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='e'])"/>
 
 <screen os="f" role="nodump"><userinput>keytab-lilo.pl uk >i${CLFS}/boot/uk.ktl</userinput></screen>
 
-  <para os="g">The argument to the command is the name of the keymap, or if
-    necessary you can specify the full path to the keymap.  Use whatever
-    is appropriate for your keyboard.</para>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='g'])"/>
 
-  <para os="i">The next step is to create /etc/lilo.conf</para>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='i'])"/>
 
 <screen os="j" role="nodump"><userinput>cat &gt; ${CLFS}/etc/lilo.conf &lt;&lt; "EOF"
 <literal># Begin /etc/lilo.conf
@@ -88,12 +85,9 @@ image=/boot/clfskernel
 EOF</literal></userinput></screen>
 
 
-  <para os="k">Replace &lt;bootdisk&gt; with the name of the disk (or
-    partition) on which the boot sector is to be written, e.g. sda. Replace
-    &lt;keytable&gt; with the name of the keytable file you created, and
-    &lt;partition&gt; with the name of the root partition for the new
-    system.
-  </para>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='k'])"/>
 
   <warning os="l">
     <para>The following command will overwrite any current boot loader.
@@ -104,7 +98,9 @@ EOF</literal></userinput></screen>
     </para>
   </warning>
 
-  <para os="m">Run Lilo:</para>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../bootable/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@os='m'])"/>
 
 <screen os="n" role="nodump"><userinput>/tools/bin/lilo-static -v</userinput></screen>
 
