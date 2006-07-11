@@ -17,7 +17,7 @@
 
     <para os="a">Your shiny new CLFS system is almost complete. One of the
       last things to do is to ensure that the system can be properly
-      booted. The instructions below apply only to computers using lilo,
+      booted. The instructions below apply only to computers using Lilo,
       which in the context of this book means x86_64 Pure64 systems.
       Information on <quote>boot loading</quote> for other architectures
       should be available in the usual resource-specific locations for
@@ -28,7 +28,7 @@
   xpointer="xpointer(//*[@os='b'])"/>
 
     <para os="c">If you have multiple systems on your machine using a
-      different bootloader such as Grub, you may prefer to use that
+      different bootloader such as GRUB, you may prefer to use that
       instead - consult the appropriate documentation.  The rest of
       this section assumes you are going to use Lilo.</para> 
 
@@ -39,12 +39,12 @@
       (using e.g. dvdrecord from dvdrtools) as a backup (this requires
       loopback block device support in the kernel).</para>
 
-    <para os="e">Normally, you interact with lilo by using the cursor
+    <para os="e">Normally, you interact with Lilo by using the cursor
       and <literal>enter</literal> keys to select from the available
       option(s), but sometimes it is necessary to add other boot
       options, such as e.g. 'init=/bin/bash' to debug boot failures.
       The more your keyboard layout differs from the US qwerty layout,
-      the harder it becomes to type boot options unless lilo knows
+      the harder it becomes to type boot options unless Lilo knows
       about your keyboard layout. So, we will create a key table for
       Lilo (.ktl) file - at one point in the documentation these are
       referred to as .klt files, which may be a typo, but has been
@@ -116,19 +116,19 @@ EOF</literal></userinput></screen>
 
   <note os='o'>
     <para>People who have been used to GRUB need to be aware that
-      lilo works differently - in particular, you cannot edit the
-      available choices as you can in the grub shell, and lilo records
-      the block addresses of the kernels into the boot blocks each time
-      /sbin/lilo is run. This means that when you compile a new kernel,
-      you have to add it to /etc/lilo.conf and rerun /sbin/lilo.  It
-      also means that if you recompile an existing kernel and save it
-      to the same name you still have to rerun /sbin/lilo in case it now
-      occupies different blocks on the filesystem.</para>
+      Lilo works differently - in particular, you cannot edit the
+      available choices as you can in the <command>grub</command> shell,
+      and Lilo records the block addresses of the kernels into the boot
+      blocks each time /sbin/lilo is run. This means that when you
+      compile a new kernel, you have to add it to /etc/lilo.conf and
+      rerun /sbin/lilo.  It also means that if you recompile an existing
+      kernel and save it to the same name you still have to rerun /sbin/lilo
+      in case it now occupies different blocks on the filesystem.</para>
   </note>
 
     <para os="p">If you are running multiple systems on this box and
-    using lilo, it is a good idea to ensure that each system is running
-    the same version of lilo, otherwise an old version may not be able
+    using Lilo, it is a good idea to ensure that each system is running
+    the same version of Lilo, otherwise an old version may not be able
     to overwrite the bootloader from a newer version.  You will also
     need to ensure that the copies of /etc/lilo.conf on each system are
     kept synchronised.</para>
