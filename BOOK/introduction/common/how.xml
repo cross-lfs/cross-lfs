@@ -11,24 +11,21 @@
   <title>How to Build a CLFS System</title>
 
   <para>The CLFS system will be built by using a previously installed
-  Linux distribution (such as Debian, Mandrake, Red Hat, or SuSE). This
-  existing Linux system (the host) will be used as a starting point to
+  Linux distribution (such as Debian, Fedora, Mandriva, SuSE, or Ubuntu).
+  This existing Linux system (the host) will be used as a starting point to
   provide necessary programs, including a compiler, linker, and shell,
   to build the new system. Select the <quote>development</quote> option
   during the distribution installation to be able to access these
   tools.</para>
 
   <para>As an alternative to installing an entire separate distribution
-  onto your machine, you may wish to
-  use the Linux From Scratch LiveCD. The CD works well as a host system,
-  providing all the tools you need to successfully follow the instructions
-  in this book. Additionally, it contains all the source packages, patches
-  and a copy of this book. So once you have the CD, no network connection
-  or additional downloads are necessary. For more information about the
-  LFS LiveCD or to download a copy, visit <ulink url="&livecd-root;"/></para>
-
-  <!-- -->
-  <para>THE TEXT BELOW NEEDS TO BE REWRITTEN</para>
+  onto your machine, you may wish to use the Linux From Scratch LiveCD.
+  The CD works well as a host system, providing all the tools you need to
+  successfully follow the instructions in this book. Additionally, it
+  contains all the source packages, patches and a copy of this book. So
+  once you have the CD, no network connection or additional downloads are
+  necessary. For more information about the LFS LiveCD or to download a copy,
+  visit <ulink url="&livecd-root;"/></para>
 
   <para><xref linkend="chapter-partitioning"/> of this book describes how
   to create a new Linux native partition and file system, the place
@@ -51,24 +48,15 @@
   compiler.</para>
 
   <para>The process of building cross-compile tools first involves installing
-  binutils into /cross-tools, so that the linker can be used with the building
-  of everything else in the temp-system. GCC is then compiled statically and
-  installed into /cross-tools, and this cross-compiler is used to build glibc
-  into /tools for the temp-system. The GCC cross-compiler is then rebuilt
-  dynamically - this final cross-compiler is what will be used to build the
-  rest of the temporary system. When this is done, the CLFS installation
-  process will no longer depend on the host distribution, with the exception
-  of the running kernel.
-  <!-- still needs some work - needs to provide a better technical
-explanation, especially the reasoning for compiling gcc statically then dynamically... --></para>
+  building all the necessary tools to create a build system for the target 
+  machine. With the Cross-Compiled tools we just created, we elminate any
+  dependencies on the toolchain from our host distro.</para>
 
-  <para>The packages in <xref linkend="chapter-temp-system"/> are then built
-  using the cross-compiled tools in /cross-tools, and linked against the
-  C library that was installed during the building of the cross-tools.</para>
-
-  <para>This effort to isolate the new system from the host distribution
-  may seem excessive, but a full technical explanation is provided at the
-  beginning of <xref linkend="chapter-temp-system"/>.</para>
+  <para>After we build our <quote>Cross-Tools</quote>, we start building
+  a very minimal working system in /tools. This effort to isolate the new
+  system from the host distribution may seem excessive, but a full technical
+  explanation is provided at the beginning of
+  <xref linkend="chapter-temp-system"/>.</para>
 
   <para>In <xref linkend="chapter-building-system"/>, the full CLFS system is
   built. Depending on the system you are cross-compiling for, either you will
@@ -88,16 +76,15 @@ explanation, especially the reasoning for compiling gcc statically then dynamica
   the host system, you must reboot because the kernel will likely not
   support the target machine. Booting involves installing a few
   additional packages that are needed for bootup, installing
-  bootscripts, and building a miminal kernel.</para>
+  bootscripts, and building a miminal kernel. We also describe some
+  alternative booting methods in <xref linkend="ch-boot-whatnext"/></para>
 
   <para>To finish the installation, the CLFS-Bootscripts are set up in <xref
   linkend="chapter-bootscripts"/>, and the kernel and boot loader are set
-  up in <xref linkend="chapter-bootable"/>. <xref
-  linkend="chapter-finalizing"/> contains information on furthering the
-  CLFS experience beyond this book.  After the steps in this book have
-  been implemented, the computer will be ready to reboot into the new
-  CLFS system.</para>
-  <!-- -->
+  up in <xref linkend="chapter-bootable"/>. <xref linkend="chapter-finalizing"/>
+  contains information on furthering the CLFS experience beyond this book.
+  After the steps in this book have been implemented, the computer will be
+  ready to reboot into the new CLFS system.</para>
 
   <para>This is the process in a nutshell. Detailed information on each
   step is discussed in the following chapters and package descriptions.
