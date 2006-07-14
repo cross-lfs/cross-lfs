@@ -1,0 +1,63 @@
+Submitted By: Jim Gifford <jim@linuxfromscratch.org>
+Date: 07-14-2006
+Initial Package Version: 0.97
+Upstream Status: Unknown
+Origin: Grub Bug Report - http://savannah.gnu.org/bugs/?func=detailitem&item_id=11312
+Description: This patch fixes the following issues on x86_64
+	1) malloc'd pages seem to lack the execute bit on x86_64;
+	2) grub seems to use some stack pointer diversion to malloc'd pages;
+	3) nested functions execute data on the stack;
+	4) this causes a segfault (at least on my machine)
+
+diff -Naur grub-0.97.orig/grub/asmstub.c grub-0.97/grub/asmstub.c
+--- grub-0.97.orig/grub/asmstub.c	2005-02-16 12:45:14.000000000 -0800
++++ grub-0.97/grub/asmstub.c	2006-07-14 12:38:08.305902933 -0700
+@@ -43,6 +43,8 @@
+ #include <termios.h>
+ #include <signal.h>
+ 
++#include <sys/mman.h>
++
+ #ifdef __linux__
+ # include <sys/ioctl.h>		/* ioctl */
+ # if !defined(__GLIBC__) || \
+@@ -142,14 +144,25 @@
+     }
+ 
+   assert (grub_scratch_mem == 0);
+-  scratch = malloc (0x100000 + EXTENDED_MEMSIZE + 15);
++  scratch = mmap(NULL,
++                 0x100000 + EXTENDED_MEMSIZE + 15,
++                 PROT_EXEC | PROT_READ | PROT_WRITE,
++                 MAP_PRIVATE | MAP_GROWSDOWN | MAP_ANONYMOUS | MAP_32BIT,
++                 -1,
++                 0);
++
+   assert (scratch);
+   grub_scratch_mem = (char *) ((((int) scratch) >> 4) << 4);
+ 
+   /* FIXME: simulate the memory holes using mprot, if available. */
+ 
+   assert (disks == 0);
+-  disks = malloc (NUM_DISKS * sizeof (*disks));
++  disks = mmap(NULL,
++               NUM_DISKS * sizeof (*disks),
++               PROT_EXEC | PROT_READ | PROT_WRITE,
++               MAP_PRIVATE | MAP_GROWSDOWN | MAP_ANONYMOUS | MAP_32BIT,
++               -1,
++               0);
+   assert (disks);
+   /* Initialize DISKS.  */
+   for (i = 0; i < NUM_DISKS; i++)
+@@ -215,9 +228,9 @@
+   /* Release memory. */
+   restore_device_map (device_map);
+   device_map = 0;
+-  free (disks);
++  munmap(disks, NUM_DISKS * sizeof (*disks));
+   disks = 0;
+-  free (scratch);
++  munmap(scratch, 0x100000 + EXTENDED_MEMSIZE + 15);
+   grub_scratch_mem = 0;
+ 
+   if (serial_device)
