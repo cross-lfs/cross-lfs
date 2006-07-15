@@ -20,12 +20,17 @@
 
   <para>As an alternative to installing an entire separate distribution
   onto your machine, you may wish to use the Linux From Scratch LiveCD.
-  The CD works well as a host system, providing all the tools you need to
-  successfully follow the instructions in this book. Additionally, it
-  contains all the source packages, patches and a copy of this book. So
-  once you have the CD, no network connection or additional downloads are
-  necessary. For more information about the LFS LiveCD or to download a copy,
-  visit <ulink url="&livecd-root;"/></para>
+  This CD works well as a host system, providing all the tools you need to
+  successfully follow the instructions in this book. It does also
+  contain source packages and patches for the LFS book, and a copy of the LFS
+  book, but not the needed packages or book for CLFS. You can still use the
+  CD for building CLFS, but you will need to download the packages, patches
+  and book separately. You can also look at
+  <ulink url="&hints-root;lfscd-remastering-howto.txt"/>
+  for infomation on building your own CD, replacing the LFS packages and book
+  with those for CLFS. Once you have the CD, no network connection or
+  additional downloads are necessary. For more information about the LFS
+  LiveCD or to download a copy, visit <ulink url="&livecd-root;"/>.</para>
 
   <para><xref linkend="chapter-partitioning"/> of this book describes how
   to create a new Linux native partition and file system, the place
@@ -47,9 +52,9 @@
   circular dependencies&mdash;for example, to compile a compiler, you need a
   compiler.</para>
 
-  <para>The process of building cross-compile tools first involves installing
-  building all the necessary tools to create a build system for the target 
-  machine. With the Cross-Compiled tools we just created, we elminate any
+  <para>The process of building cross-compile tools first involves building and
+  installing all the necessary tools to create a build system for the target 
+  machine. With these cross-compiled tools, we eliminate any
   dependencies on the toolchain from our host distro.</para>
 
   <para>After we build our <quote>Cross-Tools</quote>, we start building
@@ -59,7 +64,7 @@
   <xref linkend="chapter-temp-system"/>.</para>
 
   <para>In <xref linkend="chapter-building-system"/>, the full CLFS system is
-  built. Depending on the system you are cross-compiling for, either you will
+  built. Depending on the system you are cross-compiling for, you will either
   boot the minimal temp-system on the target machine, or chroot into it.</para>
 
   <para>The <command>chroot</command> (change root) program is used to enter
