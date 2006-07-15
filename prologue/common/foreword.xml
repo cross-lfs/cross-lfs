@@ -10,58 +10,42 @@
 
   <title>Foreword</title>
 
-  <para>My adventures in Linux began in 1998 when I downloaded and
-  installed my first distribution. After working with it for a while, I
-  discovered issues I definitely would have liked to see improved upon.
-  For example, I didn't like the arrangement of the bootscripts or the way
-  programs were configured by default. I tried a number of alternative
-  distributions to address these issues, yet each had its pros and cons.
-  Finally, I realized that if I wanted full satisfaction from my Linux
-  system, I would have to build my own from scratch.</para>
+  <para>The Linux From Scratch Project has seen many changes in the
+  few years of its existance.  I personally became involved with the
+  project in 1999, around the time of the 2.x releases.  At that time,
+  the build process was to create static binaries with the host system,
+  then chroot and build the final binaries on top of the static ones.</para>
 
-  <para>What does this mean? I resolved not to use pre-compiled packages
-  of any kind, nor CD-ROMs or boot disks that would install basic
-  utilities. I would use my current Linux system to develop my own
-  customized system. This <quote>perfect</quote> Linux system would then
-  have the strengths of various systems without their associated
-  weaknesses. In the beginning, the idea was rather daunting, but I
-  remained committed to the idea that a system could be built that would
-  conform to my needs and desires rather than to a standard that just
-  did not fit what I was looking for.</para>
+  <para>Later came the use of the /static directory to hold the initial
+  static builds, keeping them separated from the final system, then
+  the PureLFS process developed by Ryan Oliver and Greg Schafer,
+  introducing a new toolchain build process that divorces even our initial
+  builds from the host.  Finally, LFS 6 bought Linux Kernel 2.6, the
+  udev dynamic device structure, sanitized kernel headers, and other
+  improvements to the Linux From Scratch system.</para>
 
-  <para>After sorting through issues such as circular dependencies and
-  compile-time errors, I created a custom-built Linux system that was
-  fully operational and suitable to individual needs. This process also
-  allowed me to create compact and streamlined Linux systems which are
-  faster and take up less space than traditional operating systems. I
-  called this system a Linux From Scratch system, or an CLFS system for
-  short.</para>
+  <para>The one "flaw" in LFS is that it has always been based on a x86
+  class processor.  With the advent of the Athlon 64 and Intel EM64T
+  processors, the x86-only LFS is no longer ideal. Throughout this time,
+  Ryan Oliver developed and documented a process by which you could
+  build Linux for any system and from any system; by use of
+  cross-compilation techniques.  Thus,  the Cross LFS project was born.</para>
 
-  <para>As I shared my goals and experiences with other members of the
-  Linux community, it became apparent that there was sustained interest
-  in the ideas set forth in my Linux adventures. Such custom-built CLFS
-  systems serve not only to meet user specifications and requirements, but
-  also serve as an ideal learning opportunity for programmers and system
-  administrators to enhance their Linux skills. Out of this broadened
-  interest, the Linux From Scratch Project was born.</para>
+  <para>CLFS follows the same guiding principles the LFS project has
+  always followed, e.g., knowing your system inside and out by virtue
+  of having built the system yourself.  Additionally, during a CLFS
+  build, you will learn advanced techniques such as cross-build toolchains,
+  multilib support (32 & 64-bit libraries side-by-side), alternative
+  architectures such as Sparc, MIPS, and Alpha, and much more.</para>
 
-  <para>This <emphasis>Linux From Scratch</emphasis> book provides
-  readers with the background and instruction to design and build custom
-  Linux systems. This book highlights the Linux from Scratch project and
-  the benefits of using this system. Users can dictate all aspects of
-  their system, including directory layout, script setup, and security.
-  The resulting system will be compiled completely from the source code,
-  and the user will be able to specify where, why, and how programs are
-  installed. This book allows readers to fully customize Linux systems
-  to their own needs and allows users more control over their
-  system.</para>
-
-  <para>I hope you will have a great time working on your own CLFS
-  system, and enjoy the numerous benefits of having a system that is
-  truly <emphasis>your own</emphasis>.</para>
+  <para>We hope you enjoy building your own CLFS system, and the benefits
+  that come from a system tailored to your needs!</para>
 
 <literallayout>--
-Gerard Beekmans
-gerard@linuxfromscratch.org</literallayout>
+Jeremy Utley, CLFS 1.x Release Manager (Page Author)
+Jim Gifford, CLFS Project Co-leader
+Ryan Oliver, CLFS Project Co-leader
+Joe Ciccone, Justin Knierin, Chris Staub, Matt Darcy, Ken Moffat,
+Manuel Canales Esparcia, and Nathan Coulson - CLFS Developers</literallayout>
 
 </sect1>
