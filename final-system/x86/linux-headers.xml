@@ -48,16 +48,6 @@ cp -av include/sound/* /usr/include/sound</userinput></screen>
 
 <screen><userinput>cp -av include/asm-i386/* /usr/include/asm</userinput></screen>
 
-    <para os="e">Ensure that all the headers are owned by
-    <systemitem class="username">root</systemitem>:</para>
-
-<screen os="f"><userinput>chown -Rv root:root /usr/include/{asm,asm-generic,linux,mtd,net,scsi,sound}</userinput></screen>
-
-    <para os="g">Make sure the users can read the headers:</para>
-
-<screen os="h"><userinput>find /usr/include/{asm,asm-generic,linux,mtd,net,scsi,sound} -type d -exec chmod -v 755 {} \;
-find /usr/include/{asm,asm-generic,linux,mtd,net,scsi,sound} -type f -exec chmod -v 644 {} \;</userinput></screen>
-
   </sect2>
 
   <sect2 id="contents-linux-headers" role="content">
