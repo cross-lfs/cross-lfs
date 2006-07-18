@@ -48,9 +48,10 @@ EOF</userinput></screen>
   <para os="e">Included in <filename class="directory">/usr/lib/colo/examples</filename>
   are more examples of a <filename>default.colo</filename> file.</para>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../x86/grub.xml"
-  xpointer="xpointer(//*[@os='v'])"/>
+  <para os="v">The FHS stipulates that the bootloader's configuration file shoul
+d
+  be symlinked to <filename class="symlink">/etc/{Bootloader Name}</filename>.
+  To satisfy this requirement for Colo, issue the following command:</para>
 
 <screen os="f"><userinput>mkdir -v /etc/colo &amp;&amp;
 ln -sv /boot/colo/default.colo /etc/colo</userinput></screen>
