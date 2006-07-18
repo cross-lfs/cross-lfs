@@ -24,7 +24,7 @@
   url="http://www.google.com/"/>) provides a useful search engine for
   most packages. If this search is unsuccessful, try one of the
   alternative means of downloading discussed at <ulink
-  url="http://cross-lfs.org/files/packages/&major-version;.&minor-version;.&extra-version;"/>.</para>
+  url="&packages-root;"/>.</para>
 
   <para>Downloaded packages and patches will need to be stored somewhere
   that is conveniently available throughout the entire build. A working
@@ -41,11 +41,11 @@
 
 <screen><userinput>mkdir -v $CLFS/sources</userinput></screen>
 
-  <para>Make this directory writable and sticky. <quote>Sticky</quote>
-  means that even if multiple users have write permission on a
-  directory, only the owner of a file can delete the file within a
-  sticky directory. The following command will enable the write and
-  sticky modes:</para>
+  <para>Make this directory writable and sticky. When a directory is
+  marked <quote>sticky</quote>, that means that even if multiple users have
+  write permission on that directory, any file within that directory can only be
+  deleted or modified by its owner. The following command will enable the
+  write and sticky modes:</para>
 
 <screen><userinput>chmod -v a+wt $CLFS/sources</userinput></screen>
 
