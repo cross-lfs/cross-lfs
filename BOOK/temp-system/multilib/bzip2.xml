@@ -27,8 +27,9 @@
     a multi-architecture build, and change the default lib path
     to <filename class="directory">lib64</filename>:</para>
 
-<screen os="m2"><userinput>sed -i -e 's@^\(all:.*\) test@\1@g' \
-    -e 's@/lib\(/\| \|$\)@/lib64\1@g' Makefile</userinput></screen>
+<screen os="m2"><userinput>cp -v Makefile{,.orig}
+sed -e 's@^\(all:.*\) test@\1@g' \
+    -e 's@/lib\(/\| \|$\)@/lib64\1@g' Makefile.orig > Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/bzip2.xml"
