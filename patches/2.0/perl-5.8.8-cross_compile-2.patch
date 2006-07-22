@@ -1,439 +1,18 @@
 Submitted By: Joe Ciccone <jciccone@linuxfromscratch.org>
-Date: 2006-06-16
+Date: 2006-07-22
 Upstream Status: Not Submitted
 Origin: Joe Ciccone
 Description: Adds a Makefile to assit with the cross-compilation of perl.
 
-             Archs supported: arm
+             Archs supported: arm x86
 
              Usage:
                cd Cross
                make ARCH=[arch] CROSS_COMPILE=[cross-tools-prefix]
                make DESTDIR=[optional:fakeroot] install
 
-diff -Naur perl-5.8.8.orig/Cross/Makefile perl-5.8.8/Cross/Makefile
---- perl-5.8.8.orig/Cross/Makefile	2004-01-12 15:44:01.000000000 -0500
-+++ perl-5.8.8/Cross/Makefile	2006-06-16 17:04:07.000000000 -0400
-@@ -1,68 +1,62 @@
--## Toplevel Makefile for cross-compilation of perl
--#
--## $Id: Makefile,v 1.7 2004/01/12 15:41:02 red Exp red $
--
--export TOPDIR=${shell pwd}
--include $(TOPDIR)/config
--export CFLAGS
--export SYS=$(ARCH)-$(OS)
--export CROSS=$(ARCH)-$(OS)-
--export FULL_OPTIMIZATION = -fexpensive-optimizations -fomit-frame-pointer -O2
--export OPTIMIZATION = -O2
--
--export CC = $(CROSS)gcc
--export CXX = $(CROSS)g++
--export LD = $(CROSS)ld
--export STRIP = $(CROSS)strip
--export AR = $(CROSS)ar
--export RANLIB = $(CROSS)ranlib
--
--
--## Optimisation work
--ifeq ($(ARCH),arm)
-- ifdef CONFIG_TARGET_ARM_SA11X0
--   ifndef Architecture
--     Architecture = armv4l-strongarm
--   endif
--   FULL_OPTIMIZATION += -march=armv4 -mtune=strongarm1100 -mapcs-32
--   OPTIMIZATION += -march=armv4 -mtune=strongarm1100 -mapcs-32
-- endif
--endif
-+PWD	:= $(shell pwd)
-+TOP	:= $(shell dirname $(PWD))
- 
--CFLAGS+=$(FULL_OPTIMIZATION)
-+VERSION	:= $(shell awk '/define[ ]PERL_REVISION/ {printf $$3"."} /define[ ]PERL_VERSION/ {printf $$3"."} /define[ ]PERL_SUBVERSION/ {print $$3}' $(TOP)/patchlevel.h)
- 
--all:
--	@echo Please read the README file before doing anything else.
-+CROSS_COMPILE := arm-unknown-linux-gnu-
-+
-+ARCH	:= arm
-+OS	:= linux
-+
-+SYS	:= $(ARCH)-$(OS)
- 
--gen_patch:
--	diff -Bbur ../Makefile.SH Makefile.SH > Makefile.SH.patch
--	diff -Bbur ../installperl installperl > installperl.patch
--
--patch:
--	cd .. ; if [ ! -e ./CROSS_PATCHED ] ; then \
--		patch -p1 < Cross/Makefile.SH.patch; \
--		patch -p1 < Cross/installperl.patch ; mv installperl installperl-patched; \
--		sed -e 's/XXSTRIPXX/$(SYS)/' installperl-patched > installperl; \
--		touch CROSS_PATCHED ; fi
--
--dry_patch:
--	cd .. ;	patch --dry-run -p1 < Cross/Makefile.SH.patch; \
--		patch --dry-run -p1 < Cross/installperl.patch; \
--
--perl:
--	@echo Perl cross-build directory is $(TOPDIR)
--	@echo Target arch is $(SYS)
--	@echo toolchain: $(CC), $(CXX), $(LD), $(STRIP), $(AR), $(RANLIB)
--	@echo Optimizations: $(FULL_OPTIMIZATION)
--
--	$(TOPDIR)/generate_config_sh config.sh-$(SYS) > $(TOPDIR)/../config.sh
--	cd $(TOPDIR)/.. ; ./Configure -S ; make depend ; make ; make more
--	cd $(TOPDIR)/.. ; mkdir -p fake_config_library ; cp lib/Config.pm fake_config_library
--	cd $(TOPDIR)/.. ; $(MAKE) more2 "PERLRUN=/usr/bin/perl -I$(TOPDIR)/../fake_config_library -MConfig"
--	cd $(TOPDIR)/.. ; $(MAKE) more3 "PERLRUN=/usr/bin/perl -I$(TOPDIR)/../fake_config_library -MConfig"
--	cd $(TOPDIR)/.. ; $(MAKE) more4 "PERLRUN=/usr/bin/perl -I$(TOPDIR)/../fake_config_library -MConfig"
--	cd $(TOPDIR)/.. ; rm -rf install_me_here
--	cd $(TOPDIR)/.. ; make install-strip
--	cd $(TOPDIR)/.. ; sh -x Cross/warp
-+AR	:= $(CROSS_COMPILE)ar
-+CC	:= $(CROSS_COMPILE)gcc
-+CXX	:= $(CROSS_COMPILE)g++
-+CPP	:= $(CROSS_COMPILE)cpp
-+LD	:= $(CROSS_COMPILE)ld
-+RANLIB	:= $(CROSS_COMPILE)ranlib
-+STRIP	:= $(CROSS_COMPILE)strip
- 
-+.PHONY: all install create-config.sh
-+
-+all:
-+	cd $(TOP); CC=gcc ./configure.gnu
- 
-+	# Make miniperl
-+	$(MAKE) -C $(TOP) miniperl
-+	mv -v $(TOP)/miniperl $(TOP)/miniperl-cross
-+	$(MAKE) -C $(TOP) clean
-+
-+	# Do the final build
-+	$(MAKE) create-config.sh
-+	cd $(TOP); ./Configure -S
-+	$(MAKE) -C $(TOP)
-+
-+install:
-+	$(MAKE) -C $(TOP) install
-+
-+create-config.sh:
-+	sed -e "s@\(^archname=\).*@\1'$(SYS)'@g" \
-+	    -e "s@\(^myarchname=\).*@\1'$(SYS)'@g" \
-+	    -e "s@\(^ar=\).*@\1'$(AR)'@g" \
-+	    -e "s@\(^cc=\).*@\1'$(CC)'@g" \
-+	    -e "s@\(^ccname=\).*@\1'$(CC)'@g" \
-+	    -e "s@\(^cpp=\).*@\1'$(CPP)'@g" \
-+	    -e "s@\(^cpprun=\).*@\1'$(CC) -E'@g" \
-+	    -e "s@\(^cppstdin=\).*@\1'$(CC) -E'@g" \
-+	    -e "s@\(^ld=\).*@\1'$(LD)'@g" \
-+	    -e "s@\(^ranlib=\).*@\1'$(RANLIB)'@g" \
-+	    -e "s@\(^full_ar=\).*@\1'$(shell which $(AR))'@g" \
-+	    -e "s@\(^full_sed=\).*@\1'$(shell which sed)'@g" \
-+	    -e "/^ccflags=/s@-I/usr/local/include@@g" \
-+	    -e "/^cppflags=/s@-I/usr/local/include@@g" \
-+	    -e "/^ldflags=/s@-L/usr/local/lib@@g" \
-+	    -e "/^lddlflags=/s@-L/usr/local/lib@@g" \
-+	    -e "/^archlib=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
-+	    -e "/^archlibexp=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
-+	    -e "/^installarchlib=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
-+	    -e "/^installsitearch=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
-+	    -e "/^sitearch/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
-+	    -e "/^sitearchexp/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
-+	    $(PWD)/config.sh-$(SYS) > $(TOP)/config.sh
-diff -Naur perl-5.8.8.orig/Cross/Makefile.SH.patch perl-5.8.8/Cross/Makefile.SH.patch
---- perl-5.8.8.orig/Cross/Makefile.SH.patch	2006-01-12 15:18:31.000000000 -0500
-+++ perl-5.8.8/Cross/Makefile.SH.patch	1969-12-31 19:00:00.000000000 -0500
-@@ -1,189 +0,0 @@
----- ../Makefile.SH
--+++ ../Makefile.SH
--@@ -129,18 +129,7 @@
-- 	    # INSTALL file, under "Building a shared perl library".
-- 	    # If there is no pre-existing $libperl, we don't need
-- 	    # to do anything further.
---	    if test -f $archlib/CORE/$libperl; then
---		rm -f preload
---		cat <<'EOT' > preload
---#! /bin/sh
---lib=$1
---shift
---test -r $lib && export LD_PRELOAD="$lib $LD_PRELOAD"
---exec "$@"
---EOT
---		chmod 755 preload
---		ldlibpth="$ldlibpth `pwd`/preload `pwd`/$libperl"
---	    fi
--+	    echo linux libraries overwritten by cross-compile patches
-- 	    ;;
-- 	os390)	test -f /bin/env && ldlibpth="/bin/env $ldlibpth"
-- 		;;
--@@ -389,9 +378,21 @@
-- .c.s:
-- 	$(CCCMDSRC) -S $*.c
-- 
---all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT) extra.pods $(private) $(unidatafiles) $(public) $(dynamic_ext) $(nonxs_ext) extras.make
---	@echo " ";
---	@echo "	Everything is up to date. Type '$(MAKE) test' to run test suite."
--+#all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT) extra.pods $(private) $(unidatafiles) $(public) $(dynamic_ext) $(nonxs_ext) extras.make
--+#	@echo " ";
--+#	@echo "	Everything is up to date. Type '$(MAKE) test' to run test suite."
--+
--+all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT)
--+	mv miniperl miniperl-arm
--+	ln -s /usr/bin/perl miniperl
--+
--+more: extra.pods $(private) $(public)
--+
--+more2: $(dynamic_ext)
--+
--+more3: $(nonxs_ext)
--+
--+more4: extras.make
-- 
-- .PHONY: all compile translators utilities
-- 
--@@ -401,10 +402,10 @@
-- 	cd x2p; $(MAKE) compile;
-- 	cd pod; $(MAKE) compile;
-- 
---translators:	miniperl$(EXE_EXT) $(CONFIGPM) FORCE
--+translators:	$(CONFIGPM) FORCE
-- 	@echo " "; echo "	Making x2p stuff"; cd x2p; $(LDLIBPTH) $(MAKE) all
-- 
---utilities:	miniperl$(EXE_EXT) $(CONFIGPM) $(plextract) lib/lib.pm FORCE
--+utilities:	$(CONFIGPM) $(plextract) lib/lib.pm FORCE
-- 	@echo " "; echo "	Making utilities"; cd utils; $(LDLIBPTH) $(MAKE) all
-- 
-- 
--@@ -579,7 +580,7 @@
-- 	$(CC) -o miniperl $(CLDFLAGS) \
-- 	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
-- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
---	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
--+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-- !NO!SUBS!
-- 		;;
-- 	next4*)
--@@ -587,7 +588,7 @@
-- miniperl: $& miniperlmain$(OBJ_EXT) $(LIBPERL) opmini$(OBJ_EXT)
-- 	$(CC) -o miniperl `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
-- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
---	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
--+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-- !NO!SUBS!
-- 		;;
-- 	darwin*)
--@@ -754,7 +755,7 @@
-- # We need to autosplit in two steps because VOS can't handle so many args
-- #
-- .PHONY: preplibrary
---preplibrary: miniperl$(EXE_EXT) $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
--+preplibrary: $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
-- 	@sh ./makedir lib/auto
-- 	@echo "	AutoSplitting perl library"
-- 	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
--@@ -763,35 +764,35 @@
-- 		autosplit_lib_modules(@ARGV)' lib/*/*.pm
-- 	$(MAKE) lib/re.pm
-- 
---lib/Config.pod: config.sh miniperl$(EXE_EXT) configpm Porting/Glossary
--+lib/Config.pod: config.sh configpm Porting/Glossary
-- 	$(LDLIBPTH) ./miniperl -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
-- 
-- $(CONFIGPM): lib/Config.pod
-- 
---lib/ExtUtils/Miniperl.pm: miniperlmain.c miniperl$(EXE_EXT) minimod.pl $(CONFIGPM)
--+lib/ExtUtils/Miniperl.pm: miniperlmain.c minimod.pl $(CONFIGPM)
-- 	$(LDLIBPTH) ./miniperl minimod.pl > lib/ExtUtils/Miniperl.pm
-- 
-- lib/re.pm: ext/re/re.pm
-- 	cp ext/re/re.pm lib/re.pm
-- 
---$(plextract):	miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p
--+$(plextract):	$(CONFIGPM) x2p/s2p
-- 	@-rm -f $@
-- 	$(LDLIBPTH) ./miniperl -I`pwd`/lib $@.PL
-- 
---x2p/s2p: miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p.PL
--+x2p/s2p: $(CONFIGPM) x2p/s2p.PL
-- 	cd x2p; $(LDLIBPTH) $(MAKE) s2p
-- 
---lib/lib.pm:	miniperl$(EXE_EXT) $(CONFIGPM)
--+lib/lib.pm:	$(CONFIGPM)
-- 	@-rm -f $@
-- 	$(LDLIBPTH) ./miniperl -Ilib lib/lib_pm.PL
-- 
-- unidatafiles $(unidatafiles): uni.data
-- 
---uni.data: miniperl$(EXE_EXT) $(CONFIGPM) lib/unicore/mktables
--+uni.data: $(CONFIGPM) lib/unicore/mktables
-- 	cd lib/unicore && $(LDLIBPTH) ../../miniperl -I../../lib mktables -w
-- 	touch uni.data
-- 
---extra.pods: miniperl$(EXE_EXT)
--+extra.pods:
-- 	-@test -f extra.pods && rm -f `cat extra.pods`
-- 	-@rm -f extra.pods
-- 	-@for x in `grep -l '^=[a-z]' README.* | grep -v README.vms` ; do \
--@@ -798,18 +799,7 @@
-- INSTALL_DEPENDENCE = all
-- 
-- install.perl:	$(INSTALL_DEPENDENCE) installperl
---	if [ -n "$(COMPILE)" ]; \
---	then \
---		cd utils; $(MAKE) compile; \
---		cd ../x2p; $(MAKE) compile; \
---		cd ../pod; $(MAKE) compile; \
---	else :; \
---	fi
---	$(LDLIBPTH) ./perl installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
---	$(MAKE) extras.install
---
---install.man:	all installman
---	$(LDLIBPTH) ./perl installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
--+	/usr/bin/perl -Ifake_config_library -MConfig installperl $(INSTALLFLAGS) $(STRIPFLAGS)
-- 
-- # XXX Experimental. Hardwired values, but useful for testing.
-- # Eventually Configure could ask for some of these values.
--@@ -925,16 +915,16 @@
-- #
-- # DynaLoader may be needed for extensions that use Makefile.PL.
-- 
---$(DYNALOADER):	miniperl$(EXE_EXT) preplibrary FORCE
--+$(DYNALOADER):	preplibrary FORCE
-- 	@$(LDLIBPTH) sh ext/util/make_ext $(STATIC) $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
-- 
---d_dummy $(dynamic_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
--+d_dummy $(dynamic_ext):	preplibrary $(DYNALOADER) FORCE
-- 	@$(LDLIBPTH) sh ext/util/make_ext dynamic $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
-- 
---s_dummy $(static_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
--+s_dummy $(static_ext):	preplibrary $(DYNALOADER) FORCE
-- 	@$(LDLIBPTH) sh ext/util/make_ext $(STATIC) $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
-- 
---n_dummy $(nonxs_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
--+n_dummy $(nonxs_ext):	preplibrary $(DYNALOADER) FORCE
-- 	@$(LDLIBPTH) sh ext/util/make_ext nonxs $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
-- 
-- .PHONY: clean _tidy _mopup _cleaner1 _cleaner2 \
--@@ -1074,7 +1064,7 @@
-- 
-- test_prep_pre: preplibrary utilities $(nonxs_ext)
-- 
---test_prep: test_prep_pre miniperl$(EXE_EXT) $(unidatafiles) perl$(EXE_EXT) $(dynamic_ext) $(TEST_PERL_DLL)
--+test_prep: test_prep_pre $(unidatafiles) perl$(EXE_EXT) $(dynamic_ext) $(TEST_PERL_DLL)
-- 	PERL=./perl $(MAKE) _test_prep
-- 
-- _test_tty:
--@@ -1167,7 +1157,7 @@
-- 
-- # Can't depend on lib/Config.pm because that might be where miniperl
-- # is crashing.
---minitest: miniperl$(EXE_EXT) lib/re.pm minitest.prep
--+minitest: lib/re.pm minitest.prep
-- 	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
-- 		&& $(LDLIBPTH) ./perl TEST -minitest base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
-- 
-diff -Naur perl-5.8.8.orig/Cross/README perl-5.8.8/Cross/README
---- perl-5.8.8.orig/Cross/README	2005-06-30 05:24:56.000000000 -0400
-+++ perl-5.8.8/Cross/README	1969-12-31 19:00:00.000000000 -0500
-@@ -1,90 +0,0 @@
--Building for arm-linux
------------------------
--
--The files in this directory add another cross-compilation
--target to the Perl buildsystem.  It was built as a part of
--the Open Zaurus (http://www.openzaurus.com/) distribution.
--Most / All of the arm compiler optimisations are "borrowed"
--from this excellent project.
--
--(Further discussion about cross-compiling Perl in the top level
--INSTALL file, see the section "Cross-compilation".)
--
--The main target is arm-linux but I have also managed to
--successfully cross-compile Perl for Solaris x86 using the same
--buildsystem.
--
--We are currently dependent on an existing working local copy of
--Perl ** of the same version and revision ** which is available
--as /usr/bin/perl. 
--
--You need a working and tested cross-compiler for your build
--and target combination.  The binary directory must be in
--your path.
--
--1)	You should be reading me (README) in perl-5.x.y/Cross
--
--2)	Make sure you are in the Cross directory.
--
--3)	Edit the file 'config' to contain your target platform information.
--
--4)	make patch	## This will patch the existing source-tree.
--5)	make perl	## Will make perl
--
--Your built Perl environment is in install_me_here/ in your build
--directory.  From here you can package and deploy as you wish.
--
--The Obvious Ommissions
------------------------
--
--This does NOT perform any installation as site installation method
--will be dependent on the target architecture and OS. 
--
--make test will NOT work as the binaries and libraries will not execute
--on your BUILD machine. 
--
--Due to space limitations on the Zaurus (it's a PDA) we do not provide
--documentation in the core - Therefore man pages are not even generated.
--
--Other Targets (For Developers)
--------------------------------
--
--It is possible to extend the cross-compilation to other targets.
--We have sucessfully compiled for the target solaris2.8/x86
--on linux/x86 build system.
--
--To attempt a cross-compile for another target using the methods
--in this directory:
--
--1)	Copy the Perl source code onto your TARGET machine.
--2)	Execute sh Configure as normal and configure as required,
--	do not "make".
--3)	Copy the config.sh file that is generated to your BUILD
--	machine and place it in the Cross directory with the
--	filename config.sh-ARCH-OS.  For example,
--	config.sh-i386-pc-solaris2.8.  For the appropriate ARCH
--	and OS please refer to your cross-compiler documentation.
--4)	Edit Cross/config to reflect your new target and continue
--	with build as above.
--
--Should you wish to produce optimised binaries for different
--architectures you can add the appropriate compiler flags to
--the Makefile in a new ifeq ($(ARCH),...) ... endif block.
--
--
--Please refer to your cross-compiler documentation for details.
--
--
--	Note that the Cross/ directory is also used by a different
--	cross-compilation setup described in the INSTALL file, and
--	executed by Configure.  There should be no conflicts since
--	it is unlikely both that cross-compilation setups are used
--	simultaneously.
--
--Enjoy!
--
--References
------------
--Redvers Davies <red@criticalintegration.com>
--Open Zaurus http://www.openzaurus.org/
--Perl OZ Packages http://www.criticalintegration.com/perl-oz/
-diff -Naur perl-5.8.8.orig/Cross/TODO perl-5.8.8/Cross/TODO
---- perl-5.8.8.orig/Cross/TODO	2003-09-05 04:16:48.000000000 -0400
-+++ perl-5.8.8/Cross/TODO	1969-12-31 19:00:00.000000000 -0500
-@@ -1 +0,0 @@
--Provide a better sandbox for building additional XS libraries.
 diff -Naur perl-5.8.8.orig/Cross/config perl-5.8.8/Cross/config
---- perl-5.8.8.orig/Cross/config	2003-04-15 16:31:56.000000000 -0400
+--- perl-5.8.8.orig/Cross/config	2006-07-22 18:17:24.000000000 -0400
 +++ perl-5.8.8/Cross/config	1969-12-31 19:00:00.000000000 -0500
 @@ -1,23 +0,0 @@
 -##############################################################################
@@ -460,8 +39,8 @@ diff -Naur perl-5.8.8.orig/Cross/config perl-5.8.8/Cross/config
 -#OS = solaris2.8
 -
 diff -Naur perl-5.8.8.orig/Cross/config.sh-arm-linux perl-5.8.8/Cross/config.sh-arm-linux
---- perl-5.8.8.orig/Cross/config.sh-arm-linux	2006-01-18 15:01:36.000000000 -0500
-+++ perl-5.8.8/Cross/config.sh-arm-linux	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/Cross/config.sh-arm-linux	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/config.sh-arm-linux	2006-07-22 18:17:35.000000000 -0400
 @@ -8,9 +8,9 @@
  
  # Package name      : perl5
@@ -848,341 +427,9 @@ diff -Naur perl-5.8.8.orig/Cross/config.sh-arm-linux perl-5.8.8/Cross/config.sh-
  PERL_REVISION=5
  PERL_VERSION=8
  PERL_SUBVERSION=8
-diff -Naur perl-5.8.8.orig/Cross/generate_config_sh perl-5.8.8/Cross/generate_config_sh
---- perl-5.8.8.orig/Cross/generate_config_sh	2003-09-05 04:31:08.000000000 -0400
-+++ perl-5.8.8/Cross/generate_config_sh	1969-12-31 19:00:00.000000000 -0500
-@@ -1,132 +0,0 @@
--#!/usr/bin/perl
--
--##############################################################################
--#
--#	generate_config_sh
--#		Process that takes an automatically generated config.sh
--#		file and allows the environment to overload the values
--#		automatically discovered by Configure on our target platform.
--#
--#	Author	Redvers Davies <red@criticalintegration.com>
--#
--##############################################################################
--
--my $config = shift;
--
--my $sys = $ENV{SYS};
--
--my $callbacks = {};
--$callbacks->{'ar'} = [\&simple_process, ["AR", "arm-linux-ar"]];
--$callbacks->{'archname'} = [\&simple_process, ["SYS", "armv4l-linux"]];
--$callbacks->{'cc'} = [\&simple_process, ["CC", "arm-linux-gcc"]];
--$callbacks->{'cccdlflags'} = [\&simple_process, ["CFLAGS", ""]];
--$callbacks->{'ccdlflags'} = [\&simple_process, ["CFLAGS", ""]];
--$callbacks->{'ccflags'} = [\&simple_process, ["CFLAGS", "-fno-strict-aliasing -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"]];
--$callbacks->{'ccflags_uselargefiles'} = [\&simple_process, ["CFLAGS", "-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"]];
--$callbacks->{'ccname'} = [\&simple_process, ["CC", "arm-linux-gcc"]];
--$callbacks->{'cpp'} = [\&simple_process, ["CCP", "arm-linux-cpp"]];
--$callbacks->{'cppflags'} = [\&simple_process, ["CCPFLAGS", "-fno-strict-aliasing"]];
--$callbacks->{'cpprun'} = [\&simple_process_append, ["CC", "arm-linux-gcc -E", "-E"]];
--$callbacks->{'cppstdin'} = [\&simple_process_append, ["CC", "arm-linux-gcc -E", "-E"]];
--$callbacks->{'full_ar'} = [\&backtick, ["AR", "which $ENV{AR}", "/usr/local/arm/2.95.3/bin/arm-linux-ar"]];
--$callbacks->{'ld'} = [\&simple_process, ["LD", "arm-linux-ld"]];
--$callbacks->{'ldflags'} = [\&simple_process, ["LDFLAGS", ""]];
--$callbacks->{'ldflags_uselargefiles'} = [\&simple_process, ["LDFLAGS", ""]];
--$callbacks->{'myarchname'} = [\&simple_process, ["SYS", "armv4l-linux"]];
--$callbacks->{'archlib'} = [\&library_munge, ["SYS", "armv4l-linux"]];
--$callbacks->{'archlibexp'} = [\&library_munge, ["SYS", "armv4l-linux"]];
--$callbacks->{'installarchlib'} = [\&library_munge, ["SYS", "armv4l-linux"]];
--$callbacks->{'installsitearch'} = [\&library_munge, ["SYS", "armv4l-linux"]];
--$callbacks->{'sitearch'} = [\&library_munge, ["SYS", "armv4l-linux"]];
--$callbacks->{'sitearchexp'} = [\&library_munge, ["SYS", "armv4l-linux"]];
--
--if ($config eq "") {
--	die("Please run me as generate_config_sh path/to/original/config.sh");
--}
--
--open(FILE, "$config") || die("Unable to open $config");
--
--my $line_in;
--while ($line_in = <FILE>) {
--	if ($line_in =~ /^#/) {
--		next;
--	}
--
--	if ($line_in !~ /./) {
--		next;
--	}
--
--	$line_in =~ /^([^=]+)=(.*)/;
--	my $key = $1;
--	my $value = $2;
--	if (ref($callbacks->{$key}) eq "ARRAY") {
--		($callbacks->{$key}[0])->($key,$value);
--	} else {
--		print($line_in);
--	}
--}
--
--sub backtick {
--	my $key = shift;
--	my $value = shift;
--	my $envvar = $callbacks->{$key}->[1][0];
--
--	if ($ENV{$envvar}) {
--		my $rawtext = `$callbacks->{$key}->[1][1]`;
--		chomp($rawtext);
--		print("$key=\'$rawtext\'\n");
--	} else {
--		print("$key=\'$callbacks->{$key}->[1][2]\'\n");
--	}
--}
--	
--
--sub simple_process {
--	my $key = shift;
--	my $envvar = $callbacks->{$key}->[1][0];
--
--	if ($ENV{$envvar}) {
--		print("$key=\"$ENV{$envvar}\"\n");
--	} else {
--		print("$key=\'$callbacks->{$key}->[1][1]\'\n");
--	}
--
--}
--
--sub simple_process_append {
--	my $key = shift;
--	my $envvar = $callbacks->{$key}->[1][0];
--
--	if ($ENV{$envvar}) {
--		print("$key=\"$ENV{$envvar} $callbacks->{$key}->[1][2]\"\n");
--	} else {
--		print("$key=\'$callbacks->{$key}->[1][1]\'\n");
--	}
--
--}
--
--sub library_munge {
--	my $key = shift;
--	my $value = shift;
--	my $envvar = $callbacks->{$key}->[1][0];
--
--	if ($ENV{$envvar}) {
--		$value =~ s/$callbacks->{$key}->[1][1]/$ENV{$envvar}/g;
--		print("$key=$value\n");
--	} else {
--		print("$key=$value\n");
--	}
--		
--}
--
--
--
--
--
--
--
--
--
--
--
--
-diff -Naur perl-5.8.8.orig/Cross/installperl.patch perl-5.8.8/Cross/installperl.patch
---- perl-5.8.8.orig/Cross/installperl.patch	2003-12-21 19:56:02.000000000 -0500
-+++ perl-5.8.8/Cross/installperl.patch	1969-12-31 19:00:00.000000000 -0500
-@@ -1,22 +0,0 @@
----- ../installperl	2003-08-31 11:58:48.000000000 -0500
--+++ installperl	2003-09-05 02:38:40.000000000 -0500
--@@ -3,8 +3,8 @@
-- BEGIN {
--     require 5.004;
--     chdir '..' if !-d 'lib' and -d '../lib';
---    @INC = 'lib';
---    $ENV{PERL5LIB} = 'lib';
--+#    @INC = 'lib';
--+#    $ENV{PERL5LIB} = 'lib';
-- }
-- 
-- use strict;
--@@ -946,7 +946,7 @@
-- 		print " " if (@opts);
-- 		print "$file\n";
-- 	    }
---	    system("strip", @opts, $file);
--+	    system("XXSTRIPXX-strip", @opts, $file);
-- 	} else {
-- 	    print "# file '$file' skipped\n" if $verbose;
-- 	}
-diff -Naur perl-5.8.8.orig/Cross/warp perl-5.8.8/Cross/warp
---- perl-5.8.8.orig/Cross/warp	2003-04-14 22:00:58.000000000 -0400
-+++ perl-5.8.8/Cross/warp	1969-12-31 19:00:00.000000000 -0500
-@@ -1,14 +0,0 @@
--#!/bin/sh -x
--
--## This script contains an rm -rf.  This may alarm you.
--## These directories need to be reccursively deleted.
--## I don't see any method of making "Bad Things"[tm]
--## Happen.  But we don't run buildroot as root do we? :-)
--
--for f in `find lib -name install_me_here`;do
--cp -r $f/* ./install_me_here/
--done
--
--for f in `find lib -name install_me_here`;do
--rm -rf $f
--done
-diff -Naur perl-5.8.8.orig/MANIFEST perl-5.8.8/MANIFEST
---- perl-5.8.8.orig/MANIFEST	2006-01-31 18:27:53.000000000 -0500
-+++ perl-5.8.8/MANIFEST	2006-06-16 17:02:55.000000000 -0400
-@@ -33,15 +33,8 @@
- configure.gnu		Crude emulation of GNU configure
- cop.h			Control operator header
- Copying			The GNU General Public License
--Cross/config		Cross-compilation
- Cross/config.sh-arm-linux	Cross-compilation
--Cross/generate_config_sh	Cross-compilation
--Cross/installperl.patch		Cross-compilation
- Cross/Makefile		Cross-compilation
--Cross/Makefile.SH.patch	Cross-compilation
--Cross/README		Cross-compilation
--Cross/TODO		Cross-compilation
--Cross/warp		Cross-compilation
- cv.h			Code value header
- cygwin/cygwin.c		Additional code for Cygwin port
- cygwin/ld2.in		ld wrapper template for Cygwin port
-diff -Naur perl-5.8.8.orig/Makefile.SH perl-5.8.8/Makefile.SH
---- perl-5.8.8.orig/Makefile.SH	2006-01-24 07:49:44.000000000 -0500
-+++ perl-5.8.8/Makefile.SH	2006-06-16 17:03:27.000000000 -0400
-@@ -591,7 +591,7 @@
- 	$(CC) -o miniperl $(CLDFLAGS) \
- 	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	next4*)
-@@ -599,7 +599,7 @@
- miniperl: $& miniperlmain$(OBJ_EXT) $(LIBPERL) opmini$(OBJ_EXT)
- 	$(CC) -o miniperl `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	darwin*)
-@@ -620,7 +620,7 @@
- 	-@rm -f miniperl.xok
- 	$(CC) $(CLDFLAGS) $(NAMESPACEFLAGS) -o miniperl \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(LLIBPERL) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	*)
-@@ -629,7 +629,7 @@
- 	-@rm -f miniperl.xok
- 	$(LDLIBPTH) $(CC) $(CLDFLAGS) -o miniperl \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(LLIBPERL) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	esac
-@@ -769,38 +769,38 @@
- preplibrary: miniperl$(EXE_EXT) $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
- 	@sh ./makedir lib/auto
- 	@echo "	AutoSplitting perl library"
--	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
-+	$(LDLIBPTH) ./miniperl-cross -Ilib -e 'use AutoSplit; \
- 		autosplit_lib_modules(@ARGV)' lib/*.pm
--	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
-+	$(LDLIBPTH) ./miniperl-cross -Ilib -e 'use AutoSplit; \
- 		autosplit_lib_modules(@ARGV)' lib/*/*.pm
- 	$(MAKE) lib/re.pm
- 
- lib/Config.pod: config.sh miniperl$(EXE_EXT) configpm Porting/Glossary
--	$(LDLIBPTH) ./miniperl -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
-+	$(LDLIBPTH) ./miniperl-cross -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
- 
- $(CONFIGPM): lib/Config.pod
- 
- lib/ExtUtils/Miniperl.pm: miniperlmain.c miniperl$(EXE_EXT) minimod.pl $(CONFIGPM)
--	$(LDLIBPTH) ./miniperl minimod.pl > lib/ExtUtils/Miniperl.pm
-+	$(LDLIBPTH) ./miniperl-cross minimod.pl > lib/ExtUtils/Miniperl.pm
- 
- lib/re.pm: ext/re/re.pm
- 	cp ext/re/re.pm lib/re.pm
- 
- $(plextract):	miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p
- 	@-rm -f $@
--	$(LDLIBPTH) ./miniperl -I`pwd`/lib $@.PL
-+	$(LDLIBPTH) ./miniperl-cross -I`pwd`/lib $@.PL
- 
- x2p/s2p: miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p.PL
- 	cd x2p; $(LDLIBPTH) $(MAKE) s2p
- 
- lib/lib.pm:	miniperl$(EXE_EXT) $(CONFIGPM)
- 	@-rm -f $@
--	$(LDLIBPTH) ./miniperl -Ilib lib/lib_pm.PL
-+	$(LDLIBPTH) ./miniperl-cross -Ilib lib/lib_pm.PL
- 
- unidatafiles $(unidatafiles): uni.data
- 
- uni.data: miniperl$(EXE_EXT) $(CONFIGPM) lib/unicore/mktables
--	cd lib/unicore && $(LDLIBPTH) ../../miniperl -I../../lib mktables -w
-+	cd lib/unicore && $(LDLIBPTH) ../../miniperl-cross -I../../lib mktables -w
- 	touch uni.data
- 
- extra.pods: miniperl$(EXE_EXT)
-@@ -829,7 +829,7 @@
- 	no-install install.perl install.man install.html
- 
- META.yml:	Porting/makemeta Porting/Maintainers.pl Porting/Maintainers.pm
--	$(LDLIBPTH) ./miniperl -Ilib Porting/makemeta
-+	$(LDLIBPTH) ./miniperl-cross -Ilib Porting/makemeta
- 
- install-strip:
- 	$(MAKE) STRIPFLAGS=-s install DESTDIR="$(DESTDIR)"
-@@ -857,17 +857,17 @@
- 		cd ../pod; $(MAKE) compile; \
- 	else :; \
- 	fi
--	$(LDLIBPTH) ./perl installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
-+	$(LDLIBPTH) ./miniperl-cross -Ilib installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
- 	$(MAKE) extras.install
- 
- install.man:	all installman
--	$(LDLIBPTH) ./perl installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
-+	$(LDLIBPTH) ./miniperl-cross -Ilib installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
- 
- # XXX Experimental. Hardwired values, but useful for testing.
- # Eventually Configure could ask for some of these values.
- install.html: all installhtml
- 	-@test -f README.vms && cd vms && $(LNS) ../README.vms README_vms.pod && cd ..
--	$(LDLIBPTH) ./perl installhtml   \
-+	$(LDLIBPTH) ./miniperl-cross -Ilib installhtml   \
-       --podroot=. --podpath=. --recurse  \
-       --htmldir=$(privlib)/html   \
-       --htmlroot=$(privlib)/html  \
-@@ -1173,7 +1173,7 @@
- # Targets for UTF16 testing:
- 
- minitest.utf16: minitest.prep
--	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
-+	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl-cross$(EXE_EXT) perl$(EXE_EXT)) \
- 		&& $(LDLIBPTH) ./perl TEST -minitest -utf16 base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
- 
- test.utf16 check.utf16: test_prep
-@@ -1239,7 +1239,7 @@
- # Can't depend on lib/Config.pm because that might be where miniperl
- # is crashing.
- minitest: miniperl$(EXE_EXT) lib/re.pm minitest.prep
--	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
-+	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl-cross$(EXE_EXT) perl$(EXE_EXT)) \
- 		&& $(LDLIBPTH) ./perl TEST -minitest base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
- 
- # Test via harness
-diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
---- perl-5.8.8.orig/config.sh.old	1969-12-31 19:00:00.000000000 -0500
-+++ perl-5.8.8/config.sh.old	2006-06-16 17:02:55.000000000 -0400
+diff -Naur perl-5.8.8.orig/Cross/config.sh-x86-linux perl-5.8.8/Cross/config.sh-x86-linux
+--- perl-5.8.8.orig/Cross/config.sh-x86-linux	1969-12-31 19:00:00.000000000 -0500
++++ perl-5.8.8/Cross/config.sh-x86-linux	2006-07-22 18:18:01.000000000 -0400
 @@ -0,0 +1,1047 @@
 +#!/bin/sh
 +#
@@ -1194,9 +441,9 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +
 +# Package name      : perl5
 +# Source directory  : .
-+# Configuration time: Tue Jun 13 01:46:16 UTC 2006
++# Configuration time: Sun Jul  9 12:50:37 EDT 2006
 +# Configured by     : root
-+# Target system     : linux spitz 2.6.16 #1 preempt mon may 1 06:14:52 cest 2006 armv5tel gnulinux 
++# Target system     : linux lfslivecd 2.6.16.14 #1 smp sat may 13 11:48:14 gmt 2006 i686 pentium3 i386 gnulinux 
 +
 +Author=''
 +Date='$Date'
@@ -1221,11 +468,11 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +api_subversion='0'
 +api_version='8'
 +api_versionstring='5.8.0'
-+ar='arm-unknown-linux-gnu-ar'
-+archlib='/usr/lib/perl5/5.8.8/arm-linux'
-+archlibexp='/usr/lib/perl5/5.8.8/arm-linux'
++ar='ar'
++archlib='/usr/lib/perl5/5.8.8/i686-linux'
++archlibexp='/usr/lib/perl5/5.8.8/i686-linux'
 +archname64=''
-+archname='arm-linux'
++archname='i686-linux'
 +archobjs=''
 +asctime_r_proto='0'
 +awk='awk'
@@ -1239,17 +486,17 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +c=''
 +castflags='0'
 +cat='cat'
-+cc='arm-unknown-linux-gnu-gcc'
++cc='cc'
 +cccdlflags='-fpic'
 +ccdlflags='-Wl,-E'
-+ccflags='-fno-strict-aliasing -pipe -Wdeclaration-after-statement  -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
++ccflags='-fno-strict-aliasing -pipe -Wdeclaration-after-statement -I/usr/local/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
 +ccflags_uselargefiles='-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
-+ccname='arm-unknown-linux-gnu-gcc'
++ccname='gcc'
 +ccsymbols=''
 +ccversion=''
 +cf_by='root'
-+f_email='root@spitz.ciccone'
-+cf_time='Tue Jun 13 01:46:16 UTC 2006'
++cf_email='root@lfslivecd.jenacon.net'
++cf_time='Sun Jul  9 12:50:37 EDT 2006'
 +charsize='1'
 +chgrp=''
 +chmod='chmod'
@@ -1260,15 +507,15 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +contains='grep'
 +cp='cp'
 +cpio=''
-+cpp='arm-unknown-linux-gnu-cpp'
++cpp='cpp'
 +cpp_stuff='42'
 +cppccsymbols=''
-+cppflags='-fno-strict-aliasing -pipe -Wdeclaration-after-statement '
++cppflags='-fno-strict-aliasing -pipe -Wdeclaration-after-statement -I/usr/local/include'
 +cpplast='-'
 +cppminus='-'
-+cpprun='arm-unknown-linux-gnu-gcc -E'
-+cppstdin='arm-unknown-linux-gnu-gcc -E'
-+cppsymbols='__ELF__=1 _FILE_OFFSET_BITS=64 __GLIBC__=2 __GLIBC_MINOR__=4 __GNUC__=4 __GNUC_MINOR__=1 __GNU_LIBRARY__=6 _LARGEFILE_SOURCE=1 _POSIX_C_SOURCE=200112L _POSIX_SOURCE=1 __STDC__=1 __USE_BSD=1 __USE_FILE_OFFSET64=1 __USE_LARGEFILE=1 __USE_MISC=1 __USE_POSIX=1 __USE_POSIX199309=1 __USE_POSIX199506=1 __USE_POSIX2=1 __USE_SVID=1 linux=1 __linux=1 __linux__=1 unix=1 __unix=1 __unix__=1'
++cpprun='cc -E'
++cppstdin='cc -E'
++cppsymbols='__ELF__=1 _FILE_OFFSET_BITS=64 __GLIBC__=2 __GLIBC_MINOR__=4 __GNUC__=4 __GNUC_MINOR__=1 __GNU_LIBRARY__=6 _LARGEFILE_SOURCE=1 _POSIX_C_SOURCE=200112L _POSIX_SOURCE=1 __STDC__=1 __USE_BSD=1 __USE_FILE_OFFSET64=1 __USE_LARGEFILE=1 __USE_MISC=1 __USE_POSIX=1 __USE_POSIX199309=1 __USE_POSIX199506=1 __USE_POSIX2=1 __USE_SVID=1 i386=1 __i386=1 __i386__=1 linux=1 __linux=1 __linux__=1 unix=1 __unix=1 __unix__=1'
 +crypt_r_proto='0'
 +cryptlib=''
 +csh='csh'
@@ -1310,7 +557,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +d_bsdgetpgrp='undef'
 +d_bsdsetpgrp='undef'
 +d_bzero='define'
-+d_casti32='define'
++d_casti32='undef'
 +d_castneg='define'
 +d_charvspr='define'
 +d_chown='define'
@@ -1386,7 +633,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +d_fsync='define'
 +d_ftello='define'
 +d_ftime='undef'
-+d_futimes='undef'
++d_futimes='define'
 +d_getcwd='define'
 +d_getespwnam='undef'
 +d_getfsstat='undef'
@@ -1489,7 +736,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +d_mmap='define'
 +d_modfl='define'
 +d_modfl_pow32_bug='undef'
-+d_modflproto='undef'
++d_modflproto='define'
 +d_mprotect='define'
 +d_msg='define'
 +d_msg_ctrunc='define'
@@ -1521,7 +768,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +d_pipe='define'
 +d_poll='define'
 +d_portable='define'
-+d_procselfexe='undef'
++d_procselfexe='define'
 +d_pthread_atfork='undef'
 +d_pthread_attr_setscope='define'
 +d_pthread_yield='undef'
@@ -1729,7 +976,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +fpostype='fpos_t'
 +freetype='void'
 +from=':'
-+full_ar='/cross-tools/bin/arm-unknown-linux-gnu-ar'
++full_ar='/usr/bin/ar'
 +full_csh='csh'
 +full_sed='/bin/sed'
 +gccansipedantic=''
@@ -1870,7 +1117,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +inc_version_list_init='0'
 +incpath=''
 +inews=''
-+installarchlib='/usr/lib/perl5/5.8.8/arm-linux'
++installarchlib='/usr/lib/perl5/5.8.8/i686-linux'
 +installbin='/usr/bin'
 +installhtml1dir=''
 +installhtml3dir=''
@@ -1880,7 +1127,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +installprefixexp='/usr'
 +installprivlib='/usr/lib/perl5/5.8.8'
 +installscript='/usr/bin'
-+installsitearch='/usr/lib/perl5/site_perl/5.8.8/arm-linux'
++installsitearch='/usr/lib/perl5/site_perl/5.8.8/i686-linux'
 +installsitebin='/usr/bin'
 +installsitehtml1dir=''
 +installsitehtml3dir=''
@@ -1905,9 +1152,9 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +ivtype='long'
 +known_extensions='B ByteLoader Cwd DB_File Data/Dumper Devel/DProf Devel/PPPort Devel/Peek Digest/MD5 Encode Fcntl File/Glob Filter/Util/Call GDBM_File I18N/Langinfo IO IPC/SysV List/Util MIME/Base64 NDBM_File ODBM_File Opcode POSIX PerlIO/encoding PerlIO/scalar PerlIO/via SDBM_File Socket Storable Sys/Hostname Sys/Syslog Thread Time/HiRes Unicode/Normalize XS/APItest XS/Typemap attrs re threads threads/shared'
 +ksh=''
-+ld='arm-unknown-linux-gnu-ld'
-+lddlflags='-shared '
-+ldflags=' '
++ld='cc'
++lddlflags='-shared -L/usr/local/lib'
++ldflags=' -L/usr/local/lib'
 +ldflags_uselargefiles=''
 +ldlibpthname='LD_LIBRARY_PATH'
 +less='less'
@@ -1930,7 +1177,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +localtime_r_proto='0'
 +locincpth='/usr/local/include /opt/local/include /usr/gnu/include /opt/gnu/include /usr/GNU/include /opt/GNU/include'
 +loclibpth='/usr/local/lib /opt/local/lib /usr/gnu/lib /opt/gnu/lib /usr/GNU/lib /opt/GNU/lib'
-+longdblsize='8'
++longdblsize='12'
 +longlongsize='8'
 +longsize='4'
 +lp=''
@@ -1959,10 +1206,10 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +more='more'
 +multiarch='undef'
 +mv=''
-+myarchname='arm-linux'
-+mydomain='.ciccone'
-+myhostname='spitz'
-+myuname='linux spitz 2.6.16 #1 preempt mon may 1 06:14:52 cest 2006 armv5tel gnulinux '
++myarchname='i686-linux'
++mydomain='.jenacon.net'
++myhostname='lfslivecd'
++myuname='linux lfslivecd 2.6.16.14 #1 smp sat may 13 11:48:14 gmt 2006 i686 pentium3 i386 gnulinux '
 +n='-n'
 +need_va_copy='undef'
 +netdb_hlen_type='size_t'
@@ -1989,17 +1236,17 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +optimize='-O2'
 +orderlib='false'
 +osname='linux'
-+osvers='2.6.16'
++osvers='2.6.16.14'
 +otherlibdirs=' '
 +package='perl5'
-+pager='/bin/less -isR'
++pager='/usr/bin/less -isR'
 +passcat='cat /etc/passwd'
 +patchlevel='8'
 +path_sep=':'
 +perl5=''
 +perl=''
 +perl_patchlevel=''
-+perladmin='root@spitz.ciccone'
++perladmin='root@lfslivecd.jenacon.net'
 +perllibs='-lnsl -ldl -lm -lcrypt -lutil -lc'
 +perlpath='/usr/bin/perl'
 +pg='pg'
@@ -2012,7 +1259,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +prefixexp='/usr'
 +privlib='/usr/lib/perl5/5.8.8'
 +privlibexp='/usr/lib/perl5/5.8.8'
-+procselfexe=''
++procselfexe='"/proc/self/exe"'
 +prototype='define'
 +ptrsize='4'
 +quadkind='3'
@@ -2021,7 +1268,7 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +randfunc='drand48'
 +random_r_proto='0'
 +randseedtype='long'
-+ranlib='arm-unknown-linux-gnu-ranlib'
++ranlib=':'
 +rd_nodata='-1'
 +readdir64_r_proto='0'
 +readdir_r_proto='0'
@@ -2030,19 +1277,19 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +rmail=''
 +run=''
 +runnm='false'
-+sPRIEUldbl='"E"'
-+sPRIFUldbl='"F"'
-+sPRIGUldbl='"G"'
++sPRIEUldbl='"LE"'
++sPRIFUldbl='"LF"'
++sPRIGUldbl='"LG"'
 +sPRIXU64='"LX"'
 +sPRId64='"Ld"'
-+sPRIeldbl='"e"'
-+sPRIfldbl='"f"'
-+sPRIgldbl='"g"'
++sPRIeldbl='"Le"'
++sPRIfldbl='"Lf"'
++sPRIgldbl='"Lg"'
 +sPRIi64='"Li"'
 +sPRIo64='"Lo"'
 +sPRIu64='"Lu"'
 +sPRIx64='"Lx"'
-+sSCNfldbl='"f"'
++sSCNfldbl='"Lf"'
 +sched_yield='sched_yield()'
 +scriptdir='/usr/bin'
 +scriptdirexp='/usr/bin'
@@ -2072,8 +1319,8 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +sig_num_init='0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 6, 17, 29, 31, 0'
 +sig_size='69'
 +signal_t='void'
-+sitearch='/usr/lib/perl5/site_perl/5.8.8/arm-linux'
-+sitearchexp='/usr/lib/perl5/site_perl/5.8.8/arm-linux'
++sitearch='/usr/lib/perl5/site_perl/5.8.8/i686-linux'
++sitearchexp='/usr/lib/perl5/site_perl/5.8.8/i686-linux'
 +sitebin='/usr/bin'
 +sitebinexp='/usr/bin'
 +sitehtml1dir=''
@@ -2215,14 +1462,14 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +zip='zip'
 +# Configure command line arguments.
 +config_arg0='Configure'
-+config_args='-ds -e -Dprefix=/usr -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager=/bin/less -isR'
++config_args='-ds -e -Dprefix=/usr -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager=/usr/bin/less -isR'
 +config_argc=6
 +config_arg1='-ds'
 +config_arg2='-e'
 +config_arg3='-Dprefix=/usr'
 +config_arg4='-Dman1dir=/usr/share/man/man1'
 +config_arg5='-Dman3dir=/usr/share/man/man3'
-+config_arg6='-Dpager=/bin/less -isR'
++config_arg6='-Dpager=/usr/bin/less -isR'
 +PERL_REVISION=5
 +PERL_VERSION=8
 +PERL_SUBVERSION=8
@@ -2231,9 +1478,610 @@ diff -Naur perl-5.8.8.orig/config.sh.old perl-5.8.8/config.sh.old
 +PERL_API_SUBVERSION=0
 +PERL_PATCHLEVEL=
 +PERL_CONFIG_SH=true
+diff -Naur perl-5.8.8.orig/Cross/generate_config_sh perl-5.8.8/Cross/generate_config_sh
+--- perl-5.8.8.orig/Cross/generate_config_sh	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/generate_config_sh	1969-12-31 19:00:00.000000000 -0500
+@@ -1,132 +0,0 @@
+-#!/usr/bin/perl
+-
+-##############################################################################
+-#
+-#	generate_config_sh
+-#		Process that takes an automatically generated config.sh
+-#		file and allows the environment to overload the values
+-#		automatically discovered by Configure on our target platform.
+-#
+-#	Author	Redvers Davies <red@criticalintegration.com>
+-#
+-##############################################################################
+-
+-my $config = shift;
+-
+-my $sys = $ENV{SYS};
+-
+-my $callbacks = {};
+-$callbacks->{'ar'} = [\&simple_process, ["AR", "arm-linux-ar"]];
+-$callbacks->{'archname'} = [\&simple_process, ["SYS", "armv4l-linux"]];
+-$callbacks->{'cc'} = [\&simple_process, ["CC", "arm-linux-gcc"]];
+-$callbacks->{'cccdlflags'} = [\&simple_process, ["CFLAGS", ""]];
+-$callbacks->{'ccdlflags'} = [\&simple_process, ["CFLAGS", ""]];
+-$callbacks->{'ccflags'} = [\&simple_process, ["CFLAGS", "-fno-strict-aliasing -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"]];
+-$callbacks->{'ccflags_uselargefiles'} = [\&simple_process, ["CFLAGS", "-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"]];
+-$callbacks->{'ccname'} = [\&simple_process, ["CC", "arm-linux-gcc"]];
+-$callbacks->{'cpp'} = [\&simple_process, ["CCP", "arm-linux-cpp"]];
+-$callbacks->{'cppflags'} = [\&simple_process, ["CCPFLAGS", "-fno-strict-aliasing"]];
+-$callbacks->{'cpprun'} = [\&simple_process_append, ["CC", "arm-linux-gcc -E", "-E"]];
+-$callbacks->{'cppstdin'} = [\&simple_process_append, ["CC", "arm-linux-gcc -E", "-E"]];
+-$callbacks->{'full_ar'} = [\&backtick, ["AR", "which $ENV{AR}", "/usr/local/arm/2.95.3/bin/arm-linux-ar"]];
+-$callbacks->{'ld'} = [\&simple_process, ["LD", "arm-linux-ld"]];
+-$callbacks->{'ldflags'} = [\&simple_process, ["LDFLAGS", ""]];
+-$callbacks->{'ldflags_uselargefiles'} = [\&simple_process, ["LDFLAGS", ""]];
+-$callbacks->{'myarchname'} = [\&simple_process, ["SYS", "armv4l-linux"]];
+-$callbacks->{'archlib'} = [\&library_munge, ["SYS", "armv4l-linux"]];
+-$callbacks->{'archlibexp'} = [\&library_munge, ["SYS", "armv4l-linux"]];
+-$callbacks->{'installarchlib'} = [\&library_munge, ["SYS", "armv4l-linux"]];
+-$callbacks->{'installsitearch'} = [\&library_munge, ["SYS", "armv4l-linux"]];
+-$callbacks->{'sitearch'} = [\&library_munge, ["SYS", "armv4l-linux"]];
+-$callbacks->{'sitearchexp'} = [\&library_munge, ["SYS", "armv4l-linux"]];
+-
+-if ($config eq "") {
+-	die("Please run me as generate_config_sh path/to/original/config.sh");
+-}
+-
+-open(FILE, "$config") || die("Unable to open $config");
+-
+-my $line_in;
+-while ($line_in = <FILE>) {
+-	if ($line_in =~ /^#/) {
+-		next;
+-	}
+-
+-	if ($line_in !~ /./) {
+-		next;
+-	}
+-
+-	$line_in =~ /^([^=]+)=(.*)/;
+-	my $key = $1;
+-	my $value = $2;
+-	if (ref($callbacks->{$key}) eq "ARRAY") {
+-		($callbacks->{$key}[0])->($key,$value);
+-	} else {
+-		print($line_in);
+-	}
+-}
+-
+-sub backtick {
+-	my $key = shift;
+-	my $value = shift;
+-	my $envvar = $callbacks->{$key}->[1][0];
+-
+-	if ($ENV{$envvar}) {
+-		my $rawtext = `$callbacks->{$key}->[1][1]`;
+-		chomp($rawtext);
+-		print("$key=\'$rawtext\'\n");
+-	} else {
+-		print("$key=\'$callbacks->{$key}->[1][2]\'\n");
+-	}
+-}
+-	
+-
+-sub simple_process {
+-	my $key = shift;
+-	my $envvar = $callbacks->{$key}->[1][0];
+-
+-	if ($ENV{$envvar}) {
+-		print("$key=\"$ENV{$envvar}\"\n");
+-	} else {
+-		print("$key=\'$callbacks->{$key}->[1][1]\'\n");
+-	}
+-
+-}
+-
+-sub simple_process_append {
+-	my $key = shift;
+-	my $envvar = $callbacks->{$key}->[1][0];
+-
+-	if ($ENV{$envvar}) {
+-		print("$key=\"$ENV{$envvar} $callbacks->{$key}->[1][2]\"\n");
+-	} else {
+-		print("$key=\'$callbacks->{$key}->[1][1]\'\n");
+-	}
+-
+-}
+-
+-sub library_munge {
+-	my $key = shift;
+-	my $value = shift;
+-	my $envvar = $callbacks->{$key}->[1][0];
+-
+-	if ($ENV{$envvar}) {
+-		$value =~ s/$callbacks->{$key}->[1][1]/$ENV{$envvar}/g;
+-		print("$key=$value\n");
+-	} else {
+-		print("$key=$value\n");
+-	}
+-		
+-}
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+diff -Naur perl-5.8.8.orig/Cross/installperl.patch perl-5.8.8/Cross/installperl.patch
+--- perl-5.8.8.orig/Cross/installperl.patch	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/installperl.patch	1969-12-31 19:00:00.000000000 -0500
+@@ -1,22 +0,0 @@
+---- ../installperl	2003-08-31 11:58:48.000000000 -0500
+-+++ installperl	2003-09-05 02:38:40.000000000 -0500
+-@@ -3,8 +3,8 @@
+- BEGIN {
+-     require 5.004;
+-     chdir '..' if !-d 'lib' and -d '../lib';
+--    @INC = 'lib';
+--    $ENV{PERL5LIB} = 'lib';
+-+#    @INC = 'lib';
+-+#    $ENV{PERL5LIB} = 'lib';
+- }
+- 
+- use strict;
+-@@ -946,7 +946,7 @@
+- 		print " " if (@opts);
+- 		print "$file\n";
+- 	    }
+--	    system("strip", @opts, $file);
+-+	    system("XXSTRIPXX-strip", @opts, $file);
+- 	} else {
+- 	    print "# file '$file' skipped\n" if $verbose;
+- 	}
+diff -Naur perl-5.8.8.orig/Cross/Makefile perl-5.8.8/Cross/Makefile
+--- perl-5.8.8.orig/Cross/Makefile	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/Makefile	2006-07-22 18:17:35.000000000 -0400
+@@ -1,68 +1,62 @@
+-## Toplevel Makefile for cross-compilation of perl
+-#
+-## $Id: Makefile,v 1.7 2004/01/12 15:41:02 red Exp red $
+-
+-export TOPDIR=${shell pwd}
+-include $(TOPDIR)/config
+-export CFLAGS
+-export SYS=$(ARCH)-$(OS)
+-export CROSS=$(ARCH)-$(OS)-
+-export FULL_OPTIMIZATION = -fexpensive-optimizations -fomit-frame-pointer -O2
+-export OPTIMIZATION = -O2
+-
+-export CC = $(CROSS)gcc
+-export CXX = $(CROSS)g++
+-export LD = $(CROSS)ld
+-export STRIP = $(CROSS)strip
+-export AR = $(CROSS)ar
+-export RANLIB = $(CROSS)ranlib
+-
+-
+-## Optimisation work
+-ifeq ($(ARCH),arm)
+- ifdef CONFIG_TARGET_ARM_SA11X0
+-   ifndef Architecture
+-     Architecture = armv4l-strongarm
+-   endif
+-   FULL_OPTIMIZATION += -march=armv4 -mtune=strongarm1100 -mapcs-32
+-   OPTIMIZATION += -march=armv4 -mtune=strongarm1100 -mapcs-32
+- endif
+-endif
++PWD	:= $(shell pwd)
++TOP	:= $(shell dirname $(PWD))
+ 
+-CFLAGS+=$(FULL_OPTIMIZATION)
++VERSION	:= $(shell awk '/define[ ]PERL_REVISION/ {printf $$3"."} /define[ ]PERL_VERSION/ {printf $$3"."} /define[ ]PERL_SUBVERSION/ {print $$3}' $(TOP)/patchlevel.h)
+ 
+-all:
+-	@echo Please read the README file before doing anything else.
++CROSS_COMPILE := arm-unknown-linux-gnu-
++
++ARCH	:= arm
++OS	:= linux
++
++SYS	:= $(ARCH)-$(OS)
+ 
+-gen_patch:
+-	diff -Bbur ../Makefile.SH Makefile.SH > Makefile.SH.patch
+-	diff -Bbur ../installperl installperl > installperl.patch
+-
+-patch:
+-	cd .. ; if [ ! -e ./CROSS_PATCHED ] ; then \
+-		patch -p1 < Cross/Makefile.SH.patch; \
+-		patch -p1 < Cross/installperl.patch ; mv installperl installperl-patched; \
+-		sed -e 's/XXSTRIPXX/$(SYS)/' installperl-patched > installperl; \
+-		touch CROSS_PATCHED ; fi
+-
+-dry_patch:
+-	cd .. ;	patch --dry-run -p1 < Cross/Makefile.SH.patch; \
+-		patch --dry-run -p1 < Cross/installperl.patch; \
+-
+-perl:
+-	@echo Perl cross-build directory is $(TOPDIR)
+-	@echo Target arch is $(SYS)
+-	@echo toolchain: $(CC), $(CXX), $(LD), $(STRIP), $(AR), $(RANLIB)
+-	@echo Optimizations: $(FULL_OPTIMIZATION)
+-
+-	$(TOPDIR)/generate_config_sh config.sh-$(SYS) > $(TOPDIR)/../config.sh
+-	cd $(TOPDIR)/.. ; ./Configure -S ; make depend ; make ; make more
+-	cd $(TOPDIR)/.. ; mkdir -p fake_config_library ; cp lib/Config.pm fake_config_library
+-	cd $(TOPDIR)/.. ; $(MAKE) more2 "PERLRUN=/usr/bin/perl -I$(TOPDIR)/../fake_config_library -MConfig"
+-	cd $(TOPDIR)/.. ; $(MAKE) more3 "PERLRUN=/usr/bin/perl -I$(TOPDIR)/../fake_config_library -MConfig"
+-	cd $(TOPDIR)/.. ; $(MAKE) more4 "PERLRUN=/usr/bin/perl -I$(TOPDIR)/../fake_config_library -MConfig"
+-	cd $(TOPDIR)/.. ; rm -rf install_me_here
+-	cd $(TOPDIR)/.. ; make install-strip
+-	cd $(TOPDIR)/.. ; sh -x Cross/warp
++AR	:= $(CROSS_COMPILE)ar
++CC	:= $(CROSS_COMPILE)gcc
++CXX	:= $(CROSS_COMPILE)g++
++CPP	:= $(CROSS_COMPILE)cpp
++LD	:= $(CROSS_COMPILE)ld
++RANLIB	:= $(CROSS_COMPILE)ranlib
++STRIP	:= $(CROSS_COMPILE)strip
+ 
++.PHONY: all install create-config.sh
++
++all:
++	cd $(TOP); CC=gcc ./configure.gnu
+ 
++	# Make miniperl
++	$(MAKE) -C $(TOP) miniperl
++	mv -v $(TOP)/miniperl $(TOP)/miniperl-cross
++	$(MAKE) -C $(TOP) clean
++
++	# Do the final build
++	$(MAKE) create-config.sh
++	cd $(TOP); ./Configure -S
++	$(MAKE) -C $(TOP)
++
++install:
++	$(MAKE) -C $(TOP) install
++
++create-config.sh:
++	sed -e "s@\(^archname=\).*@\1'$(SYS)'@g" \
++	    -e "s@\(^myarchname=\).*@\1'$(SYS)'@g" \
++	    -e "s@\(^ar=\).*@\1'$(AR)'@g" \
++	    -e "s@\(^cc=\).*@\1'$(CC)'@g" \
++	    -e "s@\(^ccname=\).*@\1'$(CC)'@g" \
++	    -e "s@\(^cpp=\).*@\1'$(CPP)'@g" \
++	    -e "s@\(^cpprun=\).*@\1'$(CC) -E'@g" \
++	    -e "s@\(^cppstdin=\).*@\1'$(CC) -E'@g" \
++	    -e "s@\(^ld=\).*@\1'$(LD)'@g" \
++	    -e "s@\(^ranlib=\).*@\1'$(RANLIB)'@g" \
++	    -e "s@\(^full_ar=\).*@\1'$(shell which $(AR))'@g" \
++	    -e "s@\(^full_sed=\).*@\1'$(shell which sed)'@g" \
++	    -e "/^ccflags=/s@-I/usr/local/include@@g" \
++	    -e "/^cppflags=/s@-I/usr/local/include@@g" \
++	    -e "/^ldflags=/s@-L/usr/local/lib@@g" \
++	    -e "/^lddlflags=/s@-L/usr/local/lib@@g" \
++	    -e "/^archlib=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
++	    -e "/^archlibexp=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
++	    -e "/^installarchlib=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
++	    -e "/^installsitearch=/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
++	    -e "/^sitearch/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
++	    -e "/^sitearchexp/s@$(VERSION).*@$(VERSION)/$(SYS)'@" \
++	    $(PWD)/config.sh-$(SYS) > $(TOP)/config.sh
+diff -Naur perl-5.8.8.orig/Cross/Makefile.SH.patch perl-5.8.8/Cross/Makefile.SH.patch
+--- perl-5.8.8.orig/Cross/Makefile.SH.patch	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/Makefile.SH.patch	1969-12-31 19:00:00.000000000 -0500
+@@ -1,189 +0,0 @@
+---- ../Makefile.SH
+-+++ ../Makefile.SH
+-@@ -129,18 +129,7 @@
+- 	    # INSTALL file, under "Building a shared perl library".
+- 	    # If there is no pre-existing $libperl, we don't need
+- 	    # to do anything further.
+--	    if test -f $archlib/CORE/$libperl; then
+--		rm -f preload
+--		cat <<'EOT' > preload
+--#! /bin/sh
+--lib=$1
+--shift
+--test -r $lib && export LD_PRELOAD="$lib $LD_PRELOAD"
+--exec "$@"
+--EOT
+--		chmod 755 preload
+--		ldlibpth="$ldlibpth `pwd`/preload `pwd`/$libperl"
+--	    fi
+-+	    echo linux libraries overwritten by cross-compile patches
+- 	    ;;
+- 	os390)	test -f /bin/env && ldlibpth="/bin/env $ldlibpth"
+- 		;;
+-@@ -389,9 +378,21 @@
+- .c.s:
+- 	$(CCCMDSRC) -S $*.c
+- 
+--all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT) extra.pods $(private) $(unidatafiles) $(public) $(dynamic_ext) $(nonxs_ext) extras.make
+--	@echo " ";
+--	@echo "	Everything is up to date. Type '$(MAKE) test' to run test suite."
+-+#all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT) extra.pods $(private) $(unidatafiles) $(public) $(dynamic_ext) $(nonxs_ext) extras.make
+-+#	@echo " ";
+-+#	@echo "	Everything is up to date. Type '$(MAKE) test' to run test suite."
+-+
+-+all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT)
+-+	mv miniperl miniperl-arm
+-+	ln -s /usr/bin/perl miniperl
+-+
+-+more: extra.pods $(private) $(public)
+-+
+-+more2: $(dynamic_ext)
+-+
+-+more3: $(nonxs_ext)
+-+
+-+more4: extras.make
+- 
+- .PHONY: all compile translators utilities
+- 
+-@@ -401,10 +402,10 @@
+- 	cd x2p; $(MAKE) compile;
+- 	cd pod; $(MAKE) compile;
+- 
+--translators:	miniperl$(EXE_EXT) $(CONFIGPM) FORCE
+-+translators:	$(CONFIGPM) FORCE
+- 	@echo " "; echo "	Making x2p stuff"; cd x2p; $(LDLIBPTH) $(MAKE) all
+- 
+--utilities:	miniperl$(EXE_EXT) $(CONFIGPM) $(plextract) lib/lib.pm FORCE
+-+utilities:	$(CONFIGPM) $(plextract) lib/lib.pm FORCE
+- 	@echo " "; echo "	Making utilities"; cd utils; $(LDLIBPTH) $(MAKE) all
+- 
+- 
+-@@ -579,7 +580,7 @@
+- 	$(CC) -o miniperl $(CLDFLAGS) \
+- 	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
+- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
+--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+-+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+- !NO!SUBS!
+- 		;;
+- 	next4*)
+-@@ -587,7 +588,7 @@
+- miniperl: $& miniperlmain$(OBJ_EXT) $(LIBPERL) opmini$(OBJ_EXT)
+- 	$(CC) -o miniperl `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
+- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
+--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+-+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+- !NO!SUBS!
+- 		;;
+- 	darwin*)
+-@@ -754,7 +755,7 @@
+- # We need to autosplit in two steps because VOS can't handle so many args
+- #
+- .PHONY: preplibrary
+--preplibrary: miniperl$(EXE_EXT) $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
+-+preplibrary: $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
+- 	@sh ./makedir lib/auto
+- 	@echo "	AutoSplitting perl library"
+- 	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
+-@@ -763,35 +764,35 @@
+- 		autosplit_lib_modules(@ARGV)' lib/*/*.pm
+- 	$(MAKE) lib/re.pm
+- 
+--lib/Config.pod: config.sh miniperl$(EXE_EXT) configpm Porting/Glossary
+-+lib/Config.pod: config.sh configpm Porting/Glossary
+- 	$(LDLIBPTH) ./miniperl -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
+- 
+- $(CONFIGPM): lib/Config.pod
+- 
+--lib/ExtUtils/Miniperl.pm: miniperlmain.c miniperl$(EXE_EXT) minimod.pl $(CONFIGPM)
+-+lib/ExtUtils/Miniperl.pm: miniperlmain.c minimod.pl $(CONFIGPM)
+- 	$(LDLIBPTH) ./miniperl minimod.pl > lib/ExtUtils/Miniperl.pm
+- 
+- lib/re.pm: ext/re/re.pm
+- 	cp ext/re/re.pm lib/re.pm
+- 
+--$(plextract):	miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p
+-+$(plextract):	$(CONFIGPM) x2p/s2p
+- 	@-rm -f $@
+- 	$(LDLIBPTH) ./miniperl -I`pwd`/lib $@.PL
+- 
+--x2p/s2p: miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p.PL
+-+x2p/s2p: $(CONFIGPM) x2p/s2p.PL
+- 	cd x2p; $(LDLIBPTH) $(MAKE) s2p
+- 
+--lib/lib.pm:	miniperl$(EXE_EXT) $(CONFIGPM)
+-+lib/lib.pm:	$(CONFIGPM)
+- 	@-rm -f $@
+- 	$(LDLIBPTH) ./miniperl -Ilib lib/lib_pm.PL
+- 
+- unidatafiles $(unidatafiles): uni.data
+- 
+--uni.data: miniperl$(EXE_EXT) $(CONFIGPM) lib/unicore/mktables
+-+uni.data: $(CONFIGPM) lib/unicore/mktables
+- 	cd lib/unicore && $(LDLIBPTH) ../../miniperl -I../../lib mktables -w
+- 	touch uni.data
+- 
+--extra.pods: miniperl$(EXE_EXT)
+-+extra.pods:
+- 	-@test -f extra.pods && rm -f `cat extra.pods`
+- 	-@rm -f extra.pods
+- 	-@for x in `grep -l '^=[a-z]' README.* | grep -v README.vms` ; do \
+-@@ -798,18 +799,7 @@
+- INSTALL_DEPENDENCE = all
+- 
+- install.perl:	$(INSTALL_DEPENDENCE) installperl
+--	if [ -n "$(COMPILE)" ]; \
+--	then \
+--		cd utils; $(MAKE) compile; \
+--		cd ../x2p; $(MAKE) compile; \
+--		cd ../pod; $(MAKE) compile; \
+--	else :; \
+--	fi
+--	$(LDLIBPTH) ./perl installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
+--	$(MAKE) extras.install
+--
+--install.man:	all installman
+--	$(LDLIBPTH) ./perl installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
+-+	/usr/bin/perl -Ifake_config_library -MConfig installperl $(INSTALLFLAGS) $(STRIPFLAGS)
+- 
+- # XXX Experimental. Hardwired values, but useful for testing.
+- # Eventually Configure could ask for some of these values.
+-@@ -925,16 +915,16 @@
+- #
+- # DynaLoader may be needed for extensions that use Makefile.PL.
+- 
+--$(DYNALOADER):	miniperl$(EXE_EXT) preplibrary FORCE
+-+$(DYNALOADER):	preplibrary FORCE
+- 	@$(LDLIBPTH) sh ext/util/make_ext $(STATIC) $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
+- 
+--d_dummy $(dynamic_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
+-+d_dummy $(dynamic_ext):	preplibrary $(DYNALOADER) FORCE
+- 	@$(LDLIBPTH) sh ext/util/make_ext dynamic $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
+- 
+--s_dummy $(static_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
+-+s_dummy $(static_ext):	preplibrary $(DYNALOADER) FORCE
+- 	@$(LDLIBPTH) sh ext/util/make_ext $(STATIC) $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
+- 
+--n_dummy $(nonxs_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
+-+n_dummy $(nonxs_ext):	preplibrary $(DYNALOADER) FORCE
+- 	@$(LDLIBPTH) sh ext/util/make_ext nonxs $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
+- 
+- .PHONY: clean _tidy _mopup _cleaner1 _cleaner2 \
+-@@ -1074,7 +1064,7 @@
+- 
+- test_prep_pre: preplibrary utilities $(nonxs_ext)
+- 
+--test_prep: test_prep_pre miniperl$(EXE_EXT) $(unidatafiles) perl$(EXE_EXT) $(dynamic_ext) $(TEST_PERL_DLL)
+-+test_prep: test_prep_pre $(unidatafiles) perl$(EXE_EXT) $(dynamic_ext) $(TEST_PERL_DLL)
+- 	PERL=./perl $(MAKE) _test_prep
+- 
+- _test_tty:
+-@@ -1167,7 +1157,7 @@
+- 
+- # Can't depend on lib/Config.pm because that might be where miniperl
+- # is crashing.
+--minitest: miniperl$(EXE_EXT) lib/re.pm minitest.prep
+-+minitest: lib/re.pm minitest.prep
+- 	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
+- 		&& $(LDLIBPTH) ./perl TEST -minitest base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
+- 
+diff -Naur perl-5.8.8.orig/Cross/README perl-5.8.8/Cross/README
+--- perl-5.8.8.orig/Cross/README	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/README	1969-12-31 19:00:00.000000000 -0500
+@@ -1,90 +0,0 @@
+-Building for arm-linux
+-----------------------
+-
+-The files in this directory add another cross-compilation
+-target to the Perl buildsystem.  It was built as a part of
+-the Open Zaurus (http://www.openzaurus.com/) distribution.
+-Most / All of the arm compiler optimisations are "borrowed"
+-from this excellent project.
+-
+-(Further discussion about cross-compiling Perl in the top level
+-INSTALL file, see the section "Cross-compilation".)
+-
+-The main target is arm-linux but I have also managed to
+-successfully cross-compile Perl for Solaris x86 using the same
+-buildsystem.
+-
+-We are currently dependent on an existing working local copy of
+-Perl ** of the same version and revision ** which is available
+-as /usr/bin/perl. 
+-
+-You need a working and tested cross-compiler for your build
+-and target combination.  The binary directory must be in
+-your path.
+-
+-1)	You should be reading me (README) in perl-5.x.y/Cross
+-
+-2)	Make sure you are in the Cross directory.
+-
+-3)	Edit the file 'config' to contain your target platform information.
+-
+-4)	make patch	## This will patch the existing source-tree.
+-5)	make perl	## Will make perl
+-
+-Your built Perl environment is in install_me_here/ in your build
+-directory.  From here you can package and deploy as you wish.
+-
+-The Obvious Ommissions
+-----------------------
+-
+-This does NOT perform any installation as site installation method
+-will be dependent on the target architecture and OS. 
+-
+-make test will NOT work as the binaries and libraries will not execute
+-on your BUILD machine. 
+-
+-Due to space limitations on the Zaurus (it's a PDA) we do not provide
+-documentation in the core - Therefore man pages are not even generated.
+-
+-Other Targets (For Developers)
+-------------------------------
+-
+-It is possible to extend the cross-compilation to other targets.
+-We have sucessfully compiled for the target solaris2.8/x86
+-on linux/x86 build system.
+-
+-To attempt a cross-compile for another target using the methods
+-in this directory:
+-
+-1)	Copy the Perl source code onto your TARGET machine.
+-2)	Execute sh Configure as normal and configure as required,
+-	do not "make".
+-3)	Copy the config.sh file that is generated to your BUILD
+-	machine and place it in the Cross directory with the
+-	filename config.sh-ARCH-OS.  For example,
+-	config.sh-i386-pc-solaris2.8.  For the appropriate ARCH
+-	and OS please refer to your cross-compiler documentation.
+-4)	Edit Cross/config to reflect your new target and continue
+-	with build as above.
+-
+-Should you wish to produce optimised binaries for different
+-architectures you can add the appropriate compiler flags to
+-the Makefile in a new ifeq ($(ARCH),...) ... endif block.
+-
+-
+-Please refer to your cross-compiler documentation for details.
+-
+-
+-	Note that the Cross/ directory is also used by a different
+-	cross-compilation setup described in the INSTALL file, and
+-	executed by Configure.  There should be no conflicts since
+-	it is unlikely both that cross-compilation setups are used
+-	simultaneously.
+-
+-Enjoy!
+-
+-References
+-----------
+-Redvers Davies <red@criticalintegration.com>
+-Open Zaurus http://www.openzaurus.org/
+-Perl OZ Packages http://www.criticalintegration.com/perl-oz/
+diff -Naur perl-5.8.8.orig/Cross/TODO perl-5.8.8/Cross/TODO
+--- perl-5.8.8.orig/Cross/TODO	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/TODO	1969-12-31 19:00:00.000000000 -0500
+@@ -1 +0,0 @@
+-Provide a better sandbox for building additional XS libraries.
+diff -Naur perl-5.8.8.orig/Cross/warp perl-5.8.8/Cross/warp
+--- perl-5.8.8.orig/Cross/warp	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/Cross/warp	1969-12-31 19:00:00.000000000 -0500
+@@ -1,14 +0,0 @@
+-#!/bin/sh -x
+-
+-## This script contains an rm -rf.  This may alarm you.
+-## These directories need to be reccursively deleted.
+-## I don't see any method of making "Bad Things"[tm]
+-## Happen.  But we don't run buildroot as root do we? :-)
+-
+-for f in `find lib -name install_me_here`;do
+-cp -r $f/* ./install_me_here/
+-done
+-
+-for f in `find lib -name install_me_here`;do
+-rm -rf $f
+-done
 diff -Naur perl-5.8.8.orig/ext/util/make_ext perl-5.8.8/ext/util/make_ext
---- perl-5.8.8.orig/ext/util/make_ext	2002-05-02 19:32:21.000000000 -0400
-+++ perl-5.8.8/ext/util/make_ext	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/ext/util/make_ext	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/ext/util/make_ext	2006-07-22 18:17:35.000000000 -0400
 @@ -119,7 +119,7 @@
  esac
  
@@ -2244,8 +2092,8 @@ diff -Naur perl-5.8.8.orig/ext/util/make_ext perl-5.8.8/ext/util/make_ext
  if test ! -f $makefile ; then
  	if test -f Makefile.SH; then
 diff -Naur perl-5.8.8.orig/installman perl-5.8.8/installman
---- perl-5.8.8.orig/installman	2004-05-31 10:37:47.000000000 -0400
-+++ perl-5.8.8/installman	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/installman	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/installman	2006-07-22 18:17:35.000000000 -0400
 @@ -1,5 +1,4 @@
  #!./perl -w
 -BEGIN { @INC = qw(lib) }
@@ -2253,8 +2101,8 @@ diff -Naur perl-5.8.8.orig/installman perl-5.8.8/installman
  use Config;
  use Getopt::Long;
 diff -Naur perl-5.8.8.orig/installperl perl-5.8.8/installperl
---- perl-5.8.8.orig/installperl	2006-01-28 10:35:28.000000000 -0500
-+++ perl-5.8.8/installperl	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/installperl	2006-07-22 18:17:24.000000000 -0400
++++ perl-5.8.8/installperl	2006-07-22 18:17:35.000000000 -0400
 @@ -3,8 +3,6 @@
  BEGIN {
      require 5.004;
@@ -2265,8 +2113,8 @@ diff -Naur perl-5.8.8.orig/installperl perl-5.8.8/installperl
  
  use strict;
 diff -Naur perl-5.8.8.orig/lib/unicore/Makefile perl-5.8.8/lib/unicore/Makefile
---- perl-5.8.8.orig/lib/unicore/Makefile	2002-03-27 16:21:59.000000000 -0500
-+++ perl-5.8.8/lib/unicore/Makefile	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/lib/unicore/Makefile	2006-07-22 18:17:25.000000000 -0400
++++ perl-5.8.8/lib/unicore/Makefile	2006-07-22 18:17:35.000000000 -0400
 @@ -1,11 +1,11 @@
  all:
 -	../../miniperl -I../../lib ./mktables
@@ -2282,9 +2130,161 @@ diff -Naur perl-5.8.8.orig/lib/unicore/Makefile perl-5.8.8/lib/unicore/Makefile
  
  clean:
  	rm -f *.pl */*.pl
+diff -Naur perl-5.8.8.orig/Makefile.SH perl-5.8.8/Makefile.SH
+--- perl-5.8.8.orig/Makefile.SH	2006-07-22 18:17:25.000000000 -0400
++++ perl-5.8.8/Makefile.SH	2006-07-22 18:17:35.000000000 -0400
+@@ -591,7 +591,7 @@
+ 	$(CC) -o miniperl $(CLDFLAGS) \
+ 	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
+ 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
+-	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
++	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+ !NO!SUBS!
+ 		;;
+ 	next4*)
+@@ -599,7 +599,7 @@
+ miniperl: $& miniperlmain$(OBJ_EXT) $(LIBPERL) opmini$(OBJ_EXT)
+ 	$(CC) -o miniperl `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
+ 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
+-	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
++	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+ !NO!SUBS!
+ 		;;
+ 	darwin*)
+@@ -620,7 +620,7 @@
+ 	-@rm -f miniperl.xok
+ 	$(CC) $(CLDFLAGS) $(NAMESPACEFLAGS) -o miniperl \
+ 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(LLIBPERL) $(libs)
+-	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
++	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+ !NO!SUBS!
+ 		;;
+ 	*)
+@@ -629,7 +629,7 @@
+ 	-@rm -f miniperl.xok
+ 	$(LDLIBPTH) $(CC) $(CLDFLAGS) -o miniperl \
+ 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(LLIBPERL) $(libs)
+-	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
++	$(LDLIBPTH) ./miniperl-cross -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
+ !NO!SUBS!
+ 		;;
+ 	esac
+@@ -769,38 +769,38 @@
+ preplibrary: miniperl$(EXE_EXT) $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
+ 	@sh ./makedir lib/auto
+ 	@echo "	AutoSplitting perl library"
+-	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
++	$(LDLIBPTH) ./miniperl-cross -Ilib -e 'use AutoSplit; \
+ 		autosplit_lib_modules(@ARGV)' lib/*.pm
+-	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
++	$(LDLIBPTH) ./miniperl-cross -Ilib -e 'use AutoSplit; \
+ 		autosplit_lib_modules(@ARGV)' lib/*/*.pm
+ 	$(MAKE) lib/re.pm
+ 
+ lib/Config.pod: config.sh miniperl$(EXE_EXT) configpm Porting/Glossary
+-	$(LDLIBPTH) ./miniperl -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
++	$(LDLIBPTH) ./miniperl-cross -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
+ 
+ $(CONFIGPM): lib/Config.pod
+ 
+ lib/ExtUtils/Miniperl.pm: miniperlmain.c miniperl$(EXE_EXT) minimod.pl $(CONFIGPM)
+-	$(LDLIBPTH) ./miniperl minimod.pl > lib/ExtUtils/Miniperl.pm
++	$(LDLIBPTH) ./miniperl-cross minimod.pl > lib/ExtUtils/Miniperl.pm
+ 
+ lib/re.pm: ext/re/re.pm
+ 	cp ext/re/re.pm lib/re.pm
+ 
+ $(plextract):	miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p
+ 	@-rm -f $@
+-	$(LDLIBPTH) ./miniperl -I`pwd`/lib $@.PL
++	$(LDLIBPTH) ./miniperl-cross -I`pwd`/lib $@.PL
+ 
+ x2p/s2p: miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p.PL
+ 	cd x2p; $(LDLIBPTH) $(MAKE) s2p
+ 
+ lib/lib.pm:	miniperl$(EXE_EXT) $(CONFIGPM)
+ 	@-rm -f $@
+-	$(LDLIBPTH) ./miniperl -Ilib lib/lib_pm.PL
++	$(LDLIBPTH) ./miniperl-cross -Ilib lib/lib_pm.PL
+ 
+ unidatafiles $(unidatafiles): uni.data
+ 
+ uni.data: miniperl$(EXE_EXT) $(CONFIGPM) lib/unicore/mktables
+-	cd lib/unicore && $(LDLIBPTH) ../../miniperl -I../../lib mktables -w
++	cd lib/unicore && $(LDLIBPTH) ../../miniperl-cross -I../../lib mktables -w
+ 	touch uni.data
+ 
+ extra.pods: miniperl$(EXE_EXT)
+@@ -829,7 +829,7 @@
+ 	no-install install.perl install.man install.html
+ 
+ META.yml:	Porting/makemeta Porting/Maintainers.pl Porting/Maintainers.pm
+-	$(LDLIBPTH) ./miniperl -Ilib Porting/makemeta
++	$(LDLIBPTH) ./miniperl-cross -Ilib Porting/makemeta
+ 
+ install-strip:
+ 	$(MAKE) STRIPFLAGS=-s install DESTDIR="$(DESTDIR)"
+@@ -857,17 +857,17 @@
+ 		cd ../pod; $(MAKE) compile; \
+ 	else :; \
+ 	fi
+-	$(LDLIBPTH) ./perl installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
++	$(LDLIBPTH) ./miniperl-cross -Ilib installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
+ 	$(MAKE) extras.install
+ 
+ install.man:	all installman
+-	$(LDLIBPTH) ./perl installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
++	$(LDLIBPTH) ./miniperl-cross -Ilib installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
+ 
+ # XXX Experimental. Hardwired values, but useful for testing.
+ # Eventually Configure could ask for some of these values.
+ install.html: all installhtml
+ 	-@test -f README.vms && cd vms && $(LNS) ../README.vms README_vms.pod && cd ..
+-	$(LDLIBPTH) ./perl installhtml   \
++	$(LDLIBPTH) ./miniperl-cross -Ilib installhtml   \
+       --podroot=. --podpath=. --recurse  \
+       --htmldir=$(privlib)/html   \
+       --htmlroot=$(privlib)/html  \
+@@ -1173,7 +1173,7 @@
+ # Targets for UTF16 testing:
+ 
+ minitest.utf16: minitest.prep
+-	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
++	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl-cross$(EXE_EXT) perl$(EXE_EXT)) \
+ 		&& $(LDLIBPTH) ./perl TEST -minitest -utf16 base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
+ 
+ test.utf16 check.utf16: test_prep
+@@ -1239,7 +1239,7 @@
+ # Can't depend on lib/Config.pm because that might be where miniperl
+ # is crashing.
+ minitest: miniperl$(EXE_EXT) lib/re.pm minitest.prep
+-	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
++	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl-cross$(EXE_EXT) perl$(EXE_EXT)) \
+ 		&& $(LDLIBPTH) ./perl TEST -minitest base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
+ 
+ # Test via harness
+diff -Naur perl-5.8.8.orig/MANIFEST perl-5.8.8/MANIFEST
+--- perl-5.8.8.orig/MANIFEST	2006-07-22 18:17:25.000000000 -0400
++++ perl-5.8.8/MANIFEST	2006-07-22 18:17:35.000000000 -0400
+@@ -33,15 +33,8 @@
+ configure.gnu		Crude emulation of GNU configure
+ cop.h			Control operator header
+ Copying			The GNU General Public License
+-Cross/config		Cross-compilation
+ Cross/config.sh-arm-linux	Cross-compilation
+-Cross/generate_config_sh	Cross-compilation
+-Cross/installperl.patch		Cross-compilation
+ Cross/Makefile		Cross-compilation
+-Cross/Makefile.SH.patch	Cross-compilation
+-Cross/README		Cross-compilation
+-Cross/TODO		Cross-compilation
+-Cross/warp		Cross-compilation
+ cv.h			Code value header
+ cygwin/cygwin.c		Additional code for Cygwin port
+ cygwin/ld2.in		ld wrapper template for Cygwin port
 diff -Naur perl-5.8.8.orig/pod/Makefile.SH perl-5.8.8/pod/Makefile.SH
---- perl-5.8.8.orig/pod/Makefile.SH	2005-10-25 07:41:47.000000000 -0400
-+++ perl-5.8.8/pod/Makefile.SH	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/pod/Makefile.SH	2006-07-22 18:17:25.000000000 -0400
++++ perl-5.8.8/pod/Makefile.SH	2006-07-22 18:17:35.000000000 -0400
 @@ -63,7 +63,7 @@
  	    --podroot=.. --podpath=pod:lib:ext:vms \
  	    --libpods=perlfunc:perlguts:perlvar:perlrun:perlop
@@ -2295,8 +2295,8 @@ diff -Naur perl-5.8.8.orig/pod/Makefile.SH perl-5.8.8/pod/Makefile.SH
  REALPERL = ../perl
  
 diff -Naur perl-5.8.8.orig/utils/Makefile perl-5.8.8/utils/Makefile
---- perl-5.8.8.orig/utils/Makefile	2003-11-30 16:49:48.000000000 -0500
-+++ perl-5.8.8/utils/Makefile	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/utils/Makefile	2006-07-22 18:17:26.000000000 -0400
++++ perl-5.8.8/utils/Makefile	2006-07-22 18:17:35.000000000 -0400
 @@ -1,5 +1,5 @@
  
 -PERL = ../miniperl
@@ -2305,8 +2305,8 @@ diff -Naur perl-5.8.8.orig/utils/Makefile perl-5.8.8/utils/Makefile
  
  # Files to be built with variable substitution after miniperl is
 diff -Naur perl-5.8.8.orig/x2p/Makefile.SH perl-5.8.8/x2p/Makefile.SH
---- perl-5.8.8.orig/x2p/Makefile.SH	2005-09-21 09:38:24.000000000 -0400
-+++ perl-5.8.8/x2p/Makefile.SH	2006-06-16 17:02:55.000000000 -0400
+--- perl-5.8.8.orig/x2p/Makefile.SH	2006-07-22 18:17:26.000000000 -0400
++++ perl-5.8.8/x2p/Makefile.SH	2006-07-22 18:17:35.000000000 -0400
 @@ -172,7 +172,7 @@
  # These should be automatically generated
  
