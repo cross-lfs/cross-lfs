@@ -77,6 +77,12 @@
     href="../x86_64-64/glibc.xml"
     xpointer="xpointer(//*[@os='l2'])"/>
 
+    <para>Now we will force GLIBC to build as 64 bit instead of the default
+    n32 with the following sed:</para>
+
+    <screen><userinput>sed -i '/default) machine=/s/n32/64/g' \
+       ports/sysdeps/mips/preconfigure</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
