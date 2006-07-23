@@ -33,22 +33,36 @@
 
 <screen os="b"><userinput>./configure --datadir=/lib/kbd</userinput></screen>
 
-    <para os="c">Compile the package:</para>
+    <variablelist os="c">
+      <title>The meaning of the configure options:</title>
 
-<screen os="d"><userinput>make</userinput></screen>
+      <varlistentry>
+        <term><parameter>--datadir</parameter></term>
+        <listitem>
+          <para>This option places the Kbd data and keymap files into /lib/kbd,
+          as they are used by some of the scripts in the CLFS-Bootscripts
+          package and must be on the root partition.</para>
+        </listitem>
+      </varlistentry>
 
-    <para os="e">This package does not come with a test suite.</para>
+    </variablelist>
 
-    <para os="f">Install the package:</para>
+    <para os="d">Compile the package:</para>
 
-<screen os="g"><userinput>make install</userinput></screen>
+<screen os="e"><userinput>make</userinput></screen>
 
-    <para os="h">Some of the Programs from Kbd are used by some of the scripts
+    <para os="f">This package does not come with a test suite.</para>
+
+    <para os="g">Install the package:</para>
+
+<screen os="h"><userinput>make install</userinput></screen>
+
+    <para os="i">Some of the programs from Kbd are used by scripts
     in the CLFS-Bootscripts package. As <filename
     class="directory">/usr</filename> may not be available during the early
     stages of booting, those binaries need to be on the root partition:</para>
 
-<screen os="i"><userinput>mv -v /usr/bin/{kbd_mode,openvt,setfont} /bin</userinput></screen>
+<screen os="j"><userinput>mv -v /usr/bin/{kbd_mode,openvt,setfont} /bin</userinput></screen>
 
   </sect2>
 
