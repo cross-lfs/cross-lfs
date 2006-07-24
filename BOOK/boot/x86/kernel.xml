@@ -48,13 +48,14 @@
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-    <para os="ab">If your keyboard isn't an US one, you may want to build
-    the proper keymap for your keyboard layout inside the kernel. Do it by
-    running the following command:</para>
+    <para os="ab">If your keyboard isn't a US one and you have Kbd installed
+    on your host system, you can build the proper keymap for your keyboard
+    layout inside the kernel. If you wish to do this, run the following
+    command (replace [path to keymap] with the keymap location on the host -
+    a common location is in /usr/share/kbd):</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../bootable/x86/kernel.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+<screen os="f"><userinput>loadkeys -m <replaceable>[path to  keymap]</replaceable> &gt; \
+    drivers/char/defkeymap.c</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../bootable/x86/kernel.xml"
