@@ -21,16 +21,18 @@
   <sect2 role="installation">
     <title>Installation of Gettext</title>
 
-    <para os="x1">Gettext includes its own version of Libtool which is broken
-    for x86_64 (it tries to link statically linked archives compiled without
-    -fPIC against shared objects) see (<ulink
-    url="http://lists.gnu.org/archive/html/bug-libtool/2005-03/msg00070.html"/>).
-    Use the following <command>sed</command> to skip certain tests so that
-    the main language tests can be run.</para>
+    <para os="x1">Gettext fails to pass <literal>-fPIC</literal> to the testsuite
+    for its internal libtool. On x86_64 it is not possible to link statically
+    linked archives compiled without -fPIC against shared objects and the suite
+    stops without running the main body of the tests.  Use the following
+    <command>sed</command> to add this into the <literal>TESTS_ENVIRONMENT</literal>
+    parameters:</para>
 
-<screen os="x2"><userinput>sed -i -e '2iexit 77' autoconf-lib-link/tests/rpath-3*[ef]</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+<screen os="x2"><userinput>sed -i \
+    "s/CC='@CC@' CFLAGS='@CFLAGS@'/CC='@CC@' CFLAGS='@CFLAGS@ -fPIC'/" \
+    autoconf-lib-link/tests/Makefile.in</userinput></screen>
+ 
+   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gettext.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
