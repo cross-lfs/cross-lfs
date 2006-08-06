@@ -35,9 +35,19 @@
 
 <screen os="b"><userinput>CC="gcc ${BUILD64}" ./configure --datadir=/lib64/kbd</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/kbd.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+    <variablelist os="c">
+      <title>The meaning of the configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--datadir</parameter></term>
+        <listitem>
+          <para>This option places the Kbd data and keymap files into
+          /lib64/kbd, as they are used by some of the scripts in the
+          CLFS-Bootscripts package and must be on the root partition.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/kbd.xml"
