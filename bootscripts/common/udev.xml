@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
-  <!ENTITY % general-entities SYSTEM "../general.ent">
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 ]>
 
 <sect1 id="ch-scripts-udev">
   <?dbhtml filename="udev.html"?>
 
-  <title>Device and Module Handling on an LFS System</title>
+  <title>Device and Module Handling on a CLFS System</title>
 
   <indexterm zone="ch-scripts-udev">
     <primary sortas="a-Udev">Udev</primary>
@@ -130,7 +130,7 @@
       under the <filename class="directory">/dev</filename> directory are
       determined by rules specified in the files within the <filename
       class="directory">/etc/udev/rules.d/</filename> directory. These are
-      numbered in a similar fashion to the LFS-Bootscripts package. If
+      numbered in a similar fashion to the CLFS-Bootscripts package. If
       <command>udevd</command> can't find a rule for the device it is creating,
       it will default permissions to <emphasis>660</emphasis> and ownership to
       <emphasis>root:root</emphasis>. Documentation on the syntax of the Udev
@@ -154,7 +154,7 @@
       <filename>/sys/bus/pci/devices/0000:00:0d.0/modalias</filename> file
       might contain the string
       <quote>pci:v00001319d00000801sv00001319sd00001319bc04sc01i00</quote>.
-      The rules that LFS installs will cause <command>udevd</command> to call
+      The rules that CLFS installs will cause <command>udevd</command> to call
       out to <command>/sbin/modprobe</command> with the contents of the
       <envar>MODALIAS</envar> uevent environment variable (that should be the
       same as the contents of the <filename>modalias</filename> file in sysfs),
@@ -280,7 +280,7 @@
       For now, you can work around it by creating a rule that waits for the used
       <systemitem class="filesystem">sysfs</systemitem> attribute and appending
       it to the <filename>/etc/udev/rules.d/10-wait_for_sysfs.rules</filename>
-      file. Please notify the LFS Development list if you do so and it
+      file. Please notify the CLFS Development list if you do so and it
       helps.</para>
 
     </sect3>
