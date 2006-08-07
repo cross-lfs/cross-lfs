@@ -24,6 +24,92 @@
   class="directory">/etc/rc.d/rc*.d</filename>).</para>
 
   <sect2>
+    <title>Creating stable names for network interfaces</title>
+
+    <para>Instructions in this section are optional if you have only one
+    network card.</para>
+
+    <para>With Udev and modular network drivers, the network interface numbering
+    is not persistent across reboots by default, because the drivers are loaded
+    in parallel and, thus, in random order. For example, on a computer having
+    two network cards made by Intel and Realtek, the network card manufactured
+    by Intel may become <filename class="devicefile">eth0</filename> and the
+    Realtek card becomes  <filename class="devicefile">eth1</filename>. In some
+    cases, after a reboot the cards get renumbered the other way around. To
+    avoid this, create Udev rules that assign stable names to network cards
+    based on their MAC addresses or bus positions.</para>
+
+    <para>If you are going to use MAC addresses to identify your network
+    cards, find the addresses with the following command:</para>
+
+<screen role="nodump"><userinput>grep -H . /sys/class/net/*/address</userinput></screen>
+
+    <para>For each network card (but not for the loopback interface),
+    invent a descriptive name, such as <quote>realtek</quote>, and create
+    Udev rules similar to the following:</para>
+
+<screen role="nodump"><userinput>cat &gt; /etc/udev/rules.d/26-network.rules &lt;&lt; EOF
+<literal>ACTION=="add", SUBSYSTEM=="net", SYSFS{address}=="<replaceable>00:e0:4c:12:34:56</replaceable>", \
+    NAME="<replaceable>realtek</replaceable>"
+ACTION=="add", SUBSYSTEM=="net", SYSFS{address}=="<replaceable>00:a0:c9:78:9a:bc</replaceable>", \
+    NAME="<replaceable>intel</replaceable>"</literal>
+EOF</userinput></screen>
+
+<!-- Yes, I know that VLANs are beyond BLFS. This is not the reason to get them
+     incorrect by default when every distro does this right. -->
+
+    <note>
+      <para>Although the examples in this book work properly, be aware
+      that Udev does not recognize the backslash for line continuation.
+      If modifying Udev rules with an editor, be sure to leave each rule
+      on one physical line.</para>
+    </note>
+
+    <para>If you are going to use the bus position as a key, create
+    Udev rules similar to the following:</para>
+
+<screen role="nodump"><userinput>cat &gt; /etc/udev/rules.d/26-network.rules &lt;&lt; EOF
+<literal>ACTION=="add", SUBSYSTEM=="net", BUS=="<replaceable>pci</replaceable>", ID=="<replaceable>0000:00:0c.0</replaceable>", \
+    NAME="<replaceable>realtek</replaceable>"
+ACTION=="add", SUBSYSTEM=="net", BUS=="<replaceable>pci</replaceable>", ID=="<replaceable>0000:00:0d.0</replaceable>", \
+    NAME="<replaceable>intel</replaceable>"</literal>
+EOF</userinput></screen>
+
+    <para>These rules will always rename the network cards to
+    <quote>realtek</quote> and <quote>intel</quote>, independently
+    of the original numbering provided by the kernel (i.e.: the original
+    <quote>eth0</quote> and <quote>eth1</quote> interfaces will no longer
+    exist, unless you put such <quote>descriptive</quote> names in the NAME
+    key). Use the descriptive names from the Udev rules instead
+    of <quote>eth0</quote> in the network interface configuration files
+    below.</para>
+
+    <para>Note that the rules above don't work for every setup. For example,
+    MAC-based rules break when bridges or VLANs are used, because bridges and
+    VLANs have the same MAC address as the network card. One wants to rename
+    only the network card interface, not the bridge or VLAN interface, but the
+    example rule matches both. If you use such virtual interfaces, you have two
+    potential solutions. One is to add the DRIVER=="?*" key after
+    SUBSYSTEM=="net" in MAC-based rules which will stop matching the virtual
+    interfaces.  This is known to fail with some older Ethernet cards because
+    they don't have the DRIVER variable in the uevent and thus the rule does
+    not match with such cards. Another solution is to switch to rules that use
+    the bus position as a key.</para>
+
+    <para>The second known non-working case is with wireless cards using the
+    MadWifi or HostAP drivers, because they create at least two interfaces with
+    the same MAC address and bus position. For example, the Madwifi driver
+    creates both an athX and a wifiX interface where X is a digit.  To
+    differentiate these interfaces, add an appropriate KERNEL parameter such as
+    KERNEL=="ath*" after SUBSYSTEM=="net".</para>
+
+    <para>There may be other cases where the rules above don't work. Currently,
+    bugs on this topic are still being reported to Linux distributions, and no
+    solution that covers every case is available.</para>
+
+  </sect2>
+
+  <sect2>
     <title>Creating Network Interface Configuration Files</title>
 
     <para>Which interfaces are brought up and down by the network script
@@ -32,11 +118,11 @@
     This directory should contain a sub-directory for each interface to be
     configured, such as <filename>ifconfig.xyz</filename>, where
     <quote>xyz</quote> is a network interface name. Inside this directory
-    would be files defining the attributes to this interface, such as its
-    IP address(es), subnet masks, and so forth.</para>
+    would be files defining the attributes to this interface, such as its IP
+    address(es), subnet masks, and so forth.</para>
 
     <para>The following command creates a sample <filename>ipv4</filename>
-    file for the <filename class="devicefile">eth0</filename> device:</para>
+    file for the <emphasis>eth0</emphasis> device:</para>
 
 <screen><userinput>cd /etc/sysconfig/network-devices &amp;&amp;
 mkdir -v ifconfig.eth0 &amp;&amp;
@@ -49,34 +135,33 @@ PREFIX=24
 BROADCAST=192.168.1.255</literal>
 EOF</userinput></screen>
 
-    <para>The values of these variables must be changed in every file to
-    match the proper setup. If the <envar>ONBOOT</envar> variable is
-    set to <quote>yes</quote> the network script will bring up the
-    Network Interface Card (NIC) during booting of the system. If set
-    to anything but <quote>yes</quote> the NIC will be ignored by the
-    network script and not brought up.</para>
+    <para>The values of these variables must be changed in every file to match
+    the proper setup. If the <envar>ONBOOT</envar> variable is set to
+    <quote>yes</quote> the network script will bring up the Network Interface
+    Card (NIC) during booting of the system. If set to anything but
+    <quote>yes</quote> the NIC will be ignored by the network script and not
+    be brought up.</para>
 
     <para>The <envar>SERVICE</envar> variable defines the method used for
     obtaining the IP address. The CLFS-Bootscripts package has a modular IP
     assignment format, and creating additional files in the <filename
     class="directory">/etc/sysconfig/network-devices/services</filename>
-    directory allows other IP assignment methods. This is commonly used
-    for Dynamic Host Configuration Protocol (DHCP), which is addressed in
-    the BLFS book.</para>
+    directory allows other IP assignment methods. This is commonly used for
+    Dynamic Host Configuration Protocol (DHCP), which is addressed in the
+    BLFS book.</para>
 
     <para>The <envar>GATEWAY</envar> variable should contain the default
     gateway IP address, if one is present. If not, then comment out the
     variable entirely.</para>
 
-    <para>The <envar>PREFIX</envar> variable needs to contain the number
-    of bits used in the subnet. Each octet in an IP address is 8 bits.
-    If the subnet's netmask is 255.255.255.0, then it is using the first
-    three octets (24 bits) to specify the network number. If the netmask
-    is 255.255.255.240, it would be using the first 28 bits. Prefixes
-    longer than 24 bits are commonly used by DSL and cable-based Internet
-    Service Providers (ISPs). In this example (PREFIX=24), the netmask is
-    255.255.255.0. Adjust the <envar>PREFIX</envar> variable according to
-    your specific subnet.</para>
+    <para>The <envar>PREFIX</envar> variable needs to contain the number of
+    bits used in the subnet. Each octet in an IP address is 8 bits. If the
+    subnet's netmask is 255.255.255.0, then it is using the first three octets
+    (24 bits) to specify the network number. If the netmask is 255.255.255.240,
+    it would be using the first 28 bits.  Prefixes longer than 24 bits are
+    commonly used by DSL and cable-based Internet Service Providers (ISPs).
+    In this example (PREFIX=24), the netmask is 255.255.255.0. Adjust the
+    <envar>PREFIX</envar> variable according to your specific subnet.</para>
 
   </sect2>
 
@@ -88,11 +173,12 @@ EOF</userinput></screen>
     </indexterm>
 
     <para>If the system is going to be connected to the Internet, it will
-    need some means of Domain Name Service (DNS) name resolution to resolve
-    Internet domain names to IP addresses, and vice versa. This is best
-    achieved by placing the IP address of the DNS server, available from
-    the ISP or network administrator, into <filename>/etc/resolv.conf</filename>.
-    Create the file by running the following:</para>
+    need some means of Domain Name Service (DNS) name resolution to
+    resolve Internet domain names to IP addresses, and vice versa. This is
+    best achieved by placing the IP address of the DNS server, available
+    from the ISP or network administrator, into
+    <filename>/etc/resolv.conf</filename>. Create the file by running the
+    following:</para>
 
 <screen><userinput>cat &gt; /etc/resolv.conf &lt;&lt; "EOF"
 <literal># Begin /etc/resolv.conf
