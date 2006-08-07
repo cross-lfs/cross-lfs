@@ -42,7 +42,7 @@
     perfectly, even though the compiler specs file and linker are still
     pointing at <filename class="directory">/tools</filename>. The specs
     and linker cannot be adjusted before the Glibc install because the
-    Glibc autoconf tests would give false results and defeat the goal
+    Glibc Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
     <para os="c">The following patch fixes an issue that can
@@ -54,8 +54,9 @@
 
 <screen os="p2"><userinput>patch -Np1 -i ../&glibc-iconv_fix-patch;</userinput></screen>
 
-    <para os="s1">The following sed fixes a build issue with Glibc. This
-    will prevent nscd from trying to link to libraries that don't exist:</para>
+    <para os="s1">The following <command>sed</command> fixes a build issue
+    with Glibc. This will prevent <command>nscd</command> from trying to
+    link to libraries that don't exist:</para>
 
 <screen os="s2"><userinput>cp -v nscd/Makefile{,.orig}
 sed -e "/nscd_stat.o: sysincludes = # nothing/d" nscd/Makefile.orig > \
