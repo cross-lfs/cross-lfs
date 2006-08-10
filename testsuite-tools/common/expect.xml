@@ -25,8 +25,8 @@
   <sect2 role="installation">
     <title>Installation of Expect</title>
 
-    <para os="s1">The following sed prevents searching for libraries in
-    /tools/lib. It will now search in ${libdir}:</para>
+    <para os="s1">The following sed tells <command>configure</command> to look
+    for libraries in ${libdir}, not just in /tools/lib:</para>
 
 <screen os="s2"><userinput>sed -i '/EXP_LIB_SPEC=/s@${exec_prefix}/lib@${libdir}@' configure</userinput></screen>
 
