@@ -31,18 +31,18 @@
     therefore only install one version.</para>
 
     <para os="p3">Perl does not, by default, know about library directories with names other
-    than lib, such as lib64.  The following patch will allow it to install to lib64.</para>
+    than lib, such as lib64.  The following patch will allow it to install to lib64:</para>
 
 <screen os="p4"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
 
     <para os="p5">There is a further (possibly cosmetic) anomaly - if we install perl and
     then run <command>perl -V</command> it will claim that libc is in /lib.  The
     following patch fixes this, but only takes effect when <command>make install
-    </command> is run.</para>
+    </command> is run:</para>
 
 <screen os="p6"><userinput>patch -Np1 -i ../&perl-lib64-patch;</userinput></screen>
 
-    <para os="m2">We still need to tell perl to actually use lib64</para>
+    <para os="m2">We still need to tell perl to actually use lib64:</para>
 
 <screen os="m3"><userinput>echo 'installstyle="lib64/perl5"' >>hints/linux.sh</userinput></screen>
 
