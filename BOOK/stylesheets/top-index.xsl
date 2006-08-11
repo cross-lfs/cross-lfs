@@ -14,7 +14,7 @@
     <html>
       <head>
         <title>
-          Linux From Scratch
+          Cross-Compiled Linux From Scratch
         </title>
         <style type="text/css">
           <xsl:text>
