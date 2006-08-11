@@ -1,16 +1,16 @@
 Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2006-07-2
+Date: 2006-08-11
 Initial Package Version: 2.4
 Origin: Daniel Jacobwitz
 Upstream Status: Applied
 Description: Fixes for MIPS architecture
-	Fixes changes due to Kernel ABI change in 2.6.12
-	Fixes Testsuites Errors
-	Fixes Missing Symbols in Libm
+        Fixes changes due to Kernel ABI change in 2.6.12
+        Fixes Testsuites Errors
+        Fixes Missing Symbols in Libm
 
 diff -Naur glibc-2.4.orig/ports/sysdeps/mips/fpu/feholdexcpt.c glibc-2.4/ports/sysdeps/mips/fpu/feholdexcpt.c
 --- glibc-2.4.orig/ports/sysdeps/mips/fpu/feholdexcpt.c	2001-07-05 21:56:01.000000000 -0700
-+++ glibc-2.4/ports/sysdeps/mips/fpu/feholdexcpt.c	2006-07-22 19:31:13.000000000 -0700
++++ glibc-2.4/ports/sysdeps/mips/fpu/feholdexcpt.c	2006-08-11 13:51:28.984284280 -0700
 @@ -36,3 +36,4 @@
  
    return 0;
@@ -18,7 +18,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/mips/fpu/feholdexcpt.c glibc-2.4/ports/s
 +libm_hidden_def (feholdexcept)
 diff -Naur glibc-2.4.orig/ports/sysdeps/mips/fpu/fesetround.c glibc-2.4/ports/sysdeps/mips/fpu/fesetround.c
 --- glibc-2.4.orig/ports/sysdeps/mips/fpu/fesetround.c	2001-07-05 21:56:01.000000000 -0700
-+++ glibc-2.4/ports/sysdeps/mips/fpu/fesetround.c	2006-07-22 19:31:13.000000000 -0700
++++ glibc-2.4/ports/sysdeps/mips/fpu/fesetround.c	2006-08-11 13:51:28.984284280 -0700
 @@ -41,3 +41,4 @@
  
    return 0;
@@ -26,7 +26,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/mips/fpu/fesetround.c glibc-2.4/ports/sy
 +libm_hidden_def (fesetround)
 diff -Naur glibc-2.4.orig/ports/sysdeps/mips/ldsodefs.h glibc-2.4/ports/sysdeps/mips/ldsodefs.h
 --- glibc-2.4.orig/ports/sysdeps/mips/ldsodefs.h	1969-12-31 16:00:00.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/mips/ldsodefs.h	2006-07-22 19:30:57.000000000 -0700
++++ glibc-2.4/ports/sysdeps/mips/ldsodefs.h	2006-08-11 13:51:28.984284280 -0700
 @@ -0,0 +1,66 @@
 +/* Run-time dynamic linker data structures for loaded ELF shared objects.
 +   Copyright (C) 2006 Free Software Foundation, Inc.
@@ -96,7 +96,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/mips/ldsodefs.h glibc-2.4/ports/sysdeps/
 +#endif
 diff -Naur glibc-2.4.orig/ports/sysdeps/mips/mips64/n32/libm-test-ulps glibc-2.4/ports/sysdeps/mips/mips64/n32/libm-test-ulps
 --- glibc-2.4.orig/ports/sysdeps/mips/mips64/n32/libm-test-ulps	1969-12-31 16:00:00.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/mips/mips64/n32/libm-test-ulps	2006-07-22 19:46:47.000000000 -0700
++++ glibc-2.4/ports/sysdeps/mips/mips64/n32/libm-test-ulps	2006-08-11 13:51:28.988284183 -0700
 @@ -0,0 +1,1245 @@
 +# Begin of automatic generation
 +
@@ -1345,7 +1345,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/mips/mips64/n32/libm-test-ulps glibc-2.4
 +# end of automatic generation
 diff -Naur glibc-2.4.orig/ports/sysdeps/mips/mips64/n64/libm-test-ulps glibc-2.4/ports/sysdeps/mips/mips64/n64/libm-test-ulps
 --- glibc-2.4.orig/ports/sysdeps/mips/mips64/n64/libm-test-ulps	1969-12-31 16:00:00.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/mips/mips64/n64/libm-test-ulps	2006-07-22 19:46:47.000000000 -0700
++++ glibc-2.4/ports/sysdeps/mips/mips64/n64/libm-test-ulps	2006-08-11 13:51:28.988284183 -0700
 @@ -0,0 +1,1245 @@
 +# Begin of automatic generation
 +
@@ -2594,7 +2594,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/mips/mips64/n64/libm-test-ulps glibc-2.4
 +# end of automatic generation
 diff -Naur glibc-2.4.orig/ports/sysdeps/mips/tst-audit.h glibc-2.4/ports/sysdeps/mips/tst-audit.h
 --- glibc-2.4.orig/ports/sysdeps/mips/tst-audit.h	1969-12-31 16:00:00.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/mips/tst-audit.h	2006-07-22 19:30:57.000000000 -0700
++++ glibc-2.4/ports/sysdeps/mips/tst-audit.h	2006-08-11 13:51:28.988284183 -0700
 @@ -0,0 +1,40 @@
 +/* Definitions for testing PLT entry/exit auditing.  ARM version.
 +
@@ -2638,7 +2638,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/mips/tst-audit.h glibc-2.4/ports/sysdeps
 +#define int_retval lrv_v0
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/resource.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/resource.h
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/resource.h	2005-06-20 08:07:34.000000000 -0700
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/resource.h	2006-07-22 19:35:21.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/resource.h	2006-08-11 13:51:28.988284183 -0700
 @@ -107,14 +107,22 @@
  };
  
@@ -2671,7 +2671,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/resource.h gli
  /* We can represent all limits.  */
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/sigcontext.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/sigcontext.h
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/sigcontext.h	2004-11-23 20:37:34.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/sigcontext.h	2006-07-22 19:33:52.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/sigcontext.h	2006-08-11 13:51:28.992284087 -0700
 @@ -1,5 +1,5 @@
 -/* Copyright (C) 1996, 1997, 1998, 2003, 2004 Free Software Foundation, Inc.
 -   This file is part of the GNU C Library.
@@ -2823,7 +2823,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/sigcontext.h g
  #endif
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/stat.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/stat.h
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/stat.h	2004-11-23 20:37:34.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/stat.h	2006-07-22 19:30:57.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/bits/stat.h	2006-08-11 13:51:28.992284087 -0700
 @@ -61,16 +61,27 @@
      long int st_pad2[3];
      __off64_t st_size;		/* Size of file, in bytes.  */
@@ -2940,7 +2940,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/bits/stat.h glibc-2
      __blkcnt64_t st_blocks;
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/kernel_stat.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/kernel_stat.h
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/kernel_stat.h	2004-11-23 20:37:35.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/kernel_stat.h	2006-07-22 19:34:46.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/kernel_stat.h	2006-08-11 13:51:28.992284087 -0700
 @@ -16,12 +16,12 @@
      unsigned int st_rdev;
      unsigned int __pad2[3];
@@ -2981,13 +2981,26 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/kernel_stat.h glibc
      char st_fstype[16];			/* Filesystem type name, unsupported */
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/nptl/fork.c glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/nptl/fork.c
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/nptl/fork.c	2005-03-28 01:21:52.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/nptl/fork.c	2006-07-22 19:24:57.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/nptl/fork.c	2006-08-11 13:51:28.992284087 -0700
 @@ -1 +1 @@
 -#include "../i386/fork.c"
 +#include <sysdeps/unix/sysv/linux/i386/fork.c>
+diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/nptl/lowlevellock.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/nptl/lowlevellock.h
+--- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/nptl/lowlevellock.h	2006-03-02 17:16:30.000000000 -0800
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/nptl/lowlevellock.h	2006-08-11 13:52:07.259360467 -0700
+@@ -32,6 +32,9 @@
+ #define FUTEX_CMP_REQUEUE	4
+ #define FUTEX_WAKE_OP		5
+ #define FUTEX_OP_CLEAR_WAKE_IF_GT_ONE	((4 << 24) | 1)
++#define FUTEX_LOCK_PI		6
++#define FUTEX_UNLOCK_PI		7
++#define FUTEX_TRYLOCK_PI	8
+ 
+ /* Initializer for compatibility lock.	*/
+ #define LLL_MUTEX_LOCK_INITIALIZER (0)
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/register-dump.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/register-dump.h
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/register-dump.h	2002-07-12 16:25:56.000000000 -0700
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/register-dump.h	2006-07-22 19:33:52.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/register-dump.h	2006-08-11 13:51:28.992284087 -0700
 @@ -1,5 +1,5 @@
  /* Dump registers.
 -   Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
@@ -3033,7 +3046,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/register-dump.h gli
        ADD_STRING (" ");
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/sigaction.c glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/sigaction.c
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/sigaction.c	2006-01-08 00:21:17.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/sigaction.c	2006-07-22 19:36:49.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/sigaction.c	2006-08-11 13:51:28.992284087 -0700
 @@ -153,6 +153,10 @@
  }
  libc_hidden_def (__libc_sigaction)
@@ -3047,7 +3060,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/sigaction.c glibc-2
  libc_hidden_weak (__sigaction)
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/sys/ucontext.h glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/sys/ucontext.h
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/sys/ucontext.h	2004-11-23 20:36:11.000000000 -0800
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/sys/ucontext.h	2006-07-22 19:33:52.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/sys/ucontext.h	2006-08-11 13:51:28.992284087 -0700
 @@ -1,5 +1,5 @@
 -/* Copyright (C) 1997, 1998, 2000, 2003, 2004 Free Software Foundation, Inc.
 -   This file is part of the GNU C Library.
@@ -3100,7 +3113,7 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/sys/ucontext.h glib
  
 diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/xstatconv.c glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/xstatconv.c
 --- glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/xstatconv.c	2003-06-30 02:33:13.000000000 -0700
-+++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/xstatconv.c	2006-07-22 19:34:46.000000000 -0700
++++ glibc-2.4/ports/sysdeps/unix/sysv/linux/mips/xstatconv.c	2006-08-11 13:51:28.996283990 -0700
 @@ -62,9 +62,12 @@
  	buf->st_blksize = kbuf->st_blksize;
  	buf->st_blocks = kbuf->st_blocks;
@@ -3133,4 +3146,98 @@ diff -Naur glibc-2.4.orig/ports/sysdeps/unix/sysv/linux/mips/xstatconv.c glibc-2
  
  	buf->st_pad4[0] = 0; buf->st_pad4[1] = 0;
  	buf->st_pad4[2] = 0; buf->st_pad4[3] = 0;
-
+diff -Naur glibc-2.4.orig/sysdeps/generic/ldsodefs.h glibc-2.4/sysdeps/generic/ldsodefs.h
+--- glibc-2.4.orig/sysdeps/generic/ldsodefs.h	2006-02-28 22:18:33.000000000 -0800
++++ glibc-2.4/sysdeps/generic/ldsodefs.h	2006-08-11 14:00:17.187512435 -0700
+@@ -1,5 +1,5 @@
+ /* Run-time dynamic linker data structures for loaded ELF shared objects.
+-   Copyright (C) 1995-2003, 2004, 2005 Free Software Foundation, Inc.
++   Copyright (C) 1995-2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -193,8 +193,6 @@
+ struct La_ppc64_retval;
+ struct La_sh_regs;
+ struct La_sh_retval;
+-struct La_m68k_regs;
+-struct La_m68k_retval;
+ struct La_alpha_regs;
+ struct La_alpha_retval;
+ struct La_s390_32_regs;
+@@ -203,10 +201,6 @@
+ struct La_s390_64_retval;
+ struct La_ia64_regs;
+ struct La_ia64_retval;
+-struct La_mips_32_regs;
+-struct La_mips_32_retval;
+-struct La_mips_64_regs;
+-struct La_mips_64_retval;
+ struct La_sparc32_regs;
+ struct La_sparc32_retval;
+ struct La_sparc64_regs;
+@@ -247,10 +241,6 @@
+ 				  uintptr_t *, const struct La_sh_regs *,
+ 				  unsigned int *, const char *name,
+ 				  long int *framesizep);
+-    Elf32_Addr (*m68k_gnu_pltenter) (Elf32_Sym *, unsigned int, uintptr_t *,
+-				     uintptr_t *, struct La_m68k_regs *,
+-				     unsigned int *, const char *name,
+-				     long int *framesizep);
+     Elf64_Addr (*alpha_gnu_pltenter) (Elf64_Sym *, unsigned int, uintptr_t *,
+ 				      uintptr_t *, struct La_alpha_regs *,
+ 				      unsigned int *, const char *name,
+@@ -267,21 +257,6 @@
+ 				     uintptr_t *, struct La_ia64_regs *,
+ 				     unsigned int *, const char *name,
+ 				     long int *framesizep);
+-    Elf32_Addr (*mips_o32_gnu_pltenter) (Elf32_Sym *, unsigned int,
+-					 uintptr_t *, uintptr_t *,
+-					 const struct La_mips_32_regs *,
+-					 unsigned int *, const char *name,
+-					 long int *framesizep);
+-    Elf32_Addr (*mips_n32_gnu_pltenter) (Elf32_Sym *, unsigned int,
+-					 uintptr_t *, uintptr_t *,
+-					 const struct La_mips_64_regs *,
+-					 unsigned int *, const char *name,
+-					 long int *framesizep);
+-    Elf64_Addr (*mips_n64_gnu_pltenter) (Elf64_Sym *, unsigned int,
+-					 uintptr_t *, uintptr_t *,
+-					 const struct La_mips_64_regs *,
+-					 unsigned int *, const char *name,
+-					 long int *framesizep);
+     Elf32_Addr (*sparc32_gnu_pltenter) (Elf32_Sym *, unsigned int,
+ 					uintptr_t *, uintptr_t *,
+ 					const struct La_sparc32_regs *,
+@@ -317,9 +292,6 @@
+     unsigned int (*sh_gnu_pltexit) (Elf32_Sym *, unsigned int, uintptr_t *,
+ 				    uintptr_t *, const struct La_sh_regs *,
+ 				    struct La_sh_retval *, const char *);
+-    unsigned int (*m68k_gnu_pltexit) (Elf32_Sym *, unsigned int, uintptr_t *,
+-				      uintptr_t *, const struct La_m68k_regs *,
+-				      struct La_m68k_retval *, const char *);
+     unsigned int (*alpha_gnu_pltexit) (Elf64_Sym *, unsigned int, uintptr_t *,
+ 				       uintptr_t *,
+ 				       const struct La_alpha_regs *,
+@@ -338,21 +310,6 @@
+ 				      uintptr_t *,
+ 				      const struct La_ia64_regs *,
+ 				      struct La_ia64_retval *, const char *);
+-    unsigned int (*mips_o32_gnu_pltexit) (Elf32_Sym *, unsigned int,
+-					  uintptr_t *, uintptr_t *,
+-					  const struct La_mips_32_regs *,
+-					  struct La_mips_32_retval *,
+-					  const char *);
+-    unsigned int (*mips_n32_gnu_pltexit) (Elf32_Sym *, unsigned int,
+-					  uintptr_t *, uintptr_t *,
+-					  const struct La_mips_64_regs *,
+-					  struct La_mips_64_retval *,
+-					  const char *);
+-    unsigned int (*mips_n64_gnu_pltexit) (Elf64_Sym *, unsigned int,
+-					  uintptr_t *, uintptr_t *,
+-					  const struct La_mips_64_regs *,
+-					  struct La_mips_64_retval *,
+-					  const char *);
+     unsigned int (*sparc32_gnu_pltexit) (Elf32_Sym *, unsigned int,
+ 					 uintptr_t *, uintptr_t *,
+ 					 const struct La_sparc32_regs *,
