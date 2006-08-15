@@ -62,6 +62,22 @@
     href="../../cross-tools/ppc64/glibc.xml"
     xpointer="xpointer(//*[@os='t2'])"/>
 
+    <para os="u1">The powerpc (32) architecture is expected to fail the
+    check-textrel tests because it cannot protect some elf segments in
+    shared libraries from being executable and writable. Using the default
+    64-bit compiler means the test runs as <literal>__powerpc64__</literal>
+    which is <emphasis>not</emphasis> expected to fail. The problem only exists
+    in 32-bit, the 64-bit ABI allows the segments to be protected.</para>
+
+    <para os="u2">Other distributions alter gcc to default to 32-bits and
+    so do not see this failure.  Whether they then test correctly on 64-bit
+    libraries is not our problem.</para>
+
+    <para os="u3">Force the test to use the 32-bit compiler with the following
+    <command>sed</command> :</para>
+
+<screen os="u4"><userinput>sed -i "s/\(^check-textrel-CFLAGS = \)/\1 ${BUILD32} /" elf/Makefile</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='e'])"/>
