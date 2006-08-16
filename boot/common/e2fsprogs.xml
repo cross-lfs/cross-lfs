@@ -70,8 +70,9 @@
         <term><parameter>DESTDIR=${CLFS}</parameter></term>
         <listitem>
           <para>The Makefile for e2fsprogs hard-codes a path to the 
-          <filename>mke2fs.conf</filename> file, causing the installation to
-          fail unless the DESTDIR parameter is used.</para>
+          <filename>mke2fs.conf</filename> file, attempting to install it into
+          ${DESTDIR}/etc, causing the installation to fail as it tries to write
+          to /etc. The DESTDIR parameter prevents this.</para>
         </listitem>
       </varlistentry>
     </variablelist>

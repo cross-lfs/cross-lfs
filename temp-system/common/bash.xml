@@ -27,8 +27,8 @@
 <screen os="c2"><userinput>echo "ac_cv_func_setvbuf_reversed=no" >> config.cache</userinput></screen>
 
     <para os="c3">When bash is cross-compiled, it cannot test for the presence
-    of named pipes. We used <command>su</command> to become an unprivileged
-    user, this combination will cause a build without <emphasis>process
+    of named pipes. If you used <command>su</command> to become an unprivileged
+    user, this combination will cause Bash to build without <emphasis>process
     substitution</emphasis>, which will break one of the c++ test scripts in
     <literal>glibc</literal>. Prevent that by forcing the following definition:
     </para>
