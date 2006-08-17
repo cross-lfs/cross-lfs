@@ -46,9 +46,10 @@
 
     <para>The Makefile is already set to do kernel-style cross-compiling,
     but it will try to use <command>strip</command> to strip the second-stage
-    loader.  It also expects to be running as root for the install, and to
-    install for the root user, which user CLFS cannot do.  The following command
-    will fix this:</para>
+    loader. It also tries to change user and group ownership for the installed
+    files to <systemitem class="username">root</systemitem>, which the
+    <systemitem class="username">clfs</systemitem> cannot do. The following
+    command fixes both issues:</para>
 
 <screen><userinput>cp Makefile,{.orig}
 sed -e "s/\(strip \)/${CLFS_TARGET}-\1/" \
