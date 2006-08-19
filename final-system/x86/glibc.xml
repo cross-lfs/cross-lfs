@@ -14,111 +14,99 @@
     <primary sortas="a-Glibc">Glibc</primary>
   </indexterm>
 
-  <sect2 role="package">
-    <title/>
-
-    <para>The Glibc package contains the main C library. This library provides
-    the basic routines for allocating memory, searching directories, opening and
-    closing files, reading and writing files, string handling, pattern matching,
-    arithmetic, and so on.</para>
-
-  </sect2>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/glibc.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Glibc</title>
 
-    <note os="z">
-      <para>Some packages outside of CLFS suggest installing GNU libiconv in
-      order to translate data from one encoding to another. The project's
-      home page (<ulink url="http://www.gnu.org/software/libiconv/"/>) says
-      <quote>This library provides an <function>iconv()</function>
-      implementation, for use on systems which don't have one, or whose
-      implementation cannot convert from/to Unicode.</quote> Glibc provides
-      an <function>iconv()</function> implementation and can convert from/to
-      Unicode, therefore libiconv is not required on a CLFS system.</para>
-    </note>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='z'])"/>
 
-    <para os="b">The Glibc build system is self-contained and will install
-    perfectly, even though the compiler specs file and linker are still
-    pointing at <filename class="directory">/tools</filename>. The specs
-    and linker cannot be adjusted before the Glibc install because the
-    Glibc Autoconf tests would give false results and defeat the goal
-    of achieving a clean build.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
 
-    <para os="c">The following patch fixes an issue that can
-    cause <command>localdef</command> to segfault:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="d"><userinput>patch -Np1 -i ../&glibc-localedef_segfault-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
 
-    <para os="p1">The following patch fixes an issue with iconv:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&glibc-iconv_fix-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
 
-    <para os="s1">The following <command>sed</command> fixes a build issue
-    with Glibc. This will prevent <command>nscd</command> from trying to
-    link to libraries that don't exist:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
 
-<screen os="s2"><userinput>cp -v nscd/Makefile{,.orig}
-sed -e "/nscd_stat.o: sysincludes = # nothing/d" nscd/Makefile.orig > \
-    nscd/Makefile</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
 
-    <para os="e">The Glibc documentation recommends building Glibc outside of the
-    source directory in a dedicated build directory:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='e'])"/>
 
-<screen os="f"><userinput>mkdir -v ../glibc-build
-cd ../glibc-build</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
 
-    <para os="g">Prepare Glibc for compilation:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="h"><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
-    --libexecdir=/usr/lib/glibc</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
 
-    <variablelist os="i">
-      <title>The meaning of the new configure option:</title>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
 
-      <varlistentry>
-        <term><parameter>--libexecdir=/usr/lib/glibc</parameter></term>
-        <listitem>
-          <para>This changes the location of the <command>pt_chown</command>
-          program from its default of <filename
-          class="directory">/usr/libexec</filename> to <filename
-          class="directory">/usr/lib/glibc</filename>.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='j'])"/>
 
-    <para os="j">Compile the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
 
-<screen os="k"><userinput>make</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
 
-    <important os="l">
-      <para>The test suite for Glibc is considered critical.
-      Do not skip it under any circumstance.</para>
-    </important>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='m'])"/>
 
-    <para os="m">Test the results:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='n'])"/>
 
-<!-- items n,o,p no longer the master, use x86_64 which has no failures -->
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='o'])"/>
 
-<screen os="n"><userinput>make -k check &gt;glibc-check-log 2&gt;&amp;1 ; grep Error glibc-check-log</userinput></screen>
-
-    <para os="o">The Glibc test suite is highly dependent on certain functions of
-    the host system, in particular the kernel. The posix/annexc test normally fails
-    and you should see <literal>Error 1 (ignored)</literal> in the output. Apart
-    from this, the Glibc test suite is always expected to pass. However, in certain
-    circumstances, some failures are unavoidable. If a test fails because of a missing
-    program (or missing symbolic link), or a segfault, you will see an error code
-    greater than 127 and the details will be in the log. More commonly, tests will
-    fail with <literal>Error 2</literal> - for these, the contents of the corresponding
-    <filename>.out</filename> file, e.g. <filename>posix/annexc.out</filename> may be
-    informative. Here is a list of the most common issues:</para>
-
+    <!-- this is specific to x86 because of the i686 reference in the math tests -->
     <itemizedlist os="p">
       <listitem>
-        <para>The <emphasis>math</emphasis> tests sometimes fail.
-        Certain optimization settings are known to be a
-        factor here.</para>
+        <para>The <emphasis>math</emphasis> tests, at least on i686, fail in
+        the <emphasis>test-double</emphasis> and <emphasis>test-idouble</emphasis>
+        tests with gcc-&gcc-version;
+        . These two failures in the math tests appear to be harmless.
+        The math tests may also fail on systems where the CPU is not a relatively
+        new genuine Intel or authentic AMD. Certain optimization settings are
+        also known to be a factor here.</para>
       </listitem>
       <listitem>
         <para>If you have mounted the CLFS partition with the
@@ -133,15 +121,21 @@ cd ../glibc-build</userinput></screen>
       </listitem>
     </itemizedlist>
 
-    <para os="q">Though it is a harmless message, the install stage of Glibc will
-    complain about the absence of <filename>/etc/ld.so.conf</filename>.
-    Prevent this warning with:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='q'])"/>
 
-<screen os="r"><userinput>touch /etc/ld.so.conf</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='r'])"/>
 
-    <para os="s">Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='s'])"/>
 
-<screen os="t"><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='t'])"/>
 
   </sect2>
 
