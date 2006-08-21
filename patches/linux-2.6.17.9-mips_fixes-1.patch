@@ -1,5 +1,5 @@
 Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2006-07-08
+Date: 2006-08-14
 Initial Package Version: 2.6.17.4
 Origin: Linux-MIPS Mailing List
 Upstream Status: Not Applied
@@ -8,10 +8,103 @@ Description: These are patches that have not been accepted by
 
 	1 - iomap for MIPS - iomap.c io.h
 	2 - Cobalt ide fixes
+	3 - Updates to Support N32 only builds
 
-diff -Naur linux-2.6.17.4/arch/mips/lib/iomap.c linux-2.6.17.4.kernel/arch/mips/lib/iomap.c
---- linux-2.6.17.4/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.17.4.kernel/arch/mips/lib/iomap.c	2006-06-30 10:37:38.000000000 -0700
+diff -Naur linux-2.6.17.8.orig/arch/mips/kernel/Makefile linux-2.6.17.8/arch/mips/kernel/Makefile
+--- linux-2.6.17.8.orig/arch/mips/kernel/Makefile	2006-08-06 21:18:54.000000000 -0700
++++ linux-2.6.17.8/arch/mips/kernel/Makefile	2006-08-14 08:07:02.196300148 -0700
+@@ -54,7 +54,7 @@
+ obj-$(CONFIG_64BIT)		+= scall64-64.o
+ obj-$(CONFIG_BINFMT_IRIX)	+= binfmt_irix.o
+ obj-$(CONFIG_MIPS32_COMPAT)	+= linux32.o signal32.o
+-obj-$(CONFIG_MIPS32_N32)	+= binfmt_elfn32.o scall64-n32.o signal_n32.o
++obj-$(CONFIG_MIPS32_N32)	+= binfmt_elfn32.o scall64-n32.o signal_n32.o ptrace32.o
+ obj-$(CONFIG_MIPS32_O32)	+= binfmt_elfo32.o scall64-o32.o ptrace32.o
+ 
+ obj-$(CONFIG_KGDB)		+= gdb-low.o gdb-stub.o
+diff -Naur linux-2.6.17.8.orig/arch/mips/lib/Makefile linux-2.6.17.8/arch/mips/lib/Makefile
+--- linux-2.6.17.8.orig/arch/mips/lib/Makefile	2006-08-14 08:05:04.143414758 -0700
++++ linux-2.6.17.8/arch/mips/lib/Makefile	2006-08-14 08:05:27.786793056 -0700
+@@ -5,6 +5,8 @@
+ lib-y	+= csum_partial_copy.o memcpy.o promlib.o strlen_user.o strncpy_user.o \
+ 	   strnlen_user.o uncached.o
+ 
++obj-y	+= iomap.o
++
+ # libgcc-style stuff needed in the kernel
+ lib-y += ashldi3.o ashrdi3.o lshrdi3.o
+ 
+diff -Naur linux-2.6.17.8.orig/arch/mips/lib/ashldi3.c linux-2.6.17.8/arch/mips/lib/ashldi3.c
+--- linux-2.6.17.8.orig/arch/mips/lib/ashldi3.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.17.8/arch/mips/lib/ashldi3.c	2006-08-14 08:05:27.786793056 -0700
+@@ -0,0 +1,29 @@
++#include <linux/module.h>
++
++#include "libgcc.h"
++
++long long __ashldi3(long long u, word_type b)
++{
++	DWunion uu, w;
++	word_type bm;
++
++	if (b == 0)
++		return u;
++
++	uu.ll = u;
++	bm = 32 - b;
++
++	if (bm <= 0) {
++		w.s.low = 0;
++		w.s.high = (unsigned int) uu.s.low << -bm;
++	} else {
++		const unsigned int carries = (unsigned int) uu.s.low >> bm;
++
++		w.s.low = (unsigned int) uu.s.low << b;
++		w.s.high = ((unsigned int) uu.s.high << b) | carries;
++	}
++
++	return w.ll;
++}
++
++EXPORT_SYMBOL(__ashldi3);
+diff -Naur linux-2.6.17.8.orig/arch/mips/lib/ashrdi3.c linux-2.6.17.8/arch/mips/lib/ashrdi3.c
+--- linux-2.6.17.8.orig/arch/mips/lib/ashrdi3.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.17.8/arch/mips/lib/ashrdi3.c	2006-08-14 08:05:27.786793056 -0700
+@@ -0,0 +1,31 @@
++#include <linux/module.h>
++
++#include "libgcc.h"
++
++long long __ashrdi3(long long u, word_type b)
++{
++	DWunion uu, w;
++	word_type bm;
++
++	if (b == 0)
++		return u;
++
++	uu.ll = u;
++	bm = 32 - b;
++
++	if (bm <= 0) {
++		/* w.s.high = 1..1 or 0..0 */
++		w.s.high =
++		    uu.s.high >> 31;
++		w.s.low = uu.s.high >> -bm;
++	} else {
++		const unsigned int carries = (unsigned int) uu.s.high << bm;
++
++		w.s.high = uu.s.high >> b;
++		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
++	}
++
++	return w.ll;
++}
++
++EXPORT_SYMBOL(__ashrdi3);
+diff -Naur linux-2.6.17.8.orig/arch/mips/lib/iomap.c linux-2.6.17.8/arch/mips/lib/iomap.c
+--- linux-2.6.17.8.orig/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.17.8/arch/mips/lib/iomap.c	2006-08-14 08:05:27.786793056 -0700
 @@ -0,0 +1,78 @@
 +/*
 + *  iomap.c, Memory Mapped I/O routines for MIPS architecture.
@@ -91,21 +184,72 @@ diff -Naur linux-2.6.17.4/arch/mips/lib/iomap.c linux-2.6.17.4.kernel/arch/mips/
 +}
 +EXPORT_SYMBOL(pci_iomap);
 +EXPORT_SYMBOL(pci_iounmap);
-diff -Naur linux-2.6.17.4/arch/mips/lib/Makefile linux-2.6.17.4.kernel/arch/mips/lib/Makefile
---- linux-2.6.17.4/arch/mips/lib/Makefile	2006-07-02 01:53:19.000000000 -0700
-+++ linux-2.6.17.4.kernel/arch/mips/lib/Makefile	2006-07-07 12:40:23.000000000 -0700
-@@ -5,6 +5,8 @@
- lib-y	+= csum_partial_copy.o memcpy.o promlib.o strlen_user.o strncpy_user.o \
- 	   strnlen_user.o uncached.o
- 
-+obj-y	+= iomap.o
+diff -Naur linux-2.6.17.8.orig/arch/mips/lib/libgcc.h linux-2.6.17.8/arch/mips/lib/libgcc.h
+--- linux-2.6.17.8.orig/arch/mips/lib/libgcc.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.17.8/arch/mips/lib/libgcc.h	2006-08-14 08:05:27.786793056 -0700
+@@ -0,0 +1,26 @@
++#ifndef __ASM_LIBGCC_H
++#define __ASM_LIBGCC_H
 +
- # libgcc-style stuff needed in the kernel
- lib-y += ashldi3.o ashrdi3.o lshrdi3.o
- 
-diff -Naur linux-2.6.17.4/include/asm-mips/io.h linux-2.6.17.4.kernel/include/asm-mips/io.h
---- linux-2.6.17.4/include/asm-mips/io.h	2006-07-02 01:53:19.000000000 -0700
-+++ linux-2.6.17.4.kernel/include/asm-mips/io.h	2006-07-07 12:44:03.000000000 -0700
++#include <asm/byteorder.h>
++
++typedef int word_type __attribute__ ((mode (__word__)));
++
++#ifdef __BIG_ENDIAN
++struct DWstruct {
++	int high, low;
++};
++#elif defined(__LITTLE_ENDIAN)
++struct DWstruct {
++	int low, high;
++};
++#else
++#error I feel sick.
++#endif
++
++typedef union
++{
++	struct DWstruct s;
++	long long ll;
++} DWunion;
++
++#endif /* __ASM_LIBGCC_H */
+diff -Naur linux-2.6.17.8.orig/arch/mips/lib/lshrdi3.c linux-2.6.17.8/arch/mips/lib/lshrdi3.c
+--- linux-2.6.17.8.orig/arch/mips/lib/lshrdi3.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.17.8/arch/mips/lib/lshrdi3.c	2006-08-14 08:05:27.786793056 -0700
+@@ -0,0 +1,29 @@
++#include <linux/module.h>
++
++#include "libgcc.h"
++
++long long __lshrdi3(long long u, word_type b)
++{
++	DWunion uu, w;
++	word_type bm;
++
++	if (b == 0)
++		return u;
++
++	uu.ll = u;
++	bm = 32 - b;
++
++	if (bm <= 0) {
++		w.s.high = 0;
++		w.s.low = (unsigned int) uu.s.high >> -bm;
++	} else {
++		const unsigned int carries = (unsigned int) uu.s.high << bm;
++
++		w.s.high = (unsigned int) uu.s.high >> b;
++		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
++	}
++
++	return w.ll;
++}
++
++EXPORT_SYMBOL(__lshrdi3);
+diff -Naur linux-2.6.17.8.orig/include/asm-mips/io.h linux-2.6.17.8/include/asm-mips/io.h
+--- linux-2.6.17.8.orig/include/asm-mips/io.h	2006-08-14 08:05:04.311410340 -0700
++++ linux-2.6.17.8/include/asm-mips/io.h	2006-08-14 08:05:27.786793056 -0700
 @@ -519,6 +519,34 @@
  }
  
@@ -141,9 +285,9 @@ diff -Naur linux-2.6.17.4/include/asm-mips/io.h linux-2.6.17.4.kernel/include/as
   * ISA space is 'always mapped' on currently supported MIPS systems, no need
   * to explicitly ioremap() it. The fact that the ISA IO space is mapped
   * to PAGE_OFFSET is pure coincidence - it does not mean ISA values
-diff -Naur linux-2.6.17.4/include/asm-mips/mach-cobalt/ide.h linux-2.6.17.4.kernel/include/asm-mips/mach-cobalt/ide.h
---- linux-2.6.17.4/include/asm-mips/mach-cobalt/ide.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.17.4.kernel/include/asm-mips/mach-cobalt/ide.h	2006-07-07 12:40:46.000000000 -0700
+diff -Naur linux-2.6.17.8.orig/include/asm-mips/mach-cobalt/ide.h linux-2.6.17.8/include/asm-mips/mach-cobalt/ide.h
+--- linux-2.6.17.8.orig/include/asm-mips/mach-cobalt/ide.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.17.8/include/asm-mips/mach-cobalt/ide.h	2006-08-14 08:05:27.786793056 -0700
 @@ -0,0 +1,83 @@
 +
 +/*
@@ -228,134 +372,3 @@ diff -Naur linux-2.6.17.4/include/asm-mips/mach-cobalt/ide.h linux-2.6.17.4.kern
 +
 +#define __ide_mm_outsw		writesw
 +#define __ide_mm_outsl		writesl
-diff -Naur linux-2.6.17.4/arch/mips/lib/ashldi3.c linux-2.6.17.4/arch/mips/lib/ashldi3.c
---- linux-2.6.17.4/arch/mips/lib/ashldi3.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.17.4/arch/mips/lib/ashldi3.c	2006-06-19 18:16:13.000000000 -0700
-@@ -0,0 +1,29 @@
-+#include <linux/module.h>
-+
-+#include "libgcc.h"
-+
-+long long __ashldi3(long long u, word_type b)
-+{
-+	DWunion uu, w;
-+	word_type bm;
-+
-+	if (b == 0)
-+		return u;
-+
-+	uu.ll = u;
-+	bm = 32 - b;
-+
-+	if (bm <= 0) {
-+		w.s.low = 0;
-+		w.s.high = (unsigned int) uu.s.low << -bm;
-+	} else {
-+		const unsigned int carries = (unsigned int) uu.s.low >> bm;
-+
-+		w.s.low = (unsigned int) uu.s.low << b;
-+		w.s.high = ((unsigned int) uu.s.high << b) | carries;
-+	}
-+
-+	return w.ll;
-+}
-+
-+EXPORT_SYMBOL(__ashldi3);
-diff -Naur linux-2.6.17.4/arch/mips/lib/ashrdi3.c linux-2.6.17.4/arch/mips/lib/ashrdi3.c
---- linux-2.6.17.4/arch/mips/lib/ashrdi3.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.17.4/arch/mips/lib/ashrdi3.c	2006-06-19 18:16:13.000000000 -0700
-@@ -0,0 +1,31 @@
-+#include <linux/module.h>
-+
-+#include "libgcc.h"
-+
-+long long __ashrdi3(long long u, word_type b)
-+{
-+	DWunion uu, w;
-+	word_type bm;
-+
-+	if (b == 0)
-+		return u;
-+
-+	uu.ll = u;
-+	bm = 32 - b;
-+
-+	if (bm <= 0) {
-+		/* w.s.high = 1..1 or 0..0 */
-+		w.s.high =
-+		    uu.s.high >> 31;
-+		w.s.low = uu.s.high >> -bm;
-+	} else {
-+		const unsigned int carries = (unsigned int) uu.s.high << bm;
-+
-+		w.s.high = uu.s.high >> b;
-+		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
-+	}
-+
-+	return w.ll;
-+}
-+
-+EXPORT_SYMBOL(__ashrdi3);
-diff -Naur linux-2.6.17.4/arch/mips/lib/libgcc.h linux-2.6.17.4/arch/mips/lib/libgcc.h
---- linux-2.6.17.4/arch/mips/lib/libgcc.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.17.4/arch/mips/lib/libgcc.h	2006-06-19 18:16:13.000000000 -0700
-@@ -0,0 +1,26 @@
-+#ifndef __ASM_LIBGCC_H
-+#define __ASM_LIBGCC_H
-+
-+#include <asm/byteorder.h>
-+
-+typedef int word_type __attribute__ ((mode (__word__)));
-+
-+#ifdef __BIG_ENDIAN
-+struct DWstruct {
-+	int high, low;
-+};
-+#elif defined(__LITTLE_ENDIAN)
-+struct DWstruct {
-+	int low, high;
-+};
-+#else
-+#error I feel sick.
-+#endif
-+
-+typedef union
-+{
-+	struct DWstruct s;
-+	long long ll;
-+} DWunion;
-+
-+#endif /* __ASM_LIBGCC_H */
-diff -Naur linux-2.6.17.4/arch/mips/lib/lshrdi3.c linux-2.6.17.4/arch/mips/lib/lshrdi3.c
---- linux-2.6.17.4/arch/mips/lib/lshrdi3.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.17.4/arch/mips/lib/lshrdi3.c	2006-06-19 18:16:13.000000000 -0700
-@@ -0,0 +1,29 @@
-+#include <linux/module.h>
-+
-+#include "libgcc.h"
-+
-+long long __lshrdi3(long long u, word_type b)
-+{
-+	DWunion uu, w;
-+	word_type bm;
-+
-+	if (b == 0)
-+		return u;
-+
-+	uu.ll = u;
-+	bm = 32 - b;
-+
-+	if (bm <= 0) {
-+		w.s.high = 0;
-+		w.s.low = (unsigned int) uu.s.high >> -bm;
-+	} else {
-+		const unsigned int carries = (unsigned int) uu.s.high << bm;
-+
-+		w.s.high = (unsigned int) uu.s.high >> b;
-+		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
-+	}
-+
-+	return w.ll;
-+}
-+
-+EXPORT_SYMBOL(__lshrdi3);
