@@ -5,13 +5,14 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-perl" role="wrap">
-  <?dbhtml filename="perl-64bit.html"?>
+<sect1 id="ch-system-perl-n32" role="wrap">
+  <?dbhtml filename="perl-n32.html"?>
 
-  <title>Perl-&perl-version; 64 Bit</title>
+  <title>Perl-&perl-version; N32 Libraries</title>
 
-  <indexterm zone="ch-system-perl">
+  <indexterm zone="ch-system-perl-n32">
     <primary sortas="a-Perl">Perl</primary>
+    <secondary>N32</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -29,21 +30,23 @@
     href="../common/perl.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
-    <para os="p3">Perl does not, by default, know about library directories with names other
-    than lib, The following patch will allow it to install to other directories:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="perl-64bit.xml"
+    xpointer="xpointer(//*[@os='p3'])"/>
 
-<screen os="p4"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="perl-64bit.xml"
+    xpointer="xpointer(//*[@os='p4'])"/>
 
-    <para os="s1">There is a further (possibly cosmetic) anomaly - if we install perl and
-    then run <command>perl -V</command> it will claim that libc is in /lib.  The
-    following sed fixes this, but only takes effect when <command>make install
-    </command> is run:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="perl-64bit.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
 
-<screen os="s2"><userinput>sed -i "/libc/s@/lib@/lib64@" hints/linux.sh</userinput></screen>
+<screen os="s2"><userinput>sed -i "/libc/s@/lib@/lib32@" hints/linux.sh</userinput></screen>
 
-    <para os="m2">We still need to tell perl to actually use lib64:</para>
+    <para os="m2">We still need to tell perl to actually use lib32:</para>
 
-<screen os="m3"><userinput>echo 'installstyle="lib64/perl5"' >>hints/linux.sh</userinput></screen>
+<screen os="m3"><userinput>echo 'installstyle="lib32/perl5"' >>hints/linux.sh</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
@@ -61,17 +64,17 @@
    -Dman1dir=/usr/share/man/man1 \
    -Dman3dir=/usr/share/man/man3 \
    -Dpager="/bin/less -isR" \
-   -Dlibpth="/usr/local/lib64 /lib64 /usr/lib64" \
-   -Dcc="gcc ${BUILD64}" \
+   -Dlibpth="/usr/local/lib32 /lib32 /usr/lib32" \
+   -Dcc="gcc ${BUILDN32}" \
    -Dusethreads</userinput></screen>
 
     <variablelist os="m4">
       <title>The meaning of the new configure option:</title>
 
       <varlistentry>
-        <term><parameter>-Dlibpth="/usr/local/lib64 /lib64 /usr/lib64"</parameter></term>
+        <term><parameter>-Dlibpth="/usr/local/lib32 /lib32 /usr/lib32"</parameter></term>
         <listitem>
-          <para>This tells Perl to link against the 64-bit libraries.</para>
+          <para>This tells Perl to link against the N32 libraries.</para>
         </listitem>
       </varlistentry>
 
@@ -113,51 +116,16 @@
     href="perl.xml"
     xpointer="xpointer(//*[@os='l'])"/>
 
-<screen os="m"><userinput>mv /usr/bin/perl{,-64}</userinput></screen>
-
-    <para os="n">Now we need to create a multilib wrapper that lets us choose
-    which perl installation to use.</para>
-
-<screen os="o"><userinput>cat &gt; perl_wrapper.c &lt;&lt; "EOF"
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;errno.h&gt;
-
-int main (int argc, char *argv[])
-{
-  char *perl_arch;
-  if ((perl_arch = getenv("PERL_ARCH")) == NULL)
-    perl_arch = "64";
-
-  char *filename = malloc(strlen(argv[0]) + strlen(perl_arch) + 2);
-  strcpy(filename, argv[0]);
-  strcat(filename, "-");
-  strcat(filename, perl_arch);
-
-  int ret = 0;
-  ret = execvp(filename, argv);
-  if ((ret != 0)&amp;&amp;(errno != 0))
-  {
-    char *errmsg = malloc(strlen(filename) + 19);
-    strcpy(errmsg, "Unable to execute ");
-    strcat(errmsg, filename);
-    perror(errmsg);
-    free(errmsg);
-  }
-
-  free(filename);
-
-  return ret;
-}
-EOF
-gcc ${BUILD64} perl_wrapper.c -o /usr/bin/perl</userinput></screen>
+<screen os="m"><userinput>mv /usr/bin/perl{,-n32}</userinput></screen>
 
   </sect2>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/perl.xml"
-  xpointer="xpointer(id('contents-perl'))"/>
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-perl" role="."/></para>
+
+  </sect2>
 
 </sect1>
