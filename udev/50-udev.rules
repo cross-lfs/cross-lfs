@@ -128,8 +128,8 @@ KERNEL=="fd[0-9]*", 		ACTION=="remove", RUN+="/bin/rm -f $root/%k*"
 # sd:		0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
 # sr:		4 TYPE_WORM, 5 TYPE_ROM
 # st/osst:	1 TYPE_TAPE
-ACTION=="add", 			SUBSYSTEM=="scsi" , SYSFS{type}=="0|7|14", RUN+="/bin/sh -c 'echo 60 > /sys/$DEVPATH/timeout'"
-ACTION=="add", 			SUBSYSTEM=="scsi" , SYSFS{type}=="1", RUN+="/bin/sh -c 'echo 900 > /sys/$DEVPATH/timeout'"
+ACTION=="add", 			SUBSYSTEM=="scsi" , ATTR{type}=="0|7|14", ATTR{timeout}="60"
+ACTION=="add", 			SUBSYSTEM=="scsi" , ATTR{type}=="1", ATTR{timeout}="900"
 
 # device mapper
 KERNEL=="device-mapper", 	SYMLINK+="mapper/control"
