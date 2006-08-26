@@ -116,7 +116,7 @@
 <screen os="m"><userinput>mv /usr/bin/perl{,-64}</userinput></screen>
 
     <para os="n">Now we need to create a multilib wrapper that lets us choose
-    which perl installation to use.</para>
+    which perl installation to use:</para>
 
 <screen os="o"><userinput>cat &gt; perl_wrapper.c &lt;&lt; "EOF"
 #include &lt;stdio.h&gt;
@@ -157,7 +157,7 @@ gcc ${BUILD64} perl_wrapper.c -o /usr/bin/perl</userinput></screen>
   </sect2>
 
     <para os="p">This multilib wrapper makes it possible to build perl
-    extensions other then 64-bit. The PERL_ARCH enviornment variable controls
+    extensions other then 64-bit. The PERL_ARCH environment variable controls
     which perl binary to execute. Some packages that may attempt to build
     against perl will run <command>perl -V:cc</command> to get the command
     that was used to build perl. If you're building a 32-bit extension but you
