@@ -154,8 +154,6 @@ int main (int argc, char *argv[])
 EOF
 gcc ${BUILD64} perl_wrapper.c -o /usr/bin/perl</userinput></screen>
 
-  </sect2>
-
     <para os="p">This multilib wrapper makes it possible to build perl
     extensions other then 64-bit. The PERL_ARCH environment variable controls
     which perl binary to execute. Some packages that may attempt to build
@@ -165,6 +163,8 @@ gcc ${BUILD64} perl_wrapper.c -o /usr/bin/perl</userinput></screen>
     will be able to build the 32-bit extension because
     <command>perl -V:cc</command> will return the command used to build the
     32-bit perl installation.</para>
+
+  </sect2>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../common/perl.xml"
