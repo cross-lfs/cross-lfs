@@ -115,54 +115,17 @@
 
 <screen os="m"><userinput>mv /usr/bin/perl{,-64}</userinput></screen>
 
-    <para os="n">Now we need to create a multilib wrapper that lets us choose
-    which perl installation to use:</para>
+    <para os="n">Now we need to create a link to the multiarch wrapper that
+    lets us choose which perl installation to use:</para>
 
-<screen os="o"><userinput>cat &gt; perl_wrapper.c &lt;&lt; "EOF"
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;errno.h&gt;
+<screen os="o"><userinput>ln -sv multiarch_wrapper /usr/bin/perl</userinput></screen>
 
-int main (int argc, char *argv[])
-{
-  char *perl_arch;
-  if ((perl_arch = getenv("PERL_ARCH")) == NULL)
-    perl_arch = "64";
-
-  char *filename = malloc(strlen(argv[0]) + strlen(perl_arch) + 2);
-  strcpy(filename, argv[0]);
-  strcat(filename, "-");
-  strcat(filename, perl_arch);
-
-  int ret = 0;
-  ret = execvp(filename, argv);
-  if ((ret != 0)&amp;&amp;(errno != 0))
-  {
-    char *errmsg = malloc(strlen(filename) + 19);
-    strcpy(errmsg, "Unable to execute ");
-    strcat(errmsg, filename);
-    perror(errmsg);
-    free(errmsg);
-  }
-
-  free(filename);
-
-  return ret;
-}
-EOF
-gcc ${BUILD64} perl_wrapper.c -o /usr/bin/perl</userinput></screen>
-
-    <para os="p">This multilib wrapper makes it possible to build perl
-    extensions other then 64-bit. The PERL_ARCH environment variable controls
-    which perl binary to execute. Some packages that may attempt to build
-    against perl will run <command>perl -V:cc</command> to get the command
-    that was used to build perl. If you're building a 32-bit extension but you
-    only have a 64-bit perl this is not desired. By setting PERL_ARCH=32 you
-    will be able to build the 32-bit extension because
-    <command>perl -V:cc</command> will return the command used to build the
-    32-bit perl installation.</para>
+    <para os="p">The value of the <envar>USE_ARCH</envar> enviornment variable
+    will decide which perl binary to execute.
+    <command>USE_ARCH=32 perl -V:cc</command> will give the value of CC used to
+    build the 32bit perl. The multiarch_wrapper will help later with building
+    perl extensions and bindings. Without the multiarch_wrapper it is very hard
+    to setup a 32bit extenstion or binding.</para>
 
   </sect2>
 
