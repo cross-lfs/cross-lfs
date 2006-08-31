@@ -82,6 +82,7 @@ help:
 	@echo "command				description"
 	@echo "---------------------------------------------------------------------------------------"
 	@echo "make install			install udev rules package and helper scripts"
+	@echo "make install-device-mapper	install device-mapper rules"
 	@echo "make install-netboot		install udev rules package for netboot"
 	@echo "make install-network		install network helper package"
 	@echo "make install-network-upgrade	upgrades current network helper package"
@@ -94,6 +95,11 @@ install-helper-functions:
 	install -m 644 contrib/common/helper.functions ${DESTDIR}/lib/udev/helper.functions
 	install -m 644 contrib/common/udev_helper ${DESTDIR}/etc/sysconfig/udev_helper
 	
+install-device-mapper:
+	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/etc/rc.d/init.d
+	install -m ${RULESMODE} 70-device-mapper.rules ${DESTDIR}/etc/udev/rules.d/70-device-mapper.rules
+
 install-network: install-helper-functions install-network-update
 	install -d ${DESTDIR}/etc/udev/rules.d/
 	@echo "Adding rules to ${DESTDIR}/etc/udev/rules.d/35-helper.rules."

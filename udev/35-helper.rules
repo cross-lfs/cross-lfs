@@ -36,5 +36,4 @@ BUS=="scsi", ENV{ID_CDROM_DVD}=="?*",	PROGRAM="cdsymlink_helper.sh %n scsi", SYM
 BUS=="scsi", ENV{ID_CDROM_DVD_R}=="?*",	PROGRAM="cdsymlink_helper.sh %n scsi", SYMLINK+="dvdrw%c"
 
 # adds floppy devices
-KERNEL=="fd[0-9]*", ACTION=="add", SYSFS{cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{cmos} -m %M /dev/%k"t
-
+KERNEL=="fd[0-9]*", ACTION=="add", ATTRS{cmos}=="*", RUN+="create_floppy_devices -c -t $sysfs{cmos} -m %M /dev/%k"

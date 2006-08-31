@@ -18,10 +18,10 @@
 ENV{MODALIAS}=="?*",	RUN+="/sbin/modprobe $env{MODALIAS}"
 
 # scsi
-SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="0|7|14", RUN+="/sbin/modprobe sd_mod"
-SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="1", SYSFS{device/vendor}=="On[sS]tream", RUN+="/sbin/modprobe osst"
-SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="1", RUN+="/sbin/modprobe st"
-SUBSYSTEM=="scsi_device",	ACTION=="add", SYSFS{device/type}=="[45]", RUN+="/sbin/modprobe sr_mod"
+SUBSYSTEM=="scsi_device",	ACTION=="add", ATTRS{type}=="0|7|14", RUN+="/sbin/modprobe sd_mod"
+SUBSYSTEM=="scsi_device",	ACTION=="add", ATTRS{type}=="1", SYSFS{device/vendor}=="On[sS]tream", RUN+="/sbin/modprobe osst"
+SUBSYSTEM=="scsi_device",	ACTION=="add", ATTRS{type}=="1", RUN+="/sbin/modprobe st"
+SUBSYSTEM=="scsi_device",	ACTION=="add", ATTRS{type}=="[45]", RUN+="/sbin/modprobe sr_mod"
 SUBSYSTEM=="scsi_device",	ACTION=="add", RUN+="/sbin/modprobe sg"
 
 # floppy

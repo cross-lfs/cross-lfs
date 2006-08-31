@@ -34,7 +34,7 @@ KERNEL=="modems/mwave*",	GROUP="uucp"
 KERNEL=="hvc*",			GROUP="uucp"
 KERNEL=="hvsi*",		GROUP="uucp"
 KERNEL=="iseries/vtty*",	GROUP="uucp"
-KERNEL=="ttyUSB*", 		SYSFS{product}=="[Pp]alm*Handheld*", SYMLINK+="pilot"
+KERNEL=="ttyUSB*", 		ATTRS{product}=="[Pp]alm*Handheld*", SYMLINK+="pilot"
 
 # video/graphics
 SUBSYSTEM=="video4linux",	GROUP="video"
