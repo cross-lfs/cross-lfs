@@ -21,7 +21,7 @@ SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware.sh"
 BUS=="ide",	KERNEL=="hd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
 BUS=="scsi",	KERNEL=="sr[0-9]*", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
 BUS=="scsi",	KERNEL=="scd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
-BUS=="scsi",	KERNEL=="sg[0-9]*", ACTION=="add", DRIVER=="sr", GROUP="cdrom"
+BUS=="scsi",	KERNEL=="sg[0-9]*", ACTION=="add", DRIVERS=="sr", GROUP="cdrom"
 
 BUS=="ide", ENV{ID_CDROM}=="?*",	PROGRAM="cdsymlink_helper.sh %k ide", SYMLINK+="cdrom%c"
 BUS=="ide", ENV{ID_CDROM_CD_R}=="?*",	PROGRAM="cdsymlink_helper.sh %k ide", SYMLINK+="cdr%c"
