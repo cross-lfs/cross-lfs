@@ -164,8 +164,8 @@ help:
 	@printf "%-25s %-20s\n" "make nochunks" "Make single html file book"
 	@printf "%-25s %-20s\n" "make pdf" "Make pdf copy of the book"
 	@printf "%-25s %-20s\n" "make target-list" "Get List of Architecture targets"
-	@printf "%-25s %-20s\n" "make test" "Make a text copy of the book"
-	@printf "%-25s %-20s\n" "make trouble" "Make a copy tha's easy to troubleshoot"
+	@printf "%-25s %-20s\n" "make text" "Make a text copy of the book"
+	@printf "%-25s %-20s\n" "make trouble" "Make a copy that's easy to troubleshoot"
 	@printf "%-25s %-20s\n" "make validate" "Run book validation"
 
 .PHONY: clfs toplevel common render nochunks nochunk_render pdf text validate trouble dump-commands download-list \
