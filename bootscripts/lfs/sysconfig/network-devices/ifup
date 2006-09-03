@@ -62,17 +62,24 @@ for file in ${FILES}; do
 
 		if [ -n "${SERVICE}" -a -x "${network_devices}/services/${SERVICE}" ]; then
 			if [ -z "${CHECK_LINK}" -o "${CHECK_LINK}" = "y" -o "${CHECK_LINK}" = "yes" -o "${CHECK_LINK}" = "1" ]; then
-				if ip link show ${1} > /dev/null 2>&1; then
-					link_status=`ip link show ${1} 2> /dev/null | grep ${1}`
-					if [ -n "${link_status}" ]; then
-						if ! echo "${link_status}" | grep -q UP; then
-							ip link set ${1} up
-						fi
-					fi
+				TEST="`ip addr show ${1} | grep inet | cut -f1 -d'/' | cut -f2 -d't' | cut -f2 -d' '`"
+				if [ "$TEST" != "" ]; then
+						boot_mesg "Interface ${1} already configured." ${WARNING}
+						echo_warning
+						continue
 				else
-					boot_mesg "Interface ${1} doesn't exist." ${WARNING}
-					echo_warning
-					continue
+					if ip link show ${1} > /dev/null 2>&1; then
+						link_status=`ip link show ${1} 2> /dev/null | grep ${1}`
+						if [ -n "${link_status}" ]; then
+							if ! echo "${link_status}" | grep -q UP; then
+								ip link set ${1} up
+							fi
+						fi
+					else
+						boot_mesg "Interface ${1} doesn't exist." ${WARNING}
+						echo_warning
+						continue
+					fi
 				fi
 			fi
 			IFCONFIG=${file} ${network_devices}/services/${SERVICE} ${1} up
