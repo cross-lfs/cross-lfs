@@ -64,12 +64,18 @@ for file in ${FILES}; do
 	
 		# This will run the service script, if SERVICE is set
 		if [ -n "${SERVICE}" -a -x "${network_devices}/services/${SERVICE}" ]; then
-			if ip link show ${1} > /dev/null 2>&1
-			then
-				IFCONFIG=${file} ${network_devices}/services/${SERVICE} ${1} down
-			else
-				boot_mesg "Interface ${1} doesn't exist." ${WARNING}
+			TEST="`ip addr show ${1} | grep inet | cut -f1 -d'/' | cut -f2 -d't' | cut -f2 -d' '`"
+			if [ -z "$TEST" ]; then
+				boot_mesg "Interface ${1} already disabled." ${WARNING}
 				echo_warning
+				continue
+			else
+				if ip link show ${1} > /dev/null 2>&1; then
+					IFCONFIG=${file} ${network_devices}/services/${SERVICE} ${1} down
+				else
+					boot_mesg "Interface ${1} doesn't exist." ${WARNING}
+					echo_warning
+				fi
 			fi
 		else
 			boot_mesg -n "Unable to process ${file}.  Either" ${FAILURE}
