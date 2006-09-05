@@ -29,11 +29,15 @@
     href="../common/iproute2.xml"
     xpointer="xpointer(//*[@os='s2'])"/>
 
+    <para os="p1">This patch adds the ability to update the LIBDIR path:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&iproute2-tclibdir-patch;</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/iproute2.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>make CC="gcc ${BUILD64}" SBINDIR=/sbin</userinput></screen>
+<screen os="b"><userinput>make CC="gcc ${BUILD64}" LIBDIR=/usr/lib64 SBINDIR=/sbin</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/iproute2.xml"
@@ -47,9 +51,7 @@
     href="../common/iproute2.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/iproute2.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+<screen os="f"><userinput>make LIBDIR=/usr/lib64 SBINDIR=/sbin install</userinput></screen>
 
   </sect2>
 
