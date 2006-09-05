@@ -56,18 +56,6 @@
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-    <para os="ab">If your keyboard isn't a US one and you have Kbd installed
-    on your host system, you can build the proper keymap for your keyboard
-    layout inside the kernel. If you wish to do this, run the following
-    command (replace [path to keymap] with the keymap location on the host -
-    a common location is in /usr/share/kbd):</para>
-
-<screen os="f"><userinput>loadkeys -m <replaceable>[path to  keymap]</replaceable> &gt; \
-    drivers/char/defkeymap.c</userinput></screen>
-
-    <para os="g">For example, if using a Dutch keyboard, use
-    <filename>/usr/share/kbd/keymaps/i386/qwerty/nl.map.gz</filename>.</para>
-
     <para os="ae">Configure the kernel via a menu-driven interface:</para>
 
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${CLFS_TARGET}- menuconfig</userinput></screen>
