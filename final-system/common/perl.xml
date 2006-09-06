@@ -25,11 +25,13 @@
   <sect2 role="installation">
     <title>Installation of Perl</title>
 
-    <para os="p1">The following patch causes <filename>DynaLoader.a</filename>
+    <para os="s1">The following sed causes <filename>DynaLoader.a</filename>
     to be built with -fPIC so it can be linked into a shared library
     later.</para>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&perl-fpic-patch;</userinput></screen>
+<screen os="s2"><userinput>sed -i Makefile.SH \
+    -e "s@pldlflags=''@pldlflags=\"\$cccdlflags\"@g" \
+    -e "s@static_target='static'@static_target='static_pic'@g"</userinput></screen>
 
     <para os="a00">Before starting to configure, create a basic
     <filename>/etc/hosts</filename> file which will be referenced in one
