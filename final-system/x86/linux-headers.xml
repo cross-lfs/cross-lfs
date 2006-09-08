@@ -36,16 +36,12 @@
 
     <para os="b">Install the header files that are common to all architectures:</para>
 
-<screen os="c"><userinput>install -dv /usr/include/{asm,asm-generic,linux,mtd,scsi,sound}
-cp -av include/asm-generic/* /usr/include/asm-generic
-cp -av include/linux/* /usr/include/linux
-cp -av include/mtd/* /usr/include/mtd
-cp -av include/scsi/* /usr/include/scsi
-cp -av include/sound/* /usr/include/sound</userinput></screen>
+<screen os="c"><userinput>install -dv /usr/include
+cp -av include/{asm-generic,linux,mtd,scsi,sound} /usr/include/</userinput></screen>
 
     <para os="d">Install the header files that are specific to this architecture:</para>
 
-<screen><userinput>cp -av include/asm-i386/* /usr/include/asm</userinput></screen>
+<screen><userinput>cp -av include/asm-i386 /usr/include/asm</userinput></screen>
 
   </sect2>
 
