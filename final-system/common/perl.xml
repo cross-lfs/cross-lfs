@@ -29,9 +29,8 @@
     to be built with -fPIC so it can be linked into a shared library
     later:</para>
 
-<screen os="s2"><userinput>sed -i Makefile.SH \
-    -e "s@pldlflags=''@pldlflags=\"\$cccdlflags\"@g" \
-    -e "s@static_target='static'@static_target='static_pic'@g"</userinput></screen>
+<screen os="s2"><userinput>sed -i -e "s@pldlflags=''@pldlflags=\"\$cccdlflags\"@g" \
+    -e "s@static_target='static'@static_target='static_pic'@g" Makefile.SH</userinput></screen>
 
     <para os="a00">Before starting to configure, create a basic
     <filename>/etc/hosts</filename> file which will be referenced in one
