@@ -37,7 +37,17 @@
     of Perl's configuration files as well as being used used by the testsuite
     if you run that:</para>
 
-<screen os="a01"><userinput>echo "127.0.0.1 localhost $(hostname)" &gt; /etc/hosts</userinput></screen>
+<screen os="a01"><userinput>echo "127.0.0.1 localhost clfs" &gt; /etc/hosts</userinput></screen>
+
+    <para os="a02">We also have to enable the loopback interface, this
+    will prevent some perl networking testsuite failures:</para>
+
+<screen os="a03"><userinput>ip link set lo up</userinput></screen>
+
+    <para os="a04">We also have to set the hostname for some of the
+    test:</para>
+
+<screen os="a05"><userinput>hostname clfs</userinput></screen>
 
     <para os="a">To have full control over the way Perl is set up, you can
     run the interactive <command>Configure</command> script and hand-pick
