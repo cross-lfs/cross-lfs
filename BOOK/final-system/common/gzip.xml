@@ -32,6 +32,13 @@
 
 <screen os="p2"><userinput>patch -Np1 -i ../&gzip-security_fix-patch;</userinput></screen>
 
+    <para os="s1">The <command>gzexe</command> command calls <command>tail</command>
+     with options that do not conform to newer versions of the POSIX standard,
+     and therefore are not accepted by current versions of Coreutils. Fix this
+     problem by issuing the following command:</para>
+
+<screen os="s2"><userinput>sed -i 's/tail +/tail -n +/' gzexe.in</userinput></screen>
+
     <para os="a">Prepare Gzip for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
