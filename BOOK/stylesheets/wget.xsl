@@ -25,7 +25,7 @@ xsltproc -xinclude -output x86.wget stylesheets/wget.xsl x86-index.xml
   <xsl:template match="ulink">
       <!-- Packages. If some package don't have the string ".tar." in their
       name, the next test must be fixed to match it also. -->
-    <xsl:if test="contains(@url, '.tar.')">
+    <xsl:if test="contains(@url, '.tar.') or contains(@url, '.tgz')">
       <xsl:value-of select="@url"/>
       <xsl:text>&#x0a;</xsl:text>
     </xsl:if>
