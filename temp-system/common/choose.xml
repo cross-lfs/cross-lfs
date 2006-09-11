@@ -33,6 +33,18 @@
   <para>If either of these commands fail, you will have to follow the boot
   method.</para>
 
+  <para>To chroot, you will also need a Linux Kernel-2.6.x (having been
+  compiled with GCC-3.0 or greater). The reason for the kernel version
+  requirement is that thread-local
+  storage support in Binutils will not be built and
+  the Native POSIX Threading Library (NPTL) test suite will segfault if
+  the host's kernel isn't at least a 2.6.x version compiled with a 3.0 or
+  later release of GCC.</para>
+
+  <para>To check your kernel version, run <command>cat /proc/version</command>
+  - if it does not say that you are running a 2.6.2 or later Linux kernel,
+  compiled with GCC 3.0 or later, you cannot chroot.</para>
+
   <para os="e">For the boot method, follow <xref linkend="chapter-boot"/>.</para>
 
   <para os="f">For the chroot method, follow <xref linkend="chapter-chroot"/>.</para>
