@@ -32,22 +32,20 @@
 <screen os="s2"><userinput>sed -i -e "s@pldlflags=''@pldlflags=\"\$cccdlflags\"@g" \
     -e "s@static_target='static'@static_target='static_pic'@g" Makefile.SH</userinput></screen>
 
-    <para os="a00">Before starting to configure, create a basic
+    <note os="a00">
+      <para>If you are following the boot method you will need to enable the
+      loopback device as well as set a hostname for some of the tests:</para>
+
+      <screen><userinput>ip link set lo up
+hostname clfs</userinput></screen>
+    </note>
+
+    <para os="a01">Before starting to configure, create a basic
     <filename>/etc/hosts</filename> file which will be referenced in one
     of Perl's configuration files as well as being used used by the testsuite
     if you run that:</para>
 
-<screen os="a01"><userinput>echo "127.0.0.1 localhost clfs" &gt; /etc/hosts</userinput></screen>
-
-    <para os="a02">We also have to enable the loopback interface, this
-    will prevent some perl networking testsuite failures:</para>
-
-<screen os="a03"><userinput>ip link set lo up</userinput></screen>
-
-    <para os="a04">We also have to set the hostname for some of the
-    test:</para>
-
-<screen os="a05"><userinput>hostname clfs</userinput></screen>
+<screen os="a02"><userinput>echo "127.0.0.1 localhost $(hostname)" &gt; /etc/hosts</userinput></screen>
 
     <para os="a">To have full control over the way Perl is set up, you can
     run the interactive <command>Configure</command> script and hand-pick
