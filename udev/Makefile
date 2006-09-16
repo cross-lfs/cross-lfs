@@ -3,6 +3,7 @@ DIRMODE=755
 SCRIPTMODE=755
 RULESMODE=644
 CONFMODE=644
+LIBDIR=lib
 
 all: help
 
@@ -29,8 +30,8 @@ rules-netboot:
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 
 scripts:
-	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/lib/udev/load_floppy_module.sh
-	install -m ${SCRIPTMODE} cdsymlink_helper.sh ${DESTDIR}/lib/udev/cdsymlink_helper.sh
+	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/${LIBDIR}/udev/load_floppy_module.sh
+	install -m ${SCRIPTMODE} cdsymlink_helper.sh ${DESTDIR}/${LIBDIR}/udev/cdsymlink_helper.sh
 
 boot:
 	install -d ${DESTDIR}/usr/share/udev
@@ -41,39 +42,39 @@ boot:
 	ln -sf ../init.d/udev ${DESTDIR}/etc/rc.d/rcsysinit.d/S10udev
 
 device_dirs:
-	install -d -m ${DIRMODE} ${DESTDIR}/lib/udev/devices
-	install -d -m ${DIRMODE} ${DESTDIR}/lib/udev/devices/pts
-	install -d -m ${DIRMODE} ${DESTDIR}/lib/udev/devices/shm
-	install -d -m ${DIRMODE} ${DESTDIR}/lib/udev/devices/net
+	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev/devices
+	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev/devices/pts
+	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev/devices/shm
+	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev/devices/net
 
 device_links:
-	ln -snf /proc/self/fd ${DESTDIR}/lib/udev/devices/fd
-	ln -snf /proc/self/fd/0 ${DESTDIR}/lib/udev/devices/stdin
-	ln -snf /proc/self/fd/1 ${DESTDIR}/lib/udev/devices/stdout
-	ln -snf /proc/self/fd/2 ${DESTDIR}/lib/udev/devices/stderr
-	ln -snf /proc/kcore ${DESTDIR}/lib/udev/devices/core
+	ln -snf /proc/self/fd ${DESTDIR}/${LIBDIR}/udev/devices/fd
+	ln -snf /proc/self/fd/0 ${DESTDIR}/${LIBDIR}/udev/devices/stdin
+	ln -snf /proc/self/fd/1 ${DESTDIR}/${LIBDIR}/udev/devices/stdout
+	ln -snf /proc/self/fd/2 ${DESTDIR}/${LIBDIR}/udev/devices/stderr
+	ln -snf /proc/kcore ${DESTDIR}/${LIBDIR}/udev/devices/core
 
 mknod_devices:
 	@if [ "$$UID" = "0" ]; then \
-		if ! [ -e ${DESTDIR}/lib/udev/devices/null ]; then \
-			mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3 ;\
+		if ! [ -e ${DESTDIR}/${LIBDIR}/udev/devices/null ]; then \
+			mknod -m 0666 ${DESTDIR}/${LIBDIR}/udev/devices/null c 1 3 ;\
 		fi \
 	fi
 	@if [ "$$UID" = "0" ]; then \
-		if ! [ -e ${DESTDIR}/lib/udev/devices/console ]; then \
-			mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1 ;\
+		if ! [ -e ${DESTDIR}/${LIBDIR}/udev/devices/console ]; then \
+			mknod -m 0600 ${DESTDIR}/${LIBDIR}/udev/devices/console c 5 1 ;\
 		fi \
 	fi
 	@if [ "$$UID" != "0" ]; then \
-		if ! [ -e ${DESTDIR}/lib/udev/devices/null ]; then \
+		if ! [ -e ${DESTDIR}/${LIBDIR}/udev/devices/null ]; then \
 			echo "You will need to issue the following command as the root user" ;\
 			echo "" ;\
-			echo "mknod -m 0666 ${DESTDIR}/lib/udev/devices/null c 1 3" ;\
+			echo "mknod -m 0666 ${DESTDIR}/${LIBDIR}/udev/devices/null c 1 3" ;\
 		fi \
 	fi
 	@if [ "$$UID" != "0" ]; then \
-		if ! [ -e ${DESTDIR}/lib/udev/devices/console ]; then \
-			echo "mknod -m 0600 ${DESTDIR}/lib/udev/devices/console c 5 1" ;\
+		if ! [ -e ${DESTDIR}/${LIBDIR}/udev/devices/console ]; then \
+			echo "mknod -m 0600 ${DESTDIR}/${LIBDIR}/udev/devices/console c 5 1" ;\
 			echo "" ;\
 		fi \
 	fi
@@ -88,15 +89,18 @@ help:
 	@echo "make install-network-upgrade	upgrades current network helper package"
 	@echo "make install-sound		install sound rules"
 	@echo "---------------------------------------------------------------------------------------"
+	@echo "add LIBDIR=lib64 		when using /lib64/"
+	@echo "example	make  LIBDIR=lib64 install"
+	@echo "---------------------------------------------------------------------------------------"
 
 install-helper-functions:
-	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/${LIBDIR}/udev
 	install -d ${DESTDIR}/etc/sysconfig
-	install -m 644 contrib/common/helper.functions ${DESTDIR}/lib/udev/helper.functions
+	install -m 644 contrib/common/helper.functions ${DESTDIR}/${LIBDIR}/udev/helper.functions
 	install -m 644 contrib/common/udev_helper ${DESTDIR}/etc/sysconfig/udev_helper
 	
 install-device-mapper:
-	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/${LIBDIR}/udev
 	install -d ${DESTDIR}/etc/rc.d/init.d
 	install -m ${RULESMODE} 70-device-mapper.rules ${DESTDIR}/etc/udev/rules.d/70-device-mapper.rules
 
@@ -109,14 +113,14 @@ install-network: install-helper-functions install-network-update
 	@rm -f ${DESTDIR}/etc/rc.d/rc{3,4,5}.d/*network
 
 install-sound:
-	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/${LIBDIR}/udev
 	install -d ${DESTDIR}/etc/rc.d/init.d
 	install -m ${RULESMODE} 55-sound.rules ${DESTDIR}/etc/udev/rules.d/55-sound.rules
 
 install-network-update:
-	install -d ${DESTDIR}/lib/udev
+	install -d ${DESTDIR}/${LIBDIR}/udev
 	install -d ${DESTDIR}/etc/rc.d/init.d
-	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/lib/udev/network_helper.sh
+	install -m ${SCRIPTMODE} contrib/network/network_helper.sh ${DESTDIR}/${LIBDIR}/udev/network_helper.sh
 	install -m ${INITMODE} contrib/network/network ${DESTDIR}/etc/rc.d/init.d/network
 
 .PHONY: all install device_dirs device_links rules scripts boot mknod_devices \
