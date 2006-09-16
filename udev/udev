@@ -19,6 +19,12 @@
 . /etc/sysconfig/rc
 . ${rc_functions}
 
+if [ -d "/lib64" ]; then
+	udev_libdir=/lib64
+else
+	udev_libdir=/lib
+fi
+
 case "$1" in
     start)
 	boot_mesg "Creating /dev in tmpfs..."
@@ -26,7 +32,7 @@ case "$1" in
 	evaluate_retval
 
 	boot_mesg "Copying static entries..."
-	cp --preserve=all --recursive --remove-destination /lib/udev/devices/* /dev
+	cp --preserve=all --recursive --remove-destination ${udev_libdir}/udev/devices/* /dev
 	evaluate_retval
 	
 	boot_mesg "Setting Permissons on /dev/shm..."
@@ -74,7 +80,7 @@ case "$1" in
     reload)
 	boot_mesg "Reloading udev rules..."
 	udevcontrol reload_rules
-	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
+	cp --preserve=all --recursive --update ${udev_libdir}/udev/devices/* /dev
 	evaluate_retval
 	;;
 
@@ -82,7 +88,7 @@ case "$1" in
 	boot_mesg "Updating all available device nodes in /dev..."
 	udevcontrol reload_rules
 	rm -rf /dev/.udev /dev/disk
-	cp --preserve=all --recursive --update /lib/udev/devices/* /dev
+	cp --preserve=all --recursive --update ${udev_libdir}/udev/devices/* /dev
 	/sbin/udevtrigger
 	/sbin/udevsettle
 	evaluate_retval
@@ -93,3 +99,5 @@ case "$1" in
 	exit 1
 	;;
 esac
+
+unset udev_libdir
