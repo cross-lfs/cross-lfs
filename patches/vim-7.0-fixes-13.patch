@@ -1,11 +1,11 @@
 Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
-Date: 2006-09-11
+Date: 2006-09-18
 Initial Package Version: 7.0
 Origin: Upstream
 Upstream Status: Applied
 Description: Contains Patch 001-004, 006-026, 028-031, 033-044, 036-056,
-        058-064, 066-073, and 075-099  from Upstream
-        005, 027, 032, 045, 057, 066, and 074 are for the extras, Mac, or
+        058-064, 066-073, 075-107, and 109  from Upstream
+        005, 027, 032, 045, 057, 066, 074, 108  are for the extras, Mac, or
         Windows 32 only
 
 diff -Naur vim70.orig/configure vim70/configure
@@ -137,6 +137,73 @@ diff -Naur vim70.orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spel
 +    exe 'Nread ' g:spellfile_URL . '/' . a:fname
 +  endif
 +endfunc
+diff -Naur vim70.orig/runtime/menu.vim vim70/runtime/menu.vim
+--- vim70.orig/runtime/menu.vim	2006-04-17 06:47:28.000000000 -0700
++++ vim70/runtime/menu.vim	2006-09-18 08:56:52.000000000 -0700
+@@ -2,7 +2,7 @@
+ " You can also use this as a start for your own set of menus.
+ "
+ " Maintainer:	Bram Moolenaar <Bram@vim.org>
+-" Last Change:	2006 Apr 17
++" Last Change:	2006 Sep 14
+ 
+ " Note that ":an" (short for ":anoremenu") is often used to make a menu work
+ " in all modes and avoid side effects from mappings defined by the user.
+@@ -885,6 +885,8 @@
+     if exists("s:changeitem") && s:changeitem != ''
+       call <SID>SpellDel()
+     endif
++
++    " Return quickly if spell checking is not enabled.
+     if !&spell || &spelllang == ''
+       return
+     endif
+@@ -908,18 +910,18 @@
+ 	let s:fromword = w
+ 	let pri = 1
+ 	for sug in s:suglist
+-	  exe 'amenu 1.5.' . pri . ' PopUp.' . s:changeitem . '.' . escape(sug, ' .')
++	  exe 'anoremenu 1.5.' . pri . ' PopUp.' . s:changeitem . '.' . escape(sug, ' .')
+ 		\ . ' :call <SID>SpellReplace(' . pri . ')<CR>'
+ 	  let pri += 1
+ 	endfor
+ 
+ 	let s:additem = 'add\ "' . escape(w, ' .') . '"\ to\ word\ list'
+-	exe 'amenu 1.6 PopUp.' . s:additem . ' :spellgood ' . w . '<CR>'
++	exe 'anoremenu 1.6 PopUp.' . s:additem . ' :spellgood ' . w . '<CR>'
+ 
+ 	let s:ignoreitem = 'ignore\ "' . escape(w, ' .') . '"'
+-	exe 'amenu 1.7 PopUp.' . s:ignoreitem . ' :spellgood! ' . w . '<CR>'
++	exe 'anoremenu 1.7 PopUp.' . s:ignoreitem . ' :spellgood! ' . w . '<CR>'
+ 
+-	amenu 1.8 PopUp.-SpellSep- :
++	anoremenu 1.8 PopUp.-SpellSep- :
+       endif
+     endif
+   endfunc
+@@ -938,7 +940,9 @@
+     let s:changeitem = ''
+   endfun
+ 
+-  au! MenuPopup * call <SID>SpellPopup()
++  augroup SpellPopupMenu
++    au! MenuPopup * call <SID>SpellPopup()
++  augroup END
+ endif
+ 
+ " The GUI toolbar (for MS-Windows and GTK)
+@@ -1013,9 +1017,9 @@
+     tmenu ToolBar.FindPrev	Find Previous
+     tmenu ToolBar.Replace		Find / Replace...
+   endif
+-  tmenu ToolBar.LoadSesn	Chose a session to load
++  tmenu ToolBar.LoadSesn	Choose a session to load
+   tmenu ToolBar.SaveSesn	Save current session
+-  tmenu ToolBar.RunScript	Chose a Vim Script to run
++  tmenu ToolBar.RunScript	Choose a Vim Script to run
+   tmenu ToolBar.Make		Make current project (:make)
+   tmenu ToolBar.RunCtags	Build tags in current directory tree (!ctags -R .)
+   tmenu ToolBar.TagJump		Jump to tag under cursor
 diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchparen.vim
 --- vim70.orig/runtime/plugin/matchparen.vim	2006-04-27 06:31:26.000000000 -0700
 +++ vim70/runtime/plugin/matchparen.vim	2006-09-11 09:04:35.000000000 -0700
@@ -2099,7 +2166,7 @@ diff -Naur vim70.orig/src/configure.in vim70/src/configure.in
  	  LDFLAGS="$perlldflags $LDFLAGS"
 diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
 --- vim70.orig/src/edit.c	2006-05-07 04:48:51.000000000 -0700
-+++ vim70/src/edit.c	2006-09-11 08:30:17.000000000 -0700
++++ vim70/src/edit.c	2006-09-18 08:55:16.000000000 -0700
 @@ -129,7 +129,7 @@
  
  static void ins_ctrl_x __ARGS((void));
@@ -2109,7 +2176,19 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  static int  ins_compl_equal __ARGS((compl_T *match, char_u *str, int len));
  static void ins_compl_longest_match __ARGS((compl_T *match));
  static void ins_compl_add_matches __ARGS((int num_matches, char_u **matches, int icase));
-@@ -719,9 +719,14 @@
+@@ -707,6 +707,11 @@
+ 	lastc = c;			/* remember previous char for CTRL-D */
+ 	c = safe_vgetc();
+ 
++#ifdef FEAT_AUTOCMD
++	/* Don't want K_CURSORHOLD for the second key, e.g., after CTRL-V. */
++	did_cursorhold = TRUE;
++#endif
++
+ #ifdef FEAT_RIGHTLEFT
+ 	if (p_hkmap && KeyTyped)
+ 	    c = hkmap(c);		/* Hebrew mode mapping */
+@@ -719,9 +724,14 @@
  #ifdef FEAT_INS_EXPAND
  	/*
  	 * Special handling of keys while the popup menu is visible or wanted
@@ -2126,7 +2205,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	{
  	    /* BS: Delete one character from "compl_leader". */
  	    if ((c == K_BS || c == Ctrl_H)
-@@ -751,7 +756,7 @@
+@@ -751,7 +761,7 @@
  		    continue;
  		}
  
@@ -2135,7 +2214,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  		 * compl_enter_selects is set the Enter key does the same. */
  		if (c == Ctrl_Y || (compl_enter_selects
  				   && (c == CAR || c == K_KENTER || c == NL)))
-@@ -877,6 +882,7 @@
+@@ -877,6 +887,7 @@
  		/* Close the cmdline window. */
  		cmdwin_result = K_IGNORE;
  		got_int = FALSE; /* don't stop executing autocommands et al. */
@@ -2143,7 +2222,20 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  		goto doESCkey;
  	    }
  #endif
-@@ -2112,7 +2118,7 @@
+@@ -1383,6 +1394,12 @@
+ 	    break;
+ 	}   /* end of switch (c) */
+ 
++#ifdef FEAT_AUTOCMD
++	/* If typed something may trigger CursorHoldI again. */
++	if (c != K_CURSORHOLD)
++	    did_cursorhold = FALSE;
++#endif
++
+ 	/* If the cursor was moved we didn't just insert a space */
+ 	if (arrow_used)
+ 	    inserted_space = FALSE;
+@@ -2112,7 +2129,7 @@
   * maybe because alloc() returns NULL, then FAIL is returned.
   */
      static int
@@ -2152,7 +2244,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      char_u	*str;
      int		len;
      int		icase;
-@@ -2120,7 +2126,7 @@
+@@ -2120,7 +2137,7 @@
      char_u	**cptext;   /* extra text for popup menu or NULL */
      int		cdir;
      int		flags;
@@ -2161,7 +2253,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  {
      compl_T	*match;
      int		dir = (cdir == 0 ? compl_direction : cdir);
-@@ -2134,7 +2140,7 @@
+@@ -2134,7 +2151,7 @@
      /*
       * If the same match is already present, don't add it.
       */
@@ -2170,7 +2262,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      {
  	match = compl_first_match;
  	do
-@@ -2399,7 +2405,7 @@
+@@ -2399,7 +2416,7 @@
      /* compl_pattern doesn't need to be set */
      compl_orig_text = vim_strnsave(ml_get_curline() + compl_col, compl_length);
      if (compl_orig_text == NULL || ins_compl_add(compl_orig_text,
@@ -2179,7 +2271,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	return;
  
      /* Handle like dictionary completion. */
-@@ -2409,6 +2415,7 @@
+@@ -2409,6 +2426,7 @@
      compl_matches = ins_compl_make_cyclic();
      compl_started = TRUE;
      compl_used_match = TRUE;
@@ -2187,7 +2279,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  
      compl_curr_match = compl_first_match;
      ins_complete(Ctrl_N);
-@@ -2753,6 +2760,7 @@
+@@ -2753,6 +2771,7 @@
  	}
  	else
  # endif
@@ -2195,7 +2287,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	{
  	    ins_compl_files(count, files, thesaurus, flags,
  							&regmatch, buf, &dir);
-@@ -2813,7 +2821,7 @@
+@@ -2813,7 +2832,7 @@
  			ptr = find_word_end(ptr);
  		    add_r = ins_compl_add_infercase(regmatch->startp[0],
  					  (int)(ptr - regmatch->startp[0]),
@@ -2204,7 +2296,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  		    if (thesaurus)
  		    {
  			char_u *wstart;
-@@ -2849,7 +2857,7 @@
+@@ -2849,7 +2868,7 @@
  				ptr = find_word_end(ptr);
  			    add_r = ins_compl_add_infercase(wstart,
  				    (int)(ptr - wstart),
@@ -2213,7 +2305,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  			}
  		    }
  		    if (add_r == OK)
-@@ -3015,9 +3023,6 @@
+@@ -3015,9 +3034,6 @@
      if ((int)(p - line) - (int)compl_col <= 0)
  	return K_BS;
  
@@ -2223,7 +2315,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      /* Deleted more than what was used to find matches or didn't finish
       * finding all matches: need to look for matches all over again. */
      if (curwin->w_cursor.col <= compl_col + compl_length
-@@ -3046,7 +3051,6 @@
+@@ -3046,7 +3062,6 @@
      ins_compl_delete();
      ins_bytes(compl_leader + curwin->w_cursor.col - compl_col);
      compl_used_match = FALSE;
@@ -2231,7 +2323,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  
      if (compl_started)
  	ins_compl_set_original_text(compl_leader);
-@@ -3076,6 +3080,7 @@
+@@ -3076,6 +3091,7 @@
  	compl_restarting = FALSE;
      }
  
@@ -2239,7 +2331,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      if (!compl_used_match)
      {
  	/* Go to the original text, since none of the matches is inserted. */
-@@ -3087,9 +3092,15 @@
+@@ -3087,9 +3103,15 @@
  	compl_curr_match = compl_shown_match;
  	compl_shows_dir = compl_direction;
      }
@@ -2255,7 +2347,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  }
  
  /*
-@@ -3115,10 +3126,6 @@
+@@ -3115,10 +3137,6 @@
  #endif
  	ins_char(c);
  
@@ -2266,7 +2358,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      /* If we didn't complete finding matches we must search again. */
      if (compl_was_interrupted)
  	ins_compl_restart();
-@@ -3175,10 +3182,32 @@
+@@ -3175,10 +3193,32 @@
      char_u	*p;
      int		len = curwin->w_cursor.col - compl_col;
      int		c;
@@ -2300,7 +2392,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      p += len;
  #ifdef FEAT_MBYTE
      c = mb_ptr2char(p);
-@@ -3198,7 +3227,6 @@
+@@ -3198,7 +3238,6 @@
      int	    c;
  {
      char_u	*ptr;
@@ -2308,7 +2400,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      int		want_cindent;
      int		retval = FALSE;
  
-@@ -3354,6 +3382,7 @@
+@@ -3354,6 +3393,7 @@
  	    if (compl_curr_match != NULL || compl_leader != NULL || c == Ctrl_E)
  	    {
  		char_u	*p;
@@ -2316,7 +2408,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  
  		/*
  		 * If any of the original typed text has been changed, eg when
-@@ -3369,16 +3398,21 @@
+@@ -3369,16 +3409,21 @@
  		    ptr = compl_leader;
  		else
  		    ptr = compl_orig_text;
@@ -2346,7 +2438,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	    }
  
  #ifdef FEAT_CINDENT
-@@ -3578,7 +3612,7 @@
+@@ -3578,7 +3623,7 @@
  {
      char_u	*word;
      int		icase = FALSE;
@@ -2355,7 +2447,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      char_u	*(cptext[CPT_COUNT]);
  
      if (tv->v_type == VAR_DICT && tv->vval.v_dict != NULL)
-@@ -3595,7 +3629,7 @@
+@@ -3595,7 +3640,7 @@
  	if (get_dict_string(tv->vval.v_dict, (char_u *)"icase", FALSE) != NULL)
  	    icase = get_dict_number(tv->vval.v_dict, (char_u *)"icase");
  	if (get_dict_string(tv->vval.v_dict, (char_u *)"dup", FALSE) != NULL)
@@ -2364,7 +2456,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      }
      else
      {
-@@ -3604,7 +3638,7 @@
+@@ -3604,7 +3649,7 @@
      }
      if (word == NULL || *word == NUL)
  	return FAIL;
@@ -2373,7 +2465,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  }
  #endif
  
-@@ -3796,7 +3830,7 @@
+@@ -3796,7 +3841,7 @@
  		    TAG_INS_COMP | (ctrl_x_mode ? TAG_VERBOSE : 0),
  		    TAG_MANY, curbuf->b_ffname) == OK && num_matches > 0)
  	    {
@@ -2382,7 +2474,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	    }
  	    p_ic = save_p_ic;
  	    break;
-@@ -3837,7 +3871,7 @@
+@@ -3837,7 +3882,7 @@
  	    num_matches = expand_spelling(first_match_pos.lnum,
  				 first_match_pos.col, compl_pattern, &matches);
  	    if (num_matches > 0)
@@ -2391,7 +2483,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  #endif
  	    break;
  
-@@ -3971,7 +4005,7 @@
+@@ -3971,7 +4016,7 @@
  			    continue;
  		    }
  		}
@@ -2400,7 +2492,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  				 ins_buf == curbuf ? NULL : ins_buf->b_sfname,
  					   0, flags) != NOTDONE)
  		{
-@@ -4100,6 +4134,21 @@
+@@ -4100,6 +4145,21 @@
  		&& compl_shown_match->cp_next != NULL
  		&& compl_shown_match->cp_next != compl_first_match)
  	    compl_shown_match = compl_shown_match->cp_next;
@@ -2422,7 +2514,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      }
  
      if (allow_get_expansion && insert_match
-@@ -4124,8 +4173,6 @@
+@@ -4124,8 +4184,6 @@
      {
  	if (compl_shows_dir == FORWARD && compl_shown_match->cp_next != NULL)
  	{
@@ -2431,7 +2523,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	    compl_shown_match = compl_shown_match->cp_next;
  	    found_end = (compl_first_match != NULL
  			   && (compl_shown_match->cp_next == compl_first_match
-@@ -4134,14 +4181,24 @@
+@@ -4134,14 +4192,24 @@
  	else if (compl_shows_dir == BACKWARD
  					&& compl_shown_match->cp_prev != NULL)
  	{
@@ -2458,7 +2550,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	    if (advance)
  	    {
  		if (compl_shows_dir == BACKWARD)
-@@ -4149,14 +4206,27 @@
+@@ -4149,14 +4217,27 @@
  		else
  		    ++compl_pending;
  	    }
@@ -2490,7 +2582,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	    found_end = FALSE;
  	}
  	if ((compl_shown_match->cp_flags & ORIGINAL_TEXT) == 0
-@@ -4265,9 +4335,9 @@
+@@ -4265,9 +4346,9 @@
  	return;
      count = 0;
  
@@ -2502,7 +2594,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
      if (c != NUL)
      {
  	if (vim_is_ctrl_x_key(c) && c != Ctrl_X && c != Ctrl_R)
-@@ -4277,12 +4347,27 @@
+@@ -4277,12 +4358,27 @@
  	    (void)ins_compl_next(FALSE, ins_compl_key2count(c),
  						    c != K_UP && c != K_DOWN);
  	}
@@ -2534,7 +2626,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  }
  
  /*
-@@ -4611,10 +4696,12 @@
+@@ -4611,10 +4707,12 @@
  				     (int)STRLEN(compl_pattern), curs_col);
  	    if (compl_xp.xp_context == EXPAND_UNSUCCESSFUL
  		    || compl_xp.xp_context == EXPAND_NOTHING)
@@ -2551,7 +2643,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	}
  	else if (ctrl_x_mode == CTRL_X_FUNCTION || ctrl_x_mode == CTRL_X_OMNI)
  	{
-@@ -4668,11 +4755,17 @@
+@@ -4668,11 +4766,17 @@
  	    else
  		compl_col = spell_word_start(startcol);
  	    if (compl_col >= (colnr_T)startcol)
@@ -2572,7 +2664,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	    compl_pattern = vim_strnsave(line + compl_col, compl_length);
  	    if (compl_pattern == NULL)
  #endif
-@@ -4720,7 +4813,7 @@
+@@ -4720,7 +4824,7 @@
  	vim_free(compl_orig_text);
  	compl_orig_text = vim_strnsave(line + compl_col, compl_length);
  	if (compl_orig_text == NULL || ins_compl_add(compl_orig_text,
@@ -2581,7 +2673,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	{
  	    vim_free(compl_pattern);
  	    compl_pattern = NULL;
-@@ -8508,7 +8601,12 @@
+@@ -8508,7 +8612,12 @@
      tpos = curwin->w_cursor;
      if (oneleft() == OK)
      {
@@ -3463,7 +3555,7 @@ diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
  /*
 diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
 --- vim70.orig/src/ex_getln.c	2006-04-30 08:32:01.000000000 -0700
-+++ vim70/src/ex_getln.c	2006-09-11 09:27:49.000000000 -0700
++++ vim70/src/ex_getln.c	2006-09-18 08:55:55.000000000 -0700
 @@ -324,6 +324,9 @@
       */
      for (;;)
@@ -3474,7 +3566,28 @@ diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
  #ifdef USE_ON_FLY_SCROLL
  	dont_scroll = FALSE;	/* allow scrolling here */
  #endif
-@@ -4521,7 +4524,9 @@
+@@ -1753,6 +1756,11 @@
+ 		end_pos = curwin->w_cursor; /* shutup gcc 4 */
+ 
+ 	    validate_cursor();
++# ifdef FEAT_WINDOWS
++	    /* May redraw the status line to show the cursor position. */
++	    if (p_ru && curwin->w_status_height > 0)
++		curwin->w_redr_status = TRUE;
++# endif
+ 
+ 	    save_cmdline(&save_ccline);
+ 	    update_screen(SOME_VALID);
+@@ -2360,7 +2368,7 @@
+ {
+     if ((State & CMDLINE)
+ 	    && xic != NULL
+-	    && im_get_status()
++	    /* && im_get_status()  doesn't work when using SCIM */
+ 	    && !p_imdisable
+ 	    && im_is_preediting())
+     {
+@@ -4521,7 +4529,9 @@
      flags |= EW_FILE | EW_EXEC;
  
      /* For an absolute name we don't use $PATH. */
@@ -3485,7 +3598,7 @@ diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
  			    || (pat[1] == '.' && vim_ispathsep(pat[2])))))
  	path = (char_u *)".";
      else
-@@ -4534,6 +4539,9 @@
+@@ -4534,6 +4544,9 @@
      ga_init2(&ga, (int)sizeof(char *), 10);
      for (s = path; *s != NUL; s = e)
      {
@@ -3495,7 +3608,7 @@ diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
  #if defined(MSDOS) || defined(MSWIN) || defined(OS2)
  	e = vim_strchr(s, ';');
  #else
-@@ -5982,6 +5990,8 @@
+@@ -5982,6 +5995,8 @@
      typestr[0] = cmdwin_type;
      typestr[1] = NUL;
      apply_autocmds(EVENT_CMDWINENTER, typestr, typestr, FALSE, curbuf);
@@ -3506,7 +3619,7 @@ diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
      i = RedrawingDisabled;
 diff -Naur vim70.orig/src/fileio.c vim70/src/fileio.c
 --- vim70.orig/src/fileio.c	2006-04-30 08:28:57.000000000 -0700
-+++ vim70/src/fileio.c	2006-09-11 09:04:57.000000000 -0700
++++ vim70/src/fileio.c	2006-09-18 08:55:16.000000000 -0700
 @@ -316,6 +316,9 @@
       * display the line. */
      ex_no_reprint = TRUE;
@@ -3574,7 +3687,20 @@ diff -Naur vim70.orig/src/fileio.c vim70/src/fileio.c
   */
      void
  aucmd_restbuf(aco)
-@@ -9063,8 +9057,38 @@
+@@ -8295,7 +8289,11 @@
+ {
+     int		state;
+ 
+-    if (!did_cursorhold && has_cursorhold() && !Recording)
++    if (!did_cursorhold && has_cursorhold() && !Recording
++#ifdef FEAT_INS_EXPAND
++	    && !ins_compl_active()
++#endif
++	    )
+     {
+ 	state = get_real_state();
+ 	if (state == NORMAL_BUSY || (state & INSERT) != 0)
+@@ -9063,8 +9061,38 @@
      return retval;
  }
  
@@ -4863,7 +4989,7 @@ diff -Naur vim70.orig/src/message.c vim70/src/message.c
  		    break;
 diff -Naur vim70.orig/src/misc1.c vim70/src/misc1.c
 --- vim70.orig/src/misc1.c	2006-04-30 08:30:02.000000000 -0700
-+++ vim70/src/misc1.c	2006-09-11 09:03:25.000000000 -0700
++++ vim70/src/misc1.c	2006-09-18 08:57:51.000000000 -0700
 @@ -3016,6 +3016,7 @@
      int		len = 0;
      int		n;
@@ -4919,6 +5045,30 @@ diff -Naur vim70.orig/src/misc1.c vim70/src/misc1.c
  	    }
  # endif
  	}
+@@ -8070,9 +8074,20 @@
+ 		}
+ 		if (*that == '"' && *(that + 1) != NUL)
+ 		{
+-		    that++;
+-		    while (*that && (*that != '"' || *(that - 1) == '\\'))
+-			++that;
++		    while (*++that && *that != '"')
++		    {
++			/* skipping escaped characters in the string */
++			if (*that == '\\')
++			{
++			    if (*++that == NUL)
++				break;
++			    if (that[1] == NUL)
++			    {
++				++that;
++				break;
++			    }
++			}
++		    }
+ 		}
+ 		if (*that == '(' || *that == '[')
+ 		    ++parencount;
 diff -Naur vim70.orig/src/netbeans.c vim70/src/netbeans.c
 --- vim70.orig/src/netbeans.c	2006-04-22 11:00:05.000000000 -0700
 +++ vim70/src/netbeans.c	2006-09-11 08:23:16.000000000 -0700
@@ -5625,8 +5775,23 @@ diff -Naur vim70.orig/src/regexp.c vim70/src/regexp.c
  		/* Safety check (just in case 'encoding' was changed since
 diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
 --- vim70.orig/src/screen.c	2006-05-05 03:13:55.000000000 -0700
-+++ vim70/src/screen.c	2006-09-11 08:23:16.000000000 -0700
-@@ -2612,7 +2612,8 @@
++++ vim70/src/screen.c	2006-09-18 08:57:17.000000000 -0700
+@@ -1228,7 +1228,14 @@
+ 	{
+ 	    mid_end = wp->w_height;
+ 	    if (lastwin == firstwin)
++	    {
+ 		screenclear();
++#ifdef FEAT_WINDOWS
++		/* The screen was cleared, redraw the tab pages line. */
++		if (redraw_tabline)
++		    draw_tabline();
++#endif
++	    }
+ 	}
+     }
+     else
+@@ -2612,7 +2619,8 @@
  #ifdef FEAT_LINEBREAK
      int		need_showbreak = FALSE;
  #endif
@@ -5636,7 +5801,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  # define LINE_ATTR
      int		line_attr = 0;		/* atrribute for the whole line */
  #endif
-@@ -2626,7 +2627,7 @@
+@@ -2626,7 +2634,7 @@
      int		prev_c = 0;		/* previous Arabic character */
      int		prev_c1 = 0;		/* first composing char for prev_c */
  #endif
@@ -5645,7 +5810,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
      int		did_line_attr = 0;
  #endif
  
-@@ -4116,17 +4117,12 @@
+@@ -4116,17 +4124,12 @@
  		    --ptr;	    /* put it back at the NUL */
  		}
  #endif
@@ -5665,7 +5830,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  			) && (
  # ifdef FEAT_RIGHTLEFT
  			    wp->w_p_rl ? (col >= 0) :
-@@ -4237,7 +4233,7 @@
+@@ -4237,7 +4240,7 @@
  	 * At end of the text line or just after the last character.
  	 */
  	if (c == NUL
@@ -5674,7 +5839,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  		|| did_line_attr == 1
  #endif
  		)
-@@ -4258,7 +4254,7 @@
+@@ -4258,7 +4261,7 @@
  				|| prevcol == (long)match_hl[0].startcol
  				|| prevcol == (long)match_hl[1].startcol
  				|| prevcol == (long)match_hl[2].startcol)
@@ -5683,7 +5848,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  			    && did_line_attr <= 1
  # endif
  			   )
-@@ -7103,7 +7099,7 @@
+@@ -7103,7 +7106,7 @@
      tabpage_T	    *tp;
  #endif
      static int	    entered = FALSE;		/* avoid recursiveness */
@@ -5692,7 +5857,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  
      /*
       * Allocation of the screen buffers is done only when the size changes and
-@@ -7133,6 +7129,12 @@
+@@ -7133,6 +7136,12 @@
  	return;
      entered = TRUE;
  
@@ -5705,7 +5870,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
      win_new_shellsize();    /* fit the windows in the new sized shell */
  
      comp_col();		/* recompute columns for shown command and ruler */
-@@ -7205,14 +7207,14 @@
+@@ -7205,14 +7214,14 @@
  #endif
  	    || outofmem)
      {
@@ -5722,7 +5887,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  	}
  	vim_free(new_ScreenLines);
  	new_ScreenLines = NULL;
-@@ -7240,7 +7242,7 @@
+@@ -7240,7 +7249,7 @@
      }
      else
      {
@@ -5731,7 +5896,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
  
  	for (new_row = 0; new_row < Rows; ++new_row)
  	{
-@@ -7367,6 +7369,7 @@
+@@ -7367,6 +7376,7 @@
  #endif
  
      entered = FALSE;
@@ -5790,7 +5955,16 @@ diff -Naur vim70.orig/src/search.c vim70/src/search.c
  		if (add_r == OK)
 diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
 --- vim70.orig/src/spell.c	2006-05-05 00:49:58.000000000 -0700
-+++ vim70/src/spell.c	2006-09-11 08:23:16.000000000 -0700
++++ vim70/src/spell.c	2006-09-18 08:54:02.000000000 -0700
+@@ -1483,7 +1483,7 @@
+ 	    else if ((mode == FIND_COMPOUND || mode == FIND_KEEPCOMPOUND
+ 								|| !word_ends))
+ 	    {
+-		/* If there is no  flag or the word is shorter than
++		/* If there is no compound flag or the word is shorter than
+ 		 * COMPOUNDMIN reject it quickly.
+ 		 * Makes you wonder why someone puts a compound flag on a word
+ 		 * that's too short...  Myspell compatibility requires this
 @@ -2043,8 +2043,8 @@
      int		len;
  # ifdef FEAT_SYN_HL
@@ -5908,7 +6082,7 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  
      /* Count the number of siblings. */
      for (np = node; np != NULL; np = np->wn_sibling)
-@@ -9243,11 +9243,11 @@
+@@ -9243,15 +9243,15 @@
   * Add "word[len]" to 'spellfile' as a good or bad word.
   */
      void
@@ -5922,6 +6096,11 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  			       'spellfile' */
      int		undo;	    /* TRUE for "zug", "zuG", "zuw" and "zuW" */
  {
+-    FILE	*fd;
++    FILE	*fd = NULL;
+     buf_T	*buf = NULL;
+     int		new_spf = FALSE;
+     char_u	*fname;
 @@ -9261,7 +9261,7 @@
      int		i;
      char_u	*spf;
@@ -5945,7 +6124,49 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  		return;
  	    }
  	}
-@@ -10070,6 +10070,7 @@
+@@ -9336,7 +9336,10 @@
+ 		    {
+ 			fputc('#', fd);
+ 			if (undo)
++			{
++			    home_replace(NULL, fname, NameBuff, MAXPATHL, TRUE);
+ 			    smsg((char_u *)_("Word removed from %s"), NameBuff);
++			}
+ 		    }
+ 		    fseek(fd, fpos_next, SEEK_SET);
+ 		}
+@@ -9344,20 +9347,27 @@
+ 	    fclose(fd);
+ 	}
+     }
+-    else
++
++    if (!undo)
+     {
+ 	fd = mch_fopen((char *)fname, "a");
+ 	if (fd == NULL && new_spf)
+ 	{
++	    char_u *p;
++
+ 	    /* We just initialized the 'spellfile' option and can't open the
+ 	     * file.  We may need to create the "spell" directory first.  We
+ 	     * already checked the runtime directory is writable in
+ 	     * init_spellfile(). */
+-	    if (!dir_of_file_exists(fname))
++	    if (!dir_of_file_exists(fname) && (p = gettail_sep(fname)) != fname)
+ 	    {
++		int c = *p;
++
+ 		/* The directory doesn't exist.  Try creating it and opening
+ 		 * the file again. */
+-		vim_mkdir(NameBuff, 0755);
++		*p = NUL;
++		vim_mkdir(fname, 0755);
++		*p = c;
+ 		fd = mch_fopen((char *)fname, "a");
+ 	    }
+ 	}
+@@ -10070,6 +10080,7 @@
  
  	/* List the suggestions. */
  	msg_start();
@@ -5953,7 +6174,7 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  	lines_left = Rows;	/* avoid more prompt */
  	vim_snprintf((char *)IObuff, IOSIZE, _("Change \"%.*s\" to:"),
  						sug.su_badlen, sug.su_badptr);
-@@ -13579,53 +13580,58 @@
+@@ -13579,53 +13590,58 @@
  	 * the first "the" to itself. */
  	return;
  
@@ -6054,7 +6275,7 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  
      if (i < 0 && ga_grow(gap, 1) == OK)
      {
-@@ -15656,7 +15662,7 @@
+@@ -15656,7 +15672,7 @@
  		    ? MB_STRNICMP(p, pat, STRLEN(pat)) == 0
  		    : STRNCMP(p, pat, STRLEN(pat)) == 0)
  		&& ins_compl_add_infercase(p, (int)STRLEN(p),
@@ -6239,11 +6460,29 @@ diff -Naur vim70.orig/src/undo.c vim70/src/undo.c
  	    msgbuf);
 diff -Naur vim70.orig/src/version.c vim70/src/version.c
 --- vim70.orig/src/version.c	2006-05-03 00:50:42.000000000 -0700
-+++ vim70/src/version.c	2006-09-11 09:28:13.000000000 -0700
-@@ -667,6 +667,190 @@
++++ vim70/src/version.c	2006-09-18 08:57:51.000000000 -0700
+@@ -667,6 +667,208 @@
  static int included_patches[] =
  {   /* Add new patch number below this line */
  /**/
++    109,
++/**/
++    107,
++/**/
++    106,
++/**/
++    105,
++/**/
++    104,
++/**/
++    103,
++/**/
++    102,
++/**/
++    101,
++/**/
++    100,
++/**/
 +    99,
 +/**/
 +    98,
