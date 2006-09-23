@@ -8,10 +8,10 @@
 <sect1 id="ch-final-preps-creatingtoolsdir">
   <?dbhtml filename="creatingtoolsdir.html"?>
 
-  <title>Creating the $CLFS/tools Directory</title>
+  <title>Creating the ${CLFS}/tools Directory</title>
 
   <para>All programs compiled in <xref linkend="chapter-temp-system"/>
-  will be installed under <filename class="directory">$CLFS/tools</filename>
+  will be installed under <filename class="directory">${CLFS}/tools</filename>
   to keep them separate from the programs compiled in <xref
   linkend="chapter-building-system"/>. The programs compiled here are
   temporary tools and will not be a part of the final CLFS system. By keeping
@@ -23,14 +23,14 @@
   <para>Create the required directory by running the following as
   <systemitem class="username">root</systemitem>:</para>
 
-<screen><userinput>install -dv $CLFS/tools</userinput></screen>
+<screen><userinput>install -dv ${CLFS}/tools</userinput></screen>
 
   <para>The next step is to create a <filename class="symlink">/tools</filename>
   symlink on the host system. This will point to the newly-created directory
   on the CLFS partition. Run this command as <systemitem
   class="username">root</systemitem> as well:</para>
 
-<screen><userinput>ln -sv $CLFS/tools /</userinput></screen>
+<screen><userinput>ln -sv ${CLFS}/tools /</userinput></screen>
 
   <note>
     <para>The above command is correct. The <command>ln</command> command

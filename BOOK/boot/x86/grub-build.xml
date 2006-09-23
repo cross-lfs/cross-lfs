@@ -55,12 +55,13 @@
 
 <screen os="ab"><userinput>make DESTDIR=${CLFS} install
 mkdir -v ${CLFS}/boot/grub
-cp -v ${CLFS}/usr/lib/grub/i386-pc/stage{1,2} ${CLFS}/boot/grub</userinput></screen>
+cp -v ${CLFS}/usr/lib/grub/*/stage{1,2} ${CLFS}/boot/grub</userinput></screen>
 
-    <para os="ac">The <filename class="directory">i386-pc</filename> directory
-    contains a number of <filename>*stage1_5</filename> files, different
-    ones for different file systems. Review the files available and copy
-    the appropriate ones to the <filename
+    <para os="ac">The directory in
+    <filename class="directory">${CLFS}/usr/lib/grub</filename> (its name
+    depends on your arch) contains a number of <filename>*stage1_5</filename>
+    files, different ones for different file systems. Review the files
+    available and copy the appropriate ones to the <filename
     class="directory">${CLFS}/boot/grub</filename> directory. Most users will
     copy the <filename>e2fs_stage1_5</filename> and/or
     <filename>reiserfs_stage1_5</filename> files.</para>

@@ -11,9 +11,9 @@
   <title>How to Build a CLFS System</title>
 
   <para>The CLFS system will be built by using a previously installed
-  Linux distribution (such as Debian, Fedora, Mandriva, SUSE, or Ubuntu).
-  This existing Linux system (the host) will be used as a starting point to
-  provide necessary programs, including a compiler, linker, and shell,
+  Unix system or Linux distribution (such as Debian, Fedora, Mandriva, SUSE,
+  or Ubuntu). This existing system (the host) will be used as a starting
+  point to provide necessary programs, including a compiler, linker, and shell,
   to build the new system. Select the <quote>development</quote> option
   during the distribution installation to be able to access these
   tools.</para>
@@ -58,10 +58,8 @@
   dependencies on the toolchain from our host distro.</para>
 
   <para>After we build our <quote>Cross-Tools</quote>, we start building
-  a very minimal working system in /tools. This effort to isolate the new
-  system from the host distribution may seem excessive, but a full technical
-  explanation is provided at the beginning of
-  <xref linkend="chapter-temp-system"/>.</para>
+  a very minimal working system in /tools. This minimal system will be built
+  using the cross-toolchain in /cross-tools.</para>
 
   <para>In <xref linkend="chapter-building-system"/>, the full CLFS system is
   built. Depending on the system you are cross-compiling for, you will either

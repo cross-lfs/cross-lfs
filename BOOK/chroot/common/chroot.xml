@@ -16,8 +16,8 @@
   enter the realm that is, at the moment, populated with only the
   temporary tools:</para>
 
-<screen><userinput>chroot "$CLFS" /tools/bin/env -i \
-    HOME=/root TERM="$TERM" PS1='\u:\w\$ ' \
+<screen><userinput>chroot "${CLFS}" /tools/bin/env -i \
+    HOME=/root TERM="${TERM}" PS1='\u:\w\$ ' \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
     /tools/bin/bash --login +h</userinput></screen>
 
@@ -26,7 +26,7 @@
   environment. After that, only the <envar>HOME</envar>,
   <envar>TERM</envar>, <envar>PS1</envar>, and
   <envar>PATH</envar> variables are set again. The
-  <parameter>TERM=$TERM</parameter> construct will set the
+  <parameter>TERM=${TERM}</parameter> construct will set the
   <envar>TERM</envar> variable inside chroot to the same value as
   outside chroot. This variable is needed for programs like
   <command>vim</command> and <command>less</command> to operate
@@ -37,7 +37,7 @@
   <para>From this point on, there is no need to use the
   <envar>CLFS</envar> variable anymore, because all work will be
   restricted to the CLFS file system.  This is because the Bash shell is
-  told that <filename class="directory">$CLFS</filename> is now the root
+  told that <filename class="directory">${CLFS}</filename> is now the root
   (<filename class="directory">/</filename>) directory.</para>
 
   <para>Notice that <filename class="directory">/tools/bin</filename> comes

@@ -21,7 +21,7 @@
   <sect2 role="installation">
     <title>Installation of Udev</title>
 
-    <para os="p1">This patch updates moves /lib/udev to /lib64/udev, to keep
+    <para os="p1">This patch moves /lib/udev to /lib64/udev, to keep
     system consistency:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&udev-lib64-patch;</userinput></screen>
@@ -32,7 +32,7 @@
 
 <screen os="b"><userinput>make CC="gcc ${BUILD64}" LD="gcc ${BUILD64}" \
  EXTRAS="extras/cdrom_id extras/floppy extras/firmware extras/scsi_id extras/volume_id \
-            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/path_id" udevdir=/dev</userinput></screen>
+            extras/ata_id extras/usb_id extras/edd_id extras/dasd_id extras/path_id"</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/udev.xml"

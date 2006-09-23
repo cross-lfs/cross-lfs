@@ -78,17 +78,17 @@ useradd -s /bin/bash -g clfs -m -k /dev/null clfs</userinput></screen>
 <screen><userinput>passwd clfs</userinput></screen>
 
   <para>Grant <systemitem class="username">clfs</systemitem> full access to
-  <filename class="directory">$CLFS/cross-tools</filename> and
-  <filename class="directory">$CLFS/tools</filename> by making <systemitem
+  <filename class="directory">${CLFS}/cross-tools</filename> and
+  <filename class="directory">${CLFS}/tools</filename> by making <systemitem
   class="username">clfs</systemitem> the directorys' owner:</para>
 
-<screen><userinput>chown -v clfs $CLFS/tools
-chown -v clfs $CLFS/cross-tools</userinput></screen>
+<screen><userinput>chown -v clfs ${CLFS}/tools
+chown -v clfs ${CLFS}/cross-tools</userinput></screen>
 
   <para>If a separate working directory was created as suggested, 
   give user <systemitem class="username">clfs</systemitem> ownership of this directory:</para>
 
-<screen><userinput>chown -v clfs $CLFS/sources</userinput></screen>
+<screen><userinput>chown -v clfs ${CLFS}/sources</userinput></screen>
 
   <para>Next, login as user <systemitem class="username">clfs</systemitem>.
   This can be done via a virtual console, through a display manager, or
