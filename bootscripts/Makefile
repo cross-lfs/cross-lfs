@@ -74,6 +74,7 @@ install: create-dirs create-service-dir
 	ln -sf ../init.d/console     ${EXTDIR}/rc.d/rcsysinit.d/S70console
 	ln -sf ../init.d/localnet    ${EXTDIR}/rc.d/rcsysinit.d/S80localnet
 	ln -sf ../init.d/sysctl      ${EXTDIR}/rc.d/rcsysinit.d/S90sysctl
+	if [ ! -f ${EXTDIR}/sysconfig/bootscripts ]; then install -m ${CONFMODE} lfs/sysconfig/bootscripts ${EXTDIR}/sysconfig/bootscripts; fi
 	if [ ! -f ${EXTDIR}/sysconfig/console     ]; then install -m ${CONFMODE} lfs/sysconfig/console     ${EXTDIR}/sysconfig/; fi
 	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} lfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
 	if [ ! -f ${EXTDIR}/sysconfig/modules     ]; then install -m ${CONFMODE} lfs/sysconfig/modules     ${EXTDIR}/sysconfig/; fi
@@ -131,7 +132,7 @@ install-raq2:
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc4.d/S99paneld
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc5.d/S99paneld
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc6.d/K01paneld
-	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq2          ${EXTDIR}/sysconfig/lcd; fi
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq2   ${EXTDIR}/sysconfig/lcd; fi
 
 install-raq3: 
 	install -m ${MODE} lfs/init.d/setlcd        ${EXTDIR}/rc.d/init.d/
@@ -142,10 +143,10 @@ install-raq3:
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc4.d/S99setlcd
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc5.d/S99setlcd
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc6.d/K01setlcd
-	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq3          ${EXTDIR}/sysconfig/lcd; fi
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq3   ${EXTDIR}/sysconfig/lcd; fi
 
 install-lcd: 
-	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd              ${EXTDIR}/sysconfig/lcd; fi
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd        ${EXTDIR}/sysconfig/lcd; fi
 
 .PHONY: all create-dirs create-service-dir install install-consolelog \
 	install-service-mtu minimal install-lcd install-raq2 install-raq3

@@ -127,12 +127,18 @@ boot_mesg_flush()
 {
 	# Reset STRING_LENGTH for next message
 	STRING_LENGTH="0"
+	if [ "$LOGGING" ]; then
+		boot_log "${BOOTMESG}${@}"
+	fi
 }
 
 boot_log()
 {
-	# Left in for backwards compatibility
-	echo -n ""
+	if [ "$LOGGING" ]; then
+		/bin/logger -p local2.info -t bootlog "${@}"
+	else
+		return 0
+	fi
 }
 
 echo_ok()
@@ -196,8 +202,8 @@ print_error_msg()
 	boot_mesg_flush
 	boot_mesg -n "If you're able to track this"
 	boot_mesg -n " error down to a bug in one of the files provided by"
-	boot_mesg -n " the LFS book, please be so kind to inform us at"
-	boot_mesg " lfs-dev@linuxfromscratch.org.\n"
+	boot_mesg -n " the CLFS book, please be so kind to inform us at"
+	boot_mesg " clfs-dev@cross-lfs.org.\n"
 	boot_mesg_flush
 	if [ "$INTERACTIVE" ]; then
 		boot_mesg -n "Press Enter to continue..." ${INFO}
@@ -451,7 +457,7 @@ pidofproc()
 	fi
 }
 
-# This will ensure compatibility with previous LFS Bootscripts
+# This will ensure compatibility with previous CLFS Bootscripts
 getpids()
 {
 	if [ -z "${PIDFILE}" ]; then
@@ -493,7 +499,7 @@ loadproc()
 	local forcestart=""
 	local nicelevel="10"
 
-# This will ensure compatibility with previous LFS Bootscripts
+# This will ensure compatibility with previous CLFS Bootscripts
 	if [ -n "${PIDFILE}" ];	then
 		pidfile="${PIDFILE}"
 	fi
@@ -585,7 +591,7 @@ killproc()
 	local killsig=""
 	pidlist=""
 
-# This will ensure compatibility with previous LFS Bootscripts
+# This will ensure compatibility with previous CLFS Bootscripts
 	if [ -n "${PIDFILE}" ];	then
 		pidfile="${PIDFILE}"
 	fi
