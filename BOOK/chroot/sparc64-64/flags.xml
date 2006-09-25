@@ -13,10 +13,15 @@
   <para>We will need to setup target specific flags for the compiler
   and linkers.</para>
 
-<screen><userinput>export BUILD64="-m64"</userinput></screen>
+<screen><userinput>export BUILD64="[BUILD64 entries]"</userinput></screen>
+
    <para>To prevent errors when you come back to your build, we will export these
    variables to prevent any build issues in the future:</para>
 
 <screen><userinput>echo export BUILD64=\""${BUILD64}\"" &gt;&gt; ~/.bash_profile</userinput></screen>
+
+   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+   href="../../cross-tools/sparc64-64/flags.xml"
+   xpointer="xpointer(//*[@os='f'])"/>
 
 </sect1>
