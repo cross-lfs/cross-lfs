@@ -13,8 +13,8 @@
   <para>We will need to setup target specific flags for the compiler
   and linkers.</para>
 
-<screen><userinput>export BUILD32="-m32"
-export BUILD64="-m64"</userinput></screen>
+<screen><userinput>export BUILD32="[BUILD32 entries]"
+export BUILD64="-[BUILD64 entries]"</userinput></screen>
 
   <para>You will need to set your host target triplet for 32 bit:</para>
 
@@ -26,5 +26,9 @@ export BUILD64="-m64"</userinput></screen>
 <screen><userinput>echo export BUILD32=\""${BUILD32}\"" &gt;&gt; ~/.bash_profile
 echo export BUILD64=\""${BUILD64}\"" &gt;&gt; ~/.bash_profile
 echo export CLFS_TARGET32=\""${CLFS_TARGET32}\"" &gt;&gt; ~/.bash_profile</userinput></screen>
+
+   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+   href="../../cross-tools/sparc64/flags.xml"
+   xpointer="xpointer(//*[@os='f'])"/>
 
 </sect1>
