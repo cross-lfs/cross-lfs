@@ -99,21 +99,21 @@
 
     <para os="v">Issue the following command to install the kernel:</para>
 
-<screen><userinput>cp arch/i386/boot/bzImage /boot/clfskernel-&linux-version;</userinput></screen>
+<screen><userinput>cp -v arch/i386/boot/bzImage /boot/clfskernel-&linux-version;</userinput></screen>
 
     <para os="w"><filename>System.map</filename> is a symbol file for the kernel.
     It maps the function entry points of every function in the kernel API,
     as well as the addresses of the kernel data structures for the running
     kernel. Issue the following command to install the map file:</para>
 
-<screen os="w1"><userinput>cp System.map /boot/System.map-&linux-version;</userinput></screen>
+<screen os="w1"><userinput>cp -v System.map /boot/System.map-&linux-version;</userinput></screen>
 
     <para os="x">The kernel configuration file <filename>.config</filename>
     produced by the <command>make menuconfig</command> step above contains
     all the configuration selections for the kernel that was just compiled.
     It is a good idea to keep this file for future reference:</para>
 
-<screen os="x1"><userinput>cp .config /boot/config-&linux-version;</userinput></screen>
+<screen os="x1"><userinput>cp -v .config /boot/config-&linux-version;</userinput></screen>
 
     <para os="y">It is important to note that the files in the kernel source
     directory are not owned by <systemitem class="username">root</systemitem>.
