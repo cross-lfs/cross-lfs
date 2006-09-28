@@ -56,6 +56,11 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
 <screen os="p6"><userinput>patch -Np1 -i ../&util-linux-missing_header-patch;</userinput></screen>
 
+    <para os="p7">Due to a change in headers some util-linux will not build. This patch will change
+    the utilization of llseek to lseek. This change is in the new release of util-linux:</para>
+
+<screen os="p8"><userinput>patch -Np1 -i ../&util-linux-lseek-patch;</userinput></screen>
+
     <para os="a">Prepare Util-linux for compilation:</para>
 
 <screen os="b"><userinput>./configure</userinput></screen>
