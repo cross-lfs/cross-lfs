@@ -1,5 +1,5 @@
 The following port needs to open on your firewall.
-873/tcp
+80/tcp
 
 The Following modules will need to be added to your apache, you
 will need to make sure your apache was compiled with --enable-proxy.
@@ -36,44 +36,37 @@ Apache httpd.conf file
 </Location>
 </Location>
 
+--SVN Setup
 
-Follow the BLFS instructions to install rsync daemon
+Create a cross-lfs Repo locally
 
-You will need to setup rsyncd to allow files to be transferred in
-after a commit.
+Change into the directory where you want to create the repo at,
+normally this is /srv/svn. The run the following command.
 
-Here is a our /etc/rsyncd.conf. You will need to change the uid = apache to
-what ever user is running apache.
-
----start
-motd file = /home/rsync/welcome.msg
-use chroot = yes
-
-uid = rsync
-gid = rsync
-
-[clfs]
-	path = /srv/svn/cross-lfs
-	comment = CLFS svn rsync module
-	read only = no
-	list = yes
-	uid = apache
-	hosts allow = 209.172.44.8
-	secrets file = /etc/rsyncd.secrets
----end
-
-Here is an the /etc/rsyncd.secrets
-
----start
-clfs:clfs
----end
-
-After you get that setup you will need to run the following commands
-to make your repo active. You will need to change the apache:root to
-whatever user is running apache.
-
-install -d /srv/svn
 svnadmin create cross-lfs
-chown apache:root cross-lfs -R
 
-rsync -avz cross-lfs.org::clfs /srv/svn/cross-lfs/db
+--
+Create pre-revprop-change 
+
+Now change into the /srv/svn/cross-lfs and run the follow commands
+to create pre-revprop-change
+
+cat > hooks/pre-revprop-change << "EOF"
+#!/bin/sh
+EOF
+chmod 755 hooks/pre-revprop-change
+
+--
+Make sure apache has full access, this assumes your are in /srv/svn
+
+chown {myapacheuser}:root * -R
+
+--
+Intialize the Repo via syncsnc
+
+svnsync init http://{myapacheip}/svn/repos/cross-lfs http://svn.cross-lfs.org/svn/repos/cross-lfs
+
+--
+Do the Initial Sync
+
+svnsync sync http://{myapacheip}/svn/repos/cross-lfs
