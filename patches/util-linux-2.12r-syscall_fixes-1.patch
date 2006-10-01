@@ -1,0 +1,76 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2006-09-30
+Initial Package Version: 2.12r
+Origin: Joe Ciccone and Ryan Oliver
+Upstream Status: Sent
+Description: Fixes Missing Syscalls from the new 2.6.18 headers
+ 
+diff -Naur util-linux-2.12r.orig/mount/swapon.c util-linux-2.12r/mount/swapon.c
+--- util-linux-2.12r.orig/mount/swapon.c	2004-12-22 01:50:19.000000000 -0800
++++ util-linux-2.12r/mount/swapon.c	2006-09-30 19:53:01.110866713 -0700
+@@ -75,25 +75,6 @@
+ #define SWAPON_NEEDS_TWO_ARGS
+ #endif
+ 
+-#ifdef SWAPON_NEEDS_TWO_ARGS
+-#ifdef SWAPON_HAS_TWO_ARGS
+-/* libc is OK */
+-#include <unistd.h>
+-#else
+-/* We want a swapon with two args, but have an old libc.
+-   Build the kernel call by hand. */
+-#include <linux/unistd.h>
+-static
+-_syscall2(int,  swapon,  const char *,  path, int, flags);
+-static
+-_syscall1(int,  swapoff,  const char *,  path);
+-#endif
+-#else
+-/* just do as libc says */
+-#include <unistd.h>
+-#endif
+-
+-
+ /*
+  * contents of /proc/swaps
+  */
+diff -Naur util-linux-2.12r.orig/mount/umount.c util-linux-2.12r/mount/umount.c
+--- util-linux-2.12r.orig/mount/umount.c	2005-09-10 11:07:38.000000000 -0700
++++ util-linux-2.12r/mount/umount.c	2006-09-30 19:50:28.619968401 -0700
+@@ -31,36 +31,11 @@
+ #include <arpa/inet.h>
+ #endif
+ 
+-#if defined(MNT_FORCE) && !defined(__sparc__) && !defined(__arm__)
+-/* Interesting ... it seems libc knows about MNT_FORCE and presumably
+-   about umount2 as well -- need not do anything */
+-#else /* MNT_FORCE */
+-
+-/* Does the present kernel source know about umount2? */
+-#include <linux/unistd.h>
+-#ifdef __NR_umount2
+-
+-static int umount2(const char *path, int flags);
+-
+-_syscall2(int, umount2, const char *, path, int, flags);
+-
+-#else /* __NR_umount2 */
+-
+-static int
+-umount2(const char *path, int flags) {
+-	fprintf(stderr, _("umount: compiled without support for -f\n"));
+-	errno = ENOSYS;
+-	return -1;
+-}
+-#endif /* __NR_umount2 */
+-
+ #if !defined(MNT_FORCE)
+ /* dare not try to include <linux/mount.h> -- lots of errors */
+ #define MNT_FORCE 1
+ #endif
+ 
+-#endif /* MNT_FORCE */
+-
+ #if !defined(MNT_DETACH)
+ #define MNT_DETACH 2
+ #endif
