@@ -28,39 +28,31 @@
     <para os="a">Create the source file:</para>
 
 <screen os="b"><userinput>cat &gt; multiarch_wrapper.c &lt;&lt; "EOF"
-#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
 #include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
 #include &lt;errno.h&gt;
+#include &lt;string.h&gt;
 
-#ifndef DEFAULT_ARCH
-# define DEFAULT_ARCH "64"
+#ifndef DEFAULTENV
+#define DEFAULTENV "64"
 #endif
 
-int main (int argc, char *argv[])
+int main(int argc, char **argv)
 {
+  char *filename;
   char *use_arch;
-  if ((use_arch = getenv("USE_ARCH")) == NULL)
-    use_arch = DEFAULT_ARCH;
 
-  char *filename = malloc(strlen(argv[0]) + strlen(use_arch) + 2);
+  if(!(use_arch = getenv("USE_ARCH")))
+    use_arch = DEFAULTENV;
+
+  filename = (char *) malloc(strlen(argv[0]) + strlen(use_arch) + 2);
   strcpy(filename, argv[0]);
   strcat(filename, "-");
   strcat(filename, use_arch);
 
-  int ret = execvp(filename, argv);
-  if ((ret != 0)&amp;&amp;(errno != 0))
-  {
-    char *errmsg = malloc(strlen(filename) + 19);
-    strcpy(errmsg, "Unable to execute ");
-    strcat(errmsg, filename);
-    perror(errmsg);
-    free(errmsg);
-  }
-
+  execvp(filename, argv);
+  perror(argv[0]);
   free(filename);
-
-  return ret;
 }
 EOF</userinput></screen>
 
