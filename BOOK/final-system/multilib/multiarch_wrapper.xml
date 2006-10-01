@@ -33,8 +33,8 @@
 #include &lt;errno.h&gt;
 #include &lt;string.h&gt;
 
-#ifndef DEFAULTENV
-#define DEFAULTENV "64"
+#ifndef USE_ARCH
+#define USE_ARCH "64"
 #endif
 
 int main(int argc, char **argv)
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   char *use_arch;
 
   if(!(use_arch = getenv("USE_ARCH")))
-    use_arch = DEFAULTENV;
+    use_arch = USE_ARCH;
 
   filename = (char *) malloc(strlen(argv[0]) + strlen(use_arch) + 2);
   strcpy(filename, argv[0]);
