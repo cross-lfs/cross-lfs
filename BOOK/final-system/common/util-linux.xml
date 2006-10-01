@@ -47,9 +47,10 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&util-linux-cramfs-patch;</userinput></screen>
 
-    <para os="p3">The following patch fixes build issues with GCC &gcc-version;:</para>
+    <para os="p3">The following patch fixes build issues with the changes to the Linux 2.6.18
+    headers:</para>
 
-<screen os="p4"><userinput>patch -Np1 -i ../&util-linux-gcc4_fixes-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&util-linux-syscall_fixes-patch;</userinput></screen>
 
     <para os="p5">The following patch fixes swapon.c - it tries to find the variable R_OK, but
     the header that has R_OK is not included:</para>
