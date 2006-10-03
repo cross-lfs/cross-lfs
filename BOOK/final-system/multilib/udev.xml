@@ -21,30 +21,16 @@
   <sect2 role="installation">
     <title>Installation of Udev</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/udev.xml"
-    xpointer="xpointer(//*[@os='a'])"/>
+    <para os="a">Udev only provides one library, libvolume_id. Instead of
+    building the entire udev package for one library, We're just going to
+    compile the single library:</para>
 
-<screen os="b"><userinput>make CC="gcc ${BUILD32}" LD="gcc ${BUILD32}" \
- EXTRAS="extras/volume_id"</userinput></screen>
+<screen os="b"><userinput>cd extras/volume_id/lib
+make CC="gcc ${BUILD32}" AR=ar RANLIB=ranlib E=@echo Q=@</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/udev.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+    <para os="c">Install the library:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/udev.xml"
-    xpointer="xpointer(//*[@os='g'])"/>
-
-    <para os="m1">Now we copy the library files over to our proper location:</para>
-
-<screen os="m2"><userinput>cp -arv extras/volume_id/lib/libvolume_id.so* /usr/lib</userinput></screen>
-
-    <para os="m3">Now we copy the pkgconfig data file over, this file will be used in builds
-    after CLFS:</para>
-
-<screen os="m4"><userinput>install -dv /usr/lib/pkgconfig
-cp -arv extras/volume_id/lib/libvolume_id.pc /usr/lib/pkgconfig</userinput></screen>
+<screen os="d"><userinput>make install</userinput></screen>
 
   </sect2>
 
