@@ -244,7 +244,7 @@ hr {
   <xsl:template match="copyright">
     <div>
       <p class="copyright">
-        <xsl:text>Copyright (c)</xsl:text>
+        <xsl:text>Copyright ©</xsl:text>
         <xsl:apply-templates/>
       </p>
     </div>
