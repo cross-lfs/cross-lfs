@@ -11,7 +11,6 @@
 #
 ########################################################################
 
-. /lib/udev/helper.functions
 . /etc/sysconfig/udev_helper
 
 KERN_NAME="$1"
