@@ -90,22 +90,4 @@ EOF</userinput></screen>
 <literal>KEYMAP_CORRECTIONS="/etc/kbd/bs-sends-del"</literal>
 EOF</userinput></screen>
 
-  <para>To compile the keymap directly into the kernel instead of setting it
-  every time from the <command>console</command> bootscript, follow the
-  instructions given in <xref linkend="ch-bootable-kernel" role="."/> Doing
-  this ensures that the keyboard will always work as expected, even when
-  booting into maintenance mode (by passing <option>init=/bin/sh</option> to
-  the kernel), because the <command>console</command> bootscript will not be
-  run in that situation. Additionally, the kernel will not set the screen font
-  automatically. This should not pose many problems because ASCII characters
-  will be handled correctly, and it is unlikely that a user would need to rely
-  on non-ASCII characters while in maintenance mode.</para>
-
-  <para>Since the kernel will set up the keymap, it is possible to omit the
-  <envar>KEYMAP</envar> variable from the
-  <filename>/etc/sysconfig/console</filename> configuration file. It can
-  also be left in place, if desired, without consequence. Keeping it could
-  be beneficial if running several different kernels where it is difficult
-  to ensure that the keymap is compiled into every one of them.</para>
-
 </sect1>
