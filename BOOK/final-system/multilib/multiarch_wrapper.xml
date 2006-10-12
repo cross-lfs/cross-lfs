@@ -61,16 +61,16 @@ EOF</userinput></screen>
 <screen os="d"><userinput>gcc ${BUILD64} multiarch_wrapper.c -o /usr/bin/multiarch_wrapper</userinput></screen>
 
     <para os="e">This multiarch wrapper is going to be used later on in the book
-    with perl. It will also be very useful outside of the base CLFS system.</para>
+    with Perl. It will also be very useful outside of the base CLFS system.</para>
 
-    <para os="f">Creating the testcase:</para>
+    <para os="f">Create a testcase:</para>
 
 <screen os="g"><userinput>echo 'echo "32bit Version"' &gt; test-32
 echo 'echo "64bit Version"' &gt; test-64
 chmod 755 test-32 test-64
 ln -sv /usr/bin/multiarch_wrapper test</userinput></screen>
 
-    <para os="h">Testing the wrapper:</para>
+    <para os="h">Test the wrapper:</para>
 
 <screen os="i"><userinput>USE_ARCH=32 ./test
 USE_ARCH=64 ./test</userinput></screen>
