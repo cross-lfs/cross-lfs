@@ -5,18 +5,17 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-cross-tools-glibc" role="wrap">
-  <?dbhtml filename="glibc.html"?>
-
+<sect1 id="ch-system-glibc" role="wrap">
   <title>Glibc-&glibc-version;</title>
 
-  <indexterm zone="ch-cross-tools-glibc">
+  <?dbhtml filename="glibc.html"?>
+
+  <indexterm zone="ch-system-glibc">
     <primary sortas="a-Glibc">Glibc</primary>
-    <secondary>cross tools</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../final-system/common/glibc.xml"
+  href="../common/glibc.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
@@ -24,23 +23,15 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='da'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/mips/glibc.xml"
-    xpointer="xpointer(//*[@os='g1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/mips/glibc.xml"
-    xpointer="xpointer(//*[@os='g2'])"/>
+    xpointer="xpointer(//*[@os='z'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='db'])"/>
+    xpointer="xpointer(//*[@os='b'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dc'])"/>
+    <para os="s1">The following patch fixes missing symbols when building Glibc on Sparc:</para>
+
+<screen os="s2"><userinput>patch -Np1 -i ../&glibc-sparc-patch;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
@@ -68,60 +59,76 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dd'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='de'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='df'])"/>
+    xpointer="xpointer(//*[@os='h'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dg'])"/>
+    xpointer="xpointer(//*[@os='i'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dh'])"/>
+    xpointer="xpointer(//*[@os='j'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='di'])"/>
+    xpointer="xpointer(//*[@os='k'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dj'])"/>
+    xpointer="xpointer(//*[@os='l'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dk'])"/>
+    xpointer="xpointer(//*[@os='m'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='n'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='o'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='p'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dl'])"/>
+    xpointer="xpointer(//*[@os='q'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dm'])"/>
+    xpointer="xpointer(//*[@os='r'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dn'])"/>
+    xpointer="xpointer(//*[@os='s'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='t'])"/>
 
   </sect2>
 
-  <sect2 role="content">
-    <title/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/glibc.xml"
+  xpointer="xpointer(id('i18n-glibc'))"/>
 
-    <para>Details on this package are located in <xref
-    linkend="contents-glibc" role="."/></para>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/glibc.xml"
+  xpointer="xpointer(id('conf-glibc'))"/>
 
-  </sect2>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/glibc.xml"
+  xpointer="xpointer(id('conf-ld'))"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/glibc.xml"
+  xpointer="xpointer(id('contents-glibc'))"/>
 
 </sect1>
