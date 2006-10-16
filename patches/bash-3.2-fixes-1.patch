@@ -1,0 +1,31 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2006-10-15
+Initial Package Version: 3.2
+Origin: Upstream
+Upstream Status: From Upstream
+Description: Contains patches from Unofficial Patches from Upstream
+
+diff -Naur bash-3.2.orig/parse.y bash-3.2/parse.y
+--- bash-3.2.orig/parse.y	2006-09-19 13:37:21.000000000 -0700
++++ bash-3.2/parse.y	2006-10-16 10:38:05.026546246 -0700
+@@ -2735,7 +2735,7 @@
+ /* itrace("parse_matched_pair: open = %c close = %c", open, close); */
+   count = 1;
+   pass_next_character = backq_backslash = was_dollar = in_comment = 0;
+-  check_comment = (flags & P_COMMAND) && qc != '\'' && qc != '"' && (flags & P_DQUOTE) == 0;
++  check_comment = (flags & P_COMMAND) && qc != '`' && qc != '\'' && qc != '"' && (flags & P_DQUOTE) == 0;
+ 
+   /* RFLAGS is the set of flags we want to pass to recursive calls. */
+   rflags = (qc == '"') ? P_DQUOTE : (flags & P_DQUOTE);
+diff -Naur bash-3.2.orig/po/ru.po bash-3.2/po/ru.po
+--- bash-3.2.orig/po/ru.po	2006-01-10 14:51:03.000000000 -0800
++++ bash-3.2/po/ru.po	2006-10-16 11:09:47.714195333 -0700
+@@ -12,7 +12,7 @@
+ "Last-Translator: Evgeniy Dushistov <dushistov@mail.ru>\n"
+ "Language-Team: Russian <ru@li.org>\n"
+ "MIME-Version: 1.0\n"
+-"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Type: text/plain; charset=KOI8-R\n"
+ "Content-Transfer-Encoding: 8bit\n"
+ "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+ 
