@@ -1,17 +1,17 @@
 Submitted By: Matthew Burgess <matthew at linuxfromscratch dot org>
-Date: 2006-03-15
-Initial Package Version: 5.94
+Date: 2006-10-22
+Initial Package Version: 6.4
 Origin: original suppress_hotname_uptame_kill_su patch (Robert Connolly)
 Upstream Status: N/A
 Description: This patch supresses the building of uptime, and kill.  The su
-command is built so the testsuite can run, use './src/su', but it will not
-be installed. Also see:
-           http://www.linuxfromscratch.org/patches/downloads/coreutils/
-           coreutils-5.0-dupes-2.patch
+	     command is built so the testsuite can run, use './src/su', but
+	     it will not be installed. Also see:
 
-diff -Naur coreutils-6.3.orig/AUTHORS coreutils-6.3/AUTHORS
---- coreutils-6.3.orig/AUTHORS	2006-08-09 00:42:31.000000000 -0700
-+++ coreutils-6.3/AUTHORS	2006-09-30 11:53:24.000000000 -0700
+	     Updated for 6.3 and 6.4 by Jim Gifford
+
+diff -Naur coreutils-6.4.orig/AUTHORS coreutils-6.4/AUTHORS
+--- coreutils-6.4.orig/AUTHORS	2006-10-22 09:54:15.000000000 -0700
++++ coreutils-6.4/AUTHORS	2006-10-22 20:47:10.000000000 -0700
 @@ -35,7 +35,6 @@
  hostname: Jim Meyering
  id: Arnold Robbins, David MacKenzie
@@ -28,10 +28,10 @@ diff -Naur coreutils-6.3.orig/AUTHORS coreutils-6.3/AUTHORS
  users: Joseph Arceneaux, David MacKenzie
  vdir: Richard Stallman, David MacKenzie
  wc: Paul Rubin, David MacKenzie
-diff -Naur coreutils-6.3.orig/configure coreutils-6.3/configure
---- coreutils-6.3.orig/configure	2006-09-30 02:09:13.000000000 -0700
-+++ coreutils-6.3/configure	2006-09-30 11:53:24.000000000 -0700
-@@ -58175,8 +58175,7 @@
+diff -Naur coreutils-6.4.orig/configure coreutils-6.4/configure
+--- coreutils-6.4.orig/configure	2006-10-22 13:36:16.000000000 -0700
++++ coreutils-6.4/configure	2006-10-22 20:47:10.000000000 -0700
+@@ -49517,8 +49517,7 @@
  { echo "$as_me:$LINENO: result: $gnulib_cv_have_boot_time" >&5
  echo "${ECHO_T}$gnulib_cv_have_boot_time" >&6; }
    if test $gnulib_cv_have_boot_time = yes; then
@@ -41,10 +41,10 @@ diff -Naur coreutils-6.3.orig/configure coreutils-6.3/configure
  fi
  
  
-diff -Naur coreutils-6.3.orig/Makefile.in coreutils-6.3/Makefile.in
---- coreutils-6.3.orig/Makefile.in	2006-09-30 02:09:28.000000000 -0700
-+++ coreutils-6.3/Makefile.in	2006-09-30 11:53:24.000000000 -0700
-@@ -179,7 +179,7 @@
+diff -Naur coreutils-6.4.orig/Makefile.in coreutils-6.4/Makefile.in
+--- coreutils-6.4.orig/Makefile.in	2006-10-22 13:36:28.000000000 -0700
++++ coreutils-6.4/Makefile.in	2006-10-22 20:47:10.000000000 -0700
+@@ -175,7 +175,7 @@
  	$(top_srcdir)/m4/tzset.m4 $(top_srcdir)/m4/unicodeio.m4 \
  	$(top_srcdir)/m4/unistd-safer.m4 $(top_srcdir)/m4/unistd_h.m4 \
  	$(top_srcdir)/m4/unlink-busy.m4 $(top_srcdir)/m4/unlinkdir.m4 \
@@ -53,10 +53,10 @@ diff -Naur coreutils-6.3.orig/Makefile.in coreutils-6.3/Makefile.in
  	$(top_srcdir)/m4/userspec.m4 $(top_srcdir)/m4/utimbuf.m4 \
  	$(top_srcdir)/m4/utime.m4 $(top_srcdir)/m4/utimecmp.m4 \
  	$(top_srcdir)/m4/utimens.m4 $(top_srcdir)/m4/utimes-null.m4 \
-diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
---- coreutils-6.3.orig/man/Makefile.in	2006-09-30 02:09:23.000000000 -0700
-+++ coreutils-6.3/man/Makefile.in	2006-09-30 11:56:34.000000000 -0700
-@@ -174,7 +174,7 @@
+diff -Naur coreutils-6.4.orig/man/Makefile.in coreutils-6.4/man/Makefile.in
+--- coreutils-6.4.orig/man/Makefile.in	2006-10-22 13:36:24.000000000 -0700
++++ coreutils-6.4/man/Makefile.in	2006-10-22 20:47:10.000000000 -0700
+@@ -170,7 +170,7 @@
  	$(top_srcdir)/m4/tzset.m4 $(top_srcdir)/m4/unicodeio.m4 \
  	$(top_srcdir)/m4/unistd-safer.m4 $(top_srcdir)/m4/unistd_h.m4 \
  	$(top_srcdir)/m4/unlink-busy.m4 $(top_srcdir)/m4/unlinkdir.m4 \
@@ -65,7 +65,7 @@ diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
  	$(top_srcdir)/m4/userspec.m4 $(top_srcdir)/m4/utimbuf.m4 \
  	$(top_srcdir)/m4/utime.m4 $(top_srcdir)/m4/utimecmp.m4 \
  	$(top_srcdir)/m4/utimens.m4 $(top_srcdir)/m4/utimes-null.m4 \
-@@ -377,14 +377,14 @@
+@@ -380,14 +380,14 @@
    base64.1 basename.1 cat.1 chgrp.1 chmod.1 chown.1 chroot.1 cksum.1 comm.1 \
    cp.1 csplit.1 cut.1 date.1 dd.1 df.1 dir.1 dircolors.1 dirname.1 du.1 \
    echo.1 env.1 expand.1 expr.1 factor.1 false.1 fmt.1 fold.1 groups.1 \
@@ -83,7 +83,7 @@ diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
    who.1 whoami.1 yes.1
  
  man_aux = $(dist_man_MANS:.1=.x)
-@@ -651,7 +651,6 @@
+@@ -663,7 +663,6 @@
  id.1:		$(common_dep)	$(srcdir)/id.x		../src/id.c
  install.1:	$(common_dep)	$(srcdir)/install.x	../src/install.c
  join.1:		$(common_dep)	$(srcdir)/join.x	../src/join.c
@@ -91,7 +91,7 @@ diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
  link.1:		$(common_dep)	$(srcdir)/link.x	../src/link.c
  ln.1:		$(common_dep)	$(srcdir)/ln.x		../src/ln.c
  logname.1:	$(common_dep)	$(srcdir)/logname.x	../src/logname.c
-@@ -689,7 +688,6 @@
+@@ -701,7 +700,6 @@
  split.1:	$(common_dep)	$(srcdir)/split.x	../src/split.c
  stat.1:		$(common_dep)	$(srcdir)/stat.x	../src/stat.c
  stty.1:		$(common_dep)	$(srcdir)/stty.x	../src/stty.c
@@ -99,7 +99,7 @@ diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
  sum.1:		$(common_dep)	$(srcdir)/sum.x		../src/sum.c
  sync.1:		$(common_dep)	$(srcdir)/sync.x	../src/sync.c
  tac.1:		$(common_dep)	$(srcdir)/tac.x		../src/tac.c
-@@ -705,7 +703,6 @@
+@@ -717,7 +715,6 @@
  unexpand.1:	$(common_dep)	$(srcdir)/unexpand.x	../src/unexpand.c
  uniq.1:		$(common_dep)	$(srcdir)/uniq.x	../src/uniq.c
  unlink.1:	$(common_dep)	$(srcdir)/unlink.x	../src/unlink.c
@@ -107,7 +107,7 @@ diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
  users.1:	$(common_dep)	$(srcdir)/users.x	../src/users.c
  vdir.1:		$(common_dep)	$(srcdir)/vdir.x	../src/ls.c
  wc.1:		$(common_dep)	$(srcdir)/wc.x		../src/wc.c
-@@ -737,7 +734,7 @@
+@@ -749,7 +746,7 @@
  check-x-vs-1:
  	PATH=../src$(PATH_SEPARATOR)$$PATH; export PATH;		\
  	t=ls-files.$$$$;						\
@@ -116,9 +116,9 @@ diff -Naur coreutils-6.3.orig/man/Makefile.in coreutils-6.3/man/Makefile.in
  	echo $(dist_man_MANS) | tr -s ' ' '\n' | sed 's/\.1$$//'	\
  	  | $(ASSORT) | diff - $$t || { rm $$t; exit 1; };		\
  	rm $$t
-diff -Naur coreutils-6.3.orig/README coreutils-6.3/README
---- coreutils-6.3.orig/README	2006-09-26 06:02:57.000000000 -0700
-+++ coreutils-6.3/README	2006-09-30 11:54:45.000000000 -0700
+diff -Naur coreutils-6.4.orig/README coreutils-6.4/README
+--- coreutils-6.4.orig/README	2006-10-22 09:54:15.000000000 -0700
++++ coreutils-6.4/README	2006-10-22 20:47:10.000000000 -0700
 @@ -9,11 +9,11 @@
  
    [ base64 basename cat chgrp chmod chown chroot cksum comm cp csplit cut date
@@ -133,10 +133,10 @@ diff -Naur coreutils-6.3.orig/README coreutils-6.3/README
    users vdir wc who whoami yes
  
  See the file NEWS for a list of major changes in the current release.
-diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
---- coreutils-6.3.orig/src/Makefile.in	2006-09-30 02:11:14.000000000 -0700
-+++ coreutils-6.3/src/Makefile.in	2006-09-30 11:58:34.000000000 -0700
-@@ -39,7 +39,7 @@
+diff -Naur coreutils-6.4.orig/src/Makefile.in coreutils-6.4/src/Makefile.in
+--- coreutils-6.4.orig/src/Makefile.in	2006-10-22 14:41:18.000000000 -0700
++++ coreutils-6.4/src/Makefile.in	2006-10-22 20:48:20.000000000 -0700
+@@ -35,7 +35,7 @@
  host_triplet = @host@
  EXTRA_PROGRAMS = chroot$(EXEEXT) df$(EXEEXT) hostid$(EXEEXT) \
  	nice$(EXEEXT) pinky$(EXEEXT) stty$(EXEEXT) su$(EXEEXT) \
@@ -145,7 +145,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  bin_PROGRAMS = [$(EXEEXT) chgrp$(EXEEXT) chown$(EXEEXT) chmod$(EXEEXT) \
  	cp$(EXEEXT) dd$(EXEEXT) dircolors$(EXEEXT) du$(EXEEXT) \
  	ginstall$(EXEEXT) link$(EXEEXT) ln$(EXEEXT) dir$(EXEEXT) \
-@@ -57,7 +57,7 @@
+@@ -53,7 +53,7 @@
  	tsort$(EXEEXT) unexpand$(EXEEXT) uniq$(EXEEXT) wc$(EXEEXT) \
  	basename$(EXEEXT) date$(EXEEXT) dirname$(EXEEXT) echo$(EXEEXT) \
  	env$(EXEEXT) expr$(EXEEXT) factor$(EXEEXT) false$(EXEEXT) \
@@ -154,7 +154,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  	pathchk$(EXEEXT) printenv$(EXEEXT) printf$(EXEEXT) \
  	pwd$(EXEEXT) seq$(EXEEXT) sleep$(EXEEXT) tee$(EXEEXT) \
  	test$(EXEEXT) true$(EXEEXT) tty$(EXEEXT) whoami$(EXEEXT) \
-@@ -182,7 +182,7 @@
+@@ -178,7 +178,7 @@
  	$(top_srcdir)/m4/tzset.m4 $(top_srcdir)/m4/unicodeio.m4 \
  	$(top_srcdir)/m4/unistd-safer.m4 $(top_srcdir)/m4/unistd_h.m4 \
  	$(top_srcdir)/m4/unlink-busy.m4 $(top_srcdir)/m4/unlinkdir.m4 \
@@ -163,7 +163,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  	$(top_srcdir)/m4/userspec.m4 $(top_srcdir)/m4/utimbuf.m4 \
  	$(top_srcdir)/m4/utime.m4 $(top_srcdir)/m4/utimecmp.m4 \
  	$(top_srcdir)/m4/utimens.m4 $(top_srcdir)/m4/utimes-null.m4 \
-@@ -370,11 +370,6 @@
+@@ -364,11 +364,6 @@
  join_LDADD = $(LDADD)
  join_DEPENDENCIES = ../lib/libcoreutils.a $(am__DEPENDENCIES_1) \
  	../lib/libcoreutils.a
@@ -175,7 +175,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  link_SOURCES = link.c
  link_OBJECTS = link.$(OBJEXT)
  link_LDADD = $(LDADD)
-@@ -623,10 +618,6 @@
+@@ -617,10 +612,6 @@
  unlink_LDADD = $(LDADD)
  unlink_DEPENDENCIES = ../lib/libcoreutils.a $(am__DEPENDENCIES_1) \
  	../lib/libcoreutils.a
@@ -186,7 +186,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  users_SOURCES = users.c
  users_OBJECTS = users.$(OBJEXT)
  users_LDADD = $(LDADD)
-@@ -670,7 +661,7 @@
+@@ -664,7 +655,7 @@
  	csplit.c cut.c date.c dd.c df.c $(dir_SOURCES) dircolors.c \
  	dirname.c du.c echo.c env.c expand.c expr.c factor.c false.c \
  	fmt.c fold.c $(ginstall_SOURCES) head.c hostid.c hostname.c \
@@ -195,7 +195,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  	$(md5sum_SOURCES) mkdir.c mkfifo.c mknod.c $(mv_SOURCES) \
  	nice.c nl.c nohup.c od.c paste.c pathchk.c pinky.c pr.c \
  	printenv.c printf.c ptx.c pwd.c readlink.c $(rm_SOURCES) \
-@@ -679,14 +670,14 @@
+@@ -673,14 +664,14 @@
  	$(sha512sum_SOURCES) shred.c shuf.c sleep.c sort.c split.c \
  	stat.c stty.c su.c sum.c sync.c tac.c tail.c tee.c test.c \
  	touch.c tr.c true.c tsort.c tty.c uname.c unexpand.c uniq.c \
@@ -212,7 +212,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  	$(md5sum_SOURCES) mkdir.c mkfifo.c mknod.c $(mv_SOURCES) \
  	nice.c nl.c nohup.c od.c paste.c pathchk.c pinky.c pr.c \
  	printenv.c printf.c ptx.c pwd.c readlink.c $(rm_SOURCES) \
-@@ -695,7 +686,7 @@
+@@ -689,7 +680,7 @@
  	$(sha512sum_SOURCES) shred.c shuf.c sleep.c sort.c split.c \
  	stat.c stty.c su.c sum.c sync.c tac.c tail.c tee.c test.c \
  	touch.c tr.c true.c tsort.c tty.c uname.c unexpand.c uniq.c \
@@ -221,7 +221,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  	yes.c
  HEADERS = $(noinst_HEADERS)
  ETAGS = etags
-@@ -946,7 +937,6 @@
+@@ -947,7 +938,6 @@
  tail_LDADD = $(nanosec_libs)
  
  # If necessary, add -lm to resolve use of pow in lib/strtod.c.
@@ -229,27 +229,27 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  su_LDADD = $(LDADD) $(LIB_CRYPT)
  SUFFIXES = .sh
  installed_su = $(DESTDIR)$(bindir)/`echo su|sed '$(transform)'`
-@@ -1193,9 +1183,6 @@
+@@ -1194,9 +1184,6 @@
  join$(EXEEXT): $(join_OBJECTS) $(join_DEPENDENCIES) 
  	@rm -f join$(EXEEXT)
- 	$(LINK) $(join_LDFLAGS) $(join_OBJECTS) $(join_LDADD) $(LIBS)
+ 	$(LINK) $(join_OBJECTS) $(join_LDADD) $(LIBS)
 -kill$(EXEEXT): $(kill_OBJECTS) $(kill_DEPENDENCIES) 
 -	@rm -f kill$(EXEEXT)
--	$(LINK) $(kill_LDFLAGS) $(kill_OBJECTS) $(kill_LDADD) $(LIBS)
+-	$(LINK) $(kill_OBJECTS) $(kill_LDADD) $(LIBS)
  link$(EXEEXT): $(link_OBJECTS) $(link_DEPENDENCIES) 
  	@rm -f link$(EXEEXT)
- 	$(LINK) $(link_LDFLAGS) $(link_OBJECTS) $(link_LDADD) $(LIBS)
-@@ -1358,9 +1345,6 @@
+ 	$(LINK) $(link_OBJECTS) $(link_LDADD) $(LIBS)
+@@ -1359,9 +1346,6 @@
  unlink$(EXEEXT): $(unlink_OBJECTS) $(unlink_DEPENDENCIES) 
  	@rm -f unlink$(EXEEXT)
- 	$(LINK) $(unlink_LDFLAGS) $(unlink_OBJECTS) $(unlink_LDADD) $(LIBS)
+ 	$(LINK) $(unlink_OBJECTS) $(unlink_LDADD) $(LIBS)
 -uptime$(EXEEXT): $(uptime_OBJECTS) $(uptime_DEPENDENCIES) 
 -	@rm -f uptime$(EXEEXT)
--	$(LINK) $(uptime_LDFLAGS) $(uptime_OBJECTS) $(uptime_LDADD) $(LIBS)
+-	$(LINK) $(uptime_OBJECTS) $(uptime_LDADD) $(LIBS)
  users$(EXEEXT): $(users_OBJECTS) $(users_DEPENDENCIES) 
  	@rm -f users$(EXEEXT)
- 	$(LINK) $(users_LDFLAGS) $(users_OBJECTS) $(users_LDADD) $(LIBS)
-@@ -1455,7 +1439,6 @@
+ 	$(LINK) $(users_OBJECTS) $(users_LDADD) $(LIBS)
+@@ -1456,7 +1440,6 @@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/id.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/install.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/join.Po@am__quote@
@@ -257,7 +257,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lbracket.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ln.Po@am__quote@
-@@ -1515,7 +1498,6 @@
+@@ -1516,7 +1499,6 @@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unexpand.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uniq.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unlink.Po@am__quote@
@@ -265,7 +265,7 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/users.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wc.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/who.Po@am__quote@
-@@ -1826,7 +1808,7 @@
+@@ -1837,7 +1819,7 @@
  	  && can_create_suid_root_executable=yes; \
  	rm -f $$TMPFILE; \
  	if test $$can_create_suid_root_executable = yes; then \
@@ -274,3 +274,43 @@ diff -Naur coreutils-6.3.orig/src/Makefile.in coreutils-6.3/src/Makefile.in
  	else \
  	  echo "WARNING: insufficient access; not installing su"; \
  	  echo "NOTE: to install su, run 'make install-root' as root"; \
+diff -Naur coreutils-6.4.orig/src/Makefile.in.rej coreutils-6.4/src/Makefile.in.rej
+--- coreutils-6.4.orig/src/Makefile.in.rej	1969-12-31 16:00:00.000000000 -0800
++++ coreutils-6.4/src/Makefile.in.rej	2006-10-22 20:47:10.000000000 -0700
+@@ -0,0 +1,36 @@
++***************
++*** 1196,1204 ****
++  join$(EXEEXT): $(join_OBJECTS) $(join_DEPENDENCIES) 
++  	@rm -f join$(EXEEXT)
++  	$(LINK) $(join_LDFLAGS) $(join_OBJECTS) $(join_LDADD) $(LIBS)
++- kill$(EXEEXT): $(kill_OBJECTS) $(kill_DEPENDENCIES) 
++- 	@rm -f kill$(EXEEXT)
++- 	$(LINK) $(kill_LDFLAGS) $(kill_OBJECTS) $(kill_LDADD) $(LIBS)
++  link$(EXEEXT): $(link_OBJECTS) $(link_DEPENDENCIES) 
++  	@rm -f link$(EXEEXT)
++  	$(LINK) $(link_LDFLAGS) $(link_OBJECTS) $(link_LDADD) $(LIBS)
++--- 1186,1191 ----
++  join$(EXEEXT): $(join_OBJECTS) $(join_DEPENDENCIES) 
++  	@rm -f join$(EXEEXT)
++  	$(LINK) $(join_LDFLAGS) $(join_OBJECTS) $(join_LDADD) $(LIBS)
++  link$(EXEEXT): $(link_OBJECTS) $(link_DEPENDENCIES) 
++  	@rm -f link$(EXEEXT)
++  	$(LINK) $(link_LDFLAGS) $(link_OBJECTS) $(link_LDADD) $(LIBS)
++***************
++*** 1361,1369 ****
++  unlink$(EXEEXT): $(unlink_OBJECTS) $(unlink_DEPENDENCIES) 
++  	@rm -f unlink$(EXEEXT)
++  	$(LINK) $(unlink_LDFLAGS) $(unlink_OBJECTS) $(unlink_LDADD) $(LIBS)
++- uptime$(EXEEXT): $(uptime_OBJECTS) $(uptime_DEPENDENCIES) 
++- 	@rm -f uptime$(EXEEXT)
++- 	$(LINK) $(uptime_LDFLAGS) $(uptime_OBJECTS) $(uptime_LDADD) $(LIBS)
++  users$(EXEEXT): $(users_OBJECTS) $(users_DEPENDENCIES) 
++  	@rm -f users$(EXEEXT)
++  	$(LINK) $(users_LDFLAGS) $(users_OBJECTS) $(users_LDADD) $(LIBS)
++--- 1348,1353 ----
++  unlink$(EXEEXT): $(unlink_OBJECTS) $(unlink_DEPENDENCIES) 
++  	@rm -f unlink$(EXEEXT)
++  	$(LINK) $(unlink_LDFLAGS) $(unlink_OBJECTS) $(unlink_LDADD) $(LIBS)
++  users$(EXEEXT): $(users_OBJECTS) $(users_DEPENDENCIES) 
++  	@rm -f users$(EXEEXT)
++  	$(LINK) $(users_LDFLAGS) $(users_OBJECTS) $(users_LDADD) $(LIBS)
