@@ -18,9 +18,9 @@
 SUBSYSTEM=="firmware",	ACTION=="add", RUN+="firmware.sh"
 
 # check cdrom helper
-BUS=="ide",	KERNEL=="hd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
-BUS=="scsi",	KERNEL=="sr[0-9]*", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
-BUS=="scsi",	KERNEL=="scd[a-z]", ACTION=="add", IMPORT="cdrom_id --export $tempnode"
+BUS=="ide",	KERNEL=="hd[a-z]", ACTION=="add", IMPORT{program}="cdrom_id --export $tempnode"
+BUS=="scsi",	KERNEL=="sr[0-9]*", ACTION=="add", IMPORT{program}="cdrom_id --export $tempnode"
+BUS=="scsi",	KERNEL=="scd[a-z]", ACTION=="add", IMPORT{program}="cdrom_id --export $tempnode"
 BUS=="scsi",	KERNEL=="sg[0-9]*", ACTION=="add", DRIVERS=="sr", GROUP="cdrom"
 
 BUS=="ide", ENV{ID_CDROM}=="?*",	PROGRAM="cdsymlink_helper.sh %k ide", SYMLINK+="cdrom%c"
