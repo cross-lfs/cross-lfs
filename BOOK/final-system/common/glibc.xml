@@ -55,14 +55,6 @@
 
 <screen os="p2"><userinput>patch -Np1 -i ../&glibc-minor-patch;</userinput></screen>
 
-    <para os="s1">The following <command>sed</command> fixes a build issue
-    with Glibc. This will prevent <command>nscd</command> from trying to
-    link to libraries that don't exist:</para>
-
-<screen os="s2"><userinput>cp -v nscd/Makefile{,.orig}
-sed -e "/nscd_stat.o: sysincludes = # nothing/d" nscd/Makefile.orig > \
-    nscd/Makefile</userinput></screen>
-
     <para os="e">The Glibc documentation recommends building Glibc outside of the
     source directory in a dedicated build directory:</para>
 
