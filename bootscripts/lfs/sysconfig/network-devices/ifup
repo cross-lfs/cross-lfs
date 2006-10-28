@@ -64,7 +64,7 @@ for file in ${FILES}; do
 			if [ -z "${CHECK_LINK}" -o "${CHECK_LINK}" = "y" -o "${CHECK_LINK}" = "yes" -o "${CHECK_LINK}" = "1" ]; then
 				TEST="`ip addr show ${1} | grep inet | cut -f1 -d'/' | cut -f2 -d't' | cut -f2 -d' '`"
 				if [ "$TEST" != "" ]; then
-						boot_mesg "Interface ${1} already configured." ${WARNING}
+						boot_mesg "Interface ${1} already configured with IP ${TEST}." ${WARNING}
 						echo_warning
 						continue
 				else

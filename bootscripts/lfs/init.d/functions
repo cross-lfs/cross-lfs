@@ -120,6 +120,9 @@ boot_mesg()
 
 	# Print the message to the screen
 	echo ${ECHOPARM} -e "${2}${1}"
+	if [ "$LOGGING" ]; then
+		DISPLAYLOG="${1}"
+	fi
 	
 }
 
@@ -135,7 +138,7 @@ boot_mesg_flush()
 boot_log()
 {
 	if [ "$LOGGING" ]; then
-		/bin/logger -p local2.info -t bootlog "${@}"
+		/bin/logger -p local2.info -t bootlog "${DISPLAYLOG} ${1}"
 	else
 		return 0
 	fi
