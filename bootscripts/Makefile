@@ -22,24 +22,24 @@ create-service-dir:
 	install -d -m ${DIRMODE} ${EXTDIR}/sysconfig/network-devices/services
 
 install: create-dirs create-service-dir
-	install -m ${MODE} lfs/init.d/checkfs       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/cleanfs       ${EXTDIR}/rc.d/init.d/
-	install -m ${CONFMODE} lfs/init.d/functions ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/halt          ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/console       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/localnet      ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/modules       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/mountfs       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/mountkernfs   ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/network       ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/rc            ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/reboot        ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/sendsignals   ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/setclock      ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/sysklogd	    ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/swap          ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/sysctl        ${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/template      ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/checkfs       ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/cleanfs       ${EXTDIR}/rc.d/init.d/
+	install -m ${CONFMODE} clfs/init.d/functions ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/halt          ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/console       ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/localnet      ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/modules       ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/mountfs       ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/mountkernfs   ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/network       ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/rc            ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/reboot        ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/sendsignals   ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/setclock      ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/sysklogd	    ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/swap          ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/sysctl        ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/template      ${EXTDIR}/rc.d/init.d/
 	ln -sf ../init.d/network     ${EXTDIR}/rc.d/rc0.d/K80network
 	ln -sf ../init.d/sysklogd   ${EXTDIR}/rc.d/rc0.d/K90sysklogd
 	ln -sf ../init.d/sendsignals ${EXTDIR}/rc.d/rc0.d/S60sendsignals
@@ -74,15 +74,15 @@ install: create-dirs create-service-dir
 	ln -sf ../init.d/console     ${EXTDIR}/rc.d/rcsysinit.d/S70console
 	ln -sf ../init.d/localnet    ${EXTDIR}/rc.d/rcsysinit.d/S80localnet
 	ln -sf ../init.d/sysctl      ${EXTDIR}/rc.d/rcsysinit.d/S90sysctl
-	if [ ! -f ${EXTDIR}/sysconfig/bootscripts ]; then install -m ${CONFMODE} lfs/sysconfig/bootscripts ${EXTDIR}/sysconfig/bootscripts; fi
-	if [ ! -f ${EXTDIR}/sysconfig/console     ]; then install -m ${CONFMODE} lfs/sysconfig/console     ${EXTDIR}/sysconfig/; fi
-	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} lfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
-	if [ ! -f ${EXTDIR}/sysconfig/modules     ]; then install -m ${CONFMODE} lfs/sysconfig/modules     ${EXTDIR}/sysconfig/; fi
-	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} lfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
-	install                   -m ${MODE} lfs/sysconfig/network-devices/ifup   ${EXTDIR}/sysconfig/network-devices/
-	install                   -m ${MODE} lfs/sysconfig/network-devices/ifdown ${EXTDIR}/sysconfig/network-devices/
-	install                   -m ${MODE} lfs/sysconfig/network-devices/services/ipv4-static       ${EXTDIR}/sysconfig/network-devices/services/
-	install                   -m ${MODE} lfs/sysconfig/network-devices/services/ipv4-static-route ${EXTDIR}/sysconfig/network-devices/services/
+	if [ ! -f ${EXTDIR}/sysconfig/bootscripts ]; then install -m ${CONFMODE} clfs/sysconfig/bootscripts ${EXTDIR}/sysconfig/bootscripts; fi
+	if [ ! -f ${EXTDIR}/sysconfig/console     ]; then install -m ${CONFMODE} clfs/sysconfig/console     ${EXTDIR}/sysconfig/; fi
+	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} clfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
+	if [ ! -f ${EXTDIR}/sysconfig/modules     ]; then install -m ${CONFMODE} clfs/sysconfig/modules     ${EXTDIR}/sysconfig/; fi
+	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} clfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
+	install                   -m ${MODE} clfs/sysconfig/network-devices/ifup   ${EXTDIR}/sysconfig/network-devices/
+	install                   -m ${MODE} clfs/sysconfig/network-devices/ifdown ${EXTDIR}/sysconfig/network-devices/
+	install                   -m ${MODE} clfs/sysconfig/network-devices/services/ipv4-static       ${EXTDIR}/sysconfig/network-devices/services/
+	install                   -m ${MODE} clfs/sysconfig/network-devices/services/ipv4-static-route ${EXTDIR}/sysconfig/network-devices/services/
 
 install-consolelog: create-dirs
 	install -m ${MODE} contrib/init.d/consolelog   ${EXTDIR}/rc.d/init.d
@@ -93,19 +93,19 @@ install-service-mtu: create-service-dir
 	install -m ${MODE} contrib/sysconfig/network-devices/services/mtu ${EXTDIR}/sysconfig/network-devices/services
 
 minimal: create-dirs create-service-dir
-	sed -e 's|/bin:/usr/bin:/sbin:/usr/sbin|/tools/bin:/tools/sbin:/bin:/sbin|g' lfs/init.d/functions > lfs/init.d/functions.minimal
-	install -m ${MODE} lfs/init.d/checkfs       		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/cleanfs       		${EXTDIR}/rc.d/init.d/
-	install -m ${CONFMODE} lfs/init.d/functions.minimal	${EXTDIR}/rc.d/init.d/functions
-	install -m ${MODE} lfs/init.d/halt          		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/localnet      		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/mountfs       		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/mountkernfs   		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/rc            		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/reboot        		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/sendsignals   		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/setclock      		${EXTDIR}/rc.d/init.d/
-	install -m ${MODE} lfs/init.d/swap          		${EXTDIR}/rc.d/init.d/
+	sed -e 's|/bin:/usr/bin:/sbin:/usr/sbin|/tools/bin:/tools/sbin:/bin:/sbin|g' clfs/init.d/functions > clfs/init.d/functions.minimal
+	install -m ${MODE} clfs/init.d/checkfs       		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/cleanfs       		${EXTDIR}/rc.d/init.d/
+	install -m ${CONFMODE} clfs/init.d/functions.minimal	${EXTDIR}/rc.d/init.d/functions
+	install -m ${MODE} clfs/init.d/halt          		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/localnet      		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/mountfs       		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/mountkernfs   		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/rc            		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/reboot        		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/sendsignals   		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/setclock      		${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/swap          		${EXTDIR}/rc.d/init.d/
 	ln -sf ../init.d/sendsignals ${EXTDIR}/rc.d/rc0.d/S60sendsignals
 	ln -sf ../init.d/mountfs     ${EXTDIR}/rc.d/rc0.d/S70mountfs
 	ln -sf ../init.d/swap        ${EXTDIR}/rc.d/rc0.d/S80swap
@@ -120,11 +120,11 @@ minimal: create-dirs create-service-dir
 	ln -sf ../init.d/swap        ${EXTDIR}/rc.d/rcsysinit.d/S40swap
 	ln -sf ../init.d/cleanfs     ${EXTDIR}/rc.d/rcsysinit.d/S50cleanfs
 	ln -sf ../init.d/setclock    ${EXTDIR}/rc.d/rcsysinit.d/S60setclock
-	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} lfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
-	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} lfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
+	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} clfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
+	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} clfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
 
 install-raq2: 
-	install -m ${MODE} lfs/init.d/paneld        ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/paneld        ${EXTDIR}/rc.d/init.d/
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc0.d/K01paneld
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc1.d/S99paneld
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc2.d/S99paneld
@@ -132,10 +132,10 @@ install-raq2:
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc4.d/S99paneld
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc5.d/S99paneld
 	ln -sf ../init.d/paneld      ${EXTDIR}/rc.d/rc6.d/K01paneld
-	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq2   ${EXTDIR}/sysconfig/lcd; fi
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} clfs/sysconfig/lcd-raq2   ${EXTDIR}/sysconfig/lcd; fi
 
 install-raq3: 
-	install -m ${MODE} lfs/init.d/setlcd        ${EXTDIR}/rc.d/init.d/
+	install -m ${MODE} clfs/init.d/setlcd        ${EXTDIR}/rc.d/init.d/
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc0.d/K01setlcd
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc1.d/S99setlcd
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc2.d/S99setlcd
@@ -143,10 +143,10 @@ install-raq3:
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc4.d/S99setlcd
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc5.d/S99setlcd
 	ln -sf ../init.d/setlcd      ${EXTDIR}/rc.d/rc6.d/K01setlcd
-	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd-raq3   ${EXTDIR}/sysconfig/lcd; fi
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} clfs/sysconfig/lcd-raq3   ${EXTDIR}/sysconfig/lcd; fi
 
 install-lcd: 
-	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} lfs/sysconfig/lcd        ${EXTDIR}/sysconfig/lcd; fi
+	if [ ! -f ${EXTDIR}/sysconfig/lcd          ]; then install -m ${CONFMODE} clfs/sysconfig/lcd        ${EXTDIR}/sysconfig/lcd; fi
 
 .PHONY: all create-dirs create-service-dir install install-consolelog \
 	install-service-mtu minimal install-lcd install-raq2 install-raq3
