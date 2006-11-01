@@ -1,0 +1,126 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2006-10-31
+Initial Package Version: 3.2
+Origin: ftp://ftp.cwru.edu/pub/bash/bash-3.2-patches/
+Upstream Status: From Upstream
+Description: Contains patches 001-003 from upstream
+
+diff -Naur bash-3.2.orig/parse.y bash-3.2/parse.y
+--- bash-3.2.orig/parse.y	2006-09-19 13:37:21.000000000 -0700
++++ bash-3.2/parse.y	2006-10-31 21:30:32.383533860 -0800
+@@ -1029,6 +1029,7 @@
+ #define PST_CMDTOKEN	0x1000		/* command token OK - unused */
+ #define PST_COMPASSIGN	0x2000		/* parsing x=(...) compound assignment */
+ #define PST_ASSIGNOK	0x4000		/* assignment statement ok in this context */
++#define PST_REGEXP	0x8000		/* parsing an ERE/BRE as a single word */
+ 
+ /* Initial size to allocate for tokens, and the
+    amount to grow them by. */
+@@ -2591,6 +2592,9 @@
+       return (character);
+     }
+ 
++  if (parser_state & PST_REGEXP)
++    goto tokword;
++
+   /* Shell meta-characters. */
+   if MBTEST(shellmeta (character) && ((parser_state & PST_DBLPAREN) == 0))
+     {
+@@ -2698,6 +2702,7 @@
+   if MBTEST(character == '-' && (last_read_token == LESS_AND || last_read_token == GREATER_AND))
+     return (character);
+ 
++tokword:
+   /* Okay, if we got this far, we have to read a word.  Read one,
+      and then check it against the known ones. */
+   result = read_token_word (character);
+@@ -2735,7 +2740,7 @@
+ /* itrace("parse_matched_pair: open = %c close = %c", open, close); */
+   count = 1;
+   pass_next_character = backq_backslash = was_dollar = in_comment = 0;
+-  check_comment = (flags & P_COMMAND) && qc != '\'' && qc != '"' && (flags & P_DQUOTE) == 0;
++  check_comment = (flags & P_COMMAND) && qc != '`' && qc != '\'' && qc != '"' && (flags & P_DQUOTE) == 0;
+ 
+   /* RFLAGS is the set of flags we want to pass to recursive calls. */
+   rflags = (qc == '"') ? P_DQUOTE : (flags & P_DQUOTE);
+@@ -3202,8 +3207,11 @@
+       if (tok == WORD && test_binop (yylval.word->word))
+ 	op = yylval.word;
+ #if defined (COND_REGEXP)
+-      else if (tok == WORD && STREQ (yylval.word->word,"=~"))
+-	op = yylval.word;
++      else if (tok == WORD && STREQ (yylval.word->word, "=~"))
++	{
++	  op = yylval.word;
++	  parser_state |= PST_REGEXP;
++	}
+ #endif
+       else if (tok == '<' || tok == '>')
+ 	op = make_word_from_token (tok);  /* ( */
+@@ -3234,6 +3242,7 @@
+ 
+       /* rhs */
+       tok = read_token (READ);
++      parser_state &= ~PST_REGEXP;
+       if (tok == WORD)
+ 	{
+ 	  tright = make_cond_node (COND_TERM, yylval.word, (COND_COM *)NULL, (COND_COM *)NULL);
+@@ -3419,9 +3428,34 @@
+ 	  goto next_character;
+ 	}
+ 
++#ifdef COND_REGEXP
++      /* When parsing a regexp as a single word inside a conditional command,
++	 we need to special-case characters special to both the shell and
++	 regular expressions.  Right now, that is only '(' and '|'. */ /*)*/
++      if MBTEST((parser_state & PST_REGEXP) && (character == '(' || character == '|'))		/*)*/
++        {
++          if (character == '|')
++            goto got_character;
++
++	  push_delimiter (dstack, character);
++	  ttok = parse_matched_pair (cd, '(', ')', &ttoklen, 0);
++	  pop_delimiter (dstack);
++	  if (ttok == &matched_pair_error)
++	    return -1;		/* Bail immediately. */
++	  RESIZE_MALLOCED_BUFFER (token, token_index, ttoklen + 2,
++				  token_buffer_size, TOKEN_DEFAULT_GROW_SIZE);
++	  token[token_index++] = character;
++	  strcpy (token + token_index, ttok);
++	  token_index += ttoklen;
++	  FREE (ttok);
++	  dollar_present = all_digit_token = 0;
++	  goto next_character;
++        }
++#endif /* COND_REGEXP */
++
+ #ifdef EXTENDED_GLOB
+       /* Parse a ksh-style extended pattern matching specification. */
+-      if (extended_glob && PATTERN_CHAR (character))
++      if MBTEST(extended_glob && PATTERN_CHAR (character))
+ 	{
+ 	  peek_char = shell_getc (1);
+ 	  if MBTEST(peek_char == '(')		/* ) */
+diff -Naur bash-3.2.orig/patchlevel.h bash-3.2/patchlevel.h
+--- bash-3.2.orig/patchlevel.h	2006-04-13 05:31:04.000000000 -0700
++++ bash-3.2/patchlevel.h	2006-10-31 21:30:32.383533860 -0800
+@@ -25,6 +25,6 @@
+    regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
+    looks for to find the patch level (for the sccs version string). */
+ 
+-#define PATCHLEVEL 0
++#define PATCHLEVEL 3
+ 
+ #endif /* _PATCHLEVEL_H_ */
+diff -Naur bash-3.2.orig/po/ru.po bash-3.2/po/ru.po
+--- bash-3.2.orig/po/ru.po	2006-01-10 14:51:03.000000000 -0800
++++ bash-3.2/po/ru.po	2006-10-31 21:30:12.616221385 -0800
+@@ -12,7 +12,7 @@
+ "Last-Translator: Evgeniy Dushistov <dushistov@mail.ru>\n"
+ "Language-Team: Russian <ru@li.org>\n"
+ "MIME-Version: 1.0\n"
+-"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Type: text/plain; charset=KOI8-R\n"
+ "Content-Transfer-Encoding: 8bit\n"
+ "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+ 
