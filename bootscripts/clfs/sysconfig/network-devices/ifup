@@ -60,29 +60,36 @@ for file in ${FILES}; do
 			 continue
 		fi
 
+		# This will allow us to assign subinterfaces to our primary
+		if [ "${INTERFACE}" != "" ]; then
+			NET_IF=${INTERFACE}
+		else
+			NET_IF=${1}
+		fi
+
 		if [ -n "${SERVICE}" -a -x "${network_devices}/services/${SERVICE}" ]; then
 			if [ -z "${CHECK_LINK}" -o "${CHECK_LINK}" = "y" -o "${CHECK_LINK}" = "yes" -o "${CHECK_LINK}" = "1" ]; then
-				TEST="`ip addr show ${1} | grep inet | cut -f1 -d'/' | cut -f2 -d't' | cut -f2 -d' '`"
+				TEST="`ip addr show ${NET_IF} | grep inet | grep ${NET_IF} | cut -f1 -d'/' | cut -f2 -d't' | cut -f2 -d' '`"
 				if [ "$TEST" != "" ]; then
-						boot_mesg "Interface ${1} already configured with IP ${TEST}." ${WARNING}
+						boot_mesg "Interface ${NET_IF} already configured with IP ${TEST}." ${WARNING}
 						echo_warning
 						continue
 				else
-					if ip link show ${1} > /dev/null 2>&1; then
-						link_status=`ip link show ${1} 2> /dev/null | grep ${1}`
+					if ip link show ${NET_IF} > /dev/null 2>&1; then
+						link_status=`ip link show ${NET_IF} 2> /dev/null | grep ${NET_IF}`
 						if [ -n "${link_status}" ]; then
 							if ! echo "${link_status}" | grep -q UP; then
-								ip link set ${1} up
+								ip link set ${NET_IF} up
 							fi
 						fi
 					else
-						boot_mesg "Interface ${1} doesn't exist." ${WARNING}
+						boot_mesg "Interface ${NET_IF} doesn't exist." ${WARNING}
 						echo_warning
 						continue
 					fi
 				fi
 			fi
-			IFCONFIG=${file} ${network_devices}/services/${SERVICE} ${1} up
+			IFCONFIG=${file} ${network_devices}/services/${SERVICE} ${NET_IF} up
 		else
 			boot_mesg "Unable to process ${file}.  Either" ${FAILURE}
 			boot_mesg " the SERVICE variable was not set,"
