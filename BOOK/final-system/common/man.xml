@@ -34,9 +34,10 @@
 
 <screen os="c"><userinput>sed -i 's@-is@&amp;R@g' configure</userinput></screen>
 
-    <para os="d">Another <command>sed</command> substitution comments out the
-    <quote>MANPATH /usr/man</quote> and <quote>MANPATH /usr/local/man</quote>
-    lines in the <filename>man.conf</filename> file to prevent redundant
+    <para os="d">Another couple of <command>sed</command> substitutions
+    comment out the <quote>MANPATH /usr/man</quote> and
+    <quote>MANPATH /usr/local/man</quote> lines in the
+    <filename>man.conf</filename> file to prevent redundant
     results when using programs such as <command>whatis</command>:</para>
 
 <screen os="e"><userinput>sed -i 's@MANPATH./usr/man@#&amp;@g' src/man.conf.in
