@@ -1,15 +1,15 @@
 Submitted By: Joe Ciccone <joeciccone at crazyeyesoft dot com>
-Date: 2006-02-09
-Initial Package Version: 1.4.11
+Date: 2006-11-02
+Initial Package Version: 1.4.13
 Upstream Status: Unknown
 Origin: Rocklinux and Jim Gifford and Joe Ciccone
 Description: Fixes cross-compilation issues and silo no longer links to
-	libext2fs.so, it is integrated instead. Also allows silo to build
+        libext2fs.so, it is integrated instead. Also allows silo to build
         and work properly on pure64 systems.
 
-diff -Naur silo-1.4.11.orig/Makefile silo-1.4.11/Makefile
---- silo-1.4.11.orig/Makefile	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/Makefile	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/Makefile silo-1.4.13/Makefile
+--- silo-1.4.13.orig/Makefile	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/Makefile	2006-11-02 19:21:44.204761742 -0800
 @@ -3,7 +3,7 @@
  
  # These only get built on Linux
@@ -19,11 +19,11 @@ diff -Naur silo-1.4.11.orig/Makefile silo-1.4.11/Makefile
    MANPAGES = maketilo.1 tilo.1
  endif
  
-diff -Naur silo-1.4.11.orig/Rules.make silo-1.4.11/Rules.make
---- silo-1.4.11.orig/Rules.make	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/Rules.make	2006-03-09 21:48:42 +0000
+diff -Naur silo-1.4.13.orig/Rules.make silo-1.4.13/Rules.make
+--- silo-1.4.13.orig/Rules.make	2006-06-21 00:51:03.000000000 -0700
++++ silo-1.4.13/Rules.make	2006-11-02 19:21:44.204761742 -0800
 @@ -1,12 +1,14 @@
- VERSION=1.4.11
+ VERSION=1.4.13
  IMGVERSION=0.99
  RM=rm -f
 -# We want to force 32-bit builds
@@ -43,9 +43,9 @@ diff -Naur silo-1.4.11.orig/Rules.make silo-1.4.11/Rules.make
  ELFTOAOUT=elftoaout
  BIN2H=../common/bin2h
  
-diff -Naur silo-1.4.11.orig/common/Makefile silo-1.4.11/common/Makefile
---- silo-1.4.11.orig/common/Makefile	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/common/Makefile	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/common/Makefile silo-1.4.13/common/Makefile
+--- silo-1.4.13.orig/common/Makefile	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/common/Makefile	2006-11-02 19:21:44.204761742 -0800
 @@ -5,19 +5,22 @@
  include ../Rules.make
  
@@ -75,9 +75,9 @@ diff -Naur silo-1.4.11.orig/common/Makefile silo-1.4.11/common/Makefile
 -	$(RM) $(PROGRAMS) *.o
 +	$(RM) bin2h *.o
 +
-diff -Naur silo-1.4.11.orig/first/Makefile silo-1.4.11/first/Makefile
---- silo-1.4.11.orig/first/Makefile	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/first/Makefile	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/first/Makefile silo-1.4.13/first/Makefile
+--- silo-1.4.13.orig/first/Makefile	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/first/Makefile	2006-11-02 19:21:44.204761742 -0800
 @@ -13,7 +13,7 @@
  LDFLAGS=-N -Ttext 0x4000
  
@@ -132,9 +132,9 @@ diff -Naur silo-1.4.11.orig/first/Makefile silo-1.4.11/first/Makefile
  
  ieee32.b: ieee32.o
  	$(LD) $(LDFLAGS) -o ieee32.b ieee32.o
-diff -Naur silo-1.4.11.orig/first-isofs/Makefile silo-1.4.11/first-isofs/Makefile
---- silo-1.4.11.orig/first-isofs/Makefile	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/first-isofs/Makefile	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/first-isofs/Makefile silo-1.4.13/first-isofs/Makefile
+--- silo-1.4.13.orig/first-isofs/Makefile	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/first-isofs/Makefile	2006-11-02 19:21:44.204761742 -0800
 @@ -11,10 +11,10 @@
  all: $(NAME).b
  
@@ -157,9 +157,9 @@ diff -Naur silo-1.4.11.orig/first-isofs/Makefile silo-1.4.11/first-isofs/Makefil
  
  clean:
  	$(RM) *.o $(NAME) $(NAME).b $(NAME).aout
-diff -Naur silo-1.4.11.orig/include/emul_32/asm/elf.h silo-1.4.11/include/emul_32/asm/elf.h
---- silo-1.4.11.orig/include/emul_32/asm/elf.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/include/emul_32/asm/elf.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/include/emul_32/asm/elf.h silo-1.4.13/include/emul_32/asm/elf.h
+--- silo-1.4.13.orig/include/emul_32/asm/elf.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/include/emul_32/asm/elf.h	2006-11-02 19:21:44.204761742 -0800
 @@ -0,0 +1,162 @@
 +#ifndef __ASMSPARC_ELF_H
 +#define __ASMSPARC_ELF_H
@@ -323,9 +323,9 @@ diff -Naur silo-1.4.11.orig/include/emul_32/asm/elf.h silo-1.4.11/include/emul_3
 +
 +
 +#endif /* !(__ASMSPARC_ELF_H) */
-diff -Naur silo-1.4.11.orig/include/emul_32/asm/posix_types.h silo-1.4.11/include/emul_32/asm/posix_types.h
---- silo-1.4.11.orig/include/emul_32/asm/posix_types.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/include/emul_32/asm/posix_types.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/include/emul_32/asm/posix_types.h silo-1.4.13/include/emul_32/asm/posix_types.h
+--- silo-1.4.13.orig/include/emul_32/asm/posix_types.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/include/emul_32/asm/posix_types.h	2006-11-02 19:21:44.208761609 -0800
 @@ -0,0 +1,122 @@
 +#ifndef __ARCH_SPARC_POSIX_TYPES_H
 +#define __ARCH_SPARC_POSIX_TYPES_H
@@ -449,9 +449,9 @@ diff -Naur silo-1.4.11.orig/include/emul_32/asm/posix_types.h silo-1.4.11/includ
 +#endif /* defined(__KERNEL__) || !defined(__GLIBC__) || (__GLIBC__ < 2) */
 +
 +#endif /* !(__ARCH_SPARC_POSIX_TYPES_H) */
-diff -Naur silo-1.4.11.orig/include/emul_32/asm/types.h silo-1.4.11/include/emul_32/asm/types.h
---- silo-1.4.11.orig/include/emul_32/asm/types.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/include/emul_32/asm/types.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/include/emul_32/asm/types.h silo-1.4.13/include/emul_32/asm/types.h
+--- silo-1.4.13.orig/include/emul_32/asm/types.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/include/emul_32/asm/types.h	2006-11-02 19:21:44.208761609 -0800
 @@ -0,0 +1,41 @@
 +#ifndef _SPARC_TYPES_H
 +#define _SPARC_TYPES_H
@@ -494,9 +494,9 @@ diff -Naur silo-1.4.11.orig/include/emul_32/asm/types.h silo-1.4.11/include/emul
 +#endif /* __ASSEMBLY__ */
 +
 +#endif /* defined(_SPARC_TYPES_H) */
-diff -Naur silo-1.4.11.orig/include/ext2fs/ext2_err.h silo-1.4.11/include/ext2fs/ext2_err.h
---- silo-1.4.11.orig/include/ext2fs/ext2_err.h	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/include/ext2fs/ext2_err.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/include/ext2fs/ext2_err.h silo-1.4.13/include/ext2fs/ext2_err.h
+--- silo-1.4.13.orig/include/ext2fs/ext2_err.h	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/include/ext2fs/ext2_err.h	2006-11-02 19:21:44.208761609 -0800
 @@ -3,6 +3,8 @@
   * This file is automatically generated; please do not edit it.
   */
@@ -543,9 +543,9 @@ diff -Naur silo-1.4.11.orig/include/ext2fs/ext2_err.h silo-1.4.11/include/ext2fs
  #define ERROR_TABLE_BASE_ext2 (2133571328L)
  
  /* for compatibility with older versions... */
-diff -Naur silo-1.4.11.orig/include/ext2fs/ext2_io.h silo-1.4.11/include/ext2fs/ext2_io.h
---- silo-1.4.11.orig/include/ext2fs/ext2_io.h	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/include/ext2fs/ext2_io.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/include/ext2fs/ext2_io.h silo-1.4.13/include/ext2fs/ext2_io.h
+--- silo-1.4.13.orig/include/ext2fs/ext2_io.h	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/include/ext2fs/ext2_io.h	2006-11-02 19:21:44.208761609 -0800
 @@ -27,6 +27,8 @@
  typedef struct struct_io_manager *io_manager;
  typedef struct struct_io_channel *io_channel;
@@ -592,9 +592,9 @@ diff -Naur silo-1.4.11.orig/include/ext2fs/ext2_io.h silo-1.4.11/include/ext2fs/
  /* unix_io.c */
  extern io_manager unix_io_manager;
  
-diff -Naur silo-1.4.11.orig/libext2fs/ChangeLog silo-1.4.11/libext2fs/ChangeLog
---- silo-1.4.11.orig/libext2fs/ChangeLog	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ChangeLog	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ChangeLog silo-1.4.13/libext2fs/ChangeLog
+--- silo-1.4.13.orig/libext2fs/ChangeLog	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ChangeLog	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,3311 @@
 +2006-06-30  Theodore Ts'o  <tytso@mit.edu>
 +
@@ -3907,9 +3907,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ChangeLog silo-1.4.11/libext2fs/ChangeLog
 +	have been trashed.
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/Makefile silo-1.4.11/libext2fs/Makefile
---- silo-1.4.11.orig/libext2fs/Makefile	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/Makefile	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/Makefile silo-1.4.13/libext2fs/Makefile
+--- silo-1.4.13.orig/libext2fs/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/Makefile	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,21 @@
 +
 +include ../Rules.make
@@ -3932,9 +3932,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/Makefile silo-1.4.11/libext2fs/Makefile
 +
 +.c.o:
 +	$(CC-SILO) $(CFLAGS) $(DEFS) -c $< -o $@
-diff -Naur silo-1.4.11.orig/libext2fs/alloc.c silo-1.4.11/libext2fs/alloc.c
---- silo-1.4.11.orig/libext2fs/alloc.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/alloc.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/alloc.c silo-1.4.13/libext2fs/alloc.c
+--- silo-1.4.13.orig/libext2fs/alloc.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/alloc.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,173 @@
 +/*
 + * alloc.c --- allocate new inodes, blocks for ext2fs
@@ -4109,9 +4109,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/alloc.c silo-1.4.11/libext2fs/alloc.c
 +	return EXT2_ET_BLOCK_ALLOC_FAIL;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/alloc_sb.c silo-1.4.11/libext2fs/alloc_sb.c
---- silo-1.4.11.orig/libext2fs/alloc_sb.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/alloc_sb.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/alloc_sb.c silo-1.4.13/libext2fs/alloc_sb.c
+--- silo-1.4.13.orig/libext2fs/alloc_sb.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/alloc_sb.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,57 @@
 +/*
 + * alloc_sb.c --- Allocate the superblock and block group descriptors for a 
@@ -4170,9 +4170,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/alloc_sb.c silo-1.4.11/libext2fs/alloc_sb.
 +
 +	return num_blocks;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/alloc_stats.c silo-1.4.11/libext2fs/alloc_stats.c
---- silo-1.4.11.orig/libext2fs/alloc_stats.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/alloc_stats.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/alloc_stats.c silo-1.4.13/libext2fs/alloc_stats.c
+--- silo-1.4.13.orig/libext2fs/alloc_stats.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/alloc_stats.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,52 @@
 +/*
 + * alloc_stats.c --- Update allocation statistics for ext2fs
@@ -4226,9 +4226,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/alloc_stats.c silo-1.4.11/libext2fs/alloc_
 +	ext2fs_mark_super_dirty(fs);
 +	ext2fs_mark_bb_dirty(fs);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/alloc_tables.c silo-1.4.11/libext2fs/alloc_tables.c
---- silo-1.4.11.orig/libext2fs/alloc_tables.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/alloc_tables.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/alloc_tables.c silo-1.4.13/libext2fs/alloc_tables.c
+--- silo-1.4.13.orig/libext2fs/alloc_tables.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/alloc_tables.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,117 @@
 +/*
 + * alloc_tables.c --- Allocate tables for a newly initialized
@@ -4347,9 +4347,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/alloc_tables.c silo-1.4.11/libext2fs/alloc
 +	return 0;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/badblocks.c silo-1.4.11/libext2fs/badblocks.c
---- silo-1.4.11.orig/libext2fs/badblocks.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/badblocks.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/badblocks.c silo-1.4.13/libext2fs/badblocks.c
+--- silo-1.4.13.orig/libext2fs/badblocks.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/badblocks.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,327 @@
 +/*
 + * badblocks.c --- routines to manipulate the bad block structure
@@ -4678,9 +4678,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/badblocks.c silo-1.4.11/libext2fs/badblock
 +{
 +	return bb->num;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/bb_compat.c silo-1.4.11/libext2fs/bb_compat.c
---- silo-1.4.11.orig/libext2fs/bb_compat.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bb_compat.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bb_compat.c silo-1.4.13/libext2fs/bb_compat.c
+--- silo-1.4.13.orig/libext2fs/bb_compat.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bb_compat.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,63 @@
 +/*
 + * bb_compat.c --- compatibility badblocks routines
@@ -4745,9 +4745,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bb_compat.c silo-1.4.11/libext2fs/bb_compa
 +{
 +	ext2fs_badblocks_list_iterate_end(iter);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/bb_inode.c silo-1.4.11/libext2fs/bb_inode.c
---- silo-1.4.11.orig/libext2fs/bb_inode.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bb_inode.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bb_inode.c silo-1.4.13/libext2fs/bb_inode.c
+--- silo-1.4.13.orig/libext2fs/bb_inode.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bb_inode.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,267 @@
 +/*
 + * bb_inode.c --- routines to update the bad block inode.
@@ -5016,9 +5016,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bb_inode.c silo-1.4.11/libext2fs/bb_inode.
 +
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/bitmaps.c silo-1.4.11/libext2fs/bitmaps.c
---- silo-1.4.11.orig/libext2fs/bitmaps.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bitmaps.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bitmaps.c silo-1.4.13/libext2fs/bitmaps.c
+--- silo-1.4.13.orig/libext2fs/bitmaps.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bitmaps.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,212 @@
 +/*
 + * bitmaps.c --- routines to read, write, and manipulate the inode and
@@ -5232,9 +5232,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bitmaps.c silo-1.4.11/libext2fs/bitmaps.c
 +	memset(bitmap->bitmap, 0,
 +	       (size_t) (((bitmap->real_end - bitmap->start) / 8) + 1));
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/bitops.c silo-1.4.11/libext2fs/bitops.c
---- silo-1.4.11.orig/libext2fs/bitops.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bitops.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bitops.c silo-1.4.13/libext2fs/bitops.c
+--- silo-1.4.13.orig/libext2fs/bitops.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bitops.c	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,91 @@
 +/*
 + * bitops.c --- Bitmap frobbing code.  See bitops.h for the inlined
@@ -5327,9 +5327,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bitops.c silo-1.4.11/libext2fs/bitops.c
 +#endif
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/bitops.h silo-1.4.11/libext2fs/bitops.h
---- silo-1.4.11.orig/libext2fs/bitops.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bitops.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bitops.h silo-1.4.13/libext2fs/bitops.h
+--- silo-1.4.13.orig/libext2fs/bitops.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bitops.h	2006-11-02 19:21:44.212761475 -0800
 @@ -0,0 +1,617 @@
 +/*
 + * bitops.h --- Bitmap frobbing code.  The byte swapping routines are
@@ -5948,9 +5948,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bitops.h silo-1.4.11/libext2fs/bitops.h
 +#undef _INLINE_
 +#endif
 +
-diff -Naur silo-1.4.11.orig/libext2fs/block.c silo-1.4.11/libext2fs/block.c
---- silo-1.4.11.orig/libext2fs/block.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/block.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/block.c silo-1.4.13/libext2fs/block.c
+--- silo-1.4.13.orig/libext2fs/block.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/block.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,437 @@
 +/*
 + * block.c --- iterate over all blocks in an inode
@@ -6389,9 +6389,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/block.c silo-1.4.11/libext2fs/block.c
 +				     block_buf, xlate_func, &xl);
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/bmap.c silo-1.4.11/libext2fs/bmap.c
---- silo-1.4.11.orig/libext2fs/bmap.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bmap.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bmap.c silo-1.4.13/libext2fs/bmap.c
+--- silo-1.4.13.orig/libext2fs/bmap.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bmap.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,270 @@
 +/*
 + * bmap.c --- logical to physical block mapping
@@ -6663,9 +6663,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bmap.c silo-1.4.11/libext2fs/bmap.c
 +
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/bmove.c silo-1.4.11/libext2fs/bmove.c
---- silo-1.4.11.orig/libext2fs/bmove.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/bmove.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/bmove.c silo-1.4.13/libext2fs/bmove.c
+--- silo-1.4.13.orig/libext2fs/bmove.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/bmove.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,160 @@
 +/*
 + * bmove.c --- Move blocks around to make way for a particular
@@ -6827,9 +6827,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/bmove.c silo-1.4.11/libext2fs/bmove.c
 +	return 0;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/brel.h silo-1.4.11/libext2fs/brel.h
---- silo-1.4.11.orig/libext2fs/brel.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/brel.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/brel.h silo-1.4.13/libext2fs/brel.h
+--- silo-1.4.13.orig/libext2fs/brel.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/brel.h	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,86 @@
 +/*
 + * brel.h
@@ -6917,9 +6917,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/brel.h silo-1.4.11/libext2fs/brel.h
 +#define ext2fs_brel_delete(brel, old) ((brel)->delete((brel), old))
 +#define ext2fs_brel_free(brel) ((brel)->free((brel)))
 +
-diff -Naur silo-1.4.11.orig/libext2fs/brel_ma.c silo-1.4.11/libext2fs/brel_ma.c
---- silo-1.4.11.orig/libext2fs/brel_ma.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/brel_ma.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/brel_ma.c silo-1.4.13/libext2fs/brel_ma.c
+--- silo-1.4.13.orig/libext2fs/brel_ma.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/brel_ma.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,197 @@
 +/*
 + * brel_ma.c
@@ -7118,9 +7118,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/brel_ma.c silo-1.4.11/libext2fs/brel_ma.c
 +	ext2fs_free_mem(&brel);
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/check_desc.c silo-1.4.11/libext2fs/check_desc.c
---- silo-1.4.11.orig/libext2fs/check_desc.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/check_desc.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/check_desc.c silo-1.4.13/libext2fs/check_desc.c
+--- silo-1.4.13.orig/libext2fs/check_desc.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/check_desc.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,68 @@
 +/*
 + * check_desc.c --- Check the group descriptors of an ext2 filesystem
@@ -7190,9 +7190,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/check_desc.c silo-1.4.11/libext2fs/check_d
 +	}
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/closefs.c silo-1.4.11/libext2fs/closefs.c
---- silo-1.4.11.orig/libext2fs/closefs.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/closefs.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/closefs.c silo-1.4.13/libext2fs/closefs.c
+--- silo-1.4.13.orig/libext2fs/closefs.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/closefs.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,381 @@
 +/*
 + * closefs.c --- close an ext2 filesystem
@@ -7575,9 +7575,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/closefs.c silo-1.4.11/libext2fs/closefs.c
 +	return 0;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/cmp_bitmaps.c silo-1.4.11/libext2fs/cmp_bitmaps.c
---- silo-1.4.11.orig/libext2fs/cmp_bitmaps.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/cmp_bitmaps.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/cmp_bitmaps.c silo-1.4.13/libext2fs/cmp_bitmaps.c
+--- silo-1.4.13.orig/libext2fs/cmp_bitmaps.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/cmp_bitmaps.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,72 @@
 +/*
 + * cmp_bitmaps.c --- routines to compare inode and block bitmaps.
@@ -7651,9 +7651,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/cmp_bitmaps.c silo-1.4.11/libext2fs/cmp_bi
 +	return 0;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/dblist.c silo-1.4.11/libext2fs/dblist.c
---- silo-1.4.11.orig/libext2fs/dblist.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dblist.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dblist.c silo-1.4.13/libext2fs/dblist.c
+--- silo-1.4.13.orig/libext2fs/dblist.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dblist.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,260 @@
 +/*
 + * dblist.c -- directory block list functions
@@ -7915,9 +7915,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dblist.c silo-1.4.11/libext2fs/dblist.c
 +{
 +	return (int) dblist->count;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/dblist_dir.c silo-1.4.11/libext2fs/dblist_dir.c
---- silo-1.4.11.orig/libext2fs/dblist_dir.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dblist_dir.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dblist_dir.c silo-1.4.13/libext2fs/dblist_dir.c
+--- silo-1.4.13.orig/libext2fs/dblist_dir.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dblist_dir.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,75 @@
 +/*
 + * dblist_dir.c --- iterate by directory entry
@@ -7994,9 +7994,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dblist_dir.c silo-1.4.11/libext2fs/dblist_
 +	return ext2fs_process_dir_block(fs, &db_info->blk,
 +					db_info->blockcnt, 0, 0, priv_data);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/dir_iterate.c silo-1.4.11/libext2fs/dir_iterate.c
---- silo-1.4.11.orig/libext2fs/dir_iterate.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dir_iterate.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dir_iterate.c silo-1.4.13/libext2fs/dir_iterate.c
+--- silo-1.4.13.orig/libext2fs/dir_iterate.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dir_iterate.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,219 @@
 +/*
 + * dir_iterate.c --- ext2fs directory iteration operations
@@ -8217,9 +8217,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dir_iterate.c silo-1.4.11/libext2fs/dir_it
 +	return 0;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/dirblock.c silo-1.4.11/libext2fs/dirblock.c
---- silo-1.4.11.orig/libext2fs/dirblock.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dirblock.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dirblock.c silo-1.4.13/libext2fs/dirblock.c
+--- silo-1.4.13.orig/libext2fs/dirblock.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dirblock.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,130 @@
 +/*
 + * dirblock.c --- directory block routines.
@@ -8351,9 +8351,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dirblock.c silo-1.4.11/libext2fs/dirblock.
 +	return ext2fs_write_dir_block2(fs, block, inbuf, 0);
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/dirhash.c silo-1.4.11/libext2fs/dirhash.c
---- silo-1.4.11.orig/libext2fs/dirhash.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dirhash.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dirhash.c silo-1.4.13/libext2fs/dirhash.c
+--- silo-1.4.13.orig/libext2fs/dirhash.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dirhash.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,233 @@
 +/*
 + * dirhash.c -- Calculate the hash of a directory entry
@@ -8588,9 +8588,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dirhash.c silo-1.4.11/libext2fs/dirhash.c
 +		*ret_minor_hash = minor_hash;
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/dosio.c silo-1.4.11/libext2fs/dosio.c
---- silo-1.4.11.orig/libext2fs/dosio.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dosio.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dosio.c silo-1.4.13/libext2fs/dosio.c
+--- silo-1.4.13.orig/libext2fs/dosio.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dosio.c	2006-11-02 19:21:44.216761341 -0800
 @@ -0,0 +1,456 @@
 +/*
 + * dosio.c -- Disk I/O module for the ext2fs/DOS library.
@@ -9048,9 +9048,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dosio.c silo-1.4.11/libext2fs/dosio.c
 +   */
 +  return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/dosio.h silo-1.4.11/libext2fs/dosio.h
---- silo-1.4.11.orig/libext2fs/dosio.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dosio.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dosio.h silo-1.4.13/libext2fs/dosio.h
+--- silo-1.4.13.orig/libext2fs/dosio.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dosio.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,153 @@
 +/*
 + * v1.0
@@ -9205,9 +9205,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dosio.h silo-1.4.11/libext2fs/dosio.h
 +int open_partition(char *dev);
 +
 +#endif /* __diskio_h */
-diff -Naur silo-1.4.11.orig/libext2fs/dupfs.c silo-1.4.11/libext2fs/dupfs.c
---- silo-1.4.11.orig/libext2fs/dupfs.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/dupfs.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/dupfs.c silo-1.4.13/libext2fs/dupfs.c
+--- silo-1.4.13.orig/libext2fs/dupfs.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/dupfs.c	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,96 @@
 +/*
 + * dupfs.c --- duplicate a ext2 filesystem handle
@@ -9305,9 +9305,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/dupfs.c silo-1.4.11/libext2fs/dupfs.c
 +	
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/e2image.h silo-1.4.11/libext2fs/e2image.h
---- silo-1.4.11.orig/libext2fs/e2image.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/e2image.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/e2image.h silo-1.4.13/libext2fs/e2image.h
+--- silo-1.4.13.orig/libext2fs/e2image.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/e2image.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,51 @@
 +/*
 + * e2image.h --- header file describing the ext2 image format
@@ -9360,9 +9360,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/e2image.h silo-1.4.11/libext2fs/e2image.h
 +	
 +	
 +	
-diff -Naur silo-1.4.11.orig/libext2fs/expanddir.c silo-1.4.11/libext2fs/expanddir.c
---- silo-1.4.11.orig/libext2fs/expanddir.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/expanddir.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/expanddir.c silo-1.4.13/libext2fs/expanddir.c
+--- silo-1.4.13.orig/libext2fs/expanddir.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/expanddir.c	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,126 @@
 +/*
 + * expand.c --- expand an ext2fs directory
@@ -9490,9 +9490,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/expanddir.c silo-1.4.11/libext2fs/expanddi
 +
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/ext2_err.c silo-1.4.11/libext2fs/ext2_err.c
---- silo-1.4.11.orig/libext2fs/ext2_err.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext2_err.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext2_err.c silo-1.4.13/libext2fs/ext2_err.c
+--- silo-1.4.13.orig/libext2fs/ext2_err.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext2_err.c	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,148 @@
 +/*
 + * ext2_err.c:
@@ -9642,9 +9642,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext2_err.c silo-1.4.11/libext2fs/ext2_err.
 +    et->next = 0;
 +    *end = et;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/ext2_ext_attr.h silo-1.4.11/libext2fs/ext2_ext_attr.h
---- silo-1.4.11.orig/libext2fs/ext2_ext_attr.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext2_ext_attr.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext2_ext_attr.h silo-1.4.13/libext2fs/ext2_ext_attr.h
+--- silo-1.4.13.orig/libext2fs/ext2_ext_attr.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext2_ext_attr.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,69 @@
 +/*
 +  File: linux/ext2_ext_attr.h
@@ -9715,9 +9715,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext2_ext_attr.h silo-1.4.11/libext2fs/ext2
 +# endif
 +#endif  /* __KERNEL__ */
 +
-diff -Naur silo-1.4.11.orig/libext2fs/ext2_fs.h silo-1.4.11/libext2fs/ext2_fs.h
---- silo-1.4.11.orig/libext2fs/ext2_fs.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext2_fs.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext2_fs.h silo-1.4.13/libext2fs/ext2_fs.h
+--- silo-1.4.13.orig/libext2fs/ext2_fs.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext2_fs.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,644 @@
 +/*
 + *  linux/include/linux/ext2_fs.h
@@ -10363,9 +10363,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext2_fs.h silo-1.4.11/libext2fs/ext2_fs.h
 +					 ~EXT2_DIR_ROUND)
 +
 +#endif	/* _LINUX_EXT2_FS_H */
-diff -Naur silo-1.4.11.orig/libext2fs/ext2_io.h silo-1.4.11/libext2fs/ext2_io.h
---- silo-1.4.11.orig/libext2fs/ext2_io.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext2_io.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext2_io.h silo-1.4.13/libext2fs/ext2_io.h
+--- silo-1.4.13.orig/libext2fs/ext2_io.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext2_io.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,108 @@
 +/*
 + * io.h --- the I/O manager abstraction
@@ -10475,9 +10475,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext2_io.h silo-1.4.11/libext2fs/ext2_io.h
 +
 +#endif /* _EXT2FS_EXT2_IO_H */
 +	
-diff -Naur silo-1.4.11.orig/libext2fs/ext2fs.h silo-1.4.11/libext2fs/ext2fs.h
---- silo-1.4.11.orig/libext2fs/ext2fs.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext2fs.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext2fs.h silo-1.4.13/libext2fs/ext2fs.h
+--- silo-1.4.13.orig/libext2fs/ext2fs.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext2fs.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,1140 @@
 +/*
 + * ext2fs.h --- ext2fs
@@ -11619,9 +11619,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext2fs.h silo-1.4.11/libext2fs/ext2fs.h
 +#endif
 +
 +#endif /* _EXT2FS_EXT2FS_H */
-diff -Naur silo-1.4.11.orig/libext2fs/ext2fsP.h silo-1.4.11/libext2fs/ext2fsP.h
---- silo-1.4.11.orig/libext2fs/ext2fsP.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext2fsP.h	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext2fsP.h silo-1.4.13/libext2fs/ext2fsP.h
+--- silo-1.4.13.orig/libext2fs/ext2fsP.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext2fsP.h	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,88 @@
 +/*
 + * ext2fsP.h --- private header file for ext2 library
@@ -11711,9 +11711,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext2fsP.h silo-1.4.11/libext2fs/ext2fsP.h
 +				    void		*priv_data);
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/ext_attr.c silo-1.4.11/libext2fs/ext_attr.c
---- silo-1.4.11.orig/libext2fs/ext_attr.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ext_attr.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ext_attr.c silo-1.4.13/libext2fs/ext_attr.c
+--- silo-1.4.13.orig/libext2fs/ext_attr.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ext_attr.c	2006-11-02 19:21:44.220761208 -0800
 @@ -0,0 +1,105 @@
 +/*
 + * ext_attr.c --- extended attribute blocks
@@ -11820,9 +11820,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ext_attr.c silo-1.4.11/libext2fs/ext_attr.
 +		ext2fs_free_mem(&buf);
 +	return retval;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/fileio.c silo-1.4.11/libext2fs/fileio.c
---- silo-1.4.11.orig/libext2fs/fileio.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/fileio.c	2006-03-09 21:34:56 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/fileio.c silo-1.4.13/libext2fs/fileio.c
+--- silo-1.4.13.orig/libext2fs/fileio.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/fileio.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,378 @@
 +/*
 + * fileio.c --- Simple file I/O routines
@@ -12202,9 +12202,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/fileio.c silo-1.4.11/libext2fs/fileio.c
 +
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/finddev.c silo-1.4.11/libext2fs/finddev.c
---- silo-1.4.11.orig/libext2fs/finddev.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/finddev.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/finddev.c silo-1.4.13/libext2fs/finddev.c
+--- silo-1.4.13.orig/libext2fs/finddev.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/finddev.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,208 @@
 +/*
 + * finddev.c -- this routine attempts to find a particular device in
@@ -12414,9 +12414,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/finddev.c silo-1.4.11/libext2fs/finddev.c
 +}
 +	
 +#endif
-diff -Naur silo-1.4.11.orig/libext2fs/flushb.c silo-1.4.11/libext2fs/flushb.c
---- silo-1.4.11.orig/libext2fs/flushb.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/flushb.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/flushb.c silo-1.4.13/libext2fs/flushb.c
+--- silo-1.4.13.orig/libext2fs/flushb.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/flushb.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,82 @@
 +/*
 + * flushb.c --- Hides system-dependent information for both syncing a
@@ -12500,9 +12500,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/flushb.c silo-1.4.11/libext2fs/flushb.c
 +	}
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/freefs.c silo-1.4.11/libext2fs/freefs.c
---- silo-1.4.11.orig/libext2fs/freefs.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/freefs.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/freefs.c silo-1.4.13/libext2fs/freefs.c
+--- silo-1.4.13.orig/libext2fs/freefs.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/freefs.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,147 @@
 +/*
 + * freefs.c --- free an ext2 filesystem
@@ -12651,9 +12651,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/freefs.c silo-1.4.11/libext2fs/freefs.c
 +	ext2fs_free_mem(&dblist);
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/gen_bitmap.c silo-1.4.11/libext2fs/gen_bitmap.c
---- silo-1.4.11.orig/libext2fs/gen_bitmap.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/gen_bitmap.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/gen_bitmap.c silo-1.4.13/libext2fs/gen_bitmap.c
+--- silo-1.4.13.orig/libext2fs/gen_bitmap.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/gen_bitmap.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,48 @@
 +/*
 + * gen_bitmap.c --- Generic bitmap routines that used to be inlined.
@@ -12703,9 +12703,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/gen_bitmap.c silo-1.4.11/libext2fs/gen_bit
 +	}
 +	return ext2fs_clear_bit(bitno - bitmap->start, bitmap->bitmap);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/get_pathname.c silo-1.4.11/libext2fs/get_pathname.c
---- silo-1.4.11.orig/libext2fs/get_pathname.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/get_pathname.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/get_pathname.c silo-1.4.13/libext2fs/get_pathname.c
+--- silo-1.4.13.orig/libext2fs/get_pathname.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/get_pathname.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,157 @@
 +/*
 + * get_pathname.c --- do directry/inode -> name translation
@@ -12864,9 +12864,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/get_pathname.c silo-1.4.11/libext2fs/get_p
 +	return retval;
 +	
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/getsectsize.c silo-1.4.11/libext2fs/getsectsize.c
---- silo-1.4.11.orig/libext2fs/getsectsize.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/getsectsize.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/getsectsize.c silo-1.4.13/libext2fs/getsectsize.c
+--- silo-1.4.13.orig/libext2fs/getsectsize.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/getsectsize.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,60 @@
 +/*
 + * getsectsize.c --- get the sector size of a device.
@@ -12928,9 +12928,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/getsectsize.c silo-1.4.11/libext2fs/getsec
 +	close(fd);
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/getsize.c silo-1.4.11/libext2fs/getsize.c
---- silo-1.4.11.orig/libext2fs/getsize.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/getsize.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/getsize.c silo-1.4.13/libext2fs/getsize.c
+--- silo-1.4.13.orig/libext2fs/getsize.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/getsize.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,293 @@
 +/*
 + * getsize.c --- get the size of a partition.
@@ -13225,9 +13225,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/getsize.c silo-1.4.11/libext2fs/getsize.c
 +	exit(0);
 +}
 +#endif
-diff -Naur silo-1.4.11.orig/libext2fs/icount.c silo-1.4.11/libext2fs/icount.c
---- silo-1.4.11.orig/libext2fs/icount.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/icount.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/icount.c silo-1.4.13/libext2fs/icount.c
+--- silo-1.4.13.orig/libext2fs/icount.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/icount.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,483 @@
 +/*
 + * icount.c --- an efficient inode count abstraction
@@ -13712,9 +13712,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/icount.c silo-1.4.11/libext2fs/icount.c
 +
 +	return icount->size;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/imager.c silo-1.4.11/libext2fs/imager.c
---- silo-1.4.11.orig/libext2fs/imager.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/imager.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/imager.c silo-1.4.13/libext2fs/imager.c
+--- silo-1.4.13.orig/libext2fs/imager.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/imager.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,387 @@
 +/*
 + * image.c --- writes out the critical parts of the filesystem as a
@@ -14103,9 +14103,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/imager.c silo-1.4.11/libext2fs/imager.c
 +		free(buf);
 +	return (retval);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/ind_block.c silo-1.4.11/libext2fs/ind_block.c
---- silo-1.4.11.orig/libext2fs/ind_block.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ind_block.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ind_block.c silo-1.4.13/libext2fs/ind_block.c
+--- silo-1.4.13.orig/libext2fs/ind_block.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ind_block.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,66 @@
 +/*
 + * ind_block.c --- indirect block I/O routines
@@ -14173,9 +14173,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ind_block.c silo-1.4.11/libext2fs/ind_bloc
 +}
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/initialize.c silo-1.4.11/libext2fs/initialize.c
---- silo-1.4.11.orig/libext2fs/initialize.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/initialize.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/initialize.c silo-1.4.13/libext2fs/initialize.c
+--- silo-1.4.13.orig/libext2fs/initialize.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/initialize.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,387 @@
 +/*
 + * initialize.c --- initialize a filesystem handle given superblock
@@ -14564,9 +14564,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/initialize.c silo-1.4.11/libext2fs/initial
 +	ext2fs_free(fs);
 +	return retval;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/inline.c silo-1.4.11/libext2fs/inline.c
---- silo-1.4.11.orig/libext2fs/inline.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/inline.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/inline.c silo-1.4.13/libext2fs/inline.c
+--- silo-1.4.13.orig/libext2fs/inline.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/inline.c	2006-11-02 19:21:44.224761074 -0800
 @@ -0,0 +1,32 @@
 +/*
 + * inline.c --- Includes the inlined functions defined in the header
@@ -14600,9 +14600,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/inline.c silo-1.4.11/libext2fs/inline.c
 +#define INCLUDE_INLINE_FUNCS
 +#include "ext2fs.h"
 +
-diff -Naur silo-1.4.11.orig/libext2fs/inode.c silo-1.4.11/libext2fs/inode.c
---- silo-1.4.11.orig/libext2fs/inode.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/inode.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/inode.c silo-1.4.13/libext2fs/inode.c
+--- silo-1.4.13.orig/libext2fs/inode.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/inode.c	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,794 @@
 +/*
 + * inode.c --- utility routines to read and write inodes
@@ -15398,9 +15398,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/inode.c silo-1.4.11/libext2fs/inode.c
 +	return 0;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/inode_io.c silo-1.4.11/libext2fs/inode_io.c
---- silo-1.4.11.orig/libext2fs/inode_io.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/inode_io.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/inode_io.c silo-1.4.13/libext2fs/inode_io.c
+--- silo-1.4.13.orig/libext2fs/inode_io.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/inode_io.c	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,270 @@
 +/*
 + * inode_io.c --- This is allows an inode in an ext2 filesystem image
@@ -15672,9 +15672,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/inode_io.c silo-1.4.11/libext2fs/inode_io.
 +	return ext2fs_file_flush(data->file);
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/io_manager.c silo-1.4.11/libext2fs/io_manager.c
---- silo-1.4.11.orig/libext2fs/io_manager.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/io_manager.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/io_manager.c silo-1.4.13/libext2fs/io_manager.c
+--- silo-1.4.13.orig/libext2fs/io_manager.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/io_manager.c	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,69 @@
 +/*
 + * io_manager.c --- the I/O manager abstraction
@@ -15745,9 +15745,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/io_manager.c silo-1.4.11/libext2fs/io_mana
 +
 +	return EXT2_ET_UNIMPLEMENTED;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/irel.h silo-1.4.11/libext2fs/irel.h
---- silo-1.4.11.orig/libext2fs/irel.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/irel.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/irel.h silo-1.4.13/libext2fs/irel.h
+--- silo-1.4.13.orig/libext2fs/irel.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/irel.h	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,114 @@
 +/*
 + * irel.h
@@ -15863,9 +15863,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/irel.h silo-1.4.11/libext2fs/irel.h
 +#define ext2fs_irel_move(irel, old, new) ((irel)->move((irel), old, new))
 +#define ext2fs_irel_delete(irel, old) ((irel)->delete((irel), old))
 +#define ext2fs_irel_free(irel) ((irel)->free((irel)))
-diff -Naur silo-1.4.11.orig/libext2fs/irel_ma.c silo-1.4.11/libext2fs/irel_ma.c
---- silo-1.4.11.orig/libext2fs/irel_ma.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/irel_ma.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/irel_ma.c silo-1.4.13/libext2fs/irel_ma.c
+--- silo-1.4.13.orig/libext2fs/irel_ma.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/irel_ma.c	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,372 @@
 +/*
 + * irel_ma.c
@@ -16239,9 +16239,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/irel_ma.c silo-1.4.11/libext2fs/irel_ma.c
 +	ext2fs_free_mem(&irel);
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/ismounted.c silo-1.4.11/libext2fs/ismounted.c
---- silo-1.4.11.orig/libext2fs/ismounted.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/ismounted.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/ismounted.c silo-1.4.13/libext2fs/ismounted.c
+--- silo-1.4.13.orig/libext2fs/ismounted.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/ismounted.c	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,377 @@
 +/*
 + * ismounted.c --- Check to see if the filesystem was mounted
@@ -16620,9 +16620,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/ismounted.c silo-1.4.11/libext2fs/ismounte
 +	exit(0);
 +}
 +#endif /* DEBUG */
-diff -Naur silo-1.4.11.orig/libext2fs/jfs_compat.h silo-1.4.11/libext2fs/jfs_compat.h
---- silo-1.4.11.orig/libext2fs/jfs_compat.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/jfs_compat.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/jfs_compat.h silo-1.4.13/libext2fs/jfs_compat.h
+--- silo-1.4.13.orig/libext2fs/jfs_compat.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/jfs_compat.h	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,67 @@
 +
 +#ifndef _JFS_COMPAT_H
@@ -16691,9 +16691,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/jfs_compat.h silo-1.4.11/libext2fs/jfs_com
 +#endif
 +
 +#endif /* _JFS_COMPAT_H */
-diff -Naur silo-1.4.11.orig/libext2fs/jfs_dat.h silo-1.4.11/libext2fs/jfs_dat.h
---- silo-1.4.11.orig/libext2fs/jfs_dat.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/jfs_dat.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/jfs_dat.h silo-1.4.13/libext2fs/jfs_dat.h
+--- silo-1.4.13.orig/libext2fs/jfs_dat.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/jfs_dat.h	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,64 @@
 +/*
 + * jfs_dat.h --- stripped down header file which only contains the JFS
@@ -16759,9 +16759,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/jfs_dat.h silo-1.4.11/libext2fs/jfs_dat.h
 +	
 +} journal_superblock_t;
 +
-diff -Naur silo-1.4.11.orig/libext2fs/jfs_user.h silo-1.4.11/libext2fs/jfs_user.h
---- silo-1.4.11.orig/libext2fs/jfs_user.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/jfs_user.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/jfs_user.h silo-1.4.13/libext2fs/jfs_user.h
+--- silo-1.4.13.orig/libext2fs/jfs_user.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/jfs_user.h	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,8 @@
 +#ifndef _JFS_USER_H
 +#define _JFS_USER_H
@@ -16771,9 +16771,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/jfs_user.h silo-1.4.11/libext2fs/jfs_user.
 +#include "kernel-jbd.h"
 +
 +#endif /* _JFS_USER_H */
-diff -Naur silo-1.4.11.orig/libext2fs/kernel-jbd.h silo-1.4.11/libext2fs/kernel-jbd.h
---- silo-1.4.11.orig/libext2fs/kernel-jbd.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/kernel-jbd.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/kernel-jbd.h silo-1.4.13/libext2fs/kernel-jbd.h
+--- silo-1.4.13.orig/libext2fs/kernel-jbd.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/kernel-jbd.h	2006-11-02 19:21:44.228760941 -0800
 @@ -0,0 +1,910 @@
 +/*
 + * linux/include/linux/jbd.h
@@ -17685,9 +17685,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/kernel-jbd.h silo-1.4.11/libext2fs/kernel-
 +
 +#endif	/* defined(__KERNEL__) && !defined(CONFIG_JBD) */
 +#endif	/* _LINUX_JBD_H */
-diff -Naur silo-1.4.11.orig/libext2fs/kernel-list.h silo-1.4.11/libext2fs/kernel-list.h
---- silo-1.4.11.orig/libext2fs/kernel-list.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/kernel-list.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/kernel-list.h silo-1.4.13/libext2fs/kernel-list.h
+--- silo-1.4.13.orig/libext2fs/kernel-list.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/kernel-list.h	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,112 @@
 +#ifndef _LINUX_LIST_H
 +#define _LINUX_LIST_H
@@ -17801,9 +17801,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/kernel-list.h silo-1.4.11/libext2fs/kernel
 +        for (pos = (head)->next; pos != (head); pos = pos->next)
 +
 +#endif
-diff -Naur silo-1.4.11.orig/libext2fs/link.c silo-1.4.11/libext2fs/link.c
---- silo-1.4.11.orig/libext2fs/link.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/link.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/link.c silo-1.4.13/libext2fs/link.c
+--- silo-1.4.13.orig/libext2fs/link.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/link.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,134 @@
 +/*
 + * link.c --- create links in a ext2fs directory
@@ -17939,9 +17939,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/link.c silo-1.4.11/libext2fs/link.c
 +
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/llseek.c silo-1.4.11/libext2fs/llseek.c
---- silo-1.4.11.orig/libext2fs/llseek.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/llseek.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/llseek.c silo-1.4.13/libext2fs/llseek.c
+--- silo-1.4.13.orig/libext2fs/llseek.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/llseek.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,138 @@
 +/*
 + * llseek.c -- stub calling the llseek system call
@@ -18081,9 +18081,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/llseek.c silo-1.4.11/libext2fs/llseek.c
 +#endif 	/* linux */
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/lookup.c silo-1.4.11/libext2fs/lookup.c
---- silo-1.4.11.orig/libext2fs/lookup.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/lookup.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/lookup.c silo-1.4.13/libext2fs/lookup.c
+--- silo-1.4.13.orig/libext2fs/lookup.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/lookup.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,69 @@
 +/*
 + * lookup.c --- ext2fs directory lookup operations
@@ -18154,9 +18154,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/lookup.c silo-1.4.11/libext2fs/lookup.c
 +}
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/mkdir.c silo-1.4.11/libext2fs/mkdir.c
---- silo-1.4.11.orig/libext2fs/mkdir.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/mkdir.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/mkdir.c silo-1.4.13/libext2fs/mkdir.c
+--- silo-1.4.13.orig/libext2fs/mkdir.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/mkdir.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,142 @@
 +/*
 + * mkdir.c --- make a directory in the filesystem
@@ -18300,9 +18300,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/mkdir.c silo-1.4.11/libext2fs/mkdir.c
 +}
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/mkjournal.c silo-1.4.11/libext2fs/mkjournal.c
---- silo-1.4.11.orig/libext2fs/mkjournal.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/mkjournal.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/mkjournal.c silo-1.4.13/libext2fs/mkjournal.c
+--- silo-1.4.13.orig/libext2fs/mkjournal.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/mkjournal.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,425 @@
 +/*
 + * mkjournal.c --- make a journal for a filesystem
@@ -18729,9 +18729,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/mkjournal.c silo-1.4.11/libext2fs/mkjourna
 +	
 +}
 +#endif
-diff -Naur silo-1.4.11.orig/libext2fs/namei.c silo-1.4.11/libext2fs/namei.c
---- silo-1.4.11.orig/libext2fs/namei.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/namei.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/namei.c silo-1.4.13/libext2fs/namei.c
+--- silo-1.4.13.orig/libext2fs/namei.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/namei.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,205 @@
 +/*
 + * namei.c --- ext2fs directory lookup operations
@@ -18938,9 +18938,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/namei.c silo-1.4.11/libext2fs/namei.c
 +	return retval;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/native.c silo-1.4.11/libext2fs/native.c
---- silo-1.4.11.orig/libext2fs/native.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/native.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/native.c silo-1.4.13/libext2fs/native.c
+--- silo-1.4.13.orig/libext2fs/native.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/native.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,27 @@
 +/*
 + * native.c --- returns the ext2_flag for a native byte order
@@ -18969,9 +18969,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/native.c silo-1.4.11/libext2fs/native.c
 +
 +	
 +	
-diff -Naur silo-1.4.11.orig/libext2fs/newdir.c silo-1.4.11/libext2fs/newdir.c
---- silo-1.4.11.orig/libext2fs/newdir.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/newdir.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/newdir.c silo-1.4.13/libext2fs/newdir.c
+--- silo-1.4.13.orig/libext2fs/newdir.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/newdir.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,72 @@
 +/*
 + * newdir.c --- create a new directory block
@@ -19045,9 +19045,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/newdir.c silo-1.4.11/libext2fs/newdir.c
 +	*block = buf;
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/nt_io.c silo-1.4.11/libext2fs/nt_io.c
---- silo-1.4.11.orig/libext2fs/nt_io.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/nt_io.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/nt_io.c silo-1.4.13/libext2fs/nt_io.c
+--- silo-1.4.13.orig/libext2fs/nt_io.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/nt_io.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,1513 @@
 +/*
 + * nt_io.c --- This is the Nt I/O interface to the I/O manager.
@@ -20562,9 +20562,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/nt_io.c silo-1.4.11/libext2fs/nt_io.c
 +}
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/openfs.c silo-1.4.11/libext2fs/openfs.c
---- silo-1.4.11.orig/libext2fs/openfs.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/openfs.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/openfs.c silo-1.4.13/libext2fs/openfs.c
+--- silo-1.4.13.orig/libext2fs/openfs.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/openfs.c	2006-11-02 19:21:44.232760807 -0800
 @@ -0,0 +1,326 @@
 +/*
 + * openfs.c --- open an ext2 filesystem
@@ -20892,9 +20892,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/openfs.c silo-1.4.11/libext2fs/openfs.c
 +	fs->flags &= ~EXT2_FLAG_IMAGE_FILE;
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/read_bb.c silo-1.4.11/libext2fs/read_bb.c
---- silo-1.4.11.orig/libext2fs/read_bb.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/read_bb.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/read_bb.c silo-1.4.13/libext2fs/read_bb.c
+--- silo-1.4.13.orig/libext2fs/read_bb.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/read_bb.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,97 @@
 +/*
 + * read_bb --- read the bad blocks inode
@@ -20993,9 +20993,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/read_bb.c silo-1.4.11/libext2fs/read_bb.c
 +}
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/read_bb_file.c silo-1.4.11/libext2fs/read_bb_file.c
---- silo-1.4.11.orig/libext2fs/read_bb_file.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/read_bb_file.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/read_bb_file.c silo-1.4.13/libext2fs/read_bb_file.c
+--- silo-1.4.13.orig/libext2fs/read_bb_file.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/read_bb_file.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,97 @@
 +/*
 + * read_bb_file.c --- read a list of bad blocks from a FILE *
@@ -21094,9 +21094,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/read_bb_file.c silo-1.4.11/libext2fs/read_
 +}
 +
 +
-diff -Naur silo-1.4.11.orig/libext2fs/res_gdt.c silo-1.4.11/libext2fs/res_gdt.c
---- silo-1.4.11.orig/libext2fs/res_gdt.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/res_gdt.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/res_gdt.c silo-1.4.13/libext2fs/res_gdt.c
+--- silo-1.4.13.orig/libext2fs/res_gdt.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/res_gdt.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,220 @@
 +/*
 + * res_gdt.c --- reserve blocks for growing the group descriptor table
@@ -21318,9 +21318,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/res_gdt.c silo-1.4.11/libext2fs/res_gdt.c
 +	return retval;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/rs_bitmap.c silo-1.4.11/libext2fs/rs_bitmap.c
---- silo-1.4.11.orig/libext2fs/rs_bitmap.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/rs_bitmap.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/rs_bitmap.c silo-1.4.13/libext2fs/rs_bitmap.c
+--- silo-1.4.13.orig/libext2fs/rs_bitmap.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/rs_bitmap.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,106 @@
 +/*
 + * rs_bitmap.c --- routine for changing the size of a bitmap
@@ -21428,9 +21428,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/rs_bitmap.c silo-1.4.11/libext2fs/rs_bitma
 +	return retval;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/rw_bitmaps.c silo-1.4.11/libext2fs/rw_bitmaps.c
---- silo-1.4.11.orig/libext2fs/rw_bitmaps.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/rw_bitmaps.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/rw_bitmaps.c silo-1.4.13/libext2fs/rw_bitmaps.c
+--- silo-1.4.13.orig/libext2fs/rw_bitmaps.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/rw_bitmaps.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,300 @@
 +/*
 + * rw_bitmaps.c --- routines to read and write the  inode and block bitmaps.
@@ -21732,9 +21732,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/rw_bitmaps.c silo-1.4.11/libext2fs/rw_bitm
 +	return 0;
 +}	
 +
-diff -Naur silo-1.4.11.orig/libext2fs/sparse.c silo-1.4.11/libext2fs/sparse.c
---- silo-1.4.11.orig/libext2fs/sparse.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/sparse.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/sparse.c silo-1.4.13/libext2fs/sparse.c
+--- silo-1.4.13.orig/libext2fs/sparse.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/sparse.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,78 @@
 +/*
 + * sparse.c --- find the groups in an ext2 filesystem with metadata backups
@@ -21814,9 +21814,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/sparse.c silo-1.4.11/libext2fs/sparse.c
 +
 +	return ret;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/swapfs.c silo-1.4.11/libext2fs/swapfs.c
---- silo-1.4.11.orig/libext2fs/swapfs.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/swapfs.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/swapfs.c silo-1.4.13/libext2fs/swapfs.c
+--- silo-1.4.13.orig/libext2fs/swapfs.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/swapfs.c	2006-11-02 19:21:44.236760673 -0800
 @@ -0,0 +1,237 @@
 +/*
 + * swapfs.c --- swap ext2 filesystem data structures
@@ -22055,9 +22055,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/swapfs.c silo-1.4.11/libext2fs/swapfs.c
 +}
 +
 +#endif
-diff -Naur silo-1.4.11.orig/libext2fs/test_io.c silo-1.4.11/libext2fs/test_io.c
---- silo-1.4.11.orig/libext2fs/test_io.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/test_io.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/test_io.c silo-1.4.13/libext2fs/test_io.c
+--- silo-1.4.13.orig/libext2fs/test_io.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/test_io.c	2006-11-02 19:21:44.244760406 -0800
 @@ -0,0 +1,411 @@
 +/*
 + * test_io.c --- This is the Test I/O interface.
@@ -22470,9 +22470,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/test_io.c silo-1.4.11/libext2fs/test_io.c
 +	}
 +	return retval;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/tst_badblocks.c silo-1.4.11/libext2fs/tst_badblocks.c
---- silo-1.4.11.orig/libext2fs/tst_badblocks.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/tst_badblocks.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/tst_badblocks.c silo-1.4.13/libext2fs/tst_badblocks.c
+--- silo-1.4.13.orig/libext2fs/tst_badblocks.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/tst_badblocks.c	2006-11-02 19:21:44.244760406 -0800
 @@ -0,0 +1,293 @@
 +/*
 + * This testing program makes sure the badblocks implementation works.
@@ -22767,9 +22767,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/tst_badblocks.c silo-1.4.11/libext2fs/tst_
 +	return test_fail;
 +
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/tst_bitops.c silo-1.4.11/libext2fs/tst_bitops.c
---- silo-1.4.11.orig/libext2fs/tst_bitops.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/tst_bitops.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/tst_bitops.c silo-1.4.13/libext2fs/tst_bitops.c
+--- silo-1.4.13.orig/libext2fs/tst_bitops.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/tst_bitops.c	2006-11-02 19:21:44.244760406 -0800
 @@ -0,0 +1,44 @@
 +/*
 + * This testing program makes sure the bitops functions work
@@ -22815,9 +22815,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/tst_bitops.c silo-1.4.11/libext2fs/tst_bit
 +		i = ext2fs_find_next_bit_set(bitarray, size, i+1);
 +	}
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/tst_byteswap.c silo-1.4.11/libext2fs/tst_byteswap.c
---- silo-1.4.11.orig/libext2fs/tst_byteswap.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/tst_byteswap.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/tst_byteswap.c silo-1.4.13/libext2fs/tst_byteswap.c
+--- silo-1.4.13.orig/libext2fs/tst_byteswap.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/tst_byteswap.c	2006-11-02 19:21:44.244760406 -0800
 @@ -0,0 +1,92 @@
 +/*
 + * This testing program makes sure the byteswap functions work
@@ -22911,9 +22911,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/tst_byteswap.c silo-1.4.11/libext2fs/tst_b
 +	
 +	return errors;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/tst_getsectsize.c silo-1.4.11/libext2fs/tst_getsectsize.c
---- silo-1.4.11.orig/libext2fs/tst_getsectsize.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/tst_getsectsize.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/tst_getsectsize.c silo-1.4.13/libext2fs/tst_getsectsize.c
+--- silo-1.4.13.orig/libext2fs/tst_getsectsize.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/tst_getsectsize.c	2006-11-02 19:21:44.244760406 -0800
 @@ -0,0 +1,47 @@
 +/*
 + * tst_getsize.c --- this function tests the getsize function
@@ -22962,9 +22962,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/tst_getsectsize.c silo-1.4.11/libext2fs/ts
 +	       argv[1], sectsize);
 +	exit(0);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/tst_getsize.c silo-1.4.11/libext2fs/tst_getsize.c
---- silo-1.4.11.orig/libext2fs/tst_getsize.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/tst_getsize.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/tst_getsize.c silo-1.4.13/libext2fs/tst_getsize.c
+--- silo-1.4.13.orig/libext2fs/tst_getsize.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/tst_getsize.c	2006-11-02 19:21:44.244760406 -0800
 @@ -0,0 +1,44 @@
 +/*
 + * tst_getsize.c --- this function tests the getsize function
@@ -23010,9 +23010,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/tst_getsize.c silo-1.4.11/libext2fs/tst_ge
 +	printf("%s is device has %d blocks.\n", argv[1], blocks);
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/tst_iscan.c silo-1.4.11/libext2fs/tst_iscan.c
---- silo-1.4.11.orig/libext2fs/tst_iscan.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/tst_iscan.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/tst_iscan.c silo-1.4.13/libext2fs/tst_iscan.c
+--- silo-1.4.13.orig/libext2fs/tst_iscan.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/tst_iscan.c	2006-11-02 19:21:44.252760139 -0800
 @@ -0,0 +1,218 @@
 +/*
 + * tst_inode.c --- this function tests the inode scan function
@@ -23232,9 +23232,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/tst_iscan.c silo-1.4.11/libext2fs/tst_isca
 +	return failed;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/unix_io.c silo-1.4.11/libext2fs/unix_io.c
---- silo-1.4.11.orig/libext2fs/unix_io.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/unix_io.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/unix_io.c silo-1.4.13/libext2fs/unix_io.c
+--- silo-1.4.13.orig/libext2fs/unix_io.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/unix_io.c	2006-11-02 19:21:44.252760139 -0800
 @@ -0,0 +1,710 @@
 +/*
 + * unix_io.c --- This is the Unix (well, really POSIX) implementation
@@ -23946,9 +23946,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/unix_io.c silo-1.4.11/libext2fs/unix_io.c
 +	}
 +	return EXT2_ET_INVALID_ARGUMENT;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/unlink.c silo-1.4.11/libext2fs/unlink.c
---- silo-1.4.11.orig/libext2fs/unlink.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/unlink.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/unlink.c silo-1.4.13/libext2fs/unlink.c
+--- silo-1.4.13.orig/libext2fs/unlink.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/unlink.c	2006-11-02 19:21:44.252760139 -0800
 @@ -0,0 +1,99 @@
 +/*
 + * unlink.c --- delete links in a ext2fs directory
@@ -24049,9 +24049,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/unlink.c silo-1.4.11/libext2fs/unlink.c
 +	return (ls.done) ? 0 : EXT2_ET_DIR_NO_SPACE;
 +}
 +
-diff -Naur silo-1.4.11.orig/libext2fs/valid_blk.c silo-1.4.11/libext2fs/valid_blk.c
---- silo-1.4.11.orig/libext2fs/valid_blk.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/valid_blk.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/valid_blk.c silo-1.4.13/libext2fs/valid_blk.c
+--- silo-1.4.13.orig/libext2fs/valid_blk.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/valid_blk.c	2006-11-02 19:21:44.256760005 -0800
 @@ -0,0 +1,56 @@
 +/*
 + * valid_blk.c --- does the inode have valid blocks?
@@ -24109,9 +24109,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/valid_blk.c silo-1.4.11/libext2fs/valid_bl
 +	}
 +	return 1;
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/version.c silo-1.4.11/libext2fs/version.c
---- silo-1.4.11.orig/libext2fs/version.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/version.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/version.c silo-1.4.13/libext2fs/version.c
+--- silo-1.4.13.orig/libext2fs/version.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/version.c	2006-11-02 19:21:44.256760005 -0800
 @@ -0,0 +1,52 @@
 +/*
 + * version.c --- Return the version of the ext2 library
@@ -24165,9 +24165,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/version.c silo-1.4.11/libext2fs/version.c
 +
 +	return ext2fs_parse_version_string(lib_version);
 +}
-diff -Naur silo-1.4.11.orig/libext2fs/version.h silo-1.4.11/libext2fs/version.h
---- silo-1.4.11.orig/libext2fs/version.h	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/version.h	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/version.h silo-1.4.13/libext2fs/version.h
+--- silo-1.4.13.orig/libext2fs/version.h	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/version.h	2006-11-02 19:21:44.256760005 -0800
 @@ -0,0 +1,11 @@
 +/*
 + * version.h --- controls the version number printed by the e2fs
@@ -24180,9 +24180,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/version.h silo-1.4.11/libext2fs/version.h
 +
 +#define E2FSPROGS_VERSION "1.38"
 +#define E2FSPROGS_DATE "30-Jun-2005"
-diff -Naur silo-1.4.11.orig/libext2fs/write_bb_file.c silo-1.4.11/libext2fs/write_bb_file.c
---- silo-1.4.11.orig/libext2fs/write_bb_file.c	1970-01-01 00:00:00 +0000
-+++ silo-1.4.11/libext2fs/write_bb_file.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/libext2fs/write_bb_file.c silo-1.4.13/libext2fs/write_bb_file.c
+--- silo-1.4.13.orig/libext2fs/write_bb_file.c	1969-12-31 16:00:00.000000000 -0800
++++ silo-1.4.13/libext2fs/write_bb_file.c	2006-11-02 19:21:44.256760005 -0800
 @@ -0,0 +1,34 @@
 +/*
 + * write_bb_file.c --- write a list of bad blocks to a FILE *
@@ -24218,9 +24218,9 @@ diff -Naur silo-1.4.11.orig/libext2fs/write_bb_file.c silo-1.4.11/libext2fs/writ
 +	ext2fs_badblocks_list_iterate_end(bb_iter);
 +	return 0;
 +}
-diff -Naur silo-1.4.11.orig/second/Makefile silo-1.4.11/second/Makefile
---- silo-1.4.11.orig/second/Makefile	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/second/Makefile	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/second/Makefile silo-1.4.13/second/Makefile
+--- silo-1.4.13.orig/second/Makefile	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/second/Makefile	2006-11-02 19:21:44.260759872 -0800
 @@ -27,10 +27,10 @@
  LDFLAGS_LARGE=-N -Ttext $(LARGE_RELOC)
  
@@ -24311,9 +24311,80 @@ diff -Naur silo-1.4.11.orig/second/Makefile silo-1.4.11/second/Makefile
  
  second.b: second util
  	$(ELFTOAOUT) -o second.aout second
-diff -Naur silo-1.4.11.orig/second/ls.c silo-1.4.11/second/ls.c
---- silo-1.4.11.orig/second/ls.c	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/second/ls.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/second/fs/ufs.c silo-1.4.13/second/fs/ufs.c
+--- silo-1.4.13.orig/second/fs/ufs.c	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/second/fs/ufs.c	2006-11-02 19:25:24.281403152 -0800
+@@ -40,28 +40,18 @@
+ 
+ ino_t inode = 0;
+ 
+-#ifdef UFS_CIGAM
+-/* Apparently new header */
+-
+ #define ufsi_size(x) ((unsigned int)((x)->ui_size))
+ #define ufsi_db(x) ((unsigned int *)((x)->ui_u2.ui_addr.ui_db))
+ #define ufsi_ib(x) ((unsigned int *)((x)->ui_u2.ui_addr.ui_ib))
+ #define ufsd_namlen(x) ((unsigned char)((x)->d_u.d_44.d_namlen))
+ 
+-#ifdef UFS_MINFREE
+-/* Apparently even newer header */
+-#define ufs_superblock ufs_super_block
++struct ufs_superblock_full {
++	struct ufs_super_block_first first;
++	struct ufs_super_block_second second;
++	struct ufs_super_block_third third;
++};
++#define ufs_superblock ufs_super_block_first
+ #define ufs_direct ufs_dir_entry
+-#endif
+-
+-#else
+-
+-#define ufsi_size(x) (((x)->ui_size.val[1]))
+-#define ufsi_db(x) ((unsigned int *)((x)->ui_db))
+-#define ufsi_ib(x) ((unsigned int *)((x)->ui_ib))
+-#define ufsd_namlen(x) ((unsigned char)((x)->d_namlen))
+-
+-#endif
+ 
+ #ifndef S_ISLNK
+ #include <sys/stat.h>
+@@ -92,25 +82,22 @@
+         return p;
+ }
+ 
+-static struct ufs_superblock *ufs_read_super(ufs_filsys fs)
++static struct ufs_superblock_full *ufs_read_super(ufs_filsys fs)
+ {
+-    struct ufs_superblock *usb;
++    struct ufs_superblock_full *usb;
+ 
+-    usb = (struct ufs_superblock *) malloc (2048);
++    usb = (struct ufs_superblock_full *) malloc (2048);
+     if (!usb) return 0;
+     if (io_channel_read_blk (fs->io, UFS_SBLOCK/1024, -2048, (char *)usb))
+         return 0;
+-    if (usb->fs_magic != UFS_MAGIC) {
+-	/* XXX - replace hard-coded constant with a byte-swap macro */
+-	if (usb->fs_magic == 0x54190100) {
+-	}
++    if (usb->third.fs_magic != UFS_MAGIC) {
+ 	return 0;
+     }
+-    if (usb->fs_bsize != UFS_BSIZE)
++    if (usb->first.fs_bsize != UFS_BSIZE)
+         return 0;
+-    if (usb->fs_fsize != UFS_FSIZE)
++    if (usb->first.fs_fsize != UFS_FSIZE)
+         return 0;
+-    io_channel_set_blksize (fs->io, usb->fs_fsize);
++    io_channel_set_blksize (fs->io, usb->first.fs_fsize);
+     return usb;
+ }
+ 
+diff -Naur silo-1.4.13.orig/second/ls.c silo-1.4.13/second/ls.c
+--- silo-1.4.13.orig/second/ls.c	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/second/ls.c	2006-11-02 19:21:44.264759738 -0800
 @@ -19,10 +19,10 @@
     USA.  */
  
@@ -24326,9 +24397,9 @@ diff -Naur silo-1.4.11.orig/second/ls.c silo-1.4.11/second/ls.c
  #include <ext2fs/ext2_fs.h>
  #include <ext2fs/ext2fs.h>
  
-diff -Naur silo-1.4.11.orig/silo/silo.c silo-1.4.11/silo/silo.c
---- silo-1.4.11.orig/silo/silo.c	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/silo/silo.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/silo/silo.c silo-1.4.13/silo/silo.c
+--- silo-1.4.13.orig/silo/silo.c	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/silo/silo.c	2006-11-02 19:21:44.264759738 -0800
 @@ -128,8 +128,8 @@
      unsigned short nsect;	/* Sectors per track */
      unsigned char spare3[4];	/* Even more magic... */
@@ -24340,9 +24411,9 @@ diff -Naur silo-1.4.11.orig/silo/silo.c silo-1.4.11/silo/silo.c
      } partitions[8];
      unsigned short magic;	/* Magic number */
      unsigned short csum;	/* Label xor'd checksum */
-diff -Naur silo-1.4.11.orig/silo/silocheck.c silo-1.4.11/silo/silocheck.c
---- silo-1.4.11.orig/silo/silocheck.c	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/silo/silocheck.c	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/silo/silocheck.c silo-1.4.13/silo/silocheck.c
+--- silo-1.4.13.orig/silo/silocheck.c	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/silo/silocheck.c	2006-11-02 19:21:44.264759738 -0800
 @@ -100,8 +100,8 @@
      unsigned short nsect;	/* Sectors per track */
      unsigned char spare3[4];	/* Even more magic... */
@@ -24354,9 +24425,9 @@ diff -Naur silo-1.4.11.orig/silo/silocheck.c silo-1.4.11/silo/silocheck.c
      } partitions[8];
      unsigned short magic;	/* Magic number */
      unsigned short csum;	/* Label xor'd checksum */
-diff -Naur silo-1.4.11.orig/tilo/Makefile silo-1.4.11/tilo/Makefile
---- silo-1.4.11.orig/tilo/Makefile	2006-03-09 21:34:08 +0000
-+++ silo-1.4.11/tilo/Makefile	2006-03-09 21:34:57 +0000
+diff -Naur silo-1.4.13.orig/tilo/Makefile silo-1.4.13/tilo/Makefile
+--- silo-1.4.13.orig/tilo/Makefile	2006-06-01 10:24:53.000000000 -0700
++++ silo-1.4.13/tilo/Makefile	2006-11-02 19:21:44.272759471 -0800
 @@ -14,10 +14,10 @@
  all: maketilo
  
