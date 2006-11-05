@@ -1,12 +1,66 @@
 Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2006-10-22
-Initial Package Version: 2.6.18.1
+Date: 2006-11-05
+Initial Package Version: 2.6.18.2
 Origin: Linux-MIPS
 Upstream Status: http://www.linux-mips.org/pub/linux/mips/kernel/v2.6/
 
-diff -Naur linux-2.6.18.1/arch/mips/Kconfig linux-mips-2.6.18.1/arch/mips/Kconfig
---- linux-2.6.18.1/arch/mips/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/Documentation/mips/time.README linux-mips-2.6.18.2/Documentation/mips/time.README
+--- linux-2.6.18.2/Documentation/mips/time.README	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/Documentation/mips/time.README	2006-11-04 14:51:12.000000000 -0800
+@@ -63,7 +63,7 @@
+   a) board_time_init - a function pointer.  Invoked at the beginnig of
+      time_init().  It is optional.
+ 	1. (optional) set up RTC routines
+-	2. (optional) calibrate and set the mips_counter_frequency
++	2. (optional) calibrate and set the mips_hpt_frequency
+ 
+   b) plat_timer_setup - a function pointer.  Invoked at the end of time_init()
+ 	1. (optional) over-ride any decisions made in time_init()
+@@ -72,7 +72,7 @@
+ 
+   c) (optional) board-specific RTC routines.
+ 
+-  d) (optional) mips_counter_frequency - It must be definied if the board
++  d) (optional) mips_hpt_frequency - It must be definied if the board
+      is using CPU counter for timer interrupt or it is using fixed rate
+      gettimeoffset().
+ 
+@@ -104,7 +104,7 @@
+      or use an exnternal timer?
+ 
+      In order to use CPU counter register as the timer interrupt source, you
+-     must know the counter speed (mips_counter_frequency).  It is usually the
++     must know the counter speed (mips_hpt_frequency).  It is usually the
+      same as the CPU speed or an integral divisor of it.
+ 
+   d) decide on whether you want to use high-level or low-level timer
+@@ -122,7 +122,7 @@
+ 
+   board_time_init() -
+   	a) (optional) set up RTC routines, 
+-        b) (optional) calibrate and set the mips_counter_frequency
++        b) (optional) calibrate and set the mips_hpt_frequency
+  	    (only needed if you intended to use fixed_rate_gettimeoffset
+  	     or use cpu counter as timer interrupt source)
+ 
+diff -Naur linux-2.6.18.2/Makefile linux-mips-2.6.18.2/Makefile
+--- linux-2.6.18.2/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/Makefile	2006-11-04 14:51:12.000000000 -0800
+@@ -149,10 +149,7 @@
+ # then ARCH is assigned, getting whatever value it gets normally, and 
+ # SUBARCH is subsequently ignored.
+ 
+-SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
+-				  -e s/arm.*/arm/ -e s/sa110/arm/ \
+-				  -e s/s390x/s390/ -e s/parisc64/parisc/ \
+-				  -e s/ppc.*/powerpc/ -e s/mips.*/mips/ )
++SUBARCH := mips
+ 
+ # Cross compiling and selecting different set of gcc/bin-utils
+ # ---------------------------------------------------------------------------
+diff -Naur linux-2.6.18.2/arch/mips/Kconfig linux-mips-2.6.18.2/arch/mips/Kconfig
+--- linux-2.6.18.2/arch/mips/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -126,7 +126,6 @@
  	select IRQ_CPU
  	select IRQ_CPU_RM7K
@@ -93,9 +147,9 @@ diff -Naur linux-2.6.18.1/arch/mips/Kconfig linux-mips-2.6.18.1/arch/mips/Kconfi
  	help
  	  This enables support for systems with more than one CPU. If you have
  	  a system with only one CPU, like most personal computers, say N. If
-diff -Naur linux-2.6.18.1/arch/mips/Makefile linux-mips-2.6.18.1/arch/mips/Makefile
---- linux-2.6.18.1/arch/mips/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/Makefile linux-mips-2.6.18.2/arch/mips/Makefile
+--- linux-2.6.18.2/arch/mips/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -63,7 +63,9 @@
  ifdef CONFIG_BUILD_ELF64
  cflags-y		+= $(call cc-option,-mno-explicit-relocs)
@@ -135,17 +189,17 @@ diff -Naur linux-2.6.18.1/arch/mips/Makefile linux-mips-2.6.18.1/arch/mips/Makef
  load-$(CONFIG_MIPS_SEAD)	+= 0xffffffff80100000
  
  #
-diff -Naur linux-2.6.18.1/arch/mips/au1000/db1x00/Makefile linux-mips-2.6.18.1/arch/mips/au1000/db1x00/Makefile
---- linux-2.6.18.1/arch/mips/au1000/db1x00/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/au1000/db1x00/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/au1000/db1x00/Makefile linux-mips-2.6.18.2/arch/mips/au1000/db1x00/Makefile
+--- linux-2.6.18.2/arch/mips/au1000/db1x00/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/au1000/db1x00/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -6,4 +6,3 @@
  # Makefile for the Alchemy Semiconductor Db1x00 board.
  
  lib-y := init.o board_setup.o irqmap.o
 -obj-$(CONFIG_WM97XX_COMODULE) += mirage_ts.o
-diff -Naur linux-2.6.18.1/arch/mips/au1000/db1x00/mirage_ts.c linux-mips-2.6.18.1/arch/mips/au1000/db1x00/mirage_ts.c
---- linux-2.6.18.1/arch/mips/au1000/db1x00/mirage_ts.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/au1000/db1x00/mirage_ts.c	1969-12-31 16:00:00.000000000 -0800
+diff -Naur linux-2.6.18.2/arch/mips/au1000/db1x00/mirage_ts.c linux-mips-2.6.18.2/arch/mips/au1000/db1x00/mirage_ts.c
+--- linux-2.6.18.2/arch/mips/au1000/db1x00/mirage_ts.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/au1000/db1x00/mirage_ts.c	1969-12-31 16:00:00.000000000 -0800
 @@ -1,260 +0,0 @@
 -/*
 - * linux/arch/mips/au1000/db1x00/mirage_ts.c
@@ -407,9 +461,9 @@ diff -Naur linux-2.6.18.1/arch/mips/au1000/db1x00/mirage_ts.c linux-mips-2.6.18.
 -module_init(ts_mirage_init);
 -module_exit(ts_mirage_exit);
 -
-diff -Naur linux-2.6.18.1/arch/mips/cobalt/setup.c linux-mips-2.6.18.1/arch/mips/cobalt/setup.c
---- linux-2.6.18.1/arch/mips/cobalt/setup.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/cobalt/setup.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/cobalt/setup.c linux-mips-2.6.18.2/arch/mips/cobalt/setup.c
+--- linux-2.6.18.2/arch/mips/cobalt/setup.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/cobalt/setup.c	2006-11-04 14:51:12.000000000 -0800
 @@ -51,8 +51,8 @@
  
  void __init plat_timer_setup(struct irqaction *irq)
@@ -421,9 +475,9 @@ diff -Naur linux-2.6.18.1/arch/mips/cobalt/setup.c linux-mips-2.6.18.1/arch/mips
  
  	/* Enable timer */
  	GALILEO_OUTL(GALILEO_ENTC0 | GALILEO_SELTC0, GT_TC_CONTROL_OFS);
-diff -Naur linux-2.6.18.1/arch/mips/configs/e55_defconfig linux-mips-2.6.18.1/arch/mips/configs/e55_defconfig
---- linux-2.6.18.1/arch/mips/configs/e55_defconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/configs/e55_defconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/configs/e55_defconfig linux-mips-2.6.18.2/arch/mips/configs/e55_defconfig
+--- linux-2.6.18.2/arch/mips/configs/e55_defconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/configs/e55_defconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -1,7 +1,7 @@
  #
  # Automatically generated make config: don't edit
@@ -475,9 +529,9 @@ diff -Naur linux-2.6.18.1/arch/mips/configs/e55_defconfig linux-mips-2.6.18.1/ar
  
  #
  # Security options
-diff -Naur linux-2.6.18.1/arch/mips/configs/mpc30x_defconfig linux-mips-2.6.18.1/arch/mips/configs/mpc30x_defconfig
---- linux-2.6.18.1/arch/mips/configs/mpc30x_defconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/configs/mpc30x_defconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/configs/mpc30x_defconfig linux-mips-2.6.18.2/arch/mips/configs/mpc30x_defconfig
+--- linux-2.6.18.2/arch/mips/configs/mpc30x_defconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/configs/mpc30x_defconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -1,7 +1,7 @@
  #
  # Automatically generated make config: don't edit
@@ -538,9 +592,9 @@ diff -Naur linux-2.6.18.1/arch/mips/configs/mpc30x_defconfig linux-mips-2.6.18.1
  
  #
  # Security options
-diff -Naur linux-2.6.18.1/arch/mips/configs/workpad_defconfig linux-mips-2.6.18.1/arch/mips/configs/workpad_defconfig
---- linux-2.6.18.1/arch/mips/configs/workpad_defconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/configs/workpad_defconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/configs/workpad_defconfig linux-mips-2.6.18.2/arch/mips/configs/workpad_defconfig
+--- linux-2.6.18.2/arch/mips/configs/workpad_defconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/configs/workpad_defconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -1,7 +1,7 @@
  #
  # Automatically generated make config: don't edit
@@ -592,9 +646,21 @@ diff -Naur linux-2.6.18.1/arch/mips/configs/workpad_defconfig linux-mips-2.6.18.
  
  #
  # Security options
-diff -Naur linux-2.6.18.1/arch/mips/kernel/cpu-probe.c linux-mips-2.6.18.1/arch/mips/kernel/cpu-probe.c
---- linux-2.6.18.1/arch/mips/kernel/cpu-probe.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/cpu-probe.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/asm-offsets.c linux-mips-2.6.18.2/arch/mips/kernel/asm-offsets.c
+--- linux-2.6.18.2/arch/mips/kernel/asm-offsets.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/asm-offsets.c	2006-11-04 14:51:12.000000000 -0800
+@@ -22,7 +22,7 @@
+ #define offset(string, ptr, member) \
+ 	__asm__("\n@@@" string "%0" : : "i" (_offset(ptr, member)))
+ #define constant(string, member) \
+-	__asm__("\n@@@" string "%x0" : : "ri" (member))
++	__asm__("\n@@@" string "%X0" : : "ri" (member))
+ #define size(string, size) \
+ 	__asm__("\n@@@" string "%0" : : "i" (sizeof(size)))
+ #define linefeed text("")
+diff -Naur linux-2.6.18.2/arch/mips/kernel/cpu-probe.c linux-mips-2.6.18.2/arch/mips/kernel/cpu-probe.c
+--- linux-2.6.18.2/arch/mips/kernel/cpu-probe.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/cpu-probe.c	2006-11-04 14:51:12.000000000 -0800
 @@ -38,15 +38,40 @@
  
  static void r39xx_wait(void)
@@ -705,9 +771,22 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/cpu-probe.c linux-mips-2.6.18.1/arch/
  	default:
  		printk(" unavailable.\n");
  		break;
-diff -Naur linux-2.6.18.1/arch/mips/kernel/irixsig.c linux-mips-2.6.18.1/arch/mips/kernel/irixsig.c
---- linux-2.6.18.1/arch/mips/kernel/irixsig.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/irixsig.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/head.S linux-mips-2.6.18.2/arch/mips/kernel/head.S
+--- linux-2.6.18.2/arch/mips/kernel/head.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/head.S	2006-11-04 14:51:12.000000000 -0800
+@@ -189,7 +189,8 @@
+ 
+ 	MTC0		zero, CP0_CONTEXT	# clear context register
+ 	PTR_LA		$28, init_thread_union
+-	PTR_ADDIU	sp, $28, _THREAD_SIZE - 32
++	PTR_LI		sp, _THREAD_SIZE - 32
++	PTR_ADDU	sp, $28
+ 	set_saved_sp	sp, t0, t1
+ 	PTR_SUBU	sp, 4 * SZREG		# init stack pointer
+ 
+diff -Naur linux-2.6.18.2/arch/mips/kernel/irixsig.c linux-mips-2.6.18.2/arch/mips/kernel/irixsig.c
+--- linux-2.6.18.2/arch/mips/kernel/irixsig.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/irixsig.c	2006-11-04 14:51:12.000000000 -0800
 @@ -17,6 +17,7 @@
  
  #include <asm/ptrace.h>
@@ -824,9 +903,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/irixsig.c linux-mips-2.6.18.1/arch/mi
  }
  
  /* hate hate hate... */
-diff -Naur linux-2.6.18.1/arch/mips/kernel/linux32.c linux-mips-2.6.18.1/arch/mips/kernel/linux32.c
---- linux-2.6.18.1/arch/mips/kernel/linux32.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/linux32.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/linux32.c linux-mips-2.6.18.2/arch/mips/kernel/linux32.c
+--- linux-2.6.18.2/arch/mips/kernel/linux32.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/linux32.c	2006-11-04 14:51:12.000000000 -0800
 @@ -1053,7 +1053,9 @@
  asmlinkage int sys32_personality(unsigned long personality)
  {
@@ -848,9 +927,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/linux32.c linux-mips-2.6.18.1/arch/mi
 -{
 -	sys_set_thread_area(AA(addr));
 -}
-diff -Naur linux-2.6.18.1/arch/mips/kernel/mips-mt.c linux-mips-2.6.18.1/arch/mips/kernel/mips-mt.c
---- linux-2.6.18.1/arch/mips/kernel/mips-mt.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/mips-mt.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/mips-mt.c linux-mips-2.6.18.2/arch/mips/kernel/mips-mt.c
+--- linux-2.6.18.2/arch/mips/kernel/mips-mt.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/mips-mt.c	2006-11-04 14:51:12.000000000 -0800
 @@ -96,6 +96,10 @@
  		goto out_unlock;
  	}
@@ -874,9 +953,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/mips-mt.c linux-mips-2.6.18.1/arch/mi
  
  	cpus_and(mask, p->thread.user_cpus_allowed, cpu_possible_map);
  
-diff -Naur linux-2.6.18.1/arch/mips/kernel/proc.c linux-mips-2.6.18.1/arch/mips/kernel/proc.c
---- linux-2.6.18.1/arch/mips/kernel/proc.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/proc.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/proc.c linux-mips-2.6.18.2/arch/mips/kernel/proc.c
+--- linux-2.6.18.2/arch/mips/kernel/proc.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/proc.c	2006-11-04 14:51:12.000000000 -0800
 @@ -89,9 +89,9 @@
  
  static int show_cpuinfo(struct seq_file *m, void *v)
@@ -911,9 +990,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/proc.c linux-mips-2.6.18.1/arch/mips/
  	seq_printf(m, "extra interrupt vector\t: %s\n",
  	              cpu_has_divec ? "yes" : "no");
  	seq_printf(m, "hardware watchpoint\t: %s\n",
-diff -Naur linux-2.6.18.1/arch/mips/kernel/process.c linux-mips-2.6.18.1/arch/mips/kernel/process.c
---- linux-2.6.18.1/arch/mips/kernel/process.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/process.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/process.c linux-mips-2.6.18.2/arch/mips/kernel/process.c
+--- linux-2.6.18.2/arch/mips/kernel/process.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/process.c	2006-11-04 14:51:12.000000000 -0800
 @@ -114,7 +114,7 @@
  	status |= KU_USER;
  	regs->cp0_status = status;
@@ -1108,9 +1187,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/process.c linux-mips-2.6.18.1/arch/mi
 +	return __kernel_text_address(pc) ? pc : 0;
 +}
 +#endif
-diff -Naur linux-2.6.18.1/arch/mips/kernel/ptrace.c linux-mips-2.6.18.1/arch/mips/kernel/ptrace.c
---- linux-2.6.18.1/arch/mips/kernel/ptrace.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/ptrace.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/ptrace.c linux-mips-2.6.18.2/arch/mips/kernel/ptrace.c
+--- linux-2.6.18.2/arch/mips/kernel/ptrace.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/ptrace.c	2006-11-04 14:51:12.000000000 -0800
 @@ -20,12 +20,12 @@
  #include <linux/mm.h>
  #include <linux/errno.h>
@@ -1219,9 +1298,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/ptrace.c linux-mips-2.6.18.1/arch/mip
 +		                    regs->regs[4], regs->regs[5],
 +		                    regs->regs[6], regs->regs[7]);
  }
-diff -Naur linux-2.6.18.1/arch/mips/kernel/ptrace32.c linux-mips-2.6.18.1/arch/mips/kernel/ptrace32.c
---- linux-2.6.18.1/arch/mips/kernel/ptrace32.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/ptrace32.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/ptrace32.c linux-mips-2.6.18.2/arch/mips/kernel/ptrace32.c
+--- linux-2.6.18.2/arch/mips/kernel/ptrace32.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/ptrace32.c	2006-11-04 14:51:12.000000000 -0800
 @@ -175,7 +175,9 @@
  			unsigned int mtflags;
  #endif /* CONFIG_MIPS_MT_SMTC */
@@ -1240,9 +1319,25 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/ptrace32.c linux-mips-2.6.18.1/arch/m
  			if (cpu_has_mipsmt) {
  				unsigned int vpflags = dvpe();
  				flags = read_c0_status();
-diff -Naur linux-2.6.18.1/arch/mips/kernel/scall32-o32.S linux-mips-2.6.18.1/arch/mips/kernel/scall32-o32.S
---- linux-2.6.18.1/arch/mips/kernel/scall32-o32.S	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/scall32-o32.S	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/r4k_switch.S linux-mips-2.6.18.2/arch/mips/kernel/r4k_switch.S
+--- linux-2.6.18.2/arch/mips/kernel/r4k_switch.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/r4k_switch.S	2006-11-04 14:51:12.000000000 -0800
+@@ -85,7 +85,12 @@
+ 	move	$28, a2
+ 	cpu_restore_nonscratch a1
+ 
++#if (_THREAD_SIZE - 32) < 0x10000
+ 	PTR_ADDIU	t0, $28, _THREAD_SIZE - 32
++#else
++	PTR_LI		t0, _THREAD_SIZE - 32
++	PTR_ADDU	t0, $28
++#endif
+ 	set_saved_sp	t0, t1, t2
+ #ifdef CONFIG_MIPS_MT_SMTC
+ 	/* Read-modify-writes of Status must be atomic on a VPE */
+diff -Naur linux-2.6.18.2/arch/mips/kernel/scall32-o32.S linux-mips-2.6.18.2/arch/mips/kernel/scall32-o32.S
+--- linux-2.6.18.2/arch/mips/kernel/scall32-o32.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/scall32-o32.S	2006-11-04 14:51:12.000000000 -0800
 @@ -662,6 +662,8 @@
  	sys	sys_tee			4
  	sys	sys_vmsplice		4
@@ -1252,18 +1347,18 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/scall32-o32.S linux-mips-2.6.18.1/arc
  	.endm
  
  	/* We pre-compute the number of _instruction_ bytes needed to
-diff -Naur linux-2.6.18.1/arch/mips/kernel/scall64-64.S linux-mips-2.6.18.1/arch/mips/kernel/scall64-64.S
---- linux-2.6.18.1/arch/mips/kernel/scall64-64.S	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/scall64-64.S	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/scall64-64.S linux-mips-2.6.18.2/arch/mips/kernel/scall64-64.S
+--- linux-2.6.18.2/arch/mips/kernel/scall64-64.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/scall64-64.S	2006-11-04 14:51:12.000000000 -0800
 @@ -466,3 +466,5 @@
  	PTR	sys_tee				/* 5265 */
  	PTR	sys_vmsplice
  	PTR	sys_move_pages
 +	PTR	sys_set_robust_list
 +	PTR	sys_get_robust_list
-diff -Naur linux-2.6.18.1/arch/mips/kernel/scall64-n32.S linux-mips-2.6.18.1/arch/mips/kernel/scall64-n32.S
---- linux-2.6.18.1/arch/mips/kernel/scall64-n32.S	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/scall64-n32.S	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/scall64-n32.S linux-mips-2.6.18.2/arch/mips/kernel/scall64-n32.S
+--- linux-2.6.18.2/arch/mips/kernel/scall64-n32.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/scall64-n32.S	2006-11-04 14:51:12.000000000 -0800
 @@ -247,7 +247,7 @@
  	PTR	sys_capset
  	PTR	sys32_rt_sigpending		/* 6125 */
@@ -1291,9 +1386,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/scall64-n32.S linux-mips-2.6.18.1/arc
  	PTR	sys_move_pages
 +	PTR	compat_sys_set_robust_list
 +	PTR	compat_sys_get_robust_list
-diff -Naur linux-2.6.18.1/arch/mips/kernel/scall64-o32.S linux-mips-2.6.18.1/arch/mips/kernel/scall64-o32.S
---- linux-2.6.18.1/arch/mips/kernel/scall64-o32.S	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/scall64-o32.S	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/scall64-o32.S linux-mips-2.6.18.2/arch/mips/kernel/scall64-o32.S
+--- linux-2.6.18.2/arch/mips/kernel/scall64-o32.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/scall64-o32.S	2006-11-04 14:51:12.000000000 -0800
 @@ -226,7 +226,7 @@
  	PTR	sys_ni_syscall			/* was sys_stat */
  	PTR	sys_lseek
@@ -1319,9 +1414,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/scall64-o32.S linux-mips-2.6.18.1/arc
 +	PTR	compat_sys_set_robust_list
 +	PTR	compat_sys_get_robust_list	/* 4310 */
  	.size	sys_call_table,.-sys_call_table
-diff -Naur linux-2.6.18.1/arch/mips/kernel/signal.c linux-mips-2.6.18.1/arch/mips/kernel/signal.c
---- linux-2.6.18.1/arch/mips/kernel/signal.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/signal.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/signal.c linux-mips-2.6.18.2/arch/mips/kernel/signal.c
+--- linux-2.6.18.2/arch/mips/kernel/signal.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/signal.c	2006-11-04 14:51:12.000000000 -0800
 @@ -424,15 +424,11 @@
  	if (!user_mode(regs))
  		return;
@@ -1358,9 +1453,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/signal.c linux-mips-2.6.18.1/arch/mip
  	}
  
  	/*
-diff -Naur linux-2.6.18.1/arch/mips/kernel/signal32.c linux-mips-2.6.18.1/arch/mips/kernel/signal32.c
---- linux-2.6.18.1/arch/mips/kernel/signal32.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/signal32.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/signal32.c linux-mips-2.6.18.2/arch/mips/kernel/signal32.c
+--- linux-2.6.18.2/arch/mips/kernel/signal32.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/signal32.c	2006-11-04 14:51:12.000000000 -0800
 @@ -815,9 +815,6 @@
  	if (!user_mode(regs))
  		return;
@@ -1391,9 +1486,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/signal32.c linux-mips-2.6.18.1/arch/m
  	}
  
  	/*
-diff -Naur linux-2.6.18.1/arch/mips/kernel/smp-mt.c linux-mips-2.6.18.1/arch/mips/kernel/smp-mt.c
---- linux-2.6.18.1/arch/mips/kernel/smp-mt.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/smp-mt.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/smp-mt.c linux-mips-2.6.18.2/arch/mips/kernel/smp-mt.c
+--- linux-2.6.18.2/arch/mips/kernel/smp-mt.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/smp-mt.c	2006-11-04 14:51:12.000000000 -0800
 @@ -203,7 +203,7 @@
  				write_vpe_c0_config( read_c0_config());
  
@@ -1403,9 +1498,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/smp-mt.c linux-mips-2.6.18.1/arch/mip
  
  				/* Propagate Config7 */
  				write_vpe_c0_config7(read_c0_config7());
-diff -Naur linux-2.6.18.1/arch/mips/kernel/smp.c linux-mips-2.6.18.1/arch/mips/kernel/smp.c
---- linux-2.6.18.1/arch/mips/kernel/smp.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/smp.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/smp.c linux-mips-2.6.18.2/arch/mips/kernel/smp.c
+--- linux-2.6.18.2/arch/mips/kernel/smp.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/smp.c	2006-11-04 14:51:12.000000000 -0800
 @@ -467,14 +467,18 @@
  
  static int __init topology_init(void)
@@ -1430,9 +1525,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/smp.c linux-mips-2.6.18.1/arch/mips/k
  	}
  
  	return 0;
-diff -Naur linux-2.6.18.1/arch/mips/kernel/smtc-asm.S linux-mips-2.6.18.1/arch/mips/kernel/smtc-asm.S
---- linux-2.6.18.1/arch/mips/kernel/smtc-asm.S	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/smtc-asm.S	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/smtc-asm.S linux-mips-2.6.18.2/arch/mips/kernel/smtc-asm.S
+--- linux-2.6.18.2/arch/mips/kernel/smtc-asm.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/smtc-asm.S	2006-11-04 14:51:12.000000000 -0800
 @@ -8,7 +8,7 @@
  #include <asm/regdef.h>
  #include <asm/asmmacro.h>
@@ -1442,9 +1537,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/smtc-asm.S linux-mips-2.6.18.1/arch/m
  
  /*
   * "Software Interrupt" linkage.
-diff -Naur linux-2.6.18.1/arch/mips/kernel/syscall.c linux-mips-2.6.18.1/arch/mips/kernel/syscall.c
---- linux-2.6.18.1/arch/mips/kernel/syscall.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/syscall.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/syscall.c linux-mips-2.6.18.2/arch/mips/kernel/syscall.c
+--- linux-2.6.18.2/arch/mips/kernel/syscall.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/syscall.c	2006-11-04 14:51:12.000000000 -0800
 @@ -263,7 +263,7 @@
  	return error;
  }
@@ -1463,9 +1558,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/syscall.c linux-mips-2.6.18.1/arch/mi
  }
  
  asmlinkage int _sys_sysmips(int cmd, long arg1, int arg2, int arg3)
-diff -Naur linux-2.6.18.1/arch/mips/kernel/traps.c linux-mips-2.6.18.1/arch/mips/kernel/traps.c
---- linux-2.6.18.1/arch/mips/kernel/traps.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/traps.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/traps.c linux-mips-2.6.18.2/arch/mips/kernel/traps.c
+--- linux-2.6.18.2/arch/mips/kernel/traps.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/traps.c	2006-11-04 14:51:12.000000000 -0800
 @@ -20,6 +20,7 @@
  #include <linux/spinlock.h>
  #include <linux/kallsyms.h>
@@ -1707,9 +1802,29 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/traps.c linux-mips-2.6.18.1/arch/mips
  			if (sig)
  				force_sig(sig, current);
  #ifdef CONFIG_MIPS_MT_FPAFF
-diff -Naur linux-2.6.18.1/arch/mips/kernel/vpe.c linux-mips-2.6.18.1/arch/mips/kernel/vpe.c
---- linux-2.6.18.1/arch/mips/kernel/vpe.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/kernel/vpe.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/kernel/vmlinux.lds.S linux-mips-2.6.18.2/arch/mips/kernel/vmlinux.lds.S
+--- linux-2.6.18.2/arch/mips/kernel/vmlinux.lds.S	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/vmlinux.lds.S	2006-11-04 14:51:12.000000000 -0800
+@@ -50,6 +50,16 @@
+   /* writeable */
+   .data : {			/* Data */
+     . = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
++    /*
++     * This ALIGN is needed as a workaround for a bug a gcc bug upto 4.1 which
++     * limits the maximum alignment to at most 32kB and results in the following
++     * warning:
++     *
++     *  CC      arch/mips/kernel/init_task.o
++     * arch/mips/kernel/init_task.c:30: warning: alignment of ‘init_thread_union’
++     * is greater than maximum object file alignment.  Using 32768
++     */
++    . = ALIGN(_PAGE_SIZE);
+     *(.data.init_task)
+ 
+     *(.data)
+diff -Naur linux-2.6.18.2/arch/mips/kernel/vpe.c linux-mips-2.6.18.2/arch/mips/kernel/vpe.c
+--- linux-2.6.18.2/arch/mips/kernel/vpe.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/kernel/vpe.c	2006-11-04 14:51:12.000000000 -0800
 @@ -768,10 +768,16 @@
  	 */
   	write_tc_c0_tcbind((read_tc_c0_tcbind() & ~TCBIND_CURVPE) | v->minor);
@@ -1727,9 +1842,9 @@ diff -Naur linux-2.6.18.1/arch/mips/kernel/vpe.c linux-mips-2.6.18.1/arch/mips/k
          /* enable this VPE */
          write_vpe_c0_vpeconf0(read_vpe_c0_vpeconf0() | VPECONF0_VPA);
  
-diff -Naur linux-2.6.18.1/arch/mips/lib/Makefile linux-mips-2.6.18.1/arch/mips/lib/Makefile
---- linux-2.6.18.1/arch/mips/lib/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/lib/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/lib/Makefile linux-mips-2.6.18.2/arch/mips/lib/Makefile
+--- linux-2.6.18.2/arch/mips/lib/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/lib/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -5,8 +5,6 @@
  lib-y	+= csum_partial_copy.o memcpy.o promlib.o strlen_user.o strncpy_user.o \
  	   strnlen_user.o uncached.o
@@ -1739,9 +1854,9 @@ diff -Naur linux-2.6.18.1/arch/mips/lib/Makefile linux-mips-2.6.18.1/arch/mips/l
  # libgcc-style stuff needed in the kernel
  lib-y += ashldi3.o ashrdi3.o lshrdi3.o
  
-diff -Naur linux-2.6.18.1/arch/mips/lib/iomap.c linux-mips-2.6.18.1/arch/mips/lib/iomap.c
---- linux-2.6.18.1/arch/mips/lib/iomap.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
+diff -Naur linux-2.6.18.2/arch/mips/lib/iomap.c linux-mips-2.6.18.2/arch/mips/lib/iomap.c
+--- linux-2.6.18.2/arch/mips/lib/iomap.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
 @@ -1,78 +0,0 @@
 -/*
 - *  iomap.c, Memory Mapped I/O routines for MIPS architecture.
@@ -1821,9 +1936,9 @@ diff -Naur linux-2.6.18.1/arch/mips/lib/iomap.c linux-mips-2.6.18.1/arch/mips/li
 -}
 -EXPORT_SYMBOL(pci_iomap);
 -EXPORT_SYMBOL(pci_iounmap);
-diff -Naur linux-2.6.18.1/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.18.1/arch/mips/lib-32/dump_tlb.c
---- linux-2.6.18.1/arch/mips/lib-32/dump_tlb.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/lib-32/dump_tlb.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.18.2/arch/mips/lib-32/dump_tlb.c
+--- linux-2.6.18.2/arch/mips/lib-32/dump_tlb.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/lib-32/dump_tlb.c	2006-11-04 14:51:12.000000000 -0800
 @@ -40,8 +40,6 @@
  		return "256Mb";
  #endif
@@ -1833,9 +1948,9 @@ diff -Naur linux-2.6.18.1/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.18.1/arch/m
  }
  
  #define BARRIER()					\
-diff -Naur linux-2.6.18.1/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.18.1/arch/mips/lib-64/dump_tlb.c
---- linux-2.6.18.1/arch/mips/lib-64/dump_tlb.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/lib-64/dump_tlb.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.18.2/arch/mips/lib-64/dump_tlb.c
+--- linux-2.6.18.2/arch/mips/lib-64/dump_tlb.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/lib-64/dump_tlb.c	2006-11-04 14:51:12.000000000 -0800
 @@ -31,8 +31,6 @@
  	case PM_256M:	return "256Mb";
  #endif
@@ -1845,9 +1960,34 @@ diff -Naur linux-2.6.18.1/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.18.1/arch/m
  }
  
  #define BARRIER()					\
-diff -Naur linux-2.6.18.1/arch/mips/math-emu/cp1emu.c linux-mips-2.6.18.1/arch/mips/math-emu/cp1emu.c
---- linux-2.6.18.1/arch/mips/math-emu/cp1emu.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/math-emu/cp1emu.c	2006-10-17 06:23:28.000000000 -0700
+@@ -149,7 +147,7 @@
+ 	printk("Addr                 == %08lx\n", addr);
+ 	printk("tasks->mm.pgd        == %08lx\n", (unsigned long) t->mm->pgd);
+ 
+-	page_dir = pgd_offset(t->mm, 0);
++	page_dir = pgd_offset(t->mm, 0UL);
+ 	printk("page_dir == %016lx\n", (unsigned long) page_dir);
+ 
+ 	pgd = pgd_offset(t->mm, addr);
+@@ -184,13 +182,13 @@
+ 	dump_list_process(current, address);
+ }
+ 
+-unsigned int vtop(void *address)
++unsigned long vtop(void *address)
+ {
+ 	pgd_t	*pgd;
+ 	pud_t	*pud;
+ 	pmd_t	*pmd;
+ 	pte_t	*pte;
+-	unsigned int addr, paddr;
++	unsigned long addr, paddr;
+ 
+ 	addr = (unsigned long) address;
+ 	pgd = pgd_offset(current->mm, addr);
+diff -Naur linux-2.6.18.2/arch/mips/math-emu/cp1emu.c linux-mips-2.6.18.2/arch/mips/math-emu/cp1emu.c
+--- linux-2.6.18.2/arch/mips/math-emu/cp1emu.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/math-emu/cp1emu.c	2006-11-04 14:51:12.000000000 -0800
 @@ -38,8 +38,6 @@
  
  #include <asm/inst.h>
@@ -1876,9 +2016,9 @@ diff -Naur linux-2.6.18.1/arch/mips/math-emu/cp1emu.c linux-mips-2.6.18.1/arch/m
  			break;
  		if (sig)
  			break;
-diff -Naur linux-2.6.18.1/arch/mips/mips-boards/atlas/atlas_int.c linux-mips-2.6.18.1/arch/mips/mips-boards/atlas/atlas_int.c
---- linux-2.6.18.1/arch/mips/mips-boards/atlas/atlas_int.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mips-boards/atlas/atlas_int.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mips-boards/atlas/atlas_int.c linux-mips-2.6.18.2/arch/mips/mips-boards/atlas/atlas_int.c
+--- linux-2.6.18.2/arch/mips/mips-boards/atlas/atlas_int.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mips-boards/atlas/atlas_int.c	2006-11-04 14:51:12.000000000 -0800
 @@ -1,6 +1,8 @@
  /*
 - * Carsten Langgaard, carstenl@mips.com
@@ -2065,9 +2205,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mips-boards/atlas/atlas_int.c linux-mips-2.6
 +	} else
 +		setup_irq(MIPSCPU_INT_BASE + MIPSCPU_INT_ATLAS, &atlasirq);
 +}
-diff -Naur linux-2.6.18.1/arch/mips/mips-boards/atlas/atlas_setup.c linux-mips-2.6.18.1/arch/mips/mips-boards/atlas/atlas_setup.c
---- linux-2.6.18.1/arch/mips/mips-boards/atlas/atlas_setup.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mips-boards/atlas/atlas_setup.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mips-boards/atlas/atlas_setup.c linux-mips-2.6.18.2/arch/mips/mips-boards/atlas/atlas_setup.c
+--- linux-2.6.18.2/arch/mips/mips-boards/atlas/atlas_setup.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mips-boards/atlas/atlas_setup.c	2006-11-04 14:51:12.000000000 -0800
 @@ -77,7 +77,7 @@
  #else
  	s.iobase = ATLAS_UART_REGS_BASE+3;
@@ -2077,9 +2217,21 @@ diff -Naur linux-2.6.18.1/arch/mips/mips-boards/atlas/atlas_setup.c linux-mips-2
  	s.uartclk = ATLAS_BASE_BAUD * 16;
  	s.flags = UPF_BOOT_AUTOCONF | UPF_SKIP_TEST | UPF_AUTO_IRQ;
  	s.iotype = UPIO_PORT;
-diff -Naur linux-2.6.18.1/arch/mips/mips-boards/generic/time.c linux-mips-2.6.18.1/arch/mips/mips-boards/generic/time.c
---- linux-2.6.18.1/arch/mips/mips-boards/generic/time.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mips-boards/generic/time.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mips-boards/generic/memory.c linux-mips-2.6.18.2/arch/mips/mips-boards/generic/memory.c
+--- linux-2.6.18.2/arch/mips/mips-boards/generic/memory.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mips-boards/generic/memory.c	2006-11-04 14:51:12.000000000 -0800
+@@ -176,7 +176,7 @@
+ 		if (boot_mem_map.map[i].type != BOOT_MEM_ROM_DATA)
+ 			continue;
+ 
+-		addr = boot_mem_map.map[i].addr;
++		addr = PAGE_ALIGN(boot_mem_map.map[i].addr);
+ 		while (addr < boot_mem_map.map[i].addr
+ 			      + boot_mem_map.map[i].size) {
+ 			ClearPageReserved(virt_to_page(__va(addr)));
+diff -Naur linux-2.6.18.2/arch/mips/mips-boards/generic/time.c linux-mips-2.6.18.2/arch/mips/mips-boards/generic/time.c
+--- linux-2.6.18.2/arch/mips/mips-boards/generic/time.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mips-boards/generic/time.c	2006-11-04 14:51:12.000000000 -0800
 @@ -41,8 +41,13 @@
  
  #include <asm/mips-boards/generic.h>
@@ -2171,7 +2323,7 @@ diff -Naur linux-2.6.18.1/arch/mips/mips-boards/generic/time.c linux-mips-2.6.18
  	if (cpu == 0) {
  		/*
  		 * CPU 0 handles the global timer interrupt job and process
-@@ -161,9 +182,8 @@
+@@ -161,14 +182,13 @@
  		 */
  		local_timer_interrupt(irq, dev_id, regs);
  	}
@@ -2182,9 +2334,15 @@ diff -Naur linux-2.6.18.1/arch/mips/mips-boards/generic/time.c linux-mips-2.6.18
  	return IRQ_HANDLED;
  }
  
-diff -Naur linux-2.6.18.1/arch/mips/mips-boards/malta/malta_int.c linux-mips-2.6.18.1/arch/mips/mips-boards/malta/malta_int.c
---- linux-2.6.18.1/arch/mips/mips-boards/malta/malta_int.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mips-boards/malta/malta_int.c	2006-10-17 06:23:28.000000000 -0700
+ /*
+- * Estimate CPU frequency.  Sets mips_counter_frequency as a side-effect
++ * Estimate CPU frequency.  Sets mips_hpt_frequency as a side-effect
+  */
+ static unsigned int __init estimate_cpu_frequency(void)
+ {
+diff -Naur linux-2.6.18.2/arch/mips/mips-boards/malta/malta_int.c linux-mips-2.6.18.2/arch/mips/mips-boards/malta/malta_int.c
+--- linux-2.6.18.2/arch/mips/mips-boards/malta/malta_int.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mips-boards/malta/malta_int.c	2006-11-04 14:51:12.000000000 -0800
 @@ -208,23 +208,23 @@
  	unsigned int a0 = 7;
  	unsigned int t0;
@@ -2215,9 +2373,21 @@ diff -Naur linux-2.6.18.1/arch/mips/mips-boards/malta/malta_int.c linux-mips-2.6
  
  	return a0;
  #endif
-diff -Naur linux-2.6.18.1/arch/mips/mm/c-r3k.c linux-mips-2.6.18.1/arch/mips/mm/c-r3k.c
---- linux-2.6.18.1/arch/mips/mm/c-r3k.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/c-r3k.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mips-boards/sim/sim_time.c linux-mips-2.6.18.2/arch/mips/mips-boards/sim/sim_time.c
+--- linux-2.6.18.2/arch/mips/mips-boards/sim/sim_time.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mips-boards/sim/sim_time.c	2006-11-04 14:51:12.000000000 -0800
+@@ -103,7 +103,7 @@
+ 
+ 
+ /*
+- * Estimate CPU frequency.  Sets mips_counter_frequency as a side-effect
++ * Estimate CPU frequency.  Sets mips_hpt_frequency as a side-effect
+  */
+ static unsigned int __init estimate_cpu_frequency(void)
+ {
+diff -Naur linux-2.6.18.2/arch/mips/mm/c-r3k.c linux-mips-2.6.18.2/arch/mips/mm/c-r3k.c
+--- linux-2.6.18.2/arch/mips/mm/c-r3k.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/c-r3k.c	2006-11-04 14:51:12.000000000 -0800
 @@ -335,7 +335,7 @@
  	flush_cache_mm = r3k_flush_cache_mm;
  	flush_cache_range = r3k_flush_cache_range;
@@ -2227,9 +2397,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/c-r3k.c linux-mips-2.6.18.1/arch/mips/mm/
  	flush_icache_range = r3k_flush_icache_range;
  
  	flush_cache_sigtramp = r3k_flush_cache_sigtramp;
-diff -Naur linux-2.6.18.1/arch/mips/mm/c-r4k.c linux-mips-2.6.18.1/arch/mips/mm/c-r4k.c
---- linux-2.6.18.1/arch/mips/mm/c-r4k.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/c-r4k.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/c-r4k.c linux-mips-2.6.18.2/arch/mips/mm/c-r4k.c
+--- linux-2.6.18.2/arch/mips/mm/c-r4k.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/c-r4k.c	2006-11-04 14:51:12.000000000 -0800
 @@ -475,7 +475,7 @@
  		}
  	}
@@ -2266,9 +2436,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/c-r4k.c linux-mips-2.6.18.1/arch/mips/mm/
  	flush_cache_range	= r4k_flush_cache_range;
  
  	flush_cache_sigtramp	= r4k_flush_cache_sigtramp;
-diff -Naur linux-2.6.18.1/arch/mips/mm/c-sb1.c linux-mips-2.6.18.1/arch/mips/mm/c-sb1.c
---- linux-2.6.18.1/arch/mips/mm/c-sb1.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/c-sb1.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/c-sb1.c linux-mips-2.6.18.2/arch/mips/mm/c-sb1.c
+--- linux-2.6.18.2/arch/mips/mm/c-sb1.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/c-sb1.c	2006-11-04 14:51:12.000000000 -0800
 @@ -155,6 +155,26 @@
  }
  
@@ -2362,9 +2532,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/c-sb1.c linux-mips-2.6.18.1/arch/mips/mm/
  	flush_icache_all = __sb1_flush_icache_all; /* local only */
  
  	/* This implies an Icache flush too, so can't be nop'ed */
-diff -Naur linux-2.6.18.1/arch/mips/mm/c-tx39.c linux-mips-2.6.18.1/arch/mips/mm/c-tx39.c
---- linux-2.6.18.1/arch/mips/mm/c-tx39.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/c-tx39.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/c-tx39.c linux-mips-2.6.18.2/arch/mips/mm/c-tx39.c
+--- linux-2.6.18.2/arch/mips/mm/c-tx39.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/c-tx39.c	2006-11-04 14:51:12.000000000 -0800
 @@ -382,7 +382,7 @@
  		flush_cache_mm		= (void *) tx39h_flush_icache_all;
  		flush_cache_range	= (void *) tx39h_flush_icache_all;
@@ -2383,9 +2553,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/c-tx39.c linux-mips-2.6.18.1/arch/mips/mm
  		flush_icache_range = tx39_flush_icache_range;
  
  		flush_cache_sigtramp = tx39_flush_cache_sigtramp;
-diff -Naur linux-2.6.18.1/arch/mips/mm/cache.c linux-mips-2.6.18.1/arch/mips/mm/cache.c
---- linux-2.6.18.1/arch/mips/mm/cache.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/cache.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/cache.c linux-mips-2.6.18.2/arch/mips/mm/cache.c
+--- linux-2.6.18.2/arch/mips/mm/cache.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/cache.c	2006-11-04 14:51:12.000000000 -0800
 @@ -25,7 +25,7 @@
  void (*flush_cache_page)(struct vm_area_struct *vma, unsigned long page,
  	unsigned long pfn);
@@ -2428,9 +2598,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/cache.c linux-mips-2.6.18.1/arch/mips/mm/
  		ClearPageDcacheDirty(page);
  	}
  }
-diff -Naur linux-2.6.18.1/arch/mips/mm/fault.c linux-mips-2.6.18.1/arch/mips/mm/fault.c
---- linux-2.6.18.1/arch/mips/mm/fault.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/fault.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/fault.c linux-mips-2.6.18.2/arch/mips/mm/fault.c
+--- linux-2.6.18.2/arch/mips/mm/fault.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/fault.c	2006-11-04 14:51:12.000000000 -0800
 @@ -89,7 +89,7 @@
  		if (!(vma->vm_flags & VM_WRITE))
  			goto bad_area;
@@ -2440,9 +2610,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/fault.c linux-mips-2.6.18.1/arch/mips/mm/
  			goto bad_area;
  	}
  
-diff -Naur linux-2.6.18.1/arch/mips/mm/init.c linux-mips-2.6.18.1/arch/mips/mm/init.c
---- linux-2.6.18.1/arch/mips/mm/init.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/init.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/init.c linux-mips-2.6.18.2/arch/mips/mm/init.c
+--- linux-2.6.18.2/arch/mips/mm/init.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/init.c	2006-11-04 14:51:12.000000000 -0800
 @@ -30,11 +30,39 @@
  #include <asm/cachectl.h>
  #include <asm/cpu.h>
@@ -2713,9 +2883,87 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/init.c linux-mips-2.6.18.1/arch/mips/mm/i
  
  	max_dma = virt_to_phys((char *)MAX_DMA_ADDRESS) >> PAGE_SHIFT;
  	low = max_low_pfn;
-diff -Naur linux-2.6.18.1/arch/mips/mm/pgtable-32.c linux-mips-2.6.18.1/arch/mips/mm/pgtable-32.c
---- linux-2.6.18.1/arch/mips/mm/pgtable-32.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/pgtable-32.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/ioremap.c linux-mips-2.6.18.2/arch/mips/mm/ioremap.c
+--- linux-2.6.18.2/arch/mips/mm/ioremap.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/ioremap.c	2006-11-04 14:51:12.000000000 -0800
+@@ -176,7 +176,7 @@
+ 
+ #define IS_KSEG1(addr) (((unsigned long)(addr) & ~0x1fffffffUL) == CKSEG1)
+ 
+-void __iounmap(volatile void __iomem *addr)
++void __iounmap(const volatile void __iomem *addr)
+ {
+ 	struct vm_struct *p;
+ 
+diff -Naur linux-2.6.18.2/arch/mips/mm/pg-r4k.c linux-mips-2.6.18.2/arch/mips/mm/pg-r4k.c
+--- linux-2.6.18.2/arch/mips/mm/pg-r4k.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/pg-r4k.c	2006-11-04 14:51:12.000000000 -0800
+@@ -270,6 +270,20 @@
+ 	emit_instruction(mi);
+ }
+ 
++static inline void build_addiu_a2(unsigned long offset)
++{
++	union mips_instruction mi;
++
++	BUG_ON(offset > 0x7fff);
++
++	mi.i_format.opcode     = cpu_has_64bit_gp_regs ? daddiu_op : addiu_op;
++	mi.i_format.rs         = 6;		/* $a2 */
++	mi.i_format.rt         = 6;		/* $a2 */
++	mi.i_format.simmediate = offset;
++
++	emit_instruction(mi);
++}
++
+ static inline void build_addiu_a1(unsigned long offset)
+ {
+ 	union mips_instruction mi;
+@@ -333,6 +347,7 @@
+ void __init build_clear_page(void)
+ {
+ 	unsigned int loop_start;
++	unsigned long off;
+ 
+ 	epc = (unsigned int *) &clear_page_array;
+ 	instruction_pending = 0;
+@@ -369,7 +384,12 @@
+ 		}
+ 	}
+ 
+-	build_addiu_a2_a0(PAGE_SIZE - (cpu_has_prefetch ? pref_offset_clear : 0));
++        off = PAGE_SIZE - (cpu_has_prefetch ? pref_offset_clear : 0);
++	if (off > 0x7fff) {
++		build_addiu_a2_a0(off >> 1);
++		build_addiu_a2(off >> 1);
++	} else
++		build_addiu_a2_a0(off);
+ 
+ 	if (R4600_V2_HIT_CACHEOP_WAR && cpu_is_r4600_v2_x())
+ 		build_insn_word(0x3c01a000);	/* lui     $at, 0xa000  */
+@@ -420,12 +440,18 @@
+ void __init build_copy_page(void)
+ {
+ 	unsigned int loop_start;
++	unsigned long off;
+ 
+ 	epc = (unsigned int *) &copy_page_array;
+ 	store_offset = load_offset = 0;
+ 	instruction_pending = 0;
+ 
+-	build_addiu_a2_a0(PAGE_SIZE - (cpu_has_prefetch ? pref_offset_copy : 0));
++	off = PAGE_SIZE - (cpu_has_prefetch ? pref_offset_copy : 0);
++	if (off > 0x7fff) {
++		build_addiu_a2_a0(off >> 1);
++		build_addiu_a2(off >> 1);
++	} else
++		build_addiu_a2_a0(off);
+ 
+ 	if (R4600_V2_HIT_CACHEOP_WAR && cpu_is_r4600_v2_x())
+ 		build_insn_word(0x3c01a000);	/* lui     $at, 0xa000  */
+diff -Naur linux-2.6.18.2/arch/mips/mm/pgtable-32.c linux-mips-2.6.18.2/arch/mips/mm/pgtable-32.c
+--- linux-2.6.18.2/arch/mips/mm/pgtable-32.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/pgtable-32.c	2006-11-04 14:51:12.000000000 -0800
 @@ -31,9 +31,10 @@
  
  void __init pagetable_init(void)
@@ -2745,9 +2993,9 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/pgtable-32.c linux-mips-2.6.18.1/arch/mip
  	/*
  	 * Permanent kmaps:
  	 */
-diff -Naur linux-2.6.18.1/arch/mips/mm/pgtable-64.c linux-mips-2.6.18.1/arch/mips/mm/pgtable-64.c
---- linux-2.6.18.1/arch/mips/mm/pgtable-64.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/mm/pgtable-64.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/pgtable-64.c linux-mips-2.6.18.2/arch/mips/mm/pgtable-64.c
+--- linux-2.6.18.2/arch/mips/mm/pgtable-64.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/pgtable-64.c	2006-11-04 14:51:12.000000000 -0800
 @@ -8,6 +8,7 @@
   */
  #include <linux/init.h>
@@ -2774,9 +3022,103 @@ diff -Naur linux-2.6.18.1/arch/mips/mm/pgtable-64.c linux-mips-2.6.18.1/arch/mip
 +	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
 +	fixrange_init(vaddr, 0, pgd_base);
  }
-diff -Naur linux-2.6.18.1/arch/mips/pci/Makefile linux-mips-2.6.18.1/arch/mips/pci/Makefile
---- linux-2.6.18.1/arch/mips/pci/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/pci/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/mm/tlbex.c linux-mips-2.6.18.2/arch/mips/mm/tlbex.c
+--- linux-2.6.18.2/arch/mips/mm/tlbex.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/mm/tlbex.c	2006-11-04 14:51:12.000000000 -0800
+@@ -102,7 +102,7 @@
+ 	insn_addu, insn_addiu, insn_and, insn_andi, insn_beq,
+ 	insn_beql, insn_bgez, insn_bgezl, insn_bltz, insn_bltzl,
+ 	insn_bne, insn_daddu, insn_daddiu, insn_dmfc0, insn_dmtc0,
+-	insn_dsll, insn_dsll32, insn_dsra, insn_dsrl,
++	insn_dsll, insn_dsll32, insn_dsra, insn_dsrl, insn_dsrl32,
+ 	insn_dsubu, insn_eret, insn_j, insn_jal, insn_jr, insn_ld,
+ 	insn_ll, insn_lld, insn_lui, insn_lw, insn_mfc0, insn_mtc0,
+ 	insn_ori, insn_rfe, insn_sc, insn_scd, insn_sd, insn_sll,
+@@ -145,6 +145,7 @@
+ 	{ insn_dsll32, M(spec_op,0,0,0,0,dsll32_op), RT | RD | RE },
+ 	{ insn_dsra, M(spec_op,0,0,0,0,dsra_op), RT | RD | RE },
+ 	{ insn_dsrl, M(spec_op,0,0,0,0,dsrl_op), RT | RD | RE },
++	{ insn_dsrl32, M(spec_op,0,0,0,0,dsrl32_op), RT | RD | RE },
+ 	{ insn_dsubu, M(spec_op,0,0,0,0,dsubu_op), RS | RT | RD },
+ 	{ insn_eret, M(cop0_op,cop_op,0,0,0,eret_op), 0 },
+ 	{ insn_j, M(j_op,0,0,0,0,0), JIMM },
+@@ -385,6 +386,7 @@
+ I_u2u1u3(_dsll32);
+ I_u2u1u3(_dsra);
+ I_u2u1u3(_dsrl);
++I_u2u1u3(_dsrl32);
+ I_u3u1u2(_dsubu);
+ I_0(_eret);
+ I_u1(_j);
+@@ -996,7 +998,12 @@
+ #endif
+ 
+ 	l_vmalloc_done(l, *p);
+-	i_dsrl(p, tmp, tmp, PGDIR_SHIFT-3); /* get pgd offset in bytes */
++
++	if (PGDIR_SHIFT - 3 < 32)		/* get pgd offset in bytes */
++		i_dsrl(p, tmp, tmp, PGDIR_SHIFT-3);
++	else
++		i_dsrl32(p, tmp, tmp, PGDIR_SHIFT - 3 - 32);
++
+ 	i_andi(p, tmp, tmp, (PTRS_PER_PGD - 1)<<3);
+ 	i_daddu(p, ptr, ptr, tmp); /* add in pgd offset */
+ 	i_dmfc0(p, tmp, C0_BADVADDR); /* get faulting address */
+@@ -1073,7 +1080,7 @@
+ 
+ static __init void build_adjust_context(u32 **p, unsigned int ctx)
+ {
+-	unsigned int shift = 4 - (PTE_T_LOG2 + 1);
++	unsigned int shift = 4 - (PTE_T_LOG2 + 1) + PAGE_SHIFT - 12;
+ 	unsigned int mask = (PTRS_PER_PTE / 2 - 1) << (PTE_T_LOG2 + 1);
+ 
+ 	switch (current_cpu_data.cputype) {
+diff -Naur linux-2.6.18.2/arch/mips/oprofile/op_model_mipsxx.c linux-mips-2.6.18.2/arch/mips/oprofile/op_model_mipsxx.c
+--- linux-2.6.18.2/arch/mips/oprofile/op_model_mipsxx.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/oprofile/op_model_mipsxx.c	2006-11-04 14:51:12.000000000 -0800
+@@ -30,16 +30,18 @@
+ #define M_COUNTER_OVERFLOW		(1UL      << 31)
+ 
+ #ifdef CONFIG_MIPS_MT_SMP
+-#define WHAT	(M_TC_EN_VPE | M_PERFCTL_VPEID(smp_processor_id()))
++#define WHAT		(M_TC_EN_VPE | M_PERFCTL_VPEID(smp_processor_id()))
++#define vpe_id()	smp_processor_id()
+ #else
+-#define WHAT	0
++#define WHAT		0
++#define vpe_id()	smp_processor_id()
+ #endif
+ 
+ #define __define_perf_accessors(r, n, np)				\
+ 									\
+ static inline unsigned int r_c0_ ## r ## n(void)			\
+ {									\
+-	unsigned int cpu = smp_processor_id();				\
++	unsigned int cpu = vpe_id();					\
+ 									\
+ 	switch (cpu) {							\
+ 	case 0:								\
+@@ -54,7 +56,7 @@
+ 									\
+ static inline void w_c0_ ## r ## n(unsigned int value)			\
+ {									\
+-	unsigned int cpu = smp_processor_id();				\
++	unsigned int cpu = vpe_id();					\
+ 									\
+ 	switch (cpu) {							\
+ 	case 0:								\
+@@ -217,7 +219,7 @@
+ {
+ 	int counters = __n_counters();
+ 
+-#ifndef CONFIG_SMP
++#ifdef CONFIG_MIPS_MT_SMP
+ 	if (current_cpu_data.cputype == CPU_34K)
+ 		return counters >> 1;
+ #endif
+diff -Naur linux-2.6.18.2/arch/mips/pci/Makefile linux-mips-2.6.18.2/arch/mips/pci/Makefile
+--- linux-2.6.18.2/arch/mips/pci/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/pci/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -28,7 +28,7 @@
  obj-$(CONFIG_LASAT)		+= pci-lasat.o
  obj-$(CONFIG_MIPS_ATLAS)	+= fixup-atlas.o
@@ -2786,9 +3128,9 @@ diff -Naur linux-2.6.18.1/arch/mips/pci/Makefile linux-mips-2.6.18.1/arch/mips/p
  obj-$(CONFIG_MIPS_EV96100)	+= fixup-ev96100.o pci-ev96100.o
  obj-$(CONFIG_MIPS_ITE8172)	+= fixup-ite8172g.o
  obj-$(CONFIG_MIPS_IVR)		+= fixup-ivr.o
-diff -Naur linux-2.6.18.1/arch/mips/pci/fixup-atlas.c linux-mips-2.6.18.1/arch/mips/pci/fixup-atlas.c
---- linux-2.6.18.1/arch/mips/pci/fixup-atlas.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/pci/fixup-atlas.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/pci/fixup-atlas.c linux-mips-2.6.18.2/arch/mips/pci/fixup-atlas.c
+--- linux-2.6.18.2/arch/mips/pci/fixup-atlas.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/pci/fixup-atlas.c	2006-11-04 14:51:12.000000000 -0800
 @@ -21,16 +21,16 @@
  
  #include <asm/mips-boards/atlasint.h>
@@ -2816,9 +3158,9 @@ diff -Naur linux-2.6.18.1/arch/mips/pci/fixup-atlas.c linux-mips-2.6.18.1/arch/m
  
  static char irq_tab[][5] __initdata = {
  	/*      INTA    INTB    INTC    INTD */
-diff -Naur linux-2.6.18.1/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.18.1/arch/mips/pci/fixup-tb0219.c
---- linux-2.6.18.1/arch/mips/pci/fixup-tb0219.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/pci/fixup-tb0219.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.18.2/arch/mips/pci/fixup-tb0219.c
+--- linux-2.6.18.2/arch/mips/pci/fixup-tb0219.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/pci/fixup-tb0219.c	2006-11-04 14:51:12.000000000 -0800
 @@ -2,7 +2,7 @@
   *  fixup-tb0219.c, The TANBAC TB0219 specific PCI fixups.
   *
@@ -2828,9 +3170,9 @@ diff -Naur linux-2.6.18.1/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.18.1/arch/
   *
   *  This program is free software; you can redistribute it and/or modify
   *  it under the terms of the GNU General Public License as published by
-diff -Naur linux-2.6.18.1/arch/mips/pci/ops-au1000.c linux-mips-2.6.18.1/arch/mips/pci/ops-au1000.c
---- linux-2.6.18.1/arch/mips/pci/ops-au1000.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/pci/ops-au1000.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/pci/ops-au1000.c linux-mips-2.6.18.2/arch/mips/pci/ops-au1000.c
+--- linux-2.6.18.2/arch/mips/pci/ops-au1000.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/pci/ops-au1000.c	2006-11-04 14:51:12.000000000 -0800
 @@ -110,7 +110,7 @@
  	if (first_cfg) {
  		/* reserve a wired entry for pci config accesses */
@@ -2840,18 +3182,18 @@ diff -Naur linux-2.6.18.1/arch/mips/pci/ops-au1000.c linux-mips-2.6.18.1/arch/mi
  		if (!pci_cfg_vm)
  			panic (KERN_ERR "PCI unable to get vm area\n");
  		pci_cfg_wired_entry = read_c0_wired();
-diff -Naur linux-2.6.18.1/arch/mips/qemu/Makefile linux-mips-2.6.18.1/arch/mips/qemu/Makefile
---- linux-2.6.18.1/arch/mips/qemu/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/qemu/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/qemu/Makefile linux-mips-2.6.18.2/arch/mips/qemu/Makefile
+--- linux-2.6.18.2/arch/mips/qemu/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/qemu/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -4,4 +4,5 @@
  
  obj-y		= q-firmware.o q-irq.o q-mem.o q-setup.o q-reset.o
  
 +obj-$(CONFIG_VT) += q-vga.o
  obj-$(CONFIG_SMP) += q-smp.o
-diff -Naur linux-2.6.18.1/arch/mips/qemu/q-setup.c linux-mips-2.6.18.1/arch/mips/qemu/q-setup.c
---- linux-2.6.18.1/arch/mips/qemu/q-setup.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/qemu/q-setup.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/qemu/q-setup.c linux-mips-2.6.18.2/arch/mips/qemu/q-setup.c
+--- linux-2.6.18.2/arch/mips/qemu/q-setup.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/qemu/q-setup.c	2006-11-04 14:51:12.000000000 -0800
 @@ -2,6 +2,7 @@
  #include <asm/io.h>
  #include <asm/time.h>
@@ -2870,9 +3212,9 @@ diff -Naur linux-2.6.18.1/arch/mips/qemu/q-setup.c linux-mips-2.6.18.1/arch/mips
 +
  	qemu_reboot_setup();
  }
-diff -Naur linux-2.6.18.1/arch/mips/qemu/q-vga.c linux-mips-2.6.18.1/arch/mips/qemu/q-vga.c
---- linux-2.6.18.1/arch/mips/qemu/q-vga.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/arch/mips/qemu/q-vga.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/qemu/q-vga.c linux-mips-2.6.18.2/arch/mips/qemu/q-vga.c
+--- linux-2.6.18.2/arch/mips/qemu/q-vga.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/qemu/q-vga.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,189 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -3063,9 +3405,9 @@ diff -Naur linux-2.6.18.1/arch/mips/qemu/q-vga.c linux-mips-2.6.18.1/arch/mips/q
 +	while (1);
 +#endif
 +}
-diff -Naur linux-2.6.18.1/arch/mips/sibyte/bcm1480/irq.c linux-mips-2.6.18.1/arch/mips/sibyte/bcm1480/irq.c
---- linux-2.6.18.1/arch/mips/sibyte/bcm1480/irq.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/sibyte/bcm1480/irq.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/sibyte/bcm1480/irq.c linux-mips-2.6.18.2/arch/mips/sibyte/bcm1480/irq.c
+--- linux-2.6.18.2/arch/mips/sibyte/bcm1480/irq.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/sibyte/bcm1480/irq.c	2006-11-04 14:51:12.000000000 -0800
 @@ -469,21 +469,6 @@
  
  #endif 	/* CONFIG_KGDB */
@@ -3109,9 +3451,9 @@ diff -Naur linux-2.6.18.1/arch/mips/sibyte/bcm1480/irq.c linux-mips-2.6.18.1/arc
  		}
  	}
  }
-diff -Naur linux-2.6.18.1/arch/mips/sibyte/bcm1480/smp.c linux-mips-2.6.18.1/arch/mips/sibyte/bcm1480/smp.c
---- linux-2.6.18.1/arch/mips/sibyte/bcm1480/smp.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/sibyte/bcm1480/smp.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/sibyte/bcm1480/smp.c linux-mips-2.6.18.2/arch/mips/sibyte/bcm1480/smp.c
+--- linux-2.6.18.2/arch/mips/sibyte/bcm1480/smp.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/sibyte/bcm1480/smp.c	2006-11-04 14:51:12.000000000 -0800
 @@ -34,21 +34,21 @@
   * independent of board/firmware
   */
@@ -3137,9 +3479,9 @@ diff -Naur linux-2.6.18.1/arch/mips/sibyte/bcm1480/smp.c linux-mips-2.6.18.1/arc
  	IOADDR(A_BCM1480_IMR_CPU0_BASE + R_BCM1480_IMR_MAILBOX_0_CPU),
  	IOADDR(A_BCM1480_IMR_CPU1_BASE + R_BCM1480_IMR_MAILBOX_0_CPU),
  	IOADDR(A_BCM1480_IMR_CPU2_BASE + R_BCM1480_IMR_MAILBOX_0_CPU),
-diff -Naur linux-2.6.18.1/arch/mips/sibyte/sb1250/irq.c linux-mips-2.6.18.1/arch/mips/sibyte/sb1250/irq.c
---- linux-2.6.18.1/arch/mips/sibyte/sb1250/irq.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/sibyte/sb1250/irq.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/sibyte/sb1250/irq.c linux-mips-2.6.18.2/arch/mips/sibyte/sb1250/irq.c
+--- linux-2.6.18.2/arch/mips/sibyte/sb1250/irq.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/sibyte/sb1250/irq.c	2006-11-04 14:51:12.000000000 -0800
 @@ -419,21 +419,6 @@
  
  #endif 	/* CONFIG_KGDB */
@@ -3183,9 +3525,9 @@ diff -Naur linux-2.6.18.1/arch/mips/sibyte/sb1250/irq.c linux-mips-2.6.18.1/arch
 +	} else
 +		spurious_interrupt(regs);
  }
-diff -Naur linux-2.6.18.1/arch/mips/tx4927/common/tx4927_setup.c linux-mips-2.6.18.1/arch/mips/tx4927/common/tx4927_setup.c
---- linux-2.6.18.1/arch/mips/tx4927/common/tx4927_setup.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/tx4927/common/tx4927_setup.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/tx4927/common/tx4927_setup.c linux-mips-2.6.18.2/arch/mips/tx4927/common/tx4927_setup.c
+--- linux-2.6.18.2/arch/mips/tx4927/common/tx4927_setup.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/tx4927/common/tx4927_setup.c	2006-11-04 14:51:12.000000000 -0800
 @@ -53,19 +53,9 @@
  void dump_cp0(char *key);
  
@@ -3206,9 +3548,9 @@ diff -Naur linux-2.6.18.1/arch/mips/tx4927/common/tx4927_setup.c linux-mips-2.6.
  
  #ifdef CONFIG_TOSHIBA_RBTX4927
  	{
-diff -Naur linux-2.6.18.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c linux-mips-2.6.18.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c
---- linux-2.6.18.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c linux-mips-2.6.18.2/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c
+--- linux-2.6.18.2/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq.c	2006-11-04 14:51:12.000000000 -0800
 @@ -130,6 +130,7 @@
  #include <asm/ptrace.h>
  #include <asm/reboot.h>
@@ -3217,9 +3559,9 @@ diff -Naur linux-2.6.18.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_irq
  #include <linux/bootmem.h>
  #include <linux/blkdev.h>
  #ifdef CONFIG_RTC_DS1742
-diff -Naur linux-2.6.18.1/arch/mips/tx4938/common/irq.c linux-mips-2.6.18.1/arch/mips/tx4938/common/irq.c
---- linux-2.6.18.1/arch/mips/tx4938/common/irq.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/tx4938/common/irq.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/tx4938/common/irq.c linux-mips-2.6.18.2/arch/mips/tx4938/common/irq.c
+--- linux-2.6.18.2/arch/mips/tx4938/common/irq.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/tx4938/common/irq.c	2006-11-04 14:51:12.000000000 -0800
 @@ -30,6 +30,7 @@
  #include <asm/irq.h>
  #include <asm/mipsregs.h>
@@ -3228,9 +3570,9 @@ diff -Naur linux-2.6.18.1/arch/mips/tx4938/common/irq.c linux-mips-2.6.18.1/arch
  #include <asm/tx4938/rbtx4938.h>
  
  /**********************************************************************************/
-diff -Naur linux-2.6.18.1/arch/mips/tx4938/common/setup.c linux-mips-2.6.18.1/arch/mips/tx4938/common/setup.c
---- linux-2.6.18.1/arch/mips/tx4938/common/setup.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/tx4938/common/setup.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/tx4938/common/setup.c linux-mips-2.6.18.2/arch/mips/tx4938/common/setup.c
+--- linux-2.6.18.2/arch/mips/tx4938/common/setup.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/tx4938/common/setup.c	2006-11-04 14:51:12.000000000 -0800
 @@ -41,29 +41,10 @@
  void __init tx4938_time_init(void);
  void dump_cp0(char *key);
@@ -3261,9 +3603,9 @@ diff -Naur linux-2.6.18.1/arch/mips/tx4938/common/setup.c linux-mips-2.6.18.1/ar
  	toshiba_rbtx4938_setup();
  }
  
-diff -Naur linux-2.6.18.1/arch/mips/tx4938/toshiba_rbtx4938/irq.c linux-mips-2.6.18.1/arch/mips/tx4938/toshiba_rbtx4938/irq.c
---- linux-2.6.18.1/arch/mips/tx4938/toshiba_rbtx4938/irq.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/arch/mips/tx4938/toshiba_rbtx4938/irq.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/arch/mips/tx4938/toshiba_rbtx4938/irq.c linux-mips-2.6.18.2/arch/mips/tx4938/toshiba_rbtx4938/irq.c
+--- linux-2.6.18.2/arch/mips/tx4938/toshiba_rbtx4938/irq.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/arch/mips/tx4938/toshiba_rbtx4938/irq.c	2006-11-04 14:51:12.000000000 -0800
 @@ -84,6 +84,7 @@
  #include <asm/ptrace.h>
  #include <asm/reboot.h>
@@ -3272,9 +3614,9 @@ diff -Naur linux-2.6.18.1/arch/mips/tx4938/toshiba_rbtx4938/irq.c linux-mips-2.6
  #include <linux/bootmem.h>
  #include <asm/tx4938/rbtx4938.h>
  
-diff -Naur linux-2.6.18.1/drivers/char/Kconfig linux-mips-2.6.18.1/drivers/char/Kconfig
---- linux-2.6.18.1/drivers/char/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/char/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/Kconfig linux-mips-2.6.18.2/drivers/char/Kconfig
+--- linux-2.6.18.2/drivers/char/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -357,23 +357,68 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called istallion.
@@ -3385,9 +3727,9 @@ diff -Naur linux-2.6.18.1/drivers/char/Kconfig linux-mips-2.6.18.1/drivers/char/
  config A2232
  	tristate "Commodore A2232 serial support (EXPERIMENTAL)"
  	depends on EXPERIMENTAL && ZORRO && BROKEN_ON_SMP
-diff -Naur linux-2.6.18.1/drivers/char/Makefile linux-mips-2.6.18.1/drivers/char/Makefile
---- linux-2.6.18.1/drivers/char/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/char/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/Makefile linux-mips-2.6.18.2/drivers/char/Makefile
+--- linux-2.6.18.2/drivers/char/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -31,6 +31,7 @@
  obj-$(CONFIG_A2232)		+= ser_a2232.o generic_serial.o
  obj-$(CONFIG_ATARI_DSP56K)	+= dsp56k.o
@@ -3415,9 +3757,9 @@ diff -Naur linux-2.6.18.1/drivers/char/Makefile linux-mips-2.6.18.1/drivers/char
  obj-$(CONFIG_PPDEV)		+= ppdev.o
  obj-$(CONFIG_NWBUTTON)		+= nwbutton.o
  obj-$(CONFIG_NWFLASH)		+= nwflash.o
-diff -Naur linux-2.6.18.1/drivers/char/au1000_gpio.c linux-mips-2.6.18.1/drivers/char/au1000_gpio.c
---- linux-2.6.18.1/drivers/char/au1000_gpio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/char/au1000_gpio.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/au1000_gpio.c linux-mips-2.6.18.2/drivers/char/au1000_gpio.c
+--- linux-2.6.18.2/drivers/char/au1000_gpio.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/au1000_gpio.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,266 @@
 +/*
 + * FILE NAME au1000_gpio.c
@@ -3685,9 +4027,9 @@ diff -Naur linux-2.6.18.1/drivers/char/au1000_gpio.c linux-mips-2.6.18.1/drivers
 +
 +module_init(au1000gpio_init);
 +module_exit(au1000gpio_exit);
-diff -Naur linux-2.6.18.1/drivers/char/au1000_ts.c linux-mips-2.6.18.1/drivers/char/au1000_ts.c
---- linux-2.6.18.1/drivers/char/au1000_ts.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/char/au1000_ts.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/au1000_ts.c linux-mips-2.6.18.2/drivers/char/au1000_ts.c
+--- linux-2.6.18.2/drivers/char/au1000_ts.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/au1000_ts.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,677 @@
 +/*
 + *      au1000_ts.c  --  Touch screen driver for the Alchemy Au1000's
@@ -4366,9 +4708,9 @@ diff -Naur linux-2.6.18.1/drivers/char/au1000_ts.c linux-mips-2.6.18.1/drivers/c
 +
 +module_init(au1000ts_init_module);
 +module_exit(au1000ts_cleanup_module);
-diff -Naur linux-2.6.18.1/drivers/char/au1000_usbraw.c linux-mips-2.6.18.1/drivers/char/au1000_usbraw.c
---- linux-2.6.18.1/drivers/char/au1000_usbraw.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/char/au1000_usbraw.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/au1000_usbraw.c linux-mips-2.6.18.2/drivers/char/au1000_usbraw.c
+--- linux-2.6.18.2/drivers/char/au1000_usbraw.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/au1000_usbraw.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,573 @@
 +/*
 + * BRIEF MODULE DESCRIPTION
@@ -4943,9 +5285,9 @@ diff -Naur linux-2.6.18.1/drivers/char/au1000_usbraw.c linux-mips-2.6.18.1/drive
 +
 +module_init(usbfn_raw_init);
 +module_exit(usbfn_raw_exit);
-diff -Naur linux-2.6.18.1/drivers/char/au1000_usbtty.c linux-mips-2.6.18.1/drivers/char/au1000_usbtty.c
---- linux-2.6.18.1/drivers/char/au1000_usbtty.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/char/au1000_usbtty.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/au1000_usbtty.c linux-mips-2.6.18.2/drivers/char/au1000_usbtty.c
+--- linux-2.6.18.2/drivers/char/au1000_usbtty.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/au1000_usbtty.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,761 @@
 +/*
 + * BRIEF MODULE DESCRIPTION
@@ -5708,9 +6050,9 @@ diff -Naur linux-2.6.18.1/drivers/char/au1000_usbtty.c linux-mips-2.6.18.1/drive
 +
 +module_init(usbfn_tty_init);
 +module_exit(usbfn_tty_exit);
-diff -Naur linux-2.6.18.1/drivers/char/decserial.c linux-mips-2.6.18.1/drivers/char/decserial.c
---- linux-2.6.18.1/drivers/char/decserial.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/char/decserial.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/decserial.c linux-mips-2.6.18.2/drivers/char/decserial.c
+--- linux-2.6.18.2/drivers/char/decserial.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/decserial.c	2006-11-04 14:51:12.000000000 -0800
 @@ -14,86 +14,84 @@
   *      device. Added support for PROM console in drivers/char/tty_io.c
   *      instead. Although it may work to enable more than one 
@@ -5844,9 +6186,9 @@ diff -Naur linux-2.6.18.1/drivers/char/decserial.c linux-mips-2.6.18.1/drivers/c
 +console_initcall(dec_serial_console_init);
  
  #endif
-diff -Naur linux-2.6.18.1/drivers/char/qtronix.c linux-mips-2.6.18.1/drivers/char/qtronix.c
---- linux-2.6.18.1/drivers/char/qtronix.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/char/qtronix.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/qtronix.c linux-mips-2.6.18.2/drivers/char/qtronix.c
+--- linux-2.6.18.2/drivers/char/qtronix.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/qtronix.c	2006-11-04 14:51:12.000000000 -0800
 @@ -534,8 +534,7 @@
  		i--;
  	}
@@ -5857,9 +6199,9 @@ diff -Naur linux-2.6.18.1/drivers/char/qtronix.c linux-mips-2.6.18.1/drivers/cha
  		return count-i;
  	}
  	if (signal_pending(current))
-diff -Naur linux-2.6.18.1/drivers/char/rtc.c linux-mips-2.6.18.1/drivers/char/rtc.c
---- linux-2.6.18.1/drivers/char/rtc.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/char/rtc.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/rtc.c linux-mips-2.6.18.2/drivers/char/rtc.c
+--- linux-2.6.18.2/drivers/char/rtc.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/rtc.c	2006-11-04 14:51:12.000000000 -0800
 @@ -35,16 +35,16 @@
   *	1.09a	Pete Zaitcev: Sun SPARC
   *	1.09b	Jeff Garzik: Modularize, init cleanup
@@ -5880,9 +6222,9 @@ diff -Naur linux-2.6.18.1/drivers/char/rtc.c linux-mips-2.6.18.1/drivers/char/rt
   *		CONFIG_HPET_EMULATE_RTC
   *	1.12a	Maciej W. Rozycki: Handle memory-mapped chips properly.
   *	1.12ac	Alan Cox: Allow read access to the day of week register
-diff -Naur linux-2.6.18.1/drivers/char/sb1250_duart.c linux-mips-2.6.18.1/drivers/char/sb1250_duart.c
---- linux-2.6.18.1/drivers/char/sb1250_duart.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/char/sb1250_duart.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/char/sb1250_duart.c linux-mips-2.6.18.2/drivers/char/sb1250_duart.c
+--- linux-2.6.18.2/drivers/char/sb1250_duart.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/char/sb1250_duart.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,910 @@
 +/*
 + * Copyright (C) 2000,2001,2002,2003,2004 Broadcom Corporation
@@ -6794,18 +7136,18 @@ diff -Naur linux-2.6.18.1/drivers/char/sb1250_duart.c linux-mips-2.6.18.1/driver
 +console_initcall(sb1250_serial_console_init);
 +
 +#endif /* CONFIG_SIBYTE_SB1250_DUART_CONSOLE */
-diff -Naur linux-2.6.18.1/drivers/ide/mips/Makefile linux-mips-2.6.18.1/drivers/ide/mips/Makefile
---- linux-2.6.18.1/drivers/ide/mips/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/ide/mips/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/ide/mips/Makefile linux-mips-2.6.18.2/drivers/ide/mips/Makefile
+--- linux-2.6.18.2/drivers/ide/mips/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/ide/mips/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -1,4 +1,4 @@
  obj-$(CONFIG_BLK_DEV_IDE_SWARM)		+= swarm.o
  obj-$(CONFIG_BLK_DEV_IDE_AU1XXX)	+= au1xxx-ide.o
  
 -EXTRA_CFLAGS    := -Idrivers/ide
 +CFLAGS_au1xxx-ide.o := -Idrivers/ide
-diff -Naur linux-2.6.18.1/drivers/mtd/devices/docprobe.c linux-mips-2.6.18.1/drivers/mtd/devices/docprobe.c
---- linux-2.6.18.1/drivers/mtd/devices/docprobe.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/mtd/devices/docprobe.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/mtd/devices/docprobe.c linux-mips-2.6.18.2/drivers/mtd/devices/docprobe.c
+--- linux-2.6.18.2/drivers/mtd/devices/docprobe.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/mtd/devices/docprobe.c	2006-11-04 14:51:12.000000000 -0800
 @@ -83,10 +83,10 @@
  	0xe4000000,
  #elif defined(CONFIG_MOMENCO_OCELOT)
@@ -6820,9 +7162,9 @@ diff -Naur linux-2.6.18.1/drivers/mtd/devices/docprobe.c linux-mips-2.6.18.1/dri
  #warning Unknown architecture for DiskOnChip. No default probe locations defined
  #endif
  	0xffffffff };
-diff -Naur linux-2.6.18.1/drivers/mtd/maps/Kconfig linux-mips-2.6.18.1/drivers/mtd/maps/Kconfig
---- linux-2.6.18.1/drivers/mtd/maps/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/mtd/maps/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/mtd/maps/Kconfig linux-mips-2.6.18.2/drivers/mtd/maps/Kconfig
+--- linux-2.6.18.2/drivers/mtd/maps/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/mtd/maps/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -299,6 +299,18 @@
  	  Mapping for the Flaga digital module. If you don't have one, ignore
  	  this setting.
@@ -6842,9 +7184,9 @@ diff -Naur linux-2.6.18.1/drivers/mtd/maps/Kconfig linux-mips-2.6.18.1/drivers/m
  config MTD_BEECH
  	tristate "CFI Flash device mapped on IBM 405LP Beech"
  	depends on MTD_CFI && BEECH
-diff -Naur linux-2.6.18.1/drivers/mtd/maps/lasat.c linux-mips-2.6.18.1/drivers/mtd/maps/lasat.c
---- linux-2.6.18.1/drivers/mtd/maps/lasat.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/mtd/maps/lasat.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/mtd/maps/lasat.c linux-mips-2.6.18.2/drivers/mtd/maps/lasat.c
+--- linux-2.6.18.2/drivers/mtd/maps/lasat.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/mtd/maps/lasat.c	2006-11-04 14:51:12.000000000 -0800
 @@ -7,7 +7,7 @@
   * modify it under the terms of the GNU General Public License version
   * 2 as published by the Free Software Foundation.
@@ -6863,9 +7205,9 @@ diff -Naur linux-2.6.18.1/drivers/mtd/maps/lasat.c linux-mips-2.6.18.1/drivers/m
  		        lasat_map.phys, lasat_board_info.li_flash_size);
  	lasat_map.size = lasat_board_info.li_flash_size;
  
-diff -Naur linux-2.6.18.1/drivers/net/Kconfig linux-mips-2.6.18.1/drivers/net/Kconfig
---- linux-2.6.18.1/drivers/net/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/net/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/Kconfig linux-mips-2.6.18.2/drivers/net/Kconfig
+--- linux-2.6.18.2/drivers/net/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -438,6 +438,14 @@
  	  This is the driver for the onboard card of MIPS Magnum 4000,
  	  Acer PICA, Olivetti M700-10 and a few other identical OEM systems.
@@ -6967,9 +7309,9 @@ diff -Naur linux-2.6.18.1/drivers/net/Kconfig linux-mips-2.6.18.1/drivers/net/Kc
  endmenu
  
  #
-diff -Naur linux-2.6.18.1/drivers/net/Makefile linux-mips-2.6.18.1/drivers/net/Makefile
---- linux-2.6.18.1/drivers/net/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/net/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/Makefile linux-mips-2.6.18.2/drivers/net/Makefile
+--- linux-2.6.18.2/drivers/net/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -114,6 +114,11 @@
  
  obj-$(CONFIG_MV643XX_ETH) += mv643xx_eth.o
@@ -6982,9 +7324,9 @@ diff -Naur linux-2.6.18.1/drivers/net/Makefile linux-mips-2.6.18.1/drivers/net/M
  obj-$(CONFIG_PPP) += ppp_generic.o slhc.o
  obj-$(CONFIG_PPP_ASYNC) += ppp_async.o
  obj-$(CONFIG_PPP_SYNC_TTY) += ppp_synctty.o
-diff -Naur linux-2.6.18.1/drivers/net/big_sur_ge.c linux-mips-2.6.18.1/drivers/net/big_sur_ge.c
---- linux-2.6.18.1/drivers/net/big_sur_ge.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/big_sur_ge.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/big_sur_ge.c linux-mips-2.6.18.2/drivers/net/big_sur_ge.c
+--- linux-2.6.18.2/drivers/net/big_sur_ge.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/big_sur_ge.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,2005 @@
 +/*
 + * drivers/net/big_sur_ge.c - Driver for PMC-Sierra Big Sur ethernet ports
@@ -8991,9 +9333,9 @@ diff -Naur linux-2.6.18.1/drivers/net/big_sur_ge.c linux-mips-2.6.18.1/drivers/n
 +MODULE_AUTHOR("Manish Lachwani <lachwani@pmc-sierra.com>");
 +MODULE_DESCRIPTION("PMC-Sierra Big Sur Ethernet MAC Driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.18.1/drivers/net/big_sur_ge.h linux-mips-2.6.18.1/drivers/net/big_sur_ge.h
---- linux-2.6.18.1/drivers/net/big_sur_ge.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/big_sur_ge.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/big_sur_ge.h linux-mips-2.6.18.2/drivers/net/big_sur_ge.h
+--- linux-2.6.18.2/drivers/net/big_sur_ge.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/big_sur_ge.h	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,713 @@
 +/*
 + * drivers/net/big_sur_ge.h - Driver for PMC-Sierra Big Sur
@@ -9708,9 +10050,9 @@ diff -Naur linux-2.6.18.1/drivers/net/big_sur_ge.h linux-mips-2.6.18.1/drivers/n
 +                                 BIG_SUR_GEIXR_SG_END_MASK)
 +
 +#endif
-diff -Naur linux-2.6.18.1/drivers/net/gt64240eth.c linux-mips-2.6.18.1/drivers/net/gt64240eth.c
---- linux-2.6.18.1/drivers/net/gt64240eth.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/gt64240eth.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/gt64240eth.c linux-mips-2.6.18.2/drivers/net/gt64240eth.c
+--- linux-2.6.18.2/drivers/net/gt64240eth.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/gt64240eth.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,1672 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -11384,9 +11726,9 @@ diff -Naur linux-2.6.18.1/drivers/net/gt64240eth.c linux-mips-2.6.18.1/drivers/n
 +
 +	return &gp->stats;
 +}
-diff -Naur linux-2.6.18.1/drivers/net/gt64240eth.h linux-mips-2.6.18.1/drivers/net/gt64240eth.h
---- linux-2.6.18.1/drivers/net/gt64240eth.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/net/gt64240eth.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/gt64240eth.h linux-mips-2.6.18.2/drivers/net/gt64240eth.h
+--- linux-2.6.18.2/drivers/net/gt64240eth.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/gt64240eth.h	2006-11-04 14:51:12.000000000 -0800
 @@ -9,6 +9,7 @@
   * Copyright 2000 MontaVista Software Inc.
   * Author: MontaVista Software, Inc.
@@ -11427,9 +11769,9 @@ diff -Naur linux-2.6.18.1/drivers/net/gt64240eth.h linux-mips-2.6.18.1/drivers/n
  
  /* Bit definitions of the SMI Reg */
  enum {
-diff -Naur linux-2.6.18.1/drivers/net/ioc3-eth.c linux-mips-2.6.18.1/drivers/net/ioc3-eth.c
---- linux-2.6.18.1/drivers/net/ioc3-eth.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/net/ioc3-eth.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/ioc3-eth.c linux-mips-2.6.18.2/drivers/net/ioc3-eth.c
+--- linux-2.6.18.2/drivers/net/ioc3-eth.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/ioc3-eth.c	2006-11-04 14:51:12.000000000 -0800
 @@ -5,7 +5,7 @@
   *
   * Driver for SGI's IOC3 based Ethernet cards as found in the PCI card.
@@ -11556,9 +11898,9 @@ diff -Naur linux-2.6.18.1/drivers/net/ioc3-eth.c linux-mips-2.6.18.1/drivers/net
  };
  
  static int ioc3_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-diff -Naur linux-2.6.18.1/drivers/net/titan_ge.c linux-mips-2.6.18.1/drivers/net/titan_ge.c
---- linux-2.6.18.1/drivers/net/titan_ge.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/titan_ge.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/titan_ge.c linux-mips-2.6.18.2/drivers/net/titan_ge.c
+--- linux-2.6.18.2/drivers/net/titan_ge.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/titan_ge.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,2071 @@
 +/*
 + * drivers/net/titan_ge.c - Driver for Titan ethernet ports
@@ -13631,9 +13973,9 @@ diff -Naur linux-2.6.18.1/drivers/net/titan_ge.c linux-mips-2.6.18.1/drivers/net
 +
 +module_init(titan_ge_init_module);
 +module_exit(titan_ge_cleanup_module);
-diff -Naur linux-2.6.18.1/drivers/net/titan_ge.h linux-mips-2.6.18.1/drivers/net/titan_ge.h
---- linux-2.6.18.1/drivers/net/titan_ge.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/titan_ge.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/titan_ge.h linux-mips-2.6.18.2/drivers/net/titan_ge.h
+--- linux-2.6.18.2/drivers/net/titan_ge.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/titan_ge.h	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,417 @@
 +#ifndef _TITAN_GE_H_
 +#define _TITAN_GE_H_
@@ -14052,9 +14394,9 @@ diff -Naur linux-2.6.18.1/drivers/net/titan_ge.h linux-mips-2.6.18.1/drivers/net
 +
 +#endif 				/* _TITAN_GE_H_ */
 +
-diff -Naur linux-2.6.18.1/drivers/net/titan_mdio.c linux-mips-2.6.18.1/drivers/net/titan_mdio.c
---- linux-2.6.18.1/drivers/net/titan_mdio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/titan_mdio.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/titan_mdio.c linux-mips-2.6.18.2/drivers/net/titan_mdio.c
+--- linux-2.6.18.2/drivers/net/titan_mdio.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/titan_mdio.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,217 @@
 +/*
 + * drivers/net/titan_mdio.c - Driver for Titan ethernet ports
@@ -14273,9 +14615,9 @@ diff -Naur linux-2.6.18.1/drivers/net/titan_mdio.c linux-mips-2.6.18.1/drivers/n
 +	return TITAN_GE_MDIO_GOOD;
 +}
 +
-diff -Naur linux-2.6.18.1/drivers/net/titan_mdio.h linux-mips-2.6.18.1/drivers/net/titan_mdio.h
---- linux-2.6.18.1/drivers/net/titan_mdio.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/net/titan_mdio.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/net/titan_mdio.h linux-mips-2.6.18.2/drivers/net/titan_mdio.h
+--- linux-2.6.18.2/drivers/net/titan_mdio.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/net/titan_mdio.h	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,56 @@
 +/*
 + * MDIO used to interact with the PHY when using GMII/MII
@@ -14333,9 +14675,9 @@ diff -Naur linux-2.6.18.1/drivers/net/titan_mdio.h linux-mips-2.6.18.1/drivers/n
 +int titan_ge_mdio_write(int, int, unsigned int);
 +
 +#endif /* _TITAN_MDIO_H */
-diff -Naur linux-2.6.18.1/drivers/scsi/NCR53C9x.h linux-mips-2.6.18.1/drivers/scsi/NCR53C9x.h
---- linux-2.6.18.1/drivers/scsi/NCR53C9x.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/scsi/NCR53C9x.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/scsi/NCR53C9x.h linux-mips-2.6.18.2/drivers/scsi/NCR53C9x.h
+--- linux-2.6.18.2/drivers/scsi/NCR53C9x.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/scsi/NCR53C9x.h	2006-11-04 14:51:12.000000000 -0800
 @@ -144,12 +144,7 @@
  
  #ifndef MULTIPLE_PAD_SIZES
@@ -14350,9 +14692,9 @@ diff -Naur linux-2.6.18.1/drivers/scsi/NCR53C9x.h linux-mips-2.6.18.1/drivers/sc
  #define esp_read(__reg) (__reg)
  
  struct ESP_regs {
-diff -Naur linux-2.6.18.1/drivers/scsi/dec_esp.c linux-mips-2.6.18.1/drivers/scsi/dec_esp.c
---- linux-2.6.18.1/drivers/scsi/dec_esp.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/scsi/dec_esp.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/scsi/dec_esp.c linux-mips-2.6.18.2/drivers/scsi/dec_esp.c
+--- linux-2.6.18.2/drivers/scsi/dec_esp.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/scsi/dec_esp.c	2006-11-04 14:51:12.000000000 -0800
 @@ -55,7 +55,7 @@
  
  static int  dma_bytes_sent(struct NCR_ESP *esp, int fifo_count);
@@ -14371,9 +14713,9 @@ diff -Naur linux-2.6.18.1/drivers/scsi/dec_esp.c linux-mips-2.6.18.1/drivers/scs
  
  			esp->dregs = 0;
  			esp->eregs = (void *)CKSEG1ADDR(mem_start +
-diff -Naur linux-2.6.18.1/drivers/scsi/sgiwd93.c linux-mips-2.6.18.1/drivers/scsi/sgiwd93.c
---- linux-2.6.18.1/drivers/scsi/sgiwd93.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/scsi/sgiwd93.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/scsi/sgiwd93.c linux-mips-2.6.18.2/drivers/scsi/sgiwd93.c
+--- linux-2.6.18.2/drivers/scsi/sgiwd93.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/scsi/sgiwd93.c	2006-11-04 14:51:12.000000000 -0800
 @@ -14,6 +14,7 @@
  #include <linux/interrupt.h>
  #include <linux/types.h>
@@ -14390,9 +14732,9 @@ diff -Naur linux-2.6.18.1/drivers/scsi/sgiwd93.c linux-mips-2.6.18.1/drivers/scs
  
  static inline void init_hpc_chain(struct hpc_data *hd)
  {
-diff -Naur linux-2.6.18.1/drivers/serial/Kconfig linux-mips-2.6.18.1/drivers/serial/Kconfig
---- linux-2.6.18.1/drivers/serial/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/serial/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/serial/Kconfig linux-mips-2.6.18.2/drivers/serial/Kconfig
+--- linux-2.6.18.2/drivers/serial/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/serial/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -651,6 +651,25 @@
  	depends on SERIAL_SH_SCI=y
  	select SERIAL_CORE_CONSOLE
@@ -14419,9 +14761,9 @@ diff -Naur linux-2.6.18.1/drivers/serial/Kconfig linux-mips-2.6.18.1/drivers/ser
  config SERIAL_CORE
  	tristate
  
-diff -Naur linux-2.6.18.1/drivers/serial/Makefile linux-mips-2.6.18.1/drivers/serial/Makefile
---- linux-2.6.18.1/drivers/serial/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/serial/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/serial/Makefile linux-mips-2.6.18.2/drivers/serial/Makefile
+--- linux-2.6.18.2/drivers/serial/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/serial/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -39,6 +39,7 @@
  obj-$(CONFIG_V850E_UART) += v850e_uart.o
  obj-$(CONFIG_SERIAL_PMACZILOG) += pmac_zilog.o
@@ -14430,9 +14772,9 @@ diff -Naur linux-2.6.18.1/drivers/serial/Makefile linux-mips-2.6.18.1/drivers/se
  obj-$(CONFIG_SERIAL_DZ) += dz.o
  obj-$(CONFIG_SERIAL_SH_SCI) += sh-sci.o
  obj-$(CONFIG_SERIAL_SGI_L1_CONSOLE) += sn_console.o
-diff -Naur linux-2.6.18.1/drivers/serial/ip22zilog.c linux-mips-2.6.18.1/drivers/serial/ip22zilog.c
---- linux-2.6.18.1/drivers/serial/ip22zilog.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/serial/ip22zilog.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/serial/ip22zilog.c linux-mips-2.6.18.2/drivers/serial/ip22zilog.c
+--- linux-2.6.18.2/drivers/serial/ip22zilog.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/serial/ip22zilog.c	2006-11-04 14:51:12.000000000 -0800
 @@ -865,6 +865,7 @@
  	up->cflag = termios->c_cflag;
  
@@ -14450,9 +14792,9 @@ diff -Naur linux-2.6.18.1/drivers/serial/ip22zilog.c linux-mips-2.6.18.1/drivers
  }
  
  static int __init ip22zilog_console_setup(struct console *con, char *options)
-diff -Naur linux-2.6.18.1/drivers/serial/ip3106_uart.c linux-mips-2.6.18.1/drivers/serial/ip3106_uart.c
---- linux-2.6.18.1/drivers/serial/ip3106_uart.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/serial/ip3106_uart.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/serial/ip3106_uart.c linux-mips-2.6.18.2/drivers/serial/ip3106_uart.c
+--- linux-2.6.18.2/drivers/serial/ip3106_uart.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/serial/ip3106_uart.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,912 @@
 +/*
 + * Initially based on linux-2.4.20_mvl31-pnx8xx0/drivers/char/serial_pnx8550.c
@@ -15366,9 +15708,9 @@ diff -Naur linux-2.6.18.1/drivers/serial/ip3106_uart.c linux-mips-2.6.18.1/drive
 +MODULE_DESCRIPTION("IP3106 generic serial port driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS_CHARDEV_MAJOR(SERIAL_IP3106_MAJOR);
-diff -Naur linux-2.6.18.1/drivers/usb/gadget/net2280.c linux-mips-2.6.18.1/drivers/usb/gadget/net2280.c
---- linux-2.6.18.1/drivers/usb/gadget/net2280.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/usb/gadget/net2280.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/usb/gadget/net2280.c linux-mips-2.6.18.2/drivers/usb/gadget/net2280.c
+--- linux-2.6.18.2/drivers/usb/gadget/net2280.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/usb/gadget/net2280.c	2006-11-04 14:51:12.000000000 -0800
 @@ -467,7 +467,8 @@
  #elif	defined(CONFIG_PPC) && !defined(CONFIG_NOT_COHERENT_CACHE)
  #define USE_KMALLOC
@@ -15379,9 +15721,9 @@ diff -Naur linux-2.6.18.1/drivers/usb/gadget/net2280.c linux-mips-2.6.18.1/drive
  #define USE_KMALLOC
  
  /* FIXME there are other cases, including an x86-64 one ...  */
-diff -Naur linux-2.6.18.1/drivers/usb/host/ohci-hcd.c linux-mips-2.6.18.1/drivers/usb/host/ohci-hcd.c
---- linux-2.6.18.1/drivers/usb/host/ohci-hcd.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/usb/host/ohci-hcd.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/usb/host/ohci-hcd.c linux-mips-2.6.18.2/drivers/usb/host/ohci-hcd.c
+--- linux-2.6.18.2/drivers/usb/host/ohci-hcd.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/usb/host/ohci-hcd.c	2006-11-04 14:51:12.000000000 -0800
 @@ -909,6 +909,10 @@
  #include "ohci-au1xxx.c"
  #endif
@@ -15393,9 +15735,9 @@ diff -Naur linux-2.6.18.1/drivers/usb/host/ohci-hcd.c linux-mips-2.6.18.1/driver
  #ifdef CONFIG_USB_OHCI_HCD_PPC_SOC
  #include "ohci-ppc-soc.c"
  #endif
-diff -Naur linux-2.6.18.1/drivers/usb/host/ohci-pnx8550.c linux-mips-2.6.18.1/drivers/usb/host/ohci-pnx8550.c
---- linux-2.6.18.1/drivers/usb/host/ohci-pnx8550.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/usb/host/ohci-pnx8550.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/usb/host/ohci-pnx8550.c linux-mips-2.6.18.2/drivers/usb/host/ohci-pnx8550.c
+--- linux-2.6.18.2/drivers/usb/host/ohci-pnx8550.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/usb/host/ohci-pnx8550.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,277 @@
 +/*
 + * OHCI HCD (Host Controller Driver) for USB.
@@ -15674,9 +16016,9 @@ diff -Naur linux-2.6.18.1/drivers/usb/host/ohci-pnx8550.c linux-mips-2.6.18.1/dr
 +
 +module_init (ohci_hcd_pnx8550_init);
 +module_exit (ohci_hcd_pnx8550_cleanup);
-diff -Naur linux-2.6.18.1/drivers/video/Kconfig linux-mips-2.6.18.1/drivers/video/Kconfig
---- linux-2.6.18.1/drivers/video/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/video/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/video/Kconfig linux-mips-2.6.18.2/drivers/video/Kconfig
+--- linux-2.6.18.2/drivers/video/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/video/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -1250,6 +1250,17 @@
  	  Please read the <file:Documentation/fb/README-sstfb.txt> for supported
  	  options and other important info  support.
@@ -15733,9 +16075,9 @@ diff -Naur linux-2.6.18.1/drivers/video/Kconfig linux-mips-2.6.18.1/drivers/vide
  
  config FB_MAXINE
  	bool "Maxine (Personal DECstation) onboard framebuffer support"
-diff -Naur linux-2.6.18.1/drivers/video/Makefile linux-mips-2.6.18.1/drivers/video/Makefile
---- linux-2.6.18.1/drivers/video/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/video/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/video/Makefile linux-mips-2.6.18.2/drivers/video/Makefile
+--- linux-2.6.18.2/drivers/video/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/video/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -95,6 +95,7 @@
  obj-$(CONFIG_FB_TX3912)		  += tx3912fb.o
  obj-$(CONFIG_FB_S1D13XXX)	  += s1d13xxxfb.o
@@ -15744,9 +16086,9 @@ diff -Naur linux-2.6.18.1/drivers/video/Makefile linux-mips-2.6.18.1/drivers/vid
  obj-$(CONFIG_FB_S3C2410)	  += s3c2410fb.o
  obj-$(CONFIG_FB_PNX4008_DUM)	  += pnx4008/
  obj-$(CONFIG_FB_PNX4008_DUM_RGB)  += pnx4008/
-diff -Naur linux-2.6.18.1/drivers/video/au1100fb.c linux-mips-2.6.18.1/drivers/video/au1100fb.c
---- linux-2.6.18.1/drivers/video/au1100fb.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/drivers/video/au1100fb.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/video/au1100fb.c linux-mips-2.6.18.2/drivers/video/au1100fb.c
+--- linux-2.6.18.2/drivers/video/au1100fb.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/video/au1100fb.c	2006-11-04 14:51:12.000000000 -0800
 @@ -40,6 +40,7 @@
   *  with this program; if not, write  to the Free Software Foundation, Inc.,
   *  675 Mass Ave, Cambridge, MA 02139, USA.
@@ -15755,9 +16097,9 @@ diff -Naur linux-2.6.18.1/drivers/video/au1100fb.c linux-mips-2.6.18.1/drivers/v
  #include <linux/module.h>
  #include <linux/kernel.h>
  #include <linux/errno.h>
-diff -Naur linux-2.6.18.1/drivers/video/smivgxfb.c linux-mips-2.6.18.1/drivers/video/smivgxfb.c
---- linux-2.6.18.1/drivers/video/smivgxfb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/drivers/video/smivgxfb.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/drivers/video/smivgxfb.c linux-mips-2.6.18.2/drivers/video/smivgxfb.c
+--- linux-2.6.18.2/drivers/video/smivgxfb.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/drivers/video/smivgxfb.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,387 @@
 +/***************************************************************************
 + *  Silicon Motion VoyagerGX framebuffer driver
@@ -16146,16 +16488,35 @@ diff -Naur linux-2.6.18.1/drivers/video/smivgxfb.c linux-mips-2.6.18.1/drivers/v
 +MODULE_AUTHOR("");
 +MODULE_DESCRIPTION("Framebuffer driver for SMI Voyager");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.18.1/include/asm-mips/Kbuild linux-mips-2.6.18.1/include/asm-mips/Kbuild
---- linux-2.6.18.1/include/asm-mips/Kbuild	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/Kbuild	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/Kbuild linux-mips-2.6.18.2/include/asm-mips/Kbuild
+--- linux-2.6.18.2/include/asm-mips/Kbuild	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/Kbuild	2006-11-04 14:51:12.000000000 -0800
 @@ -1 +1,3 @@
  include include/asm-generic/Kbuild.asm
 +
 +header-y += cachectl.h sgidefs.h sysmips.h
-diff -Naur linux-2.6.18.1/include/asm-mips/cacheflush.h linux-mips-2.6.18.1/include/asm-mips/cacheflush.h
---- linux-2.6.18.1/include/asm-mips/cacheflush.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/cacheflush.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/asm.h linux-mips-2.6.18.2/include/asm-mips/asm.h
+--- linux-2.6.18.2/include/asm-mips/asm.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/asm.h	2006-11-04 14:51:12.000000000 -0800
+@@ -344,6 +344,7 @@
+ #define PTR_L		lw
+ #define PTR_S		sw
+ #define PTR_LA		la
++#define PTR_LI		li
+ #define PTR_SLL		sll
+ #define PTR_SLLV	sllv
+ #define PTR_SRL		srl
+@@ -368,6 +369,7 @@
+ #define PTR_L		ld
+ #define PTR_S		sd
+ #define PTR_LA		dla
++#define PTR_LI		dli
+ #define PTR_SLL		dsll
+ #define PTR_SLLV	dsllv
+ #define PTR_SRL		dsrl
+diff -Naur linux-2.6.18.2/include/asm-mips/cacheflush.h linux-mips-2.6.18.2/include/asm-mips/cacheflush.h
+--- linux-2.6.18.2/include/asm-mips/cacheflush.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/cacheflush.h	2006-11-04 14:51:12.000000000 -0800
 @@ -21,7 +21,6 @@
   *  - flush_cache_range(vma, start, end) flushes a range of pages
   *  - flush_icache_range(start, end) flush a range of instructions
@@ -16214,9 +16575,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/cacheflush.h linux-mips-2.6.18.1/incl
  
  extern void (*flush_cache_sigtramp)(unsigned long addr);
  extern void (*flush_icache_all)(void);
-diff -Naur linux-2.6.18.1/include/asm-mips/fixmap.h linux-mips-2.6.18.1/include/asm-mips/fixmap.h
---- linux-2.6.18.1/include/asm-mips/fixmap.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/fixmap.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/fixmap.h linux-mips-2.6.18.2/include/asm-mips/fixmap.h
+--- linux-2.6.18.2/include/asm-mips/fixmap.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/fixmap.h	2006-11-04 14:51:12.000000000 -0800
 @@ -45,8 +45,16 @@
   * fix-mapped?
   */
@@ -16247,9 +16608,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/fixmap.h linux-mips-2.6.18.1/include/
  #endif
  #define FIXADDR_SIZE	(__end_of_fixed_addresses << PAGE_SHIFT)
  #define FIXADDR_START	(FIXADDR_TOP - FIXADDR_SIZE)
-diff -Naur linux-2.6.18.1/include/asm-mips/fpu.h linux-mips-2.6.18.1/include/asm-mips/fpu.h
---- linux-2.6.18.1/include/asm-mips/fpu.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/fpu.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/fpu.h linux-mips-2.6.18.2/include/asm-mips/fpu.h
+--- linux-2.6.18.2/include/asm-mips/fpu.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/fpu.h	2006-11-04 14:51:12.000000000 -0800
 @@ -134,9 +134,11 @@
  
  static inline fpureg_t *get_fpu_regs(struct task_struct *tsk)
@@ -16264,9 +16625,27 @@ diff -Naur linux-2.6.18.1/include/asm-mips/fpu.h linux-mips-2.6.18.1/include/asm
  	}
  
  	return tsk->thread.fpu.fpr;
-diff -Naur linux-2.6.18.1/include/asm-mips/io.h linux-mips-2.6.18.1/include/asm-mips/io.h
---- linux-2.6.18.1/include/asm-mips/io.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/io.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/io.h linux-mips-2.6.18.2/include/asm-mips/io.h
+--- linux-2.6.18.2/include/asm-mips/io.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/io.h	2006-11-04 14:51:12.000000000 -0800
+@@ -172,7 +172,7 @@
+ #define page_to_phys(page)	((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
+ 
+ extern void __iomem * __ioremap(phys_t offset, phys_t size, unsigned long flags);
+-extern void __iounmap(volatile void __iomem *addr);
++extern void __iounmap(const volatile void __iomem *addr);
+ 
+ static inline void __iomem * __ioremap_mode(phys_t offset, unsigned long size,
+ 	unsigned long flags)
+@@ -279,7 +279,7 @@
+ #define ioremap_uncached_accelerated(offset, size)			\
+ 	__ioremap_mode((offset), (size), _CACHE_UNCACHED_ACCELERATED)
+ 
+-static inline void iounmap(volatile void __iomem *addr)
++static inline void iounmap(const volatile void __iomem *addr)
+ {
+ #define __IS_KSEG1(addr) (((unsigned long)(addr) & ~0x1fffffffUL) == CKSEG1)
+ 
 @@ -518,34 +518,6 @@
  }
  
@@ -16302,9 +16681,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/io.h linux-mips-2.6.18.1/include/asm-
   * ISA space is 'always mapped' on currently supported MIPS systems, no need
   * to explicitly ioremap() it. The fact that the ISA IO space is mapped
   * to PAGE_OFFSET is pure coincidence - it does not mean ISA values
-diff -Naur linux-2.6.18.1/include/asm-mips/irq.h linux-mips-2.6.18.1/include/asm-mips/irq.h
---- linux-2.6.18.1/include/asm-mips/irq.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/irq.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/irq.h linux-mips-2.6.18.2/include/asm-mips/irq.h
+--- linux-2.6.18.2/include/asm-mips/irq.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/irq.h	2006-11-04 14:51:12.000000000 -0800
 @@ -76,8 +76,4 @@
                            unsigned long hwmask);
  #endif /* CONFIG_MIPS_MT_SMTC */
@@ -16314,9 +16693,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/irq.h linux-mips-2.6.18.1/include/asm
 -#endif
 -
  #endif /* _ASM_IRQ_H */
-diff -Naur linux-2.6.18.1/include/asm-mips/mach-atlas/mc146818rtc.h linux-mips-2.6.18.1/include/asm-mips/mach-atlas/mc146818rtc.h
---- linux-2.6.18.1/include/asm-mips/mach-atlas/mc146818rtc.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/mach-atlas/mc146818rtc.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/mach-atlas/mc146818rtc.h linux-mips-2.6.18.2/include/asm-mips/mach-atlas/mc146818rtc.h
+--- linux-2.6.18.2/include/asm-mips/mach-atlas/mc146818rtc.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/mach-atlas/mc146818rtc.h	2006-11-04 14:51:12.000000000 -0800
 @@ -28,10 +28,12 @@
  #include <asm/mips-boards/atlas.h>
  #include <asm/mips-boards/atlasint.h>
@@ -16331,9 +16710,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/mach-atlas/mc146818rtc.h linux-mips-2
  
  static inline unsigned char CMOS_READ(unsigned long addr)
  {
-diff -Naur linux-2.6.18.1/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2.6.18.1/include/asm-mips/mach-au1x00/au1xxx_ide.h
---- linux-2.6.18.1/include/asm-mips/mach-au1x00/au1xxx_ide.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/mach-au1x00/au1xxx_ide.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2.6.18.2/include/asm-mips/mach-au1x00/au1xxx_ide.h
+--- linux-2.6.18.2/include/asm-mips/mach-au1x00/au1xxx_ide.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/mach-au1x00/au1xxx_ide.h	2006-11-04 14:51:12.000000000 -0800
 @@ -83,6 +83,7 @@
  } _auide_hwif;
  
@@ -16342,9 +16721,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2
  /* HD white list */
  static const struct drive_list_entry dma_white_list [] = {
  /*
-diff -Naur linux-2.6.18.1/include/asm-mips/mips-boards/atlasint.h linux-mips-2.6.18.1/include/asm-mips/mips-boards/atlasint.h
---- linux-2.6.18.1/include/asm-mips/mips-boards/atlasint.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/mips-boards/atlasint.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/mips-boards/atlasint.h linux-mips-2.6.18.2/include/asm-mips/mips-boards/atlasint.h
+--- linux-2.6.18.2/include/asm-mips/mips-boards/atlasint.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/mips-boards/atlasint.h	2006-11-04 14:51:12.000000000 -0800
 @@ -1,6 +1,7 @@
  /*
 - * Carsten Langgaard, carstenl@mips.com
@@ -16480,9 +16859,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/mips-boards/atlasint.h linux-mips-2.6
 +#define	MSC01E_INT_CPUCTR	11
  
  #endif /* !(_MIPS_ATLASINT_H) */
-diff -Naur linux-2.6.18.1/include/asm-mips/page.h linux-mips-2.6.18.1/include/asm-mips/page.h
---- linux-2.6.18.1/include/asm-mips/page.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/page.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/page.h linux-mips-2.6.18.2/include/asm-mips/page.h
+--- linux-2.6.18.2/include/asm-mips/page.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/page.h	2006-11-04 14:51:12.000000000 -0800
 @@ -53,19 +53,17 @@
  	extern void (*flush_data_cache_page)(unsigned long addr);
  
@@ -16529,9 +16908,33 @@ diff -Naur linux-2.6.18.1/include/asm-mips/page.h linux-mips-2.6.18.1/include/as
  
  /*
   * For 3-level pagetables we defines these ourselves, for 2-level the
-diff -Naur linux-2.6.18.1/include/asm-mips/ptrace.h linux-mips-2.6.18.1/include/asm-mips/ptrace.h
---- linux-2.6.18.1/include/asm-mips/ptrace.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/ptrace.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/pgalloc.h linux-mips-2.6.18.2/include/asm-mips/pgalloc.h
+--- linux-2.6.18.2/include/asm-mips/pgalloc.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/pgalloc.h	2006-11-04 14:51:12.000000000 -0800
+@@ -48,7 +48,7 @@
+ 
+ 	ret = (pgd_t *) __get_free_pages(GFP_KERNEL, PGD_ORDER);
+ 	if (ret) {
+-		init = pgd_offset(&init_mm, 0);
++		init = pgd_offset(&init_mm, 0UL);
+ 		pgd_init((unsigned long)ret);
+ 		memcpy(ret + USER_PTRS_PER_PGD, init + USER_PTRS_PER_PGD,
+ 		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
+diff -Naur linux-2.6.18.2/include/asm-mips/pgtable-64.h linux-mips-2.6.18.2/include/asm-mips/pgtable-64.h
+--- linux-2.6.18.2/include/asm-mips/pgtable-64.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/pgtable-64.h	2006-11-04 14:51:12.000000000 -0800
+@@ -170,7 +170,7 @@
+ #define __pmd_offset(address)	pmd_index(address)
+ 
+ /* to find an entry in a kernel page-table-directory */
+-#define pgd_offset_k(address) pgd_offset(&init_mm, 0)
++#define pgd_offset_k(address) pgd_offset(&init_mm, 0UL)
+ 
+ #define pgd_index(address)	(((address) >> PGDIR_SHIFT) & (PTRS_PER_PGD-1))
+ #define pmd_index(address)	(((address) >> PMD_SHIFT) & (PTRS_PER_PMD-1))
+diff -Naur linux-2.6.18.2/include/asm-mips/ptrace.h linux-mips-2.6.18.2/include/asm-mips/ptrace.h
+--- linux-2.6.18.2/include/asm-mips/ptrace.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/ptrace.h	2006-11-04 14:51:12.000000000 -0800
 @@ -10,8 +10,6 @@
  #define _ASM_PTRACE_H
  
@@ -16549,9 +16952,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/ptrace.h linux-mips-2.6.18.1/include/
  
  /*
   * Does the process account for user or for system time?
-diff -Naur linux-2.6.18.1/include/asm-mips/spinlock.h linux-mips-2.6.18.1/include/asm-mips/spinlock.h
---- linux-2.6.18.1/include/asm-mips/spinlock.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/spinlock.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/spinlock.h linux-mips-2.6.18.2/include/asm-mips/spinlock.h
+--- linux-2.6.18.2/include/asm-mips/spinlock.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/spinlock.h	2006-11-04 14:51:12.000000000 -0800
 @@ -239,7 +239,51 @@
  	: "memory");
  }
@@ -16611,9 +17014,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/spinlock.h linux-mips-2.6.18.1/includ
  
 +
  #endif /* _ASM_SPINLOCK_H */
-diff -Naur linux-2.6.18.1/include/asm-mips/system.h linux-mips-2.6.18.1/include/asm-mips/system.h
---- linux-2.6.18.1/include/asm-mips/system.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/system.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/system.h linux-mips-2.6.18.2/include/asm-mips/system.h
+--- linux-2.6.18.2/include/asm-mips/system.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/system.h	2006-11-04 14:51:12.000000000 -0800
 @@ -392,7 +392,7 @@
  {
  	__u64 retval;
@@ -16623,9 +17026,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/system.h linux-mips-2.6.18.1/include/
  		__asm__ __volatile__(
  		"	.set	push					\n"
  		"	.set	noat					\n"
-diff -Naur linux-2.6.18.1/include/asm-mips/timex.h linux-mips-2.6.18.1/include/asm-mips/timex.h
---- linux-2.6.18.1/include/asm-mips/timex.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/timex.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/timex.h linux-mips-2.6.18.2/include/asm-mips/timex.h
+--- linux-2.6.18.2/include/asm-mips/timex.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/timex.h	2006-11-04 14:51:12.000000000 -0800
 @@ -8,6 +8,8 @@
  #ifndef _ASM_TIMEX_H
  #define _ASM_TIMEX_H
@@ -16642,9 +17045,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/timex.h linux-mips-2.6.18.1/include/a
 +#endif /* __KERNEL__ */
 +
  #endif /*  _ASM_TIMEX_H */
-diff -Naur linux-2.6.18.1/include/asm-mips/unistd.h linux-mips-2.6.18.1/include/asm-mips/unistd.h
---- linux-2.6.18.1/include/asm-mips/unistd.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/unistd.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/unistd.h linux-mips-2.6.18.2/include/asm-mips/unistd.h
+--- linux-2.6.18.2/include/asm-mips/unistd.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/unistd.h	2006-11-04 14:51:12.000000000 -0800
 @@ -313,7 +313,7 @@
  #define __NR_mknodat			(__NR_Linux + 290)
  #define __NR_fchownat			(__NR_Linux + 291)
@@ -16735,9 +17138,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/unistd.h linux-mips-2.6.18.1/include/
  
  #ifdef __KERNEL__
  
-diff -Naur linux-2.6.18.1/include/asm-mips/user.h linux-mips-2.6.18.1/include/asm-mips/user.h
---- linux-2.6.18.1/include/asm-mips/user.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/asm-mips/user.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/asm-mips/user.h linux-mips-2.6.18.2/include/asm-mips/user.h
+--- linux-2.6.18.2/include/asm-mips/user.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/asm-mips/user.h	2006-11-04 14:51:12.000000000 -0800
 @@ -8,6 +8,8 @@
  #ifndef _ASM_USER_H
  #define _ASM_USER_H
@@ -16754,9 +17157,9 @@ diff -Naur linux-2.6.18.1/include/asm-mips/user.h linux-mips-2.6.18.1/include/as
 +#endif /* __KERNEL__ */
 +
  #endif /* _ASM_USER_H */
-diff -Naur linux-2.6.18.1/include/linux/highmem.h linux-mips-2.6.18.1/include/linux/highmem.h
---- linux-2.6.18.1/include/linux/highmem.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/linux/highmem.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/linux/highmem.h linux-mips-2.6.18.2/include/linux/highmem.h
+--- linux-2.6.18.2/include/linux/highmem.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/linux/highmem.h	2006-11-04 14:51:12.000000000 -0800
 @@ -89,7 +89,10 @@
  	kunmap_atomic(kaddr, KM_USER0);
  }
@@ -16778,9 +17181,9 @@ diff -Naur linux-2.6.18.1/include/linux/highmem.h linux-mips-2.6.18.1/include/li
  static inline void copy_highpage(struct page *to, struct page *from)
  {
  	char *vfrom, *vto;
-diff -Naur linux-2.6.18.1/include/linux/pci_ids.h linux-mips-2.6.18.1/include/linux/pci_ids.h
---- linux-2.6.18.1/include/linux/pci_ids.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/linux/pci_ids.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/linux/pci_ids.h linux-mips-2.6.18.2/include/linux/pci_ids.h
+--- linux-2.6.18.2/include/linux/pci_ids.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/linux/pci_ids.h	2006-11-04 14:51:12.000000000 -0800
 @@ -1603,6 +1603,9 @@
  #define PCI_VENDOR_ID_SATSAGEM		0x1267
  #define PCI_DEVICE_ID_SATSAGEM_NICCY	0x1016
@@ -16791,9 +17194,9 @@ diff -Naur linux-2.6.18.1/include/linux/pci_ids.h linux-mips-2.6.18.1/include/li
  
  #define PCI_VENDOR_ID_ENSONIQ		0x1274
  #define PCI_DEVICE_ID_ENSONIQ_CT5880	0x5880
-diff -Naur linux-2.6.18.1/include/linux/serial.h linux-mips-2.6.18.1/include/linux/serial.h
---- linux-2.6.18.1/include/linux/serial.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/linux/serial.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/linux/serial.h linux-mips-2.6.18.2/include/linux/serial.h
+--- linux-2.6.18.2/include/linux/serial.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/linux/serial.h	2006-11-04 14:51:12.000000000 -0800
 @@ -76,7 +76,8 @@
  #define PORT_16654	11
  #define PORT_16850	12
@@ -16804,9 +17207,9 @@ diff -Naur linux-2.6.18.1/include/linux/serial.h linux-mips-2.6.18.1/include/lin
  
  #define SERIAL_IO_PORT	0
  #define SERIAL_IO_HUB6	1
-diff -Naur linux-2.6.18.1/include/linux/serial_ip3106.h linux-mips-2.6.18.1/include/linux/serial_ip3106.h
---- linux-2.6.18.1/include/linux/serial_ip3106.h	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/include/linux/serial_ip3106.h	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/include/linux/serial_ip3106.h linux-mips-2.6.18.2/include/linux/serial_ip3106.h
+--- linux-2.6.18.2/include/linux/serial_ip3106.h	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/include/linux/serial_ip3106.h	2006-11-04 14:51:12.000000000 -0800
 @@ -78,4 +78,16 @@
  #define IP3106_UART_FIFO_RXFIFO		0x00001F00
  #define IP3106_UART_FIFO_RBRTHR		0x000000FF
@@ -16824,9 +17227,9 @@ diff -Naur linux-2.6.18.1/include/linux/serial_ip3106.h linux-mips-2.6.18.1/incl
 +#define ip3106_mid(base, port)   *(volatile u32 *)(base+(port*0x1000) + 0xFFC)
 +
  #endif
-diff -Naur linux-2.6.18.1/mm/memory.c linux-mips-2.6.18.1/mm/memory.c
---- linux-2.6.18.1/mm/memory.c	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/mm/memory.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/mm/memory.c linux-mips-2.6.18.2/mm/memory.c
+--- linux-2.6.18.2/mm/memory.c	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/mm/memory.c	2006-11-04 14:51:12.000000000 -0800
 @@ -1407,7 +1407,7 @@
  	return pte;
  }
@@ -16857,7 +17260,7 @@ diff -Naur linux-2.6.18.1/mm/memory.c linux-mips-2.6.18.1/mm/memory.c
  	}
  
  	/*
-@@ -2135,7 +2135,7 @@
+@@ -2142,7 +2142,7 @@
  			page = alloc_page_vma(GFP_HIGHUSER, vma, address);
  			if (!page)
  				goto oom;
@@ -16866,9 +17269,9 @@ diff -Naur linux-2.6.18.1/mm/memory.c linux-mips-2.6.18.1/mm/memory.c
  			page_cache_release(new_page);
  			new_page = page;
  			anon = 1;
-diff -Naur linux-2.6.18.1/sound/oss/Kconfig linux-mips-2.6.18.1/sound/oss/Kconfig
---- linux-2.6.18.1/sound/oss/Kconfig	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/sound/oss/Kconfig	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/sound/oss/Kconfig linux-mips-2.6.18.2/sound/oss/Kconfig
+--- linux-2.6.18.2/sound/oss/Kconfig	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/sound/oss/Kconfig	2006-11-04 14:51:12.000000000 -0800
 @@ -132,6 +132,13 @@
  	select SND_AC97_CODEC
  	depends on SOUND_PRIME && (SOC_AU1550 || SOC_AU1200)
@@ -16883,9 +17286,9 @@ diff -Naur linux-2.6.18.1/sound/oss/Kconfig linux-mips-2.6.18.1/sound/oss/Kconfi
  config SOUND_TRIDENT
  	tristate "Trident 4DWave DX/NX, SiS 7018 or ALi 5451 PCI Audio Core"
  	depends on SOUND_PRIME && PCI
-diff -Naur linux-2.6.18.1/sound/oss/Makefile linux-mips-2.6.18.1/sound/oss/Makefile
---- linux-2.6.18.1/sound/oss/Makefile	2006-10-13 20:34:03.000000000 -0700
-+++ linux-mips-2.6.18.1/sound/oss/Makefile	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/sound/oss/Makefile linux-mips-2.6.18.2/sound/oss/Makefile
+--- linux-2.6.18.2/sound/oss/Makefile	2006-11-03 17:33:58.000000000 -0800
++++ linux-mips-2.6.18.2/sound/oss/Makefile	2006-11-04 14:51:12.000000000 -0800
 @@ -66,6 +66,7 @@
  obj-$(CONFIG_SOUND_VRC5477)	+= nec_vrc5477.o ac97_codec.o
  obj-$(CONFIG_SOUND_AU1000)	+= au1000.o ac97_codec.o
@@ -16894,9 +17297,9 @@ diff -Naur linux-2.6.18.1/sound/oss/Makefile linux-mips-2.6.18.1/sound/oss/Makef
  obj-$(CONFIG_SOUND_ESSSOLO1)	+= esssolo1.o
  obj-$(CONFIG_SOUND_FUSION)	+= cs46xx.o ac97_codec.o
  obj-$(CONFIG_SOUND_MAESTRO)	+= maestro.o
-diff -Naur linux-2.6.18.1/sound/oss/au1550_i2s.c linux-mips-2.6.18.1/sound/oss/au1550_i2s.c
---- linux-2.6.18.1/sound/oss/au1550_i2s.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.18.1/sound/oss/au1550_i2s.c	2006-10-17 06:23:28.000000000 -0700
+diff -Naur linux-2.6.18.2/sound/oss/au1550_i2s.c linux-mips-2.6.18.2/sound/oss/au1550_i2s.c
+--- linux-2.6.18.2/sound/oss/au1550_i2s.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.18.2/sound/oss/au1550_i2s.c	2006-11-04 14:51:12.000000000 -0800
 @@ -0,0 +1,2029 @@
 +/*
 + *      au1550_i2s.c  --  Sound driver for Alchemy Au1550 MIPS
