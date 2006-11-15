@@ -42,7 +42,7 @@ sed -e "/libdir=.*\/lib/s@/lib@/lib64@g" configure.orig > configure</userinput><
     xpointer="xpointer(//*[@os='c'])"/>
 
 <screen os="aa"><userinput>CC="${CC} ${BUILD64}" ../configure --prefix=/tools \
---enable-elf-shlibs --disable-evms \
+--enable-elf-shlibs --disable-evms --with-cc="${CC} ${BUILD64}" --with-linker=${LD} \
 --host=${CLFS_TARGET}</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -53,7 +53,9 @@ sed -e "/libdir=.*\/lib/s@/lib@/lib64@g" configure.orig > configure</userinput><
     href="../common/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-<screen os="ac"><userinput>make CC="${CC} ${BUILD64}"</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/e2fsprogs.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/e2fsprogs.xml"
