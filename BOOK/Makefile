@@ -1,172 +1,134 @@
-BASEDIR=~/cross-lfs-book
-DUMPDIR=~/cross-lfs-commands
-DLLISTDIR=~/cross-lfs-dllist
-CHUNK_QUIET=1
-XSLROOTDIR=/usr/share/xml/docbook/xsl-stylesheets-1.69.1
-ARCH=x86 x86_64 x86_64-64 sparc sparc64 sparc64-64 mips mips64 mips64-64 ppc ppc64 alpha
+BASEDIR		:= ~/cross-lfs-book
+DUMPDIR		:= ~/cross-lfs-commands
+DLLISTDIR	:= ~/cross-lfs-dllist
+CHUNK_QUIET	:= 1
+XSLROOTDIR	:= /usr/share/xml/docbook/xsl-stylesheets-1.69.1
 
-# HTML Rendering Chunked
-define HTML_RENDER
-	echo "Rendering HTML of $$arch..." ; \
-	xsltproc --xinclude --nonet -stringparam profile.condition html \
-	  -stringparam chunk.quietly $(CHUNK_QUIET) -stringparam base.dir $(BASEDIR)/$$arch/ \
-	  $(PWD)/stylesheets/lfs-chunked.xsl $(PWD)/$$arch-index.xml ; \
-	mkdir -p $(BASEDIR)/$$arch/stylesheets ; \
-	cp $(PWD)/stylesheets/*.css $(BASEDIR)/$$arch/stylesheets ; \
-	cd $(BASEDIR)/$$arch/; sed -i -e "s@../stylesheets@stylesheets@g" *.html ; \
-	mkdir -p $(BASEDIR)/$$arch/images ; \
-	cp $(XSLROOTDIR)/images/*.png $(BASEDIR)/$$arch/images ; \
-	cd $(BASEDIR)/$$arch/; sed -i -e "s@../images@images@g" *.html
-endef
+S		:= -
 
-# HTML Rendering No Chunks
-define HTML_RENDER2
-	echo "Rendering Single File HTML of $$arch..." ; \
-	xsltproc --xinclude --nonet -stringparam profile.condition html \
-	   --output $(BASEDIR)/CLFS-BOOK-$$arch.html \
-	   $(PWD)/stylesheets/lfs-nochunks.xsl $$arch-index.xml
-endef
+ARCHS		:= x86 x86_64 x86_64-64 sparc sparc64 sparc64-64 mips mips64 mips64-64 ppc ppc64 alpha
 
-# PDF Rendering
-define PDF_RENDER
-	echo "Rendering PDF of $$arch..." ; \
-        xsltproc --xinclude --nonet --output $(BASEDIR)/lfs-pdf.fo \
-                $(PWD)/stylesheets/lfs-pdf.xsl $$arch-index.xml ; \
-        sed -i -e "s/inherit/all/" $(BASEDIR)/lfs-pdf.fo ; \
-        fop.sh -q $(BASEDIR)/lfs-pdf.fo -pdf $(BASEDIR)/CLFS-BOOK-$$arch.pdf ; \
-        rm $(BASEDIR)/lfs-pdf.fo
-endef
+ARCHS_HTML	:= $(ARCHS:%=%$(S)html)
+ARCHS_NOCHUNKS	:= $(ARCHS:%=%$(S)nochunks)
+ARCHS_PDF	:= $(ARCHS:%=%$(S)pdf)
+ARCHS_TEXT	:= $(ARCHS:%=%$(S)text)
+ARCHS_VALIDATE	:= $(ARCHS:%=%$(S)validate)
+ARCHS_TROUBLE	:= $(ARCHS:%=%$(S)trouble)
+ARCHS_DUMP	:= $(ARCHS:%=%$(S)dump)
+ARCHS_DLLIST	:= $(ARCHS:%=%$(S)dllist)
 
-# Plain Text Rendering
-define TEXT_RENDER
-        echo "Rendering Text of $$arch..." ; \
-        xsltproc --xinclude --nonet --output $(BASEDIR)/lfs-pdf.fo \
-                $(PWD)/stylesheets/lfs-pdf.xsl $$arch-index.xml ; \
-        sed -i -e "s/inherit/all/" $(BASEDIR)/lfs-pdf.fo ; \
-        fop.sh $(BASEDIR)/lfs-pdf.fo -txt $(BASEDIR)/CLFS-BOOK-$$arch.txt ; \
-        rm $(BASEDIR)/lfs-pdf.fo
-endef
+.PHONY: lfs tidy render titlepage $(ARCHS_HTML) nochunks $(ARCHS_NOCHUNKS) pdf $(ARCHS_PDF) text $(ARCHS_TEXT) validate $(ARCHS_VALIDATE) trouble $(ARCHS_TROUBLE) dump-commands $(ARCHS_DUMP) download-list $(ARCHS_DLLIST)
 
-# Validation
-define VALIDATE
-	echo "Validating $$arch..." ; \
-        xmllint --xinclude --noout --nonet --postvalid $(PWD)/$$arch-index.xml
-endef
+lfs: render tidy
 
-# TroubleShoot
-define TROUBLE
-	echo "Troubleshooting $$arch..." ; \
-        xmllint --xinclude --nonet --postvalid $(PWD)/$$arch-index.xml > /tmp/dump-$$arch ; \
-	xmllint --xinclude --noout --nonet --valid /tmp/dump-$$arch ; \
-	echo "You can now look at /tmp/dump-$$arch to see the errors"
-endef
-
-# Dump commands
-define DUMP
-	echo "Extracting commands from $$arch..." ; \
-	xsltproc --xinclude --nonet --output $(DUMPDIR)/$$arch/ \
-	   $(PWD)/stylesheets/dump-commands.xsl $$arch-index.xml
-endef
-
-# Get commands
-define DLLIST
-	echo "Creating download list for $$arch..." ; \
-	xsltproc --xinclude --nonet --output $(DLLISTDIR)/$$arch.dl.list \
-	   $(PWD)/stylesheets/wget.xsl $$arch-index.xml
-endef
-
-clfs: toplevel render common
-
-toplevel:
-	@xsltproc --nonet --output $(BASEDIR)/index.html $(PWD)/stylesheets/top-index.xsl $(PWD)/index.xml
-
-render:
-	@for arch in $(ARCH) ; do \
-	$(HTML_RENDER) ; \
-	done
-
-common:
+ifeq ($(shell which tidy >/dev/null 2>&1 && echo yes),yes)
+tidy:
+	@echo Running tidy on the created HTML
 	@for filename in `find $(BASEDIR) -name "*.html"`; do \
 	  tidy -config tidy.conf $$filename; \
 	  true; \
 	  sh obfuscate.sh $$filename; \
 	  sed -i -e "s@text/html@application/xhtml+xml@g" $$filename; \
 	done;
+else
+tidy:
+	@echo Tidy is not installed on this system
+endif
 
-nochunks: nochunk_render common
+render: $(ARCHS_HTML) titlepage
 
-nochunk_render:
+titlepage:
+	@xsltproc --nonet --output $(BASEDIR)/index.html $(PWD)/stylesheets/top-index.xsl $(PWD)/index.xml
 
-	@for arch in $(ARCH) ; do \
-	$(HTML_RENDER2) ; \
-	done
+$(ARCHS_HTML): override html_arch = $(@:%$(S)html=%)
+$(ARCHS_HTML):
+	@echo "Rendering HTML of $(html_arch)..."
+	@xsltproc --xinclude --nonet -stringparam profile.condition html -stringparam chunk.quietly $(CHUNK_QUIET) -stringparam base.dir $(BASEDIR)/$(html_arch)/ $(PWD)/stylesheets/lfs-chunked.xsl $(PWD)/$(html_arch)-index.xml
+	@mkdir -p $(BASEDIR)/$(html_arch)/stylesheets
+	@cp $(PWD)/stylesheets/*.css $(BASEDIR)/$(html_arch)/stylesheets
+	@sed -i -e "s@../stylesheets@stylesheets@g" $(BASEDIR)/$(html_arch)/*.html
+	@mkdir -p $(BASEDIR)/$(html_arch)/images
+	@cp $(XSLROOTDIR)/images/*.png $(BASEDIR)/$(html_arch)/images
+	@sed -i -e "s@../images@images@g" $(BASEDIR)/$(html_arch)/*.html
 
-pdf:
-	@for arch in $(ARCH) ; do \
-	$(PDF_RENDER) ; \
-	done
+nochunks: $(ARCHS_NOCHUNKS) tidy
 
-text:
-	@for arch in $(ARCH) ; do \
-	$(TEXT_RENDER) ; \
-	done
+$(ARCHS_NOCHUNKS): override nochunk_arch = $(@:%$(S)nochunks=%)
+$(ARCHS_NOCHUNKS):
+	@echo "Rendering Single File HTML of $(nochunk_arch)..."
+	@xsltproc --xinclude --nonet -stringparam profile.condition html --output $(BASEDIR)/CLFS-BOOK-$(nochunk_arch).html $(PWD)/stylesheets/lfs-nochunks.xsl $(nochunk_arch)-index.xml
 
-validate:
-	@for arch in $(ARCH) ; do \
-	$(VALIDATE) ; \
-	done
+pdf: $(ARCHS_PDF)
 
-trouble:
-	@for arch in $(ARCH) ; do \
-	$(TROUBLE) ; \
-	done
+$(ARCHS_PDF): override pdf_arch =  $(@:%$(S)pdf=%)
+$(ARCHS_PDF):
+	@echo "Rendering PDF of $(pdf_arch)..."
+	@xsltproc --xinclude --nonet --output $(BASEDIR)/clfs-$(pdf_arch)-pdf.fo $(PWD)/stylesheets/lfs-pdf.xsl $(pdf_arch)-index.xml
+	@sed -i -e "s/inherit/all/" $(BASEDIR)/clfs-$(pdf_arch)-pdf.fo
+	@fop.sh -q -fo $(BASEDIR)/clfs-$(pdf_arch)-pdf.fo -pdf $(BASEDIR)/CLFS-BOOK-$(pdf_arch).pdf
+	@rm $(BASEDIR)/clfs-$(pdf_arch)-pdf.fo
 
-dump-commands:
-	@for arch in $(ARCH) ; do \
-	$(DUMP) ; \
-	done
+text: $(ARCHS_TEXT)
 
-download-list:
-	@for arch in $(ARCH) ; do \
-	$(DLLIST) ; \
-	done
+$(ARCHS_TEXT): override text_arch =  $(@:%$(S)text=%)
+$(ARCHS_TEXT):
+	@echo "Rendering Text of $(text_arch)..."
+	@xsltproc --xinclude --nonet --output $(BASEDIR)/clfs-$(text_arch)-text.fo $(PWD)/stylesheets/lfs-pdf.xsl $(text_arch)-index.xml
+	@sed -i -e "s/inherit/all/" $(BASEDIR)/clfs-$(text_arch)-text.fo ; \
+	@fop.sh -q -fo $(BASEDIR)/clfs-$(text_arch)-text.fo -txt $(BASEDIR)/CLFS-BOOK-$(text_arch).txt ; \
+	@rm $(BASEDIR)/clfs-$(text_arch)-text.fo
 
-target-list:
-	@printf "%-15s %-10s\n" "Architecture" "Build Type" ;\
-	for arch in $(ARCH) ; do \
-	MULTILIB=0 ;\
-	PURE64=0 ;\
-	TEST="`echo $$arch | grep -c -e '-64'`" ;\
-	if [ "$$TEST" = "1" ]; then \
-		PURE64=1 ;\
-	else \
-		TEST="`echo $$arch | grep -c -e '64'`" ;\
-		if [ "$$TEST" = "1" ]; then \
-			MULTILIB=1 ;\
-		fi; \
-	fi; \
-	if [ "$$PURE64" = "1" ]; then \
-		printf "%-15s %-10s\n" $$arch "Pure 64" ;\
-	else \
-		if [ "$$MULTILIB" = "1" ]; then \
-			printf "%-15s %-10s\n" $$arch "Multilib" ;\
-		else \
-			printf "%-15s %-10s\n" $$arch "Default" ;\
-		fi; \
-	fi; \
-	done
+validate: $(ARCHS_VALIDATE)
+
+$(ARCHS_VALIDATE): override validate_arch =  $(@:%$(S)validate=%)
+$(ARCHS_VALIDATE):
+	@echo "Validating $(validate_arch)..."
+	@xmllint --xinclude --noout --nonet --postvalid $(PWD)/$(validate_arch)-index.xml
+
+trouble: $(ARCHS_TROUBLE)
+
+$(ARCHS_TROUBLE): override trouble_arch =  $(@:%$(S)trouble=%)
+$(ARCHS_TROUBLE):
+	@echo "Troubleshooting $(trouble_arch)..."
+	@xmllint --xinclude --nonet --postvalid $(PWD)/$(trouble_arch)-index.xml > /tmp/dump-$(trouble_arch)
+	@xmllint --xinclude --noout --nonet --valid /tmp/dump-$(trouble_arch)
+	@echo "You can now look at /tmp/dump-$(trouble_arch) to see the errors"
+
+dump-commands: $(ARCHS_DUMP)
+
+$(ARCHS_DUMP): override dump_arch =  $(@:%$(S)dump=%)
+$(ARCHS_DUMP):
+	@echo "Extracting commands from $(dump_arch)..."
+	@xsltproc --xinclude --nonet --output $(DUMPDIR)/$(dump_arch)/ $(PWD)/stylesheets/dump-commands.xsl $(dump_arch)-index.xml
+
+download-list: $(ARCHS_DLLIST)
+
+$(ARCHS_DLLIST): override dllist_arch = $(@:%$(S)dllist=%)
+$(ARCHS_DLLIST):
+	@echo "Creating download list for $(dllist_arch)..."
+	@xsltproc --xinclude --nonet --output $(DLLISTDIR)/$(dllist_arch).dl.list $(PWD)/stylesheets/wget.xsl $(dllist_arch)-index.xml
 
 help:
-	@printf "%-25s %-20s\n" "Command" "Function"
-	@printf "%-25s %-20s\n" "make download-list" "Create download file lists"
-	@printf "%-25s %-20s\n" "make dump-commands" "Dump all the commands from the book"
-	@printf "%-25s %-20s\n" "make clfs" "Make the standard multilib page book"
-	@printf "%-25s %-20s\n" "make nochunks" "Make single html file book"
-	@printf "%-25s %-20s\n" "make pdf" "Make pdf copy of the book"
-	@printf "%-25s %-20s\n" "make target-list" "Get List of Architecture targets"
-	@printf "%-25s %-20s\n" "make text" "Make a text copy of the book"
-	@printf "%-25s %-20s\n" "make trouble" "Make a copy that's easy to troubleshoot"
-	@printf "%-25s %-20s\n" "make validate" "Run book validation"
-
-.PHONY: clfs toplevel common render nochunks nochunk_render pdf text validate trouble dump-commands download-list \
-	target-list help
+	@echo "HTML Targets"
+	@echo -e "  \e[0;32mlfs tidy render titlepage \e[0;34m$(ARCHS_HTML)\e[0;0m"
+	@echo
+	@echo "NoChunks Targets"
+	@echo -e "  \e[0;32mnochunks tidy \e[0;34m$(ARCHS_NOCHUNKS)\e[0;0m"
+	@echo
+	@echo "PDF Targets"
+	@echo -e "  \e[0;32mpdf \e[0;34m$(ARCHS_PDF)\e[0;0m"
+	@echo
+	@echo "Text Targets"
+	@echo -e "  \e[0;32mtext \e[0;34m$(ARCHS_TEXT)\e[0;0m"
+	@echo
+	@echo "Validate Targets"
+	@echo -e "  \e[0;32mvalidate \e[0;34m$(ARCHS_VALIDATE)\e[0;0m"
+	@echo
+	@echo "Trouble Targets"
+	@echo -e "  \e[0;32mtrouble \e[0;34m$(ARCHS_TROUBLE)\e[0;0m"
+	@echo
+	@echo "Dump-Commands Targets"
+	@echo -e "  \e[0;32mdump-commands \e[0;34m$(ARCHS_DUMP)\e[0;0m"
+	@echo
+	@echo "Download-List Targets"
+	@echo -e "  \e[0;32mdownload-list \e[0;34m$(ARCHS_DLLIST)\e[0;0m"

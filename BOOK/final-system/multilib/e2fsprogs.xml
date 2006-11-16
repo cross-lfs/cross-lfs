@@ -35,7 +35,8 @@
     xpointer="xpointer(//*[@os='c'])"/>
 
 <screen os="d"><userinput>CC="gcc ${BUILD32}" ../configure --prefix=/usr \
-    --with-root-prefix="" --enable-elf-shlibs --disable-evms</userinput></screen>
+    --with-root-prefix="" --enable-elf-shlibs --disable-evms \
+    --with-cc="gcc ${BUILD32}"</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/e2fsprogs.xml"
@@ -43,7 +44,7 @@
 
     <para os="m1">Compile the libraries:</para>
 
-<screen os="m2"><userinput>make CC="gcc ${BUILD32}" libs</userinput></screen>
+<screen os="m2"><userinput>make libs</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/e2fsprogs.xml"
