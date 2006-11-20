@@ -36,7 +36,30 @@
     href="../common/procps.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-<screen os="e"><userinput>make install lib64=lib</userinput></screen>
+<screen os="f"><userinput>make install lib64=lib</userinput></screen>
+
+    <variablelist os="f">
+      <title>The meaning of the make and install options:</title>
+
+      <varlistentry os="f1">
+        <term><parameter>m64=${BUILD32}</parameter></term>
+        <listitem>
+          <para>The <filename>Makefile</filename> for this package goes to some
+	  lengths to build as 64-bit if at all possible. In CLFS we build each
+	  library for each available ABI. Overriding the m64 option enables us
+	  to specify the build options we want for it.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="f2">
+        <term><parameter>lib64=lib</parameter></term>
+        <listitem>
+          <para>The <filename>Makefile</filename> also attempts to install into
+	  lib64 on multilib, so again we choose to override it.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
 
   </sect2>
 
