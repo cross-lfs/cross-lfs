@@ -1,13 +1,13 @@
 Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2005-10-29
-Initial Package Version: 2.6.14
+Date: 2006-11-29
+Initial Package Version: 2.6.19
 Origin: Grant Gundler (parisc linux)
 Upstream Status: in -mm
 Description: Make the tulip drivers follow the chipset specs
- 
-diff -Naur linux-2.6.14.orig/drivers/net/tulip/21142.c linux-2.6.14/drivers/net/tulip/21142.c
---- linux-2.6.14.orig/drivers/net/tulip/21142.c	2005-10-28 00:02:08.000000000 +0000
-+++ linux-2.6.14/drivers/net/tulip/21142.c	2005-10-30 03:54:09.000000000 +0000
+
+diff -Naur linux-2.6.19.orig/drivers/net/tulip/21142.c linux-2.6.19/drivers/net/tulip/21142.c
+--- linux-2.6.19.orig/drivers/net/tulip/21142.c	2006-11-29 13:57:37.000000000 -0800
++++ linux-2.6.19/drivers/net/tulip/21142.c	2006-11-29 19:27:20.000000000 -0800
 @@ -172,7 +172,7 @@
  			int i;
  			for (i = 0; i < tp->mtable->leafcount; i++)
@@ -17,9 +17,9 @@ diff -Naur linux-2.6.14.orig/drivers/net/tulip/21142.c linux-2.6.14/drivers/net/
  					tp->cur_index = i;
  					tulip_select_media(dev, startup);
  					setup_done = 1;
-diff -Naur linux-2.6.14.orig/drivers/net/tulip/media.c linux-2.6.14/drivers/net/tulip/media.c
---- linux-2.6.14.orig/drivers/net/tulip/media.c	2005-10-28 00:02:08.000000000 +0000
-+++ linux-2.6.14/drivers/net/tulip/media.c	2005-10-30 03:54:09.000000000 +0000
+diff -Naur linux-2.6.19.orig/drivers/net/tulip/media.c linux-2.6.19/drivers/net/tulip/media.c
+--- linux-2.6.19.orig/drivers/net/tulip/media.c	2006-11-29 13:57:37.000000000 -0800
++++ linux-2.6.19/drivers/net/tulip/media.c	2006-11-29 19:27:20.000000000 -0800
 @@ -44,8 +44,10 @@
  
  /* MII transceiver control section.
@@ -91,10 +91,10 @@ diff -Naur linux-2.6.14.orig/drivers/net/tulip/media.c linux-2.6.14/drivers/net/
  			tmp_info = get_u16(&misc_info[1]);
  			if (tmp_info)
  				tp->advertising[phy_num] = tmp_info | 1;
-diff -Naur linux-2.6.14.orig/drivers/net/tulip/tulip.h linux-2.6.14/drivers/net/tulip/tulip.h
---- linux-2.6.14.orig/drivers/net/tulip/tulip.h	2005-10-28 00:02:08.000000000 +0000
-+++ linux-2.6.14/drivers/net/tulip/tulip.h	2005-10-30 03:54:09.000000000 +0000
-@@ -474,8 +474,11 @@
+diff -Naur linux-2.6.19.orig/drivers/net/tulip/tulip.h linux-2.6.19/drivers/net/tulip/tulip.h
+--- linux-2.6.19.orig/drivers/net/tulip/tulip.h	2006-11-29 13:57:37.000000000 -0800
++++ linux-2.6.19/drivers/net/tulip/tulip.h	2006-11-29 19:27:20.000000000 -0800
+@@ -481,8 +481,11 @@
  			udelay(10);
  
  		if (!i)
@@ -108,24 +108,16 @@ diff -Naur linux-2.6.14.orig/drivers/net/tulip/tulip.h linux-2.6.14/drivers/net/
  	}
  }
  
-diff -Naur linux-2.6.14.orig/drivers/net/tulip/tulip_core.c linux-2.6.14/drivers/net/tulip/tulip_core.c
---- linux-2.6.14.orig/drivers/net/tulip/tulip_core.c	2005-10-28 00:02:08.000000000 +0000
-+++ linux-2.6.14/drivers/net/tulip/tulip_core.c	2005-10-30 03:54:09.000000000 +0000
-@@ -22,7 +22,7 @@
+diff -Naur linux-2.6.19.orig/drivers/net/tulip/tulip_core.c linux-2.6.19/drivers/net/tulip/tulip_core.c
+--- linux-2.6.19.orig/drivers/net/tulip/tulip_core.c	2006-11-29 13:57:37.000000000 -0800
++++ linux-2.6.19/drivers/net/tulip/tulip_core.c	2006-11-29 19:27:20.000000000 -0800
+@@ -21,7 +21,7 @@
  #else
- #define DRV_VERSION	"1.1.13"
+ #define DRV_VERSION	"1.1.14"
  #endif
 -#define DRV_RELDATE	"May 11, 2002"
 +#define DRV_RELDATE	"December 15, 2004"
  
  
  #include <linux/module.h>
-@@ -148,7 +148,7 @@
- 	HAS_MII | HAS_MEDIA_TABLE | CSR12_IN_SROM | HAS_PCI_MWI, tulip_timer },
- 
-   /* DC21142, DC21143 */
--  { "Digital DS21143 Tulip", 128, 0x0801fbff,
-+  { "Digital DS21142/DS21143 Tulip", 128, 0x0801fbff,
- 	HAS_MII | HAS_MEDIA_TABLE | ALWAYS_CHECK_MII | HAS_ACPI | HAS_NWAY
- 	| HAS_INTR_MITIGATION | HAS_PCI_MWI, t21142_timer },
- 
+
