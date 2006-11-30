@@ -160,4 +160,4 @@ KERNEL=="iseries/nvt*",		GROUP="disk"
 KERNEL=="iseries/ibmsis*",	GROUP="disk"
 
 # libusb device access
-SUBSYSTEM=="usb_device", 	PROGRAM="/bin/sh -c 'K=%k; K=$${K#usbdev}; printf bus/usb/%%03i/%%03i $${K%%%%.*} $${K#*.}'", NAME="%c", MODE="0644"
+SUBSYSTEM=="usb_device", 	PROGRAM="/bin/sh -c 'K=%k; K=$${K#usbdev}; printf bus/usb/%%03i/%%03i $${K%%%%.*} $${K#*.}'", NAME="%c", MODE="0660", GROUP="usb"
