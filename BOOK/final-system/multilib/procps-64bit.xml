@@ -25,7 +25,7 @@
     href="../common/procps.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>make CC="gcc ${BUILD64}"</userinput></screen>
+<screen os="b"><userinput>make CC="gcc ${BUILD64}" m64=""</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/procps.xml"
@@ -36,6 +36,27 @@
     xpointer="xpointer(//*[@os='d'])"/>
 
 <screen os="e"><userinput>make install lib64=lib64</userinput></screen>
+
+    <variablelist os="f">
+      <title>The meaning of the make and install options:</title>
+
+      <varlistentry os="f1">
+        <term><parameter>CC="gcc ${BUILD64}"</parameter></term>
+        <listitem>
+          <para>This allows us to compile using our gcc with our
+          options lists in ${BUILD64} variable.</para>
+        </listitem>
+      </varlistentry>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/procps.xml"
+    xpointer="xpointer(//*[@os='f2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/procps.xml"
+    xpointer="xpointer(//*[@os='f3'])"/>
+
+  </variablelist>
 
   </sect2>
 
