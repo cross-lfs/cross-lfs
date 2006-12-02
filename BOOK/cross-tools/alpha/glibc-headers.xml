@@ -62,8 +62,8 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
 <screen os="s3"><userinput>CC=gcc ../glibc-&glibc-version;/configure --prefix=/tools \
    --host=${CLFS_TARGET} --build=${CLFS_HOST} \
    --disable-sanity-checks --enable-kernel=2.6.0 \
-   --with-headers=/tools/include --cache-file=config.cache \
-   --with-binutils=/cross-tools/${CLFS_TARGET}/bin</userinput></screen>
+   --with-headers=${CLFS}/tools/include --cache-file=config.cache \
+   --with-binutils=${CLFS}/cross-tools/${CLFS_TARGET}/bin</userinput></screen>
 
     <note os="e1">
       <para><emphasis>Any</emphasis> error message you see about nptl at this point
@@ -121,17 +121,17 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
        </varlistentry>
  	
        <varlistentry os="ca7">
-           <term><parameter>--with-headers=/tools/include</parameter></term>
+           <term><parameter>--with-headers=${CLFS}/tools/include</parameter></term>
            <listitem>
               <para>This tells Glibc to compile itself against the headers
-              recently installed to the <filename class="directory">/tools</filename>
+              recently installed to the <filename class="directory">${CLFS}/tools</filename>
               directory, so that it knows exactly what features the kernel has
               and can optimize itself accordingly.</para>
            </listitem>
        </varlistentry>
  	
        <varlistentry os="ca8">
-           <term><parameter>--with-binutils=/cross-tools/${CLFS_TARGET}/bin</parameter></term>
+           <term><parameter>--with-binutils=${CLFS}/cross-tools/${CLFS_TARGET}/bin</parameter></term>
            <listitem>
               <para>This tells Glibc to use the Binutils for our specific target architecture.</para>
             </listitem>
