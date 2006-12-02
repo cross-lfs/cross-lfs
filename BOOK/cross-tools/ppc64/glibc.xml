@@ -101,7 +101,8 @@ sed 's/__PPC64_ELF_H/__powerpc64__/' \
     --host=${CLFS_TARGET32} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
-    --with-binutils=/cross-tools/bin --with-headers=/tools/include \
+    --with-binutils=${CLFS}/cross-tools/bin \
+    --with-headers=${CLFS}/tools/include \
     --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">

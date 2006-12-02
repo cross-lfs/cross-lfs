@@ -75,7 +75,8 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
-    --with-binutils=/cross-tools/bin --with-headers=/tools/include \
+    --with-binutils=${CLFS}/cross-tools/bin \
+    --with-headers=${CLFS}/tools/include \
     --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">
@@ -145,7 +146,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg9">
-        <term><parameter>--with-binutils=/cross-tools/bin</parameter></term>
+        <term><parameter>--with-binutils=${CLFS}/cross-tools/bin</parameter></term>
         <listitem>
           <para>This tells Glibc to use the Binutils that are specific to
           our target architecture.</para>
