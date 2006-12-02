@@ -31,32 +31,21 @@
     xpointer="xpointer(//*[@os='s2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/glibc.xml"
+    href="../alpha/glibc-headers.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/glibc.xml"
+    href="../alpha/glibc-headers.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
+    href="../alpha/glibc-headers.xml"
     xpointer="xpointer(//*[@os='dd'])"/>
 
 <screen os="de"><userinput>echo "libc_cv_forced_unwind=yes" &gt; config.cache
 echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache
 echo "libc_cv_mlong_double_128=yes" &gt;&gt; config.cache
-echo "libc_cv_powerpc64_tls=yes" &gt;&gt; config.cache</userinput></screen>
-
-    <para>We need to persuade <command>configure</command> that the host's
-    compiler has all the necessary modern powerpc64 extensions.  It will still
-    pass flags such as <literal>-mnew-abi</literal> which are likely to trigger
-    error messages on a non-ppc host, but the headers can be built.  We do this
-    by adding the following lines to <filename>config.cache</filename>. Note
-    that one of these has three consecutive underscores.</para>
-
-<screen><userinput>echo "libc_cv_mlong_double_128ibm=yes" >> config.cache
-echo "libc_cv_initfini_array=yes" >>config.cache
-echo "libc_cv_gcc___thread=yes" >>config.cache</userinput></screen>
+echo "libc_cv_sparc32_tls=yes" &gt;&gt; config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../alpha/glibc-headers.xml"
@@ -114,9 +103,7 @@ echo "libc_cv_gcc___thread=yes" >>config.cache</userinput></screen>
     href="../alpha/glibc-headers.xml"
     xpointer="xpointer(//*[@os='cj'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../ppc/glibc-headers.xml"
-    xpointer="xpointer(//*[@os='cm'])"/>
+<screen os="cm"><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/sparc/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
 
   </sect2>
 
