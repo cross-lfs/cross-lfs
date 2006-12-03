@@ -5,12 +5,12 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-boot-zlib" role="wrap">
+<sect1 id="ch-temp-system-zlib" role="wrap">
   <?dbhtml filename="zlib.html"?>
 
   <title>Zlib-&zlib-version;</title>
 
-  <indexterm zone="ch-boot-zlib">
+  <indexterm zone="ch-temp-system-zlib">
     <primary sortas="a-Zlib">Zlib</primary>
     <secondary>boot</secondary>
   </indexterm>
@@ -24,10 +24,18 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/zlib.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/zlib.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/zlib.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CC="${CC} ${BUILD64}" \
-   ./configure --prefix=/tools --shared</userinput></screen>
+   ./configure --prefix=/tools --shared --libdir=/tools/lib64</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/zlib.xml"
