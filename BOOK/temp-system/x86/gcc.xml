@@ -65,7 +65,7 @@ sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
     process for system headers, so it won't look at the host's headers:</para>
 
 <screen os="cg"><userinput>cp -v gcc/Makefile.in{,.orig}
-sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 ${CLFS}/tools/include@g' \
+sed -e "s@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 ${CLFS}/tools/include@g" \
     gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
