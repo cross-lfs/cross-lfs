@@ -5,12 +5,12 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-testsuite-tools-file" role="wrap">
+<sect1 id="ch-temp-system-file" role="wrap">
   <?dbhtml filename="file.html"?>
 
   <title>File-&file-version;</title>
 
-  <indexterm zone="ch-testsuite-tools-file">
+  <indexterm zone="ch-temp-system-file">
     <primary sortas="a-File">File</primary>
   </indexterm>
 
@@ -27,7 +27,7 @@
 
     <para os="a">Prepare File for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/tools</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/tools --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -37,12 +37,7 @@
 
     <para os="f">Install the package:</para>
 
-<screen os="g"><userinput>make install</userinput></screen>
-
-    <para os="h">Now we create a symlink so that the GCC testsuite
-    can use <command>file</command>:</para>
-
-<screen os="i"><userinput>ln -sv /tools/bin/file /usr/bin</userinput></screen>
+<screen os="g"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
 
   </sect2>
 
