@@ -65,7 +65,7 @@ sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
     process for system headers, so it won't look at the host's headers:</para>
 
 <screen os="cg"><userinput>cp -v gcc/Makefile.in{,.orig}
-sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
+sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 ${CLFS}/tools/include@g' \
     gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -110,13 +110,13 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
 
     <para os="co">Install the package:</para>
 
-<screen os="cp"><userinput>make install</userinput></screen>
+<screen os="cp"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen os="cq"><userinput>ln -sv gcc /tools/bin/cc</userinput></screen>
+<screen os="cq"><userinput>ln -sv gcc ${CLFS}/tools/bin/cc</userinput></screen>
 
   </sect2>
 
