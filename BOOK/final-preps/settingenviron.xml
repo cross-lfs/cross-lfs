@@ -55,7 +55,7 @@ EOF</userinput></screen>
   be used as soon as they are installed. By switching off the hash function,
   the shell will always search the <envar>PATH</envar> when a program is to
   be run. As such, the shell will find the newly compiled tools in
-  <filename class="directory">/cross-tools</filename> as soon as they are
+  <filename class="directory">${CLFS}/cross-tools</filename> as soon as they are
   available without remembering a previous version of the same program in a
   different location.</para>
 
@@ -78,13 +78,13 @@ EOF</userinput></screen>
   (the two are equivalent) ensures that everything will work as expected in
   the chroot environment.</para>
 
-  <para os="j">By putting <filename class="directory">/cross-tools/bin</filename>
+  <para os="j">By putting <filename class="directory">${CLFS}/cross-tools/bin</filename>
   at the beginning of the <envar>PATH</envar>, the cross-compiler
   built in <xref linkend="chapter-cross-tools"/> will be picked up by
   the build process for the temp-system packages before anything that
   may be installed on the host. This, combined with turning off
   hashing, helps to ensure that you will be using the cross-compile
-  tools to build the temp-system in /tools.</para>
+  tools to build the temp-system in ${CLFS}/tools.</para>
 
   <para os="k">Finally, to have the environment fully prepared for building the
   temporary tools, source the just-created user profile:</para>
