@@ -8,21 +8,25 @@
 <sect1 id="ch-final-preps-creatingtoolsdir">
   <?dbhtml filename="creatingtoolsdir.html"?>
 
-  <title>Creating the ${CLFS}/tools Directory</title>
+  <title>Creating the temporary tools directories</title>
 
-  <para>All programs compiled in <xref linkend="chapter-temp-system"/>
-  will be installed under <filename class="directory">${CLFS}/tools</filename>
-  to keep them separate from the programs compiled in <xref
-  linkend="chapter-building-system"/>. The programs compiled here are
-  temporary tools and will not be a part of the final CLFS system. By keeping
-  these programs in a separate directory, they can easily be discarded later
-  after their use. This also prevents these programs from ending up in the
-  host production directories (easy to do by accident in <xref
-  linkend="chapter-temp-system"/>).</para>
+  <para>The cross-binutils and cross-compiler built in
+  <xref linkend="chapter-cross-tools"/> will be installed under
+  <filename class="directory">${CLFS}/cross-tools</filename> to keep them
+  separate from the host programs. The programs compiled here are
+  cross-tools and will not be a part of the final CLFS system or the
+  temp-system. Similarly, all programs compiled in
+  <xref linkend="chapter-temp-system"/> will be installed under
+  <filename class="directory">${CLFS}/tools</filename> to keep them separate
+  from the programs compiled in <xref linkend="chapter-building-system"/>.
+  This also prevents these programs from ending up in the host production
+  directories (easy to do by accident in <xref linkend="chapter-temp-system"/>).
+  By keeping the cross-compile tools and temporary-system programs in separate
+  directories, they can easily be discarded later after their use.</para>
 
-  <para>Create the required directory by running the following as
+  <para>Create the required directories by running the following as
   <systemitem class="username">root</systemitem>:</para>
 
-<screen><userinput>install -dv ${CLFS}/tools</userinput></screen>
+<screen><userinput>install -dv ${CLFS}/{tools,cross-tools}</userinput></screen>
 
 </sect1>
