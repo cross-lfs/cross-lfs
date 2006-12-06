@@ -48,11 +48,12 @@
 
     <para os="f">Compile the package:</para>
 
-<screen os="g"><userinput>make</userinput></screen>
+<screen os="g"><userinput>make -C gnulib-lib
+make -C src msgfmt</userinput></screen>
 
-    <para os="h">Install the package:</para>
+    <para os="h">Install the <command>msgfmt</command> binary:</para>
 
-<screen os="i"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
+<screen os="i"><userinput>cp -v src/msgfmt ${CLFS}/tools/bin</userinput></screen>
 
   </sect2>
 
