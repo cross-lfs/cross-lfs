@@ -22,12 +22,6 @@
   <sect2 role="installation">
     <title>Installation of Gzip</title>
 
-    <para os="aa">The <command>configure</command> script needs a small
-    modification when using cross-compiled tools:</para>
-
-<screen os="ab"><userinput>cp -v configure{,.orig}
-sed -e "s@nm conftest@${CLFS_TARGET}-&amp;@" configure.orig > configure</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gzip.xml"
     xpointer="xpointer(//*[@os='a'])"/>
@@ -37,17 +31,17 @@ sed -e "s@nm conftest@${CLFS_TARGET}-&amp;@" configure.orig > configure</userinp
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gzip.xml"
-    xpointer="xpointer(//*[@os='e'])"/>
+    xpointer="xpointer(//*[@os='c'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/gzip.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gzip.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/gzip.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
-
-<screen os="i"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
+<screen os="g"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
 
   </sect2>
 

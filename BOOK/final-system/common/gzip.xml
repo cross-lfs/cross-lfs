@@ -29,28 +29,21 @@
 
 <screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
-    <para os="c">The <command>gzexe</command> script has the location of the
-    <command>gzip</command> binary hard-wired into it. Because the
-    location of the binary is changed later, the following command ensures
-    that the new location gets placed into the script:</para>
+    <para os="c">Compile the package:</para>
 
-<screen os="d"><userinput>sed -i 's@"BINDIR"@/bin@g' gzexe.in</userinput></screen>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <para os="e">Compile the package:</para>
+    <para os="e">This package does not come with a test suite.</para>
 
-<screen os="f"><userinput>make</userinput></screen>
+    <para os="f">Install the package:</para>
 
-    <para os="g">This package does not come with a test suite.</para>
+<screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="h">Install the package:</para>
-
-<screen os="i"><userinput>make install</userinput></screen>
-
-    <para os="j">Move the <command>gzip</command> program to the <filename
+    <para os="h">Move the <command>gzip</command> program to the <filename
     class="directory">/bin</filename> directory and create some commonly
     used symlinks to it:</para>
 
-<screen os="k"><userinput>mv -v /usr/bin/gzip /bin
+<screen os="i"><userinput>mv -v /usr/bin/gzip /bin
 rm -v /usr/bin/{gunzip,zcat}
 ln -sv gzip /bin/gunzip
 ln -sv gzip /bin/zcat
