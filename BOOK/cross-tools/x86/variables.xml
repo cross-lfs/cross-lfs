@@ -19,7 +19,7 @@
   particular needs. To set this information you can issue the following
   command:</para>
 
-<screen os="b"><userinput>export CLFS_HOST="$(sed 's/-*-[^-]*-/-cross-/' &lt;&lt;&lt; $MACHTYPE)"</userinput></screen>
+<screen os="b"><userinput>export CLFS_HOST="$(echo $MACHTYPE | sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"</userinput></screen>
 
   <para os="c">Now you will need to set the target triplet for the target
   architecture. You can do this by running the same command as above, just

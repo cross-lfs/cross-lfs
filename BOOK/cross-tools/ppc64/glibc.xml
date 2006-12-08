@@ -85,14 +85,6 @@ sed 's/__PPC64_ELF_H/__powerpc64__/' \
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='n1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='n2'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
 <screen os="df"><userinput>BUILD_CC="gcc" CC="${CLFS_TARGET}-gcc ${BUILD32}" \
@@ -101,8 +93,7 @@ sed 's/__PPC64_ELF_H/__powerpc64__/' \
     --host=${CLFS_TARGET32} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
-    --with-binutils=${CLFS}/cross-tools/bin \
-    --with-headers=${CLFS}/tools/include \
+    --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">

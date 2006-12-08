@@ -82,18 +82,10 @@
     href="glibc.xml"
     xpointer="xpointer(//*[@os='de'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="glibc.xml"
-    xpointer="xpointer(//*[@os='n1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="glibc.xml"
-    xpointer="xpointer(//*[@os='n2'])"/>
-
-    <para os="n3">Tell Glibc to install its 32-bit libraries into <filename
+    <para os="n1">Tell Glibc to install its 32-bit libraries into <filename
     class="directory">/tools/lib32</filename>:</para>
 
-<screen os="n4"><userinput>echo "slibdir=/tools/lib32" &gt;&gt; configparms</userinput></screen>
+<screen os="n2"><userinput>echo "slibdir=/tools/lib32" &gt;&gt; configparms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="glibc.xml"
@@ -105,7 +97,7 @@
     --host=${CLFS_TARGET} --build=${CLFS_HOST} --libdir=/tools/lib32 \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
-    --with-binutils=${CLFS}/cross-tools/bin --with-headers=${CLFS}/tools/include \
+    --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
     <variablelist os="fa">

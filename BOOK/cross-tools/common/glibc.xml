@@ -60,11 +60,6 @@
 <screen os="de"><userinput>echo "libc_cv_forced_unwind=yes" &gt; config.cache
 echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
 
-    <para os="n1">The following line needs to be added to
-    <filename>configparms</filename> to adjust installation paths.</para>
-
-<screen os="n2"><userinput>echo "install_root=${CLFS}" &gt; configparms</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
@@ -75,8 +70,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
     --with-tls --enable-kernel=2.6.0 --with-__thread \
-    --with-binutils=${CLFS}/cross-tools/bin \
-    --with-headers=${CLFS}/tools/include \
+    --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">
@@ -146,7 +140,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg9">
-        <term><parameter>--with-binutils=${CLFS}/cross-tools/bin</parameter></term>
+        <term><parameter>--with-binutils=/cross-tools/bin</parameter></term>
         <listitem>
           <para>This tells Glibc to use the Binutils that are specific to
           our target architecture.</para>
