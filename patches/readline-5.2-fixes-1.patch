@@ -1,0 +1,19 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2006-12-12
+Initial Package Version: 5.2
+Origin: ftp://ftp.cwru.edu/pub/bash/readline-5.2-patches
+Upstream Status: From Upstream
+Description: Contains patches 001 from upstream
+
+diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
+--- readline-5.2.orig/display.c	2006-09-14 11:20:12.000000000 -0700
++++ readline-5.2/display.c	2006-12-12 14:57:06.000000000 -0800
+@@ -2380,6 +2380,8 @@
+ 
+   if (end <= start)
+     return 0;
++  if (MB_CUR_MAX == 1 || rl_byte_oriented)
++    return (end - start);
+ 
+   memset (&ps, 0, sizeof (mbstate_t));
+ 
