@@ -51,7 +51,7 @@
     <systemitem class="username">clfs</systemitem> user cannot do. The following
     command fixes both issues:</para>
 
-<screen><userinput>cp Makefile,{.orig}
+<screen><userinput>cp Makefile{,.orig}
 sed -e "s/\(strip \)/${CLFS_TARGET}-\1/" \
     -e 's/-o root -g root//' \
     Makefile.orig > Makefile</userinput></screen>

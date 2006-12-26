@@ -53,7 +53,7 @@
     the 32-bit compiler, and to force <command>ld</command> to use a 32-bit
     emulation. The following commands will fix and achieve this:</para>
 
-<screen><userinput>cp Makefile,{.orig}
+<screen><userinput>cp Makefile{,.orig}
 sed -e "s/\(-print-libgcc-file-name\)/${BUILD32} \1/" \
             -e "s/\(-Bstatic\)/-melf32ppclinux \1/" \
             -e "s/\(strip \)/${CLFS_TARGET}-\1/" \
