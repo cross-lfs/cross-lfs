@@ -102,7 +102,7 @@ install-helper-functions:
 install-device-mapper:
 	install -d ${DESTDIR}/${LIBDIR}/udev
 	install -d ${DESTDIR}/etc/rc.d/init.d
-	install -m ${RULESMODE} 70-device-mapper.rules ${DESTDIR}/etc/udev/rules.d/70-device-mapper.rules
+	install -m ${RULESMODE} 64-device-mapper.rules ${DESTDIR}/etc/udev/rules.d/64-device-mapper.rules
 
 install-network: install-helper-functions install-network-update
 	install -d ${DESTDIR}/etc/udev/rules.d/
