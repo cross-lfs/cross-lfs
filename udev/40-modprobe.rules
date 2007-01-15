@@ -24,5 +24,13 @@ SUBSYSTEM=="scsi_device",	ACTION=="add", ATTRS{type}=="1", RUN+="/sbin/modprobe 
 SUBSYSTEM=="scsi_device",	ACTION=="add", ATTRS{type}=="[45]", RUN+="/sbin/modprobe sr_mod"
 SUBSYSTEM=="scsi_device",	ACTION=="add", RUN+="/sbin/modprobe sg"
 
+# ide
+KERNEL=="hd*",		SUBSYSTEMS=="ide", ATTRS{media}=="floppy", OPTIONS+="all_partitions"
+SUBSYSTEM=="ide", 	ACTION=="add", ATTR{media}=="tape", RUN+="/sbin/modprobe ide-scsi"
+
 # floppy
-KERNEL=="nvram",		ACTION=="add", RUN+="load_floppy_module.sh"
+KERNEL=="nvram",	ACTION=="add", RUN+="load_floppy_module.sh"
+
+# mmc
+SUBSYSTEM=="mmc",	ACTION=="add", RUN+="/sbin/modprobe mmc_block"
+
