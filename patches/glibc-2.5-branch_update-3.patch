@@ -1,6 +1,6 @@
 Submitted By: Jim Gifford <jim at linuxfromscratch dot org>
 Original Submission By: Robert Connolly <robert at linuxfromscratch dot org>
-Date: 2007-01-12
+Date: 2007-01-23
 Initial Package Version: 2.5
 Upstream Status: From Upstream
 Origin: Robert Connolly (Concept)
@@ -12,8 +12,141 @@ for specific details.
 
 diff -Naur glibc-2.5.orig/ChangeLog glibc-2.5/ChangeLog
 --- glibc-2.5.orig/ChangeLog	2006-09-29 11:45:39.000000000 -0700
-+++ glibc-2.5/ChangeLog	2007-01-12 09:20:08.000000000 -0800
-@@ -1,5 +1,283 @@
++++ glibc-2.5/ChangeLog	2007-01-12 10:24:52.000000000 -0800
+@@ -1,5 +1,416 @@
++2007-01-05  Steven Munroe  <sjmunroe@us.ibm.com>
++
++	* stdlib/tst-makecontext.c: Include errno.h.  Change main()
++	to do_test().  Define TEST_FUNCTION. Include test-skeleton.c.
++	(do_test): Check errno and exit(0) if ENOSYS.
++
++2007-01-11  Jakub Jelinek  <jakub@redhat.com>
++
++	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Fix handling of multi-byte
++	thousands separators.
++	* stdlib/Makefile: Add rules to build and run tst-strtod4.
++	* stdlib/tst-strtod4.c: New test.
++
++	[BZ #3855]
++	* stdlib/strtod_l.c (____STRTOF_INTERNAL): 0x. not followed by
++	hexadecimal digit should accept just the initial 0.
++	* stdlib/tst-strtod2.c (tests): New variable.
++	(do_test): Run several tests rather than just one.
++
++2007-01-03  Ulrich Drepper  <drepper@redhat.com>
++
++	* stdlib/Makefile (tst-strtod3-ENV): Define.
++
++2006-12-11  Ulrich Drepper  <drepper@redhat.com>
++
++	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Parse thousand
++	separators also if no non-zero digits found.
++	* stdlib/Makefile (tests): Add tst-strtod3.
++
++2006-12-09  Ulrich Drepper  <drepper@redhat.com>
++
++	[BZ #3664]
++	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Fix test to recognize
++	empty parsed strings.
++	* stdlib/Makefile (tests): Add tst-strtod2.
++	* stdlib/tst-strtod2.c: New file.
++
++	[BZ #3673]
++	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Fix exp_limit
++	computation.
++	* stdlib/Makefile (tests): Add tst-atof2.
++	* stdlib/tst-atof2.c: New file.
++
++	[BZ #3674]
++	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Adjust exponent value
++	correctly if removing trailing zero of hex-float.
++	* stdlib/Makefile (tests): Add tst-atof1.
++	* stdlib/tst-atof1.c: New file.
++
++2007-01-03  Ulrich Drepper  <drepper@redhat.com>
++
++	* string/Makefile (tst-strxfrm2-ENV): Define.
++
++2006-11-10  Jakub Jelinek  <jakub@redhat.com>
++
++	* string/strxfrm_l.c (STRXFRM): Fix trailing \1 optimization
++	if N is one bigger than return value.
++	* string/tst-strxfrm2.c (do_test): Also test strxfrm with l1 + 1
++	and l1 last arguments, if buf is defined, verify the return value
++	equals to strlen (buf) and verify no byte beyond passed length
++	is modified.
++
++2006-11-09  Ulrich Drepper  <drepper@redhat.com>
++
++	* string/Makefile (tests): Add tst-strxfrm2.
++	* string/tst-strxfrm2.c: New file.
++
++2006-11-08  Jakub Jelinek  <jakub@redhat.com>
++
++	* string/strxfrm_l.c (STRXFRM): Do the trailing \1 removal
++	optimization even if needed > n.
++
++2006-12-22  Gavin Romig-Koch  <gavin@redhat.com>
++
++	* nis/nss_compat/compat-grp.c (internal_getgrgid_r): Don't
++	blacklist the group till after we look it up.
++
++2006-12-21  Ulrich Drepper  <drepper@redhat.com>
++
++	* include/atomic.h (atomic_forced_read): New macro.
++
++2006-12-19  Jakub Jelinek  <jakub@redhat.com>
++
++	* nss/getXXbyYY_r.c: Include atomic.h.
++	(INTERNAL (REENTRANT_NAME)): Write startp after start_fct,
++	add atomic_write_barrier () in between.
++
++2006-12-18  Jakub Jelinek  <jakub@redhat.com>
++
++	[BZ #3747]
++	* stdlib/jrand48_r.c (__jrand48_r): Make sure result is in the
++	[-231 .. 231) range.
++	* stdlib/tst-rand48.c (main): Fix expected values for 64-bit
++	targets.
++	* stdlib/tst-rand48-2.c: New test.
++	* stdlib/Makefile (tests): Add tst-rand48-2.
++
++2006-12-14  Jakub Jelinek  <jakub@redhat.com>
++
++	* misc/tst-pselect.c (do_test): Fix sigblock argument.
++
++2006-12-14  Ulrich Drepper  <drepper@redhat.com>
++
++	* misc/tst-pselect.c (do_test): Make sure the helper process is
++	terminating when the test is aborted.
++
++2006-12-13  Ulrich Drepper  <drepper@redhat.com>
++
++	[BZ #2337]
++	* libio/Makefile (tests): Add tst-setvbuf1.
++	* libio/tst-setvbuf1.c: New file.
++
++2006-12-08  Jakub Jelinek  <jakub@redhat.com>
++
++	[BZ #2337]
++	* libio/genops.c (__uflow): Fix a typo.
++	* libio/wfiledoalloc.c (_IO_wfile_doallocate): Don't stat
++	nor set _IO_LINE_BUF bit here.  Size the wide buffer based on
++	the narrow buffer size.
++
++2006-11-24  Jakub Jelinek  <jakub@redhat.com>
++
++	[BZ #2337]
++	* libio/libio.h (_IO_FLAGS2_USER_WBUF): Define.
++	* libio/wgenops.c (_IO_wsetb, _IO_wdefault_finish): Test and set
++	_IO_FLAGS2_USER_WBUF bit in _flags2 instead of _IO_USER_BUF bit
++	in _flags.
++	* libio/wstrops.c (_IO_wstr_overflow, enlarge_userbuf,
++	_IO_wstr_finish): Likewise.
++	* libio/wmemstream.c (open_wmemstream): Likewise.
++	* libio/fileops.c (_IO_new_file_close_it): Call _IO_set[bgp]
++	even for wide streams.
++
 +2006-12-09  Jakub Jelinek  <jakub@redhat.com>
 +
 +	* misc/mntent_r.c (__hasmntopt): Check p[optlen] even when p == rest.
@@ -658,6 +791,22 @@ diff -Naur glibc-2.5.orig/elf/tst-thrlock.c glibc-2.5/elf/tst-thrlock.c
 +    }
 +  return 0;
 +}
+diff -Naur glibc-2.5.orig/include/atomic.h glibc-2.5/include/atomic.h
+--- glibc-2.5.orig/include/atomic.h	2006-02-17 10:50:09.000000000 -0800
++++ glibc-2.5/include/atomic.h	2007-01-12 09:58:08.000000000 -0800
+@@ -324,6 +324,12 @@
+ #endif
+ 
+ 
++#ifndef atomic_forced_read
++# define atomic_forced_read(x) \
++  ({ __typeof (x) __x; __asm ("" : "=r" (__x) : "0" (x)); __x; })
++#endif
++
++
+ #ifndef atomic_delay
+ # define atomic_delay() do { /* nothing */ } while (0)
+ #endif
 diff -Naur glibc-2.5.orig/include/features.h glibc-2.5/include/features.h
 --- glibc-2.5.orig/include/features.h	2006-04-25 13:34:32.000000000 -0700
 +++ glibc-2.5/include/features.h	2007-01-12 09:16:43.000000000 -0800
@@ -726,6 +875,52 @@ diff -Naur glibc-2.5.orig/io/Makefile glibc-2.5/io/Makefile
  
  distribute	:= ftwtest-sh
  
+diff -Naur glibc-2.5.orig/io/tst-ttyname_r.c glibc-2.5/io/tst-ttyname_r.c
+--- glibc-2.5.orig/io/tst-ttyname_r.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/io/tst-ttyname_r.c	2007-01-12 09:27:52.000000000 -0800
+@@ -0,0 +1,42 @@
++#include <errno.h>
++#include <error.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <unistd.h>
++
++static void do_prepare (void);
++#define PREPARE(argc, argv) do_prepare ()
++static int do_test (void);
++#define TEST_FUNCTION do_test ()
++#include <test-skeleton.c>
++
++static int temp_fd;
++
++static void
++do_prepare (void)
++{
++  char *temp_file;
++  temp_fd = create_temp_file ("tst-ttyname_r.", &temp_file);
++  if (temp_fd == -1)
++    error (1, errno, "cannot create temporary file");
++}
++
++static int
++do_test (void)
++{
++  int ret = 0;
++  char buf[sysconf (_SC_TTY_NAME_MAX) + 1];
++  int res = ttyname_r (-1, buf, sizeof (buf));
++  if (res != EBADF)
++    {
++      printf ("1st ttyname_r returned with res %d\n", res);
++      ret++;
++    }
++  res = ttyname_r (temp_fd, buf, sizeof (buf));
++  if (res != ENOTTY)
++    {
++      printf ("2nd ttyname_r returned with res %d\n", res);
++      ret++;
++    }
++  return ret;
++}
 diff -Naur glibc-2.5.orig/libio/bug-wmemstream1.c glibc-2.5/libio/bug-wmemstream1.c
 --- glibc-2.5.orig/libio/bug-wmemstream1.c	2006-08-14 15:11:34.000000000 -0700
 +++ glibc-2.5/libio/bug-wmemstream1.c	2006-09-29 17:06:33.000000000 -0700
@@ -736,6 +931,114 @@ diff -Naur glibc-2.5.orig/libio/bug-wmemstream1.c glibc-2.5/libio/bug-wmemstream
  
  
  static int
+diff -Naur glibc-2.5.orig/libio/fileops.c glibc-2.5/libio/fileops.c
+--- glibc-2.5.orig/libio/fileops.c	2006-01-18 16:38:35.000000000 -0800
++++ glibc-2.5/libio/fileops.c	2007-01-12 09:25:38.000000000 -0800
+@@ -174,14 +174,8 @@
+   close_status = _IO_SYSCLOSE (fp);
+ 
+   /* Free buffer. */
+-  if (fp->_mode <= 0)
+-    {
+-      INTUSE(_IO_setb) (fp, NULL, NULL, 0);
+-      _IO_setg (fp, NULL, NULL, NULL);
+-      _IO_setp (fp, NULL, NULL);
+-    }
+ #if defined _LIBC || defined _GLIBCPP_USE_WCHAR_T
+-  else
++  if (fp->_mode > 0)
+     {
+       if (_IO_have_wbackup (fp))
+ 	INTUSE(_IO_free_wbackup_area) (fp);
+@@ -190,6 +184,9 @@
+       _IO_wsetp (fp, NULL, NULL);
+     }
+ #endif
++  INTUSE(_IO_setb) (fp, NULL, NULL, 0);
++  _IO_setg (fp, NULL, NULL, NULL);
++  _IO_setp (fp, NULL, NULL);
+ 
+   INTUSE(_IO_un_link) ((struct _IO_FILE_plus *) fp);
+   fp->_flags = _IO_MAGIC|CLOSED_FILEBUF_FLAGS;
+diff -Naur glibc-2.5.orig/libio/genops.c glibc-2.5/libio/genops.c
+--- glibc-2.5.orig/libio/genops.c	2006-02-28 21:32:48.000000000 -0800
++++ glibc-2.5/libio/genops.c	2007-01-12 09:25:38.000000000 -0800
+@@ -367,7 +367,7 @@
+ #endif
+ 
+   if (fp->_mode == 0)
+-    _IO_fwide (fp, -11);
++    _IO_fwide (fp, -1);
+   if (_IO_in_put_mode (fp))
+     if (INTUSE(_IO_switch_to_get_mode) (fp) == EOF)
+       return EOF;
+diff -Naur glibc-2.5.orig/libio/libio.h glibc-2.5/libio/libio.h
+--- glibc-2.5.orig/libio/libio.h	2006-01-14 04:09:46.000000000 -0800
++++ glibc-2.5/libio/libio.h	2007-01-12 09:25:38.000000000 -0800
+@@ -142,6 +142,7 @@
+ #ifdef _LIBC
+ # define _IO_FLAGS2_FORTIFY 4
+ #endif
++#define _IO_FLAGS2_USER_WBUF 8
+ 
+ /* These are "formatting flags" matching the iostream fmtflags enum values. */
+ #define _IO_SKIPWS 01
+diff -Naur glibc-2.5.orig/libio/Makefile glibc-2.5/libio/Makefile
+--- glibc-2.5.orig/libio/Makefile	2006-08-14 15:12:27.000000000 -0700
++++ glibc-2.5/libio/Makefile	2007-01-12 09:25:38.000000000 -0800
+@@ -57,7 +57,8 @@
+ 	bug-ungetc2 bug-ftell bug-ungetc3 bug-ungetc4 tst-fopenloc2 \
+ 	tst-memstream1 tst-memstream2 \
+ 	tst-wmemstream1 tst-wmemstream2 \
+-	bug-memstream1 bug-wmemstream1
++	bug-memstream1 bug-wmemstream1 \
++	tst-setvbuf1
+ test-srcs = test-freopen
+ 
+ all: # Make this the default target; it will be defined in Rules.
+diff -Naur glibc-2.5.orig/libio/tst-setvbuf1.c glibc-2.5/libio/tst-setvbuf1.c
+--- glibc-2.5.orig/libio/tst-setvbuf1.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/libio/tst-setvbuf1.c	2007-01-12 09:25:38.000000000 -0800
+@@ -0,0 +1,39 @@
++/* Dereived from the test case in BZ #2337.  */
++#include <errno.h>
++#include <error.h>
++#include <fcntl.h>
++#include <locale.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <wchar.h>
++
++
++static char buf[512] __attribute__ ((aligned (4096)));
++
++
++static int
++do_test (void)
++{
++  setlocale (LC_ALL, "de_DE.UTF-8");
++
++  FILE *fp = fdopen (dup (STDOUT_FILENO), "a");
++  if (fp == NULL)
++    error (EXIT_FAILURE, errno, "fdopen(,\"a\")");
++
++  setvbuf (fp, buf, _IOFBF, sizeof (buf));
++
++  /* fwprintf to unbuffered stream.   */
++  fwprintf (fp, L"hello.\n");
++
++  fclose (fp);
++
++  /* touch my buffer */
++  buf[45] = 'a';
++
++  return 0;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
 diff -Naur glibc-2.5.orig/libio/tst-wmemstream1.c glibc-2.5/libio/tst-wmemstream1.c
 --- glibc-2.5.orig/libio/tst-wmemstream1.c	2006-01-11 18:02:27.000000000 -0800
 +++ glibc-2.5/libio/tst-wmemstream1.c	2006-09-29 17:06:33.000000000 -0700
@@ -754,9 +1057,92 @@ diff -Naur glibc-2.5.orig/libio/tst-wmemstream2.c glibc-2.5/libio/tst-wmemstream
  #define CHAR_T wchar_t
  #define W(o) L##o
  #define OPEN_MEMSTREAM open_wmemstream
+diff -Naur glibc-2.5.orig/libio/wfiledoalloc.c glibc-2.5/libio/wfiledoalloc.c
+--- glibc-2.5.orig/libio/wfiledoalloc.c	2002-07-05 23:35:54.000000000 -0700
++++ glibc-2.5/libio/wfiledoalloc.c	2007-01-12 09:25:38.000000000 -0800
+@@ -1,4 +1,5 @@
+-/* Copyright (C) 1993, 1997, 1999, 2000, 2002 Free Software Foundation, Inc.
++/* Copyright (C) 1993, 1997, 1999, 2000, 2002, 2006
++   Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -85,35 +86,20 @@
+      _IO_FILE *fp;
+ {
+   _IO_size_t size;
+-  int couldbetty;
+   wchar_t *p;
+-  struct _G_stat64 st;
+ 
+   /* Allocate room for the external buffer.  */
+   if (fp->_IO_buf_base == NULL)
+     INTUSE(_IO_file_doallocate) (fp);
+ 
+-  if (fp->_fileno < 0 || _IO_SYSSTAT (fp, &st) < 0)
+-    {
+-      couldbetty = 0;
+-      size = _IO_BUFSIZ;
+-#if 0
+-      /* do not try to optimise fseek() */
+-      fp->_flags |= __SNPT;
+-#endif
+-    }
+-  else
+-    {
+-      couldbetty = S_ISCHR (st.st_mode);
+-#if _IO_HAVE_ST_BLKSIZE
+-      size = st.st_blksize <= 0 ? _IO_BUFSIZ : st.st_blksize;
+-#else
+-      size = _IO_BUFSIZ;
+-#endif
+-    }
++  /* If narrow buffer is user allocated (set by setvbuf etc.),
++     use that size as the size of the wide buffer, when it is
++     allocated by _IO_file_doallocate, multiply that by size
++     of the wide character.  */
++  size = fp->_IO_buf_end - fp->_IO_buf_base;
++  if ((fp->_flags & _IO_USER_BUF))
++    size = (size + sizeof (wchar_t) - 1) / sizeof (wchar_t);
+   ALLOC_WBUF (p, size * sizeof (wchar_t), EOF);
+   INTUSE(_IO_wsetb) (fp, p, p + size, 1);
+-  if (couldbetty && isatty (fp->_fileno))
+-    fp->_flags |= _IO_LINE_BUF;
+   return 1;
+ }
+diff -Naur glibc-2.5.orig/libio/wgenops.c glibc-2.5/libio/wgenops.c
+--- glibc-2.5.orig/libio/wgenops.c	2006-02-12 13:20:57.000000000 -0800
++++ glibc-2.5/libio/wgenops.c	2007-01-12 09:25:38.000000000 -0800
+@@ -115,14 +115,14 @@
+      wchar_t *eb;
+      int a;
+ {
+-  if (f->_wide_data->_IO_buf_base && !(f->_flags & _IO_USER_BUF))
++  if (f->_wide_data->_IO_buf_base && !(f->_flags2 & _IO_FLAGS2_USER_WBUF))
+     FREE_BUF (f->_wide_data->_IO_buf_base, _IO_wblen (f) * sizeof (wchar_t));
+   f->_wide_data->_IO_buf_base = b;
+   f->_wide_data->_IO_buf_end = eb;
+   if (a)
+-    f->_flags &= ~_IO_USER_BUF;
++    f->_flags2 &= ~_IO_FLAGS2_USER_WBUF;
+   else
+-    f->_flags |= _IO_USER_BUF;
++    f->_flags2 |= _IO_FLAGS2_USER_WBUF;
+ }
+ INTDEF(_IO_wsetb)
+ 
+@@ -198,7 +198,7 @@
+      int dummy;
+ {
+   struct _IO_marker *mark;
+-  if (fp->_wide_data->_IO_buf_base && !(fp->_flags & _IO_USER_BUF))
++  if (fp->_wide_data->_IO_buf_base && !(fp->_flags2 & _IO_FLAGS2_USER_WBUF))
+     {
+       FREE_BUF (fp->_wide_data->_IO_buf_base,
+ 		_IO_wblen (fp) * sizeof (wchar_t));
 diff -Naur glibc-2.5.orig/libio/wmemstream.c glibc-2.5/libio/wmemstream.c
 --- glibc-2.5.orig/libio/wmemstream.c	2006-08-14 15:13:48.000000000 -0700
-+++ glibc-2.5/libio/wmemstream.c	2006-09-29 17:06:33.000000000 -0700
++++ glibc-2.5/libio/wmemstream.c	2007-01-12 09:25:38.000000000 -0800
 @@ -20,6 +20,7 @@
  #include "strfile.h"
  #include <stdio.h>
@@ -765,6 +1151,45 @@ diff -Naur glibc-2.5.orig/libio/wmemstream.c glibc-2.5/libio/wmemstream.c
  
  
  struct _IO_FILE_wmemstream
+@@ -91,7 +92,7 @@
+   _IO_fwide (&new_f->fp._sf._sbf._f, 1);
+   _IO_wstr_init_static (&new_f->fp._sf._sbf._f, buf,
+ 			_IO_BUFSIZ / sizeof (wchar_t), buf);
+-  new_f->fp._sf._sbf._f._flags &= ~_IO_USER_BUF;
++  new_f->fp._sf._sbf._f._flags2 &= ~_IO_FLAGS2_USER_WBUF;
+   new_f->fp._sf._s._allocate_buffer = (_IO_alloc_type) malloc;
+   new_f->fp._sf._s._free_buffer = (_IO_free_type) free;
+ 
+diff -Naur glibc-2.5.orig/libio/wstrops.c glibc-2.5/libio/wstrops.c
+--- glibc-2.5.orig/libio/wstrops.c	2006-08-14 15:14:53.000000000 -0700
++++ glibc-2.5/libio/wstrops.c	2007-01-12 09:25:38.000000000 -0800
+@@ -88,7 +88,7 @@
+   pos = fp->_wide_data->_IO_write_ptr - fp->_wide_data->_IO_write_base;
+   if (pos >= (_IO_size_t) (_IO_wblen (fp) + flush_only))
+     {
+-      if (fp->_flags & _IO_USER_BUF) /* not allowed to enlarge */
++      if (fp->_flags2 & _IO_FLAGS2_USER_WBUF) /* not allowed to enlarge */
+ 	return WEOF;
+       else
+ 	{
+@@ -182,7 +182,7 @@
+   _IO_ssize_t oldend = wd->_IO_write_end - wd->_IO_write_base;
+ 
+   /* Try to enlarge the buffer.  */
+-  if (fp->_flags & _IO_USER_BUF)
++  if (fp->_flags2 & _IO_FLAGS2_USER_WBUF)
+     /* User-provided buffer.  */
+     return 1;
+ 
+@@ -335,7 +335,7 @@
+      _IO_FILE *fp;
+      int dummy;
+ {
+-  if (fp->_wide_data->_IO_buf_base && !(fp->_flags & _IO_USER_BUF))
++  if (fp->_wide_data->_IO_buf_base && !(fp->_flags2 & _IO_FLAGS2_USER_WBUF))
+     (((_IO_strfile *) fp)->_s._free_buffer) (fp->_wide_data->_IO_buf_base);
+   fp->_wide_data->_IO_buf_base = NULL;
+ 
 diff -Naur glibc-2.5.orig/localedata/ChangeLog glibc-2.5/localedata/ChangeLog
 --- glibc-2.5.orig/localedata/ChangeLog	2006-09-29 11:30:52.000000000 -0700
 +++ glibc-2.5/localedata/ChangeLog	2007-01-12 07:26:50.000000000 -0800
@@ -1153,6 +1578,58 @@ diff -Naur glibc-2.5.orig/misc/tst-mntent2.c glibc-2.5/misc/tst-mntent2.c
 +
 +  return result;
 +}
+diff -Naur glibc-2.5.orig/misc/tst-pselect.c glibc-2.5/misc/tst-pselect.c
+--- glibc-2.5.orig/misc/tst-pselect.c	2006-01-21 11:58:31.000000000 -0800
++++ glibc-2.5/misc/tst-pselect.c	2007-01-12 09:49:04.000000000 -0800
+@@ -29,7 +29,16 @@
+       return 1;
+     }
+ 
+-  if (sigblock (SIGUSR1) != 0)
++  sa.sa_handler = SIG_IGN;
++  sa.sa_flags = SA_NOCLDWAIT;
++
++  if (sigaction (SIGCHLD, &sa, NULL) != 0)
++    {
++      puts ("2nd sigaction failed");
++      return 1;
++    }
++
++  if (sigblock (sigmask (SIGUSR1)) != 0)
+     {
+       puts ("sigblock failed");
+       return 1;
+@@ -52,6 +61,7 @@
+ 
+   struct timespec to = { .tv_sec = 0, .tv_nsec = 500000000 };
+ 
++  pid_t parent = getpid ();
+   pid_t p = fork ();
+   if (p == 0)
+     {
+@@ -63,6 +73,9 @@
+       int e;
+       do
+ 	{
++	  if (getppid () != parent)
++	    exit (2);
++
+ 	  errno = 0;
+ 	  e = pselect (fds[0][0] + 1, &rfds, NULL, NULL, &to, &ss);
+ 	}
+@@ -108,12 +121,6 @@
+       return 1;
+     }
+ 
+-  if (TEMP_FAILURE_RETRY (waitpid (p, NULL, 0)) != p)
+-    {
+-      puts ("waitpid failed");
+-      return 1;
+-    }
+-
+   return 0;
+ }
+ 
 diff -Naur glibc-2.5.orig/nis/Makefile glibc-2.5/nis/Makefile
 --- glibc-2.5.orig/nis/Makefile	2006-04-13 22:45:49.000000000 -0700
 +++ glibc-2.5/nis/Makefile	2007-01-12 06:37:24.000000000 -0800
@@ -1312,6 +1789,28 @@ diff -Naur glibc-2.5.orig/nis/nis_table.c glibc-2.5/nis/nis_table.c
    return res;
  }
  libnsl_hidden_def (nis_list)
+diff -Naur glibc-2.5.orig/nis/nss_compat/compat-grp.c glibc-2.5/nis/nss_compat/compat-grp.c
+--- glibc-2.5.orig/nis/nss_compat/compat-grp.c	2006-07-31 16:33:04.000000000 -0700
++++ glibc-2.5/nis/nss_compat/compat-grp.c	2007-01-12 09:59:51.000000000 -0800
+@@ -580,13 +580,17 @@
+       /* +group */
+       if (result->gr_name[0] == '+' && result->gr_name[1] != '\0')
+ 	{
++	  /* Yes, no +1, see the memcpy call below.  */
++	  size_t len = strlen (result->gr_name);
++	  char buf[len];
+ 	  enum nss_status status;
+ 
+ 	  /* Store the group in the blacklist for the "+" at the end of
+ 	     /etc/group */
+-	  blacklist_store_name (&result->gr_name[1], ent);
++	  memcpy (buf, &result->gr_name[1], len);
+ 	  status = getgrnam_plusgroup (&result->gr_name[1], result, ent,
+ 				       buffer, buflen, errnop);
++	  blacklist_store_name (buf, ent);
+ 	  if (status == NSS_STATUS_SUCCESS && result->gr_gid == gid)
+ 	    break;
+ 	  else
 diff -Naur glibc-2.5.orig/nis/nss_nisplus/nisplus-grp.c glibc-2.5/nis/nss_nisplus/nisplus-grp.c
 --- glibc-2.5.orig/nis/nss_nisplus/nisplus-grp.c	2006-05-20 12:20:19.000000000 -0700
 +++ glibc-2.5/nis/nss_nisplus/nisplus-grp.c	2007-01-12 06:37:24.000000000 -0800
@@ -1601,6 +2100,77 @@ diff -Naur glibc-2.5.orig/nis/Versions glibc-2.5/nis/Versions
 +    _nss_nisplus_setspent; _nss_nisplus_initgroups_dyn;
    }
  }
+diff -Naur glibc-2.5.orig/nptl/ChangeLog glibc-2.5/nptl/ChangeLog
+--- glibc-2.5.orig/nptl/ChangeLog	2006-09-24 10:14:11.000000000 -0700
++++ glibc-2.5/nptl/ChangeLog	2007-01-12 10:14:34.000000000 -0800
+@@ -1,3 +1,12 @@
++2006-12-28  David S. Miller  <davem@davemloft.net>
++
++	* shlib-versions: Fix sparc64 linux target specification.
++
++2006-12-21  Jakub Jelinek  <jakub@redhat.com>
++
++	* sysdeps/unix/sysv/linux/pthread_kill.c (pthread_kill): Make sure
++	tid isn't reread from pd->tid in between ESRCH test and the syscall.
++
+ 2006-09-24  Ulrich Drepper  <drepper@redhat.com>
+ 
+ 	[BZ #3251]
+diff -Naur glibc-2.5.orig/nptl/shlib-versions glibc-2.5/nptl/shlib-versions
+--- glibc-2.5.orig/nptl/shlib-versions	2004-07-05 10:03:27.000000000 -0700
++++ glibc-2.5/nptl/shlib-versions	2007-01-12 10:14:34.000000000 -0800
+@@ -1,5 +1,5 @@
+ mips.*-.*-linux.*	libpthread=0		GLIBC_2.0 GLIBC_2.2
+-sparc64-.*-linux.*	libpthread=0		GLIBC_2.2
++sparc64.*-.*-linux.*	libpthread=0		GLIBC_2.2
+ sh.*-.*-linux.*		libpthread=0		GLIBC_2.2
+ ia64.*-.*-linux.*	libpthread=0		GLIBC_2.2
+ hppa.*-.*-linux.*	libpthread=0		GLIBC_2.2
+diff -Naur glibc-2.5.orig/nptl/sysdeps/unix/sysv/linux/pthread_kill.c glibc-2.5/nptl/sysdeps/unix/sysv/linux/pthread_kill.c
+--- glibc-2.5.orig/nptl/sysdeps/unix/sysv/linux/pthread_kill.c	2004-09-28 15:22:37.000000000 -0700
++++ glibc-2.5/nptl/sysdeps/unix/sysv/linux/pthread_kill.c	2007-01-12 09:58:08.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 2002, 2003, 2004 Free Software Foundation, Inc.
++/* Copyright (C) 2002, 2003, 2004, 2006 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Ulrich Drepper <drepper@redhat.com>, 2002.
+ 
+@@ -33,7 +33,15 @@
+   struct pthread *pd = (struct pthread *) threadid;
+ 
+   /* Make sure the descriptor is valid.  */
+-  if (INVALID_TD_P (pd))
++  if (DEBUGGING_P && INVALID_TD_P (pd))
++    /* Not a valid thread handle.  */
++    return ESRCH;
++
++  /* Force load of pd->tid into local variable or register.  Otherwise
++     if a thread exits between ESRCH test and tgkill, we might return
++     EINVAL, because pd->tid would be cleared by the kernel.  */
++  pid_t tid = atomic_forced_read (pd->tid);
++  if (__builtin_expect (tid <= 0, 0))
+     /* Not a valid thread handle.  */
+     return ESRCH;
+ 
+@@ -53,15 +61,15 @@
+   int val;
+ #if __ASSUME_TGKILL
+   val = INTERNAL_SYSCALL (tgkill, err, 3, THREAD_GETMEM (THREAD_SELF, pid),
+-			  pd->tid, signo);
++			  tid, signo);
+ #else
+ # ifdef __NR_tgkill
+   val = INTERNAL_SYSCALL (tgkill, err, 3, THREAD_GETMEM (THREAD_SELF, pid),
+-			  pd->tid, signo);
++			  tid, signo);
+   if (INTERNAL_SYSCALL_ERROR_P (val, err)
+       && INTERNAL_SYSCALL_ERRNO (val, err) == ENOSYS)
+ # endif
+-    val = INTERNAL_SYSCALL (tkill, err, 2, pd->tid, signo);
++    val = INTERNAL_SYSCALL (tkill, err, 2, tid, signo);
+ #endif
+ 
+   return (INTERNAL_SYSCALL_ERROR_P (val, err)
 diff -Naur glibc-2.5.orig/nptl_db/ChangeLog glibc-2.5/nptl_db/ChangeLog
 --- glibc-2.5.orig/nptl_db/ChangeLog	2006-02-03 16:48:40.000000000 -0800
 +++ glibc-2.5/nptl_db/ChangeLog	2007-01-12 07:18:15.000000000 -0800
@@ -1726,6 +2296,45 @@ diff -Naur glibc-2.5.orig/nscd/nscd_helper.c glibc-2.5/nscd/nscd_helper.c
  	    return dh;
  	}
  
+diff -Naur glibc-2.5.orig/nss/getXXbyYY_r.c glibc-2.5/nss/getXXbyYY_r.c
+--- glibc-2.5.orig/nss/getXXbyYY_r.c	2004-09-16 15:24:09.000000000 -0700
++++ glibc-2.5/nss/getXXbyYY_r.c	2007-01-12 09:53:27.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 1996-2002, 2003, 2004 Free Software Foundation, Inc.
++/* Copyright (C) 1996-2002, 2003, 2004, 2006 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
+ 
+@@ -18,6 +18,7 @@
+    02111-1307 USA.  */
+ 
+ #include <assert.h>
++#include <atomic.h>
+ #include <errno.h>
+ #include <stdbool.h>
+ #include "nsswitch.h"
+@@ -173,9 +174,6 @@
+ 	startp = (service_user *) -1l;
+       else
+ 	{
+-	  startp = nip;
+-	  start_fct = fct.l;
+-
+ #ifdef NEED__RES
+ 	  /* The resolver code will really be used so we have to
+ 	     initialize it.  */
+@@ -190,6 +188,11 @@
+ 	  if (!_res_hconf.initialized)
+ 	    _res_hconf_init ();
+ #endif /* need _res_hconf */
++
++	  start_fct = fct.l;
++	  /* Make sure start_fct is written before startp.  */
++	  atomic_write_barrier ();
++	  startp = nip;
+ 	}
+     }
+   else
 diff -Naur glibc-2.5.orig/nss/nss_files/files-alias.c glibc-2.5/nss/nss_files/files-alias.c
 --- glibc-2.5.orig/nss/nss_files/files-alias.c	2002-09-01 05:38:05.000000000 -0700
 +++ glibc-2.5/nss/nss_files/files-alias.c	2007-01-12 07:56:58.000000000 -0800
@@ -45948,6 +46557,876 @@ diff -Naur glibc-2.5.orig/README.template glibc-2.5/README.template
  The GNU C Library implements much of the POSIX.1 functionality in the
  GNU/Hurd system, using configurations i[34567]86-*-gnu.
  
+diff -Naur glibc-2.5.orig/stdlib/jrand48_r.c glibc-2.5/stdlib/jrand48_r.c
+--- glibc-2.5.orig/stdlib/jrand48_r.c	2001-07-05 21:55:41.000000000 -0700
++++ glibc-2.5/stdlib/jrand48_r.c	2007-01-12 09:52:07.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 1995, 1997, 1998, 2001 Free Software Foundation, Inc.
++/* Copyright (C) 1995, 1997, 1998, 2001, 2006 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, August 1995.
+ 
+@@ -30,7 +30,7 @@
+     return -1;
+ 
+   /* Store the result.  */
+-  *result = ((xsubi[2] << 16) | xsubi[1]) & 0xffffffffl;
++  *result = (int32_t) ((xsubi[2] << 16) | xsubi[1]);
+ 
+   return 0;
+ }
+diff -Naur glibc-2.5.orig/stdlib/Makefile glibc-2.5/stdlib/Makefile
+--- glibc-2.5.orig/stdlib/Makefile	2006-08-21 14:02:11.000000000 -0700
++++ glibc-2.5/stdlib/Makefile	2007-01-12 10:23:27.000000000 -0800
+@@ -1,4 +1,4 @@
+-# Copyright (C) 1991-2002,2003,2004,2005,2006 Free Software Foundation, Inc.
++# Copyright (C) 1991-2006, 2007 Free Software Foundation, Inc.
+ # This file is part of the GNU C Library.
+ 
+ # The GNU C Library is free software; you can redistribute it and/or
+@@ -66,7 +66,9 @@
+ 		   test-canon test-canon2 tst-strtoll tst-environ	    \
+ 		   tst-xpg-basename tst-random tst-random2 tst-bsearch	    \
+ 		   tst-limits tst-rand48 bug-strtod tst-setcontext	    \
+-		   test-a64l tst-qsort tst-system testmb2 bug-strtod2
++		   test-a64l tst-qsort tst-system testmb2 bug-strtod2	    \
++		   tst-atof1 tst-atof2 tst-strtod2 tst-strtod3 tst-rand48-2 \
++		   tst-makecontext tst-strtod4
+ 
+ include ../Makeconfig
+ 
+@@ -115,6 +117,8 @@
+ test-canon-ARGS = --test-dir=${common-objpfx}stdlib
+ 
+ tst-strtod-ENV = LOCPATH=$(common-objpfx)localedata
++tst-strtod3-ENV = LOCPATH=$(common-objpfx)localedata
++tst-strtod4-ENV = LOCPATH=$(common-objpfx)localedata
+ testmb2-ENV = LOCPATH=$(common-objpfx)localedata
+ 
+ # Run a test on the header files we use.
+diff -Naur glibc-2.5.orig/stdlib/strtod_l.c glibc-2.5/stdlib/strtod_l.c
+--- glibc-2.5.orig/stdlib/strtod_l.c	2006-01-14 04:09:09.000000000 -0800
++++ glibc-2.5/stdlib/strtod_l.c	2007-01-12 10:23:27.000000000 -0800
+@@ -1,5 +1,6 @@
+ /* Convert string representing a number to float value, using given locale.
+-   Copyright (C) 1997,1998,2002,2004,2005,2006 Free Software Foundation, Inc.
++   Copyright (C) 1997,1998,2002,2004,2005,2006,2007
++   Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
+ 
+@@ -650,10 +651,11 @@
+ 	  if (c != '0')
+ 	    {
+ 	      for (cnt = 0; thousands[cnt] != '\0'; ++cnt)
+-		if (c != thousands[cnt])
++		if (thousands[cnt] != cp[cnt])
+ 		  break;
+ 	      if (thousands[cnt] != '\0')
+ 		break;
++	      cp += cnt - 1;
+ 	    }
+ 	  c = *++cp;
+ 	}
+@@ -662,20 +664,29 @@
+ 
+   /* If no other digit but a '0' is found the result is 0.0.
+      Return current read pointer.  */
+-  if ((c < L_('0') || c > L_('9'))
+-      && (base == 16 && (c < (CHAR_TYPE) TOLOWER (L_('a'))
+-			 || c > (CHAR_TYPE) TOLOWER (L_('f'))))
++  if (!((c >= L_('0') && c <= L_('9'))
++	|| (base == 16 && ((CHAR_TYPE) TOLOWER (c) >= L_('a')
++			   && (CHAR_TYPE) TOLOWER (c) <= L_('f')))
++	|| (
+ #ifdef USE_WIDE_CHAR
+-      && c != (wint_t) decimal
++	    c == (wint_t) decimal
+ #else
+-      && ({ for (cnt = 0; decimal[cnt] != '\0'; ++cnt)
+-	      if (decimal[cnt] != cp[cnt])
+-		break;
+-	    decimal[cnt] != '\0'; })
+-#endif
+-      && (base == 16 && (cp == start_of_digits
+-			 || (CHAR_TYPE) TOLOWER (c) != L_('p')))
+-      && (base != 16 && (CHAR_TYPE) TOLOWER (c) != L_('e')))
++	    ({ for (cnt = 0; decimal[cnt] != '\0'; ++cnt)
++		 if (decimal[cnt] != cp[cnt])
++		   break;
++	       decimal[cnt] == '\0'; })
++#endif
++	    /* '0x.' alone is not a valid hexadecimal number.
++	       '.' alone is not valid either, but that has been checked
++	       already earlier.  */
++	    && (base != 16
++		|| cp != start_of_digits
++		|| (cp[decimal_len] >= L_('0') && cp[decimal_len] <= L_('9'))
++		|| ((CHAR_TYPE) TOLOWER (cp[decimal_len]) >= L_('a')
++		    && (CHAR_TYPE) TOLOWER (cp[decimal_len]) <= L_('f'))))
++	|| (base == 16 && (cp != start_of_digits
++			   && (CHAR_TYPE) TOLOWER (c) == L_('p')))
++	|| (base != 16 && (CHAR_TYPE) TOLOWER (c) == L_('e'))))
+     {
+ #ifdef USE_WIDE_CHAR
+       tp = __correctly_grouped_prefixwc (start_of_digits, cp, thousands,
+@@ -715,13 +726,14 @@
+ 		  break;
+ 	      if (thousands[cnt] != '\0')
+ 		break;
++	      cp += cnt - 1;
+ 	    }
+ #endif
+ 	}
+       c = *++cp;
+     }
+ 
+-  if (grouping && dig_no > 0)
++  if (grouping && cp > start_of_digits)
+     {
+       /* Check the grouping of the digits.  */
+ #ifdef USE_WIDE_CHAR
+@@ -759,13 +771,15 @@
+ 	}
+     }
+ 
+-  /* We have the number digits in the integer part.  Whether these are all or
+-     any is really a fractional digit will be decided later.  */
++  /* We have the number of digits in the integer part.  Whether these
++     are all or any is really a fractional digit will be decided
++     later.  */
+   int_no = dig_no;
+   lead_zero = int_no == 0 ? -1 : 0;
+ 
+-  /* Read the fractional digits.  A special case are the 'american style'
+-     numbers like `16.' i.e. with decimal but without trailing digits.  */
++  /* Read the fractional digits.  A special case are the 'american
++     style' numbers like `16.' i.e. with decimal point but without
++     trailing digits.  */
+   if (
+ #ifdef USE_WIDE_CHAR
+       c == (wint_t) decimal
+@@ -815,15 +829,16 @@
+ 	  if (base == 16)
+ 	    exp_limit = (exp_negative ?
+ 			 -MIN_EXP + MANT_DIG + 4 * int_no :
+-			 MAX_EXP - 4 * int_no + lead_zero);
++			 MAX_EXP - 4 * int_no + 4 * lead_zero + 3);
+ 	  else
+ 	    exp_limit = (exp_negative ?
+ 			 -MIN_10_EXP + MANT_DIG + int_no :
+-			 MAX_10_EXP - int_no + lead_zero);
++			 MAX_10_EXP - int_no + lead_zero + 1);
+ 
+ 	  do
+ 	    {
+ 	      exponent *= 10;
++	      exponent += c - L_('0');
+ 
+ 	      if (exponent > exp_limit)
+ 		/* The exponent is too large/small to represent a valid
+@@ -853,7 +868,6 @@
+ 		  /* NOTREACHED */
+ 		}
+ 
+-	      exponent += c - L_('0');
+ 	      c = *++cp;
+ 	    }
+ 	  while (c >= L_('0') && c <= L_('9'));
+@@ -888,7 +902,7 @@
+ 	--expp;
+ 	--dig_no;
+ 	--int_no;
+-	++exponent;
++	exponent += base == 16 ? 4 : 1;
+       }
+     while (dig_no > 0 && exponent < 0);
+ 
+diff -Naur glibc-2.5.orig/stdlib/tst-atof1.c glibc-2.5/stdlib/tst-atof1.c
+--- glibc-2.5.orig/stdlib/tst-atof1.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-atof1.c	2007-01-12 10:07:19.000000000 -0800
+@@ -0,0 +1,19 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++static int
++do_test (void)
++{
++  char buf[100];
++  snprintf (buf, sizeof (buf), "%g", atof ("0x10p-1"));
++  if (strcmp (buf, "8") != 0)
++    {
++      printf ("got \"%s\", expected \"8\"\n", buf);
++      return 1;
++    }
++  return 0;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
+diff -Naur glibc-2.5.orig/stdlib/tst-atof2.c glibc-2.5/stdlib/tst-atof2.c
+--- glibc-2.5.orig/stdlib/tst-atof2.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-atof2.c	2007-01-12 10:07:19.000000000 -0800
+@@ -0,0 +1,55 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++
++static const struct
++{
++  const char *str;
++  const char *expected;
++} tests[] =
++  {
++    { "1e308", "1e+308" },
++    { "100000000e300", "1e+308" },
++    { "0x1p1023", "8.98847e+307" },
++    { "0x1000p1011", "8.98847e+307" },
++    { "0x1p1020", "1.12356e+307" },
++    { "0x0.00001p1040", "1.12356e+307" },
++    { "1e-307", "1e-307" },
++    { "0.000001e-301", "1e-307" },
++    { "0.0000001e-300", "1e-307" },
++    { "0.00000001e-299", "1e-307" },
++    { "1000000e-313", "1e-307" },
++    { "10000000e-314", "1e-307" },
++    { "100000000e-315", "1e-307" },
++    { "0x1p-1021", "4.45015e-308" },
++    { "0x1000p-1033", "4.45015e-308" },
++    { "0x10000p-1037", "4.45015e-308" },
++    { "0x0.001p-1009", "4.45015e-308" },
++    { "0x0.0001p-1005", "4.45015e-308" },
++  };
++#define NTESTS (sizeof (tests) / sizeof (tests[0]))
++
++
++static int
++do_test (void)
++{
++  int status = 0;
++
++  for (int i = 0; i < NTESTS; ++i)
++    {
++      char buf[100];
++      snprintf (buf, sizeof (buf), "%g", atof (tests[i].str));
++      if (strcmp (buf, tests[i].expected) != 0)
++	{
++	  printf ("%d: got \"%s\", expected \"%s\"\n",
++		  i, buf, tests[i].expected);
++	  status = 1;
++	}
++    }
++
++  return status;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
+diff -Naur glibc-2.5.orig/stdlib/tst-makecontext.c glibc-2.5/stdlib/tst-makecontext.c
+--- glibc-2.5.orig/stdlib/tst-makecontext.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-makecontext.c	2007-01-12 10:24:52.000000000 -0800
+@@ -0,0 +1,67 @@
++/* Copyright (C) 2006, 2007 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <errno.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <ucontext.h>
++
++ucontext_t ucp;
++char st1[8192];
++__thread int thr;
++
++void
++cf (int i)
++{
++  if (i != 78 || thr != 94)
++    {
++      printf ("i %d thr %d\n", i, thr);
++      exit (1);
++    }
++  exit (0);
++}
++
++int
++do_test (void)
++{
++  if (getcontext (&ucp) != 0)
++    {
++      if (errno == ENOSYS)
++	{
++	  puts ("context handling not supported");
++	  return 0;
++	}
++
++      puts ("getcontext failed");
++      return 1;
++    }
++  thr = 94;
++  ucp.uc_link = NULL;
++  ucp.uc_stack.ss_sp = st1;
++  ucp.uc_stack.ss_size = sizeof st1;
++  makecontext (&ucp, (void (*) (void)) cf, 1, 78);
++  if (setcontext (&ucp) != 0)
++    {
++      puts ("setcontext failed");
++      return 1;
++    }
++  return 2;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
+diff -Naur glibc-2.5.orig/stdlib/tst-rand48-2.c glibc-2.5/stdlib/tst-rand48-2.c
+--- glibc-2.5.orig/stdlib/tst-rand48-2.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-rand48-2.c	2007-01-12 09:52:07.000000000 -0800
+@@ -0,0 +1,113 @@
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <time.h>
++
++int
++main (void)
++{
++  time_t t = time (NULL);
++  int i, ret = 0;
++  double d;
++  long int l;
++  struct drand48_data data;
++  unsigned short int buf[3];
++
++  srand48 ((long int) t);
++  for (i = 0; i < 50; i++)
++    if ((d = drand48 ()) < 0.0 || d >= 1.0)
++      {
++        printf ("drand48 %d %g\n", i, d);
++        ret = 1;
++      }
++
++  srand48_r ((long int) t, &data);
++  for (i = 0; i < 50; i++)
++    if (drand48_r (&data, &d) != 0 || d < 0.0 || d >= 1.0)
++      {
++        printf ("drand48_r %d %g\n", i, d);
++        ret = 1;
++      }
++
++  buf[2] = (t & 0xffff0000) >> 16; buf[1] = (t & 0xffff); buf[0] = 0x330e;
++  for (i = 0; i < 50; i++)
++    if ((d = erand48 (buf)) < 0.0 || d >= 1.0)
++      {
++        printf ("erand48 %d %g\n", i, d);
++        ret = 1;
++      }
++
++  buf[2] = (t & 0xffff0000) >> 16; buf[1] = (t & 0xffff); buf[0] = 0x330e;
++  for (i = 0; i < 50; i++)
++    if (erand48_r (buf, &data, &d) != 0 || d < 0.0 || d >= 1.0)
++      {
++        printf ("erand48_r %d %g\n", i, d);
++        ret = 1;
++      }
++
++  srand48 ((long int) t);
++  for (i = 0; i < 50; i++)
++    if ((l = lrand48 ()) < 0 || l > INT32_MAX)
++      {
++        printf ("lrand48 %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  srand48_r ((long int) t, &data);
++  for (i = 0; i < 50; i++)
++    if (lrand48_r (&data, &l) != 0 || l < 0 || l > INT32_MAX)
++      {
++        printf ("lrand48_r %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  buf[2] = (t & 0xffff0000) >> 16; buf[1] = (t & 0xffff); buf[0] = 0x330e;
++  for (i = 0; i < 50; i++)
++    if ((l = nrand48 (buf)) < 0 || l > INT32_MAX)
++      {
++        printf ("nrand48 %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  buf[2] = (t & 0xffff0000) >> 16; buf[1] = (t & 0xffff); buf[0] = 0x330e;
++  for (i = 0; i < 50; i++)
++    if (nrand48_r (buf, &data, &l) != 0 || l < 0 || l > INT32_MAX)
++      {
++        printf ("nrand48_r %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  srand48 ((long int) t);
++  for (i = 0; i < 50; i++)
++    if ((l = mrand48 ()) < INT32_MIN || l > INT32_MAX)
++      {
++        printf ("mrand48 %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  srand48_r ((long int) t, &data);
++  for (i = 0; i < 50; i++)
++    if (mrand48_r (&data, &l) != 0 || l < INT32_MIN || l > INT32_MAX)
++      {
++        printf ("mrand48_r %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  buf[2] = (t & 0xffff0000) >> 16; buf[1] = (t & 0xffff); buf[0] = 0x330e;
++  for (i = 0; i < 50; i++)
++    if ((l = jrand48 (buf)) < INT32_MIN || l > INT32_MAX)
++      {
++        printf ("jrand48 %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  buf[2] = (t & 0xffff0000) >> 16; buf[1] = (t & 0xffff); buf[0] = 0x330e;
++  for (i = 0; i < 50; i++)
++    if (jrand48_r (buf, &data, &l) != 0 || l < INT32_MIN || l > INT32_MAX)
++      {
++        printf ("jrand48_r %d %ld\n", i, l);
++        ret = 1;
++      }
++
++  return ret;
++}
+diff -Naur glibc-2.5.orig/stdlib/tst-rand48.c glibc-2.5/stdlib/tst-rand48.c
+--- glibc-2.5.orig/stdlib/tst-rand48.c	2001-01-19 19:32:19.000000000 -0800
++++ glibc-2.5/stdlib/tst-rand48.c	2007-01-12 09:52:07.000000000 -0800
+@@ -44,10 +44,10 @@
+     }
+ 
+   l = mrand48 ();
+-  if (l != 0xa28c1003l)
++  if (l != -0x5d73effdl)
+     {
+       printf ("mrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0xa28c1003l, l);
++	      __LINE__ - 4, -0x5d73effdl, l);
+       result = 1;
+     }
+ 
+@@ -60,10 +60,10 @@
+     }
+ 
+   l = mrand48 ();
+-  if (l != 0x9e88f474l)
++  if (l != -0x61770b8cl)
+     {
+       printf ("mrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0x9e88f474l, l);
++	      __LINE__ - 4, -0x61770b8cl, l);
+       result = 1;
+     }
+ 
+@@ -92,10 +92,10 @@
+     }
+ 
+   l = mrand48 ();
+-  if (l != 0xeb7a1fa3l)
++  if (l != -0x1485e05dl)
+     {
+       printf ("mrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0xeb7a1fa3l, l);
++	      __LINE__ - 4, -0x1485e05dl, l);
+       result = 1;
+     }
+ 
+@@ -171,10 +171,10 @@
+     }
+ 
+   l = mrand48 ();
+-  if (l != 0xa28c1003l)
++  if (l != -0x5d73effdl)
+     {
+       printf ("mrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0xa28c1003l, l);
++	      __LINE__ - 4, -0x5d73effdl, l);
+       result = 1;
+     }
+ 
+@@ -187,10 +187,10 @@
+     }
+ 
+   l = mrand48 ();
+-  if (l != 0x9e88f474l)
++  if (l != -0x61770b8cl)
+     {
+       printf ("mrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0x9e88f474l, l);
++	      __LINE__ - 4, -0x61770b8cl, l);
+       result = 1;
+     }
+ 
+@@ -231,10 +231,10 @@
+     }
+ 
+   l = mrand48 ();
+-  if (l != 0xeb7a1fa3l)
++  if (l != -0x1485e05dl)
+     {
+       printf ("mrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0xeb7a1fa3l, l);
++	      __LINE__ - 4, -0x1485e05dl, l);
+       result = 1;
+     }
+ 
+@@ -287,10 +287,10 @@
+     }
+ 
+   l = jrand48 (xs);
+-  if (l != 0xf568c7a0l)
++  if (l != -0xa973860l)
+     {
+       printf ("jrand48() in line %d failed: expected %lx, seen %lx\n",
+-	      __LINE__ - 4, 0xf568c7a0l, l);
++	      __LINE__ - 4, -0xa973860l, l);
+       result = 1;
+     }
+ 
+diff -Naur glibc-2.5.orig/stdlib/tst-strtod2.c glibc-2.5/stdlib/tst-strtod2.c
+--- glibc-2.5.orig/stdlib/tst-strtod2.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-strtod2.c	2007-01-12 10:23:27.000000000 -0800
+@@ -0,0 +1,44 @@
++#include <stdio.h>
++#include <stdlib.h>
++
++struct test
++{
++  const char *str;
++  double result;
++  size_t offset;
++} tests[] =
++{
++  { "0xy", 0.0, 1 },
++  { "0x.y", 0.0, 1 },
++  { "0x0.y", 0.0, 4 },
++  { "0x.0y", 0.0, 4 },
++  { ".y", 0.0, 0 },
++  { "0.y", 0.0, 2 },
++  { ".0y", 0.0, 2 }
++};
++
++static int
++do_test (void)
++{
++  int status = 0;
++  for (size_t i = 0; i < sizeof (tests) / sizeof (tests[0]); ++i)
++    {
++      char *ep;
++      double r = strtod (tests[i].str, &ep);
++      if (r != tests[i].result)
++	{
++	  printf ("test %zu r = %g, expect %g\n", i, r, tests[i].result);
++	  status = 1;
++	}
++      if (ep != tests[i].str + tests[i].offset)
++	{
++	  printf ("test %zu strtod parsed %ju characters, expected %zu\n",
++		  i, ep - tests[i].str, tests[i].offset);
++	  status = 1;
++	}
++    }
++  return status;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
+diff -Naur glibc-2.5.orig/stdlib/tst-strtod3.c glibc-2.5/stdlib/tst-strtod3.c
+--- glibc-2.5.orig/stdlib/tst-strtod3.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-strtod3.c	2007-01-12 10:07:19.000000000 -0800
+@@ -0,0 +1,55 @@
++#include <locale.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++static const struct
++{
++  const char *in;
++  const char *out;
++  double expected;
++} tests[] =
++  {
++    { "000,,,e1", ",,,e1", 0.0 },
++    { "000e1", "", 0.0 },
++    { "000,1e1", ",1e1", 0.0 }
++  };
++#define NTESTS (sizeof (tests) / sizeof (tests[0]))
++
++
++static int
++do_test (void)
++{
++  if (setlocale (LC_ALL, "en_US.ISO-8859-1") == NULL)
++    {
++      puts ("could not set locale");
++      return 1;
++    }
++
++  int status = 0;
++
++  for (int i = 0; i < NTESTS; ++i)
++    {
++      char *ep;
++      double r = __strtod_internal (tests[i].in, &ep, 1);
++
++      if (strcmp (ep, tests[i].out) != 0)
++	{
++	  printf ("%d: got rest string \"%s\", expected \"%s\"\n",
++		  i, ep, tests[i].out);
++	  status = 1;
++	}
++
++      if (r != tests[i].expected)
++	{
++	  printf ("%d: got wrong results %g, expected %g\n",
++		  i, r, tests[i].expected);
++	  status = 1;
++	}
++    }
++
++  return status;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
+diff -Naur glibc-2.5.orig/stdlib/tst-strtod4.c glibc-2.5/stdlib/tst-strtod4.c
+--- glibc-2.5.orig/stdlib/tst-strtod4.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/stdlib/tst-strtod4.c	2007-01-12 10:23:27.000000000 -0800
+@@ -0,0 +1,56 @@
++#include <locale.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#define NBSP "\xc2\xa0"
++
++static const struct
++{
++  const char *in;
++  const char *out;
++  double expected;
++} tests[] =
++  {
++    { "000"NBSP"000"NBSP"000", "", 0.0 },
++    { "1"NBSP"000"NBSP"000,5x", "x", 1000000.5 }
++  };
++#define NTESTS (sizeof (tests) / sizeof (tests[0]))
++
++
++static int
++do_test (void)
++{
++  if (setlocale (LC_ALL, "cs_CZ.UTF-8") == NULL)
++    {
++      puts ("could not set locale");
++      return 1;
++    }
++
++  int status = 0;
++
++  for (int i = 0; i < NTESTS; ++i)
++    {
++      char *ep;
++      double r = __strtod_internal (tests[i].in, &ep, 1);
++
++      if (strcmp (ep, tests[i].out) != 0)
++	{
++	  printf ("%d: got rest string \"%s\", expected \"%s\"\n",
++		  i, ep, tests[i].out);
++	  status = 1;
++	}
++
++      if (r != tests[i].expected)
++	{
++	  printf ("%d: got wrong results %g, expected %g\n",
++		  i, r, tests[i].expected);
++	  status = 1;
++	}
++    }
++
++  return status;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
+diff -Naur glibc-2.5.orig/string/Makefile glibc-2.5/string/Makefile
+--- glibc-2.5.orig/string/Makefile	2006-06-04 09:35:25.000000000 -0700
++++ glibc-2.5/string/Makefile	2007-01-12 10:02:24.000000000 -0800
+@@ -1,4 +1,4 @@
+-# Copyright (C) 1991-2002, 2005, 2006 Free Software Foundation, Inc.
++# Copyright (C) 1991-2002, 2005, 2006, 2007 Free Software Foundation, Inc.
+ # This file is part of the GNU C Library.
+ 
+ # The GNU C Library is free software; you can redistribute it and/or
+@@ -54,7 +54,7 @@
+ 		   bug-strncat1 bug-strspn1 bug-strpbrk1 tst-bswap	\
+ 		   tst-strtok tst-strxfrm bug-strcoll1 tst-strfry	\
+ 		   bug-strtok1 $(addprefix test-,$(strop-tests))	\
+-		   bug-envz1
++		   bug-envz1 tst-strxfrm2
+ distribute	:= memcopy.h pagecopy.h tst-svc.expect test-string.h
+ 
+ 
+@@ -64,6 +64,7 @@
+ inl-tester-ENV = LANGUAGE=C
+ noinl-tester-ENV = LANGUAGE=C
+ tst-strxfrm-ENV = LOCPATH=$(common-objpfx)localedata
++tst-strxfrm2-ENV = LOCPATH=$(common-objpfx)localedata
+ bug-strcoll1-ENV = LOCPATH=$(common-objpfx)localedata
+ CFLAGS-inl-tester.c = -fno-builtin
+ CFLAGS-noinl-tester.c = -fno-builtin
+diff -Naur glibc-2.5.orig/string/strxfrm_l.c glibc-2.5/string/strxfrm_l.c
+--- glibc-2.5.orig/string/strxfrm_l.c	2005-10-15 13:49:18.000000000 -0700
++++ glibc-2.5/string/strxfrm_l.c	2007-01-12 10:02:24.000000000 -0800
+@@ -1,4 +1,5 @@
+-/* Copyright (C) 1995,96,97,2002, 2004, 2005 Free Software Foundation, Inc.
++/* Copyright (C) 1995, 1996, 1997, 2002, 2004, 2005, 2006
++   Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Written by Ulrich Drepper <drepper@gnu.org>, 1995.
+ 
+@@ -96,6 +97,7 @@
+   const int32_t *indirect;
+   uint_fast32_t pass;
+   size_t needed;
++  size_t last_needed;
+   const USTRING_TYPE *usrc;
+   size_t srclen = STRLEN (src);
+   int32_t *idxarr;
+@@ -197,6 +199,7 @@
+ 	 this is true for all of them.  */
+       int position = rule & sort_position;
+ 
++      last_needed = needed;
+       if (position == 0)
+ 	{
+ 	  for (idxcnt = 0; idxcnt < idxmax; ++idxcnt)
+@@ -426,11 +429,11 @@
+      a `position' rule at the end and if no non-ignored character
+      is found the last \1 byte is immediately followed by a \0 byte
+      signalling this.  We can avoid the \1 byte(s).  */
+-  if (needed <= n && needed > 2 && dest[needed - 2] == L('\1'))
++  if (needed > 2 && needed == last_needed + 1)
+     {
+       /* Remove the \1 byte.  */
+-      --needed;
+-      dest[needed - 1] = L('\0');
++      if (--needed <= n)
++	dest[needed - 1] = L('\0');
+     }
+ 
+   /* Free the memory if needed.  */
+diff -Naur glibc-2.5.orig/string/tst-strxfrm2.c glibc-2.5/string/tst-strxfrm2.c
+--- glibc-2.5.orig/string/tst-strxfrm2.c	1969-12-31 16:00:00.000000000 -0800
++++ glibc-2.5/string/tst-strxfrm2.c	2007-01-12 10:02:24.000000000 -0800
+@@ -0,0 +1,83 @@
++#include <locale.h>
++#include <stdio.h>
++#include <string.h>
++
++static int
++do_test (void)
++{
++  int res = 0;
++
++  char buf[20];
++  size_t l1 = strxfrm (NULL, "ab", 0);
++  size_t l2 = strxfrm (buf, "ab", 1);
++  size_t l3 = strxfrm (buf, "ab", sizeof (buf));
++  if (l3 < sizeof (buf) && strlen (buf) != l3)
++    {
++      puts ("C locale l3 test failed");
++      res = 1;
++    }
++
++  size_t l4 = strxfrm (buf, "ab", l1 + 1);
++  if (l4 < l1 + 1 && strlen (buf) != l4)
++    {
++      puts ("C locale l4 test failed");
++      res = 1;
++    }
++
++  buf[l1] = 'Z';
++  size_t l5 = strxfrm (buf, "ab", l1);
++  if (buf[l1] != 'Z')
++    {
++      puts ("C locale l5 test failed");
++      res = 1;
++    }
++
++  if (l1 != l2 || l1 != l3 || l1 != l4 || l1 != l5)
++    {
++      puts ("C locale retval test failed");
++      res = 1;
++    }
++
++  if (setlocale (LC_ALL, "de_DE.UTF-8") == NULL)
++    {
++      puts ("setlocale failed");
++      res = 1;
++    }
++  else
++    {
++      l1 = strxfrm (NULL, "ab", 0);
++      l2 = strxfrm (buf, "ab", 1);
++      l3 = strxfrm (buf, "ab", sizeof (buf));
++      if (l3 < sizeof (buf) && strlen (buf) != l3)
++	{
++	  puts ("UTF-8 locale l3 test failed");
++	  res = 1;
++	}
++
++      l4 = strxfrm (buf, "ab", l1 + 1);
++      if (l4 < l1 + 1 && strlen (buf) != l4)
++	{
++	  puts ("UTF-8 locale l4 test failed");
++	  res = 1;
++	}
++
++      buf[l1] = 'Z';
++      l5 = strxfrm (buf, "ab", l1);
++      if (buf[l1] != 'Z')
++	{
++	  puts ("UTF-8 locale l5 test failed");
++	  res = 1;
++	}
++
++      if (l1 != l2 || l1 != l3 || l1 != l4 || l1 != l5)
++	{
++	  puts ("UTF-8 locale retval test failed");
++	  res = 1;
++	}
++    }
++
++  return res;
++}
++
++#define TEST_FUNCTION do_test ()
++#include "../test-skeleton.c"
 diff -Naur glibc-2.5.orig/sunrpc/Makefile glibc-2.5/sunrpc/Makefile
 --- glibc-2.5.orig/sunrpc/Makefile	2005-06-26 11:24:19.000000000 -0700
 +++ glibc-2.5/sunrpc/Makefile	2007-01-12 07:09:57.000000000 -0800
@@ -46452,6 +47931,38 @@ diff -Naur glibc-2.5.orig/sysdeps/unix/sysv/linux/i386/sysdep.h glibc-2.5/sysdep
  #define POPARGS_6	_POPARGS_6
  #define _PUSHARGS_6	pushl %ebp; cfi_adjust_cfa_offset (4); \
  			cfi_rel_offset (ebp, 0); L(PUSHBP1): _PUSHARGS_5
+diff -Naur glibc-2.5.orig/sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S glibc-2.5/sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S
+--- glibc-2.5.orig/sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S	2006-01-06 19:51:11.000000000 -0800
++++ glibc-2.5/sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S	2007-01-12 09:55:39.000000000 -0800
+@@ -26,9 +26,7 @@
+ 
+ ENTRY(__makecontext)
+ 	/* Set up the first 7 args to the function in its registers */
+-	addi	r11,r3,_UC_REG_SPACE+12
+-	clrrwi  r11,r11,4
+-	stw	r11,_UC_REGS_PTR(r3)
++	lwz	r11,_UC_REGS_PTR(r3)
+ 	stw	r6,_UC_GREGS+(PT_R3*4)(r11)
+ 	stw	r7,_UC_GREGS+(PT_R4*4)(r11)
+ 	stw	r8,_UC_GREGS+(PT_R5*4)(r11)
+diff -Naur glibc-2.5.orig/sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext.S glibc-2.5/sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext.S
+--- glibc-2.5.orig/sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext.S	2005-12-29 13:03:38.000000000 -0800
++++ glibc-2.5/sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext.S	2007-01-12 09:55:39.000000000 -0800
+@@ -1,5 +1,5 @@
+ /* Jump to a new context.
+-   Copyright (C) 2002, 2004, 2005 Free Software Foundation, Inc.
++   Copyright (C) 2002, 2004, 2005, 2006 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -20,6 +20,7 @@
+ #include <sysdep.h>
+ #include <rtld-global-offsets.h>
+ #include <shlib-compat.h>
++#include <kernel-features.h>
+ 
+ #define __ASSEMBLY__
+ #include <asm/ptrace.h>
 diff -Naur glibc-2.5.orig/sysdeps/unix/sysv/linux/sparc/sparc64/pause.c glibc-2.5/sysdeps/unix/sysv/linux/sparc/sparc64/pause.c
 --- glibc-2.5.orig/sysdeps/unix/sysv/linux/sparc/sparc64/pause.c	2006-08-14 22:27:23.000000000 -0700
 +++ glibc-2.5/sysdeps/unix/sysv/linux/sparc/sparc64/pause.c	2006-10-02 11:40:39.000000000 -0700
