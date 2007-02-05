@@ -1,22 +1,13 @@
 Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2006-12-12
-Initial Package Version: 2.6.19.1
+Date: 2007-02-04
+Initial Package Version: 2.6.20
 Origin: Linux-MIPS
 Upstream Status: http://www.linux-mips.org/pub/linux/mips/kernel/v2.6/
 
-diff -Naur linux-2.6.19.1/arch/mips/Kconfig linux-mips-2.6.19.1/arch/mips/Kconfig
---- linux-2.6.19.1/arch/mips/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -468,8 +468,6 @@
- config MACH_VR41XX
- 	bool "NEC VR41XX-based machines"
- 	select SYS_HAS_CPU_VR41XX
--	select SYS_SUPPORTS_32BIT_KERNEL
--	select SYS_SUPPORTS_64BIT_KERNEL if EXPERIMENTAL
- 
- config PMC_YOSEMITE
- 	bool "PMC-Sierra Yosemite eval board"
-@@ -1142,7 +1140,7 @@
+diff -Naur linux-2.6.20/arch/mips/Kconfig linux-mips-2.6.20/arch/mips/Kconfig
+--- linux-2.6.20/arch/mips/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -1199,7 +1199,7 @@
  	select CPU_SUPPORTS_32BIT_KERNEL
  	select CPU_SUPPORTS_64BIT_KERNEL
  	help
@@ -25,21 +16,27 @@ diff -Naur linux-2.6.19.1/arch/mips/Kconfig linux-mips-2.6.19.1/arch/mips/Kconfi
  	  Only choose this option if you have one of these processors as a
  	  kernel built with this option will not run on any other type of
  	  processor or vice versa.
-@@ -1922,6 +1920,11 @@
- 	depends on MIPS32_COMPAT
- 	default y
+diff -Naur linux-2.6.20/arch/mips/Kconfig.debug linux-mips-2.6.20/arch/mips/Kconfig.debug
+--- linux-2.6.20/arch/mips/Kconfig.debug	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/Kconfig.debug	2007-02-04 12:22:45.000000000 -0800
+@@ -22,10 +22,10 @@
+ 	string "Default kernel command string"
+ 	default ""
+ 	help
+-          On some platforms, there is currently no way for the boot loader to
+-          pass arguments to the kernel. For these platforms, you can supply
+-          some command-line options at build time by entering them here.  In
+-          other cases you can specify kernel args so that you don't have
++	  On some platforms, there is currently no way for the boot loader to
++	  pass arguments to the kernel. For these platforms, you can supply
++	  some command-line options at build time by entering them here.  In
++	  other cases you can specify kernel args so that you don't have
+ 	  to set them up in board prom initialization routines.
  
-+config SYSVIPC_COMPAT
-+	bool
-+	depends on COMPAT && SYSVIPC
-+	default y
-+
- config MIPS32_O32
- 	bool "Kernel support for o32 binaries"
- 	depends on MIPS32_COMPAT
-diff -Naur linux-2.6.19.1/arch/mips/au1000/common/pci.c linux-mips-2.6.19.1/arch/mips/au1000/common/pci.c
---- linux-2.6.19.1/arch/mips/au1000/common/pci.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/au1000/common/pci.c	2006-12-11 15:38:26.000000000 -0800
+ config DEBUG_STACK_USAGE
+diff -Naur linux-2.6.20/arch/mips/au1000/common/pci.c linux-mips-2.6.20/arch/mips/au1000/common/pci.c
+--- linux-2.6.20/arch/mips/au1000/common/pci.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/au1000/common/pci.c	2007-02-04 12:22:45.000000000 -0800
 @@ -76,13 +76,17 @@
  	}
  
@@ -65,9 +62,9 @@ diff -Naur linux-2.6.19.1/arch/mips/au1000/common/pci.c linux-mips-2.6.19.1/arch
  	}
  #endif
  
-diff -Naur linux-2.6.19.1/arch/mips/au1000/common/setup.c linux-mips-2.6.19.1/arch/mips/au1000/common/setup.c
---- linux-2.6.19.1/arch/mips/au1000/common/setup.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/au1000/common/setup.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/au1000/common/setup.c linux-mips-2.6.20/arch/mips/au1000/common/setup.c
+--- linux-2.6.20/arch/mips/au1000/common/setup.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/au1000/common/setup.c	2007-02-04 12:22:45.000000000 -0800
 @@ -141,17 +141,20 @@
  /* This routine should be valid for all Au1x based boards */
  phys_t __fixup_bigphys_addr(phys_t phys_addr, phys_t size)
@@ -97,9 +94,9 @@ diff -Naur linux-2.6.19.1/arch/mips/au1000/common/setup.c linux-mips-2.6.19.1/ar
  	}
  #endif
  
-diff -Naur linux-2.6.19.1/arch/mips/au1000/pb1100/board_setup.c linux-mips-2.6.19.1/arch/mips/au1000/pb1100/board_setup.c
---- linux-2.6.19.1/arch/mips/au1000/pb1100/board_setup.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/au1000/pb1100/board_setup.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/au1000/pb1100/board_setup.c linux-mips-2.6.20/arch/mips/au1000/pb1100/board_setup.c
+--- linux-2.6.20/arch/mips/au1000/pb1100/board_setup.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/au1000/pb1100/board_setup.c	2007-02-04 12:22:45.000000000 -0800
 @@ -47,8 +47,7 @@
  
  void __init board_setup(void)
@@ -215,725 +212,64 @@ diff -Naur linux-2.6.19.1/arch/mips/au1000/pb1100/board_setup.c linux-mips-2.6.1
  		au_sync();
  	}
  }
-diff -Naur linux-2.6.19.1/arch/mips/configs/malta_defconfig linux-mips-2.6.19.1/arch/mips/configs/malta_defconfig
---- linux-2.6.19.1/arch/mips/configs/malta_defconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/configs/malta_defconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -644,7 +644,85 @@
- #
- # Memory Technology Devices (MTD)
- #
--# CONFIG_MTD is not set
-+CONFIG_MTD=y
-+# CONFIG_MTD_DEBUG is not set
-+# CONFIG_MTD_CONCAT is not set
-+CONFIG_MTD_PARTITIONS=y
-+# CONFIG_MTD_REDBOOT_PARTS is not set
-+# CONFIG_MTD_CMDLINE_PARTS is not set
-+
-+#
-+# User Modules And Translation Layers
-+#
-+CONFIG_MTD_CHAR=y
-+CONFIG_MTD_BLOCK=y
-+# CONFIG_FTL is not set
-+# CONFIG_NFTL is not set
-+# CONFIG_INFTL is not set
-+# CONFIG_RFD_FTL is not set
-+# CONFIG_SSFDC is not set
-+
-+#
-+# RAM/ROM/Flash chip drivers
-+#
-+CONFIG_MTD_CFI=y
-+# CONFIG_MTD_JEDECPROBE is not set
-+CONFIG_MTD_GEN_PROBE=y
-+# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-+CONFIG_MTD_MAP_BANK_WIDTH_1=y
-+CONFIG_MTD_MAP_BANK_WIDTH_2=y
-+CONFIG_MTD_MAP_BANK_WIDTH_4=y
-+# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
-+# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
-+# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
-+CONFIG_MTD_CFI_I1=y
-+CONFIG_MTD_CFI_I2=y
-+# CONFIG_MTD_CFI_I4 is not set
-+# CONFIG_MTD_CFI_I8 is not set
-+CONFIG_MTD_CFI_INTELEXT=y
-+CONFIG_MTD_CFI_AMDSTD=y
-+CONFIG_MTD_CFI_STAA=y
-+CONFIG_MTD_CFI_UTIL=y
-+# CONFIG_MTD_RAM is not set
-+# CONFIG_MTD_ROM is not set
-+# CONFIG_MTD_ABSENT is not set
-+# CONFIG_MTD_OBSOLETE_CHIPS is not set
-+
-+#
-+# Mapping drivers for chip access
-+#
-+# CONFIG_MTD_COMPLEX_MAPPINGS is not set
-+CONFIG_MTD_PHYSMAP=y
-+CONFIG_MTD_PHYSMAP_START=0x0
-+CONFIG_MTD_PHYSMAP_LEN=0x0
-+CONFIG_MTD_PHYSMAP_BANKWIDTH=0
-+# CONFIG_MTD_PLATRAM is not set
-+
-+#
-+# Self-contained MTD device drivers
-+#
-+# CONFIG_MTD_PMC551 is not set
-+# CONFIG_MTD_SLRAM is not set
-+# CONFIG_MTD_PHRAM is not set
-+# CONFIG_MTD_MTDRAM is not set
-+# CONFIG_MTD_BLOCK2MTD is not set
-+
-+#
-+# Disk-On-Chip Device Drivers
-+#
-+# CONFIG_MTD_DOC2000 is not set
-+# CONFIG_MTD_DOC2001 is not set
-+# CONFIG_MTD_DOC2001PLUS is not set
-+
-+#
-+# NAND Flash Device Drivers
-+#
-+# CONFIG_MTD_NAND is not set
-+
-+#
-+# OneNAND Flash Device Drivers
-+#
-+# CONFIG_MTD_ONENAND is not set
- 
- #
- # Parallel port support
-diff -Naur linux-2.6.19.1/arch/mips/kernel/linux32.c linux-mips-2.6.19.1/arch/mips/kernel/linux32.c
---- linux-2.6.19.1/arch/mips/kernel/linux32.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/kernel/linux32.c	2006-12-11 15:38:26.000000000 -0800
-@@ -382,531 +382,6 @@
- 	return ret;
+diff -Naur linux-2.6.20/arch/mips/au1000/pb1200/irqmap.c linux-mips-2.6.20/arch/mips/au1000/pb1200/irqmap.c
+--- linux-2.6.20/arch/mips/au1000/pb1200/irqmap.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/au1000/pb1200/irqmap.c	2007-02-04 12:22:45.000000000 -0800
+@@ -137,33 +137,20 @@
+ 	return;
  }
  
--struct msgbuf32 { s32 mtype; char mtext[1]; };
--
--struct ipc_perm32
+-static inline void pb1200_mask_and_ack_irq(unsigned int irq_nr)
 -{
--	key_t    	  key;
--        __compat_uid_t  uid;
--        __compat_gid_t  gid;
--        __compat_uid_t  cuid;
--        __compat_gid_t  cgid;
--        compat_mode_t	mode;
--        unsigned short  seq;
--};
+-	pb1200_disable_irq( irq_nr );
+-}
 -
--struct ipc64_perm32 {
--	key_t key;
--	__compat_uid_t uid;
--	__compat_gid_t gid;
--	__compat_uid_t cuid;
--	__compat_gid_t cgid;
--	compat_mode_t	mode;
--	unsigned short	seq;
--	unsigned short __pad1;
--	unsigned int __unused1;
--	unsigned int __unused2;
--};
--
--struct semid_ds32 {
--        struct ipc_perm32 sem_perm;               /* permissions .. see ipc.h */
--        compat_time_t   sem_otime;              /* last semop time */
--        compat_time_t   sem_ctime;              /* last change time */
--        u32 sem_base;              /* ptr to first semaphore in array */
--        u32 sem_pending;          /* pending operations to be processed */
--        u32 sem_pending_last;    /* last pending operation */
--        u32 undo;                  /* undo requests on this array */
--        unsigned short  sem_nsems;              /* no. of semaphores in array */
--};
--
--struct semid64_ds32 {
--	struct ipc64_perm32	sem_perm;
--	compat_time_t	sem_otime;
--	compat_time_t	sem_ctime;
--	unsigned int		sem_nsems;
--	unsigned int		__unused1;
--	unsigned int		__unused2;
--};
--
--struct msqid_ds32
+-static void pb1200_end_irq(unsigned int irq_nr)
 -{
--        struct ipc_perm32 msg_perm;
--        u32 msg_first;
--        u32 msg_last;
--        compat_time_t   msg_stime;
--        compat_time_t   msg_rtime;
--        compat_time_t   msg_ctime;
--        u32 wwait;
--        u32 rwait;
--        unsigned short msg_cbytes;
--        unsigned short msg_qnum;
--        unsigned short msg_qbytes;
--        compat_ipc_pid_t msg_lspid;
--        compat_ipc_pid_t msg_lrpid;
--};
--
--struct msqid64_ds32 {
--	struct ipc64_perm32 msg_perm;
--	compat_time_t msg_stime;
--	unsigned int __unused1;
--	compat_time_t msg_rtime;
--	unsigned int __unused2;
--	compat_time_t msg_ctime;
--	unsigned int __unused3;
--	unsigned int msg_cbytes;
--	unsigned int msg_qnum;
--	unsigned int msg_qbytes;
--	compat_pid_t msg_lspid;
--	compat_pid_t msg_lrpid;
--	unsigned int __unused4;
--	unsigned int __unused5;
--};
--
--struct shmid_ds32 {
--        struct ipc_perm32       shm_perm;
--        int                     shm_segsz;
--        compat_time_t		shm_atime;
--        compat_time_t		shm_dtime;
--        compat_time_t		shm_ctime;
--        compat_ipc_pid_t    shm_cpid;
--        compat_ipc_pid_t    shm_lpid;
--        unsigned short          shm_nattch;
--};
--
--struct shmid64_ds32 {
--	struct ipc64_perm32	shm_perm;
--	compat_size_t		shm_segsz;
--	compat_time_t		shm_atime;
--	compat_time_t		shm_dtime;
--	compat_time_t shm_ctime;
--	compat_pid_t shm_cpid;
--	compat_pid_t shm_lpid;
--	unsigned int shm_nattch;
--	unsigned int __unused1;
--	unsigned int __unused2;
--};
--
--struct ipc_kludge32 {
--	u32 msgp;
--	s32 msgtyp;
--};
--
--static int
--do_sys32_semctl(int first, int second, int third, void __user *uptr)
--{
--	union semun fourth;
--	u32 pad;
--	int err, err2;
--	struct semid64_ds s;
--	mm_segment_t old_fs;
--
--	if (!uptr)
--		return -EINVAL;
--	err = -EFAULT;
--	if (get_user (pad, (u32 __user *)uptr))
--		return err;
--	if ((third & ~IPC_64) == SETVAL)
--		fourth.val = (int)pad;
--	else
--		fourth.__pad = (void __user *)A(pad);
--	switch (third & ~IPC_64) {
--	case IPC_INFO:
--	case IPC_RMID:
--	case IPC_SET:
--	case SEM_INFO:
--	case GETVAL:
--	case GETPID:
--	case GETNCNT:
--	case GETZCNT:
--	case GETALL:
--	case SETVAL:
--	case SETALL:
--		err = sys_semctl (first, second, third, fourth);
--		break;
--
--	case IPC_STAT:
--	case SEM_STAT:
--		fourth.__pad = (struct semid64_ds __user *)&s;
--		old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		err = sys_semctl(first, second, third | IPC_64, fourth);
--		set_fs(old_fs);
--
--		if (third & IPC_64) {
--			struct semid64_ds32 __user *usp64 = (struct semid64_ds32 __user *) A(pad);
--
--			if (!access_ok(VERIFY_WRITE, usp64, sizeof(*usp64))) {
--				err = -EFAULT;
--				break;
--			}
--			err2 = __put_user(s.sem_perm.key, &usp64->sem_perm.key);
--			err2 |= __put_user(s.sem_perm.uid, &usp64->sem_perm.uid);
--			err2 |= __put_user(s.sem_perm.gid, &usp64->sem_perm.gid);
--			err2 |= __put_user(s.sem_perm.cuid, &usp64->sem_perm.cuid);
--			err2 |= __put_user(s.sem_perm.cgid, &usp64->sem_perm.cgid);
--			err2 |= __put_user(s.sem_perm.mode, &usp64->sem_perm.mode);
--			err2 |= __put_user(s.sem_perm.seq, &usp64->sem_perm.seq);
--			err2 |= __put_user(s.sem_otime, &usp64->sem_otime);
--			err2 |= __put_user(s.sem_ctime, &usp64->sem_ctime);
--			err2 |= __put_user(s.sem_nsems, &usp64->sem_nsems);
--		} else {
--			struct semid_ds32 __user *usp32 = (struct semid_ds32 __user *) A(pad);
--
--			if (!access_ok(VERIFY_WRITE, usp32, sizeof(*usp32))) {
--				err = -EFAULT;
--				break;
--			}
--			err2 = __put_user(s.sem_perm.key, &usp32->sem_perm.key);
--			err2 |= __put_user(s.sem_perm.uid, &usp32->sem_perm.uid);
--			err2 |= __put_user(s.sem_perm.gid, &usp32->sem_perm.gid);
--			err2 |= __put_user(s.sem_perm.cuid, &usp32->sem_perm.cuid);
--			err2 |= __put_user(s.sem_perm.cgid, &usp32->sem_perm.cgid);
--			err2 |= __put_user(s.sem_perm.mode, &usp32->sem_perm.mode);
--			err2 |= __put_user(s.sem_perm.seq, &usp32->sem_perm.seq);
--			err2 |= __put_user(s.sem_otime, &usp32->sem_otime);
--			err2 |= __put_user(s.sem_ctime, &usp32->sem_ctime);
--			err2 |= __put_user(s.sem_nsems, &usp32->sem_nsems);
--		}
--		if (err2)
--			err = -EFAULT;
--		break;
--
--	default:
--		err = - EINVAL;
--		break;
+-	if (!(irq_desc[irq_nr].status & (IRQ_DISABLED|IRQ_INPROGRESS))) {
+-		pb1200_enable_irq(irq_nr);
 -	}
--
--	return err;
 -}
 -
--static int
--do_sys32_msgsnd (int first, int second, int third, void __user *uptr)
--{
--	struct msgbuf32 __user *up = (struct msgbuf32 __user *)uptr;
--	struct msgbuf *p;
--	mm_segment_t old_fs;
--	int err;
--
--	if (second < 0)
--		return -EINVAL;
--	p = kmalloc (second + sizeof (struct msgbuf)
--				    + 4, GFP_USER);
--	if (!p)
--		return -ENOMEM;
--	err = get_user (p->mtype, &up->mtype);
--	if (err)
--		goto out;
--	err |= __copy_from_user (p->mtext, &up->mtext, second);
--	if (err)
--		goto out;
--	old_fs = get_fs ();
--	set_fs (KERNEL_DS);
--	err = sys_msgsnd (first, (struct msgbuf __user *)p, second, third);
--	set_fs (old_fs);
--out:
--	kfree (p);
--
--	return err;
--}
--
--static int
--do_sys32_msgrcv (int first, int second, int msgtyp, int third,
--		 int version, void __user *uptr)
--{
--	struct msgbuf32 __user *up;
--	struct msgbuf *p;
--	mm_segment_t old_fs;
--	int err;
--
--	if (!version) {
--		struct ipc_kludge32 __user *uipck = (struct ipc_kludge32 __user *)uptr;
--		struct ipc_kludge32 ipck;
--
--		err = -EINVAL;
--		if (!uptr)
--			goto out;
--		err = -EFAULT;
--		if (copy_from_user (&ipck, uipck, sizeof (struct ipc_kludge32)))
--			goto out;
--		uptr = (void __user *)AA(ipck.msgp);
--		msgtyp = ipck.msgtyp;
--	}
--
--	if (second < 0)
--		return -EINVAL;
--	err = -ENOMEM;
--	p = kmalloc (second + sizeof (struct msgbuf) + 4, GFP_USER);
--	if (!p)
--		goto out;
--	old_fs = get_fs ();
--	set_fs (KERNEL_DS);
--	err = sys_msgrcv (first, (struct msgbuf __user *)p, second + 4, msgtyp, third);
--	set_fs (old_fs);
--	if (err < 0)
--		goto free_then_out;
--	up = (struct msgbuf32 __user *)uptr;
--	if (put_user (p->mtype, &up->mtype) ||
--	    __copy_to_user (&up->mtext, p->mtext, err))
--		err = -EFAULT;
--free_then_out:
--	kfree (p);
--out:
--	return err;
--}
--
--static int
--do_sys32_msgctl (int first, int second, void __user *uptr)
--{
--	int err = -EINVAL, err2;
--	struct msqid64_ds m;
--	struct msqid_ds32 __user *up32 = (struct msqid_ds32 __user *)uptr;
--	struct msqid64_ds32 __user *up64 = (struct msqid64_ds32 __user *)uptr;
--	mm_segment_t old_fs;
--
--	switch (second & ~IPC_64) {
--	case IPC_INFO:
--	case IPC_RMID:
--	case MSG_INFO:
--		err = sys_msgctl (first, second, (struct msqid_ds __user *)uptr);
--		break;
--
--	case IPC_SET:
--		if (second & IPC_64) {
--			if (!access_ok(VERIFY_READ, up64, sizeof(*up64))) {
--				err = -EFAULT;
--				break;
--			}
--			err = __get_user(m.msg_perm.uid, &up64->msg_perm.uid);
--			err |= __get_user(m.msg_perm.gid, &up64->msg_perm.gid);
--			err |= __get_user(m.msg_perm.mode, &up64->msg_perm.mode);
--			err |= __get_user(m.msg_qbytes, &up64->msg_qbytes);
--		} else {
--			if (!access_ok(VERIFY_READ, up32, sizeof(*up32))) {
--				err = -EFAULT;
--				break;
--			}
--			err = __get_user(m.msg_perm.uid, &up32->msg_perm.uid);
--			err |= __get_user(m.msg_perm.gid, &up32->msg_perm.gid);
--			err |= __get_user(m.msg_perm.mode, &up32->msg_perm.mode);
--			err |= __get_user(m.msg_qbytes, &up32->msg_qbytes);
--		}
--		if (err)
--			break;
--		old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		err = sys_msgctl(first, second | IPC_64, (struct msqid_ds __user *)&m);
--		set_fs(old_fs);
--		break;
--
--	case IPC_STAT:
--	case MSG_STAT:
--		old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		err = sys_msgctl(first, second | IPC_64, (struct msqid_ds __user *)&m);
--		set_fs(old_fs);
--		if (second & IPC_64) {
--			if (!access_ok(VERIFY_WRITE, up64, sizeof(*up64))) {
--				err = -EFAULT;
--				break;
--			}
--			err2 = __put_user(m.msg_perm.key, &up64->msg_perm.key);
--			err2 |= __put_user(m.msg_perm.uid, &up64->msg_perm.uid);
--			err2 |= __put_user(m.msg_perm.gid, &up64->msg_perm.gid);
--			err2 |= __put_user(m.msg_perm.cuid, &up64->msg_perm.cuid);
--			err2 |= __put_user(m.msg_perm.cgid, &up64->msg_perm.cgid);
--			err2 |= __put_user(m.msg_perm.mode, &up64->msg_perm.mode);
--			err2 |= __put_user(m.msg_perm.seq, &up64->msg_perm.seq);
--			err2 |= __put_user(m.msg_stime, &up64->msg_stime);
--			err2 |= __put_user(m.msg_rtime, &up64->msg_rtime);
--			err2 |= __put_user(m.msg_ctime, &up64->msg_ctime);
--			err2 |= __put_user(m.msg_cbytes, &up64->msg_cbytes);
--			err2 |= __put_user(m.msg_qnum, &up64->msg_qnum);
--			err2 |= __put_user(m.msg_qbytes, &up64->msg_qbytes);
--			err2 |= __put_user(m.msg_lspid, &up64->msg_lspid);
--			err2 |= __put_user(m.msg_lrpid, &up64->msg_lrpid);
--			if (err2)
--				err = -EFAULT;
--		} else {
--			if (!access_ok(VERIFY_WRITE, up32, sizeof(*up32))) {
--				err = -EFAULT;
--				break;
--			}
--			err2 = __put_user(m.msg_perm.key, &up32->msg_perm.key);
--			err2 |= __put_user(m.msg_perm.uid, &up32->msg_perm.uid);
--			err2 |= __put_user(m.msg_perm.gid, &up32->msg_perm.gid);
--			err2 |= __put_user(m.msg_perm.cuid, &up32->msg_perm.cuid);
--			err2 |= __put_user(m.msg_perm.cgid, &up32->msg_perm.cgid);
--			err2 |= __put_user(m.msg_perm.mode, &up32->msg_perm.mode);
--			err2 |= __put_user(m.msg_perm.seq, &up32->msg_perm.seq);
--			err2 |= __put_user(m.msg_stime, &up32->msg_stime);
--			err2 |= __put_user(m.msg_rtime, &up32->msg_rtime);
--			err2 |= __put_user(m.msg_ctime, &up32->msg_ctime);
--			err2 |= __put_user(m.msg_cbytes, &up32->msg_cbytes);
--			err2 |= __put_user(m.msg_qnum, &up32->msg_qnum);
--			err2 |= __put_user(m.msg_qbytes, &up32->msg_qbytes);
--			err2 |= __put_user(m.msg_lspid, &up32->msg_lspid);
--			err2 |= __put_user(m.msg_lrpid, &up32->msg_lrpid);
--			if (err2)
--				err = -EFAULT;
--		}
--		break;
--	}
--
--	return err;
--}
--
--static int
--do_sys32_shmat (int first, int second, int third, int version, void __user *uptr)
--{
--	unsigned long raddr;
--	u32 __user *uaddr = (u32 __user *)A((u32)third);
--	int err = -EINVAL;
--
--	if (version == 1)
--		return err;
--	err = do_shmat (first, uptr, second, &raddr);
--	if (err)
--		return err;
--	err = put_user (raddr, uaddr);
--	return err;
--}
--
--struct shm_info32 {
--	int used_ids;
--	u32 shm_tot, shm_rss, shm_swp;
--	u32 swap_attempts, swap_successes;
--};
--
--static int
--do_sys32_shmctl (int first, int second, void __user *uptr)
--{
--	struct shmid64_ds32 __user *up64 = (struct shmid64_ds32 __user *)uptr;
--	struct shmid_ds32 __user *up32 = (struct shmid_ds32 __user *)uptr;
--	struct shm_info32 __user *uip = (struct shm_info32 __user *)uptr;
--	int err = -EFAULT, err2;
--	struct shmid64_ds s64;
--	mm_segment_t old_fs;
--	struct shm_info si;
--	struct shmid_ds s;
--
--	switch (second & ~IPC_64) {
--	case IPC_INFO:
--		second = IPC_INFO; /* So that we don't have to translate it */
--	case IPC_RMID:
--	case SHM_LOCK:
--	case SHM_UNLOCK:
--		err = sys_shmctl(first, second, (struct shmid_ds __user *)uptr);
--		break;
--	case IPC_SET:
--		if (second & IPC_64) {
--			err = get_user(s.shm_perm.uid, &up64->shm_perm.uid);
--			err |= get_user(s.shm_perm.gid, &up64->shm_perm.gid);
--			err |= get_user(s.shm_perm.mode, &up64->shm_perm.mode);
--		} else {
--			err = get_user(s.shm_perm.uid, &up32->shm_perm.uid);
--			err |= get_user(s.shm_perm.gid, &up32->shm_perm.gid);
--			err |= get_user(s.shm_perm.mode, &up32->shm_perm.mode);
--		}
--		if (err)
--			break;
--		old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		err = sys_shmctl(first, second & ~IPC_64, (struct shmid_ds __user *)&s);
--		set_fs(old_fs);
--		break;
--
--	case IPC_STAT:
--	case SHM_STAT:
--		old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		err = sys_shmctl(first, second | IPC_64, (void __user *) &s64);
--		set_fs(old_fs);
--		if (err < 0)
--			break;
--		if (second & IPC_64) {
--			if (!access_ok(VERIFY_WRITE, up64, sizeof(*up64))) {
--				err = -EFAULT;
--				break;
--			}
--			err2 = __put_user(s64.shm_perm.key, &up64->shm_perm.key);
--			err2 |= __put_user(s64.shm_perm.uid, &up64->shm_perm.uid);
--			err2 |= __put_user(s64.shm_perm.gid, &up64->shm_perm.gid);
--			err2 |= __put_user(s64.shm_perm.cuid, &up64->shm_perm.cuid);
--			err2 |= __put_user(s64.shm_perm.cgid, &up64->shm_perm.cgid);
--			err2 |= __put_user(s64.shm_perm.mode, &up64->shm_perm.mode);
--			err2 |= __put_user(s64.shm_perm.seq, &up64->shm_perm.seq);
--			err2 |= __put_user(s64.shm_atime, &up64->shm_atime);
--			err2 |= __put_user(s64.shm_dtime, &up64->shm_dtime);
--			err2 |= __put_user(s64.shm_ctime, &up64->shm_ctime);
--			err2 |= __put_user(s64.shm_segsz, &up64->shm_segsz);
--			err2 |= __put_user(s64.shm_nattch, &up64->shm_nattch);
--			err2 |= __put_user(s64.shm_cpid, &up64->shm_cpid);
--			err2 |= __put_user(s64.shm_lpid, &up64->shm_lpid);
--		} else {
--			if (!access_ok(VERIFY_WRITE, up32, sizeof(*up32))) {
--				err = -EFAULT;
--				break;
--			}
--			err2 = __put_user(s64.shm_perm.key, &up32->shm_perm.key);
--			err2 |= __put_user(s64.shm_perm.uid, &up32->shm_perm.uid);
--			err2 |= __put_user(s64.shm_perm.gid, &up32->shm_perm.gid);
--			err2 |= __put_user(s64.shm_perm.cuid, &up32->shm_perm.cuid);
--			err2 |= __put_user(s64.shm_perm.cgid, &up32->shm_perm.cgid);
--			err2 |= __put_user(s64.shm_perm.mode, &up32->shm_perm.mode);
--			err2 |= __put_user(s64.shm_perm.seq, &up32->shm_perm.seq);
--			err2 |= __put_user(s64.shm_atime, &up32->shm_atime);
--			err2 |= __put_user(s64.shm_dtime, &up32->shm_dtime);
--			err2 |= __put_user(s64.shm_ctime, &up32->shm_ctime);
--			err2 |= __put_user(s64.shm_segsz, &up32->shm_segsz);
--			err2 |= __put_user(s64.shm_nattch, &up32->shm_nattch);
--			err2 |= __put_user(s64.shm_cpid, &up32->shm_cpid);
--			err2 |= __put_user(s64.shm_lpid, &up32->shm_lpid);
--		}
--		if (err2)
--			err = -EFAULT;
--		break;
--
--	case SHM_INFO:
--		old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		err = sys_shmctl(first, second, (void __user *)&si);
--		set_fs(old_fs);
--		if (err < 0)
--			break;
--		err2 = put_user(si.used_ids, &uip->used_ids);
--		err2 |= __put_user(si.shm_tot, &uip->shm_tot);
--		err2 |= __put_user(si.shm_rss, &uip->shm_rss);
--		err2 |= __put_user(si.shm_swp, &uip->shm_swp);
--		err2 |= __put_user(si.swap_attempts, &uip->swap_attempts);
--		err2 |= __put_user (si.swap_successes, &uip->swap_successes);
--		if (err2)
--			err = -EFAULT;
--		break;
--
--	default:
--		err = -EINVAL;
--		break;
--	}
--
--	return err;
--}
--
--static int sys32_semtimedop(int semid, struct sembuf __user *tsems, int nsems,
--                            const struct compat_timespec __user *timeout32)
--{
--	struct compat_timespec t32;
--	struct timespec __user *t64 = compat_alloc_user_space(sizeof(*t64));
--
--	if (copy_from_user(&t32, timeout32, sizeof(t32)))
--		return -EFAULT;
--
--	if (put_user(t32.tv_sec, &t64->tv_sec) ||
--	    put_user(t32.tv_nsec, &t64->tv_nsec))
--		return -EFAULT;
--
--	return sys_semtimedop(semid, tsems, nsems, t64);
--}
--
- asmlinkage long
- sys32_ipc (u32 call, int first, int second, int third, u32 ptr, u32 fifth)
+ static struct irq_chip external_irq_type =
  {
-@@ -918,48 +393,43 @@
- 	switch (call) {
- 	case SEMOP:
- 		/* struct sembuf is the same on 32 and 64bit :)) */
--		err = sys_semtimedop (first, (struct sembuf __user *)AA(ptr), second,
--		                      NULL);
-+		err = sys_semtimedop(first, compat_ptr(ptr), second, NULL);
- 		break;
- 	case SEMTIMEDOP:
--		err = sys32_semtimedop (first, (struct sembuf __user *)AA(ptr), second,
--		                      (const struct compat_timespec __user *)AA(fifth));
-+		err = compat_sys_semtimedop(first, compat_ptr(ptr), second,
-+					    compat_ptr(fifth));
- 		break;
- 	case SEMGET:
--		err = sys_semget (first, second, third);
-+		err = sys_semget(first, second, third);
- 		break;
- 	case SEMCTL:
--		err = do_sys32_semctl (first, second, third,
--				       (void __user *)AA(ptr));
-+		err = compat_sys_semctl(first, second, third, compat_ptr(ptr));
- 		break;
--
- 	case MSGSND:
--		err = do_sys32_msgsnd (first, second, third,
--				       (void __user *)AA(ptr));
-+		err = compat_sys_msgsnd(first, second, third, compat_ptr(ptr));
- 		break;
- 	case MSGRCV:
--		err = do_sys32_msgrcv (first, second, fifth, third,
--				       version, (void __user *)AA(ptr));
-+		err = compat_sys_msgrcv(first, second, fifth, third,
-+					version, compat_ptr(ptr));
- 		break;
- 	case MSGGET:
--		err = sys_msgget ((key_t) first, second);
-+		err = sys_msgget((key_t) first, second);
- 		break;
- 	case MSGCTL:
--		err = do_sys32_msgctl (first, second, (void __user *)AA(ptr));
-+		err = compat_sys_msgctl(first, second, compat_ptr(ptr));
- 		break;
--
- 	case SHMAT:
--		err = do_sys32_shmat (first, second, third,
--				      version, (void __user *)AA(ptr));
-+		err = compat_sys_shmat(first, second, third, version,
-+				       compat_ptr(ptr));
- 		break;
- 	case SHMDT:
--		err = sys_shmdt ((char __user *)A(ptr));
-+		err = sys_shmdt(compat_ptr(ptr));
- 		break;
- 	case SHMGET:
--		err = sys_shmget (first, (unsigned)second, third);
-+		err = sys_shmget(first, (unsigned)second, third);
- 		break;
- 	case SHMCTL:
--		err = do_sys32_shmctl (first, second, (void __user *)AA(ptr));
-+		err = compat_sys_shmctl(first, second, compat_ptr(ptr));
- 		break;
- 	default:
- 		err = -EINVAL;
-@@ -969,18 +439,16 @@
- 	return err;
- }
+ #ifdef CONFIG_MIPS_PB1200
+-	"Pb1200 Ext",
++	.name = "Pb1200 Ext",
+ #endif
+ #ifdef CONFIG_MIPS_DB1200
+-	"Db1200 Ext",
++	.name = "Db1200 Ext",
+ #endif
+-	pb1200_startup_irq,
+-	pb1200_shutdown_irq,
+-	pb1200_enable_irq,
+-	pb1200_disable_irq,
+-	pb1200_mask_and_ack_irq,
+-	pb1200_end_irq,
+-	NULL
++	.startup  = pb1200_startup_irq,
++	.shutdown = pb1200_shutdown_irq,
++	.ack      = pb1200_disable_irq,
++	.mask     = pb1200_disable_irq,
++	.mask_ack = pb1200_disable_irq,
++	.unmask   = pb1200_enable_irq,
+ };
  
--asmlinkage long sys32_shmat(int shmid, char __user *shmaddr,
--			  int shmflg, int32_t __user *addr)
-+#ifdef CONFIG_MIPS32_N32
-+asmlinkage long sysn32_semctl(int semid, int semnum, int cmd, union semun arg)
- {
--	unsigned long raddr;
--	int err;
--
--	err = do_shmat(shmid, shmaddr, shmflg, &raddr);
--	if (err)
--		return err;
--
--	return put_user(raddr, addr);
-+	/* compat_sys_semctl expects a pointer to union semun */
-+	u32 __user *uptr = compat_alloc_user_space(sizeof(u32));
-+	if (put_user(ptr_to_compat(arg.__pad), uptr))
-+		return -EFAULT;
-+	return compat_sys_semctl(semid, semnum, cmd, uptr);
- }
-+#endif
+ void _board_init_irq(void)
+@@ -172,7 +159,8 @@
  
- struct sysctl_args32
- {
-diff -Naur linux-2.6.19.1/arch/mips/kernel/mips-mt.c linux-mips-2.6.19.1/arch/mips/kernel/mips-mt.c
---- linux-2.6.19.1/arch/mips/kernel/mips-mt.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/kernel/mips-mt.c	2006-12-11 15:38:26.000000000 -0800
+ 	for (irq_nr = PB1200_INT_BEGIN; irq_nr <= PB1200_INT_END; irq_nr++)
+ 	{
+-		irq_desc[irq_nr].chip = &external_irq_type;
++		set_irq_chip_and_handler(irq_nr, &external_irq_type,
++					 handle_level_irq);
+ 		pb1200_disable_irq(irq_nr);
+ 	}
+ 
+diff -Naur linux-2.6.20/arch/mips/kernel/mips-mt.c linux-mips-2.6.20/arch/mips/kernel/mips-mt.c
+--- linux-2.6.20/arch/mips/kernel/mips-mt.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/kernel/mips-mt.c	2007-02-04 12:22:45.000000000 -0800
 @@ -96,6 +96,10 @@
  		goto out_unlock;
  	}
@@ -957,9 +293,9 @@ diff -Naur linux-2.6.19.1/arch/mips/kernel/mips-mt.c linux-mips-2.6.19.1/arch/mi
  
  	cpus_and(mask, p->thread.user_cpus_allowed, cpu_possible_map);
  
-diff -Naur linux-2.6.19.1/arch/mips/kernel/ptrace.c linux-mips-2.6.19.1/arch/mips/kernel/ptrace.c
---- linux-2.6.19.1/arch/mips/kernel/ptrace.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/kernel/ptrace.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/kernel/ptrace.c linux-mips-2.6.20/arch/mips/kernel/ptrace.c
+--- linux-2.6.20/arch/mips/kernel/ptrace.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/kernel/ptrace.c	2007-02-04 12:22:45.000000000 -0800
 @@ -20,12 +20,12 @@
  #include <linux/mm.h>
  #include <linux/errno.h>
@@ -1011,112 +347,45 @@ diff -Naur linux-2.6.19.1/arch/mips/kernel/ptrace.c linux-mips-2.6.19.1/arch/mip
 +		                    regs->regs[4], regs->regs[5],
 +		                    regs->regs[6], regs->regs[7]);
  }
-diff -Naur linux-2.6.19.1/arch/mips/kernel/reset.c linux-mips-2.6.19.1/arch/mips/kernel/reset.c
---- linux-2.6.19.1/arch/mips/kernel/reset.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/kernel/reset.c	2006-12-11 15:38:26.000000000 -0800
-@@ -23,6 +23,8 @@
- void (*_machine_halt)(void);
- void (*pm_power_off)(void);
- 
-+EXPORT_SYMBOL(pm_power_off);
-+
- void machine_restart(char *command)
- {
- 	if (_machine_restart)
-diff -Naur linux-2.6.19.1/arch/mips/kernel/scall64-n32.S linux-mips-2.6.19.1/arch/mips/kernel/scall64-n32.S
---- linux-2.6.19.1/arch/mips/kernel/scall64-n32.S	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/kernel/scall64-n32.S	2006-12-11 15:38:26.000000000 -0800
-@@ -149,8 +149,8 @@
- 	PTR	sys_mincore
- 	PTR	sys_madvise
- 	PTR	sys_shmget
--	PTR	sys32_shmat
--	PTR	sys_shmctl			/* 6030 */
-+	PTR	sys_shmat
-+	PTR	compat_sys_shmctl			/* 6030 */
- 	PTR	sys_dup
- 	PTR	sys_dup2
- 	PTR	sys_pause
-@@ -184,12 +184,12 @@
- 	PTR	sys32_newuname
- 	PTR	sys_semget
- 	PTR	sys_semop
--	PTR	sys_semctl
-+	PTR	sysn32_semctl
- 	PTR	sys_shmdt			/* 6065 */
- 	PTR	sys_msgget
--	PTR	sys_msgsnd
--	PTR	sys_msgrcv
--	PTR	sys_msgctl
-+	PTR	compat_sys_msgsnd
-+	PTR	compat_sys_msgrcv
-+	PTR	compat_sys_msgctl
- 	PTR	compat_sys_fcntl		/* 6070 */
- 	PTR	sys_flock
- 	PTR	sys_fsync
-@@ -335,7 +335,7 @@
- 	PTR	compat_sys_fcntl64
- 	PTR	sys_set_tid_address
- 	PTR	sys_restart_syscall
--	PTR	sys_semtimedop			/* 6215 */
-+	PTR	compat_sys_semtimedop			/* 6215 */
- 	PTR	sys_fadvise64_64
- 	PTR	compat_sys_statfs64
- 	PTR	compat_sys_fstatfs64
-diff -Naur linux-2.6.19.1/arch/mips/kernel/vmlinux.lds.S linux-mips-2.6.19.1/arch/mips/kernel/vmlinux.lds.S
---- linux-2.6.19.1/arch/mips/kernel/vmlinux.lds.S	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/kernel/vmlinux.lds.S	2006-12-11 15:38:26.000000000 -0800
-@@ -112,6 +112,7 @@
-     /* .exit.text is discarded at runtime, not link time, to deal with
-      references from .rodata */
-   .exit.text : { *(.exit.text) }
-+  .exit.data : { *(.exit.data) }
-   . = ALIGN(_PAGE_SIZE);
-   __initramfs_start = .;
-   .init.ramfs : { *(.init.ramfs) }
-@@ -139,7 +140,6 @@
- 
-   /* Sections to be discarded */
-   /DISCARD/ : {
--        *(.exit.data)
-         *(.exitcall.exit)
- 
- 	/* ABI crap starts here */
-diff -Naur linux-2.6.19.1/arch/mips/lib/Makefile linux-mips-2.6.19.1/arch/mips/lib/Makefile
---- linux-2.6.19.1/arch/mips/lib/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/lib/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/kernel/scall64-n32.S linux-mips-2.6.20/arch/mips/kernel/scall64-n32.S
+--- linux-2.6.20/arch/mips/kernel/scall64-n32.S	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/kernel/scall64-n32.S	2007-02-04 12:22:45.000000000 -0800
+@@ -384,7 +384,7 @@
+ 	PTR	sys_readlinkat
+ 	PTR	sys_fchmodat
+ 	PTR	sys_faccessat
+-	PTR	sys_pselect6
++	PTR	compat_sys_pselect6
+ 	PTR	sys_ppoll			/* 6265 */
+ 	PTR	sys_unshare
+ 	PTR	sys_splice
+diff -Naur linux-2.6.20/arch/mips/kernel/scall64-o32.S linux-mips-2.6.20/arch/mips/kernel/scall64-o32.S
+--- linux-2.6.20/arch/mips/kernel/scall64-o32.S	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/kernel/scall64-o32.S	2007-02-04 12:22:45.000000000 -0800
+@@ -506,7 +506,7 @@
+ 	PTR	sys_readlinkat
+ 	PTR	sys_fchmodat
+ 	PTR	sys_faccessat			/* 4300 */
+-	PTR	sys_pselect6
++	PTR	compat_sys_pselect6
+ 	PTR	sys_ppoll
+ 	PTR	sys_unshare
+ 	PTR	sys_splice
+diff -Naur linux-2.6.20/arch/mips/lib/Makefile linux-mips-2.6.20/arch/mips/lib/Makefile
+--- linux-2.6.20/arch/mips/lib/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/lib/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -5,8 +5,6 @@
- lib-y	+= csum_partial_copy.o memcpy.o promlib.o strlen_user.o strncpy_user.o \
- 	   strnlen_user.o uncached.o
+ lib-y	+= csum_partial.o memcpy.o promlib.o \
+ 	   strlen_user.o strncpy_user.o strnlen_user.o uncached.o
  
 -obj-y	+= iomap.o
 -
  # libgcc-style stuff needed in the kernel
  lib-y += ashldi3.o ashrdi3.o lshrdi3.o
  
-diff -Naur linux-2.6.19.1/arch/mips/lib/csum_partial_copy.c linux-mips-2.6.19.1/arch/mips/lib/csum_partial_copy.c
---- linux-2.6.19.1/arch/mips/lib/csum_partial_copy.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/lib/csum_partial_copy.c	2006-12-11 15:38:26.000000000 -0800
-@@ -7,6 +7,7 @@
-  * Copyright (C) 1998, 1999 Ralf Baechle
-  */
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/types.h>
- #include <asm/byteorder.h>
- #include <asm/string.h>
-@@ -29,6 +30,8 @@
- 	return sum;
- }
- 
-+EXPORT_SYMBOL(csum_partial_copy_nocheck);
-+
- /*
-  * Copy from userspace and compute checksum.  If we catch an exception
-  * then zero the rest of the buffer.
-diff -Naur linux-2.6.19.1/arch/mips/lib/iomap.c linux-mips-2.6.19.1/arch/mips/lib/iomap.c
---- linux-2.6.19.1/arch/mips/lib/iomap.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/lib/iomap.c linux-mips-2.6.20/arch/mips/lib/iomap.c
+--- linux-2.6.20/arch/mips/lib/iomap.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
 @@ -1,78 +0,0 @@
 -/*
 - *  iomap.c, Memory Mapped I/O routines for MIPS architecture.
@@ -1196,9 +465,9 @@ diff -Naur linux-2.6.19.1/arch/mips/lib/iomap.c linux-mips-2.6.19.1/arch/mips/li
 -}
 -EXPORT_SYMBOL(pci_iomap);
 -EXPORT_SYMBOL(pci_iounmap);
-diff -Naur linux-2.6.19.1/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.19.1/arch/mips/lib-32/dump_tlb.c
---- linux-2.6.19.1/arch/mips/lib-32/dump_tlb.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/lib-32/dump_tlb.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.20/arch/mips/lib-32/dump_tlb.c
+--- linux-2.6.20/arch/mips/lib-32/dump_tlb.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/lib-32/dump_tlb.c	2007-02-04 12:22:45.000000000 -0800
 @@ -40,8 +40,6 @@
  		return "256Mb";
  #endif
@@ -1208,9 +477,9 @@ diff -Naur linux-2.6.19.1/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.19.1/arch/m
  }
  
  #define BARRIER()					\
-diff -Naur linux-2.6.19.1/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.19.1/arch/mips/lib-64/dump_tlb.c
---- linux-2.6.19.1/arch/mips/lib-64/dump_tlb.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/lib-64/dump_tlb.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.20/arch/mips/lib-64/dump_tlb.c
+--- linux-2.6.20/arch/mips/lib-64/dump_tlb.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/lib-64/dump_tlb.c	2007-02-04 12:22:45.000000000 -0800
 @@ -31,8 +31,6 @@
  	case PM_256M:	return "256Mb";
  #endif
@@ -1220,128 +489,9 @@ diff -Naur linux-2.6.19.1/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.19.1/arch/m
  }
  
  #define BARRIER()					\
-diff -Naur linux-2.6.19.1/arch/mips/mips-boards/malta/Makefile linux-mips-2.6.19.1/arch/mips/mips-boards/malta/Makefile
---- linux-2.6.19.1/arch/mips/mips-boards/malta/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/mips-boards/malta/Makefile	2006-12-11 15:38:26.000000000 -0800
-@@ -19,5 +19,5 @@
- # under Linux.
- #
- 
--obj-y := malta_int.o malta_setup.o
-+obj-y := malta_int.o malta_mtd.o malta_setup.o
- obj-$(CONFIG_SMP) += malta_smp.o
-diff -Naur linux-2.6.19.1/arch/mips/mips-boards/malta/malta_setup.c linux-mips-2.6.19.1/arch/mips/mips-boards/malta/malta_setup.c
---- linux-2.6.19.1/arch/mips/mips-boards/malta/malta_setup.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/mips-boards/malta/malta_setup.c	2006-12-11 15:38:26.000000000 -0800
-@@ -21,13 +21,6 @@
- #include <linux/pci.h>
- #include <linux/screen_info.h>
- 
--#ifdef CONFIG_MTD
--#include <linux/mtd/partitions.h>
--#include <linux/mtd/physmap.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#endif
--
- #include <asm/cpu.h>
- #include <asm/bootinfo.h>
- #include <asm/irq.h>
-@@ -58,30 +51,6 @@
- 	{ .name = "dma2", .start = 0xc0, .end = 0xdf, .flags = IORESOURCE_BUSY },
- };
- 
--#ifdef CONFIG_MTD
--static struct mtd_partition malta_mtd_partitions[] = {
--	{
--		.name =		"YAMON",
--		.offset =	0x0,
--		.size =		0x100000,
--		.mask_flags =	MTD_WRITEABLE
--	},
--	{
--		.name =		"User FS",
--		.offset = 	0x100000,
--		.size =		0x2e0000
--	},
--	{
--		.name =		"Board Config",
--		.offset =	0x3e0000,
--		.size =		0x020000,
--		.mask_flags =	MTD_WRITEABLE
--	}
--};
--
--#define number_partitions	(sizeof(malta_mtd_partitions)/sizeof(struct mtd_partition))
--#endif
--
- const char *get_system_type(void)
- {
- 	return "MIPS Malta";
-@@ -211,14 +180,6 @@
- #endif
- #endif
- 
--#ifdef CONFIG_MTD
--	/*
--	 * Support for MTD on Malta. Use the generic physmap driver
--	 */
--	physmap_configure(0x1e000000, 0x400000, 4, NULL);
--	physmap_set_partitions(malta_mtd_partitions, number_partitions);
--#endif
--
- 	mips_reboot_setup();
- 
- 	board_time_init = mips_time_init;
-diff -Naur linux-2.6.19.1/arch/mips/mm/cache.c linux-mips-2.6.19.1/arch/mips/mm/cache.c
---- linux-2.6.19.1/arch/mips/mm/cache.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/mm/cache.c	2006-12-11 15:38:26.000000000 -0800
-@@ -32,6 +32,7 @@
- void (*flush_data_cache_page)(unsigned long addr);
- void (*flush_icache_all)(void);
- 
-+EXPORT_SYMBOL_GPL(local_flush_data_cache_page);
- EXPORT_SYMBOL(flush_data_cache_page);
- 
- #ifdef CONFIG_DMA_NONCOHERENT
-diff -Naur linux-2.6.19.1/arch/mips/mm/init.c linux-mips-2.6.19.1/arch/mips/mm/init.c
---- linux-2.6.19.1/arch/mips/mm/init.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/mm/init.c	2006-12-11 15:38:26.000000000 -0800
-@@ -203,6 +203,31 @@
- 	preempt_check_resched();
- }
- 
-+void copy_user_highpage(struct page *to, struct page *from,
-+	unsigned long vaddr, struct vm_area_struct *vma)
-+{
-+	void *vfrom, *vto;
-+
-+	vto = kmap_atomic(to, KM_USER1);
-+	if (cpu_has_dc_aliases) {
-+		vfrom = kmap_coherent(from, vaddr);
-+		copy_page(vto, vfrom);
-+		kunmap_coherent(from);
-+	} else {
-+		vfrom = kmap_atomic(from, KM_USER0);
-+		copy_page(vto, vfrom);
-+		kunmap_atomic(vfrom, KM_USER0);
-+	}
-+	if (((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc) ||
-+	    pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
-+		flush_data_cache_page((unsigned long)vto);
-+	kunmap_atomic(vto, KM_USER1);
-+	/* Make sure this page is cleared on other CPU's too before using it */
-+	smp_wmb();
-+}
-+
-+EXPORT_SYMBOL(copy_user_highpage);
-+
- void copy_to_user_page(struct vm_area_struct *vma,
- 	struct page *page, unsigned long vaddr, void *dst, const void *src,
- 	unsigned long len)
-diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/Makefile linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/Makefile
---- linux-2.6.19.1/arch/mips/momentum/jaguar_atx/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/Makefile linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/Makefile
+--- linux-2.6.20/arch/mips/momentum/jaguar_atx/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -6,7 +6,7 @@
  # unless it's something special (ie not a .c file).
  #
@@ -1351,9 +501,9 @@ diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/Makefile linux-mips-2.6.
  
  obj-$(CONFIG_SERIAL_8250_CONSOLE) += ja-console.o
  obj-$(CONFIG_REMOTE_DEBUG) += dbg_io.o
-diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h
---- linux-2.6.19.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h
+--- linux-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2007-02-04 12:22:45.000000000 -0800
 @@ -46,7 +46,9 @@
  
  extern unsigned long ja_fpga_base;
@@ -1366,9 +516,9 @@ diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h linux-
 +#define JAGUAR_FPGA_READ(reg) readb(__FPGA_REG_TO_ADDR(reg))
  
  #endif
-diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/platform.c linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/platform.c
---- linux-2.6.19.1/arch/mips/momentum/jaguar_atx/platform.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/platform.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/platform.c linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/platform.c
+--- linux-2.6.20/arch/mips/momentum/jaguar_atx/platform.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/platform.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,235 @@
 +#include <linux/delay.h>
 +#include <linux/if_ether.h>
@@ -1605,9 +755,9 @@ diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/platform.c linux-mips-2.
 +device_initcall(mv643xx_eth_add_pds);
 +
 +#endif /* defined(CONFIG_MV643XX_ETH) || defined(CONFIG_MV643XX_ETH_MODULE) */
-diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/prom.c linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/prom.c
---- linux-2.6.19.1/arch/mips/momentum/jaguar_atx/prom.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/momentum/jaguar_atx/prom.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/prom.c linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/prom.c
+--- linux-2.6.20/arch/mips/momentum/jaguar_atx/prom.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/prom.c	2007-02-04 12:22:45.000000000 -0800
 @@ -39,56 +39,6 @@
  	return "Momentum Jaguar-ATX";
  }
@@ -1677,9 +827,21 @@ diff -Naur linux-2.6.19.1/arch/mips/momentum/jaguar_atx/prom.c linux-mips-2.6.19
  }
  
  unsigned long __init prom_free_prom_memory(void)
-diff -Naur linux-2.6.19.1/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.19.1/arch/mips/pci/fixup-tb0219.c
---- linux-2.6.19.1/arch/mips/pci/fixup-tb0219.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/pci/fixup-tb0219.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/oprofile/Kconfig linux-mips-2.6.20/arch/mips/oprofile/Kconfig
+--- linux-2.6.20/arch/mips/oprofile/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/oprofile/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -11,7 +11,7 @@
+ 
+ config OPROFILE
+ 	tristate "OProfile system profiling (EXPERIMENTAL)"
+-	depends on PROFILING && EXPERIMENTAL
++	depends on PROFILING && !!MIPS_MT_SMTC && EXPERIMENTAL
+ 	help
+ 	  OProfile is a profiling system capable of profiling the
+ 	  whole system, include the kernel, kernel modules, libraries,
+diff -Naur linux-2.6.20/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.20/arch/mips/pci/fixup-tb0219.c
+--- linux-2.6.20/arch/mips/pci/fixup-tb0219.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/pci/fixup-tb0219.c	2007-02-04 12:22:45.000000000 -0800
 @@ -2,7 +2,7 @@
   *  fixup-tb0219.c, The TANBAC TB0219 specific PCI fixups.
   *
@@ -1689,18 +851,70 @@ diff -Naur linux-2.6.19.1/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.19.1/arch/
   *
   *  This program is free software; you can redistribute it and/or modify
   *  it under the terms of the GNU General Public License as published by
-diff -Naur linux-2.6.19.1/arch/mips/qemu/Makefile linux-mips-2.6.19.1/arch/mips/qemu/Makefile
---- linux-2.6.19.1/arch/mips/qemu/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/qemu/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/pci/pci.c linux-mips-2.6.20/arch/mips/pci/pci.c
+--- linux-2.6.20/arch/mips/pci/pci.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/pci/pci.c	2007-02-04 12:22:45.000000000 -0800
+@@ -103,10 +103,15 @@
+ 	return PCI_SLOT(dev->devfn);
+ }
+ 
++int mips_system_has_legacy_ide;
++
++EXPORT_SYMBOL_GPL(mips_system_has_legacy_ide);
++
+ static int __init pcibios_init(void)
+ {
+ 	struct pci_controller *hose;
+ 	struct pci_bus *bus;
++	struct pci_dev *dev;
+ 	int next_busno;
+ 	int need_domain_info = 0;
+ 
+@@ -150,6 +155,13 @@
+ 		pci_assign_unassigned_resources();
+ 	pci_fixup_irqs(common_swizzle, pcibios_map_irq);
+ 
++	if ((dev = pci_get_class(PCI_CLASS_BRIDGE_EISA << 8, NULL)) != NULL ||
++	    (dev = pci_get_class(PCI_CLASS_BRIDGE_ISA << 8, NULL)) != NULL) {
++		pci_dev_put(dev);
++
++		mips_system_has_legacy_ide = 1;
++	}
++
+ 	return 0;
+ }
+ 
+diff -Naur linux-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c linux-mips-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c
+--- linux-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c	2007-02-04 12:22:45.000000000 -0800
+@@ -171,6 +171,7 @@
+ 
+ static void __init py_uart_setup(void)
+ {
++#ifdef CONFIG_SERIAL_8250
+ 	struct uart_port up;
+ 
+ 	/*
+@@ -188,6 +189,7 @@
+ 
+ 	if (early_serial_setup(&up))
+ 		printk(KERN_ERR "Early serial init of port 0 failed\n");
++#endif /* CONFIG_SERIAL_8250 */
+ }
+ 
+ static void __init py_rtc_setup(void)
+diff -Naur linux-2.6.20/arch/mips/qemu/Makefile linux-mips-2.6.20/arch/mips/qemu/Makefile
+--- linux-2.6.20/arch/mips/qemu/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/qemu/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -4,4 +4,5 @@
  
  obj-y		= q-firmware.o q-irq.o q-mem.o q-setup.o q-reset.o
  
 +obj-$(CONFIG_VT) += q-vga.o
  obj-$(CONFIG_SMP) += q-smp.o
-diff -Naur linux-2.6.19.1/arch/mips/qemu/q-setup.c linux-mips-2.6.19.1/arch/mips/qemu/q-setup.c
---- linux-2.6.19.1/arch/mips/qemu/q-setup.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/qemu/q-setup.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/qemu/q-setup.c linux-mips-2.6.20/arch/mips/qemu/q-setup.c
+--- linux-2.6.20/arch/mips/qemu/q-setup.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/qemu/q-setup.c	2007-02-04 12:22:45.000000000 -0800
 @@ -2,6 +2,7 @@
  #include <asm/io.h>
  #include <asm/time.h>
@@ -1719,9 +933,9 @@ diff -Naur linux-2.6.19.1/arch/mips/qemu/q-setup.c linux-mips-2.6.19.1/arch/mips
 +
  	qemu_reboot_setup();
  }
-diff -Naur linux-2.6.19.1/arch/mips/qemu/q-vga.c linux-mips-2.6.19.1/arch/mips/qemu/q-vga.c
---- linux-2.6.19.1/arch/mips/qemu/q-vga.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/qemu/q-vga.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/arch/mips/qemu/q-vga.c linux-mips-2.6.20/arch/mips/qemu/q-vga.c
+--- linux-2.6.20/arch/mips/qemu/q-vga.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/arch/mips/qemu/q-vga.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,189 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -1912,49 +1126,10 @@ diff -Naur linux-2.6.19.1/arch/mips/qemu/q-vga.c linux-mips-2.6.19.1/arch/mips/q
 +	while (1);
 +#endif
 +}
-diff -Naur linux-2.6.19.1/arch/mips/sibyte/swarm/setup.c linux-mips-2.6.19.1/arch/mips/sibyte/swarm/setup.c
---- linux-2.6.19.1/arch/mips/sibyte/swarm/setup.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/arch/mips/sibyte/swarm/setup.c	2006-12-11 15:38:26.000000000 -0800
-@@ -43,7 +43,7 @@
- #elif defined(CONFIG_SIBYTE_SB1250) || defined(CONFIG_SIBYTE_BCM112X)
- #include <asm/sibyte/sb1250_regs.h>
- #else
--#error invalid SiByte board configuation
-+#error invalid SiByte board configuration
- #endif
- #include <asm/sibyte/sb1250_genbus.h>
- #include <asm/sibyte/board.h>
-@@ -53,7 +53,7 @@
- #elif defined(CONFIG_SIBYTE_SB1250) || defined(CONFIG_SIBYTE_BCM112X)
- extern void sb1250_setup(void);
- #else
--#error invalid SiByte board configuation
-+#error invalid SiByte board configuration
- #endif
- 
- extern int xicor_probe(void);
-@@ -90,7 +90,7 @@
- #elif defined(CONFIG_SIBYTE_SB1250) || defined(CONFIG_SIBYTE_BCM112X)
- 	sb1250_time_init();
- #else
--#error invalid SiByte board configuation
-+#error invalid SiByte board configuration
- #endif
- }
- 
-@@ -111,7 +111,7 @@
- #elif defined(CONFIG_SIBYTE_SB1250) || defined(CONFIG_SIBYTE_BCM112X)
- 	sb1250_setup();
- #else
--#error invalid SiByte board configuation
-+#error invalid SiByte board configuration
- #endif
- 
- 	panic_timeout = 5;  /* For debug.  */
-diff -Naur linux-2.6.19.1/drivers/char/Kconfig linux-mips-2.6.19.1/drivers/char/Kconfig
---- linux-2.6.19.1/drivers/char/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/char/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -357,19 +357,56 @@
+diff -Naur linux-2.6.20/drivers/char/Kconfig linux-mips-2.6.20/drivers/char/Kconfig
+--- linux-2.6.20/drivers/char/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/char/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -372,19 +372,56 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called istallion.
  
@@ -2023,18 +1198,18 @@ diff -Naur linux-2.6.19.1/drivers/char/Kconfig linux-mips-2.6.19.1/drivers/char/
  
  config A2232
  	tristate "Commodore A2232 serial support (EXPERIMENTAL)"
-diff -Naur linux-2.6.19.1/drivers/char/Makefile linux-mips-2.6.19.1/drivers/char/Makefile
---- linux-2.6.19.1/drivers/char/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/char/Makefile	2006-12-11 15:38:26.000000000 -0800
-@@ -31,6 +31,7 @@
- obj-$(CONFIG_A2232)		+= ser_a2232.o generic_serial.o
+diff -Naur linux-2.6.20/drivers/char/Makefile linux-mips-2.6.20/drivers/char/Makefile
+--- linux-2.6.20/drivers/char/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/char/Makefile	2007-02-04 12:22:45.000000000 -0800
+@@ -32,6 +32,7 @@
  obj-$(CONFIG_ATARI_DSP56K)	+= dsp56k.o
  obj-$(CONFIG_MOXA_SMARTIO)	+= mxser.o
+ obj-$(CONFIG_MOXA_SMARTIO_NEW)	+= mxser_new.o
 +obj-$(CONFIG_SIBYTE_SB1250_DUART) += sb1250_duart.o
  obj-$(CONFIG_COMPUTONE)		+= ip2/
  obj-$(CONFIG_RISCOM8)		+= riscom8.o
  obj-$(CONFIG_ISI)		+= isicom.o
-@@ -53,6 +54,7 @@
+@@ -54,6 +55,7 @@
  obj-$(CONFIG_VIOTAPE)		+= viotape.o
  obj-$(CONFIG_HVCS)		+= hvcs.o
  obj-$(CONFIG_SGI_MBCS)		+= mbcs.o
@@ -2043,16 +1218,16 @@ diff -Naur linux-2.6.19.1/drivers/char/Makefile linux-mips-2.6.19.1/drivers/char
  
  obj-$(CONFIG_PRINTER)		+= lp.o
 @@ -80,6 +82,7 @@
+ obj-$(CONFIG_DS1620)		+= ds1620.o
  obj-$(CONFIG_HW_RANDOM)		+= hw_random/
- obj-$(CONFIG_FTAPE)		+= ftape/
  obj-$(CONFIG_COBALT_LCD)	+= lcd.o
 +obj-$(CONFIG_AU1000_GPIO)	+= au1000_gpio.o
  obj-$(CONFIG_PPDEV)		+= ppdev.o
  obj-$(CONFIG_NWBUTTON)		+= nwbutton.o
  obj-$(CONFIG_NWFLASH)		+= nwflash.o
-diff -Naur linux-2.6.19.1/drivers/char/au1000_gpio.c linux-mips-2.6.19.1/drivers/char/au1000_gpio.c
---- linux-2.6.19.1/drivers/char/au1000_gpio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/char/au1000_gpio.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/char/au1000_gpio.c linux-mips-2.6.20/drivers/char/au1000_gpio.c
+--- linux-2.6.20/drivers/char/au1000_gpio.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/char/au1000_gpio.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,262 @@
 +/*
 + * FILE NAME au1000_gpio.c
@@ -2316,9 +1491,9 @@ diff -Naur linux-2.6.19.1/drivers/char/au1000_gpio.c linux-mips-2.6.19.1/drivers
 +
 +module_init(au1000gpio_init);
 +module_exit(au1000gpio_exit);
-diff -Naur linux-2.6.19.1/drivers/char/au1000_ts.c linux-mips-2.6.19.1/drivers/char/au1000_ts.c
---- linux-2.6.19.1/drivers/char/au1000_ts.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/char/au1000_ts.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/char/au1000_ts.c linux-mips-2.6.20/drivers/char/au1000_ts.c
+--- linux-2.6.20/drivers/char/au1000_ts.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/char/au1000_ts.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,677 @@
 +/*
 + *      au1000_ts.c  --  Touch screen driver for the Alchemy Au1000's
@@ -2997,145 +2172,9 @@ diff -Naur linux-2.6.19.1/drivers/char/au1000_ts.c linux-mips-2.6.19.1/drivers/c
 +
 +module_init(au1000ts_init_module);
 +module_exit(au1000ts_cleanup_module);
-diff -Naur linux-2.6.19.1/drivers/char/decserial.c linux-mips-2.6.19.1/drivers/char/decserial.c
---- linux-2.6.19.1/drivers/char/decserial.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/char/decserial.c	2006-12-11 15:38:26.000000000 -0800
-@@ -14,86 +14,84 @@
-  *      device. Added support for PROM console in drivers/char/tty_io.c
-  *      instead. Although it may work to enable more than one 
-  *      console device I strongly recommend to use only one.
-+ *
-+ *	Copyright (C) 2004  Maciej W. Rozycki
-  */
- 
-+#include <linux/errno.h>
- #include <linux/init.h>
--#include <asm/dec/machtype.h>
--
--#ifdef CONFIG_ZS
--extern int zs_init(void);
--#endif
- 
--#ifdef CONFIG_DZ
--extern int dz_init(void);
--#endif
-+#include <asm/dec/machtype.h>
-+#include <asm/dec/serial.h>
- 
--#ifdef CONFIG_SERIAL_CONSOLE
-+extern int register_zs_hook(unsigned int channel,
-+			    struct dec_serial_hook *hook);
-+extern int unregister_zs_hook(unsigned int channel);
- 
-+int register_dec_serial_hook(unsigned int channel,
-+			     struct dec_serial_hook *hook)
-+{
- #ifdef CONFIG_ZS
--extern void zs_serial_console_init(void);
--#endif
--
--#ifdef CONFIG_DZ
--extern void dz_serial_console_init(void);
-+	if (IOASIC)
-+		return register_zs_hook(channel, hook);
- #endif
-+	return 0;
-+}
- 
-+int unregister_dec_serial_hook(unsigned int channel)
-+{
-+#ifdef CONFIG_ZS
-+	if (IOASIC)
-+		return unregister_zs_hook(channel);
- #endif
-+	return 0;
-+}
- 
--/* rs_init - starts up the serial interface -
--   handle normal case of starting up the serial interface */
- 
--#ifdef CONFIG_SERIAL
-+extern int zs_init(void);
-+extern int dz_init(void);
- 
-+/*
-+ * rs_init - starts up the serial interface -
-+ * handle normal case of starting up the serial interface
-+ */
- int __init rs_init(void)
- {
--
--#if defined(CONFIG_ZS) && defined(CONFIG_DZ)
--    if (IOASIC)
--	return zs_init();
--    else
--	return dz_init();
--#else
--
- #ifdef CONFIG_ZS
--    return zs_init();
-+	if (IOASIC)
-+		return zs_init();
- #endif
--
- #ifdef CONFIG_DZ
--    return dz_init();
--#endif
--
-+	if (!IOASIC)
-+		return dz_init();
- #endif
-+	return -ENXIO;
- }
- 
- __initcall(rs_init);
- 
--#endif
- 
--#ifdef CONFIG_SERIAL_CONSOLE
-+#ifdef CONFIG_SERIAL_DEC_CONSOLE
-+
-+extern void zs_serial_console_init(void);
-+extern void dz_serial_console_init(void);
- 
--/* serial_console_init handles the special case of starting
-- *   up the console on the serial port
-+/*
-+ * dec_serial_console_init handles the special case of starting
-+ * up the console on the serial port
-  */
--static int __init decserial_console_init(void)
-+static int __init dec_serial_console_init(void)
- {
--#if defined(CONFIG_ZS) && defined(CONFIG_DZ)
--    if (IOASIC)
--	zs_serial_console_init();
--    else
--	dz_serial_console_init();
--#else
--
- #ifdef CONFIG_ZS
--    zs_serial_console_init();
-+	if (IOASIC)
-+		zs_serial_console_init();
- #endif
--
- #ifdef CONFIG_DZ
--    dz_serial_console_init();
--#endif
--
-+	if (!IOASIC)
-+		dz_serial_console_init();
- #endif
-     return 0;
- }
--console_initcall(decserial_console_init);
-+console_initcall(dec_serial_console_init);
- 
- #endif
-diff -Naur linux-2.6.19.1/drivers/char/sb1250_duart.c linux-mips-2.6.19.1/drivers/char/sb1250_duart.c
---- linux-2.6.19.1/drivers/char/sb1250_duart.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/char/sb1250_duart.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/char/sb1250_duart.c linux-mips-2.6.20/drivers/char/sb1250_duart.c
+--- linux-2.6.20/drivers/char/sb1250_duart.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/char/sb1250_duart.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,909 @@
 +/*
 + * Copyright (C) 2000,2001,2002,2003,2004 Broadcom Corporation
@@ -4046,66 +3085,18 @@ diff -Naur linux-2.6.19.1/drivers/char/sb1250_duart.c linux-mips-2.6.19.1/driver
 +console_initcall(sb1250_serial_console_init);
 +
 +#endif /* CONFIG_SIBYTE_SB1250_DUART_CONSOLE */
-diff -Naur linux-2.6.19.1/drivers/ide/mips/Makefile linux-mips-2.6.19.1/drivers/ide/mips/Makefile
---- linux-2.6.19.1/drivers/ide/mips/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/ide/mips/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/ide/mips/Makefile linux-mips-2.6.20/drivers/ide/mips/Makefile
+--- linux-2.6.20/drivers/ide/mips/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/ide/mips/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -1,4 +1,4 @@
  obj-$(CONFIG_BLK_DEV_IDE_SWARM)		+= swarm.o
  obj-$(CONFIG_BLK_DEV_IDE_AU1XXX)	+= au1xxx-ide.o
  
 -EXTRA_CFLAGS    := -Idrivers/ide
 +CFLAGS_au1xxx-ide.o := -Idrivers/ide
-diff -Naur linux-2.6.19.1/drivers/isdn/hisax/Kconfig linux-mips-2.6.19.1/drivers/isdn/hisax/Kconfig
---- linux-2.6.19.1/drivers/isdn/hisax/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/isdn/hisax/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -110,7 +110,7 @@
- 
- config HISAX_TELESPCI
- 	bool "Teles PCI"
--	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || FRV))
-+	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || (MIPS && !CPU_LITTLE_ENDIAN) || FRV))
- 	help
- 	  This enables HiSax support for the Teles PCI.
- 	  See <file:Documentation/isdn/README.HiSax> on how to configure it.
-@@ -238,7 +238,7 @@
- 
- config HISAX_NETJET
- 	bool "NETjet card"
--	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || FRV))
-+	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || (MIPS && !CPU_LITTLE_ENDIAN) || FRV))
- 	help
- 	  This enables HiSax support for the NetJet from Traverse
- 	  Technologies.
-@@ -249,7 +249,7 @@
- 
- config HISAX_NETJET_U
- 	bool "NETspider U card"
--	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || FRV))
-+	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || (MIPS && !CPU_LITTLE_ENDIAN) || FRV))
- 	help
- 	  This enables HiSax support for the Netspider U interface ISDN card
- 	  from Traverse Technologies.
-@@ -317,7 +317,7 @@
- 
- config HISAX_HFC_PCI
- 	bool "HFC PCI-Bus cards"
--	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || FRV))
-+	depends on PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || (MIPS && !CPU_LITTLE_ENDIAN) || FRV))
- 	help
- 	  This enables HiSax support for the HFC-S PCI 2BDS0 based cards.
- 
-@@ -344,7 +344,7 @@
- 
- config HISAX_ENTERNOW_PCI
- 	bool "Formula-n enter:now PCI card"
--	depends on HISAX_NETJET && PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || FRV))
-+	depends on HISAX_NETJET && PCI && (BROKEN || !(SPARC || PPC || PARISC || M68K || (MIPS && !CPU_LITTLE_ENDIAN) || FRV))
- 	help
- 	  This enables HiSax support for the Formula-n enter:now PCI
- 	  ISDN card.
-diff -Naur linux-2.6.19.1/drivers/mtd/devices/docprobe.c linux-mips-2.6.19.1/drivers/mtd/devices/docprobe.c
---- linux-2.6.19.1/drivers/mtd/devices/docprobe.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/mtd/devices/docprobe.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/mtd/devices/docprobe.c linux-mips-2.6.20/drivers/mtd/devices/docprobe.c
+--- linux-2.6.20/drivers/mtd/devices/docprobe.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/mtd/devices/docprobe.c	2007-02-04 12:22:45.000000000 -0800
 @@ -83,10 +83,10 @@
  	0xe4000000,
  #elif defined(CONFIG_MOMENCO_OCELOT)
@@ -4120,9 +3111,9 @@ diff -Naur linux-2.6.19.1/drivers/mtd/devices/docprobe.c linux-mips-2.6.19.1/dri
  #warning Unknown architecture for DiskOnChip. No default probe locations defined
  #endif
  	0xffffffff };
-diff -Naur linux-2.6.19.1/drivers/mtd/maps/lasat.c linux-mips-2.6.19.1/drivers/mtd/maps/lasat.c
---- linux-2.6.19.1/drivers/mtd/maps/lasat.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/mtd/maps/lasat.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/mtd/maps/lasat.c linux-mips-2.6.20/drivers/mtd/maps/lasat.c
+--- linux-2.6.20/drivers/mtd/maps/lasat.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/mtd/maps/lasat.c	2007-02-04 12:22:45.000000000 -0800
 @@ -7,7 +7,7 @@
   * modify it under the terms of the GNU General Public License version
   * 2 as published by the Free Software Foundation.
@@ -4141,10 +3132,10 @@ diff -Naur linux-2.6.19.1/drivers/mtd/maps/lasat.c linux-mips-2.6.19.1/drivers/m
  		        lasat_map.phys, lasat_board_info.li_flash_size);
  	lasat_map.size = lasat_board_info.li_flash_size;
  
-diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kconfig
---- linux-2.6.19.1/drivers/net/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -441,6 +441,14 @@
+diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfig
+--- linux-2.6.20/drivers/net/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -452,6 +452,14 @@
  	  This is the driver for the onboard card of MIPS Magnum 4000,
  	  Acer PICA, Olivetti M700-10 and a few other identical OEM systems.
  
@@ -4159,7 +3150,7 @@ diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kc
  config MIPS_AU1X00_ENET
  	bool "MIPS AU1000 Ethernet support"
  	depends on NET_ETHERNET && SOC_AU1X00
-@@ -450,10 +458,6 @@
+@@ -461,10 +469,6 @@
  	  If you have an Alchemy Semi AU1X00 based system
  	  say Y.  Otherwise, say N.
  
@@ -4170,7 +3161,7 @@ diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kc
  config SGI_IOC3_ETH
  	bool "SGI IOC3 Ethernet"
  	depends on NET_ETHERNET && PCI && SGI_IP27
-@@ -464,25 +468,13 @@
+@@ -475,25 +479,13 @@
  	  the Ethernet-HOWTO, available from
  	  <http://www.tldp.org/docs.html#howto>.
  
@@ -4202,7 +3193,7 @@ diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kc
  
  config MIPS_SIM_NET
  	tristate "MIPS simulator Network device (EXPERIMENTAL)"
-@@ -2065,6 +2057,10 @@
+@@ -2076,6 +2068,10 @@
  
  	  If in doubt, say N.
  
@@ -4213,7 +3204,7 @@ diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kc
  config R8169_VLAN
  	bool "VLAN support"
  	depends on R8169 && VLAN_8021Q
-@@ -2296,8 +2292,8 @@
+@@ -2315,8 +2311,8 @@
  	select MII
  	help
  	  This driver supports the gigabit Ethernet on the Marvell MV643XX
@@ -4224,7 +3215,7 @@ diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kc
  
  config MV643XX_ETH_0
  	bool "MV-643XX Port 0"
-@@ -2320,6 +2316,20 @@
+@@ -2339,6 +2335,20 @@
  	  This enables support for Port 2 of the Marvell MV643XX Gigabit
  	  Ethernet.
  
@@ -4245,9 +3236,9 @@ diff -Naur linux-2.6.19.1/drivers/net/Kconfig linux-mips-2.6.19.1/drivers/net/Kc
  config QLA3XXX
  	tristate "QLogic QLA3XXX Network Driver Support"
  	depends on PCI
-diff -Naur linux-2.6.19.1/drivers/net/Makefile linux-mips-2.6.19.1/drivers/net/Makefile
---- linux-2.6.19.1/drivers/net/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/Makefile linux-mips-2.6.20/drivers/net/Makefile
+--- linux-2.6.20/drivers/net/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -112,6 +112,10 @@
  obj-$(CONFIG_MV643XX_ETH) += mv643xx_eth.o
  obj-$(CONFIG_QLA3XXX) += qla3xxx.o
@@ -4259,9 +3250,9 @@ diff -Naur linux-2.6.19.1/drivers/net/Makefile linux-mips-2.6.19.1/drivers/net/M
  obj-$(CONFIG_PPP) += ppp_generic.o
  obj-$(CONFIG_PPP_ASYNC) += ppp_async.o
  obj-$(CONFIG_PPP_SYNC_TTY) += ppp_synctty.o
-diff -Naur linux-2.6.19.1/drivers/net/big_sur_ge.c linux-mips-2.6.19.1/drivers/net/big_sur_ge.c
---- linux-2.6.19.1/drivers/net/big_sur_ge.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/big_sur_ge.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/big_sur_ge.c linux-mips-2.6.20/drivers/net/big_sur_ge.c
+--- linux-2.6.20/drivers/net/big_sur_ge.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/big_sur_ge.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,2004 @@
 +/*
 + * drivers/net/big_sur_ge.c - Driver for PMC-Sierra Big Sur ethernet ports
@@ -6267,9 +5258,9 @@ diff -Naur linux-2.6.19.1/drivers/net/big_sur_ge.c linux-mips-2.6.19.1/drivers/n
 +MODULE_AUTHOR("Manish Lachwani <lachwani@pmc-sierra.com>");
 +MODULE_DESCRIPTION("PMC-Sierra Big Sur Ethernet MAC Driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.19.1/drivers/net/big_sur_ge.h linux-mips-2.6.19.1/drivers/net/big_sur_ge.h
---- linux-2.6.19.1/drivers/net/big_sur_ge.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/big_sur_ge.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/big_sur_ge.h linux-mips-2.6.20/drivers/net/big_sur_ge.h
+--- linux-2.6.20/drivers/net/big_sur_ge.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/big_sur_ge.h	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,713 @@
 +/*
 + * drivers/net/big_sur_ge.h - Driver for PMC-Sierra Big Sur
@@ -6984,9 +5975,9 @@ diff -Naur linux-2.6.19.1/drivers/net/big_sur_ge.h linux-mips-2.6.19.1/drivers/n
 +                                 BIG_SUR_GEIXR_SG_END_MASK)
 +
 +#endif
-diff -Naur linux-2.6.19.1/drivers/net/gt64240eth.c linux-mips-2.6.19.1/drivers/net/gt64240eth.c
---- linux-2.6.19.1/drivers/net/gt64240eth.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/gt64240eth.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/gt64240eth.c linux-mips-2.6.20/drivers/net/gt64240eth.c
+--- linux-2.6.20/drivers/net/gt64240eth.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/gt64240eth.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,1671 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -8659,9 +7650,9 @@ diff -Naur linux-2.6.19.1/drivers/net/gt64240eth.c linux-mips-2.6.19.1/drivers/n
 +
 +	return &gp->stats;
 +}
-diff -Naur linux-2.6.19.1/drivers/net/gt64240eth.h linux-mips-2.6.19.1/drivers/net/gt64240eth.h
---- linux-2.6.19.1/drivers/net/gt64240eth.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/gt64240eth.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/gt64240eth.h linux-mips-2.6.20/drivers/net/gt64240eth.h
+--- linux-2.6.20/drivers/net/gt64240eth.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/gt64240eth.h	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,403 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -9066,9 +8057,9 @@ diff -Naur linux-2.6.19.1/drivers/net/gt64240eth.h linux-mips-2.6.19.1/drivers/n
 +};
 +
 +#endif /* _GT64240ETH_H */
-diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net/ioc3-eth.c
---- linux-2.6.19.1/drivers/net/ioc3-eth.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/ioc3-eth.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/ioc3-eth.c linux-mips-2.6.20/drivers/net/ioc3-eth.c
+--- linux-2.6.20/drivers/net/ioc3-eth.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/ioc3-eth.c	2007-02-04 12:22:45.000000000 -0800
 @@ -5,7 +5,7 @@
   *
   * Driver for SGI's IOC3 based Ethernet cards as found in the PCI card.
@@ -9078,7 +8069,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
   * Copyright (C) 1995, 1999, 2000, 2001 by Silicon Graphics, Inc.
   *
   * References:
-@@ -62,12 +62,7 @@
+@@ -61,12 +61,7 @@
  #include <asm/pgtable.h>
  #include <asm/uaccess.h>
  #include <asm/sn/types.h>
@@ -9091,7 +8082,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  #include <asm/pci/bridge.h>
  
  /*
-@@ -95,6 +90,9 @@
+@@ -94,6 +89,9 @@
  	u32 emcr, ehar_h, ehar_l;
  	spinlock_t ioc3_lock;
  	struct mii_if_info mii;
@@ -9101,7 +8092,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  	struct pci_dev *pdev;
  
  	/* Members used by autonegotiation  */
-@@ -522,8 +520,6 @@
+@@ -521,8 +519,6 @@
  	return &ip->stats;
  }
  
@@ -9110,7 +8101,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  static void ioc3_tcpudp_checksum(struct sk_buff *skb, uint32_t hwsum, int len)
  {
  	struct ethhdr *eh = eth_hdr(skb);
-@@ -591,7 +587,6 @@
+@@ -590,7 +586,6 @@
  	if (csum == 0xffff)
  		skb->ip_summed = CHECKSUM_UNNECESSARY;
  }
@@ -9118,7 +8109,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  
  static inline void ioc3_rx(struct ioc3_private *ip)
  {
-@@ -626,9 +621,9 @@
+@@ -625,9 +620,9 @@
  				goto next;
  			}
  
@@ -9131,7 +8122,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  
  			netif_rx(skb);
  
-@@ -1289,9 +1284,7 @@
+@@ -1288,9 +1283,7 @@
  	dev->set_multicast_list	= ioc3_set_multicast_list;
  	dev->set_mac_address	= ioc3_set_mac_address;
  	dev->ethtool_ops	= &ioc3_ethtool_ops;
@@ -9141,7 +8132,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  
  	sw_physid1 = ioc3_mdio_read(dev, ip->mii.phy_id, MII_PHYSID1);
  	sw_physid2 = ioc3_mdio_read(dev, ip->mii.phy_id, MII_PHYSID2);
-@@ -1378,7 +1371,6 @@
+@@ -1377,7 +1370,6 @@
  	uint32_t w0 = 0;
  	int produce;
  
@@ -9149,7 +8140,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  	/*
  	 * IOC3 has a fairly simple minded checksumming hardware which simply
  	 * adds up the 1's complement checksum for the entire packet and
-@@ -1426,7 +1418,6 @@
+@@ -1425,7 +1417,6 @@
  
  		w0 = ETXD_DOCHECKSUM | (csoff << ETXD_CHKOFF_SHIFT);
  	}
@@ -9157,7 +8148,7 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  
  	spin_lock_irq(&ip->ioc3_lock);
  
-@@ -1580,12 +1571,37 @@
+@@ -1579,12 +1570,37 @@
  	return rc;
  }
  
@@ -9195,9 +8186,9 @@ diff -Naur linux-2.6.19.1/drivers/net/ioc3-eth.c linux-mips-2.6.19.1/drivers/net
  };
  
  static int ioc3_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-diff -Naur linux-2.6.19.1/drivers/net/titan_ge.c linux-mips-2.6.19.1/drivers/net/titan_ge.c
---- linux-2.6.19.1/drivers/net/titan_ge.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/titan_ge.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/titan_ge.c linux-mips-2.6.20/drivers/net/titan_ge.c
+--- linux-2.6.20/drivers/net/titan_ge.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/titan_ge.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,2069 @@
 +/*
 + * drivers/net/titan_ge.c - Driver for Titan ethernet ports
@@ -11268,9 +10259,9 @@ diff -Naur linux-2.6.19.1/drivers/net/titan_ge.c linux-mips-2.6.19.1/drivers/net
 +
 +module_init(titan_ge_init_module);
 +module_exit(titan_ge_cleanup_module);
-diff -Naur linux-2.6.19.1/drivers/net/titan_ge.h linux-mips-2.6.19.1/drivers/net/titan_ge.h
---- linux-2.6.19.1/drivers/net/titan_ge.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/titan_ge.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/titan_ge.h linux-mips-2.6.20/drivers/net/titan_ge.h
+--- linux-2.6.20/drivers/net/titan_ge.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/titan_ge.h	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,415 @@
 +#ifndef _TITAN_GE_H_
 +#define _TITAN_GE_H_
@@ -11687,9 +10678,9 @@ diff -Naur linux-2.6.19.1/drivers/net/titan_ge.h linux-mips-2.6.19.1/drivers/net
 +
 +#endif 				/* _TITAN_GE_H_ */
 +
-diff -Naur linux-2.6.19.1/drivers/net/titan_mdio.c linux-mips-2.6.19.1/drivers/net/titan_mdio.c
---- linux-2.6.19.1/drivers/net/titan_mdio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/titan_mdio.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/titan_mdio.c linux-mips-2.6.20/drivers/net/titan_mdio.c
+--- linux-2.6.20/drivers/net/titan_mdio.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/titan_mdio.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,217 @@
 +/*
 + * drivers/net/titan_mdio.c - Driver for Titan ethernet ports
@@ -11908,9 +10899,9 @@ diff -Naur linux-2.6.19.1/drivers/net/titan_mdio.c linux-mips-2.6.19.1/drivers/n
 +	return TITAN_GE_MDIO_GOOD;
 +}
 +
-diff -Naur linux-2.6.19.1/drivers/net/titan_mdio.h linux-mips-2.6.19.1/drivers/net/titan_mdio.h
---- linux-2.6.19.1/drivers/net/titan_mdio.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/net/titan_mdio.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/net/titan_mdio.h linux-mips-2.6.20/drivers/net/titan_mdio.h
+--- linux-2.6.20/drivers/net/titan_mdio.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/net/titan_mdio.h	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,56 @@
 +/*
 + * MDIO used to interact with the PHY when using GMII/MII
@@ -11968,9 +10959,9 @@ diff -Naur linux-2.6.19.1/drivers/net/titan_mdio.h linux-mips-2.6.19.1/drivers/n
 +int titan_ge_mdio_write(int, int, unsigned int);
 +
 +#endif /* _TITAN_MDIO_H */
-diff -Naur linux-2.6.19.1/drivers/scsi/NCR53C9x.h linux-mips-2.6.19.1/drivers/scsi/NCR53C9x.h
---- linux-2.6.19.1/drivers/scsi/NCR53C9x.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/scsi/NCR53C9x.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/scsi/NCR53C9x.h linux-mips-2.6.20/drivers/scsi/NCR53C9x.h
+--- linux-2.6.20/drivers/scsi/NCR53C9x.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/scsi/NCR53C9x.h	2007-02-04 12:22:45.000000000 -0800
 @@ -144,12 +144,7 @@
  
  #ifndef MULTIPLE_PAD_SIZES
@@ -11985,9 +10976,9 @@ diff -Naur linux-2.6.19.1/drivers/scsi/NCR53C9x.h linux-mips-2.6.19.1/drivers/sc
  #define esp_read(__reg) (__reg)
  
  struct ESP_regs {
-diff -Naur linux-2.6.19.1/drivers/scsi/dec_esp.c linux-mips-2.6.19.1/drivers/scsi/dec_esp.c
---- linux-2.6.19.1/drivers/scsi/dec_esp.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/scsi/dec_esp.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/scsi/dec_esp.c linux-mips-2.6.20/drivers/scsi/dec_esp.c
+--- linux-2.6.20/drivers/scsi/dec_esp.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/scsi/dec_esp.c	2007-02-04 12:22:45.000000000 -0800
 @@ -55,7 +55,7 @@
  
  static int  dma_bytes_sent(struct NCR_ESP *esp, int fifo_count);
@@ -12006,9 +10997,9 @@ diff -Naur linux-2.6.19.1/drivers/scsi/dec_esp.c linux-mips-2.6.19.1/drivers/scs
  
  			esp->dregs = 0;
  			esp->eregs = (void *)CKSEG1ADDR(mem_start +
-diff -Naur linux-2.6.19.1/drivers/scsi/sgiwd93.c linux-mips-2.6.19.1/drivers/scsi/sgiwd93.c
---- linux-2.6.19.1/drivers/scsi/sgiwd93.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/scsi/sgiwd93.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/scsi/sgiwd93.c linux-mips-2.6.20/drivers/scsi/sgiwd93.c
+--- linux-2.6.20/drivers/scsi/sgiwd93.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/scsi/sgiwd93.c	2007-02-04 12:22:45.000000000 -0800
 @@ -14,6 +14,7 @@
  #include <linux/interrupt.h>
  #include <linux/types.h>
@@ -12025,10 +11016,10 @@ diff -Naur linux-2.6.19.1/drivers/scsi/sgiwd93.c linux-mips-2.6.19.1/drivers/scs
  
  static inline void init_hpc_chain(struct hpc_data *hd)
  {
-diff -Naur linux-2.6.19.1/drivers/serial/Kconfig linux-mips-2.6.19.1/drivers/serial/Kconfig
---- linux-2.6.19.1/drivers/serial/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/serial/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -657,6 +657,25 @@
+diff -Naur linux-2.6.20/drivers/serial/Kconfig linux-mips-2.6.20/drivers/serial/Kconfig
+--- linux-2.6.20/drivers/serial/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/serial/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -686,6 +686,25 @@
  	depends on SERIAL_SH_SCI=y
  	select SERIAL_CORE_CONSOLE
  
@@ -12054,10 +11045,10 @@ diff -Naur linux-2.6.19.1/drivers/serial/Kconfig linux-mips-2.6.19.1/drivers/ser
  config SERIAL_CORE
  	tristate
  
-diff -Naur linux-2.6.19.1/drivers/serial/Makefile linux-mips-2.6.19.1/drivers/serial/Makefile
---- linux-2.6.19.1/drivers/serial/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/serial/Makefile	2006-12-11 15:38:26.000000000 -0800
-@@ -39,6 +39,7 @@
+diff -Naur linux-2.6.20/drivers/serial/Makefile linux-mips-2.6.20/drivers/serial/Makefile
+--- linux-2.6.20/drivers/serial/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/serial/Makefile	2007-02-04 12:22:45.000000000 -0800
+@@ -40,6 +40,7 @@
  obj-$(CONFIG_V850E_UART) += v850e_uart.o
  obj-$(CONFIG_SERIAL_PMACZILOG) += pmac_zilog.o
  obj-$(CONFIG_SERIAL_LH7A40X) += serial_lh7a40x.o
@@ -12065,9 +11056,9 @@ diff -Naur linux-2.6.19.1/drivers/serial/Makefile linux-mips-2.6.19.1/drivers/se
  obj-$(CONFIG_SERIAL_DZ) += dz.o
  obj-$(CONFIG_SERIAL_SH_SCI) += sh-sci.o
  obj-$(CONFIG_SERIAL_SGI_L1_CONSOLE) += sn_console.o
-diff -Naur linux-2.6.19.1/drivers/serial/ip22zilog.c linux-mips-2.6.19.1/drivers/serial/ip22zilog.c
---- linux-2.6.19.1/drivers/serial/ip22zilog.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/serial/ip22zilog.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/serial/ip22zilog.c linux-mips-2.6.20/drivers/serial/ip22zilog.c
+--- linux-2.6.20/drivers/serial/ip22zilog.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/serial/ip22zilog.c	2007-02-04 12:22:45.000000000 -0800
 @@ -863,6 +863,7 @@
  	up->cflag = termios->c_cflag;
  
@@ -12085,9 +11076,9 @@ diff -Naur linux-2.6.19.1/drivers/serial/ip22zilog.c linux-mips-2.6.19.1/drivers
  }
  
  static int __init ip22zilog_console_setup(struct console *con, char *options)
-diff -Naur linux-2.6.19.1/drivers/serial/ip3106_uart.c linux-mips-2.6.19.1/drivers/serial/ip3106_uart.c
---- linux-2.6.19.1/drivers/serial/ip3106_uart.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/serial/ip3106_uart.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/serial/ip3106_uart.c linux-mips-2.6.20/drivers/serial/ip3106_uart.c
+--- linux-2.6.20/drivers/serial/ip3106_uart.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/serial/ip3106_uart.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,909 @@
 +/*
 + * Initially based on linux-2.4.20_mvl31-pnx8xx0/drivers/char/serial_pnx8550.c
@@ -12998,305 +11989,10 @@ diff -Naur linux-2.6.19.1/drivers/serial/ip3106_uart.c linux-mips-2.6.19.1/drive
 +MODULE_DESCRIPTION("IP3106 generic serial port driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS_CHARDEV_MAJOR(SERIAL_IP3106_MAJOR);
-diff -Naur linux-2.6.19.1/drivers/usb/host/ohci-hcd.c linux-mips-2.6.19.1/drivers/usb/host/ohci-hcd.c
---- linux-2.6.19.1/drivers/usb/host/ohci-hcd.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/usb/host/ohci-hcd.c	2006-12-11 15:38:26.000000000 -0800
-@@ -931,6 +931,10 @@
- #include "ohci-au1xxx.c"
- #endif
- 
-+#ifdef CONFIG_PNX8550
-+#include "ohci-pnx8550.c"
-+#endif
-+
- #ifdef CONFIG_USB_OHCI_HCD_PPC_SOC
- #include "ohci-ppc-soc.c"
- #endif
-diff -Naur linux-2.6.19.1/drivers/usb/host/ohci-pnx8550.c linux-mips-2.6.19.1/drivers/usb/host/ohci-pnx8550.c
---- linux-2.6.19.1/drivers/usb/host/ohci-pnx8550.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/usb/host/ohci-pnx8550.c	2006-12-11 15:38:26.000000000 -0800
-@@ -0,0 +1,277 @@
-+/*
-+ * OHCI HCD (Host Controller Driver) for USB.
-+ *
-+ * (C) Copyright 1999 Roman Weissgaerber <weissg@vienna.at>
-+ * (C) Copyright 2000-2002 David Brownell <dbrownell@users.sourceforge.net>
-+ * (C) Copyright 2002 Hewlett-Packard Company
-+ * (C) Copyright 2005 Embedded Alley Solutions, Inc.
-+ *
-+ * Bus Glue for PNX8550
-+ *
-+ * Written by Christopher Hoover <ch@hpl.hp.com>
-+ * Based on fragments of previous driver by Russell King et al.
-+ *
-+ * Modified for LH7A404 from ohci-sa1111.c
-+ *  by Durgesh Pattamatta <pattamattad@sharpsec.com>
-+ *
-+ * Modified for pxa27x from ohci-lh7a404.c
-+ *  by Nick Bane <nick@cecomputing.co.uk> 26-8-2004
-+ *
-+ * Modified for PNX8550 from ohci-pxa27x.c
-+ *  by Embedded Alley Solutions, Inc. 
-+ *
-+ * This file is licenced under the GPL.
-+ */
-+
-+#include <linux/device.h>
-+#include <asm/mach-pnx8550/usb.h>
-+#include <asm/mach-pnx8550/int.h>
-+#include <asm/mach-pnx8550/pci.h>
-+
-+#ifndef CONFIG_PNX8550
-+#error "This file is PNX8550 bus glue.  CONFIG_PNX8550 must be defined."
-+#endif
-+
-+extern int usb_disabled(void);
-+
-+/*-------------------------------------------------------------------------*/
-+
-+static void pnx8550_start_hc(struct platform_device *dev)
-+{
-+	/*
-+	 * Set register CLK48CTL to enable and 48MHz
-+	 */
-+	outl(0x00000003, PCI_BASE | 0x0004770c);
-+
-+	/*
-+	 * Set register CLK12CTL to enable and 48MHz
-+	 */
-+	outl(0x00000003, PCI_BASE | 0x00047710);
-+
-+	udelay(100);
-+}
-+
-+static void pnx8550_stop_hc(struct platform_device *dev)
-+{
-+	udelay(10);
-+}
-+
-+
-+/*-------------------------------------------------------------------------*/
-+
-+/* configure so an HC device and id are always provided */
-+/* always called with process context; sleeping is OK */
-+
-+
-+/**
-+ * usb_hcd_pnx8550_probe - initialize pnx8550-based HCDs
-+ * Context: !in_interrupt()
-+ *
-+ * Allocates basic resources for this USB host controller, and
-+ * then invokes the start() method for the HCD associated with it
-+ * through the hotplug entry's driver_data.
-+ *
-+ */
-+int usb_hcd_pnx8550_probe (const struct hc_driver *driver,
-+			  struct platform_device *dev)
-+{
-+	int retval;
-+	struct usb_hcd *hcd;
-+
-+	if (dev->resource[1].flags != IORESOURCE_IRQ) {
-+		pr_debug ("resource[1] is not IORESOURCE_IRQ");
-+		return -ENOMEM;
-+	}
-+
-+	hcd = usb_create_hcd (driver, &dev->dev, "pnx8550");
-+	if (!hcd)
-+		return -ENOMEM;
-+	hcd->rsrc_start = dev->resource[0].start;
-+	hcd->rsrc_len = dev->resource[0].end - dev->resource[0].start + 1;
-+
-+	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
-+		pr_debug("request_mem_region failed");
-+		retval = -EBUSY;
-+		goto err1;
-+	}
-+
-+	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
-+	if (!hcd->regs) {
-+		pr_debug("ioremap failed");
-+		retval = -ENOMEM;
-+		goto err2;
-+	}
-+
-+	pnx8550_start_hc(dev);
-+
-+	ohci_hcd_init(hcd_to_ohci(hcd));
-+
-+	retval = usb_add_hcd(hcd, dev->resource[1].start, SA_INTERRUPT);
-+	if (retval == 0)
-+		return retval;
-+
-+	pnx8550_stop_hc(dev);
-+	iounmap(hcd->regs);
-+ err2:
-+	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
-+ err1:
-+	usb_put_hcd(hcd);
-+	return retval;
-+}
-+
-+
-+/* may be called without controller electrically present */
-+/* may be called with controller, bus, and devices active */
-+
-+/**
-+ * usb_hcd_pnx8550_remove - shutdown processing for pnx8550-based HCDs
-+ * @dev: USB Host Controller being removed
-+ * Context: !in_interrupt()
-+ *
-+ * Reverses the effect of usb_hcd_pnx8550_probe(), first invoking
-+ * the HCD's stop() method.  It is always called from a thread
-+ * context, normally "rmmod", "apmd", or something similar.
-+ *
-+ */
-+void usb_hcd_pnx8550_remove (struct usb_hcd *hcd, struct platform_device *dev)
-+{
-+	usb_remove_hcd(hcd);
-+	pnx8550_stop_hc(dev);
-+	iounmap(hcd->regs);
-+	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
-+	usb_put_hcd(hcd);
-+}
-+
-+/*-------------------------------------------------------------------------*/
-+
-+static int __devinit
-+ohci_pnx8550_start (struct usb_hcd *hcd)
-+{
-+	struct ohci_hcd	*ohci = hcd_to_ohci (hcd);
-+	int		ret;
-+
-+	ohci_dbg (ohci, "ohci_pnx8550_start, ohci:%p", ohci);
-+
-+	if ((ret = ohci_init(ohci)) < 0)
-+		return ret;
-+
-+	if ((ret = ohci_run (ohci)) < 0) {
-+		err ("can't start %s", hcd->self.bus_name);
-+		ohci_stop (hcd);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+/*-------------------------------------------------------------------------*/
-+
-+static const struct hc_driver ohci_pnx8550_hc_driver = {
-+	.description =		hcd_name,
-+	.product_desc =		"PNX8550 OHCI",
-+	.hcd_priv_size =	sizeof(struct ohci_hcd),
-+
-+	/*
-+	 * generic hardware linkage
-+	 */
-+	.irq =			ohci_irq,
-+	.flags =		HCD_USB11 | HCD_MEMORY,
-+
-+	/*
-+	 * basic lifecycle operations
-+	 */
-+	.start =		ohci_pnx8550_start,
-+	.stop =			ohci_stop,
-+
-+	/*
-+	 * managing i/o requests and associated device resources
-+	 */
-+	.urb_enqueue =		ohci_urb_enqueue,
-+	.urb_dequeue =		ohci_urb_dequeue,
-+	.endpoint_disable =	ohci_endpoint_disable,
-+
-+	/*
-+	 * scheduling support
-+	 */
-+	.get_frame_number =	ohci_get_frame,
-+
-+	/*
-+	 * root hub support
-+	 */
-+	.hub_status_data =	ohci_hub_status_data,
-+	.hub_control =		ohci_hub_control,
-+#ifdef  CONFIG_USB_SUSPEND
-+	.hub_suspend =		ohci_hub_suspend,
-+	.hub_resume =		ohci_hub_resume,
-+#endif
-+};
-+
-+/*-------------------------------------------------------------------------*/
-+
-+static int ohci_hcd_pnx8550_drv_probe(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	int ret;
-+
-+	pr_debug ("In ohci_hcd_pnx8550_drv_probe");
-+
-+	if (usb_disabled())
-+		return -ENODEV;
-+
-+	ret = usb_hcd_pnx8550_probe(&ohci_pnx8550_hc_driver, pdev);
-+	return ret;
-+}
-+
-+static int ohci_hcd_pnx8550_drv_remove(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct usb_hcd *hcd = dev_get_drvdata(dev);
-+
-+	usb_hcd_pnx8550_remove(hcd, pdev);
-+	return 0;
-+}
-+
-+static int ohci_hcd_pnx8550_drv_suspend(struct device *dev, u32 state, u32 level)
-+{
-+//	struct platform_device *pdev = to_platform_device(dev);
-+//	struct usb_hcd *hcd = dev_get_drvdata(dev);
-+	printk("%s: not implemented yet\n", __FUNCTION__);
-+
-+	return 0;
-+}
-+
-+static int ohci_hcd_pnx8550_drv_resume(struct device *dev, u32 state)
-+{
-+//	struct platform_device *pdev = to_platform_device(dev);
-+//	struct usb_hcd *hcd = dev_get_drvdata(dev);
-+	printk("%s: not implemented yet\n", __FUNCTION__);
-+
-+	return 0;
-+}
-+
-+
-+static struct device_driver ohci_hcd_pnx8550_driver = {
-+	.name		= "pnx8550-ohci",
-+	.bus		= &platform_bus_type,
-+	.probe		= ohci_hcd_pnx8550_drv_probe,
-+	.remove		= ohci_hcd_pnx8550_drv_remove,
-+	.suspend	= ohci_hcd_pnx8550_drv_suspend, 
-+	.resume		= ohci_hcd_pnx8550_drv_resume, 
-+};
-+
-+static int __init ohci_hcd_pnx8550_init (void)
-+{
-+	pr_debug (DRIVER_INFO " (pnx8550)");
-+	pr_debug ("block sizes: ed %d td %d\n",
-+		sizeof (struct ed), sizeof (struct td));
-+
-+	return driver_register(&ohci_hcd_pnx8550_driver);
-+}
-+
-+static void __exit ohci_hcd_pnx8550_cleanup (void)
-+{
-+	driver_unregister(&ohci_hcd_pnx8550_driver);
-+}
-+
-+module_init (ohci_hcd_pnx8550_init);
-+module_exit (ohci_hcd_pnx8550_cleanup);
-diff -Naur linux-2.6.19.1/drivers/video/Kconfig linux-mips-2.6.19.1/drivers/video/Kconfig
---- linux-2.6.19.1/drivers/video/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/video/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -1277,6 +1277,17 @@
+diff -Naur linux-2.6.20/drivers/video/Kconfig linux-mips-2.6.20/drivers/video/Kconfig
+--- linux-2.6.20/drivers/video/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/video/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -1281,6 +1281,17 @@
  	  Please read the <file:Documentation/fb/README-sstfb.txt> for supported
  	  options and other important info  support.
  
@@ -13314,7 +12010,7 @@ diff -Naur linux-2.6.19.1/drivers/video/Kconfig linux-mips-2.6.19.1/drivers/vide
  config FB_CYBLA
  	tristate "Cyberblade/i1 support"
  	depends on FB && PCI && X86_32 && !64BIT
-@@ -1341,7 +1352,25 @@
+@@ -1345,7 +1356,25 @@
  
  config FB_AU1100
  	bool "Au1100 LCD Driver"
@@ -13341,7 +12037,7 @@ diff -Naur linux-2.6.19.1/drivers/video/Kconfig linux-mips-2.6.19.1/drivers/vide
  
  config FB_AU1200
  	bool "Au1200 LCD Driver"
-@@ -1457,8 +1486,8 @@
+@@ -1461,8 +1490,8 @@
   	select FB_CFB_IMAGEBLIT
  	help
  	  Support for the PMAGB-B TURBOchannel framebuffer card used mainly
@@ -13352,9 +12048,9 @@ diff -Naur linux-2.6.19.1/drivers/video/Kconfig linux-mips-2.6.19.1/drivers/vide
  
  config FB_MAXINE
  	bool "Maxine (Personal DECstation) onboard framebuffer support"
-diff -Naur linux-2.6.19.1/drivers/video/Makefile linux-mips-2.6.19.1/drivers/video/Makefile
---- linux-2.6.19.1/drivers/video/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/video/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/video/Makefile linux-mips-2.6.20/drivers/video/Makefile
+--- linux-2.6.20/drivers/video/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/video/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -96,6 +96,7 @@
  obj-$(CONFIG_FB_TX3912)		  += tx3912fb.o
  obj-$(CONFIG_FB_S1D13XXX)	  += s1d13xxxfb.o
@@ -13363,9 +12059,9 @@ diff -Naur linux-2.6.19.1/drivers/video/Makefile linux-mips-2.6.19.1/drivers/vid
  obj-$(CONFIG_FB_S3C2410)	  += s3c2410fb.o
  obj-$(CONFIG_FB_PNX4008_DUM)	  += pnx4008/
  obj-$(CONFIG_FB_PNX4008_DUM_RGB)  += pnx4008/
-diff -Naur linux-2.6.19.1/drivers/video/au1100fb.c linux-mips-2.6.19.1/drivers/video/au1100fb.c
---- linux-2.6.19.1/drivers/video/au1100fb.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/video/au1100fb.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/video/au1100fb.c linux-mips-2.6.20/drivers/video/au1100fb.c
+--- linux-2.6.20/drivers/video/au1100fb.c	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/drivers/video/au1100fb.c	2007-02-04 12:22:45.000000000 -0800
 @@ -41,6 +41,7 @@
   *  with this program; if not, write  to the Free Software Foundation, Inc.,
   *  675 Mass Ave, Cambridge, MA 02139, USA.
@@ -13374,9 +12070,9 @@ diff -Naur linux-2.6.19.1/drivers/video/au1100fb.c linux-mips-2.6.19.1/drivers/v
  #include <linux/module.h>
  #include <linux/kernel.h>
  #include <linux/errno.h>
-diff -Naur linux-2.6.19.1/drivers/video/smivgxfb.c linux-mips-2.6.19.1/drivers/video/smivgxfb.c
---- linux-2.6.19.1/drivers/video/smivgxfb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/drivers/video/smivgxfb.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/drivers/video/smivgxfb.c linux-mips-2.6.20/drivers/video/smivgxfb.c
+--- linux-2.6.20/drivers/video/smivgxfb.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/drivers/video/smivgxfb.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,387 @@
 +/***************************************************************************
 + *  Silicon Motion VoyagerGX framebuffer driver
@@ -13765,100 +12461,9 @@ diff -Naur linux-2.6.19.1/drivers/video/smivgxfb.c linux-mips-2.6.19.1/drivers/v
 +MODULE_AUTHOR("");
 +MODULE_DESCRIPTION("Framebuffer driver for SMI Voyager");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.19.1/include/asm-mips/compat.h linux-mips-2.6.19.1/include/asm-mips/compat.h
---- linux-2.6.19.1/include/asm-mips/compat.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/compat.h	2006-12-11 15:38:26.000000000 -0800
-@@ -5,6 +5,7 @@
-  */
- #include <linux/types.h>
- #include <asm/page.h>
-+#include <asm/ptrace.h>
- 
- #define COMPAT_USER_HZ	100
- 
-@@ -32,6 +33,7 @@
- 	s32	val[2];
- } compat_fsid_t;
- typedef s32		compat_timer_t;
-+typedef s32		compat_key_t;
- 
- typedef s32		compat_int_t;
- typedef s32		compat_long_t;
-@@ -146,4 +148,71 @@
- 	return (void __user *) (regs->regs[29] - len);
- }
- 
-+struct compat_ipc64_perm {
-+	compat_key_t key;
-+	__compat_uid32_t uid;
-+	__compat_gid32_t gid;
-+	__compat_uid32_t cuid;
-+	__compat_gid32_t cgid;
-+	compat_mode_t mode;
-+	unsigned short seq;
-+	unsigned short __pad2;
-+	compat_ulong_t __unused1;
-+	compat_ulong_t __unused2;
-+};
-+
-+struct compat_semid64_ds {
-+	struct compat_ipc64_perm sem_perm;
-+	compat_time_t	sem_otime;
-+	compat_time_t	sem_ctime;
-+	compat_ulong_t	sem_nsems;
-+	compat_ulong_t	__unused1;
-+	compat_ulong_t	__unused2;
-+};
-+
-+struct compat_msqid64_ds {
-+	struct compat_ipc64_perm msg_perm;
-+#ifndef CONFIG_CPU_LITTLE_ENDIAN
-+	compat_ulong_t	__unused1;
-+#endif
-+	compat_time_t	msg_stime;
-+#ifdef CONFIG_CPU_LITTLE_ENDIAN
-+	compat_ulong_t	__unused1;
-+#endif
-+#ifndef CONFIG_CPU_LITTLE_ENDIAN
-+	compat_ulong_t	__unused2;
-+#endif
-+	compat_time_t	msg_rtime;
-+#ifdef CONFIG_CPU_LITTLE_ENDIAN
-+	compat_ulong_t	__unused2;
-+#endif
-+#ifndef CONFIG_CPU_LITTLE_ENDIAN
-+	compat_ulong_t	__unused3;
-+#endif
-+	compat_time_t	msg_ctime;
-+#ifdef CONFIG_CPU_LITTLE_ENDIAN
-+	compat_ulong_t	__unused3;
-+#endif
-+	compat_ulong_t	msg_cbytes;
-+	compat_ulong_t	msg_qnum;
-+	compat_ulong_t	msg_qbytes;
-+	compat_pid_t	msg_lspid;
-+	compat_pid_t	msg_lrpid;
-+	compat_ulong_t	__unused4;
-+	compat_ulong_t	__unused5;
-+};
-+
-+struct compat_shmid64_ds {
-+	struct compat_ipc64_perm shm_perm;
-+	compat_size_t	shm_segsz;
-+	compat_time_t	shm_atime;
-+	compat_time_t	shm_dtime;
-+	compat_time_t	shm_ctime;
-+	compat_pid_t	shm_cpid;
-+	compat_pid_t	shm_lpid;
-+	compat_ulong_t	shm_nattch;
-+	compat_ulong_t	__unused1;
-+	compat_ulong_t	__unused2;
-+};
-+
- #endif /* _ASM_COMPAT_H */
-diff -Naur linux-2.6.19.1/include/asm-mips/io.h linux-mips-2.6.19.1/include/asm-mips/io.h
---- linux-2.6.19.1/include/asm-mips/io.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/io.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/include/asm-mips/io.h linux-mips-2.6.20/include/asm-mips/io.h
+--- linux-2.6.20/include/asm-mips/io.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/asm-mips/io.h	2007-02-04 12:22:45.000000000 -0800
 @@ -518,34 +518,6 @@
  }
  
@@ -13894,9 +12499,9 @@ diff -Naur linux-2.6.19.1/include/asm-mips/io.h linux-mips-2.6.19.1/include/asm-
   * ISA space is 'always mapped' on currently supported MIPS systems, no need
   * to explicitly ioremap() it. The fact that the ISA IO space is mapped
   * to PAGE_OFFSET is pure coincidence - it does not mean ISA values
-diff -Naur linux-2.6.19.1/include/asm-mips/mach-au1x00/au1000.h linux-mips-2.6.19.1/include/asm-mips/mach-au1x00/au1000.h
---- linux-2.6.19.1/include/asm-mips/mach-au1x00/au1000.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/mach-au1x00/au1000.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/include/asm-mips/mach-au1x00/au1000.h linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1000.h
+--- linux-2.6.20/include/asm-mips/mach-au1x00/au1000.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1000.h	2007-02-04 12:22:45.000000000 -0800
 @@ -39,6 +39,7 @@
  #ifndef _LANGUAGE_ASSEMBLY
  
@@ -13905,28 +12510,9 @@ diff -Naur linux-2.6.19.1/include/asm-mips/mach-au1x00/au1000.h linux-mips-2.6.1
  #include <asm/io.h>
  
  /* cpu pipeline flush */
-@@ -1664,12 +1665,12 @@
-  * addresses.  For PCI IO, it's simpler because we get to do the ioremap
-  * ourselves and then adjust the device's resources.
-  */
--#define Au1500_EXT_CFG            0x600000000ULL
--#define Au1500_EXT_CFG_TYPE1      0x680000000ULL
--#define Au1500_PCI_IO_START       0x500000000ULL
--#define Au1500_PCI_IO_END         0x5000FFFFFULL
--#define Au1500_PCI_MEM_START      0x440000000ULL
--#define Au1500_PCI_MEM_END        0x44FFFFFFFULL
-+#define Au1500_EXT_CFG            ((resource_size_t) 0x600000000ULL)
-+#define Au1500_EXT_CFG_TYPE1      ((resource_size_t) 0x680000000ULL)
-+#define Au1500_PCI_IO_START       ((resource_size_t) 0x500000000ULL)
-+#define Au1500_PCI_IO_END         ((resource_size_t) 0x5000FFFFFULL)
-+#define Au1500_PCI_MEM_START      ((resource_size_t) 0x440000000ULL)
-+#define Au1500_PCI_MEM_END        ((resource_size_t) 0x44FFFFFFFULL)
- 
- #define PCI_IO_START    (Au1500_PCI_IO_START + 0x1000)
- #define PCI_IO_END      (Au1500_PCI_IO_END)
-diff -Naur linux-2.6.19.1/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2.6.19.1/include/asm-mips/mach-au1x00/au1xxx_ide.h
---- linux-2.6.19.1/include/asm-mips/mach-au1x00/au1xxx_ide.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/mach-au1x00/au1xxx_ide.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h
+--- linux-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h	2007-02-04 12:22:45.000000000 -0800
 @@ -83,6 +83,7 @@
  } _auide_hwif;
  
@@ -13935,174 +12521,34 @@ diff -Naur linux-2.6.19.1/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2
  /* HD white list */
  static const struct drive_list_entry dma_white_list [] = {
  /*
-diff -Naur linux-2.6.19.1/include/asm-mips/mach-ip27/irq.h linux-mips-2.6.19.1/include/asm-mips/mach-ip27/irq.h
---- linux-2.6.19.1/include/asm-mips/mach-ip27/irq.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/mach-ip27/irq.h	2006-12-11 15:38:26.000000000 -0800
-@@ -10,8 +10,6 @@
- #ifndef __ASM_MACH_IP27_IRQ_H
- #define __ASM_MACH_IP27_IRQ_H
+diff -Naur linux-2.6.20/include/asm-mips/mach-generic/ide.h linux-mips-2.6.20/include/asm-mips/mach-generic/ide.h
+--- linux-2.6.20/include/asm-mips/mach-generic/ide.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/asm-mips/mach-generic/ide.h	2007-02-04 12:22:45.000000000 -0800
+@@ -29,17 +29,12 @@
  
--#include <asm/sn/arch.h>
--
- /*
-  * A hardwired interrupt number is completly stupid for this system - a
-  * large configuration might have thousands if not tenthousands of
-diff -Naur linux-2.6.19.1/include/asm-mips/mach-ip27/topology.h linux-mips-2.6.19.1/include/asm-mips/mach-ip27/topology.h
---- linux-2.6.19.1/include/asm-mips/mach-ip27/topology.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/mach-ip27/topology.h	2006-12-11 15:38:26.000000000 -0800
-@@ -1,7 +1,6 @@
- #ifndef _ASM_MACH_TOPOLOGY_H
- #define _ASM_MACH_TOPOLOGY_H	1
+ #define IDE_ARCH_OBSOLETE_DEFAULTS
  
--#include <asm/sn/arch.h>
- #include <asm/sn/hub.h>
- #include <asm/mmzone.h>
- 
-diff -Naur linux-2.6.19.1/include/asm-mips/page.h linux-mips-2.6.19.1/include/asm-mips/page.h
---- linux-2.6.19.1/include/asm-mips/page.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/page.h	2006-12-11 15:38:26.000000000 -0800
-@@ -59,16 +59,13 @@
- 		flush_data_cache_page((unsigned long)addr);
- }
- 
--static inline void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
--	struct page *to)
--{
--	extern void (*flush_data_cache_page)(unsigned long addr);
--
--	copy_page(vto, vfrom);
--	if (!cpu_has_ic_fills_f_dc ||
--	    pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
--		flush_data_cache_page((unsigned long)vto);
--}
-+extern void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
-+	struct page *to);
-+struct vm_area_struct;
-+extern void copy_user_highpage(struct page *to, struct page *from,
-+	unsigned long vaddr, struct vm_area_struct *vma);
++extern int mips_system_has_legacy_ide;
 +
-+#define __HAVE_ARCH_COPY_USER_HIGHPAGE
- 
- /*
-  * These are used to make use of C type-checking..
-diff -Naur linux-2.6.19.1/include/asm-mips/pci.h linux-mips-2.6.19.1/include/asm-mips/pci.h
---- linux-2.6.19.1/include/asm-mips/pci.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/pci.h	2006-12-11 15:38:26.000000000 -0800
-@@ -187,4 +187,10 @@
- /* Do platform specific device initialization at pci_enable_device() time */
- extern int pcibios_plat_dev_init(struct pci_dev *dev);
- 
-+/* Chances are this interrupt is wired PC-style ...  */
-+static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
-+{
-+	return channel ? 15 : 14;
-+}
-+
- #endif /* _ASM_PCI_H */
-diff -Naur linux-2.6.19.1/include/asm-mips/ptrace.h linux-mips-2.6.19.1/include/asm-mips/ptrace.h
---- linux-2.6.19.1/include/asm-mips/ptrace.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/ptrace.h	2006-12-11 15:38:26.000000000 -0800
-@@ -84,6 +84,14 @@
- 
- extern asmlinkage void do_syscall_trace(struct pt_regs *regs, int entryexit);
- 
-+extern NORET_TYPE void die(const char *, struct pt_regs *);
-+
-+static inline void die_if_kernel(const char *str, struct pt_regs *regs)
-+{
-+	if (unlikely(!user_mode(regs)))
-+		die(str, regs);
-+}
-+
- #endif
- 
- #endif /* _ASM_PTRACE_H */
-diff -Naur linux-2.6.19.1/include/asm-mips/sn/arch.h linux-mips-2.6.19.1/include/asm-mips/sn/arch.h
---- linux-2.6.19.1/include/asm-mips/sn/arch.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/sn/arch.h	2006-12-11 15:38:26.000000000 -0800
-@@ -18,7 +18,6 @@
- #endif
- 
- typedef u64	hubreg_t;
--typedef u64	nic_t;
- 
- #define cputonasid(cpu)			(cpu_data[(cpu)].p_nasid)
- #define cputoslice(cpu)			(cpu_data[(cpu)].p_slice)
-diff -Naur linux-2.6.19.1/include/asm-mips/sn/klconfig.h linux-mips-2.6.19.1/include/asm-mips/sn/klconfig.h
---- linux-2.6.19.1/include/asm-mips/sn/klconfig.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/sn/klconfig.h	2006-12-11 15:38:26.000000000 -0800
-@@ -61,6 +61,8 @@
- #endif /* CONFIG_SGI_IP35 */
- #endif /* CONFIG_SGI_IP27 || CONFIG_SGI_IP35 */
- 
-+typedef u64  nic_t;
-+
- #define KLCFGINFO_MAGIC	0xbeedbabe
- 
- typedef s32 klconf_off_t;
-@@ -176,7 +178,7 @@
- /* --- New Macros for the changed kl_config_hdr_t structure --- */
- 
- #define PTR_CH_MALLOC_HDR(_k)   ((klc_malloc_hdr_t *)\
--			(unsigned long)_k + (_k->ch_malloc_hdr_off)))
-+			((unsigned long)_k + (_k->ch_malloc_hdr_off)))
- 
- #define KL_CONFIG_CH_MALLOC_HDR(_n)   PTR_CH_MALLOC_HDR(KL_CONFIG_HDR(_n))
- 
-diff -Naur linux-2.6.19.1/include/asm-mips/system.h linux-mips-2.6.19.1/include/asm-mips/system.h
---- linux-2.6.19.1/include/asm-mips/system.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/asm-mips/system.h	2006-12-11 15:38:26.000000000 -0800
-@@ -18,7 +18,6 @@
- #include <asm/addrspace.h>
- #include <asm/cpu-features.h>
- #include <asm/dsp.h>
--#include <asm/ptrace.h>
- #include <asm/war.h>
- 
- /*
-@@ -472,14 +471,6 @@
- extern unsigned long ebase;
- extern void per_cpu_trap_init(void);
- 
--extern NORET_TYPE void die(const char *, struct pt_regs *);
--
--static inline void die_if_kernel(const char *str, struct pt_regs *regs)
--{
--	if (unlikely(!user_mode(regs)))
--		die(str, regs);
--}
--
- extern int stop_a_enabled;
- 
- /*
-diff -Naur linux-2.6.19.1/include/linux/highmem.h linux-mips-2.6.19.1/include/linux/highmem.h
---- linux-2.6.19.1/include/linux/highmem.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/linux/highmem.h	2006-12-11 15:38:26.000000000 -0800
-@@ -94,7 +94,10 @@
- 	kunmap_atomic(kaddr, KM_USER0);
- }
- 
--static inline void copy_user_highpage(struct page *to, struct page *from, unsigned long vaddr)
-+#ifndef __HAVE_ARCH_COPY_USER_HIGHPAGE
-+
-+static inline void copy_user_highpage(struct page *to, struct page *from,
-+	unsigned long vaddr, struct vm_area_struct *vma)
+ static __inline__ int ide_probe_legacy(void)
  {
- 	char *vfrom, *vto;
- 
-@@ -107,6 +110,8 @@
- 	smp_wmb();
- }
- 
-+#endif
-+
- static inline void copy_highpage(struct page *to, struct page *from)
- {
- 	char *vfrom, *vto;
-diff -Naur linux-2.6.19.1/include/linux/pci_ids.h linux-mips-2.6.19.1/include/linux/pci_ids.h
---- linux-2.6.19.1/include/linux/pci_ids.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/linux/pci_ids.h	2006-12-11 15:38:26.000000000 -0800
-@@ -1604,6 +1604,9 @@
+ #ifdef CONFIG_PCI
+-	struct pci_dev *dev;
+-	if ((dev = pci_get_class(PCI_CLASS_BRIDGE_EISA << 8, NULL)) != NULL ||
+-	    (dev = pci_get_class(PCI_CLASS_BRIDGE_ISA << 8, NULL)) != NULL) {
+-		pci_dev_put(dev);
+-
+-		return 1;
+-	}
+-	return 0;
++	return mips_system_has_legacy_ide;
+ #elif defined(CONFIG_EISA) || defined(CONFIG_ISA)
+ 	return 1;
+ #else
+diff -Naur linux-2.6.20/include/linux/pci_ids.h linux-mips-2.6.20/include/linux/pci_ids.h
+--- linux-2.6.20/include/linux/pci_ids.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/linux/pci_ids.h	2007-02-04 12:22:45.000000000 -0800
+@@ -1614,6 +1614,9 @@
  #define PCI_VENDOR_ID_SATSAGEM		0x1267
  #define PCI_DEVICE_ID_SATSAGEM_NICCY	0x1016
  
@@ -14112,9 +12558,9 @@ diff -Naur linux-2.6.19.1/include/linux/pci_ids.h linux-mips-2.6.19.1/include/li
  
  #define PCI_VENDOR_ID_ENSONIQ		0x1274
  #define PCI_DEVICE_ID_ENSONIQ_CT5880	0x5880
-diff -Naur linux-2.6.19.1/include/linux/serial.h linux-mips-2.6.19.1/include/linux/serial.h
---- linux-2.6.19.1/include/linux/serial.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/linux/serial.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/include/linux/serial.h linux-mips-2.6.20/include/linux/serial.h
+--- linux-2.6.20/include/linux/serial.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/linux/serial.h	2007-02-04 12:22:45.000000000 -0800
 @@ -76,7 +76,8 @@
  #define PORT_16654	11
  #define PORT_16850	12
@@ -14125,9 +12571,9 @@ diff -Naur linux-2.6.19.1/include/linux/serial.h linux-mips-2.6.19.1/include/lin
  
  #define SERIAL_IO_PORT	0
  #define SERIAL_IO_HUB6	1
-diff -Naur linux-2.6.19.1/include/linux/serial_ip3106.h linux-mips-2.6.19.1/include/linux/serial_ip3106.h
---- linux-2.6.19.1/include/linux/serial_ip3106.h	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/include/linux/serial_ip3106.h	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/include/linux/serial_ip3106.h linux-mips-2.6.20/include/linux/serial_ip3106.h
+--- linux-2.6.20/include/linux/serial_ip3106.h	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/include/linux/serial_ip3106.h	2007-02-04 12:22:45.000000000 -0800
 @@ -78,4 +78,16 @@
  #define IP3106_UART_FIFO_RXFIFO		0x00001F00
  #define IP3106_UART_FIFO_RBRTHR		0x000000FF
@@ -14145,52 +12591,10 @@ diff -Naur linux-2.6.19.1/include/linux/serial_ip3106.h linux-mips-2.6.19.1/incl
 +#define ip3106_mid(base, port)   *(volatile u32 *)(base+(port*0x1000) + 0xFFC)
 +
  #endif
-diff -Naur linux-2.6.19.1/mm/memory.c linux-mips-2.6.19.1/mm/memory.c
---- linux-2.6.19.1/mm/memory.c	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/mm/memory.c	2006-12-11 15:38:26.000000000 -0800
-@@ -1431,7 +1431,7 @@
- 	return pte;
- }
- 
--static inline void cow_user_page(struct page *dst, struct page *src, unsigned long va)
-+static inline void cow_user_page(struct page *dst, struct page *src, unsigned long va, struct vm_area_struct *vma)
- {
- 	/*
- 	 * If the source page was a PFN mapping, we don't have
-@@ -1454,9 +1454,9 @@
- 		kunmap_atomic(kaddr, KM_USER0);
- 		flush_dcache_page(dst);
- 		return;
--		
-+
- 	}
--	copy_user_highpage(dst, src, va);
-+	copy_user_highpage(dst, src, va, vma);
- }
- 
- /*
-@@ -1567,7 +1567,7 @@
- 		new_page = alloc_page_vma(GFP_HIGHUSER, vma, address);
- 		if (!new_page)
- 			goto oom;
--		cow_user_page(new_page, old_page, address);
-+		cow_user_page(new_page, old_page, address, vma);
- 	}
- 
- 	/*
-@@ -2191,7 +2191,7 @@
- 			page = alloc_page_vma(GFP_HIGHUSER, vma, address);
- 			if (!page)
- 				goto oom;
--			copy_user_highpage(page, new_page, address);
-+			copy_user_highpage(page, new_page, address, vma);
- 			page_cache_release(new_page);
- 			new_page = page;
- 			anon = 1;
-diff -Naur linux-2.6.19.1/sound/oss/Kconfig linux-mips-2.6.19.1/sound/oss/Kconfig
---- linux-2.6.19.1/sound/oss/Kconfig	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/sound/oss/Kconfig	2006-12-11 15:38:26.000000000 -0800
-@@ -128,6 +128,13 @@
+diff -Naur linux-2.6.20/sound/oss/Kconfig linux-mips-2.6.20/sound/oss/Kconfig
+--- linux-2.6.20/sound/oss/Kconfig	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/sound/oss/Kconfig	2007-02-04 12:22:45.000000000 -0800
+@@ -80,6 +80,13 @@
  	select SND_AC97_CODEC
  	depends on SOUND_PRIME && (SOC_AU1550 || SOC_AU1200)
  
@@ -14204,9 +12608,9 @@ diff -Naur linux-2.6.19.1/sound/oss/Kconfig linux-mips-2.6.19.1/sound/oss/Kconfi
  config SOUND_TRIDENT
  	tristate "Trident 4DWave DX/NX, SiS 7018 or ALi 5451 PCI Audio Core"
  	depends on SOUND_PRIME && PCI
-diff -Naur linux-2.6.19.1/sound/oss/Makefile linux-mips-2.6.19.1/sound/oss/Makefile
---- linux-2.6.19.1/sound/oss/Makefile	2006-12-11 11:32:53.000000000 -0800
-+++ linux-mips-2.6.19.1/sound/oss/Makefile	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/sound/oss/Makefile linux-mips-2.6.20/sound/oss/Makefile
+--- linux-2.6.20/sound/oss/Makefile	2007-02-04 10:44:54.000000000 -0800
++++ linux-mips-2.6.20/sound/oss/Makefile	2007-02-04 12:22:45.000000000 -0800
 @@ -45,6 +45,7 @@
  obj-$(CONFIG_SOUND_ES1371)	+= es1371.o ac97_codec.o
  obj-$(CONFIG_SOUND_VRC5477)	+= nec_vrc5477.o ac97_codec.o
@@ -14215,9 +12619,9 @@ diff -Naur linux-2.6.19.1/sound/oss/Makefile linux-mips-2.6.19.1/sound/oss/Makef
  obj-$(CONFIG_SOUND_FUSION)	+= cs46xx.o ac97_codec.o
  obj-$(CONFIG_SOUND_TRIDENT)	+= trident.o ac97_codec.o
  obj-$(CONFIG_SOUND_EMU10K1)	+= ac97_codec.o
-diff -Naur linux-2.6.19.1/sound/oss/au1550_i2s.c linux-mips-2.6.19.1/sound/oss/au1550_i2s.c
---- linux-2.6.19.1/sound/oss/au1550_i2s.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.19.1/sound/oss/au1550_i2s.c	2006-12-11 15:38:26.000000000 -0800
+diff -Naur linux-2.6.20/sound/oss/au1550_i2s.c linux-mips-2.6.20/sound/oss/au1550_i2s.c
+--- linux-2.6.20/sound/oss/au1550_i2s.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-mips-2.6.20/sound/oss/au1550_i2s.c	2007-02-04 12:22:45.000000000 -0800
 @@ -0,0 +1,2029 @@
 +/*
 + *      au1550_i2s.c  --  Sound driver for Alchemy Au1550 MIPS
