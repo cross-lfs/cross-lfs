@@ -1,0 +1,32 @@
+Submitted By: Joe Ciccone <jciccone@linuxfromscratch.org>
+Date: 2006-11-29
+Initial Package Version: 2.6.19
+Origin: Joe Ciccone
+Upstream Status: Unknown
+Description: Fixes a build issue with alpha on some processors. The
+             instructions being modified are specific to ev56/ev6.
+
+diff -Naur linux-2.6.19.orig/include/asm-alpha/compiler.h linux-2.6.19/include/asm-alpha/compiler.h
+--- linux-2.6.19.orig/include/asm-alpha/compiler.h	2006-11-29 13:57:37.000000000 -0800
++++ linux-2.6.19/include/asm-alpha/compiler.h	2006-11-29 19:11:54.000000000 -0800
+@@ -78,16 +78,16 @@
+ #else
+ #define __kernel_ldbu(mem)				\
+   ({ unsigned char __kir;				\
+-     __asm__("ldbu %0,%1" : "=r"(__kir) : "m"(mem));	\
++     __asm__(".arch ev6; ldbu %0,%1" : "=r"(__kir) : "m"(mem));	\
+      __kir; })
+ #define __kernel_ldwu(mem)				\
+   ({ unsigned short __kir;				\
+-     __asm__("ldwu %0,%1" : "=r"(__kir) : "m"(mem));	\
++     __asm__(".arch ev6; ldwu %0,%1" : "=r"(__kir) : "m"(mem));	\
+      __kir; })
+ #define __kernel_stb(val,mem) \
+-  __asm__("stb %1,%0" : "=m"(mem) : "r"(val))
++  __asm__(".arch ev6; stb %1,%0" : "=m"(mem) : "r"(val))
+ #define __kernel_stw(val,mem) \
+-  __asm__("stw %1,%0" : "=m"(mem) : "r"(val))
++  __asm__(".arch ev6; stw %1,%0" : "=m"(mem) : "r"(val))
+ #endif
+ 
+ #ifdef __KERNEL__
