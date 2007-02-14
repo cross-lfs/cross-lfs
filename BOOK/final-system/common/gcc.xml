@@ -25,13 +25,6 @@
   <sect2 role="installation">
     <title>Installation of GCC</title>
 
-    <para os="p1">The following patch fixes the searching of multilib dirs for
-    specs file. The patch standardizes the gcc drivers path iteration functions,
-    ensuring multilib directories are searched in the correct order. This fixes
-    various issues, most noticably with libtool on multilib systems:</para>
-
-<screen os="p2"><userinput>patch -Np1 -i ../&gcc-PR20425-patch;</userinput></screen>
-
     <para os="d">Apply a <command>sed</command> substitution that will suppress the
     installation of <filename class="libraryfile">libiberty.a</filename>. The
     version of <filename class="libraryfile">libiberty.a</filename> provided by

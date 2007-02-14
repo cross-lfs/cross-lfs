@@ -1,15 +1,16 @@
 Submitted By: Ryan Oliver <ryan at pha dot com dot au>
-Date: 2006-04-30
-Initial Package Version: 4.1.0
+Date: 2007-02-14
+Initial Package Version: 4.1.2
 Origin: Jakub
 Upstream Status: In GCC Trunk
 Description: Fixed in GCC SVN Revision #110522
 	* config/sparc/sparc.c (sparc_output_scratch_registers): Use
 	#ignore instead of #scratch for %g7 .register directive.
 
---- trunk/gcc/config/sparc/sparc.c	2006/01/31 22:33:27	110451
-+++ trunk/gcc/config/sparc/sparc.c	2006/02/02 22:49:01	110522
-@@ -3693,7 +3693,10 @@
+diff -Naur gcc-4.1.2.orig/gcc/config/sparc/sparc.c gcc-4.1.2/gcc/config/sparc/sparc.c
+--- gcc-4.1.2.orig/gcc/config/sparc/sparc.c	2006-04-14 00:02:43.000000000 -0700
++++ gcc-4.1.2/gcc/config/sparc/sparc.c	2007-02-14 08:00:08.000000000 -0800
+@@ -3709,7 +3709,10 @@
  	  && ! sparc_hard_reg_printed [i])
  	{
  	  sparc_hard_reg_printed [i] = 1;
@@ -21,4 +22,3 @@ Description: Fixed in GCC SVN Revision #110522
  	}
        if (i == 3) i = 5;
      }
-
