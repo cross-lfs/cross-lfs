@@ -54,8 +54,7 @@
     href="../../cross-tools/x86/gcc-static.xml"
     xpointer="xpointer(//*[@os='af'])"/>
 
-    <para os="cd">Now we will change <command>cpp</command>'s search path not to look in
-    <filename class="directory">/usr/include</filename>:</para>
+    <para os="cd">Now we will change <command>cpp</command>'s search path so it     won't look in <filename class="directory">/usr/include</filename>:</para>
 
 <screen os="ce"><userinput>cp -v gcc/cppdefault.c{,.orig}
 sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
