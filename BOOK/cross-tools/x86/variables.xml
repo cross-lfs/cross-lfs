@@ -14,24 +14,26 @@
 
   <para os="a">During the building of the cross-compile tools you will need to
   set a few variables that will be dependent on your particular needs.
-  The first variable will be the triplet of the <envar>HOST</envar> machine.
-  You will need to set the <envar>CHOST</envar> triplet to match your
-  particular needs. To set this information you can issue the following
-  command:</para>
+  The first variable will be the triplet of the host machine, which will be
+  put into the <envar>CLFS_HOST</envar> variable. To account for the
+  possibility that the host and target are the same arch, as cross-compiling
+  won't work when host and target are the same, part of the triplet needs to
+  be changed slightly to add "cross". Set <envar>CLFS_HOST</envar> using the
+  following command:</para>
 
 <screen os="b"><userinput>export CLFS_HOST="$(echo $MACHTYPE | sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"</userinput></screen>
 
-  <para os="c">Now you will need to set the target triplet for the target
-  architecture. You can do this by running the same command as above, just
-  running it on the target machine. If you can't run the command on the
-  target machine, you can use the table at the bottom of this page. Set
-  the command using the method listed below:</para>
+  <para os="c">Now you will need to set the triplet for the target
+  architecture. Set the target variable using the following command:</para>
 
-<screen os="d"><userinput>export CLFS_TARGET="{target triplet}"</userinput></screen>
+<screen os="d"><userinput>export CLFS_TARGET="[target triplet]"</userinput></screen>
 
-  <bridgehead renderas="sect4">Copy settings to Environment</bridgehead>
+  <para os="t1">Replace [target triplet] with the appropriate machine triplet
+  using the table at the bottom of the page.</para>
 
-  <para os="e">Now we will add these to <filename>~/.bashrc</filename>, just in
+  <bridgehead renderas="sect4">Copy settings to the Environment</bridgehead>
+
+  <para os="e">Now add these to <filename>~/.bashrc</filename>, just in
   case you have to exit and restart building later:</para>
 
 <screen os="f"><userinput>echo export CLFS_HOST=\""${CLFS_HOST}\"" &gt;&gt; ~/.bashrc
