@@ -1,15 +1,15 @@
 Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
-Date: 01-23-2007
+Date: 02-15-2007
 Initial Package Version: 7.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 7.0.188
+Description: Contains all upstream patches up to 7.0.195
              The following patches were skipped
              005 027 028 032 045 057 065 074 108 130 131 132 138 156 161 170 171 180
 
 diff -Naur vim70.orig/configure vim70/configure
 --- vim70.orig/configure	2004-07-05 02:02:24.000000000 -0700
-+++ vim70/configure	2007-01-23 17:14:51.000000000 -0800
++++ vim70/configure	2007-02-15 21:22:24.000000000 -0800
 @@ -3,4 +3,4 @@
  # This is just a stub for the Unix configure script, to provide support for
  # doing "./configure" in the top Vim directory.
@@ -18,7 +18,7 @@ diff -Naur vim70.orig/configure vim70/configure
 +cd src && exec ./configure "$@"
 diff -Naur vim70.orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccomplete.vim
 --- vim70.orig/runtime/autoload/ccomplete.vim	2006-05-03 07:35:56.000000000 -0700
-+++ vim70/runtime/autoload/ccomplete.vim	2007-01-23 17:14:45.000000000 -0800
++++ vim70/runtime/autoload/ccomplete.vim	2007-02-15 21:22:24.000000000 -0800
 @@ -1,7 +1,7 @@
  " Vim completion script
  " Language:	C
@@ -39,7 +39,7 @@ diff -Naur vim70.orig/runtime/autoload/ccomplete.vim vim70/runtime/autoload/ccom
    endif
 diff -Naur vim70.orig/runtime/autoload/gzip.vim vim70/runtime/autoload/gzip.vim
 --- vim70.orig/runtime/autoload/gzip.vim	2006-03-31 07:12:15.000000000 -0800
-+++ vim70/runtime/autoload/gzip.vim	2007-01-23 17:15:02.000000000 -0800
++++ vim70/runtime/autoload/gzip.vim	2007-02-15 21:22:25.000000000 -0800
 @@ -1,6 +1,6 @@
  " Vim autoload file for editing compressed files.
  " Maintainer: Bram Moolenaar <Bram@vim.org>
@@ -100,7 +100,7 @@ diff -Naur vim70.orig/runtime/autoload/gzip.vim vim70/runtime/autoload/gzip.vim
  " vim: set sw=2 :
 diff -Naur vim70.orig/runtime/autoload/paste.vim vim70/runtime/autoload/paste.vim
 --- vim70.orig/runtime/autoload/paste.vim	2006-04-21 11:31:01.000000000 -0700
-+++ vim70/runtime/autoload/paste.vim	2007-01-23 17:14:49.000000000 -0800
++++ vim70/runtime/autoload/paste.vim	2007-02-15 21:22:24.000000000 -0800
 @@ -1,6 +1,6 @@
  " Vim support file to help with paste mappings and menus
  " Maintainer:	Bram Moolenaar <Bram@vim.org>
@@ -120,7 +120,7 @@ diff -Naur vim70.orig/runtime/autoload/paste.vim vim70/runtime/autoload/paste.vi
      let ove = &ve
 diff -Naur vim70.orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spellfile.vim
 --- vim70.orig/runtime/autoload/spellfile.vim	2006-02-01 04:12:24.000000000 -0800
-+++ vim70/runtime/autoload/spellfile.vim	2007-01-23 17:14:56.000000000 -0800
++++ vim70/runtime/autoload/spellfile.vim	2007-02-15 21:22:25.000000000 -0800
 @@ -1,9 +1,9 @@
  " Vim script to download a missing spell file
  " Maintainer:	Bram Moolenaar <Bram@vim.org>
@@ -176,7 +176,7 @@ diff -Naur vim70.orig/runtime/autoload/spellfile.vim vim70/runtime/autoload/spel
 +endfunc
 diff -Naur vim70.orig/runtime/doc/autocmd.txt vim70/runtime/doc/autocmd.txt
 --- vim70.orig/runtime/doc/autocmd.txt	2006-05-07 05:16:44.000000000 -0700
-+++ vim70/runtime/doc/autocmd.txt	2007-01-23 17:15:23.000000000 -0800
++++ vim70/runtime/doc/autocmd.txt	2007-02-15 21:22:27.000000000 -0800
 @@ -1,4 +1,4 @@
 -*autocmd.txt*   For Vim version 7.0.  Last change: 2006 May 06
 +*autocmd.txt*   For Vim version 7.0.  Last change: 2007 Jan 16
@@ -238,7 +238,7 @@ diff -Naur vim70.orig/runtime/doc/autocmd.txt vim70/runtime/doc/autocmd.txt
  
 diff -Naur vim70.orig/runtime/doc/eval.txt vim70/runtime/doc/eval.txt
 --- vim70.orig/runtime/doc/eval.txt	2006-05-07 05:16:44.000000000 -0700
-+++ vim70/runtime/doc/eval.txt	2007-01-23 17:15:09.000000000 -0800
++++ vim70/runtime/doc/eval.txt	2007-02-15 21:22:27.000000000 -0800
 @@ -1,4 +1,4 @@
 -*eval.txt*      For Vim version 7.0.  Last change: 2006 May 06
 +*eval.txt*      For Vim version 7.0.  Last change: 2006 Nov 01
@@ -294,7 +294,52 @@ diff -Naur vim70.orig/runtime/doc/eval.txt vim70/runtime/doc/eval.txt
  		There is no prompt, you will somehow have to make clear to the
  		user that a character has to be typed.
  		There is no mapping for the character.
-@@ -4434,6 +4462,21 @@
+@@ -2869,12 +2897,14 @@
+ 			vcol	non-zero: "col" is visual column
+ 				zero: "col" is byte index
+ 			nr	error number
++			pattern	search pattern used to locate the error
+ 			text	description of the error
+ 			type	type of the error, 'E', '1', etc.
+ 			valid	non-zero: recognized error message
+ 
+ 		When there is no error list or it's empty an empty list is
+-		returned.
++		returned. Quickfix list entries with non-existing buffer
++		number are returned with "bufnr" set to zero.
+ 
+ 		Useful application: Find pattern matches in multiple files and
+ 		do something with them: >
+@@ -4343,7 +4373,10 @@
+ 		Non-dictionary items in {list} are ignored.  Each dictionary
+ 		item can contain the following entries:
+ 
+-		    filename	name of a file
++		    bufnr	buffer number; must be the number of a valid
++		    		buffer
++		    filename	name of a file; only used when "bufnr" is not
++		    		present or it is invalid.
+ 		    lnum	line number in the file
+ 		    pattern	search pattern used to locate the error
+ 		    col		column number
+@@ -4356,11 +4389,13 @@
+ 		The "col", "vcol", "nr", "type" and "text" entries are
+ 		optional.  Either "lnum" or "pattern" entry can be used to
+ 		locate a matching error line.
+-		If the "filename" entry is not present or neither the "lnum"
+-		or "pattern" entries are present, then the item will not be
+-		handled as an error line.
++		If the "filename" and "bufnr" entries are not present or
++		neither the "lnum" or "pattern" entries are present, then the
++		item will not be handled as an error line.
+ 		If both "pattern" and "lnum" are present then "pattern" will
+ 		be used.
++		Note that the list is not exactly the same as what
++		|getqflist()| returns.
+ 
+ 		If {action} is set to 'a', then the items from {list} are
+ 		added to the existing quickfix list. If there is no existing
+@@ -4434,6 +4469,21 @@
  			:call setwinvar(1, "&list", 0)
  			:call setwinvar(2, "myvar", "foobar")
  
@@ -318,7 +363,7 @@ diff -Naur vim70.orig/runtime/doc/eval.txt vim70/runtime/doc/eval.txt
  		the meaning.  Shortcuts (on MS-Windows) or symbolic links (on
 diff -Naur vim70.orig/runtime/doc/netbeans.txt vim70/runtime/doc/netbeans.txt
 --- vim70.orig/runtime/doc/netbeans.txt	2006-05-07 05:16:45.000000000 -0700
-+++ vim70/runtime/doc/netbeans.txt	2007-01-23 17:15:10.000000000 -0800
++++ vim70/runtime/doc/netbeans.txt	2007-02-15 21:22:26.000000000 -0800
 @@ -1,4 +1,4 @@
 -*netbeans.txt*  For Vim version 7.0.  Last change: 2006 Mar 09
 +*netbeans.txt*  For Vim version 7.0.  Last change: 2006 Nov 14
@@ -354,7 +399,7 @@ diff -Naur vim70.orig/runtime/doc/netbeans.txt vim70/runtime/doc/netbeans.txt
  		When no buffer is specified (buffer number zero): Return the
 diff -Naur vim70.orig/runtime/menu.vim vim70/runtime/menu.vim
 --- vim70.orig/runtime/menu.vim	2006-04-17 06:47:28.000000000 -0700
-+++ vim70/runtime/menu.vim	2007-01-23 17:15:02.000000000 -0800
++++ vim70/runtime/menu.vim	2007-02-15 21:22:25.000000000 -0800
 @@ -2,7 +2,7 @@
  " You can also use this as a start for your own set of menus.
  "
@@ -421,7 +466,7 @@ diff -Naur vim70.orig/runtime/menu.vim vim70/runtime/menu.vim
    tmenu ToolBar.TagJump		Jump to tag under cursor
 diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchparen.vim
 --- vim70.orig/runtime/plugin/matchparen.vim	2006-04-27 06:31:26.000000000 -0700
-+++ vim70/runtime/plugin/matchparen.vim	2007-01-23 17:15:00.000000000 -0800
++++ vim70/runtime/plugin/matchparen.vim	2007-02-15 21:22:25.000000000 -0800
 @@ -1,6 +1,6 @@
  " Vim plugin for showing matching parens
  " Maintainer:  Bram Moolenaar <Bram@vim.org>
@@ -464,7 +509,7 @@ diff -Naur vim70.orig/runtime/plugin/matchparen.vim vim70/runtime/plugin/matchpa
    " If a match is found setup match highlighting.
 diff -Naur vim70.orig/runtime/scripts.vim vim70/runtime/scripts.vim
 --- vim70.orig/runtime/scripts.vim	2006-03-28 11:30:49.000000000 -0800
-+++ vim70/runtime/scripts.vim	2007-01-23 17:14:51.000000000 -0800
++++ vim70/runtime/scripts.vim	2007-02-15 21:22:24.000000000 -0800
 @@ -1,7 +1,7 @@
  " Vim support file to detect file types in scripts
  "
@@ -489,7 +534,7 @@ diff -Naur vim70.orig/runtime/scripts.vim vim70/runtime/scripts.vim
      call SetFileTypeSH(s:line1)	" defined in filetype.vim
 diff -Naur vim70.orig/runtime/tutor/Makefile vim70/runtime/tutor/Makefile
 --- vim70.orig/runtime/tutor/Makefile	2004-06-07 07:32:39.000000000 -0700
-+++ vim70/runtime/tutor/Makefile	2007-01-23 17:15:00.000000000 -0800
++++ vim70/runtime/tutor/Makefile	2007-02-15 21:22:25.000000000 -0800
 @@ -2,8 +2,13 @@
  #
  # The Japanese tutor exists in three encodings.  Use the UTF-8 version as the
@@ -523,7 +568,7 @@ diff -Naur vim70.orig/runtime/tutor/Makefile vim70/runtime/tutor/Makefile
 +	iconv -f UTF-8 -t cp737 tutor.gr.utf-8 > tutor.gr.cp737
 diff -Naur vim70.orig/runtime/tutor/tutor.gr.utf-8 vim70/runtime/tutor/tutor.gr.utf-8
 --- vim70.orig/runtime/tutor/tutor.gr.utf-8	1969-12-31 16:00:00.000000000 -0800
-+++ vim70/runtime/tutor/tutor.gr.utf-8	2007-01-23 17:15:00.000000000 -0800
++++ vim70/runtime/tutor/tutor.gr.utf-8	2007-02-15 21:22:25.000000000 -0800
 @@ -0,0 +1,815 @@
 +===============================================================================
 +=    Κ αλ ω σ ή ρ θ α τ ε    σ τ ο   V I M   T u t o r    -    Έκδοση 1.5     =
@@ -1342,7 +1387,7 @@ diff -Naur vim70.orig/runtime/tutor/tutor.gr.utf-8 vim70/runtime/tutor/tutor.gr.
 +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 diff -Naur vim70.orig/runtime/tutor/tutor.ru.utf-8 vim70/runtime/tutor/tutor.ru.utf-8
 --- vim70.orig/runtime/tutor/tutor.ru.utf-8	1969-12-31 16:00:00.000000000 -0800
-+++ vim70/runtime/tutor/tutor.ru.utf-8	2007-01-23 17:14:56.000000000 -0800
++++ vim70/runtime/tutor/tutor.ru.utf-8	2007-02-15 21:22:25.000000000 -0800
 @@ -0,0 +1,834 @@
 +===============================================================================
 +=    Д о б р о   п о ж а л о в а т ь   в   у ч е б н и к   VIM  -  Версия 1.5 =
@@ -2180,7 +2225,7 @@ diff -Naur vim70.orig/runtime/tutor/tutor.ru.utf-8 vim70/runtime/tutor/tutor.ru.
 +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 diff -Naur vim70.orig/runtime/tutor/tutor.vim vim70/runtime/tutor/tutor.vim
 --- vim70.orig/runtime/tutor/tutor.vim	2006-03-18 12:20:36.000000000 -0800
-+++ vim70/runtime/tutor/tutor.vim	2007-01-23 17:15:00.000000000 -0800
++++ vim70/runtime/tutor/tutor.vim	2007-02-15 21:22:25.000000000 -0800
 @@ -1,6 +1,6 @@
  " Vim tutor support file
  " Author: Eduardo F. Amatria <eferna1@platea.pntic.mec.es>
@@ -2230,9 +2275,29 @@ diff -Naur vim70.orig/runtime/tutor/tutor.vim vim70/runtime/tutor/tutor.vim
  endif
  
  " Somehow ".ge" (Germany) is sometimes used for ".de" (Deutsch).
+diff -Naur vim70.orig/src/Makefile vim70/src/Makefile
+--- vim70.orig/src/Makefile	2006-05-07 06:25:27.000000000 -0700
++++ vim70/src/Makefile	2007-02-15 21:22:25.000000000 -0800
+@@ -2177,6 +2177,7 @@
+ 	cd $(SHADOWDIR)/xxd; ln -s ../../xxd/*.[ch] ../../xxd/Make* .
+ 	if test -d $(RSRC_DIR); then \
+ 		cd $(SHADOWDIR); \
++		ln -s ../infplist.xml .; \
+ 		ln -s ../$(RSRC_DIR) ../os_mac.rsr.hqx ../dehqx.py .; \
+ 	fi
+ 	mkdir $(SHADOWDIR)/testdir
+@@ -2260,7 +2261,7 @@
+ auto/osdef.h: auto/config.h osdef.sh osdef1.h.in osdef2.h.in
+ 	CC="$(CC) $(OSDEF_CFLAGS)" srcdir=$(srcdir) sh $(srcdir)/osdef.sh
+ 
+-QUOTESED = sed -e 's/"/\\"/g' -e 's/\\"/"/' -e 's/\\";$$/";/'
++QUOTESED = sed -e 's/[\\"]/\\&/g' -e 's/\\"/"/' -e 's/\\";$$/";/'
+ auto/pathdef.c: Makefile auto/config.mk
+ 	-@echo creating $@
+ 	-@echo '/* pathdef.c */' > $@
 diff -Naur vim70.orig/src/auto/configure vim70/src/auto/configure
 --- vim70.orig/src/auto/configure	2006-05-04 03:46:19.000000000 -0700
-+++ vim70/src/auto/configure	2007-01-23 17:15:06.000000000 -0800
++++ vim70/src/auto/configure	2007-02-15 21:22:26.000000000 -0800
 @@ -4014,7 +4014,7 @@
        LDFLAGS=$ldflags_save
        if test $perl_ok = yes; then
@@ -2273,7 +2338,7 @@ diff -Naur vim70.orig/src/auto/configure vim70/src/auto/configure
      echo "$as_me:$LINENO: result: yes" >&5
 diff -Naur vim70.orig/src/buffer.c vim70/src/buffer.c
 --- vim70.orig/src/buffer.c	2006-04-26 14:37:23.000000000 -0700
-+++ vim70/src/buffer.c	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/buffer.c	2007-02-15 21:22:26.000000000 -0800
 @@ -434,12 +434,8 @@
      if (usingNetbeans)
  	netbeans_file_closed(buf);
@@ -2424,7 +2489,7 @@ diff -Naur vim70.orig/src/buffer.c vim70/src/buffer.c
  	wipe_buffer(newbuf, FALSE);
 diff -Naur vim70.orig/src/configure vim70/src/configure
 --- vim70.orig/src/configure	2006-05-07 07:17:49.000000000 -0700
-+++ vim70/src/configure	2007-01-23 17:14:51.000000000 -0800
++++ vim70/src/configure	2007-02-15 21:22:24.000000000 -0800
 @@ -2,5 +2,9 @@
  # run the automatically generated configure script
  CONFIG_STATUS=auto/config.status \
@@ -2437,7 +2502,7 @@ diff -Naur vim70.orig/src/configure vim70/src/configure
 +exit $result
 diff -Naur vim70.orig/src/configure.in vim70/src/configure.in
 --- vim70.orig/src/configure.in	2006-05-04 03:46:11.000000000 -0700
-+++ vim70/src/configure.in	2007-01-23 17:15:06.000000000 -0800
++++ vim70/src/configure.in	2007-02-15 21:22:26.000000000 -0800
 @@ -508,7 +508,8 @@
        LDFLAGS=$ldflags_save
        if test $perl_ok = yes; then
@@ -2480,7 +2545,7 @@ diff -Naur vim70.orig/src/configure.in vim70/src/configure.in
      AC_MSG_RESULT(yes)
 diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
 --- vim70.orig/src/edit.c	2006-05-07 04:48:51.000000000 -0700
-+++ vim70/src/edit.c	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/edit.c	2007-02-15 21:22:27.000000000 -0800
 @@ -129,7 +129,7 @@
  
  static void ins_ctrl_x __ARGS((void));
@@ -3029,7 +3094,32 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	{
  	    vim_free(compl_pattern);
  	    compl_pattern = NULL;
-@@ -5227,8 +5336,16 @@
+@@ -4861,16 +4970,18 @@
+ 	     * just a safety check. */
+ 	    if (compl_curr_match->cp_number != -1)
+ 	    {
+-		/* Space for 10 text chars. + 2x10-digit no.s */
+-		static char_u match_ref[31];
++		/* Space for 10 text chars. + 2x10-digit no.s = 31.
++		 * Translations may need more than twice that. */
++		static char_u match_ref[81];
+ 
+ 		if (compl_matches > 0)
+-		    sprintf((char *)IObuff, _("match %d of %d"),
++		    vim_snprintf((char *)match_ref, sizeof(match_ref),
++				_("match %d of %d"),
+ 				compl_curr_match->cp_number, compl_matches);
+ 		else
+-		    sprintf((char *)IObuff, _("match %d"),
+-						 compl_curr_match->cp_number);
+-		vim_strncpy(match_ref, IObuff, 30);
++		    vim_snprintf((char *)match_ref, sizeof(match_ref),
++				_("match %d"),
++				compl_curr_match->cp_number);
+ 		edit_submode_extra = match_ref;
+ 		edit_submode_highl = HLF_R;
+ 		if (dollar_vcol)
+@@ -5227,8 +5338,16 @@
  	/* Format with 'formatexpr' when it's set.  Use internal formatting
  	 * when 'formatexpr' isn't set or it returns non-zero. */
  #if defined(FEAT_EVAL)
@@ -3048,7 +3138,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  #endif
  	    internal_format(textwidth, second_indent, flags, c == NUL);
      }
-@@ -8508,7 +8625,12 @@
+@@ -8508,7 +8627,12 @@
      tpos = curwin->w_cursor;
      if (oneleft() == OK)
      {
@@ -3062,7 +3152,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  #ifdef FEAT_RIGHTLEFT
  	/* If exit reversed string, position is fixed */
  	if (revins_scol != -1 && (int)curwin->w_cursor.col >= revins_scol)
-@@ -8700,7 +8822,11 @@
+@@ -8700,7 +8824,11 @@
      if (mod_mask & MOD_MASK_CTRL)
      {
  	/* <C-PageUp>: tab page back */
@@ -3075,7 +3165,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	return;
      }
  #endif
-@@ -8759,7 +8885,11 @@
+@@ -8759,7 +8887,11 @@
      if (mod_mask & MOD_MASK_CTRL)
      {
  	/* <C-PageDown>: tab page forward */
@@ -3088,7 +3178,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  	return;
      }
  #endif
-@@ -9074,6 +9204,10 @@
+@@ -9074,6 +9206,10 @@
  #ifdef FEAT_CINDENT
      can_cindent = TRUE;
  #endif
@@ -3101,7 +3191,7 @@ diff -Naur vim70.orig/src/edit.c vim70/src/edit.c
  }
 diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
 --- vim70.orig/src/eval.c	2006-05-05 10:15:26.000000000 -0700
-+++ vim70/src/eval.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/eval.c	2007-02-15 21:22:27.000000000 -0800
 @@ -166,7 +166,6 @@
      int		uf_tm_count;	/* nr of calls */
      proftime_T	uf_tm_total;	/* time spend in function + children */
@@ -4123,48 +4213,9 @@ diff -Naur vim70.orig/src/eval.c vim70/src/eval.c
  							   buf, MSG_BUF_CLEN);
  	    smsg((char_u *)_("%s returning %s"), sourcing_name, buf);
  	    vim_free(tofree);
-diff -Naur vim70.orig/src/ex_cmds2.c vim70/src/ex_cmds2.c
---- vim70.orig/src/ex_cmds2.c	2006-04-17 03:19:07.000000000 -0700
-+++ vim70/src/ex_cmds2.c	2007-01-23 17:15:23.000000000 -0800
-@@ -2811,6 +2811,17 @@
-     }
- 
- #ifdef FEAT_AUTOCMD
-+    /* Apply SourceCmd autocommands, they should get the file and source it. */
-+    if (has_autocmd(EVENT_SOURCECMD, fname_exp, NULL)
-+	    && apply_autocmds(EVENT_SOURCECMD, fname_exp, fname_exp,
-+							       FALSE, curbuf))
-+# ifdef FEAT_EVAL
-+	return aborting() ? FAIL : OK;
-+# else
-+	return OK;
-+# endif
-+
-+    /* Apply SourcePre autocommands, they may get the file. */
-     apply_autocmds(EVENT_SOURCEPRE, fname_exp, fname_exp, FALSE, curbuf);
- #endif
- 
-@@ -3648,13 +3659,13 @@
-  * Return FALSE when not sourcing a file.
-  */
-     int
--source_finished(getline, cookie)
--    char_u	*(*getline) __ARGS((int, void *, int));
-+source_finished(fgetline, cookie)
-+    char_u	*(*fgetline) __ARGS((int, void *, int));
-     void	*cookie;
- {
--    return (getline_equal(getline, cookie, getsourceline)
-+    return (getline_equal(fgetline, cookie, getsourceline)
- 	    && ((struct source_cookie *)getline_cookie(
--						 getline, cookie))->finished);
-+						fgetline, cookie))->finished);
- }
- #endif
- 
 diff -Naur vim70.orig/src/ex_cmds.c vim70/src/ex_cmds.c
 --- vim70.orig/src/ex_cmds.c	2006-04-22 11:56:56.000000000 -0700
-+++ vim70/src/ex_cmds.c	2007-01-23 17:14:59.000000000 -0800
++++ vim70/src/ex_cmds.c	2007-02-15 21:22:27.000000000 -0800
 @@ -95,7 +95,10 @@
  		_("<%s>%s%s  %d,  Hex %02x,  Octal %03o"),
  					   transchar(c), buf1, buf2, c, c, c);
@@ -4273,9 +4324,24 @@ diff -Naur vim70.orig/src/ex_cmds.c vim70/src/ex_cmds.c
  
  #if defined(FEAT_SUN_WORKSHOP) || defined(FEAT_NETBEANS_INTG)
      if (gui.in_use && curbuf->b_ffname != NULL)
+@@ -6960,6 +6967,14 @@
+      */
+     set_arglist(eap->arg);
+ 
++    /*
++     * Expanding wildcards may result in an empty argument list.  E.g. when
++     * editing "foo.pyc" and ".pyc" is in 'wildignore'.  Assume that we
++     * already did an error message for this.
++     */
++    if (ARGCOUNT == 0)
++	return;
++
+ # ifdef FEAT_WINDOWS
+     if (cmdmod.tab)
+     {
 diff -Naur vim70.orig/src/ex_cmds.h vim70/src/ex_cmds.h
 --- vim70.orig/src/ex_cmds.h	2006-04-07 02:44:46.000000000 -0700
-+++ vim70/src/ex_cmds.h	2007-01-23 17:14:49.000000000 -0800
++++ vim70/src/ex_cmds.h	2007-02-15 21:22:24.000000000 -0800
 @@ -262,7 +262,7 @@
  EX(CMD_comclear,	"comclear",	ex_comclear,
  			TRLBAR|CMDWIN),
@@ -4285,9 +4351,84 @@ diff -Naur vim70.orig/src/ex_cmds.h vim70/src/ex_cmds.h
  EX(CMD_continue,	"continue",	ex_continue,
  			TRLBAR|SBOXOK|CMDWIN),
  EX(CMD_confirm,		"confirm",	ex_wrongmodifier,
+diff -Naur vim70.orig/src/ex_cmds2.c vim70/src/ex_cmds2.c
+--- vim70.orig/src/ex_cmds2.c	2006-04-17 03:19:07.000000000 -0700
++++ vim70/src/ex_cmds2.c	2007-02-15 21:22:27.000000000 -0800
+@@ -1242,14 +1242,22 @@
+     buf_T	*buf;
+     int		forceit;
+ {
++    int		r;
++
+     if (!(p_aw || p_awa) || !p_write
+ #ifdef FEAT_QUICKFIX
+-	/* never autowrite a "nofile" or "nowrite" buffer */
+-	|| bt_dontwrite(buf)
++	    /* never autowrite a "nofile" or "nowrite" buffer */
++	    || bt_dontwrite(buf)
+ #endif
+-	|| (!forceit && buf->b_p_ro) || buf->b_ffname == NULL)
++	    || (!forceit && buf->b_p_ro) || buf->b_ffname == NULL)
+ 	return FAIL;
+-    return buf_write_all(buf, forceit);
++    r = buf_write_all(buf, forceit);
++
++    /* Writing may succeed but the buffer still changed, e.g., when there is a
++     * conversion error.  We do want to return FAIL then. */
++    if (buf_valid(buf) && bufIsChanged(buf))
++	r = FAIL;
++    return r;
+ }
+ 
+ /*
+@@ -1472,6 +1480,8 @@
+ 	if (buf == NULL)    /* No buffers changed */
+ 	    return FALSE;
+ 
++	/* Try auto-writing the buffer.  If this fails but the buffer no
++	 * longer exists it's not changed, that's OK. */
+ 	if (check_changed(buf, p_awa, TRUE, FALSE, TRUE) && buf_valid(buf))
+ 	    break;	    /* didn't save - still changes */
+     }
+@@ -2811,6 +2821,17 @@
+     }
+ 
+ #ifdef FEAT_AUTOCMD
++    /* Apply SourceCmd autocommands, they should get the file and source it. */
++    if (has_autocmd(EVENT_SOURCECMD, fname_exp, NULL)
++	    && apply_autocmds(EVENT_SOURCECMD, fname_exp, fname_exp,
++							       FALSE, curbuf))
++# ifdef FEAT_EVAL
++	return aborting() ? FAIL : OK;
++# else
++	return OK;
++# endif
++
++    /* Apply SourcePre autocommands, they may get the file. */
+     apply_autocmds(EVENT_SOURCEPRE, fname_exp, fname_exp, FALSE, curbuf);
+ #endif
+ 
+@@ -3648,13 +3669,13 @@
+  * Return FALSE when not sourcing a file.
+  */
+     int
+-source_finished(getline, cookie)
+-    char_u	*(*getline) __ARGS((int, void *, int));
++source_finished(fgetline, cookie)
++    char_u	*(*fgetline) __ARGS((int, void *, int));
+     void	*cookie;
+ {
+-    return (getline_equal(getline, cookie, getsourceline)
++    return (getline_equal(fgetline, cookie, getsourceline)
+ 	    && ((struct source_cookie *)getline_cookie(
+-						 getline, cookie))->finished);
++						fgetline, cookie))->finished);
+ }
+ #endif
+ 
 diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
 --- vim70.orig/src/ex_docmd.c	2006-05-05 09:33:19.000000000 -0700
-+++ vim70/src/ex_docmd.c	2007-01-23 17:15:11.000000000 -0800
++++ vim70/src/ex_docmd.c	2007-02-15 21:22:27.000000000 -0800
 @@ -58,9 +58,9 @@
  #endif
  
@@ -4750,7 +4891,7 @@ diff -Naur vim70.orig/src/ex_docmd.c vim70/src/ex_docmd.c
  		continue;
 diff -Naur vim70.orig/src/ex_eval.c vim70/src/ex_eval.c
 --- vim70.orig/src/ex_eval.c	2006-04-22 12:22:27.000000000 -0700
-+++ vim70/src/ex_eval.c	2007-01-23 17:15:11.000000000 -0800
++++ vim70/src/ex_eval.c	2007-02-15 21:22:26.000000000 -0800
 @@ -340,7 +340,7 @@
  
      /* If no exception is to be thrown or the conversion should be done after
@@ -4776,7 +4917,7 @@ diff -Naur vim70.orig/src/ex_eval.c vim70/src/ex_eval.c
      /*
 diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
 --- vim70.orig/src/ex_getln.c	2006-04-30 08:32:01.000000000 -0700
-+++ vim70/src/ex_getln.c	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/ex_getln.c	2007-02-15 21:22:26.000000000 -0800
 @@ -34,7 +34,7 @@
      int		xp_context;	/* type of expansion */
  # ifdef FEAT_EVAL
@@ -4926,7 +5067,7 @@ diff -Naur vim70.orig/src/ex_getln.c vim70/src/ex_getln.c
      i = RedrawingDisabled;
 diff -Naur vim70.orig/src/fileio.c vim70/src/fileio.c
 --- vim70.orig/src/fileio.c	2006-04-30 08:28:57.000000000 -0700
-+++ vim70/src/fileio.c	2007-01-23 17:15:23.000000000 -0800
++++ vim70/src/fileio.c	2007-02-15 21:22:27.000000000 -0800
 @@ -316,6 +316,9 @@
       * display the line. */
      ex_no_reprint = TRUE;
@@ -5067,7 +5208,7 @@ diff -Naur vim70.orig/src/fileio.c vim70/src/fileio.c
   * Try matching a filename with a "pattern" ("prog" is NULL), or use the
 diff -Naur vim70.orig/src/fold.c vim70/src/fold.c
 --- vim70.orig/src/fold.c	2006-04-22 12:35:56.000000000 -0700
-+++ vim70/src/fold.c	2007-01-23 17:15:09.000000000 -0800
++++ vim70/src/fold.c	2007-02-15 21:22:26.000000000 -0800
 @@ -2971,7 +2971,11 @@
      else
  	flp->lvl = get_indent_buf(buf, lnum) / buf->b_p_sw;
@@ -5082,7 +5223,7 @@ diff -Naur vim70.orig/src/fold.c vim70/src/fold.c
  /* foldlevelDiff() {{{2 */
 diff -Naur vim70.orig/src/getchar.c vim70/src/getchar.c
 --- vim70.orig/src/getchar.c	2006-05-03 10:29:21.000000000 -0700
-+++ vim70/src/getchar.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/getchar.c	2007-02-15 21:22:27.000000000 -0800
 @@ -76,7 +76,7 @@
   */
  static mapblock_T	*first_abbr = NULL; /* first entry in abbrlist */
@@ -5217,7 +5358,7 @@ diff -Naur vim70.orig/src/getchar.c vim70/src/getchar.c
      /*
 diff -Naur vim70.orig/src/globals.h vim70/src/globals.h
 --- vim70.orig/src/globals.h	2006-04-30 06:16:23.000000000 -0700
-+++ vim70/src/globals.h	2007-01-23 17:15:05.000000000 -0800
++++ vim70/src/globals.h	2007-02-15 21:22:27.000000000 -0800
 @@ -166,6 +166,7 @@
  EXTERN int	emsg_off INIT(= 0);	    /* don't display errors for now,
  					       unless 'debug' is set. */
@@ -5246,7 +5387,18 @@ diff -Naur vim70.orig/src/globals.h vim70/src/globals.h
  #endif
  
  #if defined(FEAT_EVAL) || defined(FEAT_SYN_HL)
-@@ -1441,7 +1449,7 @@
+@@ -547,6 +555,10 @@
+ EXTERN buf_T	*lastbuf INIT(= NULL);	/* last buffer */
+ EXTERN buf_T	*curbuf INIT(= NULL);	/* currently active buffer */
+ 
++/* Flag that is set when switching off 'swapfile'.  It means that all blocks
++ * are to be loaded into memory.  Shouldn't be global... */
++EXTERN int	mf_dont_release INIT(= FALSE);	/* don't release blocks */
++
+ /*
+  * List of files being edited (global argument list).  curwin->w_alist points
+  * to this when the window is using the global argument list.
+@@ -1441,7 +1453,7 @@
  EXTERN char_u e_readonly[]	INIT(= N_("E45: 'readonly' option is set (add ! to override)"));
  #ifdef FEAT_EVAL
  EXTERN char_u e_readonlyvar[]	INIT(= N_("E46: Cannot change read-only variable \"%s\""));
@@ -5255,9 +5407,112 @@ diff -Naur vim70.orig/src/globals.h vim70/src/globals.h
  #endif
  #ifdef FEAT_QUICKFIX
  EXTERN char_u e_readerrf[]	INIT(= N_("E47: Error while reading errorfile"));
+diff -Naur vim70.orig/src/gui.c vim70/src/gui.c
+--- vim70.orig/src/gui.c	2006-05-03 04:00:59.000000000 -0700
++++ vim70/src/gui.c	2007-02-15 21:22:26.000000000 -0800
+@@ -187,9 +187,10 @@
+ #endif
+ 
+ #ifdef FEAT_AUTOCMD
+-    /* If the GUI started successfully, trigger the GUIEnter event */
+-    if (gui.in_use)
+-	apply_autocmds(EVENT_GUIENTER, NULL, NULL, FALSE, curbuf);
++    /* If the GUI started successfully, trigger the GUIEnter event, otherwise
++     * the GUIFailed event. */
++    apply_autocmds(gui.in_use ? EVENT_GUIENTER : EVENT_GUIFAILED,
++						   NULL, NULL, FALSE, curbuf);
+ #endif
+ 
+     --recursive;
+@@ -636,6 +637,7 @@
+ 
+ #if defined(FEAT_GUI_GTK) || defined(FEAT_GUI_X11) || defined(FEAT_GUI_MSWIN) \
+ 	|| defined(FEAT_GUI_PHOTON) || defined(FEAT_GUI_MAC) || defined(PROTO)
++# define NEED_GUI_UPDATE_SCREEN 1
+ /*
+  * Called when the GUI shell is closed by the user.  If there are no changed
+  * files Vim exits, otherwise there will be a dialog to ask the user what to
+@@ -664,8 +666,7 @@
+ 
+     exiting = FALSE;
+     cmdmod = save_cmdmod;
+-    setcursor();		/* position cursor */
+-    out_flush();
++    gui_update_screen();	/* redraw, window may show changed buffer */
+ }
+ #endif
+ 
+@@ -2872,6 +2873,9 @@
+      */
+     if ((State == NORMAL || State == NORMAL_BUSY || (State & INSERT))
+ 	    && Y_2_ROW(y) >= topframe->fr_height
++# ifdef FEAT_WINDOWS
++						+ firstwin->w_winrow
++# endif
+ 	    && button != MOUSE_DRAG
+ # ifdef FEAT_MOUSESHAPE
+ 	    && !drag_status_line
+@@ -3733,6 +3737,12 @@
+     if (dont_scroll || input_available())
+ 	return;
+ #endif
++#ifdef FEAT_INS_EXPAND
++    /* Disallow scrolling the current window when the completion popup menu is
++     * visible. */
++    if ((sb->wp == NULL || sb->wp == curwin) && pum_visible())
++	return;
++#endif
+ 
+ #ifdef FEAT_RIGHTLEFT
+     if (sb->wp == NULL && curwin->w_p_rl)
+@@ -4207,6 +4217,12 @@
+ 	updateWindow(wp);   /* update window, status line, and cmdline */
+     }
+ 
++#ifdef FEAT_INS_EXPAND
++    /* May need to redraw the popup menu. */
++    if (pum_visible())
++	pum_redraw();
++#endif
++
+     return (wp == curwin && !equalpos(curwin->w_cursor, old_cursor));
+ }
+ 
+@@ -4515,7 +4531,7 @@
+     int		y;
+ {
+     win_T	*wp;
+-    char_u	st[6];
++    char_u	st[8];
+ 
+     /* Ignore this while still starting up. */
+     if (!gui.in_use || gui.starting)
+@@ -4603,11 +4619,11 @@
+     /* Don't move the mouse when it's left or right of the Vim window */
+     if (x < 0 || x > Columns * gui.char_width)
+ 	return;
++    if (y >= 0
+ # ifdef FEAT_WINDOWS
+-    if (Y_2_ROW(y) >= tabline_height())
+-# else
+-    if (y >= 0)
++	    && Y_2_ROW(y) >= tabline_height()
+ # endif
++       )
+ 	wp = xy2win(x, y);
+     if (wp != curwin && wp != NULL)	/* If in other than current window */
+     {
+@@ -4807,6 +4823,7 @@
+ #endif
+ 
+ #if defined(FIND_REPLACE_DIALOG) || defined(FEAT_SUN_WORKSHOP) \
++	|| defined(NEED_GUI_UPDATE_SCREEN) \
+ 	|| defined(PROTO)
+ /*
+  * Update the current window and the screen.
 diff -Naur vim70.orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
 --- vim70.orig/src/gui_at_fs.c	2005-07-09 04:30:17.000000000 -0700
-+++ vim70/src/gui_at_fs.c	2007-01-23 17:14:47.000000000 -0800
++++ vim70/src/gui_at_fs.c	2007-02-15 21:22:24.000000000 -0800
 @@ -1861,27 +1861,27 @@
      XtPointer	pnew;
  {
@@ -5373,7 +5628,7 @@ diff -Naur vim70.orig/src/gui_at_fs.c vim70/src/gui_at_fs.c
  	nw = SFdirEnd - 3;
 diff -Naur vim70.orig/src/gui_beval.c vim70/src/gui_beval.c
 --- vim70.orig/src/gui_beval.c	2006-05-04 12:29:51.000000000 -0700
-+++ vim70/src/gui_beval.c	2007-01-23 17:14:55.000000000 -0800
++++ vim70/src/gui_beval.c	2007-02-15 21:22:25.000000000 -0800
 @@ -926,7 +926,7 @@
  #  define IS_NONPRINTABLE(c) (((c) < 0x20 && (c) != TAB && (c) != NL) \
  			      || (c) == DEL)
@@ -5410,112 +5665,9 @@ diff -Naur vim70.orig/src/gui_beval.c vim70/src/gui_beval.c
  	while (*p != NUL)
  	{
  	    /* Be quick for ASCII */
-diff -Naur vim70.orig/src/gui.c vim70/src/gui.c
---- vim70.orig/src/gui.c	2006-05-03 04:00:59.000000000 -0700
-+++ vim70/src/gui.c	2007-01-23 17:15:05.000000000 -0800
-@@ -187,9 +187,10 @@
- #endif
- 
- #ifdef FEAT_AUTOCMD
--    /* If the GUI started successfully, trigger the GUIEnter event */
--    if (gui.in_use)
--	apply_autocmds(EVENT_GUIENTER, NULL, NULL, FALSE, curbuf);
-+    /* If the GUI started successfully, trigger the GUIEnter event, otherwise
-+     * the GUIFailed event. */
-+    apply_autocmds(gui.in_use ? EVENT_GUIENTER : EVENT_GUIFAILED,
-+						   NULL, NULL, FALSE, curbuf);
- #endif
- 
-     --recursive;
-@@ -636,6 +637,7 @@
- 
- #if defined(FEAT_GUI_GTK) || defined(FEAT_GUI_X11) || defined(FEAT_GUI_MSWIN) \
- 	|| defined(FEAT_GUI_PHOTON) || defined(FEAT_GUI_MAC) || defined(PROTO)
-+# define NEED_GUI_UPDATE_SCREEN 1
- /*
-  * Called when the GUI shell is closed by the user.  If there are no changed
-  * files Vim exits, otherwise there will be a dialog to ask the user what to
-@@ -664,8 +666,7 @@
- 
-     exiting = FALSE;
-     cmdmod = save_cmdmod;
--    setcursor();		/* position cursor */
--    out_flush();
-+    gui_update_screen();	/* redraw, window may show changed buffer */
- }
- #endif
- 
-@@ -2872,6 +2873,9 @@
-      */
-     if ((State == NORMAL || State == NORMAL_BUSY || (State & INSERT))
- 	    && Y_2_ROW(y) >= topframe->fr_height
-+# ifdef FEAT_WINDOWS
-+						+ firstwin->w_winrow
-+# endif
- 	    && button != MOUSE_DRAG
- # ifdef FEAT_MOUSESHAPE
- 	    && !drag_status_line
-@@ -3733,6 +3737,12 @@
-     if (dont_scroll || input_available())
- 	return;
- #endif
-+#ifdef FEAT_INS_EXPAND
-+    /* Disallow scrolling the current window when the completion popup menu is
-+     * visible. */
-+    if ((sb->wp == NULL || sb->wp == curwin) && pum_visible())
-+	return;
-+#endif
- 
- #ifdef FEAT_RIGHTLEFT
-     if (sb->wp == NULL && curwin->w_p_rl)
-@@ -4207,6 +4217,12 @@
- 	updateWindow(wp);   /* update window, status line, and cmdline */
-     }
- 
-+#ifdef FEAT_INS_EXPAND
-+    /* May need to redraw the popup menu. */
-+    if (pum_visible())
-+	pum_redraw();
-+#endif
-+
-     return (wp == curwin && !equalpos(curwin->w_cursor, old_cursor));
- }
- 
-@@ -4515,7 +4531,7 @@
-     int		y;
- {
-     win_T	*wp;
--    char_u	st[6];
-+    char_u	st[8];
- 
-     /* Ignore this while still starting up. */
-     if (!gui.in_use || gui.starting)
-@@ -4603,11 +4619,11 @@
-     /* Don't move the mouse when it's left or right of the Vim window */
-     if (x < 0 || x > Columns * gui.char_width)
- 	return;
-+    if (y >= 0
- # ifdef FEAT_WINDOWS
--    if (Y_2_ROW(y) >= tabline_height())
--# else
--    if (y >= 0)
-+	    && Y_2_ROW(y) >= tabline_height()
- # endif
-+       )
- 	wp = xy2win(x, y);
-     if (wp != curwin && wp != NULL)	/* If in other than current window */
-     {
-@@ -4807,6 +4823,7 @@
- #endif
- 
- #if defined(FIND_REPLACE_DIALOG) || defined(FEAT_SUN_WORKSHOP) \
-+	|| defined(NEED_GUI_UPDATE_SCREEN) \
- 	|| defined(PROTO)
- /*
-  * Update the current window and the screen.
 diff -Naur vim70.orig/src/gui_gtk.c vim70/src/gui_gtk.c
 --- vim70.orig/src/gui_gtk.c	2006-05-05 04:52:52.000000000 -0700
-+++ vim70/src/gui_gtk.c	2007-01-23 17:15:08.000000000 -0800
++++ vim70/src/gui_gtk.c	2007-02-15 21:22:26.000000000 -0800
 @@ -957,15 +957,15 @@
  get_menu_position(vimmenu_T *menu)
  {
@@ -5613,7 +5765,7 @@ diff -Naur vim70.orig/src/gui_gtk.c vim70/src/gui_gtk.c
  
 diff -Naur vim70.orig/src/gui_gtk_x11.c vim70/src/gui_gtk_x11.c
 --- vim70.orig/src/gui_gtk_x11.c	2006-05-04 23:58:59.000000000 -0700
-+++ vim70/src/gui_gtk_x11.c	2007-01-23 17:14:55.000000000 -0800
++++ vim70/src/gui_gtk_x11.c	2007-02-15 21:22:25.000000000 -0800
 @@ -3233,12 +3233,12 @@
  on_select_tab(
  	GtkNotebook	*notebook,
@@ -5678,7 +5830,7 @@ diff -Naur vim70.orig/src/gui_gtk_x11.c vim70/src/gui_gtk_x11.c
  		       FILL_X(c), FILL_Y(r),
 diff -Naur vim70.orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
 --- vim70.orig/src/gui_xmebw.c	2006-04-30 08:32:32.000000000 -0700
-+++ vim70/src/gui_xmebw.c	2007-01-23 17:15:08.000000000 -0800
++++ vim70/src/gui_xmebw.c	2007-02-15 21:22:26.000000000 -0800
 @@ -47,13 +47,13 @@
  #include "gui_xmebwp.h"
  
@@ -5807,7 +5959,7 @@ diff -Naur vim70.orig/src/gui_xmebw.c vim70/src/gui_xmebw.c
  		 * defaultButtonShadow.
 diff -Naur vim70.orig/src/hardcopy.c vim70/src/hardcopy.c
 --- vim70.orig/src/hardcopy.c	2006-05-04 03:09:58.000000000 -0700
-+++ vim70/src/hardcopy.c	2007-01-23 17:14:55.000000000 -0800
++++ vim70/src/hardcopy.c	2007-02-15 21:22:25.000000000 -0800
 @@ -1794,29 +1794,27 @@
      static int
  prt_resfile_next_line()
@@ -5910,7 +6062,7 @@ diff -Naur vim70.orig/src/hardcopy.c vim70/src/hardcopy.c
  								    &p_mbenc))
 diff -Naur vim70.orig/src/if_cscope.c vim70/src/if_cscope.c
 --- vim70.orig/src/if_cscope.c	2006-04-18 01:54:15.000000000 -0700
-+++ vim70/src/if_cscope.c	2007-01-23 17:15:15.000000000 -0800
++++ vim70/src/if_cscope.c	2007-02-15 21:22:27.000000000 -0800
 @@ -627,10 +627,11 @@
  	 * If the database is out of date, or there's some other problem,
  	 * cscope will output error messages before the number-of-lines output.
@@ -6040,7 +6192,7 @@ diff -Naur vim70.orig/src/if_cscope.c vim70/src/if_cscope.c
  	       fprintf(f, "%s\t%s\t%s %s\n", fullname, slno, context, search);
 diff -Naur vim70.orig/src/if_perl.xs vim70/src/if_perl.xs
 --- vim70.orig/src/if_perl.xs	2006-03-06 10:57:16.000000000 -0800
-+++ vim70/src/if_perl.xs	2007-01-23 17:14:52.000000000 -0800
++++ vim70/src/if_perl.xs	2007-02-15 21:22:24.000000000 -0800
 @@ -155,8 +155,8 @@
  static int (*perl_run)(PerlInterpreter*);
  static int (*perl_parse)(PerlInterpreter*, XSINIT_t, int, char**, char**);
@@ -6155,7 +6307,7 @@ diff -Naur vim70.orig/src/if_perl.xs vim70/src/if_perl.xs
  	}
 diff -Naur vim70.orig/src/if_python.c vim70/src/if_python.c
 --- vim70.orig/src/if_python.c	2006-04-30 08:31:36.000000000 -0700
-+++ vim70/src/if_python.c	2007-01-23 17:15:02.000000000 -0800
++++ vim70/src/if_python.c	2007-02-15 21:22:25.000000000 -0800
 @@ -1463,7 +1463,7 @@
      if (this->buf && this->buf != INVALID_BUFFER_VALUE)
  	this->buf->b_python_ref = NULL;
@@ -6194,7 +6346,7 @@ diff -Naur vim70.orig/src/if_python.c vim70/src/if_python.c
      static int
 diff -Naur vim70.orig/src/if_ruby.c vim70/src/if_ruby.c
 --- vim70.orig/src/if_ruby.c	2006-04-30 08:37:52.000000000 -0700
-+++ vim70/src/if_ruby.c	2007-01-23 17:14:52.000000000 -0800
++++ vim70/src/if_ruby.c	2007-02-15 21:22:24.000000000 -0800
 @@ -643,11 +643,14 @@
  
  static VALUE set_buffer_line(buf_T *buf, linenr_T n, VALUE str)
@@ -6309,7 +6461,7 @@ diff -Naur vim70.orig/src/if_ruby.c vim70/src/if_ruby.c
      else {
 diff -Naur vim70.orig/src/macros.h vim70/src/macros.h
 --- vim70.orig/src/macros.h	2006-03-01 04:01:10.000000000 -0800
-+++ vim70/src/macros.h	2007-01-23 17:14:57.000000000 -0800
++++ vim70/src/macros.h	2007-02-15 21:22:25.000000000 -0800
 @@ -276,3 +276,9 @@
  # define MB_CHARLEN(p)		STRLEN(p)
  # define PTR2CHAR(p)		((int)*(p))
@@ -6322,7 +6474,7 @@ diff -Naur vim70.orig/src/macros.h vim70/src/macros.h
 +#endif
 diff -Naur vim70.orig/src/main.c vim70/src/main.c
 --- vim70.orig/src/main.c	2006-05-03 10:36:44.000000000 -0700
-+++ vim70/src/main.c	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/main.c	2007-02-15 21:22:26.000000000 -0800
 @@ -564,7 +564,11 @@
       */
      if (p_lpl)
@@ -6514,29 +6666,9 @@ diff -Naur vim70.orig/src/main.c vim70/src/main.c
  #  endif
  		parmp->serverName_arg != NULL))
      {
-diff -Naur vim70.orig/src/Makefile vim70/src/Makefile
---- vim70.orig/src/Makefile	2006-05-07 06:25:27.000000000 -0700
-+++ vim70/src/Makefile	2007-01-23 17:14:56.000000000 -0800
-@@ -2177,6 +2177,7 @@
- 	cd $(SHADOWDIR)/xxd; ln -s ../../xxd/*.[ch] ../../xxd/Make* .
- 	if test -d $(RSRC_DIR); then \
- 		cd $(SHADOWDIR); \
-+		ln -s ../infplist.xml .; \
- 		ln -s ../$(RSRC_DIR) ../os_mac.rsr.hqx ../dehqx.py .; \
- 	fi
- 	mkdir $(SHADOWDIR)/testdir
-@@ -2260,7 +2261,7 @@
- auto/osdef.h: auto/config.h osdef.sh osdef1.h.in osdef2.h.in
- 	CC="$(CC) $(OSDEF_CFLAGS)" srcdir=$(srcdir) sh $(srcdir)/osdef.sh
- 
--QUOTESED = sed -e 's/"/\\"/g' -e 's/\\"/"/' -e 's/\\";$$/";/'
-+QUOTESED = sed -e 's/[\\"]/\\&/g' -e 's/\\"/"/' -e 's/\\";$$/";/'
- auto/pathdef.c: Makefile auto/config.mk
- 	-@echo creating $@
- 	-@echo '/* pathdef.c */' > $@
 diff -Naur vim70.orig/src/mbyte.c vim70/src/mbyte.c
 --- vim70.orig/src/mbyte.c	2006-04-30 04:51:01.000000000 -0700
-+++ vim70/src/mbyte.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/mbyte.c	2007-02-15 21:22:27.000000000 -0800
 @@ -311,7 +311,11 @@
  
  #define IDX_MACROMAN	57
@@ -6633,8 +6765,29 @@ diff -Naur vim70.orig/src/mbyte.c vim70/src/mbyte.c
  	    while (pango_attr_iterator_next(iter));
 diff -Naur vim70.orig/src/memfile.c vim70/src/memfile.c
 --- vim70.orig/src/memfile.c	2006-03-06 00:59:15.000000000 -0800
-+++ vim70/src/memfile.c	2007-01-23 17:15:10.000000000 -0800
-@@ -517,7 +517,7 @@
++++ vim70/src/memfile.c	2007-02-15 21:22:27.000000000 -0800
+@@ -76,7 +76,6 @@
+ #define MEMFILE_PAGE_SIZE 4096		/* default page size */
+ 
+ static long_u	total_mem_used = 0;	/* total memory used for memfiles */
+-static int	dont_release = FALSE;	/* don't release blocks */
+ 
+ static void mf_ins_hash __ARGS((memfile_T *, bhdr_T *));
+ static void mf_rem_hash __ARGS((memfile_T *, bhdr_T *));
+@@ -279,10 +278,10 @@
+     if (getlines)
+     {
+ 	/* get all blocks in memory by accessing all lines (clumsy!) */
+-	dont_release = TRUE;
++	mf_dont_release = TRUE;
+ 	for (lnum = 1; lnum <= buf->b_ml.ml_line_count; ++lnum)
+ 	    (void)ml_get_buf(buf, lnum, FALSE);
+-	dont_release = FALSE;
++	mf_dont_release = FALSE;
+ 	/* TODO: should check if all blocks are really in core */
+     }
+ 
+@@ -517,7 +516,7 @@
  	mf_ins_free(mfp, hp);	/* put *hp in the free list */
  }
  
@@ -6643,7 +6796,7 @@ diff -Naur vim70.orig/src/memfile.c vim70/src/memfile.c
  /* function is missing in MorphOS libnix version */
  extern unsigned long *__stdfiledes;
  
-@@ -677,15 +677,19 @@
+@@ -677,15 +676,19 @@
  #  else
  #   if defined(_DCC) || defined(__GNUC__) || defined(__MORPHOS__)
  	{
@@ -6664,7 +6817,16 @@ diff -Naur vim70.orig/src/memfile.c vim70/src/memfile.c
  	}
  #   else /* assume Manx */
  	    Flush(_devtab[mfp->mf_fd].fd);
-@@ -1024,12 +1028,12 @@
+@@ -826,7 +829,7 @@
+     buf_T	*buf;
+ 
+     /* don't release while in mf_close_file() */
+-    if (dont_release)
++    if (mf_dont_release)
+ 	return NULL;
+ 
+     /*
+@@ -1024,12 +1027,12 @@
      size = page_size * hp->bh_page_count;
      if (lseek(mfp->mf_fd, offset, SEEK_SET) != offset)
      {
@@ -6679,7 +6841,7 @@ diff -Naur vim70.orig/src/memfile.c vim70/src/memfile.c
  	return FAIL;
      }
      return OK;
-@@ -1081,7 +1085,7 @@
+@@ -1081,7 +1084,7 @@
  	offset = (off_t)page_size * nr;
  	if (lseek(mfp->mf_fd, offset, SEEK_SET) != offset)
  	{
@@ -6690,7 +6852,7 @@ diff -Naur vim70.orig/src/memfile.c vim70/src/memfile.c
  	if (hp2 == NULL)	    /* freed block, fill with dummy data */
 diff -Naur vim70.orig/src/memline.c vim70/src/memline.c
 --- vim70.orig/src/memline.c	2006-04-20 14:00:21.000000000 -0700
-+++ vim70/src/memline.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/memline.c	2007-02-15 21:22:27.000000000 -0800
 @@ -215,7 +215,7 @@
  #define ML_FLUSH	0x02	    /* flush locked block */
  #define ML_SIMPLE(x)	(x & 0x10)  /* DEL, INS or FIND */
@@ -6756,7 +6918,81 @@ diff -Naur vim70.orig/src/memline.c vim70/src/memline.c
      }
  
      /*
-@@ -3652,6 +3660,7 @@
+@@ -2040,13 +2048,21 @@
+     linenr_T	lnum;
+     int		will_change;		/* line will be changed */
+ {
+-    bhdr_T    *hp;
+-    DATA_BL *dp;
+-    char_u  *ptr;
++    bhdr_T	*hp;
++    DATA_BL	*dp;
++    char_u	*ptr;
++    static int	recursive = 0;
+ 
+     if (lnum > buf->b_ml.ml_line_count)	/* invalid line number */
+     {
+-	EMSGN(_("E315: ml_get: invalid lnum: %ld"), lnum);
++	if (recursive == 0)
++	{
++	    /* Avoid giving this message for a recursive call, may happen when
++	     * the GUI redraws part of the text. */
++	    ++recursive;
++	    EMSGN(_("E315: ml_get: invalid lnum: %ld"), lnum);
++	    --recursive;
++	}
+ errorret:
+ 	STRCPY(IObuff, "???");
+ 	return IObuff;
+@@ -2060,8 +2076,10 @@
+ /*
+  * See if it is the same line as requested last time.
+  * Otherwise may need to flush last used line.
++ * Don't use the last used line when 'swapfile' is reset, need to load all
++ * blocks.
+  */
+-    if (buf->b_ml.ml_line_lnum != lnum)
++    if (buf->b_ml.ml_line_lnum != lnum || mf_dont_release)
+     {
+ 	ml_flush_line(buf);
+ 
+@@ -2072,7 +2090,14 @@
+ 	 */
+ 	if ((hp = ml_find_line(buf, lnum, ML_FIND)) == NULL)
+ 	{
+-	    EMSGN(_("E316: ml_get: cannot find line %ld"), lnum);
++	    if (recursive == 0)
++	    {
++		/* Avoid giving this message for a recursive call, may happen
++		 * when the GUI redraws part of the text. */
++		++recursive;
++		EMSGN(_("E316: ml_get: cannot find line %ld"), lnum);
++		--recursive;
++	    }
+ 	    goto errorret;
+ 	}
+ 
+@@ -3186,13 +3211,16 @@
+      * If not, flush and release the locked block.
+      * Don't do this for ML_INSERT_SAME, because the stack need to be updated.
+      * Don't do this for ML_FLUSH, because we want to flush the locked block.
++     * Don't do this when 'swapfile' is reset, we want to load all the blocks.
+      */
+     if (buf->b_ml.ml_locked)
+     {
+-	if (ML_SIMPLE(action) && buf->b_ml.ml_locked_low <= lnum
+-					  && buf->b_ml.ml_locked_high >= lnum)
++	if (ML_SIMPLE(action)
++		&& buf->b_ml.ml_locked_low <= lnum
++		&& buf->b_ml.ml_locked_high >= lnum
++		&& !mf_dont_release)
+ 	{
+-		/* remember to update pointer blocks and stack later */
++	    /* remember to update pointer blocks and stack later */
+ 	    if (action == ML_INSERT)
+ 	    {
+ 		++(buf->b_ml.ml_locked_lineadd);
+@@ -3652,6 +3680,7 @@
  {
      struct stat st;
      time_t	x, sx;
@@ -6764,7 +7000,7 @@ diff -Naur vim70.orig/src/memline.c vim70/src/memline.c
  
      ++no_wait_return;
      (void)EMSG(_("E325: ATTENTION"));
-@@ -3666,7 +3675,11 @@
+@@ -3666,7 +3695,11 @@
      {
  	MSG_PUTS(_("             dated: "));
  	x = st.st_mtime;    /* Manx C can't do &st.st_mtime */
@@ -6779,7 +7015,7 @@ diff -Naur vim70.orig/src/memline.c vim70/src/memline.c
      }
 diff -Naur vim70.orig/src/menu.c vim70/src/menu.c
 --- vim70.orig/src/menu.c	2006-05-03 10:30:48.000000000 -0700
-+++ vim70/src/menu.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/menu.c	2007-02-15 21:22:27.000000000 -0800
 @@ -511,6 +511,14 @@
  	 * name (without mnemonic and accelerator text). */
  	next_name = menu_name_skip(name);
@@ -6865,7 +7101,7 @@ diff -Naur vim70.orig/src/menu.c vim70/src/menu.c
  							   menu->silent[idx]);
 diff -Naur vim70.orig/src/message.c vim70/src/message.c
 --- vim70.orig/src/message.c	2006-05-06 13:07:37.000000000 -0700
-+++ vim70/src/message.c	2007-01-23 17:15:17.000000000 -0800
++++ vim70/src/message.c	2007-02-15 21:22:27.000000000 -0800
 @@ -53,7 +53,6 @@
  static struct msg_hist *first_msg_hist = NULL;
  static struct msg_hist *last_msg_hist = NULL;
@@ -6955,7 +7191,7 @@ diff -Naur vim70.orig/src/message.c vim70/src/message.c
  		    break;
 diff -Naur vim70.orig/src/misc1.c vim70/src/misc1.c
 --- vim70.orig/src/misc1.c	2006-04-30 08:30:02.000000000 -0700
-+++ vim70/src/misc1.c	2007-01-23 17:15:07.000000000 -0800
++++ vim70/src/misc1.c	2007-02-15 21:22:26.000000000 -0800
 @@ -1761,15 +1761,13 @@
       * Add column offset for 'number', 'foldcolumn', etc.
       */
@@ -7070,7 +7306,7 @@ diff -Naur vim70.orig/src/misc1.c vim70/src/misc1.c
  		    ++parencount;
 diff -Naur vim70.orig/src/misc2.c vim70/src/misc2.c
 --- vim70.orig/src/misc2.c	2006-05-04 05:12:38.000000000 -0700
-+++ vim70/src/misc2.c	2007-01-23 17:15:02.000000000 -0800
++++ vim70/src/misc2.c	2007-02-15 21:22:25.000000000 -0800
 @@ -1229,6 +1229,94 @@
      return escaped_string;
  }
@@ -7168,7 +7404,7 @@ diff -Naur vim70.orig/src/misc2.c vim70/src/misc2.c
   * This uses ASCII lower-to-upper case translation, language independent.
 diff -Naur vim70.orig/src/netbeans.c vim70/src/netbeans.c
 --- vim70.orig/src/netbeans.c	2006-04-22 11:00:05.000000000 -0700
-+++ vim70/src/netbeans.c	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/netbeans.c	2007-02-15 21:22:26.000000000 -0800
 @@ -61,7 +61,7 @@
  
  /* The first implementation (working only with Netbeans) returned "1.1".  The
@@ -7377,7 +7613,7 @@ diff -Naur vim70.orig/src/netbeans.c vim70/src/netbeans.c
  }
 diff -Naur vim70.orig/src/normal.c vim70/src/normal.c
 --- vim70.orig/src/normal.c	2006-04-29 06:11:18.000000000 -0700
-+++ vim70/src/normal.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/normal.c	2007-02-15 21:22:27.000000000 -0800
 @@ -651,9 +651,8 @@
  	/* Fake a "c"hange command.  When "restart_edit" is set (e.g., because
  	 * 'insertmode' is set) fake a "d"elete command, Insert mode will
@@ -7476,7 +7712,7 @@ diff -Naur vim70.orig/src/normal.c vim70/src/normal.c
  	    break;
 diff -Naur vim70.orig/src/ops.c vim70/src/ops.c
 --- vim70.orig/src/ops.c	2006-04-30 08:13:44.000000000 -0700
-+++ vim70/src/ops.c	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/ops.c	2007-02-15 21:22:26.000000000 -0800
 @@ -95,8 +95,8 @@
  static void block_insert __ARGS((oparg_T *oap, char_u *s, int b_insert, struct block_def*bdp));
  #endif
@@ -7676,7 +7912,7 @@ diff -Naur vim70.orig/src/ops.c vim70/src/ops.c
  	    curwin->w_cursor.lnum = lnum;
 diff -Naur vim70.orig/src/option.c vim70/src/option.c
 --- vim70.orig/src/option.c	2006-05-03 10:32:28.000000000 -0700
-+++ vim70/src/option.c	2007-01-23 17:15:07.000000000 -0800
++++ vim70/src/option.c	2007-02-15 21:22:26.000000000 -0800
 @@ -2294,7 +2294,7 @@
  			    {(char_u *)0L, (char_u *)0L}
  #endif
@@ -7792,7 +8028,7 @@ diff -Naur vim70.orig/src/option.c vim70/src/option.c
  
 diff -Naur vim70.orig/src/os_unix.c vim70/src/os_unix.c
 --- vim70.orig/src/os_unix.c	2006-05-01 01:13:15.000000000 -0700
-+++ vim70/src/os_unix.c	2007-01-23 17:14:55.000000000 -0800
++++ vim70/src/os_unix.c	2007-02-15 21:22:25.000000000 -0800
 @@ -3934,7 +3934,7 @@
  		    {
  			linenr_T    lnum = curbuf->b_op_start.lnum;
@@ -7851,7 +8087,7 @@ diff -Naur vim70.orig/src/os_unix.c vim70/src/os_unix.c
  	    | RTLD_LOCAL
 diff -Naur vim70.orig/src/popupmnu.c vim70/src/popupmnu.c
 --- vim70.orig/src/popupmnu.c	2006-04-20 13:18:37.000000000 -0700
-+++ vim70/src/popupmnu.c	2007-01-23 17:14:53.000000000 -0800
++++ vim70/src/popupmnu.c	2007-02-15 21:22:24.000000000 -0800
 @@ -552,6 +552,9 @@
  {
      pum_array = NULL;
@@ -7864,7 +8100,7 @@ diff -Naur vim70.orig/src/popupmnu.c vim70/src/popupmnu.c
  
 diff -Naur vim70.orig/src/proto/buffer.pro vim70/src/proto/buffer.pro
 --- vim70.orig/src/proto/buffer.pro	2006-05-07 06:08:29.000000000 -0700
-+++ vim70/src/proto/buffer.pro	2007-01-23 17:14:57.000000000 -0800
++++ vim70/src/proto/buffer.pro	2007-02-15 21:22:25.000000000 -0800
 @@ -10,6 +10,7 @@
  extern int do_buffer __ARGS((int action, int start, int dir, int count, int forceit));
  extern void set_curbuf __ARGS((buf_T *buf, int action));
@@ -7875,7 +8111,7 @@ diff -Naur vim70.orig/src/proto/buffer.pro vim70/src/proto/buffer.pro
  extern int buflist_getfile __ARGS((int n, linenr_T lnum, int options, int forceit));
 diff -Naur vim70.orig/src/proto/eval.pro vim70/src/proto/eval.pro
 --- vim70.orig/src/proto/eval.pro	2006-05-07 06:08:33.000000000 -0700
-+++ vim70/src/proto/eval.pro	2007-01-23 17:15:06.000000000 -0800
++++ vim70/src/proto/eval.pro	2007-02-15 21:22:26.000000000 -0800
 @@ -44,7 +44,7 @@
  extern char_u *get_user_var_name __ARGS((expand_T *xp, int idx));
  extern list_T *list_alloc __ARGS((void));
@@ -7887,7 +8123,7 @@ diff -Naur vim70.orig/src/proto/eval.pro vim70/src/proto/eval.pro
  extern int garbage_collect __ARGS((void));
 diff -Naur vim70.orig/src/proto/menu.pro vim70/src/proto/menu.pro
 --- vim70.orig/src/proto/menu.pro	2006-05-07 06:08:51.000000000 -0700
-+++ vim70/src/proto/menu.pro	2007-01-23 17:14:53.000000000 -0800
++++ vim70/src/proto/menu.pro	2007-02-15 21:22:24.000000000 -0800
 @@ -10,6 +10,7 @@
  extern int menu_is_child_of_popup __ARGS((vimmenu_T *menu));
  extern int menu_is_toolbar __ARGS((char_u *name));
@@ -7898,7 +8134,7 @@ diff -Naur vim70.orig/src/proto/menu.pro vim70/src/proto/menu.pro
  extern int gui_is_menu_shortcut __ARGS((int key));
 diff -Naur vim70.orig/src/proto/misc2.pro vim70/src/proto/misc2.pro
 --- vim70.orig/src/proto/misc2.pro	2006-05-07 06:08:54.000000000 -0700
-+++ vim70/src/proto/misc2.pro	2007-01-23 17:15:02.000000000 -0800
++++ vim70/src/proto/misc2.pro	2007-02-15 21:22:25.000000000 -0800
 @@ -29,6 +29,7 @@
  extern char_u *vim_strnsave __ARGS((char_u *string, int len));
  extern char_u *vim_strsave_escaped __ARGS((char_u *string, char_u *esc_chars));
@@ -7909,7 +8145,7 @@ diff -Naur vim70.orig/src/proto/misc2.pro vim70/src/proto/misc2.pro
  extern void vim_strup __ARGS((char_u *p));
 diff -Naur vim70.orig/src/proto/ops.pro vim70/src/proto/ops.pro
 --- vim70.orig/src/proto/ops.pro	2006-05-07 06:08:58.000000000 -0700
-+++ vim70/src/proto/ops.pro	2007-01-23 17:15:10.000000000 -0800
++++ vim70/src/proto/ops.pro	2007-02-15 21:22:26.000000000 -0800
 @@ -17,10 +17,10 @@
  extern void put_register __ARGS((int name, void *reg));
  extern int yank_register_mline __ARGS((int regname));
@@ -7925,7 +8161,7 @@ diff -Naur vim70.orig/src/proto/ops.pro vim70/src/proto/ops.pro
  extern int op_replace __ARGS((oparg_T *oap, int c));
 diff -Naur vim70.orig/src/proto/undo.pro vim70/src/proto/undo.pro
 --- vim70.orig/src/proto/undo.pro	2006-05-07 06:09:11.000000000 -0700
-+++ vim70/src/proto/undo.pro	2007-01-23 17:14:49.000000000 -0800
++++ vim70/src/proto/undo.pro	2007-02-15 21:22:24.000000000 -0800
 @@ -4,6 +4,7 @@
  extern int u_savesub __ARGS((linenr_T lnum));
  extern int u_inssub __ARGS((linenr_T lnum));
@@ -7936,7 +8172,16 @@ diff -Naur vim70.orig/src/proto/undo.pro vim70/src/proto/undo.pro
  extern void undo_time __ARGS((long step, int sec, int absolute));
 diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
 --- vim70.orig/src/quickfix.c	2006-05-03 00:47:42.000000000 -0700
-+++ vim70/src/quickfix.c	2007-01-23 17:15:07.000000000 -0800
++++ vim70/src/quickfix.c	2007-02-15 21:22:27.000000000 -0800
+@@ -106,7 +106,7 @@
+ 
+ static int	qf_init_ext __ARGS((qf_info_T *qi, char_u *efile, buf_T *buf, typval_T *tv, char_u *errorformat, int newlist, linenr_T lnumfirst, linenr_T lnumlast));
+ static void	qf_new_list __ARGS((qf_info_T *qi));
+-static int	qf_add_entry __ARGS((qf_info_T *qi, qfline_T **prevp, char_u *dir, char_u *fname, char_u *mesg, long lnum, int col, int vis_col, char_u *pattern, int nr, int type, int valid));
++static int	qf_add_entry __ARGS((qf_info_T *qi, qfline_T **prevp, char_u *dir, char_u *fname, int bufnum, char_u *mesg, long lnum, int col, int vis_col, char_u *pattern, int nr, int type, int valid));
+ static void	qf_msg __ARGS((qf_info_T *qi));
+ static void	qf_free __ARGS((qf_info_T *qi, int idx));
+ static char_u	*qf_types __ARGS((int, int));
 @@ -500,8 +500,6 @@
  	{
  	    if (tv != NULL)
@@ -8032,7 +8277,51 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  		    len = (int)(regmatch.endp[i] - regmatch.startp[i]);
  		    if (len > CMDBUFFSIZE - 5)
  			len = CMDBUFFSIZE - 5;
-@@ -1554,10 +1586,30 @@
+@@ -759,6 +791,7 @@
+ 			(*namebuf || directory)
+ 			    ? namebuf
+ 			    : ((currfile && valid) ? currfile : (char_u *)NULL),
++			0,
+ 			errmsg,
+ 			lnum,
+ 			col,
+@@ -904,12 +937,13 @@
+  * Returns OK or FAIL.
+  */
+     static int
+-qf_add_entry(qi, prevp, dir, fname, mesg, lnum, col, vis_col, pattern, nr, type,
+-	     valid)
++qf_add_entry(qi, prevp, dir, fname, bufnum, mesg, lnum, col, vis_col, pattern,
++	     nr, type, valid)
+     qf_info_T	*qi;		/* quickfix list */
+     qfline_T	**prevp;	/* pointer to previously added entry or NULL */
+     char_u	*dir;		/* optional directory name */
+     char_u	*fname;		/* file name or NULL */
++    int		bufnum;		/* buffer number or zero */
+     char_u	*mesg;		/* message */
+     long	lnum;		/* line number */
+     int		col;		/* column */
+@@ -923,7 +957,10 @@
+ 
+     if ((qfp = (qfline_T *)alloc((unsigned)sizeof(qfline_T))) == NULL)
+ 	return FAIL;
+-    qfp->qf_fnum = qf_get_fnum(dir, fname);
++    if (bufnum != 0)
++	qfp->qf_fnum = bufnum;
++    else
++	qfp->qf_fnum = qf_get_fnum(dir, fname);
+     if ((qfp->qf_text = vim_strsave(mesg)) == NULL)
+     {
+ 	vim_free(qfp);
+@@ -1074,6 +1111,7 @@
+ 		if (qf_add_entry(to->w_llist, &prevp,
+ 				 NULL,
+ 				 NULL,
++				 0,
+ 				 from_qfp->qf_text,
+ 				 from_qfp->qf_lnum,
+ 				 from_qfp->qf_col,
+@@ -1554,10 +1592,30 @@
  	    }
  
  	/*
@@ -8040,8 +8329,7 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
 -	 * window.
 +	 * If no usable window is found and 'switchbuf' is set to 'usetab'
 +	 * then search in other tabs.
- 	 */
--	if (firstwin == lastwin || !usable_win)
++	 */
 +	if (!usable_win && vim_strchr(p_swb, 'a') != NULL)
 +	{
 +	    tabpage_T	*tp;
@@ -8061,12 +8349,13 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
 +	/*
 +	 * If there is only one window and is the quickfix window, create a new
 +	 * one above the quickfix window.
-+	 */
+ 	 */
+-	if (firstwin == lastwin || !usable_win)
 +	if (((firstwin == lastwin) && bt_quickfix(curbuf)) || !usable_win)
  	{
  	    ll_ref = curwin->w_llist_ref;
  
-@@ -2429,32 +2481,19 @@
+@@ -2429,32 +2487,19 @@
      qf_info_T	*qi;
  {
      buf_T	*buf;
@@ -8099,7 +8388,7 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  
  	(void)qf_win_pos_update(qi, 0);
      }
-@@ -2943,10 +2982,8 @@
+@@ -2943,10 +2988,8 @@
  #if defined(FEAT_AUTOCMD) && defined(FEAT_SYN_HL)
      char_u	*save_ei = NULL;
  #endif
@@ -8111,7 +8400,15 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
      char_u	*au_name =  NULL;
      int		flags = 0;
      colnr_T	col;
-@@ -3167,24 +3204,13 @@
+@@ -3097,6 +3140,7 @@
+ 		    if (qf_add_entry(qi, &prevp,
+ 				NULL,       /* dir */
+ 				fnames[fi],
++				0,
+ 				ml_get_buf(buf,
+ 				     regmatch.startpos[0].lnum + lnum, FALSE),
+ 				regmatch.startpos[0].lnum + lnum,
+@@ -3167,24 +3211,13 @@
  		     * need to be done now, in that buffer.  And the modelines
  		     * need to be done (again).  But not the window-local
  		     * options! */
@@ -8136,7 +8433,7 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  		}
  	    }
  	}
-@@ -3285,11 +3311,7 @@
+@@ -3285,11 +3318,7 @@
  {
      buf_T	*newbuf;
      int		failed = TRUE;
@@ -8148,7 +8445,7 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  
      /* Allocate a buffer without putting it in the buffer list. */
      newbuf = buflist_new(NULL, NULL, (linenr_T)1, BLN_DUMMY);
-@@ -3299,13 +3321,8 @@
+@@ -3299,13 +3328,8 @@
      /* Init the options. */
      buf_copy_options(newbuf, BCO_ENTER | BCO_NOHELP);
  
@@ -8162,7 +8459,7 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  
      /* Need to set the filename for autocommands. */
      (void)setfname(curbuf, fname, NULL, FALSE);
-@@ -3336,13 +3353,8 @@
+@@ -3336,13 +3360,8 @@
  	}
      }
  
@@ -8176,7 +8473,33 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  
      if (!buf_valid(newbuf))
  	return NULL;
-@@ -3434,8 +3446,10 @@
+@@ -3407,6 +3426,7 @@
+     char_u	buf[2];
+     qfline_T	*qfp;
+     int		i;
++    int		bufnum;
+ 
+     if (wp != NULL)
+     {
+@@ -3422,6 +3442,11 @@
+     qfp = qi->qf_lists[qi->qf_curlist].qf_start;
+     for (i = 1; !got_int && i <= qi->qf_lists[qi->qf_curlist].qf_count; ++i)
+     {
++	/* Handle entries with a non-existing buffer number. */
++	bufnum = qfp->qf_fnum;
++	if (bufnum != 0 && (buflist_findnr(bufnum) == NULL))
++	    bufnum = 0;
++
+ 	if ((dict = dict_alloc()) == NULL)
+ 	    return FAIL;
+ 	if (list_append_dict(list, dict) == FAIL)
+@@ -3429,13 +3454,15 @@
+ 
+ 	buf[0] = qfp->qf_type;
+ 	buf[1] = NUL;
+-	if ( dict_add_nr_str(dict, "bufnr", (long)qfp->qf_fnum, NULL) == FAIL
++	if ( dict_add_nr_str(dict, "bufnr", (long)bufnum, NULL) == FAIL
+ 	  || dict_add_nr_str(dict, "lnum",  (long)qfp->qf_lnum, NULL) == FAIL
  	  || dict_add_nr_str(dict, "col",   (long)qfp->qf_col, NULL) == FAIL
  	  || dict_add_nr_str(dict, "vcol",  (long)qfp->qf_viscol, NULL) == FAIL
  	  || dict_add_nr_str(dict, "nr",    (long)qfp->qf_nr, NULL) == FAIL
@@ -8189,9 +8512,69 @@ diff -Naur vim70.orig/src/quickfix.c vim70/src/quickfix.c
  	  || dict_add_nr_str(dict, "type",  0L, buf) == FAIL
  	  || dict_add_nr_str(dict, "valid", (long)qfp->qf_valid, NULL) == FAIL)
  	    return FAIL;
+@@ -3458,6 +3485,7 @@
+     listitem_T	*li;
+     dict_T	*d;
+     char_u	*filename, *pattern, *text, *type;
++    int		bufnum;
+     long	lnum;
+     int		col, nr;
+     int		vcol;
+@@ -3465,6 +3493,7 @@
+     int		valid, status;
+     int		retval = OK;
+     qf_info_T	*qi = &ql_info;
++    int		did_bufnr_emsg = FALSE;
+ 
+     if (wp != NULL)
+     {
+@@ -3494,6 +3523,7 @@
+ 	    continue;
+ 
+ 	filename = get_dict_string(d, (char_u *)"filename", TRUE);
++	bufnum = get_dict_number(d, (char_u *)"bufnr");
+ 	lnum = get_dict_number(d, (char_u *)"lnum");
+ 	col = get_dict_number(d, (char_u *)"col");
+ 	vcol = get_dict_number(d, (char_u *)"vcol");
+@@ -3505,12 +3535,26 @@
+ 	    text = vim_strsave((char_u *)"");
+ 
+ 	valid = TRUE;
+-	if (filename == NULL || (lnum == 0 && pattern == NULL))
++	if ((filename == NULL && bufnum == 0) || (lnum == 0 && pattern == NULL))
++	    valid = FALSE;
++
++	/* Mark entries with non-existing buffer number as not valid. Give the
++	 * error message only once. */
++	if (bufnum != 0 && (buflist_findnr(bufnum) == NULL))
++	{
++	    if (!did_bufnr_emsg)
++	    {
++		did_bufnr_emsg = TRUE;
++		EMSGN(_("E92: Buffer %ld not found"), bufnum);
++	    }
+ 	    valid = FALSE;
++	    bufnum = 0;
++	}
+ 
+ 	status =  qf_add_entry(qi, &prevp,
+ 			       NULL,	    /* dir */
+ 			       filename,
++			       bufnum,
+ 			       text,
+ 			       lnum,
+ 			       col,
+@@ -3743,6 +3787,7 @@
+ 				if (qf_add_entry(qi, &prevp,
+ 					    NULL,	/* dir */
+ 					    fnames[fi],
++					    0,
+ 					    IObuff,
+ 					    lnum,
+ 					    (int)(regmatch.startp[0] - IObuff)
 diff -Naur vim70.orig/src/regexp.c vim70/src/regexp.c
 --- vim70.orig/src/regexp.c	2006-04-30 08:31:50.000000000 -0700
-+++ vim70/src/regexp.c	2007-01-23 17:15:07.000000000 -0800
++++ vim70/src/regexp.c	2007-02-15 21:22:26.000000000 -0800
 @@ -3777,8 +3777,8 @@
  
  	op = OP(scan);
@@ -8328,7 +8711,7 @@ diff -Naur vim70.orig/src/regexp.c vim70/src/regexp.c
  	    if (reg_line_lbr)
 diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
 --- vim70.orig/src/screen.c	2006-05-05 03:13:55.000000000 -0700
-+++ vim70/src/screen.c	2007-01-23 17:15:11.000000000 -0800
++++ vim70/src/screen.c	2007-02-15 21:22:26.000000000 -0800
 @@ -455,6 +455,7 @@
  		    && curwin->w_topline == curwin->w_lines[0].wl_lnum)
  #ifdef FEAT_VISUAL
@@ -8512,7 +8895,7 @@ diff -Naur vim70.orig/src/screen.c vim70/src/screen.c
      if (starting == 0)
 diff -Naur vim70.orig/src/search.c vim70/src/search.c
 --- vim70.orig/src/search.c	2006-05-05 05:12:13.000000000 -0700
-+++ vim70/src/search.c	2007-01-23 17:15:26.000000000 -0800
++++ vim70/src/search.c	2007-02-15 21:22:27.000000000 -0800
 @@ -812,7 +812,11 @@
  #ifdef FEAT_MBYTE
  			if (has_mbyte)
@@ -8582,7 +8965,7 @@ diff -Naur vim70.orig/src/search.c vim70/src/search.c
  		if (add_r == OK)
 diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
 --- vim70.orig/src/spell.c	2006-05-05 00:49:58.000000000 -0700
-+++ vim70/src/spell.c	2007-01-23 17:15:01.000000000 -0800
++++ vim70/src/spell.c	2007-02-15 21:22:25.000000000 -0800
 @@ -1483,7 +1483,7 @@
  	    else if ((mode == FIND_COMPOUND || mode == FIND_KEEPCOMPOUND
  								|| !word_ends))
@@ -8913,7 +9296,7 @@ diff -Naur vim70.orig/src/spell.c vim70/src/spell.c
  }
 diff -Naur vim70.orig/src/structs.h vim70/src/structs.h
 --- vim70.orig/src/structs.h	2006-04-09 10:57:46.000000000 -0700
-+++ vim70/src/structs.h	2007-01-23 17:14:52.000000000 -0800
++++ vim70/src/structs.h	2007-02-15 21:22:24.000000000 -0800
 @@ -2213,18 +2213,20 @@
  
  /*
@@ -8939,7 +9322,7 @@ diff -Naur vim70.orig/src/structs.h vim70/src/structs.h
  
 diff -Naur vim70.orig/src/syntax.c vim70/src/syntax.c
 --- vim70.orig/src/syntax.c	2006-04-26 05:49:45.000000000 -0700
-+++ vim70/src/syntax.c	2007-01-23 17:15:09.000000000 -0800
++++ vim70/src/syntax.c	2007-02-15 21:22:27.000000000 -0800
 @@ -977,6 +977,7 @@
  {
      stateitem_T	*cur_si;
@@ -9029,6 +9412,15 @@ diff -Naur vim70.orig/src/syntax.c vim70/src/syntax.c
      }
  }
  
+@@ -3188,7 +3206,7 @@
+ 	curbuf->b_syn_spell = SYNSPL_TOP;
+     else if (STRNICMP(arg, "notoplevel", 10) == 0 && next - arg == 10)
+ 	curbuf->b_syn_spell = SYNSPL_NOTOP;
+-    else if (STRNICMP(arg, "default", 4) == 0 && next - arg == 4)
++    else if (STRNICMP(arg, "default", 7) == 0 && next - arg == 7)
+ 	curbuf->b_syn_spell = SYNSPL_DEFAULT;
+     else
+ 	EMSG2(_("E390: Illegal argument: %s"), arg);
 @@ -6054,7 +6072,11 @@
  		++level;
      }
@@ -9043,7 +9435,7 @@ diff -Naur vim70.orig/src/syntax.c vim70/src/syntax.c
  #endif
 diff -Naur vim70.orig/src/tag.c vim70/src/tag.c
 --- vim70.orig/src/tag.c	2006-04-27 06:11:21.000000000 -0700
-+++ vim70/src/tag.c	2007-01-23 17:15:06.000000000 -0800
++++ vim70/src/tag.c	2007-02-15 21:22:26.000000000 -0800
 @@ -911,7 +911,7 @@
  
  		set_errorlist(curwin, list, ' ');
@@ -9085,7 +9477,7 @@ diff -Naur vim70.orig/src/tag.c vim70/src/tag.c
  		for (p = tp.command_end + 3;
 diff -Naur vim70.orig/src/term.c vim70/src/term.c
 --- vim70.orig/src/term.c	2006-05-03 10:34:57.000000000 -0700
-+++ vim70/src/term.c	2007-01-23 17:15:08.000000000 -0800
++++ vim70/src/term.c	2007-02-15 21:22:26.000000000 -0800
 @@ -3137,25 +3137,32 @@
  	    screenalloc(FALSE);
  	    repeat_message();
@@ -9149,7 +9541,7 @@ diff -Naur vim70.orig/src/term.c vim70/src/term.c
  # ifdef FEAT_GUI_TABLINE
 diff -Naur vim70.orig/src/testdir/test56.in vim70/src/testdir/test56.in
 --- vim70.orig/src/testdir/test56.in	2005-05-18 08:37:37.000000000 -0700
-+++ vim70/src/testdir/test56.in	2007-01-23 17:14:57.000000000 -0800
++++ vim70/src/testdir/test56.in	2007-02-15 21:22:25.000000000 -0800
 @@ -3,7 +3,7 @@
  STARTTEST
  :so small.vim
@@ -9161,7 +9553,7 @@ diff -Naur vim70.orig/src/testdir/test56.in vim70/src/testdir/test56.in
  _x
 diff -Naur vim70.orig/src/ui.c vim70/src/ui.c
 --- vim70.orig/src/ui.c	2006-03-27 11:15:09.000000000 -0800
-+++ vim70/src/ui.c	2007-01-23 17:14:55.000000000 -0800
++++ vim70/src/ui.c	2007-02-15 21:22:25.000000000 -0800
 @@ -1137,7 +1137,6 @@
      int		len;
  #ifdef FEAT_MBYTE
@@ -9181,7 +9573,7 @@ diff -Naur vim70.orig/src/ui.c vim70/src/ui.c
  		    if (enc_dbcs == DBCS_JPNU && p[i] == 0x8e)
 diff -Naur vim70.orig/src/undo.c vim70/src/undo.c
 --- vim70.orig/src/undo.c	2006-04-21 02:30:59.000000000 -0700
-+++ vim70/src/undo.c	2007-01-23 17:15:12.000000000 -0800
++++ vim70/src/undo.c	2007-02-15 21:22:27.000000000 -0800
 @@ -84,7 +84,6 @@
  static void u_unch_branch __ARGS((u_header_T *uhp));
  static u_entry_T *u_get_headentry __ARGS((void));
@@ -9284,11 +9676,25 @@ diff -Naur vim70.orig/src/undo.c vim70/src/undo.c
  	    msgbuf);
 diff -Naur vim70.orig/src/version.c vim70/src/version.c
 --- vim70.orig/src/version.c	2006-05-03 00:50:42.000000000 -0700
-+++ vim70/src/version.c	2007-01-23 17:15:26.000000000 -0800
-@@ -667,6 +667,346 @@
++++ vim70/src/version.c	2007-02-15 21:22:27.000000000 -0800
+@@ -667,6 +667,360 @@
  static int included_patches[] =
  {   /* Add new patch number below this line */
  /**/
++    195,
++/**/
++    194,
++/**/
++    193,
++/**/
++    192,
++/**/
++    191,
++/**/
++    190,
++/**/
++    189,
++/**/
 +    188,
 +/**/
 +    187,
@@ -9632,7 +10038,7 @@ diff -Naur vim70.orig/src/version.c vim70/src/version.c
      0
  };
  
-@@ -731,7 +1071,11 @@
+@@ -731,7 +1085,11 @@
      /* Only MS VC 4.1 and earlier can do Win32s */
      MSG_PUTS(_("\nMS-Windows 16/32 bit GUI version"));
  #  else
@@ -9646,7 +10052,7 @@ diff -Naur vim70.orig/src/version.c vim70/src/version.c
  	MSG_PUTS(_(" in Win32s mode"));
 diff -Naur vim70.orig/src/vim.h vim70/src/vim.h
 --- vim70.orig/src/vim.h	2006-04-30 08:32:38.000000000 -0700
-+++ vim70/src/vim.h	2007-01-23 17:15:23.000000000 -0800
++++ vim70/src/vim.h	2007-02-15 21:22:27.000000000 -0800
 @@ -585,7 +585,6 @@
  #define INSERT		0x10	/* Insert mode */
  #define LANGMAP		0x20	/* Language mapping, can be combined with
@@ -9704,7 +10110,7 @@ diff -Naur vim70.orig/src/vim.h vim70/src/vim.h
  
 diff -Naur vim70.orig/src/window.c vim70/src/window.c
 --- vim70.orig/src/window.c	2006-05-06 03:54:51.000000000 -0700
-+++ vim70/src/window.c	2007-01-23 17:15:11.000000000 -0800
++++ vim70/src/window.c	2007-02-15 21:22:26.000000000 -0800
 @@ -340,10 +340,10 @@
  		{
  		    tabpage_T	*oldtab = curtab;
