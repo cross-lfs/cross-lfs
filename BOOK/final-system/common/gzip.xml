@@ -27,28 +27,21 @@
 
     <para os="a">Prepare Gzip for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --bindir=/bin</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
 
-    <para os="e">This package does not come with a test suite.</para>
+    <para os="e">To test the results, issue: make check.</para>
 
     <para os="f">Install the package:</para>
 
 <screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="h">Move the <command>gzip</command> program to the <filename
-    class="directory">/bin</filename> directory and create some commonly
-    used symlinks to it:</para>
+    <para os="h">Now we will move some of utilities to /usr/bin to meet FHS compliance:</para>
 
-<screen os="i"><userinput>mv -v /usr/bin/gzip /bin
-rm -v /usr/bin/{gunzip,zcat}
-ln -sv gzip /bin/gunzip
-ln -sv gzip /bin/zcat
-ln -sv gzip /bin/compress
-ln -sv gunzip /bin/uncompress</userinput></screen>
+<screen os="i"><userinput>mv /bin/z{egrep,cmp,diff,fgrep,force,grep,less,more,new} /usr/bin</userinput></screen>
 
   </sect2>
 
