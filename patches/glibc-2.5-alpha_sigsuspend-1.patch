@@ -1,0 +1,31 @@
+Submitted By: Joe Ciccone <jciccone@linuxfromscratch.org>
+Date: 2007-02-17
+Initial Package Version: 2.5
+Upstream Status: Unknown
+Origin: http://sourceware.org/ml/libc-alpha/2006-10/msg00074.html
+Description: Adds sigsuspend_nocancel to alpha.
+
+--- glibc-2.5.orig/sysdeps/unix/sysv/linux/alpha/sigsuspend.S	2007-02-17 11:02:56.000000000 -0500
++++ glibc-2.5/sysdeps/unix/sysv/linux/alpha/sigsuspend.S	2007-02-17 11:03:29.000000000 -0500
+@@ -31,3 +31,21 @@
+ libc_hidden_def (__sigsuspend)
+ weak_alias (__sigsuspend, sigsuspend)
+ strong_alias (__sigsuspend, __libc_sigsuspend)
++
++#ifndef NO_CANCELLATION
++	.globl __sigsuspend_nocancel;
++	.align 4;
++	.type __sigsuspend_nocancel, @function;
++	.usepv __sigsuspend_nocancel, std;
++	cfi_startproc;
++__LABEL(__sigsuspend_nocancel)
++	ldgp    gp, 0(pv);
++	PSEUDO_PROF;
++	PSEUDO_PREPARE_ARGS
++	lda     v0, SYS_ify(sigsuspend);
++	call_pal PAL_callsys;
++	bne     a3, SYSCALL_ERROR_LABEL;
++	ret;
++	cfi_endproc;
++	.size __sigsuspend_nocancel, .-__sigsuspend_nocancel
++#endif
