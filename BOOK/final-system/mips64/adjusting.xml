@@ -55,7 +55,7 @@ perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
     <para>For N32 ABI:</para>
 
 <screen><userinput>echo 'main(){}' &gt; dummy.c
-cc ${BUILDN32} dummy.c
+gcc ${BUILDN32} dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"

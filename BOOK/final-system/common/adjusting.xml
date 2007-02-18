@@ -32,7 +32,7 @@ perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
     check:</para>
 
 <screen os="g"><userinput>echo 'main(){}' &gt; dummy.c
-cc dummy.c
+gcc dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
     <para os="h">If everything is working correctly, there should be no errors,

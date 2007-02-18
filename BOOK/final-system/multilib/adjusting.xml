@@ -37,7 +37,7 @@ perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
     <para os="m2">For 32 bit ABI:</para>
 
 <screen os="m3"><userinput>echo 'main(){}' &gt; dummy.c
-cc ${BUILD32} dummy.c
+gcc ${BUILD32} dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -51,7 +51,7 @@ readelf -l a.out | grep ': /lib'</userinput></screen>
     <para os="m4">For 64 bit ABI:</para>
 
 <screen os="m5"><userinput>echo 'main(){}' &gt; dummy.c
-cc ${BUILD64} dummy.c
+gcc ${BUILD64} dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
