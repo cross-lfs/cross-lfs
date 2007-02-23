@@ -333,32 +333,3 @@ diff -Naur gcc-4.1.2.orig/gcc/config/xtensa/linux.h gcc-4.1.2/gcc/config/xtensa/
        %{static:-static}}}"
  
  #undef LOCAL_LABEL_PREFIX
-diff -Naur gcc-4.1.2.orig/gcc/gcc.c gcc-4.1.2/gcc/gcc.c
---- gcc-4.1.2.orig/gcc/gcc.c	2006-11-07 06:26:21.000000000 -0800
-+++ gcc-4.1.2/gcc/gcc.c	2007-02-14 07:48:55.000000000 -0800
-@@ -3821,16 +3821,22 @@
- 	      PREFIX_PRIORITY_LAST, 2, 0);
-   add_prefix (&exec_prefixes, standard_exec_prefix, "BINUTILS",
- 	      PREFIX_PRIORITY_LAST, 2, 0);
--  add_prefix (&exec_prefixes, standard_exec_prefix_1, "BINUTILS",
-+  if (*cross_compile == '0')
-+    {
-+      add_prefix (&exec_prefixes, standard_exec_prefix_1, "BINUTILS",
- 	      PREFIX_PRIORITY_LAST, 2, 0);
--  add_prefix (&exec_prefixes, standard_exec_prefix_2, "BINUTILS",
-+      add_prefix (&exec_prefixes, standard_exec_prefix_2, "BINUTILS",
- 	      PREFIX_PRIORITY_LAST, 2, 0);
-+    }
- #endif
- 
-   add_prefix (&startfile_prefixes, standard_exec_prefix, "BINUTILS",
- 	      PREFIX_PRIORITY_LAST, 1, 0);
--  add_prefix (&startfile_prefixes, standard_exec_prefix_2, "BINUTILS",
-+  if (*cross_compile == '0')
-+    {
-+      add_prefix (&startfile_prefixes, standard_exec_prefix_2, "BINUTILS",
- 	      PREFIX_PRIORITY_LAST, 1, 0);
-+    }
- 
-   tooldir_prefix = concat (tooldir_base_prefix, spec_machine,
- 			   dir_separator_str, NULL);
