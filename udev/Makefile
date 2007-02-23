@@ -30,7 +30,7 @@ rules-netboot:
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 
 scripts:
-	install -d -m ${DIRMODE} ${DESTDIR}/udev
+	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/${LIBDIR}/udev/load_floppy_module.sh
 	install -m ${SCRIPTMODE} cdsymlink_helper.sh ${DESTDIR}/${LIBDIR}/udev/cdsymlink_helper.sh
 
