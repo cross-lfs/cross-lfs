@@ -30,6 +30,7 @@ rules-netboot:
 	install -m ${RULESMODE} 50-udev.rules ${DESTDIR}/etc/udev/rules.d/50-udev.rules
 
 scripts:
+	install -d -m ${DIRMODE} ${DESTDIR}/udev
 	install -m ${SCRIPTMODE} load_floppy_module.sh ${DESTDIR}/${LIBDIR}/udev/load_floppy_module.sh
 	install -m ${SCRIPTMODE} cdsymlink_helper.sh ${DESTDIR}/${LIBDIR}/udev/cdsymlink_helper.sh
 
@@ -47,14 +48,14 @@ device_dirs:
 	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev/devices/shm
 	install -d -m ${DIRMODE} ${DESTDIR}/${LIBDIR}/udev/devices/net
 
-device_links:
+device_links: device_dirs
 	ln -snf /proc/self/fd ${DESTDIR}/${LIBDIR}/udev/devices/fd
 	ln -snf /proc/self/fd/0 ${DESTDIR}/${LIBDIR}/udev/devices/stdin
 	ln -snf /proc/self/fd/1 ${DESTDIR}/${LIBDIR}/udev/devices/stdout
 	ln -snf /proc/self/fd/2 ${DESTDIR}/${LIBDIR}/udev/devices/stderr
 	ln -snf /proc/kcore ${DESTDIR}/${LIBDIR}/udev/devices/core
 
-mknod_devices:
+mknod_devices: device_dirs
 	@if [ "$$UID" = "0" ]; then \
 		if ! [ -e ${DESTDIR}/${LIBDIR}/udev/devices/null ]; then \
 			mknod -m 0666 ${DESTDIR}/${LIBDIR}/udev/devices/null c 1 3 ;\
