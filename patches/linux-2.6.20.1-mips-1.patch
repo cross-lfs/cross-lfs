@@ -1,13 +1,117 @@
 Submitted By: Jim Gifford (patches at jg555 dot com)
-Date: 2007-02-04
-Initial Package Version: 2.6.20
+Date: 2007-02-24
+Initial Package Version: 2.6.20.1
 Origin: Linux-MIPS
 Upstream Status: http://www.linux-mips.org/pub/linux/mips/kernel/v2.6/
 
-diff -Naur linux-2.6.20/arch/mips/Kconfig linux-mips-2.6.20/arch/mips/Kconfig
---- linux-2.6.20/arch/mips/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/Kconfig	2007-02-04 12:22:45.000000000 -0800
-@@ -1199,7 +1199,7 @@
+diff -Naur linux-2.6.20.1.orig/arch/mips/Kconfig linux-2.6.20.1/arch/mips/Kconfig
+--- linux-2.6.20.1.orig/arch/mips/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/Kconfig	2007-02-20 16:47:41.000000000 -0800
+@@ -140,6 +140,7 @@
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	help
+ 	  The eXcite is a smart camera platform manufactured by
+ 	  Basler Vision Technologies AG
+@@ -206,6 +207,7 @@
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	help
+ 	  This is an evaluation board based on the Galileo GT-64120
+ 	  single-chip system controller that contains a MIPS R5000 compatible
+@@ -370,6 +372,7 @@
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	help
+ 	  The Jaguar ATX is a MIPS-based Single Board Computer (SBC) made by
+ 	  Momentum Computer <http://www.momenco.com/>.
+@@ -387,6 +390,7 @@
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	help
+ 	  The Ocelot is a MIPS-based Single Board Computer (SBC) made by
+ 	  Momentum Computer <http://www.momenco.com/>.
+@@ -476,6 +480,7 @@
+ 	select SYS_HAS_CPU_R5432
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL if EXPERIMENTAL
++	select SYS_SUPPORTS_KGDB
+ 	select SYS_SUPPORTS_LITTLE_ENDIAN
+ 	help
+ 	  This enables support for the R5432-based NEC DDB Vrc-5477,
+@@ -504,6 +509,7 @@
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
+ 	select SYS_SUPPORTS_HIGHMEM
++	select SYS_SUPPORTS_KGDB
+ 	select SYS_SUPPORTS_SMP
+ 	help
+ 	  Yosemite is an evaluation board for the RM9000x2 processor
+@@ -579,6 +585,7 @@
+ 	select SYS_HAS_CPU_R10000
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	select SYS_SUPPORTS_NUMA
+ 	select SYS_SUPPORTS_SMP
+ 	select GENERIC_HARDIRQS_NO__DO_IRQ
+@@ -628,6 +635,7 @@
+ 	select SYS_HAS_CPU_SB1
+ 	select SYS_SUPPORTS_BIG_ENDIAN
+ 	select SYS_SUPPORTS_HIGHMEM
++	select SYS_SUPPORTS_KGDB
+ 	select SYS_SUPPORTS_LITTLE_ENDIAN
+ 
+ config SIBYTE_SENTOSA
+@@ -762,6 +770,7 @@
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	select TOSHIBA_BOARDS
+ 	select GENERIC_HARDIRQS_NO__DO_IRQ
+ 	help
+@@ -782,6 +791,7 @@
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_LITTLE_ENDIAN
+ 	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_KGDB
+ 	select TOSHIBA_BOARDS
+ 	select GENERIC_HARDIRQS_NO__DO_IRQ
+ 	help
+@@ -965,6 +975,7 @@
+ 
+ config DDB5XXX_COMMON
+ 	bool
++	select SYS_SUPPORTS_KGDB
+ 
+ config MIPS_BOARDS_GEN
+ 	bool
+@@ -1012,6 +1023,7 @@
+ 	bool
+ 	select SYS_HAS_CPU_MIPS32_R1
+ 	select SYS_SUPPORTS_32BIT_KERNEL
++	select SYS_SUPPORTS_KGDB
+ 
+ config PNX8550
+ 	bool
+@@ -1024,6 +1036,7 @@
+ 	select SYS_HAS_CPU_MIPS32_R1
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select GENERIC_HARDIRQS_NO__DO_IRQ
++	select SYS_SUPPORTS_KGDB
+ 
+ config SWAP_IO_SPACE
+ 	bool
+@@ -1199,7 +1212,7 @@
  	select CPU_SUPPORTS_32BIT_KERNEL
  	select CPU_SUPPORTS_64BIT_KERNEL
  	help
@@ -16,9 +120,9 @@ diff -Naur linux-2.6.20/arch/mips/Kconfig linux-mips-2.6.20/arch/mips/Kconfig
  	  Only choose this option if you have one of these processors as a
  	  kernel built with this option will not run on any other type of
  	  processor or vice versa.
-diff -Naur linux-2.6.20/arch/mips/Kconfig.debug linux-mips-2.6.20/arch/mips/Kconfig.debug
---- linux-2.6.20/arch/mips/Kconfig.debug	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/Kconfig.debug	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/Kconfig.debug linux-2.6.20.1/arch/mips/Kconfig.debug
+--- linux-2.6.20.1.orig/arch/mips/Kconfig.debug	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/Kconfig.debug	2007-02-20 16:47:41.000000000 -0800
 @@ -22,10 +22,10 @@
  	string "Default kernel command string"
  	default ""
@@ -34,9 +138,28 @@ diff -Naur linux-2.6.20/arch/mips/Kconfig.debug linux-mips-2.6.20/arch/mips/Kcon
  	  to set them up in board prom initialization routines.
  
  config DEBUG_STACK_USAGE
-diff -Naur linux-2.6.20/arch/mips/au1000/common/pci.c linux-mips-2.6.20/arch/mips/au1000/common/pci.c
---- linux-2.6.20/arch/mips/au1000/common/pci.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/au1000/common/pci.c	2007-02-04 12:22:45.000000000 -0800
+@@ -39,7 +39,7 @@
+ 
+ config KGDB
+ 	bool "Remote GDB kernel debugging"
+-	depends on DEBUG_KERNEL
++	depends on DEBUG_KERNEL && SYS_SUPPORTS_KGDB
+ 	select DEBUG_INFO
+ 	help
+ 	  If you say Y here, it will be possible to remotely debug the MIPS
+@@ -48,6 +48,9 @@
+ 	  better 32 MB RAM to avoid excessive linking time. This is only
+ 	  useful for kernel hackers. If unsure, say N.
+ 
++config SYS_SUPPORTS_KGDB
++	bool
++
+ config GDB_CONSOLE
+ 	bool "Console output to GDB"
+ 	depends on KGDB
+diff -Naur linux-2.6.20.1.orig/arch/mips/au1000/common/pci.c linux-2.6.20.1/arch/mips/au1000/common/pci.c
+--- linux-2.6.20.1.orig/arch/mips/au1000/common/pci.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/au1000/common/pci.c	2007-02-20 16:47:41.000000000 -0800
 @@ -76,13 +76,17 @@
  	}
  
@@ -62,9 +185,9 @@ diff -Naur linux-2.6.20/arch/mips/au1000/common/pci.c linux-mips-2.6.20/arch/mip
  	}
  #endif
  
-diff -Naur linux-2.6.20/arch/mips/au1000/common/setup.c linux-mips-2.6.20/arch/mips/au1000/common/setup.c
---- linux-2.6.20/arch/mips/au1000/common/setup.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/au1000/common/setup.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/au1000/common/setup.c linux-2.6.20.1/arch/mips/au1000/common/setup.c
+--- linux-2.6.20.1.orig/arch/mips/au1000/common/setup.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/au1000/common/setup.c	2007-02-20 16:47:41.000000000 -0800
 @@ -141,17 +141,20 @@
  /* This routine should be valid for all Au1x based boards */
  phys_t __fixup_bigphys_addr(phys_t phys_addr, phys_t size)
@@ -94,9 +217,9 @@ diff -Naur linux-2.6.20/arch/mips/au1000/common/setup.c linux-mips-2.6.20/arch/m
  	}
  #endif
  
-diff -Naur linux-2.6.20/arch/mips/au1000/pb1100/board_setup.c linux-mips-2.6.20/arch/mips/au1000/pb1100/board_setup.c
---- linux-2.6.20/arch/mips/au1000/pb1100/board_setup.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/au1000/pb1100/board_setup.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/au1000/pb1100/board_setup.c linux-2.6.20.1/arch/mips/au1000/pb1100/board_setup.c
+--- linux-2.6.20.1.orig/arch/mips/au1000/pb1100/board_setup.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/au1000/pb1100/board_setup.c	2007-02-20 16:47:41.000000000 -0800
 @@ -47,8 +47,7 @@
  
  void __init board_setup(void)
@@ -212,9 +335,9 @@ diff -Naur linux-2.6.20/arch/mips/au1000/pb1100/board_setup.c linux-mips-2.6.20/
  		au_sync();
  	}
  }
-diff -Naur linux-2.6.20/arch/mips/au1000/pb1200/irqmap.c linux-mips-2.6.20/arch/mips/au1000/pb1200/irqmap.c
---- linux-2.6.20/arch/mips/au1000/pb1200/irqmap.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/au1000/pb1200/irqmap.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/au1000/pb1200/irqmap.c linux-2.6.20.1/arch/mips/au1000/pb1200/irqmap.c
+--- linux-2.6.20.1.orig/arch/mips/au1000/pb1200/irqmap.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/au1000/pb1200/irqmap.c	2007-02-20 16:47:41.000000000 -0800
 @@ -137,33 +137,20 @@
  	return;
  }
@@ -267,10 +390,131 @@ diff -Naur linux-2.6.20/arch/mips/au1000/pb1200/irqmap.c linux-mips-2.6.20/arch/
  		pb1200_disable_irq(irq_nr);
  	}
  
-diff -Naur linux-2.6.20/arch/mips/kernel/mips-mt.c linux-mips-2.6.20/arch/mips/kernel/mips-mt.c
---- linux-2.6.20/arch/mips/kernel/mips-mt.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/kernel/mips-mt.c	2007-02-04 12:22:45.000000000 -0800
-@@ -96,6 +96,10 @@
+diff -Naur linux-2.6.20.1.orig/arch/mips/dec/int-handler.S linux-2.6.20.1/arch/mips/dec/int-handler.S
+--- linux-2.6.20.1.orig/arch/mips/dec/int-handler.S	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/dec/int-handler.S	2007-02-20 16:47:41.000000000 -0800
+@@ -264,9 +264,6 @@
+ 		 srlv	t3,t1,t2
+ 
+ handle_it:
+-		LONG_L	s0, TI_REGS($28)
+-		LONG_S	sp, TI_REGS($28)
+-		PTR_LA	ra, ret_from_irq
+ 		j	dec_irq_dispatch
+ 		 nop
+ 
+@@ -277,7 +274,6 @@
+ #endif
+ 
+ spurious:
+-		PTR_LA	ra, _ret_from_irq
+ 		j	spurious_interrupt
+ 		 nop
+ 		END(plat_irq_dispatch)
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/Makefile linux-2.6.20.1/arch/mips/kernel/Makefile
+--- linux-2.6.20.1.orig/arch/mips/kernel/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/Makefile	2007-02-20 16:47:41.000000000 -0800
+@@ -55,9 +55,9 @@
+ obj-$(CONFIG_32BIT)		+= scall32-o32.o
+ obj-$(CONFIG_64BIT)		+= scall64-64.o
+ obj-$(CONFIG_BINFMT_IRIX)	+= binfmt_irix.o
+-obj-$(CONFIG_MIPS32_COMPAT)	+= linux32.o signal32.o
++obj-$(CONFIG_MIPS32_COMPAT)	+= linux32.o ptrace32.o signal32.o
+ obj-$(CONFIG_MIPS32_N32)	+= binfmt_elfn32.o scall64-n32.o signal_n32.o
+-obj-$(CONFIG_MIPS32_O32)	+= binfmt_elfo32.o scall64-o32.o ptrace32.o
++obj-$(CONFIG_MIPS32_O32)	+= binfmt_elfo32.o scall64-o32.o
+ 
+ obj-$(CONFIG_KGDB)		+= gdb-low.o gdb-stub.o
+ obj-$(CONFIG_PROC_FS)		+= proc.o
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/cpu-probe.c linux-2.6.20.1/arch/mips/kernel/cpu-probe.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/cpu-probe.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/cpu-probe.c	2007-02-20 16:47:41.000000000 -0800
+@@ -97,7 +97,7 @@
+ 
+ static int __initdata nowait = 0;
+ 
+-int __init wait_disable(char *s)
++static int __init wait_disable(char *s)
+ {
+ 	nowait = 1;
+ 
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/linux32.c linux-2.6.20.1/arch/mips/kernel/linux32.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/linux32.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/linux32.c	2007-02-20 16:47:41.000000000 -0800
+@@ -39,6 +39,7 @@
+ #include <net/sock.h>
+ #include <net/scm.h>
+ 
++#include <asm/compat-signal.h>
+ #include <asm/ipc.h>
+ #include <asm/sim.h>
+ #include <asm/uaccess.h>
+@@ -780,3 +781,49 @@
+ 	return do_fork(clone_flags, newsp, &regs, 0,
+ 	               parent_tidptr, child_tidptr);
+ }
++
++/*
++ * Implement the event wait interface for the eventpoll file. It is the kernel
++ * part of the user space epoll_pwait(2).
++ */
++asmlinkage long compat_sys_epoll_pwait(int epfd,
++	struct epoll_event __user *events, int maxevents, int timeout,
++	const compat_sigset_t __user *sigmask, size_t sigsetsize)
++{
++	int error;
++	sigset_t ksigmask, sigsaved;
++
++	/*
++	 * If the caller wants a certain signal mask to be set during the wait,
++	 * we apply it here.
++	 */
++	if (sigmask) {
++		if (sigsetsize != sizeof(sigset_t))
++			return -EINVAL;
++		if (!access_ok(VERIFY_READ, sigmask, sizeof(ksigmask)))
++			return -EFAULT;
++		if (__copy_conv_sigset_from_user(&ksigmask, sigmask))
++			return -EFAULT;
++		sigdelsetmask(&ksigmask, sigmask(SIGKILL) | sigmask(SIGSTOP));
++		sigprocmask(SIG_SETMASK, &ksigmask, &sigsaved);
++	}
++
++	error = sys_epoll_wait(epfd, events, maxevents, timeout);
++
++	/*
++	 * If we changed the signal mask, we need to restore the original one.
++	 * In case we've got a signal while waiting, we do not restore the
++	 * signal mask yet, and we allow do_signal() to deliver the signal on
++	 * the way back to userspace, before the signal mask is restored.
++	 */
++	if (sigmask) {
++		if (error == -EINTR) {
++			memcpy(&current->saved_sigmask, &sigsaved,
++				sizeof(sigsaved));
++			set_thread_flag(TIF_RESTORE_SIGMASK);
++		} else
++			sigprocmask(SIG_SETMASK, &sigsaved, NULL);
++	}
++
++	return error;
++}
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/mips-mt.c linux-2.6.20.1/arch/mips/kernel/mips-mt.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/mips-mt.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/mips-mt.c	2007-02-20 16:47:41.000000000 -0800
+@@ -3,9 +3,11 @@
+  * Copyright (C) 2005 Mips Technologies, Inc
+  */
+ 
++#include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+ #include <linux/cpumask.h>
++#include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/security.h>
+ 
+@@ -96,6 +98,10 @@
  		goto out_unlock;
  	}
  
@@ -281,7 +525,7 @@ diff -Naur linux-2.6.20/arch/mips/kernel/mips-mt.c linux-mips-2.6.20/arch/mips/k
  	/* Record new user-specified CPU set for future reference */
  	p->thread.user_cpus_allowed = new_mask;
  
-@@ -141,8 +145,9 @@
+@@ -141,8 +147,9 @@
  	p = find_process_by_pid(pid);
  	if (!p)
  		goto out_unlock;
@@ -293,9 +537,30 @@ diff -Naur linux-2.6.20/arch/mips/kernel/mips-mt.c linux-mips-2.6.20/arch/mips/k
  
  	cpus_and(mask, p->thread.user_cpus_allowed, cpu_possible_map);
  
-diff -Naur linux-2.6.20/arch/mips/kernel/ptrace.c linux-mips-2.6.20/arch/mips/kernel/ptrace.c
---- linux-2.6.20/arch/mips/kernel/ptrace.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/kernel/ptrace.c	2007-02-04 12:22:45.000000000 -0800
+@@ -448,3 +455,20 @@
+ #endif /* CONFIG_MIPS_MT_SMTC */
+ 	/* FILL IN VSMP and AP/SP VERSIONS HERE */
+ }
++
++struct class *mt_class;
++
++static int __init mt_init(void)
++{
++	struct class *mtc;
++
++	mtc = class_create(THIS_MODULE, "mt");
++	if (IS_ERR(mtc))
++		return PTR_ERR(mtc);
++
++	mt_class = mtc;
++
++	return 0;
++}
++
++subsys_initcall(mt_init);
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/ptrace.c linux-2.6.20.1/arch/mips/kernel/ptrace.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/ptrace.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/ptrace.c	2007-02-20 16:47:41.000000000 -0800
 @@ -20,12 +20,12 @@
  #include <linux/mm.h>
  #include <linux/errno.h>
@@ -347,9 +612,119 @@ diff -Naur linux-2.6.20/arch/mips/kernel/ptrace.c linux-mips-2.6.20/arch/mips/ke
 +		                    regs->regs[4], regs->regs[5],
 +		                    regs->regs[6], regs->regs[7]);
  }
-diff -Naur linux-2.6.20/arch/mips/kernel/scall64-n32.S linux-mips-2.6.20/arch/mips/kernel/scall64-n32.S
---- linux-2.6.20/arch/mips/kernel/scall64-n32.S	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/kernel/scall64-n32.S	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/r4k_fpu.S linux-2.6.20.1/arch/mips/kernel/r4k_fpu.S
+--- linux-2.6.20.1.orig/arch/mips/kernel/r4k_fpu.S	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/r4k_fpu.S	2007-02-20 16:47:41.000000000 -0800
+@@ -114,6 +114,14 @@
+  */
+ LEAF(_restore_fp_context)
+ 	EX	lw t0, SC_FPC_CSR(a0)
++
++	/* Fail if the CSR has exceptions pending */
++	srl	t1, t0, 5
++	and	t1, t0
++	andi	t1, 0x1f << 7
++	bnez	t1, fault
++	 nop
++
+ #ifdef CONFIG_64BIT
+ 	EX	ldc1 $f1, SC_FPREGS+8(a0)
+ 	EX	ldc1 $f3, SC_FPREGS+24(a0)
+@@ -157,6 +165,14 @@
+ LEAF(_restore_fp_context32)
+ 	/* Restore an o32 sigcontext.  */
+ 	EX	lw t0, SC32_FPC_CSR(a0)
++
++	/* Fail if the CSR has exceptions pending */
++	srl	t1, t0, 5
++	and	t1, t0
++	andi	t1, 0x1f << 7
++	bnez	t1, fault
++	 nop
++
+ 	EX	ldc1 $f0, SC32_FPREGS+0(a0)
+ 	EX	ldc1 $f2, SC32_FPREGS+16(a0)
+ 	EX	ldc1 $f4, SC32_FPREGS+32(a0)
+@@ -177,9 +193,10 @@
+ 	jr	ra
+ 	 li	v0, 0					# success
+ 	END(_restore_fp_context32)
+-	.set	reorder
+ #endif
+ 
++	.set	reorder
++
+ 	.type	fault@function
+ 	.ent	fault
+ fault:	li	v0, -EFAULT				# failure
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/rtlx.c linux-2.6.20.1/arch/mips/kernel/rtlx.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/rtlx.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/rtlx.c	2007-02-20 16:47:41.000000000 -0800
+@@ -17,6 +17,7 @@
+  *
+  */
+ 
++#include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/fs.h>
+@@ -34,6 +35,7 @@
+ #include <linux/sched.h>
+ #include <linux/wait.h>
+ #include <asm/mipsmtregs.h>
++#include <asm/mips_mt.h>
+ #include <asm/cacheflush.h>
+ #include <asm/atomic.h>
+ #include <asm/cpu.h>
+@@ -498,7 +500,8 @@
+ 
+ static int rtlx_module_init(void)
+ {
+-	int i;
++	struct device *dev;
++	int i, err;
+ 
+ 	major = register_chrdev(0, module_name, &rtlx_fops);
+ 	if (major < 0) {
+@@ -511,6 +514,13 @@
+ 		init_waitqueue_head(&channel_wqs[i].rt_queue);
+ 		init_waitqueue_head(&channel_wqs[i].lx_queue);
+ 		channel_wqs[i].in_open = 0;
++
++		dev = device_create(mt_class, NULL, MKDEV(major, i),
++		                    "%s%d", module_name, i);
++		if (IS_ERR(dev)) {
++			err = PTR_ERR(dev);
++			goto out_chrdev;
++		}
+ 	}
+ 
+ 	/* set up notifiers */
+@@ -525,10 +535,21 @@
+ 	setup_irq(rtlx_irq_num, &rtlx_irq);
+ 
+ 	return 0;
++
++out_chrdev:
++	for (i = 0; i < RTLX_CHANNELS; i++)
++		device_destroy(mt_class, MKDEV(major, i));
++
++	return err;
+ }
+ 
+ static void __exit rtlx_module_exit(void)
+ {
++	int i;
++
++	for (i = 0; i < RTLX_CHANNELS; i++)
++		device_destroy(mt_class, MKDEV(major, i));
++
+ 	unregister_chrdev(major, module_name);
+ }
+ 
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/scall64-n32.S linux-2.6.20.1/arch/mips/kernel/scall64-n32.S
+--- linux-2.6.20.1.orig/arch/mips/kernel/scall64-n32.S	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/scall64-n32.S	2007-02-20 16:47:41.000000000 -0800
 @@ -384,7 +384,7 @@
  	PTR	sys_readlinkat
  	PTR	sys_fchmodat
@@ -359,9 +734,15 @@ diff -Naur linux-2.6.20/arch/mips/kernel/scall64-n32.S linux-mips-2.6.20/arch/mi
  	PTR	sys_ppoll			/* 6265 */
  	PTR	sys_unshare
  	PTR	sys_splice
-diff -Naur linux-2.6.20/arch/mips/kernel/scall64-o32.S linux-mips-2.6.20/arch/mips/kernel/scall64-o32.S
---- linux-2.6.20/arch/mips/kernel/scall64-o32.S	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/kernel/scall64-o32.S	2007-02-04 12:22:45.000000000 -0800
+@@ -396,4 +396,4 @@
+ 	PTR	compat_sys_get_robust_list
+ 	PTR	compat_sys_kexec_load
+ 	PTR	sys_getcpu
+-	PTR	sys_epoll_pwait
++	PTR	compat_sys_epoll_pwait
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/scall64-o32.S linux-2.6.20.1/arch/mips/kernel/scall64-o32.S
+--- linux-2.6.20.1.orig/arch/mips/kernel/scall64-o32.S	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/scall64-o32.S	2007-02-24 14:25:52.000000000 -0800
 @@ -506,7 +506,7 @@
  	PTR	sys_readlinkat
  	PTR	sys_fchmodat
@@ -371,25 +752,400 @@ diff -Naur linux-2.6.20/arch/mips/kernel/scall64-o32.S linux-mips-2.6.20/arch/mi
  	PTR	sys_ppoll
  	PTR	sys_unshare
  	PTR	sys_splice
-diff -Naur linux-2.6.20/arch/mips/lib/Makefile linux-mips-2.6.20/arch/mips/lib/Makefile
---- linux-2.6.20/arch/mips/lib/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/lib/Makefile	2007-02-04 12:22:45.000000000 -0800
-@@ -5,8 +5,6 @@
- lib-y	+= csum_partial.o memcpy.o promlib.o \
+@@ -518,5 +518,5 @@
+ 	PTR	compat_sys_get_robust_list	/* 4310 */
+ 	PTR	compat_sys_kexec_load
+ 	PTR	sys_getcpu
+-	PTR	sys_epoll_pwait
++	PTR	compat_sys_epoll_pwait
+ 	.size	sys_call_table,.-sys_call_table
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/setup.c linux-2.6.20.1/arch/mips/kernel/setup.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/setup.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/setup.c	2007-02-20 16:47:41.000000000 -0800
+@@ -521,7 +521,7 @@
+ #endif
+ }
+ 
+-int __init fpu_disable(char *s)
++static int __init fpu_disable(char *s)
+ {
+ 	int i;
+ 
+@@ -533,7 +533,7 @@
+ 
+ __setup("nofpu", fpu_disable);
+ 
+-int __init dsp_disable(char *s)
++static int __init dsp_disable(char *s)
+ {
+ 	cpu_data[0].ases &= ~MIPS_ASE_DSP;
+ 
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/signal32.c linux-2.6.20.1/arch/mips/kernel/signal32.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/signal32.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/signal32.c	2007-02-20 16:47:41.000000000 -0800
+@@ -8,6 +8,7 @@
+  * Copyright (C) 1999, 2000 Silicon Graphics, Inc.
+  */
+ #include <linux/cache.h>
++#include <linux/compat.h>
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+ #include <linux/smp.h>
+@@ -24,6 +25,7 @@
+ 
+ #include <asm/abi.h>
+ #include <asm/asm.h>
++#include <asm/compat-signal.h>
+ #include <linux/bitops.h>
+ #include <asm/cacheflush.h>
+ #include <asm/sim.h>
+@@ -108,13 +110,6 @@
+ 
+ /* 32-bit compatibility types */
+ 
+-#define _NSIG_BPW32	32
+-#define _NSIG_WORDS32	(_NSIG / _NSIG_BPW32)
+-
+-typedef struct {
+-	unsigned int sig[_NSIG_WORDS32];
+-} sigset_t32;
+-
+ typedef unsigned int __sighandler32_t;
+ typedef void (*vfptr_t)(void);
+ 
+@@ -136,7 +131,7 @@
+ 	s32                 uc_link;
+ 	stack32_t           uc_stack;
+ 	struct sigcontext32 uc_mcontext;
+-	sigset_t32          uc_sigmask;   /* mask last for extensibility */
++	compat_sigset_t     uc_sigmask;   /* mask last for extensibility */
+ };
+ 
+ extern void __put_sigset_unknown_nsig(void);
+@@ -391,7 +386,7 @@
+ 	u32 sf_code[2];			/* signal trampoline */
+ #endif
+ 	struct sigcontext32 sf_sc;
+-	sigset_t sf_mask;
++	compat_sigset_t sf_mask;
+ #if ICACHE_REFILLS_WORKAROUND_WAR
+ 	u32 sf_code[8] ____cacheline_aligned;	/* signal trampoline */
+ #endif
+@@ -473,7 +468,7 @@
+ 	frame = (struct sigframe __user *) regs.regs[29];
+ 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+ 		goto badframe;
+-	if (__copy_from_user(&blocked, &frame->sf_mask, sizeof(blocked)))
++	if (__copy_conv_sigset_from_user(&blocked, &frame->sf_mask))
+ 		goto badframe;
+ 
+ 	sigdelsetmask(&blocked, ~_BLOCKABLE);
+@@ -512,7 +507,7 @@
+ 	frame = (struct rt_sigframe32 __user *) regs.regs[29];
+ 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+ 		goto badframe;
+-	if (__copy_from_user(&set, &frame->rs_uc.uc_sigmask, sizeof(set)))
++	if (__copy_conv_sigset_from_user(&set, &frame->rs_uc.uc_sigmask))
+ 		goto badframe;
+ 
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+@@ -658,7 +653,8 @@
+ 	flush_cache_sigtramp((unsigned long) frame->sf_code);
+ 
+ 	err |= setup_sigcontext32(regs, &frame->sf_sc);
+-	err |= __copy_to_user(&frame->sf_mask, set, sizeof(*set));
++	err |= __copy_conv_sigset_to_user(&frame->sf_mask, set);
++
+ 	if (err)
+ 		goto give_sigsegv;
+ 
+@@ -728,7 +724,7 @@
+ 	err |= __put_user(current->sas_ss_size,
+ 	                  &frame->rs_uc.uc_stack.ss_size);
+ 	err |= setup_sigcontext32(regs, &frame->rs_uc.uc_mcontext);
+-	err |= __copy_to_user(&frame->rs_uc.uc_sigmask, set, sizeof(*set));
++	err |= __copy_conv_sigset_to_user(&frame->rs_uc.uc_sigmask, set);
+ 
+ 	if (err)
+ 		goto give_sigsegv;
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/signal_n32.c linux-2.6.20.1/arch/mips/kernel/signal_n32.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/signal_n32.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/signal_n32.c	2007-02-20 16:47:41.000000000 -0800
+@@ -31,6 +31,7 @@
+ 
+ #include <asm/asm.h>
+ #include <asm/cacheflush.h>
++#include <asm/compat-signal.h>
+ #include <asm/sim.h>
+ #include <asm/uaccess.h>
+ #include <asm/ucontext.h>
+@@ -63,7 +64,7 @@
+ 	s32                 uc_link;
+ 	stack32_t           uc_stack;
+ 	struct sigcontext   uc_mcontext;
+-	sigset_t            uc_sigmask;   /* mask last for extensibility */
++	compat_sigset_t     uc_sigmask;   /* mask last for extensibility */
+ };
+ 
+ struct rt_sigframe_n32 {
+@@ -126,7 +127,7 @@
+ 	frame = (struct rt_sigframe_n32 __user *) regs.regs[29];
+ 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+ 		goto badframe;
+-	if (__copy_from_user(&set, &frame->rs_uc.uc_sigmask, sizeof(set)))
++	if (__copy_conv_sigset_from_user(&set, &frame->rs_uc.uc_sigmask))
+ 		goto badframe;
+ 
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+@@ -192,7 +193,7 @@
+ 	err |= __put_user(current->sas_ss_size,
+ 	                  &frame->rs_uc.uc_stack.ss_size);
+ 	err |= setup_sigcontext(regs, &frame->rs_uc.uc_mcontext);
+-	err |= __copy_to_user(&frame->rs_uc.uc_sigmask, set, sizeof(*set));
++	err |= __copy_conv_sigset_to_user(&frame->rs_uc.uc_sigmask, set);
+ 
+ 	if (err)
+ 		goto give_sigsegv;
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/smp.c linux-2.6.20.1/arch/mips/kernel/smp.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/smp.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/smp.c	2007-02-20 16:47:41.000000000 -0800
+@@ -51,31 +51,14 @@
+ EXPORT_SYMBOL(phys_cpu_present_map);
+ EXPORT_SYMBOL(cpu_online_map);
+ 
++/* This happens early in bootup, can't really do it better */
+ static void smp_tune_scheduling (void)
+ {
+ 	struct cache_desc *cd = &current_cpu_data.scache;
+-	unsigned long cachesize;       /* kB   */
+-	unsigned long cpu_khz;
++	unsigned long cachesize = cd->linesz * cd->sets * cd->ways;
+ 
+-	/*
+-	 * Crude estimate until we actually meassure ...
+-	 */
+-	cpu_khz = loops_per_jiffy * 2 * HZ / 1000;
+-
+-	/*
+-	 * Rough estimation for SMP scheduling, this is the number of
+-	 * cycles it takes for a fully memory-limited process to flush
+-	 * the SMP-local cache.
+-	 *
+-	 * (For a P5 this pretty much means we will choose another idle
+-	 *  CPU almost always at wakeup time (this is due to the small
+-	 *  L1 cache), on PIIs it's around 50-100 usecs, depending on
+-	 *  the cache size)
+-	 */
+-	if (!cpu_khz)
+-		return;
+-
+-	cachesize = cd->linesz * cd->sets * cd->ways;
++	if (cachesize > max_cache_size)
++		max_cache_size = cachesize;
+ }
+ 
+ extern void __init calibrate_delay(void);
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/traps.c linux-2.6.20.1/arch/mips/kernel/traps.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/traps.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/traps.c	2007-02-20 16:47:41.000000000 -0800
+@@ -708,6 +708,7 @@
+ 		die_if_kernel("Break instruction in kernel code", regs);
+ 		force_sig(SIGTRAP, current);
+ 	}
++	return;
+ 
+ out_sigsegv:
+ 	force_sig(SIGSEGV, current);
+@@ -751,6 +752,7 @@
+ 		die_if_kernel("Trap instruction in kernel code", regs);
+ 		force_sig(SIGTRAP, current);
+ 	}
++	return;
+ 
+ out_sigsegv:
+ 	force_sig(SIGSEGV, current);
+diff -Naur linux-2.6.20.1.orig/arch/mips/kernel/vpe.c linux-2.6.20.1/arch/mips/kernel/vpe.c
+--- linux-2.6.20.1.orig/arch/mips/kernel/vpe.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/kernel/vpe.c	2007-02-20 16:47:41.000000000 -0800
+@@ -29,6 +29,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/fs.h>
+ #include <linux/init.h>
+@@ -48,6 +49,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/atomic.h>
+ #include <asm/cpu.h>
++#include <asm/mips_mt.h>
+ #include <asm/processor.h>
+ #include <asm/system.h>
+ #include <asm/vpe.h>
+@@ -64,6 +66,7 @@
+ 
+ static char module_name[] = "vpe";
+ static int major;
++static const int minor = 1;	/* fixed for now  */
+ 
+ #ifdef CONFIG_MIPS_APSP_KSPD
+  static struct kspd_notifications kspd_events;
+@@ -1365,12 +1368,15 @@
+ }
+ #endif
+ 
++static struct device *vpe_dev;
++
+ static int __init vpe_module_init(void)
+ {
+ 	struct vpe *v = NULL;
++	struct device *dev;
+ 	struct tc *t;
+ 	unsigned long val;
+-	int i;
++	int i, err;
+ 
+ 	if (!cpu_has_mipsmt) {
+ 		printk("VPE loader: not a MIPS MT capable processor\n");
+@@ -1383,6 +1389,14 @@
+ 		return major;
+ 	}
+ 
++	dev = device_create(mt_class, NULL, MKDEV(major, minor),
++	                    "tc%d", minor);
++	if (IS_ERR(dev)) {
++		err = PTR_ERR(dev);
++		goto out_chrdev;
++	}
++	vpe_dev = dev;
++
+ 	dmt();
+ 	dvpe();
+ 
+@@ -1478,6 +1492,11 @@
+ 	kspd_events.kspd_sp_exit = kspd_sp_exit;
+ #endif
+ 	return 0;
++
++out_chrdev:
++	unregister_chrdev(major, module_name);
++
++	return err;
+ }
+ 
+ static void __exit vpe_module_exit(void)
+@@ -1490,6 +1509,7 @@
+ 		}
+ 	}
+ 
++	device_destroy(mt_class, MKDEV(major, minor));
+ 	unregister_chrdev(major, module_name);
+ }
+ 
+diff -Naur linux-2.6.20.1.orig/arch/mips/lib/Makefile linux-2.6.20.1/arch/mips/lib/Makefile
+--- linux-2.6.20.1.orig/arch/mips/lib/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/lib/Makefile	2007-02-20 16:47:41.000000000 -0800
+@@ -2,10 +2,11 @@
+ # Makefile for MIPS-specific library files..
+ #
+ 
+-lib-y	+= csum_partial.o memcpy.o promlib.o \
++lib-y	+= csum_partial.o memcpy.o memcpy-inatomic.o promlib.o \
  	   strlen_user.o strncpy_user.o strnlen_user.o uncached.o
  
 -obj-y	+= iomap.o
--
++obj-y			+= iomap.o
++obj-$(CONFIG_PCI)	+= iomap-pci.o
+ 
  # libgcc-style stuff needed in the kernel
  lib-y += ashldi3.o ashrdi3.o lshrdi3.o
- 
-diff -Naur linux-2.6.20/arch/mips/lib/iomap.c linux-mips-2.6.20/arch/mips/lib/iomap.c
---- linux-2.6.20/arch/mips/lib/iomap.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/lib/iomap.c	1969-12-31 16:00:00.000000000 -0800
-@@ -1,78 +0,0 @@
--/*
+diff -Naur linux-2.6.20.1.orig/arch/mips/lib/iomap-pci.c linux-2.6.20.1/arch/mips/lib/iomap-pci.c
+--- linux-2.6.20.1.orig/arch/mips/lib/iomap-pci.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/arch/mips/lib/iomap-pci.c	2007-02-20 16:47:41.000000000 -0800
+@@ -0,0 +1,74 @@
++/*
++ * Implement the default iomap interfaces
++ *
++ * (C) Copyright 2004 Linus Torvalds
++ * (C) Copyright 2006 Ralf Baechle <ralf@linux-mips.org>
++ * (C) Copyright 2007 MIPS Technologies, Inc.
++ *     written by Ralf Baechle <ralf@linux-mips.org>
++ */
++#include <linux/pci.h>
++#include <linux/module.h>
++#include <asm/io.h>
++
++static void __iomem *ioport_map_pci(struct pci_dev *dev,
++                                     unsigned long port, unsigned int nr)
++{
++	struct pci_controller *ctrl = dev->bus->sysdata;
++	unsigned long base = ctrl->io_map_base;
++
++	/* This will eventually become a BUG_ON but for now be gentle */
++	if (unlikely(!ctrl->io_map_base)) {
++		struct pci_bus *bus = dev->bus;
++		char name[8];
++
++		while (bus->parent)
++			bus = bus->parent;
++
++		ctrl->io_map_base = base = mips_io_port_base;
++
++		sprintf(name, "%04x:%02x", pci_domain_nr(bus), bus->number);
++		printk(KERN_WARNING "io_map_base of root PCI bus %s unset.  "
++		       "Trying to continue but you better\nfix this issue or "
++		       "report it to linux-mips@linux-mips.org or your "
++		       "vendor.\n", name);
++#ifdef CONFIG_PCI_DOMAINS
++		panic("To avoid data corruption io_map_base MUST be set with "
++		      "multiple PCI domains.");
++#endif
++	}
++
++	return (void __iomem *) (ctrl->io_map_base + port);
++}
++
++/*
++ * Create a virtual mapping cookie for a PCI BAR (memory or IO)
++ */
++void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
++{
++	unsigned long start = pci_resource_start(dev, bar);
++	unsigned long len = pci_resource_len(dev, bar);
++	unsigned long flags = pci_resource_flags(dev, bar);
++
++	if (!len || !start)
++		return NULL;
++	if (maxlen && len > maxlen)
++		len = maxlen;
++	if (flags & IORESOURCE_IO)
++		return ioport_map_pci(dev, start, len);
++	if (flags & IORESOURCE_MEM) {
++		if (flags & IORESOURCE_CACHEABLE)
++			return ioremap(start, len);
++		return ioremap_nocache(start, len);
++	}
++	/* What? */
++	return NULL;
++}
++
++EXPORT_SYMBOL(pci_iomap);
++
++void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
++{
++	iounmap(addr);
++}
++
++EXPORT_SYMBOL(pci_iounmap);
+diff -Naur linux-2.6.20.1.orig/arch/mips/lib/iomap.c linux-2.6.20.1/arch/mips/lib/iomap.c
+--- linux-2.6.20.1.orig/arch/mips/lib/iomap.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/lib/iomap.c	2007-02-20 16:47:41.000000000 -0800
+@@ -1,78 +1,227 @@
+ /*
 - *  iomap.c, Memory Mapped I/O routines for MIPS architecture.
-- *
++ * Implement the default iomap interfaces
+  *
 - *  This code is based on lib/iomap.c, by Linus Torvalds.
 - *
 - *  Copyright (C) 2004-2005  Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
@@ -398,55 +1154,102 @@ diff -Naur linux-2.6.20/arch/mips/lib/iomap.c linux-mips-2.6.20/arch/mips/lib/io
 - *  it under the terms of the GNU General Public License as published by
 - *  the Free Software Foundation; either version 2 of the License, or
 - *  (at your option) any later version.
-- *
++ * (C) Copyright 2004 Linus Torvalds
++ * (C) Copyright 2006 Ralf Baechle <ralf@linux-mips.org>
++ * (C) Copyright 2007 MIPS Technologies, Inc.
++ *     written by Ralf Baechle <ralf@linux-mips.org>
++ */
++#include <linux/pci.h>
++#include <linux/module.h>
++#include <asm/io.h>
++
++/*
++ * Read/write from/to an (offsettable) iomem cookie. It might be a PIO
++ * access or a MMIO access, these functions don't care. The info is
++ * encoded in the hardware mapping set up by the mapping functions
++ * (or the cookie itself, depending on implementation and hw).
+  *
 - *  This program is distributed in the hope that it will be useful,
 - *  but WITHOUT ANY WARRANTY; without even the implied warranty of
 - *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 - *  GNU General Public License for more details.
-- *
++ * The generic routines don't assume any hardware mappings, and just
++ * encode the PIO/MMIO as part of the cookie. They coldly assume that
++ * the MMIO IO mappings are not in the low address range.
+  *
 - *  You should have received a copy of the GNU General Public License
 - *  along with this program; if not, write to the Free Software
 - *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-- */
++ * Architectures for which this is not true can't use this generic
++ * implementation and should do their own copy.
+  */
 -#include <linux/ioport.h>
 -#include <linux/module.h>
 -#include <linux/pci.h>
--
+ 
 -#include <asm/io.h>
--
++#define PIO_MASK	0x0ffffUL
+ 
 -void __iomem *ioport_map(unsigned long port, unsigned int nr)
--{
++unsigned int ioread8(void __iomem *addr)
+ {
 -	unsigned long end;
--
++	return readb(addr);
++}
+ 
 -	end = port + nr - 1UL;
 -	if (ioport_resource.start > port ||
 -	    ioport_resource.end < end || port > end)
 -		return NULL;
--
++EXPORT_SYMBOL(ioread8);
+ 
 -	return (void __iomem *)(mips_io_port_base + port);
--}
--
++unsigned int ioread16(void __iomem *addr)
++{
++	return readw(addr);
+ }
+ 
 -void ioport_unmap(void __iomem *addr)
--{
--}
++EXPORT_SYMBOL(ioread16);
++
++unsigned int ioread16be(void __iomem *addr)
+ {
++	return be16_to_cpu(__raw_readw(addr));
+ }
 -EXPORT_SYMBOL(ioport_map);
 -EXPORT_SYMBOL(ioport_unmap);
--
+ 
 -void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
--{
++EXPORT_SYMBOL(ioread16be);
++
++unsigned int ioread32(void __iomem *addr)
+ {
 -	unsigned long start, len, flags;
--
++	return readl(addr);
++}
+ 
 -	if (dev == NULL)
 -		return NULL;
--
++EXPORT_SYMBOL(ioread32);
+ 
 -	start = pci_resource_start(dev, bar);
 -	len = pci_resource_len(dev, bar);
 -	if (!start || !len)
 -		return NULL;
--
++unsigned int ioread32be(void __iomem *addr)
++{
++	return be32_to_cpu(__raw_readl(addr));
++}
+ 
 -	if (maxlen != 0 && len > maxlen)
 -		len = maxlen;
--
++EXPORT_SYMBOL(ioread32be);
++
++void iowrite8(u8 val, void __iomem *addr)
++{
++	writeb(val, addr);
++}
+ 
 -	flags = pci_resource_flags(dev, bar);
 -	if (flags & IORESOURCE_IO)
 -		return ioport_map(start, len);
@@ -454,20 +1257,613 @@ diff -Naur linux-2.6.20/arch/mips/lib/iomap.c linux-mips-2.6.20/arch/mips/lib/io
 -		if (flags & IORESOURCE_CACHEABLE)
 -			return ioremap_cachable(start, len);
 -		return ioremap_nocache(start, len);
--	}
--
++EXPORT_SYMBOL(iowrite8);
++
++void iowrite16(u16 val, void __iomem *addr)
++{
++	writew(val, addr);
++}
++
++EXPORT_SYMBOL(iowrite16);
++
++void iowrite16be(u16 val, void __iomem *addr)
++{
++	__raw_writew(cpu_to_be16(val), addr);
++}
++
++EXPORT_SYMBOL(iowrite16be);
++
++void iowrite32(u32 val, void __iomem *addr)
++{
++	writel(val, addr);
++}
++
++EXPORT_SYMBOL(iowrite32);
++
++void iowrite32be(u32 val, void __iomem *addr)
++{
++	__raw_writel(cpu_to_be32(val), addr);
++}
++
++EXPORT_SYMBOL(iowrite32be);
++
++/*
++ * These are the "repeat MMIO read/write" functions.
++ * Note the "__raw" accesses, since we don't want to
++ * convert to CPU byte order. We write in "IO byte
++ * order" (we also don't have IO barriers).
++ */
++static inline void mmio_insb(void __iomem *addr, u8 *dst, int count)
++{
++	while (--count >= 0) {
++		u8 data = __raw_readb(addr);
++		*dst = data;
++		dst++;
+ 	}
++}
+ 
 -	return NULL;
--}
--
++static inline void mmio_insw(void __iomem *addr, u16 *dst, int count)
++{
++	while (--count >= 0) {
++		u16 data = __raw_readw(addr);
++		*dst = data;
++		dst++;
++	}
+ }
+ 
 -void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
--{
++static inline void mmio_insl(void __iomem *addr, u32 *dst, int count)
+ {
 -	iounmap(addr);
--}
++	while (--count >= 0) {
++		u32 data = __raw_readl(addr);
++		*dst = data;
++		dst++;
++	}
+ }
 -EXPORT_SYMBOL(pci_iomap);
 -EXPORT_SYMBOL(pci_iounmap);
-diff -Naur linux-2.6.20/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.20/arch/mips/lib-32/dump_tlb.c
---- linux-2.6.20/arch/mips/lib-32/dump_tlb.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/lib-32/dump_tlb.c	2007-02-04 12:22:45.000000000 -0800
++
++static inline void mmio_outsb(void __iomem *addr, const u8 *src, int count)
++{
++	while (--count >= 0) {
++		__raw_writeb(*src, addr);
++		src++;
++	}
++}
++
++static inline void mmio_outsw(void __iomem *addr, const u16 *src, int count)
++{
++	while (--count >= 0) {
++		__raw_writew(*src, addr);
++		src++;
++	}
++}
++
++static inline void mmio_outsl(void __iomem *addr, const u32 *src, int count)
++{
++	while (--count >= 0) {
++		__raw_writel(*src, addr);
++		src++;
++	}
++}
++
++void ioread8_rep(void __iomem *addr, void *dst, unsigned long count)
++{
++	mmio_insb(addr, dst, count);
++}
++
++EXPORT_SYMBOL(ioread8_rep);
++
++void ioread16_rep(void __iomem *addr, void *dst, unsigned long count)
++{
++	mmio_insw(addr, dst, count);
++}
++
++EXPORT_SYMBOL(ioread16_rep);
++
++void ioread32_rep(void __iomem *addr, void *dst, unsigned long count)
++{
++	mmio_insl(addr, dst, count);
++}
++
++EXPORT_SYMBOL(ioread32_rep);
++
++void iowrite8_rep(void __iomem *addr, const void *src, unsigned long count)
++{
++	mmio_outsb(addr, src, count);
++}
++
++EXPORT_SYMBOL(iowrite8_rep);
++
++void iowrite16_rep(void __iomem *addr, const void *src, unsigned long count)
++{
++	mmio_outsw(addr, src, count);
++}
++
++EXPORT_SYMBOL(iowrite16_rep);
++
++void iowrite32_rep(void __iomem *addr, const void *src, unsigned long count)
++{
++	mmio_outsl(addr, src, count);
++}
++
++EXPORT_SYMBOL(iowrite32_rep);
++
++/*
++ * Create a virtual mapping cookie for an IO port range
++ *
++ * This uses the same mapping are as the in/out family which has to be setup
++ * by the platform initialization code.
++ *
++ * Just to make matters somewhat more interesting on MIPS systems with
++ * multiple host bridge each will have it's own ioport address space.
++ */
++static void __iomem *ioport_map_legacy(unsigned long port, unsigned int nr)
++{
++	return (void __iomem *) (mips_io_port_base + port);
++}
++
++void __iomem *ioport_map(unsigned long port, unsigned int nr)
++{
++	if (port > PIO_MASK)
++		return NULL;
++
++	return ioport_map_legacy(port, nr);
++}
++
++EXPORT_SYMBOL(ioport_map);
++
++void ioport_unmap(void __iomem *addr)
++{
++	/* Nothing to do */
++}
++
++EXPORT_SYMBOL(ioport_unmap);
+diff -Naur linux-2.6.20.1.orig/arch/mips/lib/memcpy-inatomic.S linux-2.6.20.1/arch/mips/lib/memcpy-inatomic.S
+--- linux-2.6.20.1.orig/arch/mips/lib/memcpy-inatomic.S	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/arch/mips/lib/memcpy-inatomic.S	2007-02-20 16:47:41.000000000 -0800
+@@ -0,0 +1,436 @@
++/*
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file "COPYING" in the main directory of this archive
++ * for more details.
++ *
++ * Unified implementation of memcpy, memmove and the __copy_user backend.
++ *
++ * Copyright (C) 1998, 99, 2000, 01, 2002 Ralf Baechle (ralf@gnu.org)
++ * Copyright (C) 1999, 2000, 01, 2002 Silicon Graphics, Inc.
++ * Copyright (C) 2002 Broadcom, Inc.
++ *   memcpy/copy_user author: Mark Vandevoorde
++ *
++ * Mnemonic names for arguments to memcpy/__copy_user
++ */
++
++/*
++ * Hack to resolve longstanding prefetch issue
++ *
++ * Prefetching may be fatal on some systems if we're prefetching beyond the
++ * end of memory on some systems.  It's also a seriously bad idea on non
++ * dma-coherent systems.
++ */
++#if !defined(CONFIG_DMA_COHERENT) || !defined(CONFIG_DMA_IP27)
++#undef CONFIG_CPU_HAS_PREFETCH
++#endif
++#ifdef CONFIG_MIPS_MALTA
++#undef CONFIG_CPU_HAS_PREFETCH
++#endif
++
++#include <asm/asm.h>
++#include <asm/asm-offsets.h>
++#include <asm/regdef.h>
++
++#define dst a0
++#define src a1
++#define len a2
++
++/*
++ * Spec
++ *
++ * memcpy copies len bytes from src to dst and sets v0 to dst.
++ * It assumes that
++ *   - src and dst don't overlap
++ *   - src is readable
++ *   - dst is writable
++ * memcpy uses the standard calling convention
++ *
++ * __copy_user copies up to len bytes from src to dst and sets a2 (len) to
++ * the number of uncopied bytes due to an exception caused by a read or write.
++ * __copy_user assumes that src and dst don't overlap, and that the call is
++ * implementing one of the following:
++ *   copy_to_user
++ *     - src is readable  (no exceptions when reading src)
++ *   copy_from_user
++ *     - dst is writable  (no exceptions when writing dst)
++ * __copy_user uses a non-standard calling convention; see
++ * include/asm-mips/uaccess.h
++ *
++ * When an exception happens on a load, the handler must
++ # ensure that all of the destination buffer is overwritten to prevent
++ * leaking information to user mode programs.
++ */
++
++/*
++ * Implementation
++ */
++
++/*
++ * The exception handler for loads requires that:
++ *  1- AT contain the address of the byte just past the end of the source
++ *     of the copy,
++ *  2- src_entry <= src < AT, and
++ *  3- (dst - src) == (dst_entry - src_entry),
++ * The _entry suffix denotes values when __copy_user was called.
++ *
++ * (1) is set up up by uaccess.h and maintained by not writing AT in copy_user
++ * (2) is met by incrementing src by the number of bytes copied
++ * (3) is met by not doing loads between a pair of increments of dst and src
++ *
++ * The exception handlers for stores adjust len (if necessary) and return.
++ * These handlers do not need to overwrite any data.
++ *
++ * For __rmemcpy and memmove an exception is always a kernel bug, therefore
++ * they're not protected.
++ */
++
++#define EXC(inst_reg,addr,handler)		\
++9:	inst_reg, addr;				\
++	.section __ex_table,"a";		\
++	PTR	9b, handler;			\
++	.previous
++
++/*
++ * Only on the 64-bit kernel we can made use of 64-bit registers.
++ */
++#ifdef CONFIG_64BIT
++#define USE_DOUBLE
++#endif
++
++#ifdef USE_DOUBLE
++
++#define LOAD   ld
++#define LOADL  ldl
++#define LOADR  ldr
++#define STOREL sdl
++#define STORER sdr
++#define STORE  sd
++#define ADD    daddu
++#define SUB    dsubu
++#define SRL    dsrl
++#define SRA    dsra
++#define SLL    dsll
++#define SLLV   dsllv
++#define SRLV   dsrlv
++#define NBYTES 8
++#define LOG_NBYTES 3
++
++/*
++ * As we are sharing code base with the mips32 tree (which use the o32 ABI
++ * register definitions). We need to redefine the register definitions from
++ * the n64 ABI register naming to the o32 ABI register naming.
++ */
++#undef t0
++#undef t1
++#undef t2
++#undef t3
++#define t0	$8
++#define t1	$9
++#define t2	$10
++#define t3	$11
++#define t4	$12
++#define t5	$13
++#define t6	$14
++#define t7	$15
++
++#else
++
++#define LOAD   lw
++#define LOADL  lwl
++#define LOADR  lwr
++#define STOREL swl
++#define STORER swr
++#define STORE  sw
++#define ADD    addu
++#define SUB    subu
++#define SRL    srl
++#define SLL    sll
++#define SRA    sra
++#define SLLV   sllv
++#define SRLV   srlv
++#define NBYTES 4
++#define LOG_NBYTES 2
++
++#endif /* USE_DOUBLE */
++
++#ifdef CONFIG_CPU_LITTLE_ENDIAN
++#define LDFIRST LOADR
++#define LDREST  LOADL
++#define STFIRST STORER
++#define STREST  STOREL
++#define SHIFT_DISCARD SLLV
++#else
++#define LDFIRST LOADL
++#define LDREST  LOADR
++#define STFIRST STOREL
++#define STREST  STORER
++#define SHIFT_DISCARD SRLV
++#endif
++
++#define FIRST(unit) ((unit)*NBYTES)
++#define REST(unit)  (FIRST(unit)+NBYTES-1)
++#define UNIT(unit)  FIRST(unit)
++
++#define ADDRMASK (NBYTES-1)
++
++	.text
++	.set	noreorder
++	.set	noat
++
++/*
++ * A combined memcpy/__copy_user
++ * __copy_user sets len to 0 for success; else to an upper bound of
++ * the number of uncopied bytes.
++ * memcpy sets v0 to dst.
++ */
++	.align	5
++LEAF(__copy_user_inatomic)
++	/*
++	 * Note: dst & src may be unaligned, len may be 0
++	 * Temps
++	 */
++#define rem t8
++
++	/*
++	 * The "issue break"s below are very approximate.
++	 * Issue delays for dcache fills will perturb the schedule, as will
++	 * load queue full replay traps, etc.
++	 *
++	 * If len < NBYTES use byte operations.
++	 */
++	PREF(	0, 0(src) )
++	PREF(	1, 0(dst) )
++	sltu	t2, len, NBYTES
++	and	t1, dst, ADDRMASK
++	PREF(	0, 1*32(src) )
++	PREF(	1, 1*32(dst) )
++	bnez	t2, copy_bytes_checklen
++	 and	t0, src, ADDRMASK
++	PREF(	0, 2*32(src) )
++	PREF(	1, 2*32(dst) )
++	bnez	t1, dst_unaligned
++	 nop
++	bnez	t0, src_unaligned_dst_aligned
++	/*
++	 * use delay slot for fall-through
++	 * src and dst are aligned; need to compute rem
++	 */
++both_aligned:
++	 SRL	t0, len, LOG_NBYTES+3    # +3 for 8 units/iter
++	beqz	t0, cleanup_both_aligned # len < 8*NBYTES
++	 and	rem, len, (8*NBYTES-1)	 # rem = len % (8*NBYTES)
++	PREF(	0, 3*32(src) )
++	PREF(	1, 3*32(dst) )
++	.align	4
++1:
++EXC(	LOAD	t0, UNIT(0)(src),	l_exc)
++EXC(	LOAD	t1, UNIT(1)(src),	l_exc_copy)
++EXC(	LOAD	t2, UNIT(2)(src),	l_exc_copy)
++EXC(	LOAD	t3, UNIT(3)(src),	l_exc_copy)
++	SUB	len, len, 8*NBYTES
++EXC(	LOAD	t4, UNIT(4)(src),	l_exc_copy)
++EXC(	LOAD	t7, UNIT(5)(src),	l_exc_copy)
++	STORE	t0, UNIT(0)(dst)
++	STORE	t1, UNIT(1)(dst)
++EXC(	LOAD	t0, UNIT(6)(src),	l_exc_copy)
++EXC(	LOAD	t1, UNIT(7)(src),	l_exc_copy)
++	ADD	src, src, 8*NBYTES
++	ADD	dst, dst, 8*NBYTES
++	STORE	t2, UNIT(-6)(dst)
++	STORE	t3, UNIT(-5)(dst)
++	STORE	t4, UNIT(-4)(dst)
++	STORE	t7, UNIT(-3)(dst)
++	STORE	t0, UNIT(-2)(dst)
++	STORE	t1, UNIT(-1)(dst)
++	PREF(	0, 8*32(src) )
++	PREF(	1, 8*32(dst) )
++	bne	len, rem, 1b
++	 nop
++
++	/*
++	 * len == rem == the number of bytes left to copy < 8*NBYTES
++	 */
++cleanup_both_aligned:
++	beqz	len, done
++	 sltu	t0, len, 4*NBYTES
++	bnez	t0, less_than_4units
++	 and	rem, len, (NBYTES-1)	# rem = len % NBYTES
++	/*
++	 * len >= 4*NBYTES
++	 */
++EXC(	LOAD	t0, UNIT(0)(src),	l_exc)
++EXC(	LOAD	t1, UNIT(1)(src),	l_exc_copy)
++EXC(	LOAD	t2, UNIT(2)(src),	l_exc_copy)
++EXC(	LOAD	t3, UNIT(3)(src),	l_exc_copy)
++	SUB	len, len, 4*NBYTES
++	ADD	src, src, 4*NBYTES
++	STORE	t0, UNIT(0)(dst)
++	STORE	t1, UNIT(1)(dst)
++	STORE	t2, UNIT(2)(dst)
++	STORE	t3, UNIT(3)(dst)
++	beqz	len, done
++	 ADD	dst, dst, 4*NBYTES
++less_than_4units:
++	/*
++	 * rem = len % NBYTES
++	 */
++	beq	rem, len, copy_bytes
++	 nop
++1:
++EXC(	LOAD	t0, 0(src),		l_exc)
++	ADD	src, src, NBYTES
++	SUB	len, len, NBYTES
++	STORE	t0, 0(dst)
++	bne	rem, len, 1b
++	 ADD	dst, dst, NBYTES
++
++	/*
++	 * src and dst are aligned, need to copy rem bytes (rem < NBYTES)
++	 * A loop would do only a byte at a time with possible branch
++	 * mispredicts.  Can't do an explicit LOAD dst,mask,or,STORE
++	 * because can't assume read-access to dst.  Instead, use
++	 * STREST dst, which doesn't require read access to dst.
++	 *
++	 * This code should perform better than a simple loop on modern,
++	 * wide-issue mips processors because the code has fewer branches and
++	 * more instruction-level parallelism.
++	 */
++#define bits t2
++	beqz	len, done
++	 ADD	t1, dst, len	# t1 is just past last byte of dst
++	li	bits, 8*NBYTES
++	SLL	rem, len, 3	# rem = number of bits to keep
++EXC(	LOAD	t0, 0(src),		l_exc)
++	SUB	bits, bits, rem	# bits = number of bits to discard
++	SHIFT_DISCARD t0, t0, bits
++	STREST	t0, -1(t1)
++	jr	ra
++	 move	len, zero
++dst_unaligned:
++	/*
++	 * dst is unaligned
++	 * t0 = src & ADDRMASK
++	 * t1 = dst & ADDRMASK; T1 > 0
++	 * len >= NBYTES
++	 *
++	 * Copy enough bytes to align dst
++	 * Set match = (src and dst have same alignment)
++	 */
++#define match rem
++EXC(	LDFIRST	t3, FIRST(0)(src),	l_exc)
++	ADD	t2, zero, NBYTES
++EXC(	LDREST	t3, REST(0)(src),	l_exc_copy)
++	SUB	t2, t2, t1	# t2 = number of bytes copied
++	xor	match, t0, t1
++	STFIRST t3, FIRST(0)(dst)
++	beq	len, t2, done
++	 SUB	len, len, t2
++	ADD	dst, dst, t2
++	beqz	match, both_aligned
++	 ADD	src, src, t2
++
++src_unaligned_dst_aligned:
++	SRL	t0, len, LOG_NBYTES+2    # +2 for 4 units/iter
++	PREF(	0, 3*32(src) )
++	beqz	t0, cleanup_src_unaligned
++	 and	rem, len, (4*NBYTES-1)   # rem = len % 4*NBYTES
++	PREF(	1, 3*32(dst) )
++1:
++/*
++ * Avoid consecutive LD*'s to the same register since some mips
++ * implementations can't issue them in the same cycle.
++ * It's OK to load FIRST(N+1) before REST(N) because the two addresses
++ * are to the same unit (unless src is aligned, but it's not).
++ */
++EXC(	LDFIRST	t0, FIRST(0)(src),	l_exc)
++EXC(	LDFIRST	t1, FIRST(1)(src),	l_exc_copy)
++	SUB     len, len, 4*NBYTES
++EXC(	LDREST	t0, REST(0)(src),	l_exc_copy)
++EXC(	LDREST	t1, REST(1)(src),	l_exc_copy)
++EXC(	LDFIRST	t2, FIRST(2)(src),	l_exc_copy)
++EXC(	LDFIRST	t3, FIRST(3)(src),	l_exc_copy)
++EXC(	LDREST	t2, REST(2)(src),	l_exc_copy)
++EXC(	LDREST	t3, REST(3)(src),	l_exc_copy)
++	PREF(	0, 9*32(src) )		# 0 is PREF_LOAD  (not streamed)
++	ADD	src, src, 4*NBYTES
++#ifdef CONFIG_CPU_SB1
++	nop				# improves slotting
++#endif
++	STORE	t0, UNIT(0)(dst)
++	STORE	t1, UNIT(1)(dst)
++	STORE	t2, UNIT(2)(dst)
++	STORE	t3, UNIT(3)(dst)
++	PREF(	1, 9*32(dst) )     	# 1 is PREF_STORE (not streamed)
++	bne	len, rem, 1b
++	 ADD	dst, dst, 4*NBYTES
++
++cleanup_src_unaligned:
++	beqz	len, done
++	 and	rem, len, NBYTES-1  # rem = len % NBYTES
++	beq	rem, len, copy_bytes
++	 nop
++1:
++EXC(	LDFIRST t0, FIRST(0)(src),	l_exc)
++EXC(	LDREST	t0, REST(0)(src),	l_exc_copy)
++	ADD	src, src, NBYTES
++	SUB	len, len, NBYTES
++	STORE	t0, 0(dst)
++	bne	len, rem, 1b
++	 ADD	dst, dst, NBYTES
++
++copy_bytes_checklen:
++	beqz	len, done
++	 nop
++copy_bytes:
++	/* 0 < len < NBYTES  */
++#define COPY_BYTE(N)			\
++EXC(	lb	t0, N(src), l_exc);	\
++	SUB	len, len, 1;		\
++	beqz	len, done;		\
++	 sb	t0, N(dst)
++
++	COPY_BYTE(0)
++	COPY_BYTE(1)
++#ifdef USE_DOUBLE
++	COPY_BYTE(2)
++	COPY_BYTE(3)
++	COPY_BYTE(4)
++	COPY_BYTE(5)
++#endif
++EXC(	lb	t0, NBYTES-2(src), l_exc)
++	SUB	len, len, 1
++	jr	ra
++	 sb	t0, NBYTES-2(dst)
++done:
++	jr	ra
++	 nop
++	END(__copy_user_inatomic)
++
++l_exc_copy:
++	/*
++	 * Copy bytes from src until faulting load address (or until a
++	 * lb faults)
++	 *
++	 * When reached by a faulting LDFIRST/LDREST, THREAD_BUADDR($28)
++	 * may be more than a byte beyond the last address.
++	 * Hence, the lb below may get an exception.
++	 *
++	 * Assumes src < THREAD_BUADDR($28)
++	 */
++	LOAD	t0, TI_TASK($28)
++	 nop
++	LOAD	t0, THREAD_BUADDR(t0)
++1:
++EXC(	lb	t1, 0(src),	l_exc)
++	ADD	src, src, 1
++	sb	t1, 0(dst)	# can't fault -- we're copy_from_user
++	bne	src, t0, 1b
++	 ADD	dst, dst, 1
++l_exc:
++	LOAD	t0, TI_TASK($28)
++	 nop
++	LOAD	t0, THREAD_BUADDR(t0)	# t0 is just past last good address
++	 nop
++	SUB	len, AT, t0		# len number of uncopied bytes
++	jr	ra
++	 nop
+diff -Naur linux-2.6.20.1.orig/arch/mips/lib-32/dump_tlb.c linux-2.6.20.1/arch/mips/lib-32/dump_tlb.c
+--- linux-2.6.20.1.orig/arch/mips/lib-32/dump_tlb.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/lib-32/dump_tlb.c	2007-02-20 16:47:41.000000000 -0800
 @@ -40,8 +40,6 @@
  		return "256Mb";
  #endif
@@ -477,9 +1873,9 @@ diff -Naur linux-2.6.20/arch/mips/lib-32/dump_tlb.c linux-mips-2.6.20/arch/mips/
  }
  
  #define BARRIER()					\
-diff -Naur linux-2.6.20/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.20/arch/mips/lib-64/dump_tlb.c
---- linux-2.6.20/arch/mips/lib-64/dump_tlb.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/lib-64/dump_tlb.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/lib-64/dump_tlb.c linux-2.6.20.1/arch/mips/lib-64/dump_tlb.c
+--- linux-2.6.20.1.orig/arch/mips/lib-64/dump_tlb.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/lib-64/dump_tlb.c	2007-02-20 16:47:41.000000000 -0800
 @@ -31,8 +31,6 @@
  	case PM_256M:	return "256Mb";
  #endif
@@ -489,9 +1885,46 @@ diff -Naur linux-2.6.20/arch/mips/lib-64/dump_tlb.c linux-mips-2.6.20/arch/mips/
  }
  
  #define BARRIER()					\
-diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/Makefile linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/Makefile
---- linux-2.6.20/arch/mips/momentum/jaguar_atx/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/mm/c-sb1.c linux-2.6.20.1/arch/mips/mm/c-sb1.c
+--- linux-2.6.20.1.orig/arch/mips/mm/c-sb1.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/mm/c-sb1.c	2007-02-20 16:47:41.000000000 -0800
+@@ -259,6 +259,12 @@
+ 		on_each_cpu(sb1_flush_cache_data_page_ipi, (void *) addr, 1, 1);
+ }
+ #else
++
++static void local_sb1_flush_cache_data_page(unsigned long addr)
++{
++	__sb1_writeback_inv_dcache_range(addr, addr + PAGE_SIZE);
++}
++
+ void sb1_flush_cache_data_page(unsigned long)
+ 	__attribute__((alias("local_sb1_flush_cache_data_page")));
+ #endif
+diff -Naur linux-2.6.20.1.orig/arch/mips/mm/init.c linux-2.6.20.1/arch/mips/mm/init.c
+--- linux-2.6.20.1.orig/arch/mips/mm/init.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/mm/init.c	2007-02-20 16:47:41.000000000 -0800
+@@ -61,8 +61,6 @@
+ 
+ DEFINE_PER_CPU(struct mmu_gather, mmu_gathers);
+ 
+-unsigned long highstart_pfn, highend_pfn;
+-
+ /*
+  * We have up to 8 empty zeroed pages so we can map one of the right colour
+  * when needed.  This is necessary only on R4000 / R4400 SC and MC versions
+@@ -261,6 +259,8 @@
+ 
+ 
+ #ifdef CONFIG_HIGHMEM
++unsigned long highstart_pfn, highend_pfn;
++
+ pte_t *kmap_pte;
+ pgprot_t kmap_prot;
+ 
+diff -Naur linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/Makefile linux-2.6.20.1/arch/mips/momentum/jaguar_atx/Makefile
+--- linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/momentum/jaguar_atx/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -6,7 +6,7 @@
  # unless it's something special (ie not a .c file).
  #
@@ -501,9 +1934,9 @@ diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/Makefile linux-mips-2.6.20
  
  obj-$(CONFIG_SERIAL_8250_CONSOLE) += ja-console.o
  obj-$(CONFIG_REMOTE_DEBUG) += dbg_io.o
-diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h
---- linux-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h linux-2.6.20.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h
+--- linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h	2007-02-20 16:47:41.000000000 -0800
 @@ -46,7 +46,9 @@
  
  extern unsigned long ja_fpga_base;
@@ -516,9 +1949,9 @@ diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/jaguar_atx_fpga.h linux-mi
 +#define JAGUAR_FPGA_READ(reg) readb(__FPGA_REG_TO_ADDR(reg))
  
  #endif
-diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/platform.c linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/platform.c
---- linux-2.6.20/arch/mips/momentum/jaguar_atx/platform.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/platform.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/platform.c linux-2.6.20.1/arch/mips/momentum/jaguar_atx/platform.c
+--- linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/platform.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/arch/mips/momentum/jaguar_atx/platform.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,235 @@
 +#include <linux/delay.h>
 +#include <linux/if_ether.h>
@@ -651,7 +2084,7 @@ diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/platform.c linux-mips-2.6.
 +
 +static struct platform_device eth2_device = {
 +	.name		= MV643XX_ETH_NAME,
-+	.id		= 1,
++	.id		= 2,
 +	.num_resources	= ARRAY_SIZE(mv64x60_eth2_resources),
 +	.resource	= mv64x60_eth2_resources,
 +	.dev = {
@@ -755,9 +2188,9 @@ diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/platform.c linux-mips-2.6.
 +device_initcall(mv643xx_eth_add_pds);
 +
 +#endif /* defined(CONFIG_MV643XX_ETH) || defined(CONFIG_MV643XX_ETH_MODULE) */
-diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/prom.c linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/prom.c
---- linux-2.6.20/arch/mips/momentum/jaguar_atx/prom.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/momentum/jaguar_atx/prom.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/prom.c linux-2.6.20.1/arch/mips/momentum/jaguar_atx/prom.c
+--- linux-2.6.20.1.orig/arch/mips/momentum/jaguar_atx/prom.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/momentum/jaguar_atx/prom.c	2007-02-20 16:47:41.000000000 -0800
 @@ -39,56 +39,6 @@
  	return "Momentum Jaguar-ATX";
  }
@@ -827,21 +2260,33 @@ diff -Naur linux-2.6.20/arch/mips/momentum/jaguar_atx/prom.c linux-mips-2.6.20/a
  }
  
  unsigned long __init prom_free_prom_memory(void)
-diff -Naur linux-2.6.20/arch/mips/oprofile/Kconfig linux-mips-2.6.20/arch/mips/oprofile/Kconfig
---- linux-2.6.20/arch/mips/oprofile/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/oprofile/Kconfig	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/momentum/ocelot_3/platform.c linux-2.6.20.1/arch/mips/momentum/ocelot_3/platform.c
+--- linux-2.6.20.1.orig/arch/mips/momentum/ocelot_3/platform.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/momentum/ocelot_3/platform.c	2007-02-20 16:47:41.000000000 -0800
+@@ -129,7 +129,7 @@
+ 
+ static struct platform_device eth2_device = {
+ 	.name		= MV643XX_ETH_NAME,
+-	.id		= 1,
++	.id		= 2,
+ 	.num_resources	= ARRAY_SIZE(mv64x60_eth2_resources),
+ 	.resource	= mv64x60_eth2_resources,
+ 	.dev = {
+diff -Naur linux-2.6.20.1.orig/arch/mips/oprofile/Kconfig linux-2.6.20.1/arch/mips/oprofile/Kconfig
+--- linux-2.6.20.1.orig/arch/mips/oprofile/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/oprofile/Kconfig	2007-02-20 16:47:41.000000000 -0800
 @@ -11,7 +11,7 @@
  
  config OPROFILE
  	tristate "OProfile system profiling (EXPERIMENTAL)"
 -	depends on PROFILING && EXPERIMENTAL
-+	depends on PROFILING && !!MIPS_MT_SMTC && EXPERIMENTAL
++	depends on PROFILING && !MIPS_MT_SMTC && EXPERIMENTAL
  	help
  	  OProfile is a profiling system capable of profiling the
  	  whole system, include the kernel, kernel modules, libraries,
-diff -Naur linux-2.6.20/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.20/arch/mips/pci/fixup-tb0219.c
---- linux-2.6.20/arch/mips/pci/fixup-tb0219.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/pci/fixup-tb0219.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/pci/fixup-tb0219.c linux-2.6.20.1/arch/mips/pci/fixup-tb0219.c
+--- linux-2.6.20.1.orig/arch/mips/pci/fixup-tb0219.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/pci/fixup-tb0219.c	2007-02-20 16:47:41.000000000 -0800
 @@ -2,7 +2,7 @@
   *  fixup-tb0219.c, The TANBAC TB0219 specific PCI fixups.
   *
@@ -851,10 +2296,25 @@ diff -Naur linux-2.6.20/arch/mips/pci/fixup-tb0219.c linux-mips-2.6.20/arch/mips
   *
   *  This program is free software; you can redistribute it and/or modify
   *  it under the terms of the GNU General Public License as published by
-diff -Naur linux-2.6.20/arch/mips/pci/pci.c linux-mips-2.6.20/arch/mips/pci/pci.c
---- linux-2.6.20/arch/mips/pci/pci.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/pci/pci.c	2007-02-04 12:22:45.000000000 -0800
-@@ -103,10 +103,15 @@
+diff -Naur linux-2.6.20.1.orig/arch/mips/pci/pci.c linux-2.6.20.1/arch/mips/pci/pci.c
+--- linux-2.6.20.1.orig/arch/mips/pci/pci.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/pci/pci.c	2007-02-20 16:47:41.000000000 -0800
+@@ -79,6 +79,14 @@
+ {
+ 	*hose_tail = hose;
+ 	hose_tail = &hose->next;
++
++	/*
++	 * Do not panic here but later - this might hapen before console init.
++	 */
++	if (!hose->io_map_base) {
++		printk(KERN_WARNING
++		       "registering PCI controller with io_map_base unset\n");
++	}
+ }
+ 
+ /* Most MIPS systems have straight-forward swizzling needs.  */
+@@ -103,10 +111,15 @@
  	return PCI_SLOT(dev->devfn);
  }
  
@@ -870,7 +2330,7 @@ diff -Naur linux-2.6.20/arch/mips/pci/pci.c linux-mips-2.6.20/arch/mips/pci/pci.
  	int next_busno;
  	int need_domain_info = 0;
  
-@@ -150,6 +155,13 @@
+@@ -150,6 +163,13 @@
  		pci_assign_unassigned_resources();
  	pci_fixup_irqs(common_swizzle, pcibios_map_irq);
  
@@ -884,9 +2344,21 @@ diff -Naur linux-2.6.20/arch/mips/pci/pci.c linux-mips-2.6.20/arch/mips/pci/pci.
  	return 0;
  }
  
-diff -Naur linux-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c linux-mips-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c
---- linux-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/pmc-sierra/yosemite/dbg_io.c linux-2.6.20.1/arch/mips/pmc-sierra/yosemite/dbg_io.c
+--- linux-2.6.20.1.orig/arch/mips/pmc-sierra/yosemite/dbg_io.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/pmc-sierra/yosemite/dbg_io.c	2007-02-20 16:47:41.000000000 -0800
+@@ -93,7 +93,7 @@
+  * Functions to READ and WRITE to serial port 1
+  */
+ #define	SERIAL_READ_1(ofs)		(*((volatile unsigned char*)	\
+-					(TITAN_SERIAL_BASE_1 + ofs)
++					(TITAN_SERIAL_BASE_1 + ofs)))
+ 
+ #define	SERIAL_WRITE_1(ofs, val)	((*((volatile unsigned char*)	\
+ 					(TITAN_SERIAL_BASE_1 + ofs))) = val)
+diff -Naur linux-2.6.20.1.orig/arch/mips/pmc-sierra/yosemite/setup.c linux-2.6.20.1/arch/mips/pmc-sierra/yosemite/setup.c
+--- linux-2.6.20.1.orig/arch/mips/pmc-sierra/yosemite/setup.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/pmc-sierra/yosemite/setup.c	2007-02-20 16:47:41.000000000 -0800
 @@ -171,6 +171,7 @@
  
  static void __init py_uart_setup(void)
@@ -903,18 +2375,18 @@ diff -Naur linux-2.6.20/arch/mips/pmc-sierra/yosemite/setup.c linux-mips-2.6.20/
  }
  
  static void __init py_rtc_setup(void)
-diff -Naur linux-2.6.20/arch/mips/qemu/Makefile linux-mips-2.6.20/arch/mips/qemu/Makefile
---- linux-2.6.20/arch/mips/qemu/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/qemu/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/qemu/Makefile linux-2.6.20.1/arch/mips/qemu/Makefile
+--- linux-2.6.20.1.orig/arch/mips/qemu/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/qemu/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -4,4 +4,5 @@
  
  obj-y		= q-firmware.o q-irq.o q-mem.o q-setup.o q-reset.o
  
 +obj-$(CONFIG_VT) += q-vga.o
  obj-$(CONFIG_SMP) += q-smp.o
-diff -Naur linux-2.6.20/arch/mips/qemu/q-setup.c linux-mips-2.6.20/arch/mips/qemu/q-setup.c
---- linux-2.6.20/arch/mips/qemu/q-setup.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/qemu/q-setup.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/qemu/q-setup.c linux-2.6.20.1/arch/mips/qemu/q-setup.c
+--- linux-2.6.20.1.orig/arch/mips/qemu/q-setup.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/qemu/q-setup.c	2007-02-20 16:47:41.000000000 -0800
 @@ -2,6 +2,7 @@
  #include <asm/io.h>
  #include <asm/time.h>
@@ -933,9 +2405,9 @@ diff -Naur linux-2.6.20/arch/mips/qemu/q-setup.c linux-mips-2.6.20/arch/mips/qem
 +
  	qemu_reboot_setup();
  }
-diff -Naur linux-2.6.20/arch/mips/qemu/q-vga.c linux-mips-2.6.20/arch/mips/qemu/q-vga.c
---- linux-2.6.20/arch/mips/qemu/q-vga.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/arch/mips/qemu/q-vga.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/qemu/q-vga.c linux-2.6.20.1/arch/mips/qemu/q-vga.c
+--- linux-2.6.20.1.orig/arch/mips/qemu/q-vga.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/arch/mips/qemu/q-vga.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,189 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -1126,9 +2598,33 @@ diff -Naur linux-2.6.20/arch/mips/qemu/q-vga.c linux-mips-2.6.20/arch/mips/qemu/
 +	while (1);
 +#endif
 +}
-diff -Naur linux-2.6.20/drivers/char/Kconfig linux-mips-2.6.20/drivers/char/Kconfig
---- linux-2.6.20/drivers/char/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/char/Kconfig	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/arch/mips/sgi-ip27/ip27-timer.c linux-2.6.20.1/arch/mips/sgi-ip27/ip27-timer.c
+--- linux-2.6.20.1.orig/arch/mips/sgi-ip27/ip27-timer.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/sgi-ip27/ip27-timer.c	2007-02-20 16:47:41.000000000 -0800
+@@ -190,7 +190,7 @@
+ };
+ 
+ static struct irqaction rt_irqaction = {
+-	.handler	= ip27_rt_timer_interrupt,
++	.handler	= (irq_handler_t) ip27_rt_timer_interrupt,
+ 	.flags		= IRQF_DISABLED,
+ 	.mask		= CPU_MASK_NONE,
+ 	.name		= "timer"
+diff -Naur linux-2.6.20.1.orig/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_setup.c linux-2.6.20.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_setup.c
+--- linux-2.6.20.1.orig/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_setup.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/arch/mips/tx4927/toshiba_rbtx4927/toshiba_rbtx4927_setup.c	2007-02-20 16:47:41.000000000 -0800
+@@ -137,6 +137,8 @@
+ extern void gt64120_time_init(void);
+ extern void toshiba_rbtx4927_irq_setup(void);
+ 
++char *prom_getcmdline(void);
++
+ #ifdef CONFIG_PCI
+ #define CONFIG_TX4927BUG_WORKAROUND
+ #undef TX4927_SUPPORT_COMMAND_IO
+diff -Naur linux-2.6.20.1.orig/drivers/char/Kconfig linux-2.6.20.1/drivers/char/Kconfig
+--- linux-2.6.20.1.orig/drivers/char/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/char/Kconfig	2007-02-20 16:47:41.000000000 -0800
 @@ -372,19 +372,56 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called istallion.
@@ -1198,9 +2694,9 @@ diff -Naur linux-2.6.20/drivers/char/Kconfig linux-mips-2.6.20/drivers/char/Kcon
  
  config A2232
  	tristate "Commodore A2232 serial support (EXPERIMENTAL)"
-diff -Naur linux-2.6.20/drivers/char/Makefile linux-mips-2.6.20/drivers/char/Makefile
---- linux-2.6.20/drivers/char/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/char/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/char/Makefile linux-2.6.20.1/drivers/char/Makefile
+--- linux-2.6.20.1.orig/drivers/char/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/char/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -32,6 +32,7 @@
  obj-$(CONFIG_ATARI_DSP56K)	+= dsp56k.o
  obj-$(CONFIG_MOXA_SMARTIO)	+= mxser.o
@@ -1225,9 +2721,9 @@ diff -Naur linux-2.6.20/drivers/char/Makefile linux-mips-2.6.20/drivers/char/Mak
  obj-$(CONFIG_PPDEV)		+= ppdev.o
  obj-$(CONFIG_NWBUTTON)		+= nwbutton.o
  obj-$(CONFIG_NWFLASH)		+= nwflash.o
-diff -Naur linux-2.6.20/drivers/char/au1000_gpio.c linux-mips-2.6.20/drivers/char/au1000_gpio.c
---- linux-2.6.20/drivers/char/au1000_gpio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/char/au1000_gpio.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/char/au1000_gpio.c linux-2.6.20.1/drivers/char/au1000_gpio.c
+--- linux-2.6.20.1.orig/drivers/char/au1000_gpio.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/char/au1000_gpio.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,262 @@
 +/*
 + * FILE NAME au1000_gpio.c
@@ -1491,9 +2987,9 @@ diff -Naur linux-2.6.20/drivers/char/au1000_gpio.c linux-mips-2.6.20/drivers/cha
 +
 +module_init(au1000gpio_init);
 +module_exit(au1000gpio_exit);
-diff -Naur linux-2.6.20/drivers/char/au1000_ts.c linux-mips-2.6.20/drivers/char/au1000_ts.c
---- linux-2.6.20/drivers/char/au1000_ts.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/char/au1000_ts.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/char/au1000_ts.c linux-2.6.20.1/drivers/char/au1000_ts.c
+--- linux-2.6.20.1.orig/drivers/char/au1000_ts.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/char/au1000_ts.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,677 @@
 +/*
 + *      au1000_ts.c  --  Touch screen driver for the Alchemy Au1000's
@@ -2172,9 +3668,9 @@ diff -Naur linux-2.6.20/drivers/char/au1000_ts.c linux-mips-2.6.20/drivers/char/
 +
 +module_init(au1000ts_init_module);
 +module_exit(au1000ts_cleanup_module);
-diff -Naur linux-2.6.20/drivers/char/sb1250_duart.c linux-mips-2.6.20/drivers/char/sb1250_duart.c
---- linux-2.6.20/drivers/char/sb1250_duart.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/char/sb1250_duart.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/char/sb1250_duart.c linux-2.6.20.1/drivers/char/sb1250_duart.c
+--- linux-2.6.20.1.orig/drivers/char/sb1250_duart.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/char/sb1250_duart.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,909 @@
 +/*
 + * Copyright (C) 2000,2001,2002,2003,2004 Broadcom Corporation
@@ -3085,18 +4581,18 @@ diff -Naur linux-2.6.20/drivers/char/sb1250_duart.c linux-mips-2.6.20/drivers/ch
 +console_initcall(sb1250_serial_console_init);
 +
 +#endif /* CONFIG_SIBYTE_SB1250_DUART_CONSOLE */
-diff -Naur linux-2.6.20/drivers/ide/mips/Makefile linux-mips-2.6.20/drivers/ide/mips/Makefile
---- linux-2.6.20/drivers/ide/mips/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/ide/mips/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/ide/mips/Makefile linux-2.6.20.1/drivers/ide/mips/Makefile
+--- linux-2.6.20.1.orig/drivers/ide/mips/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/ide/mips/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -1,4 +1,4 @@
  obj-$(CONFIG_BLK_DEV_IDE_SWARM)		+= swarm.o
  obj-$(CONFIG_BLK_DEV_IDE_AU1XXX)	+= au1xxx-ide.o
  
 -EXTRA_CFLAGS    := -Idrivers/ide
 +CFLAGS_au1xxx-ide.o := -Idrivers/ide
-diff -Naur linux-2.6.20/drivers/mtd/devices/docprobe.c linux-mips-2.6.20/drivers/mtd/devices/docprobe.c
---- linux-2.6.20/drivers/mtd/devices/docprobe.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/mtd/devices/docprobe.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/mtd/devices/docprobe.c linux-2.6.20.1/drivers/mtd/devices/docprobe.c
+--- linux-2.6.20.1.orig/drivers/mtd/devices/docprobe.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/mtd/devices/docprobe.c	2007-02-20 16:47:41.000000000 -0800
 @@ -83,10 +83,10 @@
  	0xe4000000,
  #elif defined(CONFIG_MOMENCO_OCELOT)
@@ -3111,9 +4607,9 @@ diff -Naur linux-2.6.20/drivers/mtd/devices/docprobe.c linux-mips-2.6.20/drivers
  #warning Unknown architecture for DiskOnChip. No default probe locations defined
  #endif
  	0xffffffff };
-diff -Naur linux-2.6.20/drivers/mtd/maps/lasat.c linux-mips-2.6.20/drivers/mtd/maps/lasat.c
---- linux-2.6.20/drivers/mtd/maps/lasat.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/mtd/maps/lasat.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/mtd/maps/lasat.c linux-2.6.20.1/drivers/mtd/maps/lasat.c
+--- linux-2.6.20.1.orig/drivers/mtd/maps/lasat.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/mtd/maps/lasat.c	2007-02-20 16:47:41.000000000 -0800
 @@ -7,7 +7,7 @@
   * modify it under the terms of the GNU General Public License version
   * 2 as published by the Free Software Foundation.
@@ -3132,9 +4628,9 @@ diff -Naur linux-2.6.20/drivers/mtd/maps/lasat.c linux-mips-2.6.20/drivers/mtd/m
  		        lasat_map.phys, lasat_board_info.li_flash_size);
  	lasat_map.size = lasat_board_info.li_flash_size;
  
-diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfig
---- linux-2.6.20/drivers/net/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/Kconfig	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/Kconfig linux-2.6.20.1/drivers/net/Kconfig
+--- linux-2.6.20.1.orig/drivers/net/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/net/Kconfig	2007-02-20 16:47:41.000000000 -0800
 @@ -452,6 +452,14 @@
  	  This is the driver for the onboard card of MIPS Magnum 4000,
  	  Acer PICA, Olivetti M700-10 and a few other identical OEM systems.
@@ -3161,7 +4657,7 @@ diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfi
  config SGI_IOC3_ETH
  	bool "SGI IOC3 Ethernet"
  	depends on NET_ETHERNET && PCI && SGI_IP27
-@@ -475,25 +479,13 @@
+@@ -475,29 +479,9 @@
  	  the Ethernet-HOWTO, available from
  	  <http://www.tldp.org/docs.html#howto>.
  
@@ -3179,21 +4675,20 @@ diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfi
 -	bool "Transmit hardware checksums"
 -	depends on SGI_IOC3_ETH && INET
 -	default y
-+config MIPS_SIM_NET
-+	tristate "MIPS simulator Network device (EXPERIMENTAL)"
-+	depends on NETDEVICES && MIPS_SIM && EXPERIMENTAL
- 	help
+-	help
 -	  The SGI IOC3 network adapter supports TCP and UDP checksums in
 -	  hardware to offload processing of these checksums from the CPU.  At
 -	  the moment only acceleration of IPv4 is supported.  This option
 -	  enables offloading for checksums on transmit.  If unsure, say Y.
-+	  The MIPSNET device is a simple Ethernet network device which is
-+	  emulated by the MIPS Simulator.
-+	  If you are not using a MIPSsim or are unsure, say N.
- 
+-
  config MIPS_SIM_NET
  	tristate "MIPS simulator Network device (EXPERIMENTAL)"
-@@ -2076,6 +2068,10 @@
+-	depends on MIPS_SIM && EXPERIMENTAL
++	depends on NET_ETHERNET && MIPS_SIM && EXPERIMENTAL
+ 	help
+ 	  The MIPSNET device is a simple Ethernet network device which is
+ 	  emulated by the MIPS Simulator.
+@@ -2076,6 +2060,10 @@
  
  	  If in doubt, say N.
  
@@ -3204,7 +4699,7 @@ diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfi
  config R8169_VLAN
  	bool "VLAN support"
  	depends on R8169 && VLAN_8021Q
-@@ -2315,8 +2311,8 @@
+@@ -2315,8 +2303,8 @@
  	select MII
  	help
  	  This driver supports the gigabit Ethernet on the Marvell MV643XX
@@ -3215,7 +4710,7 @@ diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfi
  
  config MV643XX_ETH_0
  	bool "MV-643XX Port 0"
-@@ -2339,6 +2335,20 @@
+@@ -2339,6 +2327,20 @@
  	  This enables support for Port 2 of the Marvell MV643XX Gigabit
  	  Ethernet.
  
@@ -3236,9 +4731,9 @@ diff -Naur linux-2.6.20/drivers/net/Kconfig linux-mips-2.6.20/drivers/net/Kconfi
  config QLA3XXX
  	tristate "QLogic QLA3XXX Network Driver Support"
  	depends on PCI
-diff -Naur linux-2.6.20/drivers/net/Makefile linux-mips-2.6.20/drivers/net/Makefile
---- linux-2.6.20/drivers/net/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/Makefile linux-2.6.20.1/drivers/net/Makefile
+--- linux-2.6.20.1.orig/drivers/net/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/net/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -112,6 +112,10 @@
  obj-$(CONFIG_MV643XX_ETH) += mv643xx_eth.o
  obj-$(CONFIG_QLA3XXX) += qla3xxx.o
@@ -3250,9 +4745,9 @@ diff -Naur linux-2.6.20/drivers/net/Makefile linux-mips-2.6.20/drivers/net/Makef
  obj-$(CONFIG_PPP) += ppp_generic.o
  obj-$(CONFIG_PPP_ASYNC) += ppp_async.o
  obj-$(CONFIG_PPP_SYNC_TTY) += ppp_synctty.o
-diff -Naur linux-2.6.20/drivers/net/big_sur_ge.c linux-mips-2.6.20/drivers/net/big_sur_ge.c
---- linux-2.6.20/drivers/net/big_sur_ge.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/big_sur_ge.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/big_sur_ge.c linux-2.6.20.1/drivers/net/big_sur_ge.c
+--- linux-2.6.20.1.orig/drivers/net/big_sur_ge.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/big_sur_ge.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,2004 @@
 +/*
 + * drivers/net/big_sur_ge.c - Driver for PMC-Sierra Big Sur ethernet ports
@@ -5258,9 +6753,9 @@ diff -Naur linux-2.6.20/drivers/net/big_sur_ge.c linux-mips-2.6.20/drivers/net/b
 +MODULE_AUTHOR("Manish Lachwani <lachwani@pmc-sierra.com>");
 +MODULE_DESCRIPTION("PMC-Sierra Big Sur Ethernet MAC Driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.20/drivers/net/big_sur_ge.h linux-mips-2.6.20/drivers/net/big_sur_ge.h
---- linux-2.6.20/drivers/net/big_sur_ge.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/big_sur_ge.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/big_sur_ge.h linux-2.6.20.1/drivers/net/big_sur_ge.h
+--- linux-2.6.20.1.orig/drivers/net/big_sur_ge.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/big_sur_ge.h	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,713 @@
 +/*
 + * drivers/net/big_sur_ge.h - Driver for PMC-Sierra Big Sur
@@ -5975,9 +7470,9 @@ diff -Naur linux-2.6.20/drivers/net/big_sur_ge.h linux-mips-2.6.20/drivers/net/b
 +                                 BIG_SUR_GEIXR_SG_END_MASK)
 +
 +#endif
-diff -Naur linux-2.6.20/drivers/net/gt64240eth.c linux-mips-2.6.20/drivers/net/gt64240eth.c
---- linux-2.6.20/drivers/net/gt64240eth.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/gt64240eth.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/gt64240eth.c linux-2.6.20.1/drivers/net/gt64240eth.c
+--- linux-2.6.20.1.orig/drivers/net/gt64240eth.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/gt64240eth.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,1671 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -7650,9 +9145,9 @@ diff -Naur linux-2.6.20/drivers/net/gt64240eth.c linux-mips-2.6.20/drivers/net/g
 +
 +	return &gp->stats;
 +}
-diff -Naur linux-2.6.20/drivers/net/gt64240eth.h linux-mips-2.6.20/drivers/net/gt64240eth.h
---- linux-2.6.20/drivers/net/gt64240eth.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/gt64240eth.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/gt64240eth.h linux-2.6.20.1/drivers/net/gt64240eth.h
+--- linux-2.6.20.1.orig/drivers/net/gt64240eth.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/gt64240eth.h	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,403 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
@@ -8057,9 +9552,9 @@ diff -Naur linux-2.6.20/drivers/net/gt64240eth.h linux-mips-2.6.20/drivers/net/g
 +};
 +
 +#endif /* _GT64240ETH_H */
-diff -Naur linux-2.6.20/drivers/net/ioc3-eth.c linux-mips-2.6.20/drivers/net/ioc3-eth.c
---- linux-2.6.20/drivers/net/ioc3-eth.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/ioc3-eth.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/ioc3-eth.c linux-2.6.20.1/drivers/net/ioc3-eth.c
+--- linux-2.6.20.1.orig/drivers/net/ioc3-eth.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/net/ioc3-eth.c	2007-02-20 16:47:41.000000000 -0800
 @@ -5,7 +5,7 @@
   *
   * Driver for SGI's IOC3 based Ethernet cards as found in the PCI card.
@@ -8186,9 +9681,9 @@ diff -Naur linux-2.6.20/drivers/net/ioc3-eth.c linux-mips-2.6.20/drivers/net/ioc
  };
  
  static int ioc3_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-diff -Naur linux-2.6.20/drivers/net/titan_ge.c linux-mips-2.6.20/drivers/net/titan_ge.c
---- linux-2.6.20/drivers/net/titan_ge.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/titan_ge.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/titan_ge.c linux-2.6.20.1/drivers/net/titan_ge.c
+--- linux-2.6.20.1.orig/drivers/net/titan_ge.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/titan_ge.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,2069 @@
 +/*
 + * drivers/net/titan_ge.c - Driver for Titan ethernet ports
@@ -10259,9 +11754,9 @@ diff -Naur linux-2.6.20/drivers/net/titan_ge.c linux-mips-2.6.20/drivers/net/tit
 +
 +module_init(titan_ge_init_module);
 +module_exit(titan_ge_cleanup_module);
-diff -Naur linux-2.6.20/drivers/net/titan_ge.h linux-mips-2.6.20/drivers/net/titan_ge.h
---- linux-2.6.20/drivers/net/titan_ge.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/titan_ge.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/titan_ge.h linux-2.6.20.1/drivers/net/titan_ge.h
+--- linux-2.6.20.1.orig/drivers/net/titan_ge.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/titan_ge.h	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,415 @@
 +#ifndef _TITAN_GE_H_
 +#define _TITAN_GE_H_
@@ -10678,9 +12173,9 @@ diff -Naur linux-2.6.20/drivers/net/titan_ge.h linux-mips-2.6.20/drivers/net/tit
 +
 +#endif 				/* _TITAN_GE_H_ */
 +
-diff -Naur linux-2.6.20/drivers/net/titan_mdio.c linux-mips-2.6.20/drivers/net/titan_mdio.c
---- linux-2.6.20/drivers/net/titan_mdio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/titan_mdio.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/titan_mdio.c linux-2.6.20.1/drivers/net/titan_mdio.c
+--- linux-2.6.20.1.orig/drivers/net/titan_mdio.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/titan_mdio.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,217 @@
 +/*
 + * drivers/net/titan_mdio.c - Driver for Titan ethernet ports
@@ -10899,9 +12394,9 @@ diff -Naur linux-2.6.20/drivers/net/titan_mdio.c linux-mips-2.6.20/drivers/net/t
 +	return TITAN_GE_MDIO_GOOD;
 +}
 +
-diff -Naur linux-2.6.20/drivers/net/titan_mdio.h linux-mips-2.6.20/drivers/net/titan_mdio.h
---- linux-2.6.20/drivers/net/titan_mdio.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/net/titan_mdio.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/net/titan_mdio.h linux-2.6.20.1/drivers/net/titan_mdio.h
+--- linux-2.6.20.1.orig/drivers/net/titan_mdio.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/net/titan_mdio.h	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,56 @@
 +/*
 + * MDIO used to interact with the PHY when using GMII/MII
@@ -10959,9 +12454,9 @@ diff -Naur linux-2.6.20/drivers/net/titan_mdio.h linux-mips-2.6.20/drivers/net/t
 +int titan_ge_mdio_write(int, int, unsigned int);
 +
 +#endif /* _TITAN_MDIO_H */
-diff -Naur linux-2.6.20/drivers/scsi/NCR53C9x.h linux-mips-2.6.20/drivers/scsi/NCR53C9x.h
---- linux-2.6.20/drivers/scsi/NCR53C9x.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/scsi/NCR53C9x.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/scsi/NCR53C9x.h linux-2.6.20.1/drivers/scsi/NCR53C9x.h
+--- linux-2.6.20.1.orig/drivers/scsi/NCR53C9x.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/scsi/NCR53C9x.h	2007-02-20 16:47:41.000000000 -0800
 @@ -144,12 +144,7 @@
  
  #ifndef MULTIPLE_PAD_SIZES
@@ -10976,9 +12471,9 @@ diff -Naur linux-2.6.20/drivers/scsi/NCR53C9x.h linux-mips-2.6.20/drivers/scsi/N
  #define esp_read(__reg) (__reg)
  
  struct ESP_regs {
-diff -Naur linux-2.6.20/drivers/scsi/dec_esp.c linux-mips-2.6.20/drivers/scsi/dec_esp.c
---- linux-2.6.20/drivers/scsi/dec_esp.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/scsi/dec_esp.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/scsi/dec_esp.c linux-2.6.20.1/drivers/scsi/dec_esp.c
+--- linux-2.6.20.1.orig/drivers/scsi/dec_esp.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/scsi/dec_esp.c	2007-02-20 16:47:41.000000000 -0800
 @@ -55,7 +55,7 @@
  
  static int  dma_bytes_sent(struct NCR_ESP *esp, int fifo_count);
@@ -10997,9 +12492,9 @@ diff -Naur linux-2.6.20/drivers/scsi/dec_esp.c linux-mips-2.6.20/drivers/scsi/de
  
  			esp->dregs = 0;
  			esp->eregs = (void *)CKSEG1ADDR(mem_start +
-diff -Naur linux-2.6.20/drivers/scsi/sgiwd93.c linux-mips-2.6.20/drivers/scsi/sgiwd93.c
---- linux-2.6.20/drivers/scsi/sgiwd93.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/scsi/sgiwd93.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/scsi/sgiwd93.c linux-2.6.20.1/drivers/scsi/sgiwd93.c
+--- linux-2.6.20.1.orig/drivers/scsi/sgiwd93.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/scsi/sgiwd93.c	2007-02-20 16:47:41.000000000 -0800
 @@ -14,6 +14,7 @@
  #include <linux/interrupt.h>
  #include <linux/types.h>
@@ -11016,9 +12511,9 @@ diff -Naur linux-2.6.20/drivers/scsi/sgiwd93.c linux-mips-2.6.20/drivers/scsi/sg
  
  static inline void init_hpc_chain(struct hpc_data *hd)
  {
-diff -Naur linux-2.6.20/drivers/serial/Kconfig linux-mips-2.6.20/drivers/serial/Kconfig
---- linux-2.6.20/drivers/serial/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/serial/Kconfig	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/serial/Kconfig linux-2.6.20.1/drivers/serial/Kconfig
+--- linux-2.6.20.1.orig/drivers/serial/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/serial/Kconfig	2007-02-20 16:47:41.000000000 -0800
 @@ -686,6 +686,25 @@
  	depends on SERIAL_SH_SCI=y
  	select SERIAL_CORE_CONSOLE
@@ -11045,9 +12540,9 @@ diff -Naur linux-2.6.20/drivers/serial/Kconfig linux-mips-2.6.20/drivers/serial/
  config SERIAL_CORE
  	tristate
  
-diff -Naur linux-2.6.20/drivers/serial/Makefile linux-mips-2.6.20/drivers/serial/Makefile
---- linux-2.6.20/drivers/serial/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/serial/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/serial/Makefile linux-2.6.20.1/drivers/serial/Makefile
+--- linux-2.6.20.1.orig/drivers/serial/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/serial/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -40,6 +40,7 @@
  obj-$(CONFIG_V850E_UART) += v850e_uart.o
  obj-$(CONFIG_SERIAL_PMACZILOG) += pmac_zilog.o
@@ -11056,9 +12551,9 @@ diff -Naur linux-2.6.20/drivers/serial/Makefile linux-mips-2.6.20/drivers/serial
  obj-$(CONFIG_SERIAL_DZ) += dz.o
  obj-$(CONFIG_SERIAL_SH_SCI) += sh-sci.o
  obj-$(CONFIG_SERIAL_SGI_L1_CONSOLE) += sn_console.o
-diff -Naur linux-2.6.20/drivers/serial/ip22zilog.c linux-mips-2.6.20/drivers/serial/ip22zilog.c
---- linux-2.6.20/drivers/serial/ip22zilog.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/serial/ip22zilog.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/serial/ip22zilog.c linux-2.6.20.1/drivers/serial/ip22zilog.c
+--- linux-2.6.20.1.orig/drivers/serial/ip22zilog.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/serial/ip22zilog.c	2007-02-20 16:47:41.000000000 -0800
 @@ -863,6 +863,7 @@
  	up->cflag = termios->c_cflag;
  
@@ -11076,9 +12571,9 @@ diff -Naur linux-2.6.20/drivers/serial/ip22zilog.c linux-mips-2.6.20/drivers/ser
  }
  
  static int __init ip22zilog_console_setup(struct console *con, char *options)
-diff -Naur linux-2.6.20/drivers/serial/ip3106_uart.c linux-mips-2.6.20/drivers/serial/ip3106_uart.c
---- linux-2.6.20/drivers/serial/ip3106_uart.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/serial/ip3106_uart.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/serial/ip3106_uart.c linux-2.6.20.1/drivers/serial/ip3106_uart.c
+--- linux-2.6.20.1.orig/drivers/serial/ip3106_uart.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/serial/ip3106_uart.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,909 @@
 +/*
 + * Initially based on linux-2.4.20_mvl31-pnx8xx0/drivers/char/serial_pnx8550.c
@@ -11989,9 +13484,9 @@ diff -Naur linux-2.6.20/drivers/serial/ip3106_uart.c linux-mips-2.6.20/drivers/s
 +MODULE_DESCRIPTION("IP3106 generic serial port driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS_CHARDEV_MAJOR(SERIAL_IP3106_MAJOR);
-diff -Naur linux-2.6.20/drivers/video/Kconfig linux-mips-2.6.20/drivers/video/Kconfig
---- linux-2.6.20/drivers/video/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/video/Kconfig	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/video/Kconfig linux-2.6.20.1/drivers/video/Kconfig
+--- linux-2.6.20.1.orig/drivers/video/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/video/Kconfig	2007-02-20 16:47:41.000000000 -0800
 @@ -1281,6 +1281,17 @@
  	  Please read the <file:Documentation/fb/README-sstfb.txt> for supported
  	  options and other important info  support.
@@ -12048,9 +13543,9 @@ diff -Naur linux-2.6.20/drivers/video/Kconfig linux-mips-2.6.20/drivers/video/Kc
  
  config FB_MAXINE
  	bool "Maxine (Personal DECstation) onboard framebuffer support"
-diff -Naur linux-2.6.20/drivers/video/Makefile linux-mips-2.6.20/drivers/video/Makefile
---- linux-2.6.20/drivers/video/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/video/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/video/Makefile linux-2.6.20.1/drivers/video/Makefile
+--- linux-2.6.20.1.orig/drivers/video/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/video/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -96,6 +96,7 @@
  obj-$(CONFIG_FB_TX3912)		  += tx3912fb.o
  obj-$(CONFIG_FB_S1D13XXX)	  += s1d13xxxfb.o
@@ -12059,9 +13554,9 @@ diff -Naur linux-2.6.20/drivers/video/Makefile linux-mips-2.6.20/drivers/video/M
  obj-$(CONFIG_FB_S3C2410)	  += s3c2410fb.o
  obj-$(CONFIG_FB_PNX4008_DUM)	  += pnx4008/
  obj-$(CONFIG_FB_PNX4008_DUM_RGB)  += pnx4008/
-diff -Naur linux-2.6.20/drivers/video/au1100fb.c linux-mips-2.6.20/drivers/video/au1100fb.c
---- linux-2.6.20/drivers/video/au1100fb.c	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/drivers/video/au1100fb.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/video/au1100fb.c linux-2.6.20.1/drivers/video/au1100fb.c
+--- linux-2.6.20.1.orig/drivers/video/au1100fb.c	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/drivers/video/au1100fb.c	2007-02-20 16:47:41.000000000 -0800
 @@ -41,6 +41,7 @@
   *  with this program; if not, write  to the Free Software Foundation, Inc.,
   *  675 Mass Ave, Cambridge, MA 02139, USA.
@@ -12070,9 +13565,9 @@ diff -Naur linux-2.6.20/drivers/video/au1100fb.c linux-mips-2.6.20/drivers/video
  #include <linux/module.h>
  #include <linux/kernel.h>
  #include <linux/errno.h>
-diff -Naur linux-2.6.20/drivers/video/smivgxfb.c linux-mips-2.6.20/drivers/video/smivgxfb.c
---- linux-2.6.20/drivers/video/smivgxfb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/drivers/video/smivgxfb.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/drivers/video/smivgxfb.c linux-2.6.20.1/drivers/video/smivgxfb.c
+--- linux-2.6.20.1.orig/drivers/video/smivgxfb.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/drivers/video/smivgxfb.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,387 @@
 +/***************************************************************************
 + *  Silicon Motion VoyagerGX framebuffer driver
@@ -12461,10 +13956,94 @@ diff -Naur linux-2.6.20/drivers/video/smivgxfb.c linux-mips-2.6.20/drivers/video
 +MODULE_AUTHOR("");
 +MODULE_DESCRIPTION("Framebuffer driver for SMI Voyager");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.20/include/asm-mips/io.h linux-mips-2.6.20/include/asm-mips/io.h
---- linux-2.6.20/include/asm-mips/io.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/asm-mips/io.h	2007-02-04 12:22:45.000000000 -0800
-@@ -518,34 +518,6 @@
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/compat-signal.h linux-2.6.20.1/include/asm-mips/compat-signal.h
+--- linux-2.6.20.1.orig/include/asm-mips/compat-signal.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/compat-signal.h	2007-02-20 16:47:41.000000000 -0800
+@@ -0,0 +1,54 @@
++#ifndef __ASM_COMPAT_SIGNAL_H
++#define __ASM_COMPAT_SIGNAL_H
++
++#include <linux/bug.h>
++#include <linux/compat.h>
++#include <linux/compiler.h>
++
++#include <asm/uaccess.h>
++
++static inline int __copy_conv_sigset_to_user(compat_sigset_t __user *d,
++	const sigset_t *s)
++{
++	int err;
++
++	BUG_ON(sizeof(*d) != sizeof(*s));
++	BUG_ON(_NSIG_WORDS != 2);
++
++	err  = __put_user(s->sig[0],       &d->sig[0]);
++	err |= __put_user(s->sig[0] >> 32, &d->sig[1]);
++	err |= __put_user(s->sig[1],       &d->sig[2]);
++	err |= __put_user(s->sig[1] >> 32, &d->sig[3]);
++
++	return err;
++}
++
++static inline int __copy_conv_sigset_from_user(sigset_t *d,
++	const compat_sigset_t __user *s)
++{
++	int err;
++	union sigset_u {
++		sigset_t	s;
++		compat_sigset_t c;
++	} *u = (union sigset_u *) d;
++
++	BUG_ON(sizeof(*d) != sizeof(*s));
++	BUG_ON(_NSIG_WORDS != 2);
++
++#ifdef CONFIG_CPU_BIG_ENDIAN
++	err  = __get_user(u->c.sig[1], &s->sig[0]);
++	err |= __get_user(u->c.sig[0], &s->sig[1]);
++	err |= __get_user(u->c.sig[3], &s->sig[2]);
++	err |= __get_user(u->c.sig[2], &s->sig[3]);
++#endif
++#ifdef CONFIG_CPU_LITTLE_ENDIAN
++	err  = __get_user(u->c.sig[0], &s->sig[0]);
++	err |= __get_user(u->c.sig[1], &s->sig[1]);
++	err |= __get_user(u->c.sig[2], &s->sig[2]);
++	err |= __get_user(u->c.sig[3], &s->sig[3]);
++#endif
++
++	return err;
++}
++
++#endif /* __ASM_COMPAT_SIGNAL_H */
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/dma-mapping.h linux-2.6.20.1/include/asm-mips/dma-mapping.h
+--- linux-2.6.20.1.orig/include/asm-mips/dma-mapping.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/dma-mapping.h	2007-02-20 16:47:41.000000000 -0800
+@@ -68,6 +68,7 @@
+ extern void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+ 	       enum dma_data_direction direction);
+ 
++#if 0
+ #define ARCH_HAS_DMA_DECLARE_COHERENT_MEMORY
+ 
+ extern int dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
+@@ -75,5 +76,6 @@
+ extern void dma_release_declared_memory(struct device *dev);
+ extern void * dma_mark_declared_memory_occupied(struct device *dev,
+ 	dma_addr_t device_addr, size_t size);
++#endif
+ 
+ #endif /* _ASM_DMA_MAPPING_H */
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/io.h linux-2.6.20.1/include/asm-mips/io.h
+--- linux-2.6.20.1.orig/include/asm-mips/io.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/io.h	2007-02-20 16:47:41.000000000 -0800
+@@ -20,6 +20,7 @@
+ #include <asm/byteorder.h>
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
++#include <asm-generic/iomap.h>
+ #include <asm/page.h>
+ #include <asm/pgtable-bits.h>
+ #include <asm/processor.h>
+@@ -518,34 +519,6 @@
  }
  
  /*
@@ -12499,9 +14078,9 @@ diff -Naur linux-2.6.20/include/asm-mips/io.h linux-mips-2.6.20/include/asm-mips
   * ISA space is 'always mapped' on currently supported MIPS systems, no need
   * to explicitly ioremap() it. The fact that the ISA IO space is mapped
   * to PAGE_OFFSET is pure coincidence - it does not mean ISA values
-diff -Naur linux-2.6.20/include/asm-mips/mach-au1x00/au1000.h linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1000.h
---- linux-2.6.20/include/asm-mips/mach-au1x00/au1000.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1000.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/mach-au1x00/au1000.h linux-2.6.20.1/include/asm-mips/mach-au1x00/au1000.h
+--- linux-2.6.20.1.orig/include/asm-mips/mach-au1x00/au1000.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/mach-au1x00/au1000.h	2007-02-20 16:47:41.000000000 -0800
 @@ -39,6 +39,7 @@
  #ifndef _LANGUAGE_ASSEMBLY
  
@@ -12510,9 +14089,9 @@ diff -Naur linux-2.6.20/include/asm-mips/mach-au1x00/au1000.h linux-mips-2.6.20/
  #include <asm/io.h>
  
  /* cpu pipeline flush */
-diff -Naur linux-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h
---- linux-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-2.6.20.1/include/asm-mips/mach-au1x00/au1xxx_ide.h
+--- linux-2.6.20.1.orig/include/asm-mips/mach-au1x00/au1xxx_ide.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/mach-au1x00/au1xxx_ide.h	2007-02-20 16:47:41.000000000 -0800
 @@ -83,6 +83,7 @@
  } _auide_hwif;
  
@@ -12521,9 +14100,9 @@ diff -Naur linux-2.6.20/include/asm-mips/mach-au1x00/au1xxx_ide.h linux-mips-2.6
  /* HD white list */
  static const struct drive_list_entry dma_white_list [] = {
  /*
-diff -Naur linux-2.6.20/include/asm-mips/mach-generic/ide.h linux-mips-2.6.20/include/asm-mips/mach-generic/ide.h
---- linux-2.6.20/include/asm-mips/mach-generic/ide.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/asm-mips/mach-generic/ide.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/mach-generic/ide.h linux-2.6.20.1/include/asm-mips/mach-generic/ide.h
+--- linux-2.6.20.1.orig/include/asm-mips/mach-generic/ide.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/mach-generic/ide.h	2007-02-20 16:47:41.000000000 -0800
 @@ -29,17 +29,12 @@
  
  #define IDE_ARCH_OBSOLETE_DEFAULTS
@@ -12545,9 +14124,187 @@ diff -Naur linux-2.6.20/include/asm-mips/mach-generic/ide.h linux-mips-2.6.20/in
  #elif defined(CONFIG_EISA) || defined(CONFIG_ISA)
  	return 1;
  #else
-diff -Naur linux-2.6.20/include/linux/pci_ids.h linux-mips-2.6.20/include/linux/pci_ids.h
---- linux-2.6.20/include/linux/pci_ids.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/linux/pci_ids.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/mips_mt.h linux-2.6.20.1/include/asm-mips/mips_mt.h
+--- linux-2.6.20.1.orig/include/asm-mips/mips_mt.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/mips_mt.h	2007-02-20 16:47:41.000000000 -0800
+@@ -12,4 +12,7 @@
+ extern void mips_mt_regdump(unsigned long previous_mvpcontrol_value);
+ extern void mips_mt_set_cpuoptions(void);
+ 
++struct class;
++extern struct class *mt_class;
++
+ #endif /* __ASM_MIPS_MT_H */
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/pci.h linux-2.6.20.1/include/asm-mips/pci.h
+--- linux-2.6.20.1.orig/include/asm-mips/pci.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/pci.h	2007-02-20 16:47:41.000000000 -0800
+@@ -32,6 +32,7 @@
+ 	unsigned long mem_offset;
+ 	struct resource *io_resource;
+ 	unsigned long io_offset;
++	unsigned long io_map_base;
+ 
+ 	unsigned int index;
+ 	/* For compatibility with current (as of July 2003) pciutils
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/sigcontext.h linux-2.6.20.1/include/asm-mips/sigcontext.h
+--- linux-2.6.20.1.orig/include/asm-mips/sigcontext.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/sigcontext.h	2007-02-20 16:47:41.000000000 -0800
+@@ -42,6 +42,7 @@
+ 
+ #if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
+ 
++#include <linux/posix_types.h>
+ /*
+  * Keep this struct definition in sync with the sigcontext fragment
+  * in arch/mips/tools/offset.c
+@@ -53,27 +54,25 @@
+  * entries, add sc_dsp and sc_reserved for padding.  No prisoners.
+  */
+ struct sigcontext {
+-	unsigned long	sc_regs[32];
+-	unsigned long	sc_fpregs[32];
+-	unsigned long	sc_mdhi;
+-	unsigned long	sc_hi1;
+-	unsigned long	sc_hi2;
+-	unsigned long	sc_hi3;
+-	unsigned long	sc_mdlo;
+-	unsigned long	sc_lo1;
+-	unsigned long	sc_lo2;
+-	unsigned long	sc_lo3;
+-	unsigned long	sc_pc;
+-	unsigned int	sc_fpc_csr;
+-	unsigned int	sc_used_math;
+-	unsigned int	sc_dsp;
+-	unsigned int	sc_reserved;
++	__u64	sc_regs[32];
++	__u64	sc_fpregs[32];
++	__u64	sc_mdhi;
++	__u64	sc_hi1;
++	__u64	sc_hi2;
++	__u64	sc_hi3;
++	__u64	sc_mdlo;
++	__u64	sc_lo1;
++	__u64	sc_lo2;
++	__u64	sc_lo3;
++	__u64	sc_pc;
++	__u32	sc_fpc_csr;
++	__u32	sc_used_math;
++	__u32	sc_dsp;
++	__u32	sc_reserved;
+ };
+ 
+ #ifdef __KERNEL__
+ 
+-#include <linux/posix_types.h>
+-
+ struct sigcontext32 {
+ 	__u32		sc_regmask;	/* Unused */
+ 	__u32		sc_status;
+diff -Naur linux-2.6.20.1.orig/include/asm-mips/uaccess.h linux-2.6.20.1/include/asm-mips/uaccess.h
+--- linux-2.6.20.1.orig/include/asm-mips/uaccess.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/asm-mips/uaccess.h	2007-02-20 16:47:41.000000000 -0800
+@@ -265,12 +265,14 @@
+  */
+ #define __get_user_asm_ll32(val, addr)					\
+ {									\
+-        unsigned long long __gu_tmp;					\
++	union {								\
++		unsigned long long	l;				\
++		__typeof__(*(addr))	t;				\
++	} __gu_tmp;							\
+ 									\
+ 	__asm__ __volatile__(						\
+ 	"1:	lw	%1, (%3)				\n"	\
+ 	"2:	lw	%D1, 4(%3)				\n"	\
+-	"	move	%0, $0					\n"	\
+ 	"3:	.section	.fixup,\"ax\"			\n"	\
+ 	"4:	li	%0, %4					\n"	\
+ 	"	move	%1, $0					\n"	\
+@@ -281,9 +283,10 @@
+ 	"	" __UA_ADDR "	1b, 4b				\n"	\
+ 	"	" __UA_ADDR "	2b, 4b				\n"	\
+ 	"	.previous					\n"	\
+-	: "=r" (__gu_err), "=&r" (__gu_tmp)				\
++	: "=r" (__gu_err), "=&r" (__gu_tmp.l)				\
+ 	: "0" (0), "r" (addr), "i" (-EFAULT));				\
+-	(val) = (__typeof__(*(addr))) __gu_tmp;				\
++									\
++	(val) = __gu_tmp.t;						\
+ }
+ 
+ /*
+@@ -432,8 +435,32 @@
+ 	__cu_len;							\
+ })
+ 
+-#define __copy_to_user_inatomic __copy_to_user
+-#define __copy_from_user_inatomic __copy_from_user
++#define __copy_to_user_inatomic(to,from,n)				\
++({									\
++	void __user *__cu_to;						\
++	const void *__cu_from;						\
++	long __cu_len;							\
++									\
++	__cu_to = (to);							\
++	__cu_from = (from);						\
++	__cu_len = (n);							\
++	__cu_len = __invoke_copy_to_user(__cu_to, __cu_from, __cu_len);	\
++	__cu_len;							\
++})
++
++#define __copy_from_user_inatomic(to,from,n)				\
++({									\
++	void *__cu_to;							\
++	const void __user *__cu_from;					\
++	long __cu_len;							\
++									\
++	__cu_to = (to);							\
++	__cu_from = (from);						\
++	__cu_len = (n);							\
++	__cu_len = __invoke_copy_from_user_inatomic(__cu_to, __cu_from,	\
++	                                            __cu_len);		\
++	__cu_len;							\
++})
+ 
+ /*
+  * copy_to_user: - Copy a block of data into user space.
+@@ -487,8 +514,32 @@
+ 	__cu_len_r;							\
+ })
+ 
++#define __invoke_copy_from_user_inatomic(to,from,n)			\
++({									\
++	register void *__cu_to_r __asm__ ("$4");			\
++	register const void __user *__cu_from_r __asm__ ("$5");		\
++	register long __cu_len_r __asm__ ("$6");			\
++									\
++	__cu_to_r = (to);						\
++	__cu_from_r = (from);						\
++	__cu_len_r = (n);						\
++	__asm__ __volatile__(						\
++	".set\tnoreorder\n\t"						\
++	__MODULE_JAL(__copy_user_inatomic)				\
++	".set\tnoat\n\t"						\
++	__UA_ADDU "\t$1, %1, %2\n\t"					\
++	".set\tat\n\t"							\
++	".set\treorder"							\
++	: "+r" (__cu_to_r), "+r" (__cu_from_r), "+r" (__cu_len_r)	\
++	:								\
++	: "$8", "$9", "$10", "$11", "$12", "$15", "$24", "$31",		\
++	  "memory");							\
++	__cu_len_r;							\
++})
++
+ /*
+- * __copy_from_user: - Copy a block of data from user space, with less checking. * @to:   Destination address, in kernel space.
++ * __copy_from_user: - Copy a block of data from user space, with less checking.
++ * @to:   Destination address, in kernel space.
+  * @from: Source address, in user space.
+  * @n:    Number of bytes to copy.
+  *
+diff -Naur linux-2.6.20.1.orig/include/linux/pci_ids.h linux-2.6.20.1/include/linux/pci_ids.h
+--- linux-2.6.20.1.orig/include/linux/pci_ids.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/linux/pci_ids.h	2007-02-20 16:47:41.000000000 -0800
 @@ -1614,6 +1614,9 @@
  #define PCI_VENDOR_ID_SATSAGEM		0x1267
  #define PCI_DEVICE_ID_SATSAGEM_NICCY	0x1016
@@ -12558,9 +14315,9 @@ diff -Naur linux-2.6.20/include/linux/pci_ids.h linux-mips-2.6.20/include/linux/
  
  #define PCI_VENDOR_ID_ENSONIQ		0x1274
  #define PCI_DEVICE_ID_ENSONIQ_CT5880	0x5880
-diff -Naur linux-2.6.20/include/linux/serial.h linux-mips-2.6.20/include/linux/serial.h
---- linux-2.6.20/include/linux/serial.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/linux/serial.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/include/linux/serial.h linux-2.6.20.1/include/linux/serial.h
+--- linux-2.6.20.1.orig/include/linux/serial.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/linux/serial.h	2007-02-20 16:47:41.000000000 -0800
 @@ -76,7 +76,8 @@
  #define PORT_16654	11
  #define PORT_16850	12
@@ -12571,9 +14328,9 @@ diff -Naur linux-2.6.20/include/linux/serial.h linux-mips-2.6.20/include/linux/s
  
  #define SERIAL_IO_PORT	0
  #define SERIAL_IO_HUB6	1
-diff -Naur linux-2.6.20/include/linux/serial_ip3106.h linux-mips-2.6.20/include/linux/serial_ip3106.h
---- linux-2.6.20/include/linux/serial_ip3106.h	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/include/linux/serial_ip3106.h	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/include/linux/serial_ip3106.h linux-2.6.20.1/include/linux/serial_ip3106.h
+--- linux-2.6.20.1.orig/include/linux/serial_ip3106.h	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/include/linux/serial_ip3106.h	2007-02-20 16:47:41.000000000 -0800
 @@ -78,4 +78,16 @@
  #define IP3106_UART_FIFO_RXFIFO		0x00001F00
  #define IP3106_UART_FIFO_RBRTHR		0x000000FF
@@ -12591,9 +14348,9 @@ diff -Naur linux-2.6.20/include/linux/serial_ip3106.h linux-mips-2.6.20/include/
 +#define ip3106_mid(base, port)   *(volatile u32 *)(base+(port*0x1000) + 0xFFC)
 +
  #endif
-diff -Naur linux-2.6.20/sound/oss/Kconfig linux-mips-2.6.20/sound/oss/Kconfig
---- linux-2.6.20/sound/oss/Kconfig	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/sound/oss/Kconfig	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/sound/oss/Kconfig linux-2.6.20.1/sound/oss/Kconfig
+--- linux-2.6.20.1.orig/sound/oss/Kconfig	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/sound/oss/Kconfig	2007-02-20 16:47:41.000000000 -0800
 @@ -80,6 +80,13 @@
  	select SND_AC97_CODEC
  	depends on SOUND_PRIME && (SOC_AU1550 || SOC_AU1200)
@@ -12608,9 +14365,9 @@ diff -Naur linux-2.6.20/sound/oss/Kconfig linux-mips-2.6.20/sound/oss/Kconfig
  config SOUND_TRIDENT
  	tristate "Trident 4DWave DX/NX, SiS 7018 or ALi 5451 PCI Audio Core"
  	depends on SOUND_PRIME && PCI
-diff -Naur linux-2.6.20/sound/oss/Makefile linux-mips-2.6.20/sound/oss/Makefile
---- linux-2.6.20/sound/oss/Makefile	2007-02-04 10:44:54.000000000 -0800
-+++ linux-mips-2.6.20/sound/oss/Makefile	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/sound/oss/Makefile linux-2.6.20.1/sound/oss/Makefile
+--- linux-2.6.20.1.orig/sound/oss/Makefile	2007-02-19 22:34:32.000000000 -0800
++++ linux-2.6.20.1/sound/oss/Makefile	2007-02-20 16:47:41.000000000 -0800
 @@ -45,6 +45,7 @@
  obj-$(CONFIG_SOUND_ES1371)	+= es1371.o ac97_codec.o
  obj-$(CONFIG_SOUND_VRC5477)	+= nec_vrc5477.o ac97_codec.o
@@ -12619,9 +14376,9 @@ diff -Naur linux-2.6.20/sound/oss/Makefile linux-mips-2.6.20/sound/oss/Makefile
  obj-$(CONFIG_SOUND_FUSION)	+= cs46xx.o ac97_codec.o
  obj-$(CONFIG_SOUND_TRIDENT)	+= trident.o ac97_codec.o
  obj-$(CONFIG_SOUND_EMU10K1)	+= ac97_codec.o
-diff -Naur linux-2.6.20/sound/oss/au1550_i2s.c linux-mips-2.6.20/sound/oss/au1550_i2s.c
---- linux-2.6.20/sound/oss/au1550_i2s.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-mips-2.6.20/sound/oss/au1550_i2s.c	2007-02-04 12:22:45.000000000 -0800
+diff -Naur linux-2.6.20.1.orig/sound/oss/au1550_i2s.c linux-2.6.20.1/sound/oss/au1550_i2s.c
+--- linux-2.6.20.1.orig/sound/oss/au1550_i2s.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.20.1/sound/oss/au1550_i2s.c	2007-02-20 16:47:41.000000000 -0800
 @@ -0,0 +1,2029 @@
 +/*
 + *      au1550_i2s.c  --  Sound driver for Alchemy Au1550 MIPS
@@ -14652,3 +16409,4 @@ diff -Naur linux-2.6.20/sound/oss/au1550_i2s.c linux-mips-2.6.20/sound/oss/au155
 +
 +MODULE_AUTHOR("Advanced Micro Devices (AMD), dan@embeddededge.com");
 +MODULE_DESCRIPTION("Au1550 I2S Audio Driver");
+
