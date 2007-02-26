@@ -79,15 +79,13 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='l'])"/>
 
-    <para os="l1">In multilib, we tend to think that compiling for
-    <literal>${CLFS_TARGET32}</literal> is <emphasis>not</emphasis>
-    cross-compiling. Glibc takes the traditional view that if you are building
-    for a different host then you are cross-compiling, so you won't be running
-    the tests and therefore you don't need the locale files. When we run
-    the tests, many will fail if the locale files are missing. The following
-    sed allows these tests to succeed:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc.xml"
+    xpointer="xpointer(//*[@os='l1'])"/>
 
-<screen os="l2"><userinput>sed -i '/cross-compiling/s@ifeq@ifneq@g' ../glibc-2.4/localedata/Makefile</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc.xml"
+    xpointer="xpointer(//*[@os='l2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
