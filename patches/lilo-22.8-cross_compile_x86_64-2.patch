@@ -1,0 +1,88 @@
+Submitted By: Ken Moffat <ken at linuxfromscratch dot org>
+Date: 2006-03-11
+Initial Package Version: 22.7.1
+Upstream Status: Not submitted, purely for cross-compiling for x86_64(-64)
+Origin: Self
+Description: Allows lilo-static to be built with a cross-compiler (plus
+ cross as86, ld86).
+
+diff -Nru lilo-22.8-ori/checkit lilo-22.8/checkit
+--- lilo-22.8-ori/checkit	2006-08-13 21:24:45.000000000 +0200
++++ lilo-22.8/checkit	2007-02-27 07:53:07.000000000 +0100
+@@ -58,29 +58,29 @@
+ 
+ echo
+ echo AS86 version $dev or later is required
+-as86 -v 1>foo1 2>foo2
++x86_64-unknown-linux-gnu-as86 -v 1>foo1 2>foo2
+ A=`cat foo1 foo2 | grep version | cut -d " " -f 3`
+ rm -f foo1 foo2
+ if [ -z $A ]; then
+-	echo as86 is not present
++	echo x86_64-unknown-linux-gnu-as86 is not present
+ 	ret=1
+ else
+ 	vers_min $A $dev
+-	echo as86 version $A
++	echo x86_64-unknown-linux-gnu-as86 version $A
+ 	if [ $rc = 0 ]; then echo OKAY; else echo ERROR; ret=1; fi
+ fi
+ 
+ echo
+ echo LD86 version $dev or later is required
+-ld86 -v 1>foo1 2>foo2
++x86_64-unknown-linux-gnu-ld86 -v 1>foo1 2>foo2
+ L=`cat foo1 foo2 | grep version | cut -d " " -f 3`
+ rm -f foo1 foo2
+ if [ -z $L ]; then
+-	echo ld86 is not present
++	echo x86_64-unknown-linux-gnu-ld86 is not present
+ 	ret=1
+ else
+ 	vers_min $L $dev
+-	echo ld86 version $L
++	echo x86_64-unknown-linux-gnu-ld86 version $L
+ 	if [ $rc = 0 ]; then echo OKAY; else echo ERROR; ret=1; fi
+ fi
+ 
+diff -Nru lilo-22.8-ori/Makefile lilo-22.8/Makefile
+--- lilo-22.8-ori/Makefile	2007-02-19 18:15:10.000000000 +0100
++++ lilo-22.8/Makefile	2007-02-27 07:57:03.000000000 +0100
+@@ -101,18 +101,18 @@
+   cat $$ROOT/etc/lilo.defines; else echo $(CONFIG); fi ) | \
+   sed 's/-D/-DLCF_/g'`
+ LILO=-DLILO=0xbb920890
+-KVER=`if [ -f /usr/include/linux/version.h ]; then echo -DHAS_VERSION_H; fi`
+-HDM=`if [ -f /usr/include/libdevmapper.h ]; then echo -DHAS_LIBDEVMAPPER_H; fi`
+-DEVMAPPER=`if [ -f /usr/include/libdevmapper.h ]; then echo "-ldevmapper"; fi`
++KVER=
++HDM=
++DEVMAPPER=
+ 
+ TMP=_TmP_
+ 
+ 
+ SHELL=/bin/sh
+-CC=gcc
++#CC=gcc
+ CPP=$(CC) -E
+-AS86=as86 -0 -a
+-LD86=ld86 -0
++AS86=x86_64-unknown-linux-gnu-as86 -0 -a
++LD86=x86_64-unknown-linux-gnu-ld86 -0
+ NASM=nasm
+ G=`cat foo1 foo2 | grep version | cut -d " " -f 3`
+ 
+@@ -471,10 +471,10 @@
+ 		mv tmp_make Makefile
+ 
+ version:	common.c lilo.h common.h
+-		$(CC) $(CFLAGS) -DSHS_MAIN -o version common.c
++		gcc $(CFLAGS) -DSHS_MAIN -o version common.c
+ 
+ mkloader:	temp.c
+-		$(CC) $(CFLAGS) -DLILO_BINARY -o mkloader temp.c
++		gcc $(CFLAGS) -DLILO_BINARY -o mkloader temp.c
+ 
+ tidy:
+ 		rm -f core $(LIS) *.shs *.crc $(TMP)*
