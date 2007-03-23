@@ -117,8 +117,8 @@ KERNEL=="pktcdvd",		NAME="pktcdvd/control"
 KERNEL=="pktcdvd[0-9]*",	NAME="pktcdvd/%k"
 
 # fix floppy devices
-KERNEL=="fd[0-9]*", 		ACTION=="add", GROUP="floppy", MODE="660"
-KERNEL=="fd[0-9]*", 		ACTION=="remove", RUN+="/bin/rm -f $root/%k*"
+KERNEL=="nvram",		ACTION=="add", RUN+="load_floppy_module.sh"
+KERNEL=="fd[0-9]*",		ACTION=="add", ATTRS{cmos}=="?*", RUN+="create_floppy_devices -c -t $attr{cmos} -m %M -M 0660 -G floppy $root/%k"
 
 # sd:		0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
 # sr:		4 TYPE_WORM, 5 TYPE_ROM
@@ -145,7 +145,7 @@ KERNEL=="npt*",			GROUP="tape"
 KERNEL=="pg*",			GROUP="disk"
 KERNEL=="evms/block_device*",	GROUP="disk"
 KERNEL=="rawctl*",		GROUP="disk"
-SUBSYSTEM=="block", 		KERNEL=="raw[0-9]*", NAME="raw/%k", GROUP="disk"
+SUBSYSTEM=="raw", 		KERNEL=="raw[0-9]*", NAME="raw/%k", GROUP="disk"
 KERNEL=="osst*|nosst*",		GROUP="tape"
 KERNEL=="iseries/vt*",		GROUP="disk"
 KERNEL=="iseries/nvt*",		GROUP="disk"

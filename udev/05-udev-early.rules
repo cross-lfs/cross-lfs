@@ -22,5 +22,5 @@ SUBSYSTEM=="module",		OPTIONS="ignore_device"
 # sysfs is populated after the event is sent
 #
 ACTION=="add", DEVPATH=="/devices/*", ENV{PHYSDEVBUS}=="?*", WAIT_FOR_SYSFS="bus"
-ACTION=="add", SUBSYSTEM=="scsi", WAIT_FOR_SYSFS="ioerr_cnt"
+ACTION=="add", SUBSYSTEM=="scsi", KERNEL=="[0-9]*:[0-9]*", WAIT_FOR_SYSFS="ioerr_cnt"
 ACTION=="add", SUBSYSTEM=="net", WAIT_FOR_SYSFS="address"
