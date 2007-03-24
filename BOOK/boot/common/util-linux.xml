@@ -63,8 +63,8 @@
 sed -e 's@/usr/include@/tools/include@g' configure.orig &gt; configure</userinput></screen>
 
     <para os="bc">The Util-linux installation uses <option>-o root</option>.
-    The following <command>sed</command> removes that since we don't have
-    users setup yet:</para>
+    As we are currently using an unprivileged user, this will not work. The
+    following <command>sed</command> removes it:</para>
 
 <screen os="bd"><userinput>cp -v MCONFIG{,.orig}
 sed -e 's|-o root||' MCONFIG.orig > MCONFIG</userinput></screen>
