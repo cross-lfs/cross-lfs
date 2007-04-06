@@ -80,7 +80,7 @@ diff -Naur silo-1.4.13.orig/first/Makefile silo-1.4.13/first/Makefile
  	$(ELFTOAOUT) -o ultra.b ultra
  	echo -n 'SILO'$(IMGVERSION) | $(DD) of=ultra.b bs=8 conv=notrunc seek=3 count=1
 -	echo -n -e '\340' | $(DD) of=ultra.b bs=1 count=1 seek=7 conv=notrunc
-+	/bin/echo -n -e '\0340' | $(DD) of=ultra.b bs=1 count=1 seek=7 conv=notrunc
++	echo -n -e '\0340' | $(DD) of=ultra.b bs=1 count=1 seek=7 conv=notrunc
  	$(DD) if=/dev/zero of=ultra.b bs=4 count=1 seek=127
  
  generic.o: generic.S
