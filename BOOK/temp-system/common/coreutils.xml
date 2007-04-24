@@ -32,9 +32,11 @@
 <screen os="be"><userinput>./configure --prefix=/tools --cache-file=config.cache \
     --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
 
-    <para os="m1">The following command creates a dummy
-    <filename>uname.1</filename>. This is needed because the creation of man
-    pages for Coreutils now requires help2man:</para>
+    <para os="m1">When the uname patch was applied. A change was made to
+    <filename>uname.c</filename>. This change is causing the man Makefile to
+    try and regenerate the man page for uname. Since the compiled uname can
+    not be executed the build will fail. The following command gives the
+    uname man page a newer timestamp then <filename>uname.c</filename>.</para>
 
 <screen os="m2"><userinput>touch man/uname.1</userinput></screen>
 
