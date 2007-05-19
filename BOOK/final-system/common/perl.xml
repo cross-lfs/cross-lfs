@@ -25,6 +25,12 @@
   <sect2 role="installation">
     <title>Installation of Perl</title>
 
+    <para os="p1">The following patch causes makedepend.sh to also remove
+    <literal>&lt;command-line&gt;</literal> as well as
+    <literal>&lt;command line&gt;</literal>:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&perl-gcc42_fix-patch;</userinput></screen>
+
     <para os="s1">The following sed causes <filename>DynaLoader.a</filename>
     to be built with -fPIC so it can be linked into a shared library
     later:</para>
