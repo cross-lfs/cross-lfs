@@ -1,6 +1,6 @@
 ########################################################################
 #
-# Description : 64-device-mapper.rules
+# Description : 65-md-raid.rules
 #
 # Authors     : Based on Open Suse Udev Rules
 #               kay.sievers@suse.de
@@ -17,22 +17,21 @@
 #
 ########################################################################
 
-KERNEL=="device-mapper",	SYMLINK+="mapper/control"
+# md links hook into "change" events, when the array becomes available
 
-KERNEL!="dm-*",		GOTO="device_mapper_end"
-ACTION!="add|change",	GOTO="device_mapper_end"
+SUBSYSTEM!="block",	GOTO="md_raid_end"
+KERNEL!="md[0-9]*",	GOTO="md_raid_end"
+ACTION!="add|change",	GOTO="md_raid_end"
 
-# skip snapshot and error tables
-IMPORT{program}="/sbin/dmsetup export -j%M -m%m"
-ENV{DM_STATE}!="ACTIVE",			GOTO="device_mapper_end"
-ENV{DM_TARGET_TYPES}=="|*snapshot*|*error*",	GOTO="device_mapper_end"
+ATTR{md/array_state}=="|clear|inactive", GOTO="md_raid_end"
 
-SYMLINK+="disk/by-id/dm-name-$env{DM_NAME}"
-ENV{DM_UUID}=="?*", SYMLINK+="disk/by-id/dm-uuid-$env{DM_UUID}"
+IMPORT{program}="/sbin/mdadm -D --export $tempnode"
+ENV{MD_NAME}=="?*",	SYMLINK+="disk/by-id/md-name-$env{MD_NAME}"
+ENV{MD_UUID}=="?*",	SYMLINK+="disk/by-id/md-uuid-$env{MD_UUID}"
 
 IMPORT{program}="vol_id --export $tempnode"
-OPTIONS="link_priority=-100"
+OPTIONS="link_priority=100"
 ENV{ID_FS_USAGE}=="filesystem|other|crypto",	ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-uuid/$env{ID_FS_UUID_ENC}"
 ENV{ID_FS_USAGE}=="filesystem|other",		ENV{ID_FS_LABEL_ENC}=="?*", SYMLINK+="disk/by-label/$env{ID_FS_LABEL_ENC}"
 
-LABEL="device_mapper_end"
+LABEL="md_raid_end"

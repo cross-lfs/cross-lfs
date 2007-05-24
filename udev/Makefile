@@ -85,6 +85,7 @@ help:
 	@echo "---------------------------------------------------------------------------------------"
 	@echo "make install			install udev rules package and helper scripts"
 	@echo "make install-device-mapper	install device-mapper rules"
+	@echo "make install-dm			install dm rules"
 	@echo "make install-netboot		install udev rules package for netboot"
 	@echo "make install-network		install network helper package"
 	@echo "make install-network-upgrade	upgrades current network helper package"
@@ -100,10 +101,13 @@ install-helper-functions:
 	install -m 644 contrib/common/helper.functions ${DESTDIR}/${LIBDIR}/udev/helper.functions
 	install -m 644 contrib/common/udev_helper ${DESTDIR}/etc/sysconfig/udev_helper
 	
+install-dm: install-device-mapper
+
 install-device-mapper:
 	install -d ${DESTDIR}/${LIBDIR}/udev
 	install -d ${DESTDIR}/etc/rc.d/init.d
 	install -m ${RULESMODE} 64-device-mapper.rules ${DESTDIR}/etc/udev/rules.d/64-device-mapper.rules
+	install -m ${RULESMODE} 65-dm-raid.rules ${DESTDIR}/etc/udev/rules.d/65-dm-raid.rules
 
 install-network: install-helper-functions install-network-update
 	install -d ${DESTDIR}/etc/udev/rules.d/
@@ -126,4 +130,5 @@ install-network-update:
 
 .PHONY: all install device_dirs device_links rules scripts boot mknod_devices \
 	help install-helper-functions install-network install-network-update \
-	install-netboot rules-netboot
+	install-netboot rules-netboot install-dm install-device-mapper \
+	install-sound
