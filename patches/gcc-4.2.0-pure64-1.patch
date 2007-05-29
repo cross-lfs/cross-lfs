@@ -24,17 +24,6 @@ diff -Naur gcc-4.2.0.orig/gcc/config/i386/t-linux64 gcc-4.2.0/gcc/config/i386/t-
  
  LIBGCC = stmp-multilib
  INSTALL_LIBGCC = install-multilib
-diff -Naur gcc-4.2.0.orig/gcc/config/linux.h gcc-4.2.0/gcc/config/linux.h
---- gcc-4.2.0.orig/gcc/config/linux.h	2007-05-16 19:21:19.000000000 -0400
-+++ gcc-4.2.0/gcc/config/linux.h	2007-05-18 16:51:43.000000000 -0400
-@@ -127,3 +127,7 @@
- #define TARGET_C99_FUNCTIONS (OPTION_GLIBC)
- 
- #define TARGET_POSIX_IO
-+
-+/* Remove /usr/include from the end of the include search path.  */
-+#undef STANDARD_INCLUDE_DIR
-+#define STANDARD_INCLUDE_DIR 0
 diff -Naur gcc-4.2.0.orig/gcc/config/mips/linux64.h gcc-4.2.0/gcc/config/mips/linux64.h
 --- gcc-4.2.0.orig/gcc/config/mips/linux64.h	2007-05-16 19:21:19.000000000 -0400
 +++ gcc-4.2.0/gcc/config/mips/linux64.h	2007-05-18 17:04:05.000000000 -0400
