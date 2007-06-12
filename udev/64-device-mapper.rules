@@ -25,7 +25,7 @@ ACTION!="add|change",	GOTO="device_mapper_end"
 # skip snapshot and error tables
 IMPORT{program}="/sbin/dmsetup export -j%M -m%m"
 ENV{DM_STATE}!="ACTIVE",			GOTO="device_mapper_end"
-ENV{DM_TARGET_TYPES}=="|*snapshot*|*error*",	GOTO="device_mapper_end"
+ENV{DM_TARGET_TYPES}=="|*error*",		GOTO="device_mapper_end"
 
 SYMLINK+="disk/by-id/dm-name-$env{DM_NAME}"
 ENV{DM_UUID}=="?*", SYMLINK+="disk/by-id/dm-uuid-$env{DM_UUID}"

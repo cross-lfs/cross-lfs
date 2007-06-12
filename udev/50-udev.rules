@@ -118,8 +118,8 @@ KERNEL=="fd[0-9]*",		ACTION=="add", ATTRS{cmos}=="?*", RUN+="create_floppy_devic
 # sd:		0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
 # sr:		4 TYPE_WORM, 5 TYPE_ROM
 # st/osst:	1 TYPE_TAPE
-ACTION=="add", 			SUBSYSTEM=="scsi" , ATTR{type}=="0|7|14", ATTR{timeout}="60"
-ACTION=="add", 			SUBSYSTEM=="scsi" , ATTR{type}=="1", ATTR{timeout}="900"
+SUBSYSTEM=="scsi",		KERNEL=="[0-9]*:[0-9]*", ACTION=="add", ATTR{type}=="0|7|14", ATTR{timeout}="60"
+SUBSYSTEM=="scsi",		KERNEL=="[0-9]*:[0-9]*", ACTION=="add", ATTR{type}=="1", ATTR{timeout}="900
 
 # misc storage devices (non-block)
 KERNEL=="sg*",			GROUP="disk", MODE="0640"
@@ -148,4 +148,3 @@ KERNEL=="iseries/ibmsis*",	GROUP="disk"
 
 # libusb device access
 SUBSYSTEM=="usb",		ACTION=="add", ENV{DEVTYPE}=="usb_device", NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}", MODE="0644"
-SUBSYSTEM=="usb_device",	ACTION=="add", PROGRAM="/bin/sh -c 'K=%k; K=$${K#usbdev}; printf bus/usb/%%03i/%%03i $${K%%%%.*} $${K#*.}'", NAME="%c", MODE="0644"
