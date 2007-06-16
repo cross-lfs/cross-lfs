@@ -22,14 +22,9 @@
   <sect2 role="installation">
     <title>Installation of Coreutils</title>
 
-    <para os="ba">Coreutils has some issues when cross-compiling. So we
-    define the items cross-compiling doesn't like:</para>
-
-<screen os="bc"><userinput>echo "ac_cv_func_setvbuf_reversed=yes" &gt;&gt; config.cache</userinput></screen>
-
     <para os="bd">Prepare Coreutils for compilation:</para>
 
-<screen os="be"><userinput>./configure --prefix=/tools --cache-file=config.cache \
+<screen os="be"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
 
     <para os="bf">Compile the package:</para>
