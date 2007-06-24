@@ -1,0 +1,183 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 06-05-2007
+Initial Package Version: 2.6
+Origin: Upstream
+Upstream Status: Applied
+Description: This is a branch update for Glibc-2.6, and should be
+             rechecked periodically. See the 'Changelog' and 'localedata/ChangeLog'
+             for specific details.
+
+2007-05-21  Jakub Jelinek  <jakub@redhat.com>
+
+	* malloc/hooks.c (MALLOC_STATE_VERSION): Bump.
+	(public_sET_STATe): If ms->version < 3, put all chunks into
+	unsorted chunks and clear {fd,bk}_nextsize fields of largebin
+	chunks.
+	* malloc/malloc.c (do_check_malloc_state): Don't assert
+	n_mmaps is not greater than n_mmaps_max.
+
+	* malloc/malloc.c [MALLOC_DEBUG]: Revert 2007-05-13 changes.
+	* malloc/hooks.c: Likewise.
+	* malloc/arena.c: Likewise.
+	* malloc/Makefile (CFLAGS-malloc.c): Revert accidental
+	2007-05-07 commit.
+
+--- libc/malloc/arena.c.jj	2007-05-20 20:01:52.000000000 +0200
++++ libc/malloc/arena.c	2007-05-21 11:18:13.000000000 +0200
+@@ -370,9 +370,6 @@ ptmalloc_init_minimal (void)
+   mp_.top_pad        = DEFAULT_TOP_PAD;
+ #endif
+   mp_.n_mmaps_max    = DEFAULT_MMAP_MAX;
+-#if MALLOC_DEBUG
+-  mp_.n_mmaps_cmax   = DEFAULT_MMAP_MAX;
+-#endif
+   mp_.mmap_threshold = DEFAULT_MMAP_THRESHOLD;
+   mp_.trim_threshold = DEFAULT_TRIM_THRESHOLD;
+   mp_.pagesize       = malloc_getpagesize;
+--- libc/malloc/malloc.c.jj	2007-05-20 20:01:52.000000000 +0200
++++ libc/malloc/malloc.c	2007-05-21 11:19:32.000000000 +0200
+@@ -2358,9 +2358,6 @@ struct malloc_par {
+   /* Memory map support */
+   int              n_mmaps;
+   int              n_mmaps_max;
+-#if MALLOC_DEBUG
+-  int              n_mmaps_cmax;
+-#endif
+   int              max_n_mmaps;
+   /* the mmap_threshold is dynamic, until the user sets
+      it manually, at which point we need to disable any
+@@ -2876,8 +2873,6 @@ static void do_check_malloc_state(mstate
+   assert(total <= (unsigned long)(mp_.max_total_mem));
+   assert(mp_.n_mmaps >= 0);
+ #endif
+-  assert(mp_.n_mmaps <= mp_.n_mmaps_cmax);
+-  assert(mp_.n_mmaps_max <= mp_.n_mmaps_cmax);
+   assert(mp_.n_mmaps <= mp_.max_n_mmaps);
+ 
+   assert((unsigned long)(av->system_mem) <=
+@@ -3475,13 +3470,6 @@ munmap_chunk(p) mchunkptr p;
+     }
+ 
+   mp_.n_mmaps--;
+-#if MALLOC_DEBUG
+-  if (mp_.n_mmaps_cmax > mp_.n_mmaps_max)
+-    {
+-      assert (mp_.n_mmaps_cmax == mp_.n_mmaps + 1);
+-      mp_.n_mmaps_cmax = mp_.n_mmaps;
+-    }
+-#endif
+   mp_.mmapped_mem -= total_size;
+ 
+   int ret __attribute__ ((unused)) = munmap((char *)block, total_size);
+@@ -5397,9 +5385,6 @@ mstate av; size_t n_elements; size_t* si
+   mp_.n_mmaps_max = 0;
+   mem = _int_malloc(av, size);
+   mp_.n_mmaps_max = mmx;   /* reset mmap */
+-#if MALLOC_DEBUG
+-  mp_.n_mmaps_cmax = mmx;
+-#endif
+   if (mem == 0)
+     return 0;
+ 
+@@ -5725,17 +5710,8 @@ int mALLOPt(param_number, value) int par
+       res = 0;
+     else
+ #endif
+-      {
+-#if MALLOC_DEBUG
+-	if (mp_.n_mmaps <= value)
+-	  mp_.n_mmaps_cmax = value;
+-	else
+-	  mp_.n_mmaps_cmax = mp_.n_mmaps;
+-#endif
+-
+-	mp_.n_mmaps_max = value;
+-	mp_.no_dyn_threshold = 1;
+-      }
++      mp_.n_mmaps_max = value;
++      mp_.no_dyn_threshold = 1;
+     break;
+ 
+   case M_CHECK_ACTION:
+--- libc/malloc/hooks.c.jj	2007-05-20 20:01:52.000000000 +0200
++++ libc/malloc/hooks.c	2007-05-21 11:18:13.000000000 +0200
+@@ -496,7 +496,7 @@ free_starter(mem, caller) Void_t* mem; c
+    then the hooks are reset to 0.  */
+ 
+ #define MALLOC_STATE_MAGIC   0x444c4541l
+-#define MALLOC_STATE_VERSION (0*0x100l + 2l) /* major*0x100 + minor */
++#define MALLOC_STATE_VERSION (0*0x100l + 3l) /* major*0x100 + minor */
+ 
+ struct malloc_save_state {
+   long          magic;
+@@ -507,9 +507,6 @@ struct malloc_save_state {
+   unsigned long trim_threshold;
+   unsigned long top_pad;
+   unsigned int  n_mmaps_max;
+-#if MALLOC_DEBUG
+-  unsigned int  n_mmaps_cmax;
+-#endif
+   unsigned long mmap_threshold;
+   int           check_action;
+   unsigned long max_sbrked_mem;
+@@ -553,9 +550,6 @@ public_gET_STATe(void)
+   ms->trim_threshold = mp_.trim_threshold;
+   ms->top_pad = mp_.top_pad;
+   ms->n_mmaps_max = mp_.n_mmaps_max;
+-#if MALLOC_DEBUG
+-  ms->n_mmaps_cmax = mp_.n_mmaps_cmax;
+-#endif
+   ms->mmap_threshold = mp_.mmap_threshold;
+   ms->check_action = check_action;
+   ms->max_sbrked_mem = main_arena.max_system_mem;
+@@ -601,8 +595,9 @@ public_sET_STATe(Void_t* msptr)
+       assert(ms->av[2*i+3] == 0);
+       first(b) = last(b) = b;
+     } else {
+-      if(i<NSMALLBINS || (largebin_index(chunksize(ms->av[2*i+2]))==i &&
+-			  largebin_index(chunksize(ms->av[2*i+3]))==i)) {
++      if(ms->version >= 3 &&
++	 (i<NSMALLBINS || (largebin_index(chunksize(ms->av[2*i+2]))==i &&
++			   largebin_index(chunksize(ms->av[2*i+3]))==i))) {
+ 	first(b) = ms->av[2*i+2];
+ 	last(b) = ms->av[2*i+3];
+ 	/* Make sure the links to the bins within the heap are correct.  */
+@@ -622,14 +617,22 @@ public_sET_STATe(Void_t* msptr)
+       }
+     }
+   }
++  if (ms->version < 3) {
++    /* Clear fd_nextsize and bk_nextsize fields.  */
++    b = unsorted_chunks(&main_arena)->fd;
++    while (b != unsorted_chunks(&main_arena)) {
++      if (!in_smallbin_range(chunksize(b))) {
++	b->fd_nextsize = NULL;
++	b->bk_nextsize = NULL;
++      }
++      b = b->fd;
++    }
++  }
+   mp_.sbrk_base = ms->sbrk_base;
+   main_arena.system_mem = ms->sbrked_mem_bytes;
+   mp_.trim_threshold = ms->trim_threshold;
+   mp_.top_pad = ms->top_pad;
+   mp_.n_mmaps_max = ms->n_mmaps_max;
+-#if MALLOC_DEBUG
+-  mp_.n_mmaps_cmax = ms->n_mmaps_cmax;
+-#endif
+   mp_.mmap_threshold = ms->mmap_threshold;
+   check_action = ms->check_action;
+   main_arena.max_system_mem = ms->max_sbrked_mem;
+--- libc/malloc/Makefile.jj	2007-04-30 11:51:54.000000000 +0200
++++ libc/malloc/Makefile	2007-05-21 11:20:41.000000000 +0200
+@@ -104,7 +104,6 @@ $(objpfx)memusagestat: $(memusagestat-mo
+ include ../Rules
+ 
+ CFLAGS-mcheck-init.c = $(PIC-ccflag)
+-CFLAGS-malloc.c += -DMALLOC_DEBUG
+ 
+ $(objpfx)libmcheck.a: $(objpfx)mcheck-init.o
+ 	-rm -f $@
+
+	Jakub
+

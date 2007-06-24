@@ -1,14 +1,15 @@
 Submitted By: Joe Ciccone <jciccone@linuxfromscratch.org>
-Date: 2006-06-25
-Initial Package Version: 2.4
+Date: 2007-05-19
+Initial Package Version: 2.6
 Origin: Joe Ciccone
 Upstream Status: Unknown
 Description: Fixes a build issue with alpha on some processors. The
              instructions being modified are specific to ev56/ev6.
 
---- glibc-2.4.orig/sysdeps/unix/sysv/linux/alpha/ioperm.c	2006-06-24 18:31:02.000000000 -0400
-+++ glibc-2.4/sysdeps/unix/sysv/linux/alpha/ioperm.c		2006-06-24 18:32:15.000000000 -0400
-@@ -173,13 +173,13 @@
+diff -Naur glibc-2.6.orig/sysdeps/unix/sysv/linux/alpha/ioperm.c glibc-2.6/sysdeps/unix/sysv/linux/alpha/ioperm.c
+--- glibc-2.6.orig/sysdeps/unix/sysv/linux/alpha/ioperm.c	2007-05-07 15:57:20.000000000 -0700
++++ glibc-2.6/sysdeps/unix/sysv/linux/alpha/ioperm.c	2007-05-19 13:29:49.000000000 -0700
+@@ -178,13 +178,13 @@
  static inline void
  stb_mb(unsigned char val, unsigned long addr)
  {
@@ -24,7 +25,7 @@ Description: Fixes a build issue with alpha on some processors. The
  }
  
  static inline void
-@@ -351,7 +351,7 @@
+@@ -356,7 +356,7 @@
    unsigned long int addr = dense_port_to_cpu_addr (port);
    unsigned char r;
  
@@ -33,7 +34,7 @@ Description: Fixes a build issue with alpha on some processors. The
    return r;
  }
  
-@@ -361,7 +361,7 @@
+@@ -366,7 +366,7 @@
    unsigned long int addr = dense_port_to_cpu_addr (port);
    unsigned short r;
  
@@ -41,4 +42,5 @@ Description: Fixes a build issue with alpha on some processors. The
 +  __asm__ (".arch ev6; ldwu %0,%1" : "=r"(r) : "m"(*(vusp)addr));
    return r;
  }
+ 
  

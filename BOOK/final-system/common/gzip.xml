@@ -25,6 +25,12 @@
   <sect2 role="installation">
     <title>Installation of Gzip</title>
 
+    <para os="s1">The following command renames the internal implementation of
+    futimens to gl_futimens as newer versions of Glibc provide an incompatible
+    version:</para>
+
+<screen os="s2"><userinput>sed -i "s/futimens/gl_&amp;/" $(grep -lr futimens *)</userinput></screen>
+
     <para os="a">Prepare Gzip for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr --bindir=/bin</userinput></screen>
