@@ -60,7 +60,7 @@
 
 <screen os="h"><userinput>CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
     CFLAGS="-march=$(cut -d- -f1 &lt;&lt;&lt; ${CLFS_TARGET32}) \
-    ../glibc-&glibc-version;/configure --prefix=/usr \
+    -mtune=generic -g -O2" ../glibc-&glibc-version;/configure --prefix=/usr \
     --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
     --libexecdir=/usr/lib/glibc --host=${CLFS_TARGET32}</userinput></screen>
 
