@@ -1,0 +1,102 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 2007-07-23
+Initial Package Version: 5.2
+Origin: ftp://ftp.cwru.edu/pub/bash/readline-5.2-patches
+Upstream Status: From Upstream
+Description: Contains patches 001 - 004 from upstream
+
+diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
+--- readline-5.2.orig/display.c	2007-07-23 20:10:10.000000000 -0400
++++ readline-5.2/display.c	2007-07-23 20:10:27.000000000 -0400
+@@ -561,6 +561,17 @@
+       wrap_offset = prompt_invis_chars_first_line = 0;
+     }
+ 
++#if defined (HANDLE_MULTIBYTE)
++#define CHECK_INV_LBREAKS() \
++      do { \
++	if (newlines >= (inv_lbsize - 2)) \
++	  { \
++	    inv_lbsize *= 2; \
++	    inv_lbreaks = (int *)xrealloc (inv_lbreaks, inv_lbsize * sizeof (int)); \
++	    _rl_wrapped_line = (int *)xrealloc (_rl_wrapped_line, inv_lbsize * sizeof (int)); \
++	  } \
++      } while (0)
++#else
+ #define CHECK_INV_LBREAKS() \
+       do { \
+ 	if (newlines >= (inv_lbsize - 2)) \
+@@ -569,6 +580,7 @@
+ 	    inv_lbreaks = (int *)xrealloc (inv_lbreaks, inv_lbsize * sizeof (int)); \
+ 	  } \
+       } while (0)
++#endif /* HANDLE_MULTIBYTE */
+ 
+ #if defined (HANDLE_MULTIBYTE)	  
+ #define CHECK_LPOS() \
+@@ -1586,8 +1598,22 @@
+ 	  temp = nls - nfd;
+ 	  if (temp > 0)
+ 	    {
++	      /* If nfd begins at the prompt, or before the invisible
++		 characters in the prompt, we need to adjust _rl_last_c_pos
++		 in a multibyte locale to account for the wrap offset and
++		 set cpos_adjusted accordingly. */
+ 	      _rl_output_some_chars (nfd, temp);
+-	      _rl_last_c_pos += _rl_col_width (nfd, 0, temp);;
++	      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
++		{
++                  _rl_last_c_pos += _rl_col_width (nfd, 0, temp);
++                  if (current_line == 0 && wrap_offset &&  ((nfd - new) <= prompt_last_invisible))
++		    {
++		      _rl_last_c_pos -= wrap_offset;
++		      cpos_adjusted = 1;
++		    }
++		}
++              else
++                _rl_last_c_pos += temp;
+ 	    }
+ 	}
+       /* Otherwise, print over the existing material. */
+@@ -1595,8 +1621,20 @@
+ 	{
+ 	  if (temp > 0)
+ 	    {
++	      /* If nfd begins at the prompt, or before the invisible
++		 characters in the prompt, we need to adjust _rl_last_c_pos
++		 in a multibyte locale to account for the wrap offset and
++		 set cpos_adjusted accordingly. */
+ 	      _rl_output_some_chars (nfd, temp);
+ 	      _rl_last_c_pos += col_temp;		/* XXX */
++	      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
++		{
++		  if (current_line == 0 && wrap_offset &&  ((nfd - new) <= prompt_last_invisible))
++		    {
++		      _rl_last_c_pos -= wrap_offset;
++		      cpos_adjusted = 1;
++		    }
++		}
+ 	    }
+ 	  lendiff = (oe - old) - (ne - new);
+ 	  if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+@@ -1732,7 +1770,10 @@
+   if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+     {
+       dpos = _rl_col_width (data, 0, new);
+-      if (dpos > prompt_last_invisible)		/* XXX - don't use woff here */
++      /* Use NEW when comparing against the last invisible character in the
++	 prompt string, since they're both buffer indices and DPOS is a
++	 desired display position. */
++      if (new > prompt_last_invisible)		/* XXX - don't use woff here */
+ 	{
+ 	  dpos -= woff;
+ 	  /* Since this will be assigned to _rl_last_c_pos at the end (more
+@@ -2380,6 +2421,8 @@
+ 
+   if (end <= start)
+     return 0;
++  if (MB_CUR_MAX == 1 || rl_byte_oriented)
++    return (end - start);
+ 
+   memset (&ps, 0, sizeof (mbstate_t));
+ 
