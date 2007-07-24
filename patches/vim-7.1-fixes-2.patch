@@ -1,0 +1,1081 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 07-23-2007
+Initial Package Version: 7.1
+Origin: Upstream
+Upstream Status: Applied
+Description: Contains all upstream patches up to 7.1.033
+             The following patches were skipped
+            0 003 007
+
+diff -Naur vim71.orig/runtime/doc/change.txt vim71/runtime/doc/change.txt
+--- vim71.orig/runtime/doc/change.txt	2007-05-12 06:18:46.000000000 -0400
++++ vim71/runtime/doc/change.txt	2007-07-23 19:57:09.000000000 -0400
+@@ -1571,6 +1571,10 @@
+ 			in their original order, right before the sorted
+ 			lines.
+ 
++			If {pattern} is empty (e.g. // is specified), the
++			last search pattern is used.  This allows trying out
++			a pattern first.
++
+ Note that using ":sort" with ":global" doesn't sort the matching lines, it's
+ quite useless.
+ 
+diff -Naur vim71.orig/runtime/doc/eval.txt vim71/runtime/doc/eval.txt
+--- vim71.orig/runtime/doc/eval.txt	2007-05-12 06:18:46.000000000 -0400
++++ vim71/runtime/doc/eval.txt	2007-07-23 19:57:09.000000000 -0400
+@@ -1,4 +1,4 @@
+-*eval.txt*      For Vim version 7.1.  Last change: 2007 May 11
++*eval.txt*      For Vim version 7.1.  Last change: 2007 Jul 11
+ 
+ 
+ 		  VIM REFERENCE MANUAL    by Bram Moolenaar
+@@ -2020,6 +2020,10 @@
+ 			    number of characters in the cursor line plus one)
+ 		    'x	    position of mark x (if the mark is not set, 0 is
+ 			    returned)
++		Additionally {expr} can be [lnum, col]: a |List| with the line
++		and column number. Most useful when the column is "$", to get
++		the las column of a specific line.  When "lnum" or "col" is
++		out of range then col() returns zero.
+ 		To get the line number use |line()|.  To get both use
+ 		|getpos()|.
+ 		For the screen column position use |virtcol()|.
+@@ -2824,6 +2828,8 @@
+ 		given file {fname}.
+ 		If {fname} is a directory, 0 is returned.
+ 		If the file {fname} can't be found, -1 is returned.
++		If the size of {fname} is too big to fit in a Number then -2
++		is returned.
+ 
+ getfontname([{name}])					*getfontname()*
+ 		Without an argument returns the name of the normal font being
+@@ -5022,14 +5028,12 @@
+ 		position, the returned Number will be the column at the end of
+ 		the <Tab>.  For example, for a <Tab> in column 1, with 'ts'
+ 		set to 8, it returns 8.
+-		For the use of {expr} see |col()|.  Additionally you can use
+-		[lnum, col]: a |List| with the line and column number.  When
+-		"lnum" or "col" is out of range then virtcol() returns zero.
+-		When 'virtualedit' is used it can be [lnum, col, off], where
++		For the byte position use |col()|.
++		For the use of {expr} see |col()|.
++		When 'virtualedit' is used {expr} can be [lnum, col, off], where
+ 		"off" is the offset in screen columns from the start of the
+ 		character.  E.g., a position within a <Tab> or after the last
+ 		character.
+-		For the byte position use |col()|.
+ 		When Virtual editing is active in the current mode, a position
+ 		beyond the end of the line can be returned. |'virtualedit'|
+ 		The accepted positions are:
+diff -Naur vim71.orig/runtime/filetype.vim vim71/runtime/filetype.vim
+--- vim71.orig/runtime/filetype.vim	2007-05-10 11:14:37.000000000 -0400
++++ vim71/runtime/filetype.vim	2007-07-23 19:57:05.000000000 -0400
+@@ -1,7 +1,7 @@
+ " Vim support file to detect file types
+ "
+ " Maintainer:	Bram Moolenaar <Bram@vim.org>
+-" Last Change:	2007 May 10
++" Last Change:	2007 May 15
+ 
+ " Listen very carefully, I will say this only once
+ if exists("did_load_filetypes")
+@@ -1286,7 +1286,7 @@
+ au BufNewFile,BufRead *.it,*.ih			setf ppwiz
+ 
+ " Oracle Pro*C/C++
+-au BufNewFile,BufRead .pc			setf proc
++au BufNewFile,BufRead *.pc			setf proc
+ 
+ " Privoxy actions file
+ au BufNewFile,BufRead *.action			setf privoxy
+diff -Naur vim71.orig/src/auto/configure vim71/src/auto/configure
+--- vim71.orig/src/auto/configure	2007-05-12 07:49:09.000000000 -0400
++++ vim71/src/auto/configure	2007-07-23 19:57:08.000000000 -0400
+@@ -3843,7 +3843,9 @@
+   fi
+ 
+   if test "X$vi_cv_path_mzscheme_pfx" != "X"; then
+-    if test -f "${vi_cv_path_mzscheme_pfx}/lib/libmzgc.a"; then
++    if test "x$MACOSX" = "xyes"; then
++      MZSCHEME_LIBS="-framework PLT_MzScheme"
++    elif test -f "${vi_cv_path_mzscheme_pfx}/lib/libmzgc.a"; then
+       MZSCHEME_LIBS="${vi_cv_path_mzscheme_pfx}/lib/libmzscheme.a ${vi_cv_path_mzscheme_pfx}/lib/libmzgc.a"
+     else
+       MZSCHEME_LIBS="-L${vi_cv_path_mzscheme_pfx}/lib -lmzscheme -lmzgc"
+diff -Naur vim71.orig/src/buffer.c vim71/src/buffer.c
+--- vim71.orig/src/buffer.c	2007-05-10 11:25:59.000000000 -0400
++++ vim71/src/buffer.c	2007-07-23 19:57:07.000000000 -0400
+@@ -171,6 +171,13 @@
+ 	    /* Put the cursor on the first line. */
+ 	    curwin->w_cursor.lnum = 1;
+ 	    curwin->w_cursor.col = 0;
++
++	    /* Set or reset 'modified' before executing autocommands, so that
++	     * it can be changed there. */
++	    if (!readonlymode && !bufempty())
++		changed();
++	    else if (retval != FAIL)
++		unchanged(curbuf, FALSE);
+ #ifdef FEAT_AUTOCMD
+ # ifdef FEAT_EVAL
+ 	    apply_autocmds_retval(EVENT_STDINREADPOST, NULL, NULL, FALSE,
+@@ -194,16 +201,16 @@
+     /* When reading stdin, the buffer contents always needs writing, so set
+      * the changed flag.  Unless in readonly mode: "ls | gview -".
+      * When interrupted and 'cpoptions' contains 'i' set changed flag. */
+-    if ((read_stdin && !readonlymode && !bufempty())
++    if ((got_int && vim_strchr(p_cpo, CPO_INTMOD) != NULL)
+ #ifdef FEAT_AUTOCMD
+ 		|| modified_was_set	/* ":set modified" used in autocmd */
+ # ifdef FEAT_EVAL
+ 		|| (aborting() && vim_strchr(p_cpo, CPO_INTMOD) != NULL)
+ # endif
+ #endif
+-		|| (got_int && vim_strchr(p_cpo, CPO_INTMOD) != NULL))
++       )
+ 	changed();
+-    else if (retval != FAIL)
++    else if (retval != FAIL && !read_stdin)
+ 	unchanged(curbuf, FALSE);
+     save_file_ff(curbuf);		/* keep this fileformat */
+ 
+diff -Naur vim71.orig/src/configure.in vim71/src/configure.in
+--- vim71.orig/src/configure.in	2007-05-12 05:19:27.000000000 -0400
++++ vim71/src/configure.in	2007-07-23 19:57:08.000000000 -0400
+@@ -423,7 +423,9 @@
+   fi
+ 
+   if test "X$vi_cv_path_mzscheme_pfx" != "X"; then
+-    if test -f "${vi_cv_path_mzscheme_pfx}/lib/libmzgc.a"; then
++    if test "x$MACOSX" = "xyes"; then
++      MZSCHEME_LIBS="-framework PLT_MzScheme"
++    elif test -f "${vi_cv_path_mzscheme_pfx}/lib/libmzgc.a"; then
+       MZSCHEME_LIBS="${vi_cv_path_mzscheme_pfx}/lib/libmzscheme.a ${vi_cv_path_mzscheme_pfx}/lib/libmzgc.a"
+     else
+       MZSCHEME_LIBS="-L${vi_cv_path_mzscheme_pfx}/lib -lmzscheme -lmzgc"
+diff -Naur vim71.orig/src/digraph.c vim71/src/digraph.c
+--- vim71.orig/src/digraph.c	2006-05-02 14:24:04.000000000 -0400
++++ vim71/src/digraph.c	2007-07-23 19:57:09.000000000 -0400
+@@ -2349,8 +2349,10 @@
+ 
+     if (*curbuf->b_p_keymap == NUL)
+     {
+-	/* Stop any active keymap and clear the table. */
++	/* Stop any active keymap and clear the table.  Also remove
++	 * b:keymap_unload, as no keymap is active now. */
+ 	keymap_unload();
++	do_cmdline_cmd((char_u *)"unlet! b:keymap_name");
+     }
+     else
+     {
+@@ -2500,7 +2502,6 @@
+ 
+     ga_clear(&curbuf->b_kmap_ga);
+     curbuf->b_kmap_state &= ~KEYMAP_LOADED;
+-    do_cmdline_cmd((char_u *)"unlet! b:keymap_name");
+ #ifdef FEAT_WINDOWS
+     status_redraw_curbuf();
+ #endif
+diff -Naur vim71.orig/src/edit.c vim71/src/edit.c
+--- vim71.orig/src/edit.c	2007-05-07 15:43:55.000000000 -0400
++++ vim71/src/edit.c	2007-07-23 19:57:08.000000000 -0400
+@@ -7215,6 +7215,8 @@
+ 		p = ml_get_curline();
+ 		if (cin_iscase(p) || cin_isscopedecl(p) || cin_islabel(30))
+ 		    return TRUE;
++		/* Need to get the line again after cin_islabel(). */
++		p = ml_get_curline();
+ 		if (curwin->w_cursor.col > 2
+ 			&& p[curwin->w_cursor.col - 1] == ':'
+ 			&& p[curwin->w_cursor.col - 2] == ':')
+diff -Naur vim71.orig/src/eval.c vim71/src/eval.c
+--- vim71.orig/src/eval.c	2007-05-07 15:47:32.000000000 -0400
++++ vim71/src/eval.c	2007-07-23 19:57:09.000000000 -0400
+@@ -672,7 +672,7 @@
+ static void f_writefile __ARGS((typval_T *argvars, typval_T *rettv));
+ 
+ static int list2fpos __ARGS((typval_T *arg, pos_T *posp, int *fnump));
+-static pos_T *var2fpos __ARGS((typval_T *varp, int lnum, int *fnum));
++static pos_T *var2fpos __ARGS((typval_T *varp, int dollar_lnum, int *fnum));
+ static int get_env_len __ARGS((char_u **arg));
+ static int get_id_len __ARGS((char_u **arg));
+ static int get_name_len __ARGS((char_u **arg, char_u **alias, int evaluate, int verbose));
+@@ -10136,7 +10136,13 @@
+ 	if (mch_isdir(fname))
+ 	    rettv->vval.v_number = 0;
+ 	else
++	{
+ 	    rettv->vval.v_number = (varnumber_T)st.st_size;
++
++	    /* non-perfect check for overflow */
++	    if ((off_t)rettv->vval.v_number != (off_t)st.st_size)
++		rettv->vval.v_number = -2;
++	}
+     }
+     else
+ 	  rettv->vval.v_number = -1;
+@@ -13919,6 +13925,8 @@
+     /* If 'n' flag is used: restore cursor position. */
+     if (flags & SP_NOMOVE)
+ 	curwin->w_cursor = save_cursor;
++    else
++	curwin->w_set_curswant = TRUE;
+ theend:
+     p_ws = save_p_ws;
+ 
+@@ -16497,9 +16505,9 @@
+  * Returns NULL when there is an error.
+  */
+     static pos_T *
+-var2fpos(varp, lnum, fnum)
++var2fpos(varp, dollar_lnum, fnum)
+     typval_T	*varp;
+-    int		lnum;		/* TRUE when $ is last line */
++    int		dollar_lnum;	/* TRUE when $ is last line */
+     int		*fnum;		/* set to fnum for '0, 'A, etc. */
+ {
+     char_u		*name;
+@@ -16512,6 +16520,7 @@
+ 	list_T		*l;
+ 	int		len;
+ 	int		error = FALSE;
++	listitem_T	*li;
+ 
+ 	l = varp->vval.v_list;
+ 	if (l == NULL)
+@@ -16527,6 +16536,14 @@
+ 	if (error)
+ 	    return NULL;
+ 	len = (long)STRLEN(ml_get(pos.lnum));
++
++	/* We accept "$" for the column number: last column. */
++	li = list_find(l, 1L);
++	if (li != NULL && li->li_tv.v_type == VAR_STRING
++		&& li->li_tv.vval.v_string != NULL
++		&& STRCMP(li->li_tv.vval.v_string, "$") == 0)
++	    pos.col = len + 1;
++
+ 	/* Accept a position up to the NUL after the line. */
+ 	if (pos.col == 0 || (int)pos.col > len + 1)
+ 	    return NULL;	/* invalid column number */
+@@ -16559,7 +16576,7 @@
+     pos.coladd = 0;
+ #endif
+ 
+-    if (name[0] == 'w' && lnum)
++    if (name[0] == 'w' && dollar_lnum)
+     {
+ 	pos.col = 0;
+ 	if (name[1] == '0')		/* "w0": first visible line */
+@@ -16577,7 +16594,7 @@
+     }
+     else if (name[0] == '$')		/* last column or line */
+     {
+-	if (lnum)
++	if (dollar_lnum)
+ 	{
+ 	    pos.lnum = curbuf->b_ml.ml_line_count;
+ 	    pos.col = 0;
+diff -Naur vim71.orig/src/ex_cmds.c vim71/src/ex_cmds.c
+--- vim71.orig/src/ex_cmds.c	2007-05-07 15:41:01.000000000 -0400
++++ vim71/src/ex_cmds.c	2007-07-23 19:57:09.000000000 -0400
+@@ -408,7 +408,11 @@
+ 		goto sortend;
+ 	    }
+ 	    *s = NUL;
+-	    regmatch.regprog = vim_regcomp(p + 1, RE_MAGIC);
++	    /* Use last search pattern if sort pattern is empty. */
++	    if (s == p + 1 && last_search_pat() != NULL)
++		regmatch.regprog = vim_regcomp(last_search_pat(), RE_MAGIC);
++	    else
++		regmatch.regprog = vim_regcomp(p + 1, RE_MAGIC);
+ 	    if (regmatch.regprog == NULL)
+ 		goto sortend;
+ 	    p = s;		/* continue after the regexp */
+@@ -2912,22 +2916,35 @@
+ }
+ 
+ /*
+- * Check if a buffer is read-only.  Ask for overruling in a dialog.
+- * Return TRUE and give an error message when the buffer is readonly.
++ * Check if a buffer is read-only (either 'readonly' option is set or file is
++ * read-only). Ask for overruling in a dialog. Return TRUE and give an error
++ * message when the buffer is readonly.
+  */
+     static int
+ check_readonly(forceit, buf)
+     int		*forceit;
+     buf_T	*buf;
+ {
+-    if (!*forceit && buf->b_p_ro)
++    struct stat	st;
++
++    /* Handle a file being readonly when the 'readonly' option is set or when
++     * the file exists and permissions are read-only.
++     * We will send 0777 to check_file_readonly(), as the "perm" variable is
++     * important for device checks but not here. */
++    if (!*forceit && (buf->b_p_ro
++		|| (mch_stat((char *)buf->b_ffname, &st) >= 0
++		    && check_file_readonly(buf->b_ffname, 0777))))
+     {
+ #if defined(FEAT_GUI_DIALOG) || defined(FEAT_CON_DIALOG)
+ 	if ((p_confirm || cmdmod.confirm) && buf->b_fname != NULL)
+ 	{
+ 	    char_u	buff[IOSIZE];
+ 
+-	    dialog_msg(buff, _("'readonly' option is set for \"%s\".\nDo you wish to write anyway?"),
++	    if (buf->b_p_ro)
++		dialog_msg(buff, _("'readonly' option is set for \"%s\".\nDo you wish to write anyway?"),
++		    buf->b_fname);
++	    else
++		dialog_msg(buff, _("File permissions of \"%s\" are read-only.\nIt may still be possible to write it.\nDo you wish to try?"),
+ 		    buf->b_fname);
+ 
+ 	    if (vim_dialog_yesno(VIM_QUESTION, NULL, buff, 2) == VIM_YES)
+@@ -2941,9 +2958,14 @@
+ 	}
+ 	else
+ #endif
++	if (buf->b_p_ro)
+ 	    EMSG(_(e_readonly));
++	else
++	    EMSG2(_("E505: \"%s\" is read-only (add ! to override)"),
++		    buf->b_fname);
+ 	return TRUE;
+     }
++
+     return FALSE;
+ }
+ 
+@@ -3367,7 +3389,7 @@
+ 		 * was in this window (or another window).  If not used
+ 		 * before, reset the local window options to the global
+ 		 * values.  Also restores old folding stuff. */
+-		get_winopts(buf);
++		get_winopts(curbuf);
+ #ifdef FEAT_SPELL
+ 		did_get_winopts = TRUE;
+ #endif
+@@ -3649,8 +3671,8 @@
+ #ifdef FEAT_SPELL
+     /* If the window options were changed may need to set the spell language.
+      * Can only do this after the buffer has been properly setup. */
+-    if (did_get_winopts && curwin->w_p_spell && *buf->b_p_spl != NUL)
+-	did_set_spelllang(buf);
++    if (did_get_winopts && curwin->w_p_spell && *curbuf->b_p_spl != NUL)
++	did_set_spelllang(curbuf);
+ #endif
+ 
+     if (command == NULL)
+diff -Naur vim71.orig/src/ex_docmd.c vim71/src/ex_docmd.c
+--- vim71.orig/src/ex_docmd.c	2007-05-07 15:49:38.000000000 -0400
++++ vim71/src/ex_docmd.c	2007-07-23 19:57:09.000000000 -0400
+@@ -133,6 +133,7 @@
+ static void	get_flags __ARGS((exarg_T *eap));
+ #if !defined(FEAT_PERL) || !defined(FEAT_PYTHON) || !defined(FEAT_TCL) \
+ 	|| !defined(FEAT_RUBY) || !defined(FEAT_MZSCHEME)
++# define HAVE_EX_SCRIPT_NI
+ static void	ex_script_ni __ARGS((exarg_T *eap));
+ #endif
+ static char_u	*invalid_range __ARGS((exarg_T *eap));
+@@ -2118,7 +2119,11 @@
+ #ifdef FEAT_USR_CMDS
+ 	    !USER_CMDIDX(ea.cmdidx) &&
+ #endif
+-	    cmdnames[ea.cmdidx].cmd_func == ex_ni);
++	    (cmdnames[ea.cmdidx].cmd_func == ex_ni
++#ifdef HAVE_EX_SCRIPT_NI
++	     || cmdnames[ea.cmdidx].cmd_func == ex_script_ni
++#endif
++	     ));
+ 
+ #ifndef FEAT_EVAL
+     /*
+@@ -3997,8 +4002,7 @@
+ 	eap->errmsg = (char_u *)N_("E319: Sorry, the command is not available in this version");
+ }
+ 
+-#if !defined(FEAT_PERL) || !defined(FEAT_PYTHON) || !defined(FEAT_TCL) \
+-	|| !defined(FEAT_RUBY) || !defined(FEAT_MZSCHEME)
++#ifdef HAVE_EX_SCRIPT_NI
+ /*
+  * Function called for script command which is Not Implemented.  NI!
+  * Skips over ":perl <<EOF" constructs.
+diff -Naur vim71.orig/src/ex_getln.c vim71/src/ex_getln.c
+--- vim71.orig/src/ex_getln.c	2007-05-07 15:47:23.000000000 -0400
++++ vim71/src/ex_getln.c	2007-07-23 19:57:09.000000000 -0400
+@@ -484,7 +484,8 @@
+ 	if (xpc.xp_context == EXPAND_MENUNAMES && p_wmnu)
+ 	{
+ 	    /* Hitting <Down> after "emenu Name.": complete submenu */
+-	    if (ccline.cmdbuff[ccline.cmdpos - 1] == '.' && c == K_DOWN)
++	    if (c == K_DOWN && ccline.cmdpos > 0
++				  && ccline.cmdbuff[ccline.cmdpos - 1] == '.')
+ 		c = p_wc;
+ 	    else if (c == K_UP)
+ 	    {
+@@ -533,9 +534,11 @@
+ 	    upseg[3] = PATHSEP;
+ 	    upseg[4] = NUL;
+ 
+-	    if (ccline.cmdbuff[ccline.cmdpos - 1] == PATHSEP
+-		    && c == K_DOWN
+-		    && (ccline.cmdbuff[ccline.cmdpos - 2] != '.'
++	    if (c == K_DOWN
++		    && ccline.cmdpos > 0
++		    && ccline.cmdbuff[ccline.cmdpos - 1] == PATHSEP
++		    && (ccline.cmdpos < 3
++			|| ccline.cmdbuff[ccline.cmdpos - 2] != '.'
+ 			|| ccline.cmdbuff[ccline.cmdpos - 3] != '.'))
+ 	    {
+ 		/* go down a directory */
+@@ -730,8 +733,8 @@
+ 	    /* In Ex mode a backslash escapes a newline. */
+ 	    if (exmode_active
+ 		    && c != ESC
+-		    && ccline.cmdpos > 0
+ 		    && ccline.cmdpos == ccline.cmdlen
++		    && ccline.cmdpos > 0
+ 		    && ccline.cmdbuff[ccline.cmdpos - 1] == '\\')
+ 	    {
+ 		if (c == K_KENTER)
+diff -Naur vim71.orig/src/fileio.c vim71/src/fileio.c
+--- vim71.orig/src/fileio.c	2007-05-10 07:29:44.000000000 -0400
++++ vim71/src/fileio.c	2007-07-23 19:57:09.000000000 -0400
+@@ -44,6 +44,10 @@
+ /* Is there any system that doesn't have access()? */
+ #define USE_MCH_ACCESS
+ 
++#if defined(sun) && defined(S_ISCHR)
++# define OPEN_CHR_FILES
++static int is_dev_fd_file(char_u *fname);
++#endif
+ #ifdef FEAT_MBYTE
+ static char_u *next_fenc __ARGS((char_u **pp));
+ # ifdef FEAT_EVAL
+@@ -406,6 +410,10 @@
+ # ifdef S_ISSOCK
+ 		      && !S_ISSOCK(perm)	    /* ... or socket */
+ # endif
++# ifdef OPEN_CHR_FILES
++		      && !(S_ISCHR(perm) && is_dev_fd_file(fname))
++			/* ... or a character special file named /dev/fd/<n> */
++# endif
+ 						)
+ 	{
+ 	    if (S_ISDIR(perm))
+@@ -424,7 +432,7 @@
+ 	 */
+ 	if (!p_odev && mch_nodetype(fname) == NODE_WRITABLE)
+ 	{
+-	    filemess(curbuf, fname, (char_u *)_("is a device (disabled with 'opendevice' option"), 0);
++	    filemess(curbuf, fname, (char_u *)_("is a device (disabled with 'opendevice' option)"), 0);
+ 	    msg_end();
+ 	    msg_scroll = msg_save;
+ 	    return FAIL;
+@@ -2265,6 +2273,13 @@
+ 	    }
+ #  endif
+ # endif
++# ifdef OPEN_CHR_FILES
++	    if (S_ISCHR(perm))			    /* or character special */
++	    {
++		STRCAT(IObuff, _("[character special]"));
++		c = TRUE;
++	    }
++# endif
+ #endif
+ 	    if (curbuf->b_p_ro)
+ 	    {
+@@ -2464,6 +2479,25 @@
+     return OK;
+ }
+ 
++#ifdef OPEN_CHR_FILES
++/*
++ * Returns TRUE if the file name argument is of the form "/dev/fd/\d\+",
++ * which is the name of files used for process substitution output by
++ * some shells on some operating systems, e.g., bash on SunOS.
++ * Do not accept "/dev/fd/[012]", opening these may hang Vim.
++ */
++    static int
++is_dev_fd_file(fname)
++    char_u	*fname;
++{
++    return (STRNCMP(fname, "/dev/fd/", 8) == 0
++	    && VIM_ISDIGIT(fname[8])
++	    && *skipdigits(fname + 9) == NUL
++	    && (fname[9] != NUL
++		|| (fname[8] != '0' && fname[8] != '1' && fname[8] != '2')));
++}
++#endif
++
+ #ifdef FEAT_MBYTE
+ 
+ /*
+@@ -2734,6 +2768,32 @@
+ #endif
+ 
+ /*
++ * Return TRUE if a file appears to be read-only from the file permissions.
++ */
++    int
++check_file_readonly(fname, perm)
++    char_u	*fname;		/* full path to file */
++    int		perm;		/* known permissions on file */
++{
++#ifndef USE_MCH_ACCESS
++    int	    fd = 0;
++#endif
++
++    return (
++#ifdef USE_MCH_ACCESS
++# ifdef UNIX
++	(perm & 0222) == 0 ||
++# endif
++	mch_access((char *)fname, W_OK)
++#else
++	(fd = mch_open((char *)fname, O_RDWR | O_EXTRA, 0)) < 0
++					? TRUE : (close(fd), FALSE)
++#endif
++	);
++}
++
++
++/*
+  * buf_write() - write to file "fname" lines "start" through "end"
+  *
+  * We do our own buffering here because fwrite() is so slow.
+@@ -3219,17 +3279,8 @@
+ 	 * Check if the file is really writable (when renaming the file to
+ 	 * make a backup we won't discover it later).
+ 	 */
+-	file_readonly = (
+-# ifdef USE_MCH_ACCESS
+-#  ifdef UNIX
+-		    (perm & 0222) == 0 ||
+-#  endif
+-		    mch_access((char *)fname, W_OK)
+-# else
+-		    (fd = mch_open((char *)fname, O_RDWR | O_EXTRA, 0)) < 0
+-						   ? TRUE : (close(fd), FALSE)
+-# endif
+-		    );
++	file_readonly = check_file_readonly(fname, (int)perm);
++
+ 	if (!forceit && file_readonly)
+ 	{
+ 	    if (vim_strchr(p_cpo, CPO_FWRITE) != NULL)
+diff -Naur vim71.orig/src/gui_gtk.c vim71/src/gui_gtk.c
+--- vim71.orig/src/gui_gtk.c	2007-05-10 04:37:37.000000000 -0400
++++ vim71/src/gui_gtk.c	2007-07-23 19:57:05.000000000 -0400
+@@ -53,8 +53,8 @@
+ # ifdef bindtextdomain
+ #  undef bindtextdomain
+ # endif
+-# ifdef bindtextdomain_codeset
+-#  undef bindtextdomain_codeset
++# ifdef bind_textdomain_codeset
++#  undef bind_textdomain_codeset
+ # endif
+ # if defined(FEAT_GETTEXT) && !defined(ENABLE_NLS)
+ #  define ENABLE_NLS	/* so the texts in the dialog boxes are translated */
+diff -Naur vim71.orig/src/gui_gtk_x11.c vim71/src/gui_gtk_x11.c
+--- vim71.orig/src/gui_gtk_x11.c	2007-05-10 04:37:49.000000000 -0400
++++ vim71/src/gui_gtk_x11.c	2007-07-23 19:57:08.000000000 -0400
+@@ -36,8 +36,8 @@
+ # ifdef bindtextdomain
+ #  undef bindtextdomain
+ # endif
+-# ifdef bindtextdomain_codeset
+-#  undef bindtextdomain_codeset
++# ifdef bind_textdomain_codeset
++#  undef bind_textdomain_codeset
+ # endif
+ # if defined(FEAT_GETTEXT) && !defined(ENABLE_NLS)
+ #  define ENABLE_NLS	/* so the texts in the dialog boxes are translated */
+@@ -2188,8 +2188,10 @@
+     escaped_filename = vim_strsave_escaped(filename, escape_chars);
+     if (escaped_filename == NULL)
+ 	return FALSE;
+-    mksession_cmdline = g_strconcat("mksession ", (char *)escaped_filename, NULL);
++    mksession_cmdline = g_strconcat("mksession ", (char *)escaped_filename,
++									NULL);
+     vim_free(escaped_filename);
++
+     /*
+      * Use a reasonable hardcoded set of 'sessionoptions' flags to avoid
+      * unpredictable effects when the session is saved automatically.  Also,
+@@ -2199,7 +2201,7 @@
+      */
+     save_ssop_flags = ssop_flags;
+     ssop_flags = (SSOP_BLANK|SSOP_CURDIR|SSOP_FOLDS|SSOP_GLOBALS
+-		  |SSOP_HELP|SSOP_OPTIONS|SSOP_WINSIZE);
++		  |SSOP_HELP|SSOP_OPTIONS|SSOP_WINSIZE|SSOP_TABPAGES);
+ 
+     do_cmdline_cmd((char_u *)"let Save_VV_this_session = v:this_session");
+     failed = (do_cmdline_cmd((char_u *)mksession_cmdline) == FAIL);
+diff -Naur vim71.orig/src/if_mzsch.c vim71/src/if_mzsch.c
+--- vim71.orig/src/if_mzsch.c	2007-05-12 07:13:47.000000000 -0400
++++ vim71/src/if_mzsch.c	2007-07-23 19:57:09.000000000 -0400
+@@ -308,6 +308,8 @@
+ static Scheme_Config *(*dll_scheme_current_config)(void);
+ static Scheme_Object *(*dll_scheme_char_string_to_byte_string)
+     (Scheme_Object *s);
++static Scheme_Object *(*dll_scheme_char_string_to_path)
++    (Scheme_Object *s);
+ # endif
+ 
+ /* arrays are imported directly */
+@@ -398,6 +400,8 @@
+ #  define scheme_current_config dll_scheme_current_config
+ #  define scheme_char_string_to_byte_string \
+     dll_scheme_char_string_to_byte_string
++#  define scheme_char_string_to_path \
++    dll_scheme_char_string_to_path
+ # endif
+ 
+ typedef struct
+@@ -498,6 +502,8 @@
+     {"scheme_current_config", (void **)&dll_scheme_current_config},
+     {"scheme_char_string_to_byte_string",
+ 	(void **)&dll_scheme_char_string_to_byte_string},
++    {"scheme_char_string_to_path",
++	(void **)&dll_scheme_char_string_to_path},
+ # endif
+     {NULL, NULL}};
+ 
+@@ -773,7 +779,14 @@
+ #ifdef MZSCHEME_COLLECTS
+     /* setup 'current-library-collection-paths' parameter */
+     scheme_set_param(scheme_config, MZCONFIG_COLLECTION_PATHS,
+-	    scheme_make_pair(scheme_make_string(MZSCHEME_COLLECTS),
++	    scheme_make_pair(
++# if MZSCHEME_VERSION_MAJOR >= 299
++		scheme_char_string_to_path(
++		    scheme_byte_string_to_char_string(
++			scheme_make_byte_string(MZSCHEME_COLLECTS))),
++# else
++		scheme_make_string(MZSCHEME_COLLECTS),
++# endif
+ 		scheme_null));
+ #endif
+ #ifdef HAVE_SANDBOX
+diff -Naur vim71.orig/src/main.c vim71/src/main.c
+--- vim71.orig/src/main.c	2007-05-07 15:38:44.000000000 -0400
++++ vim71/src/main.c	2007-07-23 19:57:08.000000000 -0400
+@@ -1360,8 +1360,7 @@
+ 	p = vim_getenv((char_u *)"VIMRUNTIME", &mustfree);
+ 	if (p != NULL && *p != NUL)
+ 	{
+-	    STRCPY(NameBuff, p);
+-	    STRCAT(NameBuff, "/lang");
++	    vim_snprintf((char *)NameBuff, MAXPATHL, "%s/lang", p);
+ 	    bindtextdomain(VIMPACKAGE, (char *)NameBuff);
+ 	}
+ 	if (mustfree)
+diff -Naur vim71.orig/src/message.c vim71/src/message.c
+--- vim71.orig/src/message.c	2007-05-07 15:31:59.000000000 -0400
++++ vim71/src/message.c	2007-07-23 19:57:09.000000000 -0400
+@@ -3456,11 +3456,11 @@
+ 		    /* advance to next hotkey and set default hotkey */
+ #ifdef FEAT_MBYTE
+ 		    if (has_mbyte)
+-			hotkp += (*mb_ptr2len)(hotkp);
++			hotkp += STRLEN(hotkp);
+ 		    else
+ #endif
+ 			++hotkp;
+-		    (void)copy_char(r + 1, hotkp, TRUE);
++		    hotkp[copy_char(r + 1, hotkp, TRUE)] = NUL;
+ 		    if (dfltbutton)
+ 			--dfltbutton;
+ 
+@@ -3493,7 +3493,7 @@
+ 			*msgp++ = (dfltbutton == 1) ? ']' : ')';
+ 
+ 			/* redefine hotkey */
+-			(void)copy_char(r, hotkp, TRUE);
++			hotkp[copy_char(r, hotkp, TRUE)] = NUL;
+ 		    }
+ 		}
+ 		else
+@@ -3519,8 +3519,6 @@
+ 	    *msgp++ = ':';
+ 	    *msgp++ = ' ';
+ 	    *msgp = NUL;
+-	    mb_ptr_adv(hotkp);
+-	    *hotkp = NUL;
+ 	}
+ 	else
+ 	{
+@@ -3555,8 +3553,9 @@
+ 	    msgp = confirm_msg + 1 + STRLEN(message);
+ 	    hotkp = hotk;
+ 
+-	    /* define first default hotkey */
+-	    (void)copy_char(buttons, hotkp, TRUE);
++	    /* Define first default hotkey.  Keep the hotkey string NUL
++	     * terminated to avoid reading past the end. */
++	    hotkp[copy_char(buttons, hotkp, TRUE)] = NUL;
+ 
+ 	    /* Remember where the choices start, displaying starts here when
+ 	     * "hotkp" typed at the more prompt. */
+diff -Naur vim71.orig/src/normal.c vim71/src/normal.c
+--- vim71.orig/src/normal.c	2007-05-07 15:34:39.000000000 -0400
++++ vim71/src/normal.c	2007-07-23 19:57:09.000000000 -0400
+@@ -6379,7 +6379,7 @@
+      */
+     else if (cap->nchar == 'p' || cap->nchar == 'P')
+     {
+-	if (!checkclearopq(cap->oap))
++	if (!checkclearop(cap->oap))
+ 	{
+ 	    prep_redo_cmd(cap);
+ 	    do_put(cap->oap->regname,
+diff -Naur vim71.orig/src/ops.c vim71/src/ops.c
+--- vim71.orig/src/ops.c	2007-05-07 15:33:47.000000000 -0400
++++ vim71/src/ops.c	2007-07-23 19:57:09.000000000 -0400
+@@ -3404,7 +3404,9 @@
+ 
+ #ifdef FEAT_VIRTUALEDIT
+ 	col += curwin->w_cursor.coladd;
+-	if (ve_flags == VE_ALL && curwin->w_cursor.coladd > 0)
++	if (ve_flags == VE_ALL
++		&& (curwin->w_cursor.coladd > 0
++		    || endcol2 == curwin->w_cursor.col))
+ 	{
+ 	    if (dir == FORWARD && c == NUL)
+ 		++col;
+diff -Naur vim71.orig/src/option.c vim71/src/option.c
+--- vim71.orig/src/option.c	2007-05-01 07:26:10.000000000 -0400
++++ vim71/src/option.c	2007-07-23 19:57:09.000000000 -0400
+@@ -8219,6 +8219,25 @@
+ 	    varp = get_varp(&options[opt_idx]);
+ 	    if (varp != NULL)	/* hidden option is not changed */
+ 	    {
++		if (number == 0 && string != NULL)
++		{
++		    int index;
++
++		    /* Either we are given a string or we are setting option
++		     * to zero. */
++		    for (index = 0; string[index] == '0'; ++index)
++			;
++		    if (string[index] != NUL || index == 0)
++		    {
++			/* There's another character after zeros or the string
++			 * is empty.  In both cases, we are trying to set a
++			 * num option using a string. */
++			EMSG3(_("E521: Number required: &%s = '%s'"),
++								name, string);
++			return;     /* do nothing as we hit an error */
++
++		    }
++		}
+ 		if (flags & P_NUM)
+ 		    (void)set_num_option(opt_idx, varp, number,
+ 							  NULL, 0, opt_flags);
+@@ -10605,6 +10624,9 @@
+ file_ff_differs(buf)
+     buf_T	*buf;
+ {
++    /* In a buffer that was never loaded the options are not valid. */
++    if (buf->b_flags & BF_NEVERLOADED)
++	return FALSE;
+     if ((buf->b_flags & BF_NEW)
+ 	    && buf->b_ml.ml_line_count == 1
+ 	    && *ml_get_buf(buf, (linenr_T)1, FALSE) == NUL)
+diff -Naur vim71.orig/src/os_unix.h vim71/src/os_unix.h
+--- vim71.orig/src/os_unix.h	2007-05-07 15:35:05.000000000 -0400
++++ vim71/src/os_unix.h	2007-07-23 19:57:09.000000000 -0400
+@@ -508,6 +508,9 @@
+ #if !defined(S_ISFIFO) && defined(S_IFIFO)
+ # define	S_ISFIFO(m) (((m) & S_IFMT) == S_IFIFO)
+ #endif
++#if !defined(S_ISCHR) && defined(S_IFCHR)
++# define	S_ISCHR(m) (((m) & S_IFMT) == S_IFCHR)
++#endif
+ 
+ /* Note: Some systems need both string.h and strings.h (Savage).  However,
+  * some systems can't handle both, only use string.h in that case. */
+diff -Naur vim71.orig/src/popupmnu.c vim71/src/popupmnu.c
+--- vim71.orig/src/popupmnu.c	2007-03-24 16:07:39.000000000 -0400
++++ vim71/src/popupmnu.c	2007-07-23 19:57:08.000000000 -0400
+@@ -466,7 +466,7 @@
+ 			set_option_value((char_u *)"bh", 0L,
+ 						 (char_u *)"wipe", OPT_LOCAL);
+ 			set_option_value((char_u *)"diff", 0L,
+-						     (char_u *)"", OPT_LOCAL);
++							     NULL, OPT_LOCAL);
+ 		    }
+ 		}
+ 		if (res == OK)
+diff -Naur vim71.orig/src/proto/fileio.pro vim71/src/proto/fileio.pro
+--- vim71.orig/src/proto/fileio.pro	2007-05-12 06:39:14.000000000 -0400
++++ vim71/src/proto/fileio.pro	2007-07-23 19:57:08.000000000 -0400
+@@ -2,6 +2,7 @@
+ void filemess __ARGS((buf_T *buf, char_u *name, char_u *s, int attr));
+ int readfile __ARGS((char_u *fname, char_u *sfname, linenr_T from, linenr_T lines_to_skip, linenr_T lines_to_read, exarg_T *eap, int flags));
+ int prep_exarg __ARGS((exarg_T *eap, buf_T *buf));
++int check_file_readonly __ARGS((char_u *fname, int perm));
+ int buf_write __ARGS((buf_T *buf, char_u *fname, char_u *sfname, linenr_T start, linenr_T end, exarg_T *eap, int append, int forceit, int reset_changed, int filtering));
+ void msg_add_fname __ARGS((buf_T *buf, char_u *fname));
+ void msg_add_lines __ARGS((int insert_space, long lnum, long nchars));
+diff -Naur vim71.orig/src/quickfix.c vim71/src/quickfix.c
+--- vim71.orig/src/quickfix.c	2007-02-03 19:50:17.000000000 -0500
++++ vim71/src/quickfix.c	2007-07-23 19:57:08.000000000 -0400
+@@ -2331,7 +2331,7 @@
+ 	    set_option_value((char_u *)"bt", 0L, (char_u *)"quickfix",
+ 								   OPT_LOCAL);
+ 	    set_option_value((char_u *)"bh", 0L, (char_u *)"wipe", OPT_LOCAL);
+-	    set_option_value((char_u *)"diff", 0L, (char_u *)"", OPT_LOCAL);
++	    set_option_value((char_u *)"diff", 0L, NULL, OPT_LOCAL);
+ 	}
+ 
+ 	/* Only set the height when still in the same tab page and there is no
+diff -Naur vim71.orig/src/screen.c vim71/src/screen.c
+--- vim71.orig/src/screen.c	2007-05-07 15:27:53.000000000 -0400
++++ vim71/src/screen.c	2007-07-23 19:57:08.000000000 -0400
+@@ -3459,9 +3459,11 @@
+ #ifdef FEAT_DIFF
+ 	    if (diff_hlf != (hlf_T)0)
+ 	    {
+-		if (diff_hlf == HLF_CHD && ptr - line >= change_start)
++		if (diff_hlf == HLF_CHD && ptr - line >= change_start
++							      && n_extra == 0)
+ 		    diff_hlf = HLF_TXD;		/* changed text */
+-		if (diff_hlf == HLF_TXD && ptr - line > change_end)
++		if (diff_hlf == HLF_TXD && ptr - line > change_end
++							      && n_extra == 0)
+ 		    diff_hlf = HLF_CHD;		/* changed line */
+ 		line_attr = hl_attr(diff_hlf);
+ 	    }
+diff -Naur vim71.orig/src/search.c vim71/src/search.c
+--- vim71.orig/src/search.c	2007-05-07 15:42:02.000000000 -0400
++++ vim71/src/search.c	2007-07-23 19:57:09.000000000 -0400
+@@ -573,8 +573,12 @@
+ 	/*
+ 	 * Start searching in current line, unless searching backwards and
+ 	 * we're in column 0.
++	 * If we are searching backwards, in column 0, and not including the
++	 * current position, gain some efficiency by skipping back a line.
++	 * Otherwise begin the search in the current line.
+ 	 */
+-	if (dir == BACKWARD && start_pos.col == 0)
++	if (dir == BACKWARD && start_pos.col == 0
++					     && (options & SEARCH_START) == 0)
+ 	{
+ 	    lnum = pos->lnum - 1;
+ 	    at_first_line = FALSE;
+@@ -2124,6 +2128,9 @@
+ 			else if (!backwards)
+ 			    inquote = TRUE;
+ 		    }
++
++		    /* ml_get() only keeps one line, need to get linep again */
++		    linep = ml_get(pos.lnum);
+ 		}
+ 	    }
+ 	}
+@@ -2795,7 +2802,7 @@
+ 	i = inc_cursor();
+ 	if (i == -1 || (i >= 1 && last_line)) /* started at last char in file */
+ 	    return FAIL;
+-	if (i == 1 && eol && count == 0)      /* started at last char in line */
++	if (i >= 1 && eol && count == 0)      /* started at last char in line */
+ 	    return OK;
+ 
+ 	/*
+@@ -3600,13 +3607,16 @@
+     {
+ 	oap->start = start_pos;
+ 	oap->motion_type = MCHAR;
++	oap->inclusive = FALSE;
+ 	if (sol)
+-	{
+ 	    incl(&curwin->w_cursor);
+-	    oap->inclusive = FALSE;
+-	}
+-	else
++	else if (lt(start_pos, curwin->w_cursor))
++	    /* Include the character under the cursor. */
+ 	    oap->inclusive = TRUE;
++	else
++	    /* End is before the start (no text in between <>, [], etc.): don't
++	     * operate on any text. */
++	    curwin->w_cursor = start_pos;
+     }
+ 
+     return OK;
+@@ -3734,7 +3744,7 @@
+ 
+ 	if (in_html_tag(FALSE))
+ 	{
+-	    /* cursor on start tag, move to just after it */
++	    /* cursor on start tag, move to its '>' */
+ 	    while (*ml_get_cursor() != '>')
+ 		if (inc_cursor() < 0)
+ 		    break;
+@@ -3838,7 +3848,7 @@
+ 	/* Exclude the start tag. */
+ 	curwin->w_cursor = start_pos;
+ 	while (inc_cursor() >= 0)
+-	    if (*ml_get_cursor() == '>' && lt(curwin->w_cursor, end_pos))
++	    if (*ml_get_cursor() == '>')
+ 	    {
+ 		inc_cursor();
+ 		start_pos = curwin->w_cursor;
+@@ -3860,7 +3870,11 @@
+ #ifdef FEAT_VISUAL
+     if (VIsual_active)
+     {
+-	if (*p_sel == 'e')
++	/* If the end is before the start there is no text between tags, select
++	 * the char under the cursor. */
++	if (lt(end_pos, start_pos))
++	    curwin->w_cursor = start_pos;
++	else if (*p_sel == 'e')
+ 	    ++curwin->w_cursor.col;
+ 	VIsual = start_pos;
+ 	VIsual_mode = 'v';
+@@ -3872,7 +3886,15 @@
+     {
+ 	oap->start = start_pos;
+ 	oap->motion_type = MCHAR;
+-	oap->inclusive = TRUE;
++	if (lt(end_pos, start_pos))
++	{
++	    /* End is before the start: there is no text between tags; operate
++	     * on an empty area. */
++	    curwin->w_cursor = start_pos;
++	    oap->inclusive = FALSE;
++	}
++	else
++	    oap->inclusive = TRUE;
+     }
+     retval = OK;
+ 
+diff -Naur vim71.orig/src/syntax.c vim71/src/syntax.c
+--- vim71.orig/src/syntax.c	2007-05-07 15:42:55.000000000 -0400
++++ vim71/src/syntax.c	2007-07-23 19:57:08.000000000 -0400
+@@ -4460,8 +4460,8 @@
+     current_syn_inc_tag = ++running_syn_inc_tag;
+     prev_toplvl_grp = curbuf->b_syn_topgrp;
+     curbuf->b_syn_topgrp = sgl_id;
+-    if (source ? do_source(eap->arg, FALSE, FALSE) == FAIL
+-				: source_runtime(eap->arg, DOSO_NONE) == FAIL)
++    if (source ? do_source(eap->arg, FALSE, DOSO_NONE) == FAIL
++				: source_runtime(eap->arg, TRUE) == FAIL)
+ 	EMSG2(_(e_notopen), eap->arg);
+     curbuf->b_syn_topgrp = prev_toplvl_grp;
+     current_syn_inc_tag = prev_syn_inc_tag;
+diff -Naur vim71.orig/src/version.c vim71/src/version.c
+--- vim71.orig/src/version.c	2007-05-12 06:23:44.000000000 -0400
++++ vim71/src/version.c	2007-07-23 19:57:09.000000000 -0400
+@@ -667,6 +667,68 @@
+ static int included_patches[] =
+ {   /* Add new patch number below this line */
+ /**/
++    33,
++/**/
++    32,
++/**/
++    31,
++/**/
++    30,
++/**/
++    29,
++/**/
++    28,
++/**/
++    27,
++/**/
++    26,
++/**/
++    25,
++/**/
++    24,
++/**/
++    23,
++/**/
++    22,
++/**/
++    21,
++/**/
++    20,
++/**/
++    19,
++/**/
++    18,
++/**/
++    17,
++/**/
++    16,
++/**/
++    15,
++/**/
++    14,
++/**/
++    13,
++/**/
++    12,
++/**/
++    11,
++/**/
++    10,
++/**/
++    9,
++/**/
++    8,
++/**/
++    6,
++/**/
++    5,
++/**/
++    4,
++/**/
++    2,
++/**/
++    1,
++/**/
+     0
+ };
+ 
+diff -Naur vim71.orig/src/vimtutor vim71/src/vimtutor
+--- vim71.orig/src/vimtutor	2004-06-07 10:32:27.000000000 -0400
++++ vim71/src/vimtutor	2007-07-23 19:57:09.000000000 -0400
+@@ -39,18 +39,22 @@
+ # remove the copy of the tutor on exit
+ trap "rm -rf $TODELETE" 0 1 2 3 9 11 13 15
+ 
+-# Vim could be called "vim" or "vi".  Also check for "vim6", for people who
+-# have Vim 5.x installed as "vim" and Vim 6.0 as "vim6".
+-testvim=`which vim6 2>/dev/null`
+-if test -f "$testvim"; then
+-	VIM=vim6
+-else
+-	testvim=`which vim`
++# Vim could be called "vim" or "vi".  Also check for "vimN", for people who
++# have Vim installed with its version number.
++# We anticipate up to a future Vim 8 version :-).
++seq="vim vim8 vim75 vim74 vim73 vim72 vim71 vim70 vim7 vim6 vi"
++for i in $seq; do
++	testvim=`which $i 2>/dev/null`
+ 	if test -f "$testvim"; then
+-		VIM=vim
+-	else
+-		VIM=vi
++		VIM=$i
++		break
+ 	fi
++done
++
++# When no Vim version was found fall back to "vim", you'll get an error message
++# below.
++if test -z "$VIM"; then
++	VIM=vim
+ fi
+ 
+ # Use Vim to copy the tutor, it knows the value of $VIMRUNTIME
