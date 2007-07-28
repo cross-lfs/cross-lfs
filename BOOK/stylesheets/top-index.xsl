@@ -18,11 +18,12 @@
         </title>
         <style type="text/css">
           <xsl:text>
+/* Global settings */
 body {
-  font-family: sans-serif;
+  font-family: verdana, tahoma, helvetica, arial, sans-serif;
   text-align: left;
   background: #fff;
-  color: #333;
+  color: #222;
   margin: 1em;
   padding: 0;
   font-size: 1em;
@@ -30,52 +31,45 @@ body {
 }
 
 a:link { color: #22b; }
-a:visited { color: #7e4988; }
-a:hover, a:focus { color: #d30e08; }
-a:active { color: #6b77b1;}
+a.ulink:link { font-weight: bold; color: #55f; }
+a:visited { color: #7e4988 ! important; }
+a:hover, a:focus { color: #d30e08 ! important; }
+a:active { color: #6b77b1 ! important;}
 
-h1, h2 {
+h1, h2 h3, h4 {
   color: #000;
   font-weight: bold;
-}
-
-h3, h4, h5, h6 {
-  color: #222;
+  line-height: 1em;
 }
 
 h1 { font-size: 173%; text-align: center; }
-h2 { font-size: 144%;  text-align: center; }
-h3 { font-size: 120%; padding-top: 0.2em; margin-top: 0.3em; }
-h4 { font-size: 110%;}
+h2 { font-size: 144%; text-align: center; }
+h3 { font-size: 120%; }
+h4 { font-size: 110%; }
 
-div.toc {
+.toc {
   padding-left: 1em;
-  margin-top: 1em;
 }
 
-div.toc ul li h3, div.toc ul li h4 {
+.toc ul li h3, .toc ul li h4 {
   margin: .4em;
 }
 
-div.book {
-  padding-bottom: 0.5em;
-}
-
-div.book h1 {
+.book h1 {
   background: #f5f6f7;
   margin: 0px auto;
   padding: 0.5em;
 }
 
-div.book h2 {
+.book h2 {
   background: #dbddec;
   margin: 0px auto;
   padding: 0.2em;
 }
-div.authorgroup, div p.copyright {
+.author, .copyright {
   background: #f5f6f7;
   margin: 0px auto;
-  padding:  1em 0.5em;
+  padding: 0.5em 1em;
 }
 
 hr {
@@ -214,40 +208,32 @@ hr {
   </xsl:template>
 
   <xsl:template match="title">
-    <div>
-      <h1 class="title">
-        <xsl:value-of select="."/>
-      </h1>
-    </div>
-    <div>
-      <h2 class="subtitle">
-        <xsl:text>Version &version;</xsl:text>
-      </h2>
-    </div>
+    <h1 class="title">
+      <xsl:value-of select="."/>
+    </h1>
+    <h2 class="subtitle">
+      <xsl:text>Version &version;</xsl:text>
+    </h2>
   </xsl:template>
 
   <xsl:template match="authorgroup">
-    <div class="authorgroup">
-      <h3 class="author">
-        <xsl:value-of select="author[1]/firstname"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="author[1]/surname"/>
-      </h3>
-      <h3 class="author">
-        <xsl:value-of select="author[2]/firstname"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="author[2]/surname"/>
-      </h3>
-    </div>
+    <h3 class="author">
+      <xsl:value-of select="author[1]/firstname"/>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="author[1]/surname"/>
+    </h3>
+    <h3 class="author">
+      <xsl:value-of select="author[2]/firstname"/>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="author[2]/surname"/>
+    </h3>
   </xsl:template>
 
   <xsl:template match="copyright">
-    <div>
-      <p class="copyright">
-        <xsl:text>Copyright ©</xsl:text>
-        <xsl:apply-templates/>
-      </p>
-    </div>
+    <p class="copyright">
+      <xsl:text>Copyright ©</xsl:text>
+      <xsl:apply-templates/>
+    </p>
   </xsl:template>
 
   <xsl:template match="year">
@@ -259,13 +245,11 @@ hr {
   </xsl:template>
 
   <xsl:template match="bibliosource">
-    <div>
-      <p class="copyright">
-        <em>
-          <xsl:apply-templates/>
-        </em>
-      </p>
-    </div>
+    <p class="copyright">
+      <em>
+        <xsl:apply-templates/>
+      </em>
+    </p>
   </xsl:template>
 
   <xsl:template match="subtitle|author|firstname|surname|legalnotice"/>
