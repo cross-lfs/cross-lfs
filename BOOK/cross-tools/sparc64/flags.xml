@@ -13,9 +13,9 @@
   and linkers. You can choose the appropriate BUILD32 and BUILD64
   from the table at the bottom of the page.</para>
 
-<screen os="b"><userinput>export BUILD32="[BUILD32 entries]"
-export BUILD64="[BUILD64 entries]"
-export GCCTARGET="[GCCTARGET entries]"</userinput></screen>
+<screen os="b"><userinput>export BUILD32="<replaceable>[BUILD32 entries]</replaceable>"
+export BUILD64="<replaceable>[BUILD64 entries]</replaceable>"
+export GCCTARGET="<replaceable>[GCCTARGET entries]</replaceable>"</userinput></screen>
 
    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
    href="../multilib/flags.xml"
@@ -32,11 +32,15 @@ echo export GCCTARGET=\""${GCCTARGET}\"" &gt;&gt; ~/.bashrc</userinput></screen>
 
   <table os="f">
     <title>List of 32-Bit settings, 64-Bit Build settings, and GCC setting</title>
-    <tgroup cols="2" align="center">
-      <colspec colname="Processor"/>
-      <colspec colname="Build32"/>
-      <colspec colname="Build64"/>
-      <colspec colname="GCC"/>
+    <?dbfo table-width="7in" ?>
+
+    <tgroup cols="4">
+
+      <colspec colnum="1" colwidth="1in" colname="Processor"/>
+      <colspec colnum="2" colwidth="2in" colname="Build32"/>
+      <colspec colnum="3" colwidth="2in" colname="Build64"/>
+      <colspec colnum="4" colwidth="2in" colname="GCC"/>
+
       <thead>
         <row>
           <entry>Processor</entry>
@@ -45,6 +49,7 @@ echo export GCCTARGET=\""${GCCTARGET}\"" &gt;&gt; ~/.bashrc</userinput></screen>
           <entry>GCCTARGET</entry>
         </row>
       </thead>
+
       <tbody>
         <row>
           <entry>Ultrasparc and Ultrasparc2</entry>
@@ -59,7 +64,9 @@ echo export GCCTARGET=\""${GCCTARGET}\"" &gt;&gt; ~/.bashrc</userinput></screen>
           <entry>-mcpu=ultrasparc3 -mtune=ultrasparc3</entry>
         </row>
       </tbody>
+
     </tgroup>
+
   </table>
 
 </sect1>

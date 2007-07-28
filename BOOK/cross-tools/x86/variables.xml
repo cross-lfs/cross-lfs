@@ -21,7 +21,8 @@
   be changed slightly to add "cross". Set <envar>CLFS_HOST</envar> using the
   following command:</para>
 
-<screen os="b"><userinput>export CLFS_HOST="$(echo $MACHTYPE | sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"</userinput></screen>
+<screen os="b"><userinput>export CLFS_HOST="$(echo $MACHTYPE | \
+    sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"</userinput></screen>
 
   <para os="c">Now you will need to set the triplet for the target
   architecture. Set the target variable using the following command:</para>
@@ -41,15 +42,20 @@ echo export CLFS_TARGET=\""${CLFS_TARGET}\"" &gt;&gt; ~/.bashrc</userinput></scr
 
   <table os="g">
     <title>Processor Type and  Target Triplets</title>
-    <tgroup cols="2" align="center">
-      <colspec colname="Processor"/>
-      <colspec colname="Triplet"/>
+    <?dbfo table-width="5in" ?>
+
+    <tgroup cols="2">
+
+      <colspec colnum="1" colwidth="2.5in" colname="Processor"/>
+      <colspec colnum="2" colwidth="2.5in" colname="Triplet"/>
+
       <thead>
         <row>
           <entry>Processor</entry>
           <entry>Target Triplet</entry>
         </row>
       </thead>
+
       <tbody>
         <row>
           <entry>386 Compatibles</entry>
@@ -72,7 +78,9 @@ echo export CLFS_TARGET=\""${CLFS_TARGET}\"" &gt;&gt; ~/.bashrc</userinput></scr
           <entry>i686-pc-linux-gnu</entry>
         </row>
       </tbody>
+
     </tgroup>
+
   </table>
 
 </sect1>

@@ -58,15 +58,15 @@
   <filename class="devicefile">/dev/sda7</filename> and so forth in the usual
   way.  At least some of the distros specify a full OF path to the 'device' and
   to the image(s), such as
-  <filename class="devicefile">device=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:
-  </filename> for the disk, and
-  <filename class="partition">image=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:9,/boot/clfskernel-&linux-version;
-  </filename> which definitely works.</para>
+  <parameter>device=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:</parameter>
+  for the disk, and
+  <parameter>image=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:9,/boot/clfskernel-&linux-version;</parameter>
+  which definitely works.</para>
 
   <para os="k">Create a <quote>yaboot.conf</quote> file defining yaboot's boot
   menu:</para>
 
-<screen os="l" role="nodump"><userinput>cat &gt; /etc/yaboot.conf &lt;&lt; "EOF"
+<screen os="l" role="nodump"><?dbfo keep-together="auto"?><userinput>cat &gt; /etc/yaboot.conf &lt;&lt; "EOF"
 <literal># Begin /etc/yaboot.conf
 
 # By default, yaboot will boot the first menu entry.
@@ -88,7 +88,7 @@ partition=7
 # default root partition
 root=/dev/hda7
 
-# where ybin is to find yaboot and ofboot 
+# where ybin is to find yaboot and ofboot
 install=/usr/lib/yaboot/yaboot
 magicboot=/usr/lib/yaboot/ofboot
 

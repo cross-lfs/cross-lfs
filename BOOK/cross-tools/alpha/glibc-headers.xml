@@ -26,7 +26,7 @@
     the glibc we are using in cross-lfs. The reason we are changing it is
     because this only installs the headers, no compiling takes place. In the
     next Glibc installation, we use the GCC that's built right after this section:</para>
- 	
+
 <screen os="s2"><userinput>cp -v configure{,.orig}
 sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
 
@@ -64,14 +64,14 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
 
     <variablelist os="ca">
        <title>The meaning of the configure options:</title>
- 	
+
           <varlistentry os="ca1">
              <term><parameter>CC=gcc</parameter></term>
              <listitem>
                 <para>Tells Glibc to use the host's GCC compiler.</para>
              </listitem>
           </varlistentry>
- 	
+
          <varlistentry os="ca2">
             <term><parameter>--prefix=/tools</parameter></term>
             <listitem>
@@ -80,7 +80,7 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
  	          directory.</para>
              </listitem>
          </varlistentry>
-	
+
          <varlistentry os="ca3">
             <term><parameter>--build=${CLFS_HOST}</parameter></term>
             <listitem>
@@ -88,7 +88,7 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
                   executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST}.</para>
             </listitem>
         </varlistentry>
- 	
+
         <varlistentry os="ca4">
            <term><parameter>--host=${CLFS_TARGET}</parameter></term>
            <listitem>
@@ -96,14 +96,14 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
                   executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST}.</para>
            </listitem>
         </varlistentry>
- 	
+
        <varlistentry os="ca5">
           <term><parameter>--disable-sanity-checks</parameter></term>
           <listitem>
              <para>This switch disables any checks that are in place.</para>
            </listitem>
        </varlistentry>
- 	
+
        <varlistentry os="ca6">
             <term><parameter>--enable-kernel=2.6.0</parameter></term>
             <listitem>
@@ -111,7 +111,7 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
                for 2.6.x Linux kernels.</para>
             </listitem>
        </varlistentry>
- 	
+
        <varlistentry os="ca7">
            <term><parameter>--with-headers=/tools/include</parameter></term>
            <listitem>
@@ -121,16 +121,16 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
               and can optimize itself accordingly.</para>
            </listitem>
        </varlistentry>
- 	
+
        <varlistentry os="ca8">
            <term><parameter>--with-binutils=/cross-tools/${CLFS_TARGET}/bin</parameter></term>
            <listitem>
               <para>This tells Glibc to use the Binutils for our specific target architecture.</para>
             </listitem>
        </varlistentry>
- 	
+
        </variablelist>
- 	
+
    <para os="cb">Now, install the headers:</para>
 
 <screen os="cd"><userinput>make install-headers</userinput></screen>
@@ -138,7 +138,7 @@ echo "libc_cv_alpha_tls=yes" &gt;&gt; config.cache</userinput></screen>
    <para os="ce">Some files aren't installed by the above command, so
     we will copy the additional header files we need.</para>
 
-   <para os="cf">First we will copy a common file over to <filename 
+   <para os="cf">First we will copy a common file over to <filename
    class="directory">/tools/include</filename>:</para>
 
 <screen os="cg"><userinput>install -dv /tools/include/bits
@@ -149,8 +149,9 @@ cp -v bits/stdio_lim.h /tools/include/bits</userinput></screen>
 <screen os="ci"><userinput>touch /tools/include/gnu/stubs.h</userinput></screen>
 
    <para os="cj">Another header is needed for NPTL:</para>
-   
-<screen><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/alpha/bits/pthreadtypes.h /tools/include/bits/</userinput></screen>
+
+<screen><userinput>cp -v ../glibc-&glibc-version;/nptl/sysdeps/unix/sysv/linux/alpha/bits/pthreadtypes.h \
+    /tools/include/bits/</userinput></screen>
 
   </sect2>
 
