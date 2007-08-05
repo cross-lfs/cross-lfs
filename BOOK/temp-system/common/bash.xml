@@ -31,13 +31,27 @@
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <para os="c1">When bash is cross-compiled, it cannot test for the presence
-    of named pipes. If you used <command>su</command> to become an unprivileged
-    user, this combination will cause Bash to build without <emphasis>process
-    substitution</emphasis>, which will break one of the c++ test scripts in
-    <literal>glibc</literal>. Prevent that by forcing the following definition:
-    </para>
+    of named pipes, amoung other things. If you used <command>su</command> to
+    become an unprivileged user, this combination will cause Bash to build
+    without <emphasis>process substitution</emphasis>, which will break one
+    of the c++ test scripts in <literal>glibc</literal>. The following prevents
+    future problems by skipping tests that can not run while cross-compiling
+    or that do not run properly:</para>
 
-<screen os="c2"><userinput>echo "bash_cv_sys_named_pipes=yes" >> config.cache</userinput></screen>
+<screen os="c2"><userinput>cat &gt; config.cache &lt;&lt; "EOF"
+ac_cv_func_mmap_fixed_mapped=yes
+ac_cv_func_strcoll_works=yes
+ac_cv_func_working_mktime=yes
+bash_cv_func_sigsetjmp=present
+bash_cv_getcwd_malloc=yes
+bash_cv_job_control_missing=present
+bash_cv_printf_a_format=yes
+bash_cv_sys_named_pipes=present
+bash_cv_ulimit_maxfds=yes
+bash_cv_under_sys_siglist=yes
+bash_cv_unusable_rtsigs=no
+gt_cv_int_divbyzero_sigfpe=yes
+EOF</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
