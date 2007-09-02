@@ -27,14 +27,6 @@
     linker and assembler to determine which of their own features to
     enable.</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/binutils.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/binutils.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
-
     <para os="ba">To make sure that the proper syntax is used for a couple of
     tools, apply the following patch:</para>
 
@@ -52,7 +44,7 @@
     href="../../final-system/common/binutils.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen os="bc"><userinput>../binutils-&binutils-version;/configure --prefix=/cross-tools \
+<screen os="bc"><userinput>AR=ar AS=as ../binutils-&binutils-version;/configure --prefix=/cross-tools \
     --host=${CLFS_HOST} --target=${CLFS_TARGET} --with-lib-path=/tools/lib \
     --disable-nls --enable-shared --disable-multilib</userinput></screen>
 
