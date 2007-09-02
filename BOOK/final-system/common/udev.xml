@@ -29,7 +29,7 @@
 
 <screen os="b"><userinput>make EXTRAS="extras/floppy extras/cdrom_id extras/firmware \
     extras/scsi_id extras/volume_id extras/ata_id extras/usb_id \
-    extras/edd_id extras/dasd_id extras/path_id"</userinput></screen>
+    extras/edd_id extras/collect extras/path_id"</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the make parameter:</title>
@@ -37,7 +37,7 @@
       <varlistentry>
       <term><parameter>EXTRAS="extras/floppy extras/cdrom_id extras/firmware
       extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id
-      extras/dasd_id extras/path_id"</parameter></term>
+      extras/collect extras/path_id"</parameter></term>
         <listitem>
           <para>This builds the helper applications that are used with
           udev. The helper programs assist in correct handling of devices.</para>
@@ -60,7 +60,7 @@
 <screen os="h"><userinput>make DESTDIR=/ \
     EXTRAS="extras/floppy extras/cdrom_id extras/firmware \
     extras/scsi_id extras/volume_id extras/ata_id extras/usb_id \
-    extras/edd_id extras/dasd_id extras/path_id" install</userinput></screen>
+    extras/edd_id extras/collect extras/path_id" install</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the make parameter:</title>
@@ -77,11 +77,6 @@
     </variablelist>
 
     <para os="i">Install a necessary helper script:</para>
-
-<screen os="j"><userinput>install -v extras/eventrecorder.sh /lib/udev</userinput></screen>
-
-    <para os="l">Install the documentation that explains how to create
-    Udev rules:</para>
 
 <screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html \
     /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
