@@ -27,17 +27,17 @@
 
     <para os="a">Compile the package:</para>
 
-<screen os="b"><userinput>make EXTRAS="extras/floppy extras/cdrom_id extras/firmware \
-    extras/scsi_id extras/volume_id extras/ata_id extras/usb_id \
-    extras/edd_id extras/collect extras/path_id"</userinput></screen>
+<screen os="b"><userinput>make EXTRAS="extras/ata_id extras/cdrom_id extras/collect
+    extras/edd_id extras/firmware extras/floppy extras/path_id extras/rule_generator
+    extras/scsi_id extras/usb_id extras/volume_id" udevdir=/dev</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the make parameter:</title>
 
       <varlistentry>
-      <term><parameter>EXTRAS="extras/floppy extras/cdrom_id extras/firmware
-      extras/scsi_id extras/volume_id extras/ata_id extras/usb_id extras/edd_id
-      extras/collect extras/path_id"</parameter></term>
+      <term><parameter>EXTRAS="extras/ata_id extras/cdrom_id extras/collect
+      extras/edd_id extras/firmware extras/floppy extras/path_id extras/rule_generator
+      extras/scsi_id extras/usb_id extras/volume_id"</parameter></term>
         <listitem>
           <para>This builds the helper applications that are used with
           udev. The helper programs assist in correct handling of devices.</para>
@@ -47,8 +47,7 @@
     </variablelist>
 
     <para os="d">If you want to run the testsuite, you need to change
-    a hardcoded reference to the <command>test</command>
-    program:</para>
+    a hardcoded reference to the <command>test</command> program:</para>
 
     <screen os="e"><userinput>sed -i 's@/usr/bin/test@/bin/test@' test/udev-test.pl</userinput></screen>
 
@@ -57,10 +56,9 @@
 
     <para os="g">Install the package:</para>
 
-<screen os="h"><userinput>make DESTDIR=/ \
-    EXTRAS="extras/floppy extras/cdrom_id extras/firmware \
-    extras/scsi_id extras/volume_id extras/ata_id extras/usb_id \
-    extras/edd_id extras/collect extras/path_id" install</userinput></screen>
+<screen os="h"><userinput>make EXTRAS="extras/ata_id extras/cdrom_id extras/collect
+    extras/edd_id extras/firmware extras/floppy extras/path_id extras/rule_generator
+    extras/scsi_id extras/usb_id extras/volume_id" DESTDIR=/ udevdir=/dev" install</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the make parameter:</title>
@@ -76,20 +74,15 @@
 
     </variablelist>
 
-    <para os="l">Install a necessary helper script:</para>
+    <para os="j">Install documentation:</para>
 
-<screen os="m"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html \
+<screen os="k"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html \
     /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
 
-    <para os="n">Create a directory for storing firmware that can be
+    <para os="l">Create a directory for storing firmware that can be
     loaded by <command>udev</command>:</para>
 
-<screen os="o"><userinput>install -dv /lib/firmware</userinput></screen>
-
-  <para os="p">Finally, remove the rules installed by Udev as we will be
-  installing custom Udev rules later:</para>
-
-<screen os="q"><userinput>rm -v /etc/udev/rules.d/*</userinput></screen>
+<screen os="m"><userinput>install -dv /lib/firmware</userinput></screen>
 
   </sect2>
 
