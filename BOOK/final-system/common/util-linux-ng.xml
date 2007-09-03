@@ -5,26 +5,26 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-util-linux" role="wrap">
-  <?dbhtml filename="util-linux.html"?>
+<sect1 id="ch-system-util-linux-ng" role="wrap">
+  <?dbhtml filename="util-linux-ng.html"?>
 
-  <title>Util-linux-&util-linux-version;</title>
+  <title>Util-linux-ng-&util-linux-ng-version;</title>
 
-  <indexterm zone="ch-system-util-linux">
-    <primary sortas="a-Util-linux">Util-linux</primary>
+  <indexterm zone="ch-system-util-linux-ng">
+    <primary sortas="a-Util-linux-ng">Util-linux-ng</primary>
   </indexterm>
 
   <sect2 role="package">
     <title/>
 
-    <para>The Util-linux package contains miscellaneous utility programs.
+    <para>The Util-linux-ng package contains miscellaneous utility programs.
     Among them are utilities for handling file systems, consoles, partitions,
     and messages.</para>
 
 
   </sect2>
 
-  <sect2 id="fhs-util-linux" role="installation">
+  <sect2 id="fhs-util-linux-ng" role="installation">
     <title>FHS compliance notes</title>
 
     <para>The FHS recommends using the <filename
@@ -40,72 +40,30 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of Util-linux</title>
+    <title>Installation of Util-linux-ng</title>
 
-    <para os="p1">Util-linux fails to compile against newer versions of
-    Linux kernel headers. The following patch properly fixes this issue:</para>
+    <para os="a">Prepare Util-linux-ng for compilation:</para>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&util-linux-cramfs-patch;</userinput></screen>
-
-    <para os="p3">The following patch fixes build issues with the changes to the Linux 2.6.18
-    headers:</para>
-
-<screen os="p4"><userinput>patch -Np1 -i ../&util-linux-syscall_fixes-patch;</userinput></screen>
-
-    <para os="p5">The following patch fixes swapon.c - it tries to find the variable R_OK, but
-    the header that has R_OK is not included:</para>
-
-<screen os="p6"><userinput>patch -Np1 -i ../&util-linux-missing_header-patch;</userinput></screen>
-
-    <para os="p7">Due to a change in headers some of Util-linux will not build.
-    This patch will change the utilization of llseek to lseek. This fix has
-    been applied to the development version of Util-linux:</para>
-
-<screen os="p8"><userinput>patch -Np1 -i ../&util-linux-lseek-patch;</userinput></screen>
-
-    <para os="a">Prepare Util-linux for compilation:</para>
-
-<screen os="b"><userinput>./configure</userinput></screen>
+<screen os="b"><userinput>CC="gcc ${BUILD32}" ./configure --with-fsprobe=blkid --enable-agetty \
+    --enable-cramfs --disable-init --disable-kill --disable-last \
+    --disable-mesg --enable-partx --enable-rename --disable-reset \
+    --disable-login-utils --enable-schedutils --disable-wall --enable-write \
+    --without-pam</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
-<screen os="d"><userinput>make HAVE_KILL=yes HAVE_SLN=yes</userinput></screen>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <variablelist os="e">
-      <title>The meaning of the make parameters:</title>
+    <para os="e">This package does not come with a test suite.</para>
 
-      <varlistentry os="e1">
-        <term><parameter>HAVE_KILL=yes</parameter></term>
-        <listitem>
-          <para>This prevents the <command>kill</command> program (already
-          installed by Procps) from being built and installed again.</para>
-        </listitem>
-      </varlistentry>
+    <para os="g">Install the package:</para>
 
-      <varlistentry os="e2">
-        <term><parameter>HAVE_SLN=yes</parameter></term>
-        <listitem>
-          <para>This prevents the <command>sln</command> program (a
-          statically linked version of <command>ln</command> already installed
-          by Glibc) from being built and installed again.</para>
-        </listitem>
-      </varlistentry>
-
-    </variablelist>
-
-    <para os="f">This package does not come with a test suite.</para>
-
-    <para os="g">Install the package and move the <command>logger</command> binary
-    to <filename class="directory">/bin</filename> as it is needed by the
-    CLFS-Bootscripts package:</para>
-
-<screen os="h"><userinput>make HAVE_KILL=yes HAVE_SLN=yes install
-mv -v /usr/bin/logger /bin</userinput></screen>
+<screen os="h"><userinput>make install</userinput></screen>
 
   </sect2>
 
-  <sect2 id="contents-util-linux" role="content">
-    <title>Contents of Util-linux</title>
+  <sect2 id="contents-util-linux-ng" role="content">
+    <title>Contents of Util-linux-ng</title>
 
     <segmentedlist>
       <segtitle>Installed programs</segtitle>
@@ -133,7 +91,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Opens a tty port, prompts for a login name,
           and then invokes the <command>login</command> program</para>
-          <indexterm zone="ch-system-util-linux agetty">
+          <indexterm zone="ch-system-util-linux-ng agetty">
             <primary sortas="b-agetty">agetty</primary>
           </indexterm>
         </listitem>
@@ -143,7 +101,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>arch</command></term>
         <listitem>
           <para>Reports the machine's architecture</para>
-          <indexterm zone="ch-system-util-linux arch">
+          <indexterm zone="ch-system-util-linux-ng arch">
             <primary sortas="b-arch">arch</primary>
           </indexterm>
         </listitem>
@@ -154,7 +112,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Allows users to call block device ioctls from the command
           line</para>
-          <indexterm zone="ch-system-util-linux blockdev">
+          <indexterm zone="ch-system-util-linux-ng blockdev">
             <primary sortas="b-blockdev">blockdev</primary>
           </indexterm>
         </listitem>
@@ -164,7 +122,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>cal</command></term>
         <listitem>
           <para>Displays a simple calendar</para>
-          <indexterm zone="ch-system-util-linux cal">
+          <indexterm zone="ch-system-util-linux-ng cal">
             <primary sortas="b-cal">cal</primary>
           </indexterm>
         </listitem>
@@ -174,7 +132,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>cfdisk</command></term>
         <listitem>
           <para>Manipulates the partition table of the given device</para>
-          <indexterm zone="ch-system-util-linux cfdisk">
+          <indexterm zone="ch-system-util-linux-ng cfdisk">
             <primary sortas="b-cfdisk">cfdisk</primary>
           </indexterm>
         </listitem>
@@ -184,7 +142,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>chkdupexe</command></term>
         <listitem>
           <para>Finds duplicate executables</para>
-          <indexterm zone="ch-system-util-linux chkdupexe">
+          <indexterm zone="ch-system-util-linux-ng chkdupexe">
             <primary sortas="b-chkdupexe">chkdupexe</primary>
           </indexterm>
         </listitem>
@@ -194,7 +152,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>col</command></term>
         <listitem>
           <para>Filters out reverse line feeds</para>
-          <indexterm zone="ch-system-util-linux col">
+          <indexterm zone="ch-system-util-linux-ng col">
             <primary sortas="b-col">col</primary>
           </indexterm>
         </listitem>
@@ -205,7 +163,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Filters <command>nroff</command> output for terminals
           that lack some capabilities, such as overstriking and half-lines</para>
-          <indexterm zone="ch-system-util-linux colcrt">
+          <indexterm zone="ch-system-util-linux-ng colcrt">
             <primary sortas="b-colcrt">colcrt</primary>
           </indexterm>
         </listitem>
@@ -215,7 +173,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>colrm</command></term>
         <listitem>
           <para>Filters out the given columns</para>
-          <indexterm zone="ch-system-util-linux colrm">
+          <indexterm zone="ch-system-util-linux-ng colrm">
             <primary sortas="b-colrm">colrm</primary>
           </indexterm>
         </listitem>
@@ -225,7 +183,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>column</command></term>
         <listitem>
           <para>Formats a given file into multiple columns</para>
-          <indexterm zone="ch-system-util-linux column">
+          <indexterm zone="ch-system-util-linux-ng column">
             <primary sortas="b-column">column</primary>
           </indexterm>
         </listitem>
@@ -236,7 +194,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Sets the function of the Ctrl+Alt+Del key combination to a
           hard or a soft reset</para>
-          <indexterm zone="ch-system-util-linux ctrlaltdel">
+          <indexterm zone="ch-system-util-linux-ng ctrlaltdel">
             <primary sortas="b-ctrlaltdel">ctrlaltdel</primary>
           </indexterm>
         </listitem>
@@ -247,7 +205,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Tunes the parameters of the serial line drivers for
           Cyclades cards</para>
-          <indexterm zone="ch-system-util-linux cytune">
+          <indexterm zone="ch-system-util-linux-ng cytune">
             <primary sortas="b-cytune">cytune</primary>
           </indexterm>
         </listitem>
@@ -258,7 +216,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Gives the Discordian date or converts the given Gregorian date
           to a Discordian one</para>
-          <indexterm zone="ch-system-util-linux ddate">
+          <indexterm zone="ch-system-util-linux-ng ddate">
             <primary sortas="b-ddate">ddate</primary>
           </indexterm>
         </listitem>
@@ -268,7 +226,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>dmesg</command></term>
         <listitem>
           <para>Dumps the kernel boot messages</para>
-          <indexterm zone="ch-system-util-linux dmesg">
+          <indexterm zone="ch-system-util-linux-ng dmesg">
             <primary sortas="b-dmesg">dmesg</primary>
           </indexterm>
         </listitem>
@@ -279,7 +237,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Tunes the performance and interactivity of a block
           device</para>
-          <indexterm zone="ch-system-util-linux elvtune">
+          <indexterm zone="ch-system-util-linux-ng elvtune">
             <primary sortas="b-elvtune">elvtune</primary>
           </indexterm>
         </listitem>
@@ -289,7 +247,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>fdformat</command></term>
         <listitem>
           <para>Low-level formats a floppy disk</para>
-          <indexterm zone="ch-system-util-linux fdformat">
+          <indexterm zone="ch-system-util-linux-ng fdformat">
             <primary sortas="b-fdformat">fdformat</primary>
           </indexterm>
         </listitem>
@@ -299,7 +257,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>fdisk</command></term>
         <listitem>
           <para>Manipulates the partition table of the given device</para>
-          <indexterm zone="ch-system-util-linux fdisk">
+          <indexterm zone="ch-system-util-linux-ng fdisk">
             <primary sortas="b-fdisk">fdisk</primary>
           </indexterm>
         </listitem>
@@ -310,7 +268,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Acquires a file lock and then executes a command with the lock
           held</para>
-          <indexterm zone="ch-system-util-linux flock">
+          <indexterm zone="ch-system-util-linux-ng flock">
             <primary sortas="b-flock">flock</primary>
           </indexterm>
         </listitem>
@@ -321,7 +279,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Performs a consistency check on the Cramfs file system on the
           given device</para>
-          <indexterm zone="ch-system-util-linux fsck.cramfs">
+          <indexterm zone="ch-system-util-linux-ng fsck.cramfs">
             <primary sortas="b-fsck.cramfs">fsck.cramfs</primary>
           </indexterm>
         </listitem>
@@ -332,7 +290,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Performs a consistency check on the Minix file system on the
           given device</para>
-          <indexterm zone="ch-system-util-linux fsck.minix">
+          <indexterm zone="ch-system-util-linux-ng fsck.minix">
             <primary sortas="b-fsck.minix">fsck.minix</primary>
           </indexterm>
         </listitem>
@@ -342,7 +300,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>getopt</command></term>
         <listitem>
           <para>Parses options in the given command line</para>
-          <indexterm zone="ch-system-util-linux getopt">
+          <indexterm zone="ch-system-util-linux-ng getopt">
             <primary sortas="b-getopt">getopt</primary>
           </indexterm>
         </listitem>
@@ -353,7 +311,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Dumps the given file in hexadecimal or in another given
           format</para>
-          <indexterm zone="ch-system-util-linux hexdump">
+          <indexterm zone="ch-system-util-linux-ng hexdump">
             <primary sortas="b-hexdump">hexdump</primary>
           </indexterm>
         </listitem>
@@ -365,7 +323,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
           <para>Reads or sets the system's hardware clock, also called
           the Real-Time Clock (RTC) or Basic Input-Output System (BIOS)
           clock</para>
-          <indexterm zone="ch-system-util-linux hwclock">
+          <indexterm zone="ch-system-util-linux-ng hwclock">
             <primary sortas="b-hwclock">hwclock</primary>
           </indexterm>
         </listitem>
@@ -375,7 +333,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>ipcrm</command></term>
         <listitem>
           <para>Removes the given Inter-Process Communication (IPC) resource</para>
-          <indexterm zone="ch-system-util-linux ipcrm">
+          <indexterm zone="ch-system-util-linux-ng ipcrm">
             <primary sortas="b-ipcrm">ipcrm</primary>
           </indexterm>
         </listitem>
@@ -385,7 +343,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>ipcs</command></term>
         <listitem>
           <para>Provides IPC status information</para>
-          <indexterm zone="ch-system-util-linux ipcs">
+          <indexterm zone="ch-system-util-linux-ng ipcs">
             <primary sortas="b-ipcs">ipcs</primary>
           </indexterm>
         </listitem>
@@ -395,7 +353,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>isosize</command></term>
         <listitem>
           <para>Reports the size of an iso9660 file system</para>
-          <indexterm zone="ch-system-util-linux isosize">
+          <indexterm zone="ch-system-util-linux-ng isosize">
             <primary sortas="b-isosize">isosize</primary>
           </indexterm>
         </listitem>
@@ -405,7 +363,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>line</command></term>
         <listitem>
           <para>Copies a single line</para>
-          <indexterm zone="ch-system-util-linux line">
+          <indexterm zone="ch-system-util-linux-ng line">
             <primary sortas="b-line">line</primary>
           </indexterm>
         </listitem>
@@ -415,7 +373,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>logger</command></term>
         <listitem>
           <para>Enters the given message into the system log</para>
-          <indexterm zone="ch-system-util-linux logger">
+          <indexterm zone="ch-system-util-linux-ng logger">
             <primary sortas="b-logger">logger</primary>
           </indexterm>
         </listitem>
@@ -425,7 +383,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>look</command></term>
         <listitem>
           <para>Displays lines that begin with the given string</para>
-          <indexterm zone="ch-system-util-linux look">
+          <indexterm zone="ch-system-util-linux-ng look">
             <primary sortas="b-look">look</primary>
           </indexterm>
         </listitem>
@@ -435,7 +393,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>losetup</command></term>
         <listitem>
           <para>Sets up and controls loop devices</para>
-          <indexterm zone="ch-system-util-linux losetup">
+          <indexterm zone="ch-system-util-linux-ng losetup">
             <primary sortas="b-losetup">losetup</primary>
           </indexterm>
         </listitem>
@@ -446,7 +404,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Generates magic cookies (128-bit random hexadecimal numbers) for
           <command>xauth</command></para>
-          <indexterm zone="ch-system-util-linux mcookie">
+          <indexterm zone="ch-system-util-linux-ng mcookie">
             <primary sortas="b-mcookie">mcookie</primary>
           </indexterm>
         </listitem>
@@ -457,7 +415,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Builds a file system on a device (usually a hard disk
           partition)</para>
-          <indexterm zone="ch-system-util-linux mkfs">
+          <indexterm zone="ch-system-util-linux-ng mkfs">
             <primary sortas="b-mkfs">mkfs</primary>
           </indexterm>
         </listitem>
@@ -467,7 +425,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>mkfs.bfs</command></term>
         <listitem>
           <para>Creates a Santa Cruz Operations (SCO) bfs file system</para>
-          <indexterm zone="ch-system-util-linux mkfs.bfs">
+          <indexterm zone="ch-system-util-linux-ng mkfs.bfs">
             <primary sortas="b-mkfs.bfs">mkfs.bfs</primary>
           </indexterm>
         </listitem>
@@ -477,7 +435,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>mkfs.cramfs</command></term>
         <listitem>
           <para>Creates a cramfs file system</para>
-          <indexterm zone="ch-system-util-linux mkfs.cramfs">
+          <indexterm zone="ch-system-util-linux-ng mkfs.cramfs">
             <primary sortas="b-mkfs.cramfs">mkfs.cramfs</primary>
           </indexterm>
         </listitem>
@@ -487,7 +445,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>mkfs.minix</command></term>
         <listitem>
           <para>Creates a Minix file system</para>
-          <indexterm zone="ch-system-util-linux mkfs.minix">
+          <indexterm zone="ch-system-util-linux-ng mkfs.minix">
             <primary sortas="b-mkfs.minix">mkfs.minix</primary>
           </indexterm>
         </listitem>
@@ -498,7 +456,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Initializes the given device or file to be used as a swap
           area</para>
-          <indexterm zone="ch-system-util-linux mkswap">
+          <indexterm zone="ch-system-util-linux-ng mkswap">
             <primary sortas="b-mkswap">mkswap</primary>
           </indexterm>
         </listitem>
@@ -508,7 +466,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>more</command></term>
         <listitem>
           <para>A filter for paging through text one screen at a time</para>
-          <indexterm zone="ch-system-util-linux more">
+          <indexterm zone="ch-system-util-linux-ng more">
             <primary sortas="b-more">more</primary>
           </indexterm>
         </listitem>
@@ -519,7 +477,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Attaches the file system on the given device to a specified
           directory in the file-system tree</para>
-          <indexterm zone="ch-system-util-linux mount">
+          <indexterm zone="ch-system-util-linux-ng mount">
             <primary sortas="b-mount">mount</primary>
           </indexterm>
         </listitem>
@@ -529,7 +487,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>namei</command></term>
         <listitem>
           <para>Shows the symbolic links in the given pathnames</para>
-          <indexterm zone="ch-system-util-linux namei">
+          <indexterm zone="ch-system-util-linux-ng namei">
             <primary sortas="b-namei">namei</primary>
           </indexterm>
         </listitem>
@@ -539,7 +497,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>pg</command></term>
         <listitem>
           <para>Displays a text file one screen full at a time</para>
-          <indexterm zone="ch-system-util-linux pg">
+          <indexterm zone="ch-system-util-linux-ng pg">
             <primary sortas="b-pg">pg</primary>
           </indexterm>
         </listitem>
@@ -550,7 +508,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Makes the given file system the new root file system of the
           current process</para>
-          <indexterm zone="ch-system-util-linux pivot_root">
+          <indexterm zone="ch-system-util-linux-ng pivot_root">
             <primary sortas="b-pivot_root">pivot_root</primary>
           </indexterm>
         </listitem>
@@ -560,7 +518,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>ramsize</command></term>
         <listitem>
           <para>Sets the size of the RAM disk in a bootable image</para>
-          <indexterm zone="ch-system-util-linux ramsize">
+          <indexterm zone="ch-system-util-linux-ng ramsize">
             <primary sortas="b-ramsize">ramsize</primary>
           </indexterm>
         </listitem>
@@ -569,9 +527,9 @@ mv -v /usr/bin/logger /bin</userinput></screen>
       <varlistentry id="raw">
         <term><command>raw</command></term>
         <listitem>
-          <para>Used to bind a Linux raw character device to a block
+          <para>Used to bind a Linux-ng raw character device to a block
           device</para>
-          <indexterm zone="ch-system-util-linux raw">
+          <indexterm zone="ch-system-util-linux-ng raw">
             <primary sortas="b-raw">raw</primary>
           </indexterm>
         </listitem>
@@ -582,7 +540,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Queries and sets the root device, among other things, in a
           bootable image</para>
-          <indexterm zone="ch-system-util-linux rdev">
+          <indexterm zone="ch-system-util-linux-ng rdev">
             <primary sortas="b-rdev">rdev</primary>
           </indexterm>
         </listitem>
@@ -592,7 +550,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>readprofile</command></term>
         <listitem>
           <para>Reads kernel profiling information</para>
-          <indexterm zone="ch-system-util-linux readprofile">
+          <indexterm zone="ch-system-util-linux-ng readprofile">
             <primary sortas="b-readprofile">readprofile</primary>
           </indexterm>
         </listitem>
@@ -603,7 +561,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Renames the given files, replacing a given string with
           another</para>
-          <indexterm zone="ch-system-util-linux rename">
+          <indexterm zone="ch-system-util-linux-ng rename">
             <primary sortas="b-rename">rename</primary>
           </indexterm>
         </listitem>
@@ -613,7 +571,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>renice</command></term>
         <listitem>
           <para>Alters the priority of running processes</para>
-          <indexterm zone="ch-system-util-linux renice">
+          <indexterm zone="ch-system-util-linux-ng renice">
             <primary sortas="b-renice">renice</primary>
           </indexterm>
         </listitem>
@@ -623,7 +581,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>rev</command></term>
         <listitem>
           <para>Reverses the lines of a given file</para>
-          <indexterm zone="ch-system-util-linux rev">
+          <indexterm zone="ch-system-util-linux-ng rev">
             <primary sortas="b-rev">rev</primary>
           </indexterm>
         </listitem>
@@ -633,7 +591,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>rootflags</command></term>
         <listitem>
           <para>Sets the rootflags in a bootable image</para>
-          <indexterm zone="ch-system-util-linux rootflags">
+          <indexterm zone="ch-system-util-linux-ng rootflags">
             <primary sortas="b-rootflags">rootflags</primary>
           </indexterm>
         </listitem>
@@ -643,7 +601,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>script</command></term>
         <listitem>
           <para>Makes a typescript of a terminal session</para>
-          <indexterm zone="ch-system-util-linux script">
+          <indexterm zone="ch-system-util-linux-ng script">
             <primary sortas="b-script">script</primary>
           </indexterm>
         </listitem>
@@ -653,7 +611,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>setfdprm</command></term>
         <listitem>
           <para>Sets user-provided floppy disk parameters</para>
-          <indexterm zone="ch-system-util-linux setfdprm">
+          <indexterm zone="ch-system-util-linux-ng setfdprm">
             <primary sortas="b-setfdprm">setfdprm</primary>
           </indexterm>
         </listitem>
@@ -663,7 +621,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>setsid</command></term>
         <listitem>
           <para>Runs the given program in a new session</para>
-          <indexterm zone="ch-system-util-linux setsid">
+          <indexterm zone="ch-system-util-linux-ng setsid">
             <primary sortas="b-setsid">setsid</primary>
           </indexterm>
         </listitem>
@@ -673,7 +631,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>setterm</command></term>
         <listitem>
           <para>Sets terminal attributes</para>
-          <indexterm zone="ch-system-util-linux setterm">
+          <indexterm zone="ch-system-util-linux-ng setterm">
             <primary sortas="b-setterm">setterm</primary>
           </indexterm>
         </listitem>
@@ -683,7 +641,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>sfdisk</command></term>
         <listitem>
           <para>A disk partition table manipulator</para>
-          <indexterm zone="ch-system-util-linux sfdisk">
+          <indexterm zone="ch-system-util-linux-ng sfdisk">
             <primary sortas="b-sfdisk">sfdisk</primary>
           </indexterm>
         </listitem>
@@ -693,7 +651,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>swapoff</command></term>
         <listitem>
           <para>Disables devices and files for paging and swapping</para>
-          <indexterm zone="ch-system-util-linux swapoff">
+          <indexterm zone="ch-system-util-linux-ng swapoff">
             <primary sortas="b-swapoff">swapoff</primary>
           </indexterm>
         </listitem>
@@ -704,7 +662,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Enables devices and files for paging and swapping and
           lists the devices and files currently in use</para>
-          <indexterm zone="ch-system-util-linux swapon">
+          <indexterm zone="ch-system-util-linux-ng swapon">
             <primary sortas="b-swapon">swapon</primary>
           </indexterm>
         </listitem>
@@ -716,7 +674,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
           <para>Tracks the growth of a log file. Displays the last 10 lines
           of a log file, then continues displaying any new entries in the
           log file as they are created</para>
-          <indexterm zone="ch-system-util-linux tailf">
+          <indexterm zone="ch-system-util-linux-ng tailf">
             <primary sortas="b-tailf">tailf</primary>
           </indexterm>
         </listitem>
@@ -726,7 +684,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>tunelp</command></term>
         <listitem>
           <para>Tunes the parameters of the line printer</para>
-          <indexterm zone="ch-system-util-linux tunelp">
+          <indexterm zone="ch-system-util-linux-ng tunelp">
             <primary sortas="b-tunelp">tunelp</primary>
           </indexterm>
         </listitem>
@@ -737,7 +695,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>A filter for translating underscores into escape sequences
           indicating underlining for the terminal in use</para>
-          <indexterm zone="ch-system-util-linux ul">
+          <indexterm zone="ch-system-util-linux-ng ul">
             <primary sortas="b-ul">ul</primary>
           </indexterm>
         </listitem>
@@ -747,7 +705,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>umount</command></term>
         <listitem>
           <para>Disconnects a file system from the system's file tree</para>
-          <indexterm zone="ch-system-util-linux umount">
+          <indexterm zone="ch-system-util-linux-ng umount">
             <primary sortas="b-umount">umount</primary>
           </indexterm>
         </listitem>
@@ -757,7 +715,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <term><command>vidmode</command></term>
         <listitem>
           <para>Sets the video mode in a bootable image</para>
-          <indexterm zone="ch-system-util-linux vidmode">
+          <indexterm zone="ch-system-util-linux-ng vidmode">
             <primary sortas="b-vidmode">vidmode</primary>
           </indexterm>
         </listitem>
@@ -768,7 +726,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Reports the location of the binary, source, and man page
           for the given command</para>
-          <indexterm zone="ch-system-util-linux whereis">
+          <indexterm zone="ch-system-util-linux-ng whereis">
             <primary sortas="b-whereis">whereis</primary>
           </indexterm>
         </listitem>
@@ -779,7 +737,7 @@ mv -v /usr/bin/logger /bin</userinput></screen>
         <listitem>
           <para>Sends a message to the given user <emphasis>if</emphasis> that
           user has not disabled receipt of such messages</para>
-          <indexterm zone="ch-system-util-linux write">
+          <indexterm zone="ch-system-util-linux-ng write">
             <primary sortas="b-write">write</primary>
           </indexterm>
         </listitem>
