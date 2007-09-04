@@ -1,0 +1,435 @@
+Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
+Date: 2007-09-03
+Initial Package Version: 5.2
+Origin: ftp://ftp.cwru.edu/pub/bash/readline-5.2-patches
+Upstream Status: From Upstream
+Description: Contains patches 001-007 from upstream
+ 
+diff -Naur readline-5.2.orig/complete.c readline-5.2/complete.c
+--- readline-5.2.orig/complete.c	2006-07-28 08:35:49.000000000 -0700
++++ readline-5.2/complete.c	2007-09-03 22:06:46.000000000 -0700
+@@ -428,7 +428,7 @@
+ 	return (1);
+       if (c == 'n' || c == 'N' || c == RUBOUT)
+ 	return (0);
+-      if (c == ABORT_CHAR)
++      if (c == ABORT_CHAR || c < 0)
+ 	_rl_abort_internal ();
+       if (for_pager && (c == NEWLINE || c == RETURN))
+ 	return (2);
+diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
+--- readline-5.2.orig/display.c	2006-09-14 11:20:12.000000000 -0700
++++ readline-5.2/display.c	2007-09-03 22:06:48.000000000 -0700
+@@ -561,6 +561,17 @@
+       wrap_offset = prompt_invis_chars_first_line = 0;
+     }
+ 
++#if defined (HANDLE_MULTIBYTE)
++#define CHECK_INV_LBREAKS() \
++      do { \
++	if (newlines >= (inv_lbsize - 2)) \
++	  { \
++	    inv_lbsize *= 2; \
++	    inv_lbreaks = (int *)xrealloc (inv_lbreaks, inv_lbsize * sizeof (int)); \
++	    _rl_wrapped_line = (int *)xrealloc (_rl_wrapped_line, inv_lbsize * sizeof (int)); \
++	  } \
++      } while (0)
++#else
+ #define CHECK_INV_LBREAKS() \
+       do { \
+ 	if (newlines >= (inv_lbsize - 2)) \
+@@ -569,6 +580,7 @@
+ 	    inv_lbreaks = (int *)xrealloc (inv_lbreaks, inv_lbsize * sizeof (int)); \
+ 	  } \
+       } while (0)
++#endif /* HANDLE_MULTIBYTE */
+ 
+ #if defined (HANDLE_MULTIBYTE)	  
+ #define CHECK_LPOS() \
+@@ -1506,11 +1518,31 @@
+     {
+       /* Non-zero if we're increasing the number of lines. */
+       int gl = current_line >= _rl_vis_botlin && inv_botlin > _rl_vis_botlin;
++      /* If col_lendiff is > 0, implying that the new string takes up more
++	 screen real estate than the old, but lendiff is < 0, meaning that it
++	 takes fewer bytes, we need to just output the characters starting
++	 from the first difference.  These will overwrite what is on the
++	 display, so there's no reason to do a smart update.  This can really
++	 only happen in a multibyte environment. */
++      if (lendiff < 0)
++	{
++	  _rl_output_some_chars (nfd, temp);
++	  _rl_last_c_pos += _rl_col_width (nfd, 0, temp);
++	  /* If nfd begins before any invisible characters in the prompt,
++	     adjust _rl_last_c_pos to account for wrap_offset and set
++	     cpos_adjusted to let the caller know. */
++	  if (current_line == 0 && wrap_offset && ((nfd - new) <= prompt_last_invisible))
++	    {
++	      _rl_last_c_pos -= wrap_offset;
++	      cpos_adjusted = 1;
++	    }
++	  return;
++	}
+       /* Sometimes it is cheaper to print the characters rather than
+ 	 use the terminal's capabilities.  If we're growing the number
+ 	 of lines, make sure we actually cause the new line to wrap
+ 	 around on auto-wrapping terminals. */
+-      if (_rl_terminal_can_insert && ((2 * col_temp) >= col_lendiff || _rl_term_IC) && (!_rl_term_autowrap || !gl))
++      else if (_rl_terminal_can_insert && ((2 * col_temp) >= col_lendiff || _rl_term_IC) && (!_rl_term_autowrap || !gl))
+ 	{
+ 	  /* If lendiff > prompt_visible_length and _rl_last_c_pos == 0 and
+ 	     _rl_horizontal_scroll_mode == 1, inserting the characters with
+@@ -1586,8 +1618,22 @@
+ 	  temp = nls - nfd;
+ 	  if (temp > 0)
+ 	    {
++	      /* If nfd begins at the prompt, or before the invisible
++		 characters in the prompt, we need to adjust _rl_last_c_pos
++		 in a multibyte locale to account for the wrap offset and
++		 set cpos_adjusted accordingly. */
+ 	      _rl_output_some_chars (nfd, temp);
+-	      _rl_last_c_pos += _rl_col_width (nfd, 0, temp);;
++	      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
++		{
++                  _rl_last_c_pos += _rl_col_width (nfd, 0, temp);
++                  if (current_line == 0 && wrap_offset &&  ((nfd - new) <= prompt_last_invisible))
++		    {
++		      _rl_last_c_pos -= wrap_offset;
++		      cpos_adjusted = 1;
++		    }
++		}
++              else
++                _rl_last_c_pos += temp;
+ 	    }
+ 	}
+       /* Otherwise, print over the existing material. */
+@@ -1595,8 +1641,20 @@
+ 	{
+ 	  if (temp > 0)
+ 	    {
++	      /* If nfd begins at the prompt, or before the invisible
++		 characters in the prompt, we need to adjust _rl_last_c_pos
++		 in a multibyte locale to account for the wrap offset and
++		 set cpos_adjusted accordingly. */
+ 	      _rl_output_some_chars (nfd, temp);
+ 	      _rl_last_c_pos += col_temp;		/* XXX */
++	      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
++		{
++		  if (current_line == 0 && wrap_offset &&  ((nfd - new) <= prompt_last_invisible))
++		    {
++		      _rl_last_c_pos -= wrap_offset;
++		      cpos_adjusted = 1;
++		    }
++		}
+ 	    }
+ 	  lendiff = (oe - old) - (ne - new);
+ 	  if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+@@ -1732,7 +1790,10 @@
+   if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+     {
+       dpos = _rl_col_width (data, 0, new);
+-      if (dpos > prompt_last_invisible)		/* XXX - don't use woff here */
++      /* Use NEW when comparing against the last invisible character in the
++	 prompt string, since they're both buffer indices and DPOS is a
++	 desired display position. */
++      if (new > prompt_last_invisible)		/* XXX - don't use woff here */
+ 	{
+ 	  dpos -= woff;
+ 	  /* Since this will be assigned to _rl_last_c_pos at the end (more
+@@ -2380,6 +2441,8 @@
+ 
+   if (end <= start)
+     return 0;
++  if (MB_CUR_MAX == 1 || rl_byte_oriented)
++    return (end - start);
+ 
+   memset (&ps, 0, sizeof (mbstate_t));
+ 
+diff -Naur readline-5.2.orig/input.c readline-5.2/input.c
+--- readline-5.2.orig/input.c	2006-08-16 12:15:16.000000000 -0700
++++ readline-5.2/input.c	2007-09-03 22:06:51.000000000 -0700
+@@ -133,8 +133,11 @@
+     return (0);
+ 
+   *key = ibuffer[pop_index++];
+-
++#if 0
+   if (pop_index >= ibuffer_len)
++#else
++  if (pop_index > ibuffer_len)
++#endif
+     pop_index = 0;
+ 
+   return (1);
+@@ -250,7 +253,8 @@
+       while (chars_avail--)
+ 	{
+ 	  k = (*rl_getc_function) (rl_instream);
+-	  rl_stuff_char (k);
++	  if (rl_stuff_char (k) == 0)
++	    break;			/* some problem; no more room */
+ 	  if (k == NEWLINE || k == RETURN)
+ 	    break;
+ 	}
+@@ -373,7 +377,11 @@
+       RL_SETSTATE (RL_STATE_INPUTPENDING);
+     }
+   ibuffer[push_index++] = key;
++#if 0
+   if (push_index >= ibuffer_len)
++#else
++  if (push_index > ibuffer_len)
++#endif
+     push_index = 0;
+ 
+   return 1;
+@@ -513,20 +521,26 @@
+      char *mbchar;
+      int size;
+ {
+-  int mb_len = 0;
++  int mb_len, c;
+   size_t mbchar_bytes_length;
+   wchar_t wc;
+   mbstate_t ps, ps_back;
+ 
+   memset(&ps, 0, sizeof (mbstate_t));
+   memset(&ps_back, 0, sizeof (mbstate_t));
+-  
++
++  mb_len = 0;  
+   while (mb_len < size)
+     {
+       RL_SETSTATE(RL_STATE_MOREINPUT);
+-      mbchar[mb_len++] = rl_read_key ();
++      c = rl_read_key ();
+       RL_UNSETSTATE(RL_STATE_MOREINPUT);
+ 
++      if (c < 0)
++	break;
++
++      mbchar[mb_len++] = c;
++
+       mbchar_bytes_length = mbrtowc (&wc, mbchar, mb_len, &ps);
+       if (mbchar_bytes_length == (size_t)(-1))
+ 	break;		/* invalid byte sequence for the current locale */
+@@ -564,7 +578,7 @@
+ 
+   c = first;
+   memset (mb, 0, mlen);
+-  for (i = 0; i < mlen; i++)
++  for (i = 0; c >= 0 && i < mlen; i++)
+     {
+       mb[i] = (char)c;
+       memset (&ps, 0, sizeof (mbstate_t));
+diff -Naur readline-5.2.orig/isearch.c readline-5.2/isearch.c
+--- readline-5.2.orig/isearch.c	2005-12-26 14:18:53.000000000 -0800
++++ readline-5.2/isearch.c	2007-09-03 22:06:46.000000000 -0700
+@@ -327,8 +327,15 @@
+   rl_command_func_t *f;
+ 
+   f = (rl_command_func_t *)NULL;
+- 
+- /* Translate the keys we do something with to opcodes. */
++
++  if (c < 0)
++    {
++      cxt->sflags |= SF_FAILED;
++      cxt->history_pos = cxt->last_found_line;
++      return -1;
++    }
++
++  /* Translate the keys we do something with to opcodes. */
+   if (c >= 0 && _rl_keymap[c].type == ISFUNC)
+     {
+       f = _rl_keymap[c].function;
+diff -Naur readline-5.2.orig/misc.c readline-5.2/misc.c
+--- readline-5.2.orig/misc.c	2005-12-26 14:20:46.000000000 -0800
++++ readline-5.2/misc.c	2007-09-03 22:06:46.000000000 -0700
+@@ -146,6 +146,8 @@
+ 	  rl_restore_prompt ();
+ 	  rl_clear_message ();
+ 	  RL_UNSETSTATE(RL_STATE_NUMERICARG);
++	  if (key < 0)
++	    return -1;
+ 	  return (_rl_dispatch (key, _rl_keymap));
+ 	}
+     }
+diff -Naur readline-5.2.orig/readline.c readline-5.2/readline.c
+--- readline-5.2.orig/readline.c	2006-08-16 12:00:36.000000000 -0700
++++ readline-5.2/readline.c	2007-09-03 22:06:46.000000000 -0700
+@@ -645,6 +645,11 @@
+   if ((cxt->flags & KSEQ_DISPATCHED) == 0)
+     {
+       nkey = _rl_subseq_getchar (cxt->okey);
++      if (nkey < 0)
++	{
++	  _rl_abort_internal ();
++	  return -1;
++	}
+       r = _rl_dispatch_subseq (nkey, cxt->dmap, cxt->subseq_arg);
+       cxt->flags |= KSEQ_DISPATCHED;
+     }
+diff -Naur readline-5.2.orig/text.c readline-5.2/text.c
+--- readline-5.2.orig/text.c	2006-07-28 08:55:27.000000000 -0700
++++ readline-5.2/text.c	2007-09-03 22:06:46.000000000 -0700
+@@ -857,6 +857,9 @@
+   c = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
+ 
++  if (c < 0)
++    return -1;
++
+ #if defined (HANDLE_SIGNALS)
+   if (RL_ISSTATE (RL_STATE_CALLBACK) == 0)
+     _rl_restore_tty_signals ();
+@@ -1520,6 +1523,9 @@
+ 
+   mb_len = _rl_read_mbchar (mbchar, MB_LEN_MAX);
+ 
++  if (mb_len <= 0)
++    return -1;
++
+   if (count < 0)
+     return (_rl_char_search_internal (-count, bdir, mbchar, mb_len));
+   else
+@@ -1536,6 +1542,9 @@
+   c = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
+ 
++  if (c < 0)
++    return -1;
++
+   if (count < 0)
+     return (_rl_char_search_internal (-count, bdir, c));
+   else
+diff -Naur readline-5.2.orig/vi_mode.c readline-5.2/vi_mode.c
+--- readline-5.2.orig/vi_mode.c	2006-07-29 13:42:28.000000000 -0700
++++ readline-5.2/vi_mode.c	2007-09-03 22:06:46.000000000 -0700
+@@ -886,6 +886,13 @@
+   RL_SETSTATE(RL_STATE_MOREINPUT);
+   c = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
++
++  if (c < 0)
++    {
++      *nextkey = 0;
++      return -1;
++    }
++
+   *nextkey = c;
+ 
+   if (!member (c, vi_motion))
+@@ -902,6 +909,11 @@
+ 	  RL_SETSTATE(RL_STATE_MOREINPUT);
+ 	  c = rl_read_key ();	/* real command */
+ 	  RL_UNSETSTATE(RL_STATE_MOREINPUT);
++	  if (c < 0)
++	    {
++	      *nextkey = 0;
++	      return -1;
++	    }
+ 	  *nextkey = c;
+ 	}
+       else if (key == c && (key == 'd' || key == 'y' || key == 'c'))
+@@ -1224,14 +1236,22 @@
+ _rl_vi_callback_char_search (data)
+      _rl_callback_generic_arg *data;
+ {
++  int c;
+ #if defined (HANDLE_MULTIBYTE)
+-  _rl_vi_last_search_mblen = _rl_read_mbchar (_rl_vi_last_search_mbchar, MB_LEN_MAX);
++  c = _rl_vi_last_search_mblen = _rl_read_mbchar (_rl_vi_last_search_mbchar, MB_LEN_MAX);
+ #else
+   RL_SETSTATE(RL_STATE_MOREINPUT);
+-  _rl_vi_last_search_char = rl_read_key ();
++  c = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
+ #endif
+ 
++  if (c <= 0)
++    return -1;
++
++#if !defined (HANDLE_MULTIBYTE)
++  _rl_vi_last_search_char = c;
++#endif
++
+   _rl_callback_func = 0;
+   _rl_want_redisplay = 1;
+ 
+@@ -1247,6 +1267,7 @@
+ rl_vi_char_search (count, key)
+      int count, key;
+ {
++  int c;
+ #if defined (HANDLE_MULTIBYTE)
+   static char *target;
+   static int tlen;
+@@ -1293,11 +1314,17 @@
+       else
+ 	{
+ #if defined (HANDLE_MULTIBYTE)
+-	  _rl_vi_last_search_mblen = _rl_read_mbchar (_rl_vi_last_search_mbchar, MB_LEN_MAX);
++	  c = _rl_read_mbchar (_rl_vi_last_search_mbchar, MB_LEN_MAX);
++	  if (c <= 0)
++	    return -1;
++	  _rl_vi_last_search_mblen = c;
+ #else
+ 	  RL_SETSTATE(RL_STATE_MOREINPUT);
+-	  _rl_vi_last_search_char = rl_read_key ();
++	  c = rl_read_key ();
+ 	  RL_UNSETSTATE(RL_STATE_MOREINPUT);
++	  if (c < 0)
++	    return -1;
++	  _rl_vi_last_search_char = c;
+ #endif
+ 	}
+     }
+@@ -1467,6 +1494,9 @@
+   c = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
+ 
++  if (c < 0)
++    return -1;
++
+ #if defined (HANDLE_MULTIBYTE)
+   if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+     c = _rl_read_mbstring (c, mb, mlen);
+@@ -1485,6 +1515,9 @@
+ 
+   _rl_vi_last_replacement = c = _rl_vi_callback_getchar (mb, MB_LEN_MAX);
+ 
++  if (c < 0)
++    return -1;
++
+   _rl_callback_func = 0;
+   _rl_want_redisplay = 1;
+ 
+@@ -1516,6 +1549,9 @@
+   else
+     _rl_vi_last_replacement = c = _rl_vi_callback_getchar (mb, MB_LEN_MAX);
+ 
++  if (c < 0)
++    return -1;
++
+   return (_rl_vi_change_char (count, c, mb));
+ }
+ 
+@@ -1650,7 +1686,7 @@
+   ch = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
+ 
+-  if (ch < 'a' || ch > 'z')
++  if (ch < 0 || ch < 'a' || ch > 'z')	/* make test against 0 explicit */
+     {
+       rl_ding ();
+       return -1;
+@@ -1702,7 +1738,7 @@
+       rl_point = rl_mark;
+       return 0;
+     }
+-  else if (ch < 'a' || ch > 'z')
++  else if (ch < 0 || ch < 'a' || ch > 'z')	/* make test against 0 explicit */
+     {
+       rl_ding ();
+       return -1;
