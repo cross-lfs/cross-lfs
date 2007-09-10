@@ -124,6 +124,14 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg8">
+        <term><parameter>--enable-kernel=2.6.0</parameter></term>
+        <listitem>
+          <para>This tells Glibc to compile the library with support
+          for 2.6.x Linux kernels.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="dg9">
         <term><parameter>--with-__thread</parameter></term>
         <listitem>
           <para>This tells Glibc to use use the __thread for libc and
@@ -131,7 +139,7 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg9">
+      <varlistentry os="dg10">
         <term><parameter>--with-binutils=/cross-tools/bin</parameter></term>
         <listitem>
           <para>This tells Glibc to use the Binutils that are specific to
@@ -139,7 +147,17 @@ echo "libc_cv_c_cleanup=yes" &gt;&gt; config.cache</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg10">
+      <varlistentry os="dg11">
+        <term><parameter>--with-headers=/tools/include</parameter></term>
+        <listitem>
+          <para>This tells Glibc to compile itself against the headers
+          recently installed to the <filename class="directory">/tools</filename>
+          directory, so that it knows exactly what features the kernel has
+          and can optimize itself accordingly.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="dg12">
         <term><parameter>--cache-file=config.cache</parameter></term>
         <listitem>
           <para>This tells Glibc to utilize a premade cache file.</para>
