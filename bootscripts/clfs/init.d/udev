@@ -1,0 +1,103 @@
+#!/bin/sh
+########################################################################
+# Begin $rc_base/init.d/udev
+#
+# Description : Udev Boot Script
+#
+# Authors     : Based on Open Suse Udev Rules
+#               kay.sievers@suse.de
+#
+# Adapted to  : Jim Gifford
+# LFS	      : Alexander E. Patrakov
+#
+# Version     : 00.00
+#
+# Notes       :
+#
+########################################################################
+
+. /etc/sysconfig/rc
+. ${rc_functions}
+
+if [ -d "/lib64" ]; then
+	udev_libdir=/lib64
+else
+	udev_libdir=/lib
+fi
+
+case "$1" in
+    start)
+	boot_mesg "Creating /dev in tmpfs..."
+	mount -n -t tmpfs -o mode=0755 udev /dev
+	evaluate_retval
+
+	boot_mesg "Copying static entries..."
+	cp --preserve=all --recursive --remove-destination ${udev_libdir}/udev/devices/* /dev
+	evaluate_retval
+	
+	boot_mesg "Setting Permissons on /dev/shm..."
+	chmod 1777 /dev/shm
+	evaluate_retval
+
+	echo "" > /sys/kernel/uevent_helper
+
+	# start udevd
+	boot_mesg "Starting udevd..."
+	/sbin/udevd --daemon
+	evaluate_retval
+
+	# start coldplugging
+	boot_mesg "Performing Coldplugging..."
+
+	# unlikely, but we may be faster than the first event
+	mkdir -p /dev/.udev/queue
+
+	# configure all devices
+	/sbin/udevtrigger
+	
+	# this replaces the old loop, exits after all devices are done
+	/sbin/udevsettle
+
+	echo_ok
+	;;
+
+    stop)
+	boot_mesg "Stopping udevd..."
+	killproc /sbin/udevd
+	;;
+
+    restart)
+	boot_mesg "Restarting udevd..."
+	killproc /sbin/udevd
+	loadproc /sbin/udevd --daemon
+	evaluate_retval
+	;;
+
+    status)
+	statusproc /sbin/udevd
+	;;
+
+    reload)
+	boot_mesg "Reloading udev rules..."
+	udevcontrol reload_rules
+	cp --preserve=all --recursive --update ${udev_libdir}/udev/devices/* /dev
+	evaluate_retval
+	;;
+
+    force-reload)
+	boot_mesg "Updating all available device nodes in /dev..."
+	udevcontrol reload_rules
+	rm -rf /dev/.udev /dev/disk
+	cp --preserve=all --recursive --update ${udev_libdir}/udev/devices/* /dev
+	/sbin/udevtrigger
+	/sbin/udevsettle
+	evaluate_retval
+	;;
+
+    *)
+	echo "Usage: $0 {start|stop|restart|status|reload|force-reload}"
+	exit 1
+	;;
+esac
+
+unset udev_libdir
