@@ -46,11 +46,39 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
 <screen os="b"><userinput>./configure --enable-partx --disable-wall --enable-write</userinput></screen>
 
-    <para os="c">Compile the package:</para>
+    <variablelist os="c">
+      <title>The meaning of the configure options:</title>
 
-<screen os="d"><userinput>make</userinput></screen>
+      <varlistentry>
+        <term><parameter>--enable-partx</parameter></term>
+        <listitem>
+          <para>Enable partx stuff (need more description).</para>
+        </listitem>
+      </varlistentry>
 
-    <para os="e">This package does not come with a test suite.</para>
+      <varlistentry>
+        <term><parameter>--disable-wall</parameter></term>
+        <listitem>
+          <para>Disables building the <command>wall</command> program,
+          as the Sysvinit package installs its own version.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--enable-write</parameter></term>
+        <listitem>
+          <para>This option allows the <command>write</command> program to be
+          installed.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="d">Compile the package:</para>
+
+<screen os="e"><userinput>make</userinput></screen>
+
+    <para os="f">This package does not come with a test suite.</para>
 
     <para os="g">Install the package:</para>
 
