@@ -99,13 +99,14 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
       <segtitle>Installed programs</segtitle>
 
       <seglistitem>
-        <seg>agetty, blockdev, cal, cfdisk, chkdupexe, col, colcrt,
-        colrm, column, ctrlaltdel, cytune, ddate, dmesg, fdformat,
-        fdisk, flock, fsck.cramfs, fsck.minix, getopt, hexdump, hwclock, ipcrm,
-        ipcs, isosize, line, logger, look, losetup, mcookie, mkfs, mkfs.bfs,
-        mkfs.cramfs, mkfs.minix, mkswap, more, mount, namei, pg, pivot_root,
-        readprofile, rename, renice, rev, script, setsid, setterm, sfdisk,
-        swapoff (link to swapon), swapon, tailf, tunelp, ul, umount, whereis, and write</seg>
+        <seg>addpart, agetty, blockdev, cal, cfdisk, chkdupexe, col, colcrt,
+        colrm, column, ctrlaltdel, cytune, ddate, delpart, dmesg, fdformat,
+        fdisk, flock, fsck.cramfs, fsck.minix, getopt, hexdump, hwclock, ionice,
+        ipcrm, ipcs, isosize, line, logger, look, losetup, mcookie, mkfs,
+        mkfs.bfs, mkfs.cramfs, mkfs.minix, mkswap, more, mount, namei, partx,
+        pg, pivot_root, readprofile, rename, renice, rev, rtcwake, script,
+        scriptreplay, setarch, setsid, setterm, sfdisk, swapoff (link to swapon),
+        swapon, tailf, taskset, tunelp, ul, umount, whereis, and write</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -113,6 +114,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="addpart">
+        <term><command>addpart</command></term>
+        <listitem>
+          <para>Informs the kernel of a new partition</para>
+          <indexterm zone="ch-system-util-linux-ng addpart">
+            <primary sortas="b-addpart">addpart</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
 
       <varlistentry id="agetty">
         <term><command>agetty</command></term>
@@ -240,6 +251,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="delpart">
+        <term><command>delpart</command></term>
+        <listitem>
+          <para>Asks the kernel to remove a partition</para>
+          <indexterm zone="ch-system-util-linux-ng delpart">
+            <primary sortas="b-delpart">delpart</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="dmesg">
         <term><command>dmesg</command></term>
         <listitem>
@@ -332,6 +353,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           clock</para>
           <indexterm zone="ch-system-util-linux-ng hwclock">
             <primary sortas="b-hwclock">hwclock</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ionice">
+        <term><command>ionice</command></term>
+        <listitem>
+          <para>Gives and sets program I/O scheduling class and priority</para>
+          <indexterm zone="ch-system-util-linux-ng ionice">
+            <primary sortas="b-ionice">ionice</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -500,6 +531,17 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="partx">
+        <term><command>partx</command></term>
+        <listitem>
+          <para>Tells the kernel about the presence and numbering of on-disk
+          partitions</para>
+          <indexterm zone="ch-system-util-linux-ng partx">
+            <primary sortas="b-partx">partx</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="pg">
         <term><command>pg</command></term>
         <listitem>
@@ -562,12 +604,43 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="rtcwake">
+        <term><command>rtcwake</command></term>
+        <listitem>
+          <para>Enters a system sleep state until a specified wakeup time</para>
+          <indexterm zone="ch-system-util-linux-ng rtcwake">
+            <primary sortas="b-rtcwake">rtcwake</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="script">
         <term><command>script</command></term>
         <listitem>
           <para>Makes a typescript of a terminal session</para>
           <indexterm zone="ch-system-util-linux-ng script">
             <primary sortas="b-script">script</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="scriptreplay">
+        <term><command>scriptreplay</command></term>
+        <listitem>
+          <para>Plays back typescripts created by <command>script</command></para>
+          <indexterm zone="ch-system-util-linux-ng scriptreplay">
+            <primary sortas="b-scriptreplay">scriptreplay</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="setarch">
+        <term><command>setarch</command></term>
+        <listitem>
+          <para>Changes reported architecture in new program environment and
+          sets personality flags</para>
+          <indexterm zone="ch-system-util-linux-ng setarch">
+            <primary sortas="b-setarch">setarch</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -631,6 +704,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           log file as they are created</para>
           <indexterm zone="ch-system-util-linux-ng tailf">
             <primary sortas="b-tailf">tailf</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="taskset">
+        <term><command>taskset</command></term>
+        <listitem>
+          <para>Retrieves or sets a process's CPU affinity</para>
+          <indexterm zone="ch-system-util-linux-ng taskset">
+            <primary sortas="b-taskset">taskset</primary>
           </indexterm>
         </listitem>
       </varlistentry>
