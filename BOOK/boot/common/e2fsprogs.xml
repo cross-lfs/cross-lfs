@@ -61,21 +61,7 @@
 
     <para os="h">Install the binaries, documentation and shared libraries:</para>
 
-<screen os="i"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
-
-    <variablelist os="j">
-      <title>The meaning of the make option:</title>
-
-      <varlistentry>
-        <term><parameter>DESTDIR=${CLFS}</parameter></term>
-        <listitem>
-          <para>The Makefile for e2fsprogs hard-codes a path to the 
-          <filename>mke2fs.conf</filename> file, attempting to install it into
-          ${DESTDIR}/etc, causing the installation to fail as it tries to write
-          to /etc. The DESTDIR parameter prevents this.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+<screen os="i"><userinput>make install</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/e2fsprogs.xml"
