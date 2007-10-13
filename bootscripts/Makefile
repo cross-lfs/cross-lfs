@@ -1,4 +1,5 @@
 ETCDIR=/etc
+LIBDIR=/lib
 EXTDIR=${DESTDIR}${ETCDIR}
 MODE=754
 DIRMODE=755
@@ -21,7 +22,45 @@ create-dirs:
 create-service-dir:
 	install -d -m ${DIRMODE} ${EXTDIR}/sysconfig/network-devices/services
 
-install: create-dirs create-service-dir
+udev_device_dirs:
+	install -d -m ${DIRMODE} ${DESTDIR}${LIBDIR}/udev/devices
+	install -d -m ${DIRMODE} ${DESTDIR}${LIBDIR}/udev/devices/pts
+	install -d -m ${DIRMODE} ${DESTDIR}${LIBDIR}/udev/devices/shm
+	install -d -m ${DIRMODE} ${DESTDIR}${LIBDIR}/udev/devices/net
+
+udev_device_links: udev_device_dirs
+	ln -snf /proc/self/fd ${DESTDIR}${LIBDIR}/udev/devices/fd
+	ln -snf /proc/self/fd/0 ${DESTDIR}${LIBDIR}/udev/devices/stdin
+	ln -snf /proc/self/fd/1 ${DESTDIR}${LIBDIR}/udev/devices/stdout
+	ln -snf /proc/self/fd/2 ${DESTDIR}${LIBDIR}/udev/devices/stderr
+	ln -snf /proc/kcore ${DESTDIR}${LIBDIR}/udev/devices/core
+
+mknod_devices: udev_device_dirs
+	@if [ "$$UID" = "0" ]; then \
+		if ! [ -e ${DESTDIR}${LIBDIR}/udev/devices/null ]; then \
+			mknod -m 0666 ${DESTDIR}${LIBDIR}/udev/devices/null c 1 3 ;\
+		fi \
+	fi
+	@if [ "$$UID" = "0" ]; then \
+		if ! [ -e ${DESTDIR}${LIBDIR}/udev/devices/console ]; then \
+			mknod -m 0600 ${DESTDIR}${LIBDIR}/udev/devices/console c 5 1 ;\
+		fi \
+	fi
+	@if [ "$$UID" != "0" ]; then \
+		if ! [ -e ${DESTDIR}${LIBDIR}/udev/devices/null ]; then \
+			echo "You will need to issue the following command as the root user" ;\
+			echo "" ;\
+			echo "mknod -m 0666 ${DESTDIR}${LIBDIR}/udev/devices/null c 1 3" ;\
+		fi \
+	fi
+	@if [ "$$UID" != "0" ]; then \
+		if ! [ -e ${DESTDIR}${LIBDIR}/udev/devices/console ]; then \
+			echo "mknod -m 0600 ${DESTDIR}${LIBDIR}/udev/devices/console c 5 1" ;\
+			echo "" ;\
+		fi \
+	fi
+
+install: create-dirs create-service-dir udev_device_dirs udev_device_links
 	install -m ${MODE} clfs/init.d/checkfs       ${EXTDIR}/rc.d/init.d/
 	install -m ${MODE} clfs/init.d/cleanfs       ${EXTDIR}/rc.d/init.d/
 	install -m ${CONFMODE} clfs/init.d/functions ${EXTDIR}/rc.d/init.d/
@@ -85,6 +124,7 @@ install: create-dirs create-service-dir
 	install                   -m ${MODE} clfs/sysconfig/network-devices/ifdown ${EXTDIR}/sysconfig/network-devices/
 	install                   -m ${MODE} clfs/sysconfig/network-devices/services/ipv4-static       ${EXTDIR}/sysconfig/network-devices/services/
 	install                   -m ${MODE} clfs/sysconfig/network-devices/services/ipv4-static-route ${EXTDIR}/sysconfig/network-devices/services/
+	@$(MAKE) mknod_devices
 
 install-consolelog: create-dirs
 	install -m ${MODE} contrib/init.d/consolelog   ${EXTDIR}/rc.d/init.d
@@ -94,7 +134,7 @@ install-consolelog: create-dirs
 install-service-mtu: create-service-dir
 	install -m ${MODE} contrib/sysconfig/network-devices/services/mtu ${EXTDIR}/sysconfig/network-devices/services
 
-minimal: create-dirs create-service-dir
+minimal: create-dirs create-service-dir udev_device_dirs udev_device_links
 	sed -e 's|/bin:/usr/bin:/sbin:/usr/sbin|/tools/bin:/tools/sbin:/bin:/sbin|g' clfs/init.d/functions > clfs/init.d/functions.minimal
 	install -m ${MODE} clfs/init.d/checkfs       		${EXTDIR}/rc.d/init.d/
 	install -m ${MODE} clfs/init.d/cleanfs       		${EXTDIR}/rc.d/init.d/
@@ -125,6 +165,7 @@ minimal: create-dirs create-service-dir
 	ln -sf ../init.d/setclock    ${EXTDIR}/rc.d/rcsysinit.d/S60setclock
 	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} clfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
 	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} clfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
+	@$(MAKE) mknod_devices
 
 install-raq2: 
 	install -m ${MODE} clfs/init.d/paneld        ${EXTDIR}/rc.d/init.d/
