@@ -8,7 +8,7 @@
 <sect1 id="ch-system-linux-headers" role="wrap">
   <?dbhtml filename="linux-headers.html"?>
 
-  <title>Linux-Headers-&linux-headers-version;</title>
+  <title>Linux-Headers-&linux-version;</title>
 
   <indexterm zone="ch-system-linux-headers">
     <primary sortas="a-Linux-Headers">Linux-Headers</primary>
@@ -25,23 +25,14 @@
   <sect2 role="installation">
     <title>Installation of Linux-Headers</title>
 
-    <para os="a">For years it has been common practice to use
-    <quote>raw</quote> kernel headers (straight from a kernel tarball) in
-    <filename class="directory">/usr/include</filename>, but over the last few
-    years, the kernel developers have taken a strong stance that this
-    should not be done. This gave birth to the Linux-Libc-Headers Project,
-    which was designed to maintain an API stable version of the Linux
-    headers. Recently this project stopped producing updates, so the Cross-LFS
-    team started development on our own project to sanitize the headers.</para>
+    <para os="a">For this step you will need the kernel tarballs.</para>
 
     <para os="b">Install the header files that are common to all architectures:</para>
 
-<screen os="c"><userinput>install -dv /usr/include
-cp -av include/{asm-generic,linux,mtd,scsi,sound} /usr/include/</userinput></screen>
-
-    <para os="d">Install the header files that are specific to this architecture:</para>
-
-<screen><userinput>cp -av include/asm-i386 /usr/include/asm</userinput></screen>
+<screen os="c"><userinput>make mrproper
+make headers_check
+make INSTALL_HDR_PATH=dest headers_install
+cp -rv dest/include/* /usr/include</userinput></screen>
 
   </sect2>
 

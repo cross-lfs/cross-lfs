@@ -8,7 +8,7 @@
 <sect1 id="ch-cross-tools-linux-headers" role="wrap">
   <?dbhtml filename="linux-headers.html"?>
 
-  <title>Linux-Headers-&linux-headers-version;</title>
+  <title>Linux-Headers-&linux-version;</title>
 
   <indexterm zone="ch-cross-tools-linux-headers">
     <primary sortas="a-Linux-Headers">Linux-Headers</primary>
@@ -16,19 +16,24 @@
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../final-system/x86/linux-headers.xml"
+  href="../../final-system/common/linux-headers.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Linux-Headers</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86/linux-headers.xml"
+    href="../../final-system/common/linux-headers.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>install -dv /tools/include
-cp -av include/asm-sparc /tools/include/asm
-cp -av include/{asm-generic,linux} /tools/include/</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/linux-headers.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
+
+<screen os="c"><userinput>make mrproper
+make ARCH=sparc headers_check
+make ARCH=sparc INSTALL_HDR_PATH=dest headers_install
+cp -rv dest/include/* /tools/include</userinput></screen>
 
   </sect2>
 
