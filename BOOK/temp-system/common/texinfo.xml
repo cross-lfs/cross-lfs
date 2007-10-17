@@ -22,6 +22,11 @@
   <sect2 role="installation">
     <title>Installation of Texinfo</title>
 
+    <para os="p1">Fixes a build error due to mbstate is not defined.
+    Apply the following patch to fix this:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&texinfo-mbstate_fix-patch;</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/texinfo.xml"
     xpointer="xpointer(//*[@os='a'])"/>
