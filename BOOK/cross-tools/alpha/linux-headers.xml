@@ -30,7 +30,8 @@
     href="../../final-system/common/linux-headers.xml"
     xpointer="xpointer(//*[@os='b'])"/>
 
-<screen os="c"><userinput>make mrproper
+<screen os="c"><userinput>install -dv /tools/include
+make mrproper
 make ARCH=alpha headers_check
 make ARCH=alpha INSTALL_HDR_PATH=dest headers_install
 cp -rv dest/include/* /tools/include</userinput></screen>
