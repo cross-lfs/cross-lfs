@@ -23,33 +23,26 @@
     <title>Installation of CLFS-Bootscripts</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../bootscripts/common/bootscripts.xml"
+    href="../common/bootscripts.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>make DESTDIR=${CLFS} install-minimal</userinput></screen>
+<screen os="b"><userinput>make DESTDIR=${CLFS} LIBDIR=${CLFS}/lib64 install-minimal</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../bootscripts/common/setclock.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-    <para os="c">If you do not know whether or not the hardware clock is set to UTC,
-    you can find out after you have booted the new machine by running the
-    <userinput>hwclock --localtime  --show</userinput> command, and if
-    necessary editing the <filename>/etc/sysconfig/clock</filename> script.
-    The worst that will happen if you make a wrong guess here is that the
-    time displayed will be wrong.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bootscripts.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../bootscripts/common/setclock.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="d"><userinput>cat &gt; ${CLFS}/etc/sysconfig/clock &lt;&lt; "EOF"
-<literal># Begin /etc/sysconfig/clock
-
-UTC=1
-
-# End /etc/sysconfig/clock</literal>
-EOF</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/bootscripts.xml"
+    xpointer="xpointer(//*[@os='d'])"/>
 
   </sect2>
 
