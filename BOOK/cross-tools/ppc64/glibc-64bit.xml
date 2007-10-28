@@ -5,45 +5,42 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-glibc" role="wrap">
-  <?dbhtml filename="glibc.html"?>
+<sect1 id="ch-cross-tools-glibc-64" role="wrap">
+  <?dbhtml filename="glibc-64.html"?>
 
-  <title>Glibc-&glibc-version;</title>
+  <title>Glibc-&glibc-version; 64-Bit</title>
 
-  <indexterm zone="ch-system-glibc">
+  <indexterm zone="ch-cross-tools-glibc-64">
     <primary sortas="a-Glibc">Glibc</primary>
+    <secondary>cross tools, 64 Bit</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/glibc.xml"
+  href="../../final-system/common/glibc.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Glibc</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='z'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='b'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
+    href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
+    href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../mips/glibc.xml"
-    xpointer="xpointer(//*[@os='g1'])"/>
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='da'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../mips/glibc.xml"
-    xpointer="xpointer(//*[@os='g2'])"/>
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='db'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='dc'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
@@ -62,91 +59,69 @@
     xpointer="xpointer(//*[@os='f'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/glibc.xml"
-    xpointer="xpointer(//*[@os='l1'])"/>
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='dd'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/glibc.xml"
-    xpointer="xpointer(//*[@os='l2'])"/>
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='de'])"/>
 
-    <para>Now we will force Glibc to build as 64-bit instead of the default
-    n32 with the following sed:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='n1'])"/>
 
-    <screen><userinput>sed -i '/default) machine=/s/n32/64/g' \
-       ports/sysdeps/mips/preconfigure</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='n2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/glibc.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/glibc.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='k'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='l'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='m'])"/>
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='df'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../multilib/glibc-64bit.xml"
-    xpointer="xpointer(//*[@os='n'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../multilib/glibc-64bit.xml"
-    xpointer="xpointer(//*[@os='o'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../multilib/glibc-64bit.xml"
-    xpointer="xpointer(//*[@os='p'])"/>
+    xpointer="xpointer(//*[@os='dg'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='q'])"/>
+    xpointer="xpointer(//*[@os='dh'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='r'])"/>
+    xpointer="xpointer(//*[@os='di'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='s'])"/>
+    xpointer="xpointer(//*[@os='dj'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='t'])"/>
+    xpointer="xpointer(//*[@os='dk'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='dl'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='dm'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/glibc.xml"
+    xpointer="xpointer(//*[@os='dn'])"/>
 
   </sect2>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/glibc.xml"
-  xpointer="xpointer(id('i18n-glibc'))"/>
+  <sect2 role="content">
+    <title/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/glibc.xml"
-  xpointer="xpointer(id('conf-glibc'))"/>
+    <para>Details on this package are located in <xref
+    linkend="contents-glibc" role="."/></para>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/glibc.xml"
-  xpointer="xpointer(id('conf-ld'))"/>
-
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/glibc.xml"
-  xpointer="xpointer(id('contents-glibc'))"/>
+  </sect2>
 
 </sect1>
