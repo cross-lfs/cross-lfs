@@ -25,30 +25,25 @@
   <sect2 role="installation">
     <title>Installation of Gawk</title>
 
-    <para os="a">Patch Gawk to fix a bug which causes it to
-    segfault when invoked on a non-existent file:</para>
+    <para os="a">Prepare Gawk for compilation:</para>
 
-<screen os="b"><userinput>patch -Np1 -i ../&gawk-segfault-patch;</userinput></screen>
-
-    <para os="c">Prepare Gawk for compilation:</para>
-
-<screen os="d"><userinput>./configure --prefix=/usr --libexecdir=/usr/lib</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --libexecdir=/usr/lib</userinput></screen>
 
     <para os="h1">Now fix an issue that will cause the Gettext testsuite
     to fail:</para>
 
 <screen os="h2"><userinput>echo '#define HAVE_LC_MESSAGES 1' >> config.h</userinput></screen>
 
-    <para os="e">Compile the package:</para>
+    <para os="c">Compile the package:</para>
 
-<screen os="f"><userinput>make</userinput></screen>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <para os="g">To test the results, issue:
+    <para os="e">To test the results, issue:
     <userinput>make check</userinput>.</para>
 
-    <para os="h">Install the package:</para>
+    <para os="f">Install the package:</para>
 
-<screen os="i"><userinput>make install</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
   </sect2>
 
