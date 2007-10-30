@@ -25,6 +25,11 @@
   <sect2 role="installation">
     <title>Installation of Shadow</title>
 
+    <para os="p1">Fixes an issue whereby the '-g' switch to useradd and usermod don't
+     accept group names. Apply the following patch to fix this:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&shadow-useradd_fix-patch;</userinput></screen>
+
     <note os="a">
       <para>If you would like to enforce the use of strong passwords,
       refer to <ulink url="&cblfs-root;index.php/Cracklib"/>
