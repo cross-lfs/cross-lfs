@@ -7,8 +7,8 @@ Description: Fixes usersadd issue
  
 diff -Naur shadow-4.0.18.2.orig/src/useradd.c shadow-4.0.18.2/src/useradd.c
 --- shadow-4.0.18.2.orig/src/useradd.c	2007-10-07 07:36:51.000000000 -0700
-+++ shadow-4.0.18.2/src/useradd.c	2007-10-29 23:33:26.000000000 -0700
-@@ -203,14 +203,14 @@
++++ shadow-4.0.18.2/src/useradd.c	2007-10-30 02:32:55.000000000 -0700
+@@ -203,6 +203,10 @@
  	long gid;
  	char *errptr;
  
@@ -17,22 +17,20 @@ diff -Naur shadow-4.0.18.2.orig/src/useradd.c shadow-4.0.18.2/src/useradd.c
 +		return grp;
 +
  	gid = strtol (grname, &errptr, 10);
--	if (*errptr || errno == ERANGE || gid < 0) {
--		fprintf (stderr,
--			 _("%s: invalid numeric argument '%s'\n"), Prog,
--			 grname);
--		exit (E_BAD_ARG);
--	}
+ 	if (*errptr || errno == ERANGE || gid < 0) {
+ 		fprintf (stderr,
+@@ -210,7 +214,7 @@
+ 			 grname);
+ 		exit (E_BAD_ARG);
+ 	}
 -	return getgrnam (grname);
-+	if (*grname != '\0' && *errptr == '\0' && errno != ERANGE && gid >= 0)
-+		return getgrgid (gid);
 +	return getgrgid (gid);
  }
  
  static long get_number (const char *numstr)
 diff -Naur shadow-4.0.18.2.orig/src/usermod.c shadow-4.0.18.2/src/usermod.c
 --- shadow-4.0.18.2.orig/src/usermod.c	2007-10-27 06:01:19.000000000 -0700
-+++ shadow-4.0.18.2/src/usermod.c	2007-10-29 23:34:42.000000000 -0700
++++ shadow-4.0.18.2/src/usermod.c	2007-10-30 02:32:14.000000000 -0700
 @@ -165,10 +165,14 @@
  	long val;
  	char *errptr;
@@ -49,4 +47,3 @@ diff -Naur shadow-4.0.18.2.orig/src/usermod.c shadow-4.0.18.2/src/usermod.c
  }
  
  /*
-
