@@ -43,8 +43,9 @@
     xpointer="xpointer(//*[@os='c'])"/>
 
 <screen os="d"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
-   ./configure --prefix=/tools \
-   --build=${CLFS_HOST} --host=${CLFS_TARGET} --disable-shared</userinput></screen>
+    ./configure --prefix=/tools --disabled-shared \
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gettext.xml"
