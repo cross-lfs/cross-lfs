@@ -26,13 +26,16 @@
     <title>Installation of Module-Init-Tools</title>
 
     <para os="c">Issue the following commands to perform the tests
-    (note that the <command>make distclean</command> command is required
-    to clean up the source tree, as the source gets recompiled as part
-    of the testing process):</para>
+    (note that the <command>make clean</command> and <command>rm</command>
+    commands are required to clean up the source tree, otherwise the code
+    built for testing will be installed, and the test version of
+    <command>modprobe</command> does not function outside the test
+    environment).</para>
 
 <screen os="d"><userinput>./configure &amp;&amp;
-make check &amp;&amp;
-make distclean</userinput></screen>
+make DOCBOOKTOMAN=true check &amp;&amp;
+make clean &amp;&amp;
+rm *.5 *.8</userinput></screen>
 
     <para os="e">Prepare Module-Init-Tools for compilation:</para>
 
@@ -55,12 +58,25 @@ make distclean</userinput></screen>
 
 <screen os="i"><userinput>make DOCBOOKTOMAN=true</userinput></screen>
 
+    <variablelist os="i2">
+      <title>The meaning of the make parameter:</title>
+      <varlistentry>
+        <term><parameter>DOCBOOKTOMAN=true</parameter></term>
+        <listitem>
+          <para>The <literal>DOCBOOKTOMAN</literal> variable specifies the
+	  program which is executed to convert the sgml source to man pages.
+	  We do not have either of the alternatives, so we create empty pages
+	  instead.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
     <para os="j">Install the package:</para>
 
 <screen os="k"><userinput>make INSTALL=install install</userinput></screen>
 
     <variablelist os="l">
-      <title>The meaning of the make parameter:</title>
+      <title>The meaning of the make install parameter:</title>
       <varlistentry>
         <term><parameter>INSTALL=install</parameter></term>
         <listitem>
