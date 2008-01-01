@@ -32,11 +32,11 @@
 
     <para>Compile the package:</para>
 
-<screen><userinput>make CC="${CC}"</userinput></screen>
+<screen><userinput>make CROSS_COMPILE=${CLFS_TARGET}-</userinput></screen>
 
     <para>Install the package:</para>
 
-<screen><userinput>make root="${CLFS}" bindir=/cross-tools/bin install</userinput></screen>
+<screen><userinput>make DESTDIR="${CLFS}" BINDIR="/cross-tools/bin" install</userinput></screen>
 
   </sect2>
 
