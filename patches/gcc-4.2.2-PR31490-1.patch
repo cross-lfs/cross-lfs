@@ -1,0 +1,28 @@
+Submitted By: Ken Moffat <zarniwhoop @ ntlworld dot com>
+Date: 2008-01-06
+Initial Package Version: 4.2.2
+Upstream Status: Kicking around in bugzilla, apparently nobody cares.
+Origin: Dinar Temirbulatov
+Description: Allows gcc-4.2 to compile a modular kernel on ppc64.  Rediffed
+ to apply with -p1.
+
+diff -Naur gcc-4.2.2/gcc/varasm.c gcc-4.2.2-PR31490/gcc/varasm.c
+--- gcc-4.2.2/gcc/varasm.c	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.2-PR31490/gcc/varasm.c	2007-11-22 17:50:24.000000000 +0000
+@@ -5452,12 +5452,14 @@
+ 	     be read-only or not, but whether the dynamic link will have to
+ 	     do something.  If so, we wish to segregate the data in order to
+ 	     minimize cache misses inside the dynamic linker.  */
+-	  if (reloc & targetm.asm_out.reloc_rw_mask ())
++	  if (reloc & targetm.asm_out.reloc_rw_mask ()
++	      && !lookup_attribute ("section", DECL_ATTRIBUTES (decl)))
+ 	    ret = reloc == 1 ? SECCAT_DATA_REL_LOCAL : SECCAT_DATA_REL;
+ 	  else
+ 	    ret = SECCAT_DATA;
+ 	}
+-      else if (reloc & targetm.asm_out.reloc_rw_mask ())
++      else if (reloc & targetm.asm_out.reloc_rw_mask ()
++              && !lookup_attribute ("section", DECL_ATTRIBUTES (decl)))
+ 	ret = reloc == 1 ? SECCAT_DATA_REL_RO_LOCAL : SECCAT_DATA_REL_RO;
+       else if (reloc || flag_merge_constants < 2)
+ 	/* C and C++ don't allow different variables to share the same
