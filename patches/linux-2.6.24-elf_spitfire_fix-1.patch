@@ -31,31 +31,3 @@ diff -Naur linux-2.6.24.orig/include/asm-sparc64/Kbuild linux-2.6.24/include/asm
  header-y += uctx.h
  header-y += utrap.h
  header-y += watchdog.h
-diff -Naur linux-2.6.24.orig/include/asm-sparc64/Kbuild.orig linux-2.6.24/include/asm-sparc64/Kbuild.orig
---- linux-2.6.24.orig/include/asm-sparc64/Kbuild.orig	1969-12-31 19:00:00.000000000 -0500
-+++ linux-2.6.24/include/asm-sparc64/Kbuild.orig	2008-01-24 17:58:37.000000000 -0500
-@@ -0,0 +1,24 @@
-+include include/asm-generic/Kbuild.asm
-+
-+ALTARCH := sparc
-+ARCHDEF := defined __sparc__ && defined __arch64__
-+ALTARCHDEF := defined __sparc__ && !defined __arch64__
-+
-+header-y += apb.h
-+header-y += asi.h
-+header-y += bbc.h
-+header-y += bpp.h
-+header-y += display7seg.h
-+header-y += envctrl.h
-+header-y += openprom.h
-+header-y += openpromio.h
-+header-y += pconf.h
-+header-y += psrcompat.h
-+header-y += pstate.h
-+header-y += reg.h
-+header-y += uctx.h
-+header-y += utrap.h
-+header-y += watchdog.h
-+
-+unifdef-y += fbio.h
-+unifdef-y += perfctr.h
