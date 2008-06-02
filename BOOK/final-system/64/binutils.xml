@@ -49,6 +49,14 @@
     href="../common/binutils.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
+    <para os="q1">Libiberty uses <command>gcc -print-multi-os-directory</command>
+    to determine where to install libiberty.a.  Because our temporary gcc is
+    still multilib-aware, the command returns <literal>../lib64</literal> which
+    causes the archive to be installed into /usr/lib64.  The following sed will
+    prevent this:</para>
+
+<screen os="q2"><userinput>sed -i 's%\(^MULTIOSDIR = \).*%\1 ../lib%' libiberty/Makefile.in</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/binutils.xml"
     xpointer="xpointer(//*[@os='g'])"/>
