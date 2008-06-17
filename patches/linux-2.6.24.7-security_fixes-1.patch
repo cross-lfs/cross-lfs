@@ -1,0 +1,505 @@
+Submitted By: Ken Moffat <ken at linuxfromscratch dot org>
+Date: 2008-06-17
+Initial Package Version: 2.6.24.7
+Upstream Status: Merged
+Origin: Debian
+Description: 2.6.24 is no longer maintained by -stable.  These patches from
+debian (some are straight git pulls from upstream, others are backports)
+fix the following: CVE-2008-{1615,1673,2136,2137,2148}.
+
+ fixes CVE-2008-1673
+ Subject: asn1: additional sanity checking during BER decoding
+ X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Ftorvalds%2Flinux-2.6.git;a=commitdiff_plain;h=ddb2c43594f22843e9f3153da151deaba1a834c5
+ 
+ asn1: additional sanity checking during BER decoding
+ 
+ - Don't trust a length which is greater than the working buffer.
+   An invalid length could cause overflow when calculating buffer size
+   for decoding oid.
+ 
+ - An oid length of zero is invalid and allows for an off-by-one error when
+   decoding oid because the first subid actually encodes first 2 subids.
+ 
+ - A primitive encoding may not have an indefinite length.
+ 
+ Thanks to Wei Wang from McAfee for report.
+ 
+ Cc: Steven French <sfrench@us.ibm.com>
+ Cc: stable@kernel.org
+ Acked-by: Patrick McHardy <kaber@trash.net>
+ Signed-off-by: Chris Wright <chrisw@sous-sol.org>
+ Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+ ---
+
+diff --git a/fs/cifs/asn1.c b/fs/cifs/asn1.c
+index cb52cbb..f58e41d 100644
+--- a/fs/cifs/asn1.c
++++ b/fs/cifs/asn1.c
+@@ -186,6 +186,11 @@ asn1_length_decode(struct asn1_ctx *ctx, unsigned int *def, unsigned int *len)
+ 			}
+ 		}
+ 	}
++
++	/* don't trust len bigger than ctx buffer */
++	if (*len > ctx->end - ctx->pointer)
++		return 0;
++
+ 	return 1;
+ }
+ 
+@@ -203,6 +208,10 @@ asn1_header_decode(struct asn1_ctx *ctx,
+ 	if (!asn1_length_decode(ctx, &def, &len))
+ 		return 0;
+ 
++	/* primitive shall be definite, indefinite shall be constructed */
++	if (*con == ASN1_PRI && !def)
++		return 0;
++
+ 	if (def)
+ 		*eoc = ctx->pointer + len;
+ 	else
+@@ -389,6 +398,11 @@ asn1_oid_decode(struct asn1_ctx *ctx,
+ 	unsigned long *optr;
+ 
+ 	size = eoc - ctx->pointer + 1;
++
++	/* first subid actually encodes first two subids */
++	if (size < 2 || size > ULONG_MAX/sizeof(unsigned long))
++		return 0;
++
+ 	*oid = kmalloc(size * sizeof(unsigned long), GFP_ATOMIC);
+ 	if (*oid == NULL)
+ 		return 0;
+diff --git a/net/ipv4/netfilter/nf_nat_snmp_basic.c b/net/ipv4/netfilter/nf_nat_snmp_basic.c
+index 5daefad..7750c97 100644
+--- a/net/ipv4/netfilter/nf_nat_snmp_basic.c
++++ b/net/ipv4/netfilter/nf_nat_snmp_basic.c
+@@ -232,6 +232,11 @@ static unsigned char asn1_length_decode(struct asn1_ctx *ctx,
+ 			}
+ 		}
+ 	}
++
++	/* don't trust len bigger than ctx buffer */
++	if (*len > ctx->end - ctx->pointer)
++		return 0;
++
+ 	return 1;
+ }
+ 
+@@ -250,6 +255,10 @@ static unsigned char asn1_header_decode(struct asn1_ctx *ctx,
+ 	if (!asn1_length_decode(ctx, &def, &len))
+ 		return 0;
+ 
++	/* primitive shall be definite, indefinite shall be constructed */
++	if (*con == ASN1_PRI && !def)
++		return 0;
++
+ 	if (def)
+ 		*eoc = ctx->pointer + len;
+ 	else
+@@ -434,6 +443,11 @@ static unsigned char asn1_oid_decode(struct asn1_ctx *ctx,
+ 	unsigned long *optr;
+ 
+ 	size = eoc - ctx->pointer + 1;
++
++	/* first subid actually encodes first two subids */
++	if (size < 2 || size > ULONG_MAX/sizeof(unsigned long))
++		return 0;
++
+ 	*oid = kmalloc(size * sizeof(unsigned long), GFP_ATOMIC);
+ 	if (*oid == NULL) {
+ 		if (net_ratelimit())
+
+
+ fixes local ptrace dos on x86_64, CVE-2008-1615
+ from debian's 2.6.24, backported by dann frazier
+diff -urpN linux-source-2.6.24.orig/arch/x86/kernel/entry_64.S linux-source-2.6.24/arch/x86/kernel/entry_64.S
+--- linux-source-2.6.24.orig/arch/x86/kernel/entry_64.S	2008-01-24 15:58:37.000000000 -0700
++++ linux-source-2.6.24/arch/x86/kernel/entry_64.S	2008-06-03 01:26:47.000000000 -0600
+@@ -779,7 +779,7 @@ paranoid_swapgs\trace:
+ 	swapgs
+ paranoid_restore\trace:
+ 	RESTORE_ALL 8
+-	iretq
++	jmp iret_label
+ paranoid_userspace\trace:
+ 	GET_THREAD_INFO(%rcx)
+ 	movl threadinfo_flags(%rcx),%ebx
+
+ fix ipv6 over ipv4 remotely triggerable memory leak, CVE-2008-2136
+ commit 36ca34cc3b8335eb1fe8bd9a1d0a2592980c3f02
+ Author: David S. Miller <davem@davemloft.net>
+ Date:   Thu May 8 23:40:26 2008 -0700
+ 
+     sit: Add missing kfree_skb() on pskb_may_pull() failure.
+     
+     Noticed by Paul Marks <paul@pmarks.net>.
+     
+     Signed-off-by: David S. Miller <davem@davemloft.net>
+ 
+ Adjusted to apply to Debian's 2.6.24 by dann frazier <dannf@debian.org>
+
+diff -urpN linux-source-2.6.24.orig/net/ipv6/sit.c linux-source-2.6.24/net/ipv6/sit.c
+--- linux-source-2.6.24.orig/net/ipv6/sit.c	2008-01-24 15:58:37.000000000 -0700
++++ linux-source-2.6.24/net/ipv6/sit.c	2008-05-21 00:00:08.000000000 -0600
+@@ -395,9 +395,9 @@ static int ipip6_rcv(struct sk_buff *skb
+ 	}
+ 
+ 	icmp_send(skb, ICMP_DEST_UNREACH, ICMP_PORT_UNREACH, 0);
+-	kfree_skb(skb);
+ 	read_unlock(&ipip6_lock);
+ out:
++	kfree_skb(skb);
+ 	return 0;
+ }
+ 
+
+  * [sparc] Validate address ranges regardless of MAP_FIXED (CVE-2008-2137)
+ commit 94d149c34cda933ff5096aca94bb23bf68602f4e
+ Author: David S. Miller <davem@davemloft.net>
+ Date:   Mon May 12 16:33:33 2008 -0700
+ 
+     sparc: Fix mremap address range validation.
+     
+     Just like mmap, we need to validate address ranges regardless
+     of MAP_FIXED.
+     
+     sparc{,64}_mmap_check()'s flag argument is unused, remove.
+     
+     Based upon a report and preliminary patch by
+     Jan Lieskovsky <jlieskov@redhat.com>
+     
+     Signed-off-by: David S. Miller <davem@davemloft.net>
+
+diff --git a/arch/sparc/kernel/sys_sparc.c b/arch/sparc/kernel/sys_sparc.c
+index e995491..3c6b49a 100644
+--- a/arch/sparc/kernel/sys_sparc.c
++++ b/arch/sparc/kernel/sys_sparc.c
+@@ -219,7 +219,7 @@ out:
+ 	return err;
+ }
+ 
+-int sparc_mmap_check(unsigned long addr, unsigned long len, unsigned long flags)
++int sparc_mmap_check(unsigned long addr, unsigned long len)
+ {
+ 	if (ARCH_SUN4C_SUN4 &&
+ 	    (len > 0x20000000 ||
+@@ -295,52 +295,14 @@ asmlinkage unsigned long sparc_mremap(unsigned long addr,
+ 	unsigned long old_len, unsigned long new_len,
+ 	unsigned long flags, unsigned long new_addr)
+ {
+-	struct vm_area_struct *vma;
+ 	unsigned long ret = -EINVAL;
+-	if (ARCH_SUN4C_SUN4) {
+-		if (old_len > 0x20000000 || new_len > 0x20000000)
+-			goto out;
+-		if (addr < 0xe0000000 && addr + old_len > 0x20000000)
+-			goto out;
+-	}
+-	if (old_len > TASK_SIZE - PAGE_SIZE ||
+-	    new_len > TASK_SIZE - PAGE_SIZE)
++
++	if (unlikely(sparc_mmap_check(addr, old_len)))
++		goto out;
++	if (unlikely(sparc_mmap_check(new_addr, new_len)))
+ 		goto out;
+ 	down_write(&current->mm->mmap_sem);
+-	if (flags & MREMAP_FIXED) {
+-		if (ARCH_SUN4C_SUN4 &&
+-		    new_addr < 0xe0000000 &&
+-		    new_addr + new_len > 0x20000000)
+-			goto out_sem;
+-		if (new_addr + new_len > TASK_SIZE - PAGE_SIZE)
+-			goto out_sem;
+-	} else if ((ARCH_SUN4C_SUN4 && addr < 0xe0000000 &&
+-		    addr + new_len > 0x20000000) ||
+-		   addr + new_len > TASK_SIZE - PAGE_SIZE) {
+-		unsigned long map_flags = 0;
+-		struct file *file = NULL;
+-
+-		ret = -ENOMEM;
+-		if (!(flags & MREMAP_MAYMOVE))
+-			goto out_sem;
+-
+-		vma = find_vma(current->mm, addr);
+-		if (vma) {
+-			if (vma->vm_flags & VM_SHARED)
+-				map_flags |= MAP_SHARED;
+-			file = vma->vm_file;
+-		}
+-
+-		new_addr = get_unmapped_area(file, addr, new_len,
+-				     vma ? vma->vm_pgoff : 0,
+-				     map_flags);
+-		ret = new_addr;
+-		if (new_addr & ~PAGE_MASK)
+-			goto out_sem;
+-		flags |= MREMAP_FIXED;
+-	}
+ 	ret = do_mremap(addr, old_len, new_len, flags, new_addr);
+-out_sem:
+ 	up_write(&current->mm->mmap_sem);
+ out:
+ 	return ret;       
+diff --git a/arch/sparc64/kernel/sys_sparc.c b/arch/sparc64/kernel/sys_sparc.c
+index 0dbc941..ac1bff5 100644
+--- a/arch/sparc64/kernel/sys_sparc.c
++++ b/arch/sparc64/kernel/sys_sparc.c
+@@ -542,8 +542,7 @@ asmlinkage long sparc64_personality(unsigned long personality)
+ 	return ret;
+ }
+ 
+-int sparc64_mmap_check(unsigned long addr, unsigned long len,
+-		unsigned long flags)
++int sparc64_mmap_check(unsigned long addr, unsigned long len)
+ {
+ 	if (test_thread_flag(TIF_32BIT)) {
+ 		if (len >= STACK_TOP32)
+@@ -609,46 +608,19 @@ asmlinkage unsigned long sys64_mremap(unsigned long addr,
+ 	unsigned long old_len, unsigned long new_len,
+ 	unsigned long flags, unsigned long new_addr)
+ {
+-	struct vm_area_struct *vma;
+ 	unsigned long ret = -EINVAL;
+ 
+ 	if (test_thread_flag(TIF_32BIT))
+ 		goto out;
+ 	if (unlikely(new_len >= VA_EXCLUDE_START))
+ 		goto out;
+-	if (unlikely(invalid_64bit_range(addr, old_len)))
++	if (unlikely(sparc64_mmap_check(addr, old_len)))
++		goto out;
++	if (unlikely(sparc64_mmap_check(new_addr, new_len)))
+ 		goto out;
+ 
+ 	down_write(&current->mm->mmap_sem);
+-	if (flags & MREMAP_FIXED) {
+-		if (invalid_64bit_range(new_addr, new_len))
+-			goto out_sem;
+-	} else if (invalid_64bit_range(addr, new_len)) {
+-		unsigned long map_flags = 0;
+-		struct file *file = NULL;
+-
+-		ret = -ENOMEM;
+-		if (!(flags & MREMAP_MAYMOVE))
+-			goto out_sem;
+-
+-		vma = find_vma(current->mm, addr);
+-		if (vma) {
+-			if (vma->vm_flags & VM_SHARED)
+-				map_flags |= MAP_SHARED;
+-			file = vma->vm_file;
+-		}
+-
+-		/* MREMAP_FIXED checked above. */
+-		new_addr = get_unmapped_area(file, addr, new_len,
+-				    vma ? vma->vm_pgoff : 0,
+-				    map_flags);
+-		ret = new_addr;
+-		if (new_addr & ~PAGE_MASK)
+-			goto out_sem;
+-		flags |= MREMAP_FIXED;
+-	}
+ 	ret = do_mremap(addr, old_len, new_len, flags, new_addr);
+-out_sem:
+ 	up_write(&current->mm->mmap_sem);
+ out:
+ 	return ret;       
+diff --git a/arch/sparc64/kernel/sys_sparc32.c b/arch/sparc64/kernel/sys_sparc32.c
+index 1aa4288..ba5bd62 100644
+--- a/arch/sparc64/kernel/sys_sparc32.c
++++ b/arch/sparc64/kernel/sys_sparc32.c
+@@ -867,44 +867,15 @@ asmlinkage unsigned long sys32_mremap(unsigned long addr,
+ 	unsigned long old_len, unsigned long new_len,
+ 	unsigned long flags, u32 __new_addr)
+ {
+-	struct vm_area_struct *vma;
+ 	unsigned long ret = -EINVAL;
+ 	unsigned long new_addr = __new_addr;
+ 
+-	if (old_len > STACK_TOP32 || new_len > STACK_TOP32)
++	if (unlikely(sparc64_mmap_check(addr, old_len)))
+ 		goto out;
+-	if (addr > STACK_TOP32 - old_len)
++	if (unlikely(sparc64_mmap_check(new_addr, new_len)))
+ 		goto out;
+ 	down_write(&current->mm->mmap_sem);
+-	if (flags & MREMAP_FIXED) {
+-		if (new_addr > STACK_TOP32 - new_len)
+-			goto out_sem;
+-	} else if (addr > STACK_TOP32 - new_len) {
+-		unsigned long map_flags = 0;
+-		struct file *file = NULL;
+-
+-		ret = -ENOMEM;
+-		if (!(flags & MREMAP_MAYMOVE))
+-			goto out_sem;
+-
+-		vma = find_vma(current->mm, addr);
+-		if (vma) {
+-			if (vma->vm_flags & VM_SHARED)
+-				map_flags |= MAP_SHARED;
+-			file = vma->vm_file;
+-		}
+-
+-		/* MREMAP_FIXED checked above. */
+-		new_addr = get_unmapped_area(file, addr, new_len,
+-				    vma ? vma->vm_pgoff : 0,
+-				    map_flags);
+-		ret = new_addr;
+-		if (new_addr & ~PAGE_MASK)
+-			goto out_sem;
+-		flags |= MREMAP_FIXED;
+-	}
+ 	ret = do_mremap(addr, old_len, new_len, flags, new_addr);
+-out_sem:
+ 	up_write(&current->mm->mmap_sem);
+ out:
+ 	return ret;       
+diff --git a/include/asm-sparc/mman.h b/include/asm-sparc/mman.h
+index e18be98..3d16b40 100644
+--- a/include/asm-sparc/mman.h
++++ b/include/asm-sparc/mman.h
+@@ -24,9 +24,8 @@
+ 
+ #ifdef __KERNEL__
+ #ifndef __ASSEMBLY__
+-#define arch_mmap_check	sparc_mmap_check
+-int sparc_mmap_check(unsigned long addr, unsigned long len,
+-		unsigned long flags);
++#define arch_mmap_check(addr,len,flags)	sparc_mmap_check(addr,len)
++int sparc_mmap_check(unsigned long addr, unsigned long len);
+ #endif
+ #endif
+ 
+diff --git a/include/asm-sparc64/mman.h b/include/asm-sparc64/mman.h
+index e584563..625be4d 100644
+--- a/include/asm-sparc64/mman.h
++++ b/include/asm-sparc64/mman.h
+@@ -24,9 +24,8 @@
+ 
+ #ifdef __KERNEL__
+ #ifndef __ASSEMBLY__
+-#define arch_mmap_check	sparc64_mmap_check
+-int sparc64_mmap_check(unsigned long addr, unsigned long len,
+-		unsigned long flags);
++#define arch_mmap_check(addr,len,flags)	sparc64_mmap_check(addr,len)
++int sparc64_mmap_check(unsigned long addr, unsigned long len);
+ #endif
+ #endif
+ 
+
+  a second part for this
+ commit 5816339310b2d9623cf413d33e538b45e815da5d
+ Author: David S. Miller <davem@davemloft.net>
+ Date:   Wed May 7 02:24:28 2008 -0700
+ 
+     sparc: Fix mmap VA span checking.
+     
+     We should not conditionalize VA range checks on MAP_FIXED.
+     
+     Signed-off-by: David S. Miller <davem@davemloft.net>
+
+diff --git a/arch/sparc/kernel/sys_sparc.c b/arch/sparc/kernel/sys_sparc.c
+index f188b5d..e995491 100644
+--- a/arch/sparc/kernel/sys_sparc.c
++++ b/arch/sparc/kernel/sys_sparc.c
+@@ -223,8 +223,7 @@ int sparc_mmap_check(unsigned long addr, unsigned long len, unsigned long flags)
+ {
+ 	if (ARCH_SUN4C_SUN4 &&
+ 	    (len > 0x20000000 ||
+-	     ((flags & MAP_FIXED) &&
+-	      addr < 0xe0000000 && addr + len > 0x20000000)))
++	     (addr < 0xe0000000 && addr + len > 0x20000000)))
+ 		return -EINVAL;
+ 
+ 	/* See asm-sparc/uaccess.h */
+diff --git a/arch/sparc64/kernel/sys_sparc.c b/arch/sparc64/kernel/sys_sparc.c
+index 8d4761f..0dbc941 100644
+--- a/arch/sparc64/kernel/sys_sparc.c
++++ b/arch/sparc64/kernel/sys_sparc.c
+@@ -549,13 +549,13 @@ int sparc64_mmap_check(unsigned long addr, unsigned long len,
+ 		if (len >= STACK_TOP32)
+ 			return -EINVAL;
+ 
+-		if ((flags & MAP_FIXED) && addr > STACK_TOP32 - len)
++		if (addr > STACK_TOP32 - len)
+ 			return -EINVAL;
+ 	} else {
+ 		if (len >= VA_EXCLUDE_START)
+ 			return -EINVAL;
+ 
+-		if ((flags & MAP_FIXED) && invalid_64bit_range(addr, len))
++		if (invalid_64bit_range(addr, len))
+ 			return -EINVAL;
+ 	}
+ 
+
+ fix CVE-2008-2148 (prevent local users modifying file times without permission)
+ commit 02c6be615f1fcd37ac5ed93a3ad6692ad8991cd9
+ Author: Miklos Szeredi <mszeredi@suse.cz>
+ Date:   Thu May 1 04:34:45 2008 -0700
+ 
+     vfs: fix permission checking in sys_utimensat
+     
+     If utimensat() is called with both times set to UTIME_NOW or one of them to
+     UTIME_NOW and the other to UTIME_OMIT, then it will update the file time
+     without any permission checking.
+     
+     I don't think this can be used for anything other than a local DoS, but could
+     be quite bewildering at that (e.g.  "Why was that large source tree rebuilt
+     when I didn't modify anything???")
+     
+     This affects all kernels from 2.6.22, when the utimensat() syscall was
+     introduced.
+     
+     Fix by doing the same permission checking as for the "times == NULL" case.
+     
+     Thanks to Michael Kerrisk, whose utimensat-non-conformances-and-fixes.patch in
+     -mm also fixes this (and breaks other stuff), only he didn't realize the
+     security implications of this bug.
+     
+     Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+     Cc: Ulrich Drepper <drepper@redhat.com>
+     Cc: Michael Kerrisk <mtk-manpages@gmx.net>
+     Cc: <stable@kernel.org>
+     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+diff --git a/fs/utimes.c b/fs/utimes.c
+index a2bef77..af059d5 100644
+--- a/fs/utimes.c
++++ b/fs/utimes.c
+@@ -40,9 +40,14 @@ asmlinkage long sys_utime(char __user *filename, struct utimbuf __user *times)
+ 
+ #endif
+ 
++static bool nsec_special(long nsec)
++{
++	return nsec == UTIME_OMIT || nsec == UTIME_NOW;
++}
++
+ static bool nsec_valid(long nsec)
+ {
+-	if (nsec == UTIME_OMIT || nsec == UTIME_NOW)
++	if (nsec_special(nsec))
+ 		return true;
+ 
+ 	return nsec >= 0 && nsec <= 999999999;
+@@ -119,7 +124,15 @@ long do_utimes(int dfd, char __user *filename, struct timespec *times, int flags
+ 			newattrs.ia_mtime.tv_nsec = times[1].tv_nsec;
+ 			newattrs.ia_valid |= ATTR_MTIME_SET;
+ 		}
+-	} else {
++	}
++
++	/*
++	 * If times is NULL or both times are either UTIME_OMIT or
++	 * UTIME_NOW, then need to check permissions, because
++	 * inode_change_ok() won't do it.
++	 */
++	if (!times || (nsec_special(times[0].tv_nsec) &&
++		       nsec_special(times[1].tv_nsec))) {
+ 		error = -EACCES;
+                 if (IS_IMMUTABLE(inode))
+ 			goto mnt_drop_write_and_out;
