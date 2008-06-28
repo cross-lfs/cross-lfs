@@ -31,16 +31,24 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
+    xpointer="xpointer(//*[@os='p3'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/perl.xml"
+    xpointer="xpointer(//*[@os='p4'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/perl.xml"
     xpointer="xpointer(//*[@os='s1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
     xpointer="xpointer(//*[@os='s2'])"/>
 
-    <para os="p3">Perl does not, by default, know about library directories with names other
+    <para os="mp1">Perl does not, by default, know about library directories with names other
     than lib, The following patch will allow it to install to other directories:</para>
 
-<screen os="p4"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
+<screen os="mp2"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
 
     <para os="s1">There is a further (possibly cosmetic) anomaly - if we install perl and
     then run <command>perl -V</command> it will claim that libc is in /lib.  The
