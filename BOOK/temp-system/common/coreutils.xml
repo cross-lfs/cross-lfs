@@ -30,10 +30,18 @@
     href="../../final-system/common/coreutils.xml"
     xpointer="xpointer(//*[@os='s2'])"/>
 
+    <para os="ba">Configure can not properly determine how to get free space
+    when cross-compiling, Without putting the following entry into
+    <filename>config.cache</filename> the <command>df</command> program will
+    not be built.</para>
+
+<screen os="bb"><userinput>echo "fu_cv_sys_stat_statfs2_bsize=yes" &gt; config.cache</userinput></screen>
+
     <para os="bd">Prepare Coreutils for compilation:</para>
 
 <screen os="be"><userinput>./configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --cache-file=config.cache</userinput></screen>
 
     <para os="m1">When we changed the futimens references, one of the files we
     updated was touch.c. That change means the
