@@ -50,13 +50,17 @@
         </listitem>
       </varlistentry>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../multilib/procps.xml"
-    xpointer="xpointer(//*[@os='f2'])"/>
+      <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+      href="../multilib/procps.xml"
+      xpointer="xpointer(//*[@os='f2'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../multilib/procps.xml"
-    xpointer="xpointer(//*[@os='f3'])"/>
+      <varlistentry os="f3">
+        <term><parameter>lib64=lib32</parameter></term>
+        <listitem>
+          <para>The <filename>Makefile</filename> also attempts to install into
+          lib64 on multilib, so again we choose to override it.</para>
+        </listitem>
+      </varlistentry>
 
   </variablelist>
 
