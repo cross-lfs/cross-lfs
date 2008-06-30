@@ -115,13 +115,6 @@ find man -name Makefile -exec sed -i 's/groups.1 //' '{}' \;</userinput></screen
 
 <screen os="v"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
-    <para os="w">Move Shadow's static libraries to a more appropriate
-    location:</para>
-
-<screen os="x"><userinput>mv -v /lib/libshadow.*a /usr/lib
-rm -v /lib/libshadow.so
-ln -svf ../../lib/libshadow.so.0 /usr/lib/libshadow.so</userinput></screen>
-
   </sect2>
 
   <sect2 id="conf-shadow" role="configuration">
