@@ -32,16 +32,19 @@
 
 <screen os="a2"><userinput>patch -Np1 -i ../&module-init-tools-manpages-patch;</userinput></screen>
 
-    <para os="c">Issue the following commands to perform the tests
-    (note that the <command>make clean</command>
-    command is required to clean up the source tree, otherwise the code
-    built for testing will be installed, and the test version of
-    <command>modprobe</command> does not function outside the test
-    environment).</para>
+    <para os="c">Issue the following commands to perform the tests</para>
+
+    <note os="cc">
+      <para>note that the <command>make clean</command>
+      command is required to clean up the source tree, otherwise the code
+      built for testing will be installed, and the test version of
+      <command>modprobe</command> does not function outside the test
+      environment.</para>
+    </note>
 
 <screen os="d"><userinput>./configure &amp;&amp;
 make check &amp;&amp;
-make clean &amp;&amp;</userinput></screen>
+make clean</userinput></screen>
 
     <para os="e">Prepare Module-Init-Tools for compilation:</para>
 
