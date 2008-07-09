@@ -21,7 +21,9 @@
   issue the following commands to add the new user:</para>
 
 <screen><userinput>groupadd clfs
-useradd -s /bin/bash -g clfs -m -k /dev/null clfs</userinput></screen>
+useradd -s /bin/bash -g clfs -d /home/clfs clfs
+mkdir -pv /home/clfs
+chown -v clfs:clfs /home/clfs</userinput></screen>
 
   <variablelist>
     <title>The meaning of the command line options:</title>
