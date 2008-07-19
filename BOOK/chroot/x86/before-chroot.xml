@@ -99,21 +99,34 @@
 
 <screen os="uud"><userinput>make uname_hack_fake_machine=i486</userinput></screen>
 
-    <para os="uue">In the top level directory of the Uname Hack pacakage you
+    <variablelist os="uue">
+      <title>The meaning of the make and install options:</title>
+
+      <varlistentry os="uue1">
+        <term><parameter>uname_hack_fake_machine=i486</parameter></term>
+        <listitem>
+          <para>This parameter sets the value that the uts machine type will be
+          changed to. Alternativley this could be set to i586 or i686.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="uuf">In the top level directory of the Uname Hack pacakage you
     should see a file named uname_hack.ko. As soon as that module is loaded
     into the running kernel the output of <command>uname -m</command> will be
     affected immediately system-wide. Load the kernel module with the following
     command:</para>
 
-<screen os="uuf"><userinput>insmod uname_hack.ko</userinput></screen>
+<screen os="uug"><userinput>insmod uname_hack.ko</userinput></screen>
 
-    <para os="uug">To test if the Uname Hack is working properly, execute the
+    <para os="uuh">To test if the Uname Hack is working properly, execute the
     following command from inside of the <xref linkend="ch-system-automake"/>
     directory:</para>
 
-<screen os="uuh"><userinput>lib/config.guess</userinput></screen>
+<screen os="uui"><userinput>lib/config.guess</userinput></screen>
 
-    <para os="uui">The output of the above command should be the same as the
+    <para os="uuj">The output of the above command should be the same as the
     <envar>${CLFS_TARGET}</envar> enviornment variable. If this is not the
     case, You can try and get help on the CLFS Support Mailing List or the
     IRC Channel. See <xref linkend="ch-intro-askforhelp"/> for more
