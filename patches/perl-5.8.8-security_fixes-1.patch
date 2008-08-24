@@ -1,0 +1,306 @@
+Submitted By: Ken Moffat <ken at linuxfromscratch dot org>
+Date: 2008-07-09
+Initial Package Version: 5.8.8
+Upstream Status: unknown
+Origin: Extracted from redhat-enterprise.
+Description: Fixes CVE-2007-5116 and CVE-2008-1927.  NB - anyone who
+thinks we should just upgrade to 5.10.0 needs to find a fix for
+CVE-2008-2827 : no doubt 5.10.1 will fix that when it is released.
+Edited to remove the creation of regcomp.c~ which I had overlooked.
+
+diff -Naur perl-5.8.8.orig/embed.fnc perl-5.8.8/embed.fnc
+--- perl-5.8.8.orig/embed.fnc	2006-01-31 14:40:27.000000000 +0000
++++ perl-5.8.8/embed.fnc	2008-07-09 23:13:32.000000000 +0100
+@@ -1168,6 +1168,7 @@
+ Es	|regnode*|regclass	|NN struct RExC_state_t *state
+ ERs	|I32	|regcurly	|NN const char *
+ Es	|regnode*|reg_node	|NN struct RExC_state_t *state|U8 op
++Es	|UV	|reg_recode	|const char value|NULLOK SV **encp
+ Es	|regnode*|regpiece	|NN struct RExC_state_t *state|NN I32 *flagp
+ Es	|void	|reginsert	|NN struct RExC_state_t *state|U8 op|NN regnode *opnd
+ Es	|void	|regoptail	|NN struct RExC_state_t *state|NN regnode *p|NN regnode *val
+diff -Naur perl-5.8.8.orig/embed.h perl-5.8.8/embed.h
+--- perl-5.8.8.orig/embed.h	2006-01-31 15:50:34.000000000 +0000
++++ perl-5.8.8/embed.h	2008-07-09 23:13:32.000000000 +0100
+@@ -1234,6 +1234,7 @@
+ #define regclass		S_regclass
+ #define regcurly		S_regcurly
+ #define reg_node		S_reg_node
++#define reg_recode		S_reg_recode
+ #define regpiece		S_regpiece
+ #define reginsert		S_reginsert
+ #define regoptail		S_regoptail
+@@ -3277,6 +3278,7 @@
+ #define regclass(a)		S_regclass(aTHX_ a)
+ #define regcurly(a)		S_regcurly(aTHX_ a)
+ #define reg_node(a,b)		S_reg_node(aTHX_ a,b)
++#define reg_recode(a,b)		S_reg_recode(aTHX_ a,b)
+ #define regpiece(a,b)		S_regpiece(aTHX_ a,b)
+ #define reginsert(a,b,c)	S_reginsert(aTHX_ a,b,c)
+ #define regoptail(a,b,c)	S_regoptail(aTHX_ a,b,c)
+diff -Naur perl-5.8.8.orig/pod/perldiag.pod perl-5.8.8/pod/perldiag.pod
+--- perl-5.8.8.orig/pod/perldiag.pod	2006-01-06 23:16:08.000000000 +0000
++++ perl-5.8.8/pod/perldiag.pod	2008-07-09 23:13:32.000000000 +0100
+@@ -1900,6 +1900,15 @@
+ (W printf) Perl does not understand the given format conversion.  See
+ L<perlfunc/sprintf>.
+ 
++=item Invalid escape in the specified encoding in regex; marked by <-- HERE in m/%s/
++
++(W regexp) The numeric escape (for example C<\xHH>) of value < 256
++didn't correspond to a single character through the conversion
++from the encoding specified by the encoding pragma.
++The escape was replaced with REPLACEMENT CHARACTER (U+FFFD) instead.
++The <-- HERE shows in the regular expression about where the
++escape was discovered.
++
+ =item Invalid [] range "%s" in regex; marked by <-- HERE in m/%s/
+ 
+ (F) The range specified in a character class had a minimum character
+diff -Naur perl-5.8.8.orig/proto.h perl-5.8.8/proto.h
+--- perl-5.8.8.orig/proto.h	2006-01-31 15:50:34.000000000 +0000
++++ perl-5.8.8/proto.h	2008-07-09 23:13:32.000000000 +0100
+@@ -1748,6 +1748,7 @@
+ 			__attribute__warn_unused_result__;
+ 
+ STATIC regnode*	S_reg_node(pTHX_ struct RExC_state_t *state, U8 op);
++STATIC UV	S_reg_recode(pTHX_ const char value, SV **encp);
+ STATIC regnode*	S_regpiece(pTHX_ struct RExC_state_t *state, I32 *flagp);
+ STATIC void	S_reginsert(pTHX_ struct RExC_state_t *state, U8 op, regnode *opnd);
+ STATIC void	S_regoptail(pTHX_ struct RExC_state_t *state, regnode *p, regnode *val);
+diff -Naur perl-5.8.8.orig/regcomp.c perl-5.8.8/regcomp.c
+--- perl-5.8.8.orig/regcomp.c	2006-01-08 20:59:27.000000000 +0000
++++ perl-5.8.8/regcomp.c	2008-07-09 23:13:32.000000000 +0100
+@@ -136,6 +136,7 @@
+     I32		seen_zerolen;
+     I32		seen_evals;
+     I32		utf8;
++    I32		orig_utf8;
+ #if ADD_TO_REGEXEC
+     char 	*starttry;		/* -Dr: where regtry was called. */
+ #define RExC_starttry	(pRExC_state->starttry)
+@@ -161,6 +162,7 @@
+ #define RExC_seen_zerolen	(pRExC_state->seen_zerolen)
+ #define RExC_seen_evals	(pRExC_state->seen_evals)
+ #define RExC_utf8	(pRExC_state->utf8)
++#define RExC_orig_utf8 (pRExC_state->orig_utf8)
+ 
+ #define	ISMULT1(c)	((c) == '*' || (c) == '+' || (c) == '?')
+ #define	ISMULT2(s)	((*s) == '*' || (*s) == '+' || (*s) == '?' || \
+@@ -1749,15 +1751,17 @@
+     if (exp == NULL)
+ 	FAIL("NULL regexp argument");
+ 
+-    RExC_utf8 = pm->op_pmdynflags & PMdf_CMP_UTF8;
++    RExC_orig_utf8 = RExC_utf8 = pm->op_pmdynflags & PMdf_CMP_UTF8;
+ 
+-    RExC_precomp = exp;
+     DEBUG_r({
+ 	 if (!PL_colorset) reginitcolors();
+ 	 PerlIO_printf(Perl_debug_log, "%sCompiling REx%s `%s%*s%s'\n",
+ 		       PL_colors[4],PL_colors[5],PL_colors[0],
+-		       (int)(xend - exp), RExC_precomp, PL_colors[1]);
++		       (int)(xend - exp), exp, PL_colors[1]);
+     });
++
++redo_first_pass:
++    RExC_precomp = exp;
+     RExC_flags = pm->op_pmflags;
+     RExC_sawback = 0;
+ 
+@@ -1783,6 +1787,17 @@
+ 	RExC_precomp = Nullch;
+ 	return(NULL);
+     }
++    if (RExC_utf8 && !RExC_orig_utf8) {
++    	STRLEN len = xend-exp;
++    	DEBUG_r(PerlIO_printf(Perl_debug_log,
++	   "UTF8 mismatch! Converting to utf8 for resizing and compile\n"));
++	exp = (char*)Perl_bytes_to_utf8(aTHX_ (U8*)exp, &len);
++	xend = exp + len;
++	RExC_orig_utf8 = RExC_utf8;
++	SAVEFREEPV(exp);
++	goto redo_first_pass;
++    }
++
+     DEBUG_r(PerlIO_printf(Perl_debug_log, "size %"IVdf" ", (IV)RExC_size));
+ 
+     /* Small enough for pointer-storage convention?
+@@ -2775,6 +2790,39 @@
+ }
+ 
+ /*
++ * reg_recode
++ *
++ * It returns the code point in utf8 for the value in *encp.
++ *    value: a code value in the source encoding
++ *    encp:  a pointer to an Encode object
++ *
++ * If the result from Encode is not a single character,
++ * it returns U+FFFD (Replacement character) and sets *encp to NULL.
++ */
++STATIC UV
++S_reg_recode(pTHX_ const char value, SV **encp)
++{
++    STRLEN numlen = 1;
++    SV * const sv = sv_2mortal(newSVpvn(&value, numlen));
++    const char * const s = encp && *encp ? sv_recode_to_utf8(sv, *encp)
++					 : SvPVX(sv);
++    const STRLEN newlen = SvCUR(sv);
++    UV uv = UNICODE_REPLACEMENT;
++
++    if (newlen)
++	uv = SvUTF8(sv)
++	     ? utf8n_to_uvchr((U8*)s, newlen, &numlen, UTF8_ALLOW_DEFAULT)
++	     : *(U8*)s;
++
++    if (!newlen || numlen != newlen) {
++	uv = UNICODE_REPLACEMENT;
++	if (encp)
++	    *encp = NULL;
++    }
++    return uv;
++}
++
++/*
+  - regatom - the lowest level
+  *
+  * Optimization:  gobbles an entire sequence of ordinary characters so that
+@@ -3166,6 +3214,8 @@
+ 			    ender = grok_hex(p, &numlen, &flags, NULL);
+ 			    p += numlen;
+ 			}
++			if (PL_encoding && ender < 0x100)
++			    goto recode_encoding;
+ 			break;
+ 		    case 'c':
+ 			p++;
+@@ -3185,6 +3235,17 @@
+ 			    --p;
+ 			    goto loopdone;
+ 			}
++			if (PL_encoding && ender < 0x100)
++			    goto recode_encoding;
++			break;
++		    recode_encoding:
++			{
++			    SV* enc = PL_encoding;
++			    ender = reg_recode((const char)(U8)ender, &enc);
++			    if (!enc && SIZE_ONLY && ckWARN(WARN_REGEXP))
++				vWARN(p, "Invalid escape in the specified encoding");
++			    RExC_utf8 = 1;
++			}
+ 			break;
+ 		    case '\0':
+ 			if (p >= RExC_end)
+@@ -3315,32 +3376,6 @@
+ 	break;
+     }
+ 
+-    /* If the encoding pragma is in effect recode the text of
+-     * any EXACT-kind nodes. */
+-    if (PL_encoding && PL_regkind[(U8)OP(ret)] == EXACT) {
+-	STRLEN oldlen = STR_LEN(ret);
+-	SV *sv        = sv_2mortal(newSVpvn(STRING(ret), oldlen));
+-
+-	if (RExC_utf8)
+-	    SvUTF8_on(sv);
+-	if (sv_utf8_downgrade(sv, TRUE)) {
+-	    const char * const s = sv_recode_to_utf8(sv, PL_encoding);
+-	    const STRLEN newlen = SvCUR(sv);
+-
+-	    if (SvUTF8(sv))
+-		RExC_utf8 = 1;
+-	    if (!SIZE_ONLY) {
+-		DEBUG_r(PerlIO_printf(Perl_debug_log, "recode %*s to %*s\n",
+-				      (int)oldlen, STRING(ret),
+-				      (int)newlen, s));
+-		Copy(s, STRING(ret), newlen, char);
+-		STR_LEN(ret) += newlen - oldlen;
+-		RExC_emit += STR_SZ(newlen) - STR_SZ(oldlen);
+-	    } else
+-		RExC_size += STR_SZ(newlen) - STR_SZ(oldlen);
+-	}
+-    }
+-
+     return(ret);
+ }
+ 
+@@ -3718,6 +3753,8 @@
+ 		    value = grok_hex(RExC_parse, &numlen, &flags, NULL);
+ 		    RExC_parse += numlen;
+ 		}
++		if (PL_encoding && value < 0x100)
++		    goto recode_encoding;
+ 		break;
+ 	    case 'c':
+ 		value = UCHARAT(RExC_parse++);
+@@ -3725,13 +3762,24 @@
+ 		break;
+ 	    case '0': case '1': case '2': case '3': case '4':
+ 	    case '5': case '6': case '7': case '8': case '9':
+-            {
+-                I32 flags = 0;
+-		numlen = 3;
+-		value = grok_oct(--RExC_parse, &numlen, &flags, NULL);
+-		RExC_parse += numlen;
+-		break;
+-            }
++		{
++		    I32 flags = 0;
++		    numlen = 3;
++		    value = grok_oct(--RExC_parse, &numlen, &flags, NULL);
++		    RExC_parse += numlen;
++		    if (PL_encoding && value < 0x100)
++			goto recode_encoding;
++		    break;
++		}
++	    recode_encoding:
++		{
++		    SV* enc = PL_encoding;
++		    value = reg_recode((const char)(U8)value, &enc);
++		    if (!enc && SIZE_ONLY && ckWARN(WARN_REGEXP))
++			vWARN(RExC_parse,
++			      "Invalid escape in the specified encoding");
++		    break;
++		}
+ 	    default:
+ 		if (!SIZE_ONLY && isALPHA(value) && ckWARN(WARN_REGEXP))
+ 		    vWARN2(RExC_parse,
+diff -Naur perl-5.8.8.orig/t/uni/tr_utf8.t perl-5.8.8/t/uni/tr_utf8.t
+--- perl-5.8.8.orig/t/uni/tr_utf8.t	2004-06-25 09:53:16.000000000 +0100
++++ perl-5.8.8/t/uni/tr_utf8.t	2008-07-09 23:13:32.000000000 +0100
+@@ -31,7 +31,7 @@
+ }
+ 
+ use strict;
+-use Test::More tests => 7;
++use Test::More tests => 8;
+ 
+ use encoding 'utf8';
+ 
+@@ -67,4 +67,12 @@
+   $line =~ tr/bcdeghijklmnprstvwxyz$02578/בצדעגהיײקלמנפּרסטװשכיזשױתײחא/;
+   is($line, "aבצדעfגהיײקלמנoפqּרסuטװשכיזש1ױ34ת6ײח9", "[perl #16843]");
+ }
++
++{
++  # [perl #40641]
++  my $str = qq/Gebääääääääääääääääääääude/;
++  my $reg = qr/Gebääääääääääääääääääääude/;
++  ok($str =~ /$reg/, "[perl #40641]");
++}
++
+ __END__
+diff -Naur perl-5.8.8.orig/utf8.h perl-5.8.8/utf8.h
+--- perl-5.8.8.orig/utf8.h	2006-01-08 21:11:27.000000000 +0000
++++ perl-5.8.8/utf8.h	2008-07-09 23:13:32.000000000 +0100
+@@ -198,6 +198,8 @@
+ 					 UTF8_ALLOW_SURROGATE|UTF8_ALLOW_FFFF)
+ #define UTF8_ALLOW_ANY			0x00FF
+ #define UTF8_CHECK_ONLY			0x0200
++#define UTF8_ALLOW_DEFAULT             (ckWARN(WARN_UTF8) ? 0 : \
++                                        UTF8_ALLOW_ANYUV)
+ 
+ #define UNICODE_SURROGATE_FIRST		0xD800
+ #define UNICODE_SURROGATE_LAST		0xDFFF

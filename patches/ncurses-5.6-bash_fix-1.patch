@@ -1,0 +1,21 @@
+Submitted by: Jim Gifford (patches at jg555 dot com)
+Date: 2007-02-15
+Initial Package Version: 5.6
+Upstream Status: Sent
+Origin: Jim Gifford
+Description: Fixes Ncurses to utilize a buggy version of Bash
+
+diff -Naur ncurses-5.6.orig/include/MKhashsize.sh ncurses-5.6/include/MKhashsize.sh
+--- ncurses-5.6.orig/include/MKhashsize.sh	2006-10-21 17:45:39.000000000 -0700
++++ ncurses-5.6/include/MKhashsize.sh	2007-02-15 07:16:46.000000000 -0800
+@@ -35,7 +35,7 @@
+ echo " */"
+ 
+ CAPS="${1-Caps}"
+-TABSIZE=`grep -v '^[ #]' $CAPS | grep -v "^$" | grep -v "^capalias"| grep -v "^infoalias" | wc -l`
++TABSIZE=$(grep -v '^[ #]' $CAPS | grep -v "^$" | grep -v "^capalias"| grep -v "^infoalias" | wc -l)
+ 
+ echo ""
+ echo "#define CAPTABSIZE	${TABSIZE}"
+
+

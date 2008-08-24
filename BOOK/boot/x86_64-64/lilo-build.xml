@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-lilo-build" role="wrap">
+  <?dbhtml filename="lilo-build.html"?>
+
+  <title>Lilo-&lilo-version;</title>
+
+  <indexterm zone="ch-boot-lilo-build">
+    <primary sortas="a-Lilo">Lilo</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../final-system/x86_64-64/lilo.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
+
+  <sect2 role="installation">
+    <title>Installation of Lilo</title>
+
+    <para os="a">The following patch forces Lilo to use our cross-compiler
+      (except for a couple of utilities which run during the compile),
+      and to look for as86 and ld86 under the names by which we installed
+      them.</para>
+
+<screen os="b"><userinput>patch -Np1 -i ../&lilo-cross-x86_64-patch;</userinput></screen>
+
+    <para os="c">Compile the program which installs the loader, linking
+      it statically so that it does not have to link to host libraries
+      when it runs:</para> 
+
+<screen os="d"><userinput>make lilo.static</userinput></screen>
+
+    <para os="e">Install only the parts we need:</para>
+
+<screen os="f"><userinput>install -v -m755 lilo.static /tools/bin
+install -v -m755 keytab-lilo.pl /tools/bin</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-lilo" role="."/></para>
+
+  </sect2>
+
+</sect1>

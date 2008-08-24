@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-introduction">
+  <?dbhtml filename="introduction.html"?>
+
+  <title>Introduction</title>
+
+  <para>This chapter shows how to complete the build of temporary tools to
+  create a minimal system that will be used to boot the target machine and to
+  build the final system packages.</para>
+
+  <para>There are a few additional packages that will need to be
+  installed to allow you to boot the minimal system. Some of these
+  packages will be installed onto root or in /usr on the CLFS
+  partition (${CLFS}/bin, ${CLFS}/usr/bin, etc...), rather than /tools, using the
+  "DESTDIR" option with make. This will require the
+  <systemitem class="username">clfs</systemitem> user to have write access to
+  the rest of the CLFS partition, so you will need to temporarily change the
+  ownership of ${CLFS} to the <systemitem class="username">clfs</systemitem> user.
+  Run the following command as <systemitem
+  class="username">root</systemitem>:</para>
+
+<screen><userinput>chown -v clfs ${CLFS}</userinput></screen>
+
+</sect1>

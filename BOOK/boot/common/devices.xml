@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-devices">
+  <?dbhtml filename="devices.html"?>
+
+  <title>Populating /dev</title>
+
+  <indexterm zone="ch-boot-devices">
+    <primary sortas="e-/dev/*">/dev/*</primary>
+  </indexterm>
+
+  <sect2>
+    <title>Creating Initial Device Nodes</title>
+
+    <note os="a">
+      <para>The commands in the remainder of the book should be run as
+      the <systemitem class="username">root</systemitem> user. Also,
+      double-check that ${CLFS} is set as
+      <systemitem class="username">root</systemitem>.</para>
+    </note>
+
+    <para os="b">When the kernel boots the system, it requires the presence
+    of a few device nodes, in particular the <filename
+    class="devicefile">console</filename> and <filename
+    class="devicefile">null</filename> devices. The device nodes will
+    be created on the hard disk so that they are available before
+    <command>udev</command> has been started, and additionally when Linux
+    is started in single user mode (hence the restrictive permissions on
+    <filename class="devicefile">console</filename>). Create these by running
+    the following commands:</para>
+
+<screen><userinput>mknod -m 600 ${CLFS}/dev/console c 5 1
+mknod -m 666 ${CLFS}/dev/null c 1 3</userinput></screen>
+
+  </sect2>
+
+</sect1>

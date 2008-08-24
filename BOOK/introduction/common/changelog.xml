@@ -1,0 +1,1622 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-intro-changelog" xreflabel="Master Changelog">
+  <?dbhtml filename="changelog.html"?>
+
+  <title>Master Changelog</title>
+
+  <para>This is version &version; of the Cross-Compiled Linux From Scratch
+  book, dated &releasedate;. If this book is more than six months old, a newer
+  and better version is probably already available. To find out, please check
+  one of the mirrors via <ulink url="&clfs-wiki;"/>.</para>
+
+  <para>Below is a list of detailed changes made since the previous release of
+   the book.</para>
+
+  <itemizedlist>
+    <title>Changelog Entries:</title>
+
+<!-- Changelog template
+
+    <listitem>
+      <para>Date</para>
+      <itemizedlist>
+        <listitem>
+          <para>[name] - New changelog entry.</para>
+        </listitem>
+        <listitem>
+          <para>[name] - Previous changelog entry.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+-->
+
+    <listitem>
+      <para>August 24, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Update the paths to ld.so when configuring Glibc
+          for each arch.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 13, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Add a page right before Entering the Chroot
+          Enviornment. This page covers the problem of building a 32bit system
+          from a 64bit host or building a older 32bit system from another
+          newer 32bit system.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 12, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Drop the minix tools from the chroot Util-Linux-NG
+          build.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 11, 2008</para>
+      <itemizedlist>
+	<listitem>
+          <para>[ken] - Add a patch to address known perl
+          vulnerabilities.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 7, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Change the command that creates the clfs user
+          to not include -k /dev/null. Newer versions of Shadow (4.1.2)
+          apparently any argument passed to -k to be a directory.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 7, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Fix a omission in the Udev lib64 patch. Thanks to
+          AcidPoison for catching this and reporting it in Trac.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 6, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Now that shadow doesn't provide any libraries
+          we only need to build it once on multilib.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 28, 2008</para>
+      <itemizedlist>
+	<listitem>
+          <para>[jciccone] - Downgraded the Vim Branch Update patch back to -2
+          from -3.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Remove the commands that relocate the Shadow
+          libraries as they are not provided in newer versions of
+          shadow. Also only build 64bit, since there are no libraries
+          anymore.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Link /tools/bin/echo to /bin/echo foe one of the
+          Glibc tests.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated GCC to 4.2.4.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 28, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Fixed the Glibc i586 chk patch entity.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Tar to 1.20.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Udev to 124.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Ncurses Branch Update patch to
+          -3/</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Add a config.cache entry to Coreutils so that the
+          <command>df</command> program will be built</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Fixed descriptions for lib64= in procps on the
+          various multilib pages.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Corrected the entities for the lilo x86_64 cross
+          compile patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Added a patch to perl so it wont include
+          asm/page.h.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Vim Branch Update patch to -3.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Shadow to 4.1.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Fixed GCC Posix patch MD5SUM.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Fixed Inetutils MD5SUM.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Util-Linux-NG to 2.14.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Util-Linux-NG homepage link.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Man-Pages to 3.01.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Bash Fixes patch to -8.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 17, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Ken] - Fix all known kernel vulnerabilities by upgrading to
+          2.6.24.7 plus a patch extracted from debian for the more recent
+          fixes.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 7, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Updated dependency info for several packages.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Date</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Flex to 2.5.35. This update fixes numerous
+          compilation issues against 2.5.34.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 12, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Added cs_CZ.UTF-8 locale for grep's fmbtest.sh test.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Frburary 3, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated the Kernel to 2.6.24.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Feburary 2, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Man-Pages to 2.77.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Libtool to 1.5.26.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Findutils to 4.2.32.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Automake to 1.10.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the bootscripts to 1.1-pre10. These use
+          udevadm instead of the individual udevcontrol, udevtrigger, and
+          udevsettle programs. Which are currently symlinked to udevadm.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 20, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Bigdissaved] - Changed the minimum ${CLFS} size from 1.5Gb to
+          2.5Gb. Thanks to Copper for seeing this </para>
+        </listitem>
+       </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 19, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Update the Kernel to 2.6.23.14.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 19, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Man-Pages to 2.76.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Util-Linux-NG to 2.13.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Less to 418.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 14, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Add patch for man pages in module-init-tools.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 13, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated the Kernel to 2.6.23.13.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 6, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated File to 4.23.</para>
+        </listitem>
+        <listitem>
+          <para>[ken] - Updated Glibc branch update patch to 1A, so that ppc and
+	  ppc64 build again.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 2, 2008</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated E2fsprogs to 1.40.4.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Janurary 1, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Shadow to 4.1.0.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 29, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Make the current Module-Init-Tools testsuite run,
+	  update the instructions because distclean is no longer useful,
+	  and comment on the DOCBOOKTOMAN parameter.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 23, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Added a config.cache entry to Gettext to resolve some
+          errors.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 19, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Util-Linux-NG to 2.13.0.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Various Branch Update Patches.</para>
+        </listitem>
+       <listitem>
+          <para>[jciccone] - Updated Udev to 118.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Psmisc to 22.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Module Init Tools to 3.4.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Man-Pages to 2.73.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Kernel to 2.6.23.12.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Less to 416.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 16, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Gettext to 0.17.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated e2fsprogs to 1.40.3.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Flex to 2.5.34.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Kernel to 2.6.23.11.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the bootscripts to 1.1-pre9.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 10, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Added --disable-makeinstall-chown to util-linux-ng
+          in the boot section.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 27, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated the bootscripts to 1.1-pre8.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 30, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to TCL 8.4.16.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.67.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Replaced Shadow Patch with better patch.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 29, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Binutils 2.18 Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Vim 7.1 Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Ncurses 5.6 Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Gawk 3.1.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Shadow 4.0.18.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Updated Useradd Fix Patch to Shadow 4.0.18.2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 26, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added Binutils 2.18 Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added GCC 4.2.2 Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Glibc 2.7 Branch Update Patch.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 25, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated the bootscripts to 1.1-pre7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Glibc 2.7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Bootscripts build to make sure the udev
+			devices get created correctly in boot section.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 16, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated the bootscripts to 1.1-pre6.
+		Combined with cblfs bootscripts, all bootscripts in one package.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.23.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Removed Linux-Headers Package.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to GCC 4.2.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Tar 1.19.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Texinfo 4.11.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Less 409.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 116.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added patch to correct the detction of texinfo in binutils.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to IPRoute2 2.6.23.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 13, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated the bootscripts to 1.1-pre5. The Makefile
+          now creates the static nodes that the udev Makefile used to.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated the boot section Util-Linux-NG Build. Fixes
+		issues where files were missing during bootup and the ability
+		to login.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 24, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - More dependency updates for several packages.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 23, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Updates to dependency info for several packages.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 12, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Added more new programs to Util-Linux-Ng installed
+          programs list.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 11, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Updated list of installed programs for Util-Linux-ng.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated CLFS Bootscripts to 1.1-pre4.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+    
+    <listitem>
+      <para>September 10, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Added needed mkdir command to IPRoute2 instructions.</para>
+        </listitem>
+        <listitem>
+          <para>[Chris] - Fixed descriptive text in testsuite-tools
+          introduction page. Reported by gomoko (ticket #118).</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 09, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Build a PIC libfl.a with Flex.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Util-Linux-ng in Boot Section, to cross-compile.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 03, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Udev to 115.
+			This change also removed udev-cross-lfs package
+			since our rules are the same as base ones installed.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Grep to 2.5.3.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Man-Pages to 2.64.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated TCL to 8.4.15.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.22.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.22.6-09032007.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Less to 406.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Sysklogd to 1.5.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Kbd to 1.13.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated IPRoute2 to 2.6.22-070710.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Shadow Patch for more fixes. Man Page Typos,
+          buffer overflows, useradd -G fixes, better name support, and
+          the previous useradd fix.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Bash 3.2 Patch to -6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Readline 5.2 Patch to -3.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Vim 3.1 Patch to -3.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 02, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Util-linux-ng to 2.13.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Tree to 1.5.1.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Glibc to 2.6.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Binutils to 2.18.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>August 05, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated the bash config.cache to contain all
+          of the differences between a cross-compiled and a native build.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 23, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated Texinfo to 4.9.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated E2fsprogs to 1.40.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated M4 to 1.4.10.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Tar to 1.18.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated Libtool to 1.5.24.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated the Man Pages to 2.63.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 22, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated GCC to 4.2.1.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 20, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[ken] - Make coreutils build in temp-system when the host cannot
+	  run the target programs.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>July 1, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated the download location for the Man Pages
+          package.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 23, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Glibc 2.6. This includes adding a sed
+          to Coreutils and Gzip to rename their internal implementations of
+          futimens which are incompatible with the implementation provided
+          by Glibc.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 18, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Tar 1.17.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 17, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Vim 7.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to Findutils 4.2.31.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to File 4.21.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to Less 403.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to Man Pages 2.57.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>June 16, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Removed creation of config.cache from temp-system
+          Coreutils, as it no longer looks for setvbuf.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 19, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Added a patch to Perl that accounts for a change
+          in GCC 4.2.0. The patch causes makedepend.sh to also remove
+          <literal>&lt;command-line&gt;</literal> as well as
+          <literal>&lt;command line&gt;</literal>.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>May 18, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to GCC 4.2.0.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>April 30, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Man Pages 2.46.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>April 27, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jhuntwork] - We don't use the uname patch for temp-system Coreutils.
+	  No need to 'touch man/uname.1'.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>April 24, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Psmisc 22.5.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>April 20, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Gzip 1.3.12.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to Psmisc 22.4.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to Man Pages 2.44.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to M4 1.4.9.</para>
+        </listitem>
+        <listitem>
+          <para>[jciccone] - Updated to Coreutils 6.9.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>April 10, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Updated Gzip's list of installed programs - compress
+          is no longer installed, and gunzip, uncompress, and zcat are now bash
+          scripts rather than links.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 25, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.20.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.20.1-02252007.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 17, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Moved the build of the File package in cross-tools
+          to the beginning of the chapter.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Gzip 1.3.11.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 16, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Changed the wording in the "Build Variables" page
+          to make it clearer.</para>
+          <para>[Chris] - Added command to Udev installation to remove Udev
+          rules it installs.</para>
+          <para>[Chris] - Removed Ncurses patch for buggy versions of Bash from
+          from the final-system build (it's still in the temp-system).</para>
+          <para>[Chris] - Removed unneeded /tools/bin/cc symlink.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 15, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Fix a building of Ncurses when an unpatched version of Bash 3.x is used.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 14, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to GCC 4.1.2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 5, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Automake 1.10.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>February 4, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.20.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.20-02042007.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 105.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 23, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.19.2-01232007.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Update to Glibc Branch Update Patch.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 15, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.19.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.19.2-01152007.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Tree 1.5.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 104.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev Rules 1.1-pre4.</para>
+        </listitem>
+        <listitem>
+          <para>[Chris] - Removed obsolete note from bzip2 instructions
+          about performing rm /usr/bin/bz*.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 12, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Update to Glibc Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Update to Binutils Branch Update Patch.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>January 7, 2007</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Bzip2 1.0.4.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 23, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jciccone] - Updated to Ncurses 5.6.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 15, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Gzip 1.3.9.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to IPRoute2 2.6.19-061214.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 13, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added File to Cross-tools.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 12, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.19.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.19.1-12122006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Readline Upstream Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Update Bash Upstream Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to File 4.19.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 10, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Gzip 1.3.8.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 9, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Tar 1.16.1.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 7, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Gzip 1.3.7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 6.7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Reverting sysroot changes.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>December 1, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.43.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Removed MINOR patch and replaced it with a more complete
+          upstream patch will all current updates to the 2.5 branch of glibc.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Binutils Branch Update Patch.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Reverted change in gettext build in temp-system.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 6.7.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 29, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.19-11302006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev Rules 1.1-pre3.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 29, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.19.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.19-11292006.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 27, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Gettext 0.16.1.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 26, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.42.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Gzip 1.3.6.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 25, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Findutils 4.2.29.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 23, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Added /bin/rm to essential symlinks - e2fsprogs
+          testsuite hard-codes the location to that binary.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 22, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 6.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man 1.6e.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 20, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 6.5.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Patch for Coreutils 6.5 ls segfault.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to M4 1.4.8.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.18.3.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.18.3-11202006.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 17, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Autoconf 2.61.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 15, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to IANA-Etc 2.20.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 14, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Change to E2FSProgs, does not pick up the CC or LD
+	  variables.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 12, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.18.2-11122006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Bash 3.2 patch updated with upstream fixes 001-005.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 5, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.18.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.18.2-11052006.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 4, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Modified the instructions for disabling the
+          installation of the groups program to account for changes in shadow's
+          Makefile.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>November 2, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to File 4.18.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 31, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Bash 3.2 patch updated with upstream fixes.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Bootscripts 1.1-pre3.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 30, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Udev Rules 1.1-pre2.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 27, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Bootscripts 1.1-pre2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated syslog.conf file.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 26, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux-Headers 2.6.18.1-10262006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Gettext 0.16.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - The nscd sed is no longer needed to build Glibc 2.5.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 25, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Updated to Psmisc 22.3.</para>
+        </listitem>
+        <listitem>
+          <para>[Chris] - Updated to Tcl 8.4.14.</para>
+        </listitem>
+        <listitem>
+          <para>[Chris] - Moved e2fsprogs and sed before coreutils, as
+          Coreutils testsuite now requires e2fsprogs.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 23, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Removed unneeded additions to config.cache for
+          temp-system Tar and Coreutils.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added touch man/uname.1 in temp-system Coreutils to
+          prevent a build failure.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Added Patch for a Versioning issue with Glibc 2.5.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 22, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux 2.6.18.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers 2.6.18.1-10222006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 6.4.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Removed out of place udev text in bootscripts Networking.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+     <para>October 21, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Inetutils 1.5.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to IPRoute2 2.6.18-061002.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Tar 1.16.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 103.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 6.3.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 20, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Removed command to add "setvbuf_reversed" to
+          temp-system bash as it is no longer needed with Bash 3.2.</para>
+        </listitem>
+	<listitem>
+          <para>[Chris] - Added command to man instructions to comment out
+          MANPATH /usr/local/man (in addition to /usr/man).</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 15, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Bash 3.2 with some unofficial upstream fixes. Thank you Chet Ramey.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 12, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added patch to fix build issue with Bash 3.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.41.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Glibc 2.5.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 11, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Bash 3.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Readline 5.2.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.40.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 102.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 4, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[manuel] - Changed book license to the Open Publication
+          License v1.0.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>October 1, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[Chris] - Removed obsolete command from Tcl instructions,
+          as the issue it fixes has been fixed in the latest Tcl version.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 29, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers to 2.6.18-09302006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - New patch for util-linux, replaces GCC 4 Fixes, the new
+          patches fixes the same issues, and removes the use of syscalls. Syscalls were
+          removed the unistd.h during santization.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 28, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Added patch for Util-Linux to fix build issues due to headers change in the
+          kernel.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Texinfo 4.8a.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 25, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Bootscripts to 1.1-pre1. Adding in the boot logging feature.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 100.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated Udev Rules for Udev 100.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to M4 1.4.7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux to 2.6.18.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Linux Headers to 2.6.18-09252006.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Udev library libvolume_id is used by HAL, which makes
+          us change our build to a multilib build of udev libaries only for 32 and N32.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>September 18, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated Bison to a multilib build in all support architectures.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>August 28, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Updated to Gettext 0.15.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Shadow 4.0.18.1.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Coreutils 5.97.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Procps 3.2.7.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Man-Pages 2.39.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Autoconf 2.60.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to TCL 8.4.13.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to M4 1.4.6.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Findutils 4.2.28.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Coreutils Uname Patch -2, which supports all architectures.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Vim Patch -10, which contains upstream fixes.</para>
+        </listitem>
+        <listitem>
+          <para>[jim] - Updated to Udev 098 and udev-cross-lfs to 1.1-08272006 rules.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>August 28, 2006</para>
+      <itemizedlist>
+        <listitem>
+          <para>[jim] - Changelog restarted, see the 1.0.0 book for the old changelog.</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+  </itemizedlist>
+
+  <para>Branch Synced from the Release of LFS 6.0 on February 23rd, 2005</para>
+
+</sect1>

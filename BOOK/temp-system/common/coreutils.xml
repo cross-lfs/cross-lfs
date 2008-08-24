@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-temp-system-coreutils" role="wrap">
+  <?dbhtml filename="coreutils.html"?>
+
+  <title>Coreutils-&coreutils-version;</title>
+
+  <indexterm zone="ch-temp-system-coreutils">
+    <primary sortas="a-Coreutils">Coreutils</primary>
+    <secondary>temporary system</secondary>
+  </indexterm>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../final-system/common/coreutils.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
+
+  <sect2 role="installation">
+    <title>Installation of Coreutils</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/coreutils.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/common/coreutils.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
+
+    <para os="ba">Configure can not properly determine how to get free space
+    when cross-compiling, Without putting the following entry into
+    <filename>config.cache</filename> the <command>df</command> program will
+    not be built.</para>
+
+<screen os="bb"><userinput>echo "fu_cv_sys_stat_statfs2_bsize=yes" &gt; config.cache</userinput></screen>
+
+    <para os="bd">Prepare Coreutils for compilation:</para>
+
+<screen os="be"><userinput>./configure --prefix=/tools \
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --cache-file=config.cache</userinput></screen>
+
+    <para os="m1">When we changed the futimens references, one of the files we
+    updated was touch.c. That change means the
+    <filename class="directory">man</filename> Makefile will try to
+    regenerate the man page for touch, by executing the compiled
+    <literal>touch</literal> program. If the target architecture cannot be
+    executed by the host system, the build will fail. The following command
+    fixes this by giving the man page a newer timestamp then its corresponding source file:</para>
+
+<screen os="m2"><userinput>touch man/touch.1</userinput></screen>
+
+   <para os="bf">Compile the package:</para>
+
+<screen os="bg"><userinput>make</userinput></screen>
+
+    <para os="bh">Install the package:</para>
+
+<screen os="bi"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-coreutils" role="."/></para>
+
+  </sect2>
+
+</sect1>

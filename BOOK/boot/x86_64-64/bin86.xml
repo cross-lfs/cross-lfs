@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-bin86" role="wrap">
+  <?dbhtml filename="bin86.html"?>
+
+  <title>Bin86-&bin86-version;</title>
+
+  <indexterm zone="ch-boot-bin86">
+    <primary sortas="a-Bin86">Bin86</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../final-system/x86_64-64/bin86.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
+
+  <sect2 role="installation">
+    <title>Installation of Bin86</title>
+
+    <para os="a">We are building Bin86 so that we can compile Lilo.
+      Both <command>as86</command> and <command>ld86</command> need to
+      run on the host system to assemble x86_64 code.  We cannot
+      compile the whole package like this, but fortunately these two
+      programs are the only parts we require.</para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/x86_64-64/bin86.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../final-system/x86_64-64/bin86.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <para os="b">The Bin86 package does not contain a <command>configure
+      </command> script.  Natively compile only the necessary parts with:
+    </para>
+
+<screen os="c"><userinput>make CC=gcc -C as as86
+make CC=gcc -C ld ld86</userinput></screen>
+
+    <para os="e">Install the assembler and linker where they will be on
+      the PATH when we build Lilo, using prefixes to show that their
+      output is not for a native system.</para>
+
+<screen os="f"><userinput>install -v -m 755 -s as/as86 /cross-tools/bin/${CLFS_TARGET}-as86
+install -v -m 755 -s ld/ld86 /cross-tools/bin/${CLFS_TARGET}-ld86</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-bin86" role="."/></para>
+
+  </sect2>
+
+</sect1>

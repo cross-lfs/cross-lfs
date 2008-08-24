@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-system-linux-headers" role="wrap">
+  <?dbhtml filename="linux-headers.html"?>
+
+  <title>Linux-Headers-&linux-version;</title>
+
+  <indexterm zone="ch-system-linux-headers">
+    <primary sortas="a-Linux-Headers">Linux-Headers</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>The Linux Headers package contains the
+    <quote>sanitized</quote> kernel headers.</para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Linux-Headers</title>
+
+    <para os="a">For this step you will need the kernel tarballs.</para>
+
+    <para os="b">Install the header files that are common to all architectures:</para>
+
+<screen os="c"><userinput>make mrproper
+make headers_check
+make INSTALL_HDR_PATH=dest headers_install
+cp -rv dest/include/* /usr/include</userinput></screen>
+
+  </sect2>
+
+  <sect2 id="contents-linux-headers" role="content">
+    <title>Contents of Linux-Headers</title>
+
+    <segmentedlist>
+      <segtitle>Installed headers</segtitle>
+
+      <seglistitem>
+        <seg>/usr/include/{asm,asm-generic,linux,mtd,scsi,sound}/*.h</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="linux-headers">
+        <term><filename
+        class="headerfile">/usr/include/{asm,asm-generic,linux,mtd,scsi,sound}/*.h</filename></term>
+        <listitem>
+          <para>The Linux API headers</para>
+          <indexterm zone="ch-system-linux-headers linux-headers">
+            <primary
+            sortas="e-/usr/include/{asm,linux}/*.h">/usr/include/{asm,linux}/*.h</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

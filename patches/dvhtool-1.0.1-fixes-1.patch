@@ -1,0 +1,169 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-11-20
+Initial Package Version: 1.0.1
+Origin: Gentoo and Debian
+Upstream Status: Applied
+Description: Fixes Build issues with Dvhtool
+             Adds support for LVM and Linux Partitions
+ 
+diff -Naur dvhtool-1.0.1.orig/Makefile.in dvhtool-1.0.1/Makefile.in
+--- dvhtool-1.0.1.orig/Makefile.in	2001-04-17 18:07:24.000000000 +0000
++++ dvhtool-1.0.1/Makefile.in	2005-11-21 03:17:54.000000000 +0000
+@@ -1,4 +1,4 @@
+-# Makefile.in generated automatically by automake 1.4a from Makefile.am
++# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+ 
+ # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+ # This Makefile.in is free software; the Free Software Foundation
+@@ -46,10 +46,9 @@
+ AUTOHEADER = @AUTOHEADER@
+ 
+ INSTALL = @INSTALL@
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+ INSTALL_DATA = @INSTALL_DATA@
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+-INSTALL_STRIP_FLAG =
+ transform = @program_transform_name@
+ 
+ NORMAL_INSTALL = :
+@@ -104,7 +103,7 @@
+ 
+ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+ 
+-TAR = gtar
++TAR = tar
+ GZIP_ENV = --best
+ DEP_FILES =  .deps/dvhlib.P .deps/dvhtool.P .deps/getopt.P \
+ .deps/getopt1.P .deps/pread.P
+@@ -124,7 +123,7 @@
+ $(ACLOCAL_M4):  configure.in  acinclude.m4
+ 	cd $(srcdir) && $(ACLOCAL)
+ 
+-config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
++config.status: $(srcdir)/configure.in $(CONFIG_STATUS_DEPENDENCIES)
+ 	$(SHELL) ./config.status --recheck
+ $(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+ 	cd $(srcdir) && $(AUTOCONF)
+@@ -173,8 +172,8 @@
+ 	$(mkinstalldirs) $(DESTDIR)$(sbindir)
+ 	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
+ 	  if test -f $$p; then \
+-	    echo "  $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+-	     $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
++	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
++	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(sbindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+ 	  else :; fi; \
+ 	done
+ 
+@@ -382,7 +381,7 @@
+ all-am: Makefile $(PROGRAMS) $(MANS) $(HEADERS) config.h
+ all-redirect: all-am
+ install-strip:
+-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
++	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+ installdirs:
+ 	$(mkinstalldirs)  $(DESTDIR)$(sbindir) $(DESTDIR)$(mandir)/man8
+ 
+diff -Naur dvhtool-1.0.1.orig/aclocal.m4 dvhtool-1.0.1/aclocal.m4
+--- dvhtool-1.0.1.orig/aclocal.m4	2000-11-07 00:05:27.000000000 +0000
++++ dvhtool-1.0.1/aclocal.m4	2005-11-21 03:17:54.000000000 +0000
+@@ -1,4 +1,4 @@
+-dnl aclocal.m4 generated automatically by aclocal 1.4a
++dnl aclocal.m4 generated automatically by aclocal 1.4-p4
+ 
+ dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+ dnl This file is free software; the Free Software Foundation
+@@ -51,8 +51,6 @@
+ 
+ AC_DEFUN(AM_INIT_AUTOMAKE,
+ [AC_REQUIRE([AC_PROG_INSTALL])
+-dnl We require 2.13 because we rely on SHELL being computed by configure.
+-AC_PREREQ([2.13])
+ PACKAGE=[$1]
+ AC_SUBST(PACKAGE)
+ VERSION=[$2]
+diff -Naur dvhtool-1.0.1.orig/dvh.h dvhtool-1.0.1/dvh.h
+--- dvhtool-1.0.1.orig/dvh.h	2001-02-22 02:29:45.000000000 +0000
++++ dvhtool-1.0.1/dvh.h	2005-11-21 03:18:42.000000000 +0000
+@@ -127,6 +127,10 @@
+ #define	PTYPE_XFSLOG	11		/* partition is sgi XFS log */
+ #define	PTYPE_XLV	12		/* partition is part of an XLV vol */
+ #define	PTYPE_XVM	13		/* partition is sgi XVM */
++#define	PTYPE_LSWAP	0x82		/* partition is Linux swap */
++#define	PTYPE_LINUX	0x83		/* partition is Linux native */
++#define PTYPE_LLVM	0x8e		/* partition is Linux LVM */
++#define PTYPE_LRAID	0xfd		/* partition is Linux RAID */
+ #define NPTYPES		16
+ 
+ #define	VHMAGIC		0xbe5a941	/* randomly chosen value */
+diff -Naur dvhtool-1.0.1.orig/dvhlib.c dvhtool-1.0.1/dvhlib.c
+--- dvhtool-1.0.1.orig/dvhlib.c	2001-02-24 10:37:37.000000000 +0000
++++ dvhtool-1.0.1/dvhlib.c	2005-11-21 03:18:42.000000000 +0000
+@@ -50,6 +50,10 @@
+ 	case PTYPE_XFSLOG:	return "XFS Log";
+ 	case PTYPE_XLV:		return "XLV Volume";
+ 	case PTYPE_XVM:		return "XVM Volume";
++	case PTYPE_LSWAP:	return "Linux Swap";
++	case PTYPE_LINUX:	return "Linux Native";
++	case PTYPE_LLVM:	return "Linux LVM";
++	case PTYPE_LRAID:	return "Linux RAID";
+ 	}
+ 	return "Unknown Partition Type";
+ }
+@@ -325,8 +329,10 @@
+ 	if (res == -1)
+ 		die("Couldn't stat source file");
+ 
+-	/* XXX pad to blocksize? */
+-	size = vh->vh_pt[8].pt_nblks * blksize - istat.st_size;
++	/* calculate free blocks in vh */
++	size = vh->vh_pt[8].pt_nblks				/* total vh size */
++		- ( vh->vh_pt[8].pt_firstlbn + 4 )		/* reserved area */
++		- (( istat.st_size + blksize - 1 ) / blksize );	/* pad to blocksize */
+ 	/*
+ 	 * Are we replacing an existing file, check for enough space and free
+ 	 * entry in volume header
+@@ -336,16 +342,15 @@
+ 			/* It's an existing file, delete it.  */
+ 			memset(vd->vd_name, 0, VDNAMESIZE);
+ 			vd->vd_nbytes = 0;
+-			break;
+ 		}
+ 		if ( vd->vd_nbytes ) {
+-			size -= vd->vd_nbytes;
++			size -= (vd->vd_nbytes + blksize - 1 ) / blksize; /* pad to blocksize */
+ 			num++;
+ 		}
+ 		vd++;
+ 	}
+ 
+-	if ( num == NVDIR ) 
++	if ( num == NVDIR )
+ 		die("No more free entries in volume header");
+ 	if ( size <= 0 )
+ 		die("Not enough space left in volume header");
+@@ -403,7 +408,7 @@
+ 				die("Short write");
+ 			}
+ 		}
+-		dest += (vd->vd_nbytes + 511) / 512;	/* XXX Blocksize  */
++		dest += (vd->vd_nbytes + blksize - 1) / blksize;
+ 		vd++;
+ 	}
+ 
+diff -Naur dvhtool-1.0.1.orig/dvhtool.8 dvhtool-1.0.1/dvhtool.8
+--- dvhtool-1.0.1.orig/dvhtool.8	2001-02-24 10:37:37.000000000 +0000
++++ dvhtool-1.0.1/dvhtool.8	2005-11-21 03:17:54.000000000 +0000
+@@ -1,4 +1,4 @@
+-.TH DVHTOOL 1 "July 2000"
++.TH DVHTOOL 8 "July 2000"
+ .UC 4
+ .SH NAME
+ dvhtool \- Disk volume header manipulation tool
+@@ -85,4 +85,4 @@
+ .PP
+ .I dvhtool
+ was written by Ralf Baechle <ralf@oss.sgi.com>, Keith M. Wesolowski <wesolows@foobazco.org>,
+-Tor Arntsen <tor@spacetec.no>, Guido Guenther <guido.guenther@gmx.net>. 
++Tor Arntsen <tor@spacetec.no>, Guido Guenther <agx@debian.org>. 
