@@ -117,9 +117,41 @@
   href="../common/glibc.xml"
   xpointer="xpointer(id('conf-glibc'))"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../multilib/glibc-64bit.xml"
-  xpointer="xpointer(id('conf-ld'))"/>
+  <sect2 id="conf-ld" role="configuration">
+    <title>Configuring The Dynamic Loader</title>
+
+    <indexterm zone="conf-ld">
+      <primary sortas="e-/etc/ld.so.conf">/etc/ld.so.conf</primary>
+    </indexterm>
+
+    <para>By default, the dynamic loader (<filename
+    class="libraryfile">/lib/ld-linux.so.2</filename> for 32bit executables and
+    <filename class="libraryfile">/lib64/ld-linux-x86-64.so.2</filename> for
+    64bit executables) searches through
+    <filename class="directory">/lib</filename>,
+    <filename class="directory">/lib64</filename>,
+    <filename class="directory">/usr/lib</filename>,
+    and <filename class="directory">/usr/lib64</filename> for dynamic
+    libraries that are needed by programs as they are run. However, if
+    there are libraries in directories other than these, they need to be
+    added to the <filename>/etc/ld.so.conf</filename> file in order
+    for the dynamic loader to find them. Some directories that are commonly
+    known to contain additional libraries are
+    <filename class="directory">/usr/local/lib</filename>,
+    <filename class="directory">/usr/local/lib64</filename>,
+    <filename class="directory">/opt/lib</filename>,
+    and <filename class="directory">/opt/lib64</filename>,
+    so add those directories to the dynamic loader's search path.</para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='ld-b'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/glibc-64bit.xml"
+    xpointer="xpointer(//*[@os='ld-c'])"/>
+
+  </sect2>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../common/glibc.xml"

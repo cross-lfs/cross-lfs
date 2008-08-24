@@ -136,8 +136,11 @@ sed '/ldd-rewrite-script/s:@:${objdir}/&amp;:' config.make.in.orig &gt; config.m
       <primary sortas="e-/etc/ld.so.conf">/etc/ld.so.conf</primary>
     </indexterm>
 
-    <para>By default, the dynamic loader (<filename
-    class="libraryfile">/lib/ld-linux.so.2</filename>) searches through
+    <para os="ld-a">By default, the dynamic loader (<filename
+    class="libraryfile">/lib/ld.so.1</filename> for 32bit executables <filename
+    class="libraryfile">/lib32/ld.so.1</filename> for n32 executables and
+    <filename class="libraryfile">/lib64/ld.so.1</filename> for 64bit
+    executables) searches through
     <filename class="directory">/lib</filename> and <filename
     class="directory">/usr/lib</filename> for dynamic libraries that are
     needed by programs as they are run. However, if there are libraries in
@@ -154,10 +157,10 @@ sed '/ldd-rewrite-script/s:@:${objdir}/&amp;:' config.make.in.orig &gt; config.m
     and <filename class="directory">/opt/lib64</filename>,
     so add those directories to the dynamic loader's search path.</para>
 
-    <para>Create a new file <filename>/etc/ld.so.conf</filename> by running the
+    <para os="ld-b">Create a new file <filename>/etc/ld.so.conf</filename> by running the
     following:</para>
 
-<screen><userinput>cat &gt; /etc/ld.so.conf &lt;&lt; "EOF"
+<screen os="ld-c"><userinput>cat &gt; /etc/ld.so.conf &lt;&lt; "EOF"
 <literal># Begin /etc/ld.so.conf
 
 /usr/local/lib
