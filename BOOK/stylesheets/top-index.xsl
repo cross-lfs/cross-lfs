@@ -116,6 +116,7 @@ hr {
               </a>
             </h4>
           </li>
+<!--
           <li>
             <h4>
               <a href="mips">
@@ -130,6 +131,7 @@ hr {
               </a>
             </h4>
           </li>
+-->
 	</ul>
         <h3>
           <xsl:text>64 Bit Builds</xsl:text>
@@ -145,6 +147,7 @@ hr {
               </a>
             </h4>
           </li>
+<!--
           <li>
             <h4>
               <a href="mips64-64">
@@ -152,6 +155,7 @@ hr {
               </a>
             </h4>
           </li>
+-->
           <li>
             <h4>
              <a href="sparc64-64">
@@ -159,6 +163,7 @@ hr {
              </a>
             </h4>
           </li>
+<!--
           <li>
             <h4>
              <a href="alpha">
@@ -166,6 +171,7 @@ hr {
              </a>
             </h4>
           </li>
+-->
 	</ul>
         <h3>
           <xsl:text>Multilib Builds</xsl:text>
@@ -181,6 +187,7 @@ hr {
               </a>
             </h4>
           </li>
+<!--
           <li>
             <h4>
               <a href="mips64">
@@ -188,6 +195,7 @@ hr {
               </a>
             </h4>
           </li>
+-->
           <li>
             <h4>
              <a href="sparc64">
