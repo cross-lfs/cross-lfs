@@ -22,24 +22,6 @@
   <sect2 role="installation">
     <title>Installation of GCC Cross Compiler</title>
 
-<!--
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
--->
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-final.xml"
-    xpointer="xpointer(//*[@os='p3'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-final.xml"
-    xpointer="xpointer(//*[@os='p4'])"/>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='aa'])"/>
@@ -55,14 +37,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='ae'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='af'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
@@ -92,11 +66,12 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="bf" ><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --target=${CLFS_TARGET} --host=${CLFS_HOST} --with-abi=64 \
+<screen os="bf" ><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST}
     --with-local-prefix=/tools --disable-nls --enable-shared \
     --enable-languages=c,c++ --enable-__cxa_atexit --disable-multilib \
-    --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
+    --enable-c99 --enable-long-long --enable-threads=posix \
+    --with-abi=64</userinput></screen>
 
     <variablelist os="bg">
       <title>The meaning of the new configure options:</title>

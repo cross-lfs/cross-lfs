@@ -45,10 +45,16 @@
     Glibc Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
-    <para os="p1">The following patches merges all updates from the &glibc-version; Branch
+    <para os="p1">The following patch merges all updates from the &glibc-version; Branch
     from the Glibc developers:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&glibc-branch_update-patch;</userinput></screen>
+
+    <para os="p3">The following patch causes the Glibc build system to include
+    headers from GCC's <filename class="directory">include-fixed</filename>
+    directory:</para>
+
+<screen os="p4"><userinput>patch -Np1 -i ../&glibc-include_fixed-patch;</userinput></screen>
 
     <para os="c">The following patch fixes an issue that can
     cause <command>localdef</command> to segfault:</para>

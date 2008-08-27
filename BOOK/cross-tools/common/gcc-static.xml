@@ -23,16 +23,6 @@
     <title>Installation of Cross GCC Compiler with Static libgcc
     and no Threads</title>
 
-<!--
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/gcc.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/gcc.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
--->
-
     <para os="aa">Make a couple of essential adjustments to the specs file
     to ensure GCC uses our build environment:</para>
 
@@ -42,13 +32,6 @@
     apply the following patch:</para>
 
 <screen os="ad"><userinput>patch -Np1 -i ../&gcc-posix-patch;</userinput></screen>
-
-    <para os="ae">The following patch ensures that <command>gcc</command> does not
-    search the <filename class="directory">/usr</filename> directory for
-    <filename class="libraryfile">libgcc_s.so</filename> when
-    cross-compiling:</para>
-
-<screen os="af"><userinput>patch -Np1 -i ../&gcc-cross_search-patch;</userinput></screen>
 
     <para os="ag">Change the StartFile Spec to point to the correct library
     location:</para>
@@ -76,10 +59,12 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="al"><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --host=${CLFS_HOST} --target=${CLFS_TARGET} --disable-multilib \
-    --with-local-prefix=/tools --disable-nls --disable-shared \
-    --disable-threads --enable-languages=c</userinput></screen>
+<screen os="al"><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+    --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
+    --disable-multilib --with-local-prefix=/tools --disable-nls \
+    --without-headers --with-newlib --disable-decimal-float \
+    --disable-libgomp --disable-libmudflap --disable-libssp \
+    --disable-shared --disable-threads --enable-languages=c</userinput></screen>
 
     <variablelist os="am">
       <title>The meaning of the configure options:</title>
@@ -123,11 +108,11 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
 
     <para os="an">Continue with compiling the package:</para>
 
-<screen os="ao"><userinput>make all-gcc</userinput></screen>
+<screen os="ao"><userinput>make</userinput></screen>
 
     <para os="ap">Install the package:</para>
 
-<screen os="aq"><userinput>make install-gcc</userinput></screen>
+<screen os="aq"><userinput>make install</userinput></screen>
 
   </sect2>
 

@@ -1,0 +1,43 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 2008-08-24
+Initial Package Version: 2.7
+Upstream Status: Unknown
+Origin: Joe Ciccone
+Description: Glibc needs to look in GCC include-fixed dir for headers.
+
+diff -Naur glibc-2.7.orig/configure.in glibc-2.7/configure.in
+--- glibc-2.7.orig/configure.in	2007-06-07 23:16:36.000000000 -0400
++++ glibc-2.7/configure.in	2008-08-26 20:16:35.000000000 -0400
+@@ -912,7 +912,13 @@
+ # thing on a system that doesn't need fixincludes.  (Not presently a problem.)
+ if test -n "$sysheaders"; then
+   ccheaders=`$CC -print-file-name=include`
+-  SYSINCLUDES="-nostdinc -isystem $ccheaders \
++  ccheaders_fixed=`$CC -print-file-name=include-fixed`
++  if test "$ccheaders_fixed" = "include-fixed"; then
++    ccheaders_fixed=""
++  else
++    ccheaders_fixed="-isystem $ccheaders_fixed"
++  fi
++  SYSINCLUDES="-nostdinc -isystem $ccheaders $ccheaders_fixed \
+ -isystem `echo $sysheaders | sed 's/:/ -isystem /g'`"
+   if test -n "$CXX"; then
+     cxxversion=`$CXX -dumpversion 2>&AS_MESSAGE_LOG_FD` &&
+diff -Naur glibc-2.7.orig/configure glibc-2.7/configure
+--- glibc-2.7.orig/configure	2007-10-18 07:22:23.000000000 -0400
++++ glibc-2.7/configure	2008-08-26 20:16:41.000000000 -0400
+@@ -5063,7 +5063,13 @@
+ # thing on a system that doesn't need fixincludes.  (Not presently a problem.)
+ if test -n "$sysheaders"; then
+   ccheaders=`$CC -print-file-name=include`
+-  SYSINCLUDES="-nostdinc -isystem $ccheaders \
++  ccheaders_fixed=`$CC -print-file-name=include-fixed`
++  if test "$ccheaders_fixed" = "include-fixed"; then
++    ccheaders_fixed=""
++  else
++    ccheaders_fixed="-isystem $ccheaders_fixed"
++  fi
++  SYSINCLUDES="-nostdinc -isystem $ccheaders $ccheaders_fixed \
+ -isystem `echo $sysheaders | sed 's/:/ -isystem /g'`"
+   if test -n "$CXX"; then
+     cxxversion=`$CXX -dumpversion 2>&5` &&

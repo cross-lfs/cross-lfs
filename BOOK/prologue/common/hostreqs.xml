@@ -68,6 +68,10 @@
     </listitem>
 
     <listitem>
+      <para><emphasis role="strong">GMP-4.1</emphasis></para>
+    </listitem>
+
+    <listitem>
       <para><emphasis role="strong">Grep-2.5</emphasis></para>
     </listitem>
 
@@ -77,6 +81,10 @@
 
     <listitem>
       <para><emphasis role="strong">Make-3.79.1</emphasis></para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="strong">MPFR-2.3.0</emphasis></para>
     </listitem>
 
     <listitem>
@@ -114,9 +122,11 @@ find --version | head -n1
 gawk --version | head -n1
 gcc --version | head -n1
 /lib/libc.so.6 | head -n1 | cut -d" " -f1-7
+echo -n "GMP: "; strings /usr/lib*/libgmp.so 2>/dev/null | grep ^jw | uniq
 grep --version | head -n1
 gzip --version | head -n1
 make --version | head -n1
+echo -n "MPFR: "; grep VERSION_STRING /usr/include/mpfr.h | cut -d\" -f2
 tic -V
 patch --version | head -n1
 sed --version | head -n1

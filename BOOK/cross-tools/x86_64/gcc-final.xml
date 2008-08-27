@@ -22,24 +22,6 @@
   <sect2 role="installation">
     <title>Installation of GCC Cross Compiler</title>
 
-<!--
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
--->
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-final.xml"
-    xpointer="xpointer(//*[@os='p3'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-final.xml"
-    xpointer="xpointer(//*[@os='p4'])"/>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='aa'])"/>
@@ -55,14 +37,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='ae'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='af'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
@@ -100,8 +74,8 @@ sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig > \
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="bf"><userinput>../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --target=${CLFS_TARGET} --host=${CLFS_HOST} \
+<screen os="bf"><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
     --with-local-prefix=/tools --disable-nls --enable-shared \
     --enable-languages=c,c++ --enable-__cxa_atexit \
     --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
