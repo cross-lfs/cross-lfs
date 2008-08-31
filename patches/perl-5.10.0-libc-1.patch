@@ -1,14 +1,15 @@
 Submitted By: Anderson Lizardo <andersonlizardo(at)yahoo(dot)com(dot)br>
 Date: 2006-02-15
 Initial Package Version: 5.8.8
+        Rediffed against 5.10.0 by Joe Ciccone on 2008-08-30
 Origin: based on current LFS-BOOK patch (perl-5.8.0-libc-2.patch)
 Description: this patch adapts some hard-wired paths to the C library.
              It uses the $prefix variable to locate the correct libc.
 
-diff -Naur perl-5.8.8.orig/hints/linux.sh perl-5.8.8/hints/linux.sh
---- perl-5.8.8.orig/hints/linux.sh	2005-11-18 01:18:45.000000000 +0000
-+++ perl-5.8.8/hints/linux.sh	2006-02-12 12:20:32.000000000 +0000
-@@ -52,9 +52,9 @@
+diff -Naur perl-5.10.0.orig/hints/linux.sh perl-5.10.0/hints/linux.sh
+--- perl-5.10.0.orig/hints/linux.sh	2007-12-18 05:47:07.000000000 -0500
++++ perl-5.10.0/hints/linux.sh	2008-08-31 11:57:41.000000000 -0400
+@@ -60,9 +60,9 @@
  # We don't use __GLIBC__ and  __GLIBC_MINOR__ because they
  # are insufficiently precise to distinguish things like
  # libc-2.0.6 and libc-2.0.7.
@@ -21,8 +22,8 @@ diff -Naur perl-5.8.8.orig/hints/linux.sh perl-5.8.8/hints/linux.sh
  fi
  
  # Configure may fail to find lstat() since it's a static/inline
-@@ -330,3 +330,8 @@
-     libswanted="$*"
+@@ -423,3 +423,8 @@
+     libswanted="$libswanted pthread"
      ;;
  esac
 +

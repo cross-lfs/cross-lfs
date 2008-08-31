@@ -25,11 +25,6 @@
   <sect2 role="installation">
     <title>Installation of Coreutils</title>
 
-    <para os="a">Prevent Coreutils from installing binaries that will be
-    installed by other packages:</para>
-
-<screen os="b"><userinput>patch -Np1 -i ../&coreutils-suppress-patch;</userinput></screen>
-
     <para os="p1">A known issue with the <command>uname</command> program from
     this package is that the <option>-p</option> switch always
     returns <computeroutput>unknown</computeroutput>. The following patch
@@ -45,7 +40,8 @@
 
     <para os="c">Now prepare Coreutils for compilation:</para>
 
-<screen os="d"><userinput>./configure --prefix=/usr</userinput></screen>
+<screen os="d"><userinput>./configure --prefix=/usr \
+    --enable-no-install-program=arch,hostname,kill,su,uptime</userinput></screen>
 
     <para os="e">Compile the package:</para>
 
@@ -113,12 +109,12 @@ ln -svf ../../bin/install /usr/bin</userinput></screen>
         comm, cp, csplit, cut, date, dd, df, dir, dircolors, dirname, du,
         echo, env, expand, expr, factor, false, fmt, fold, groups, head,
         hostid, hostname, id, install, join, link, ln, logname, ls, md5sum,
-        mkdir, mkfifo, mknod, mv, nice, nl, nohup, od, paste, pathchk, pinky,
-        pr, printenv, printf, ptx, pwd, readlink, rm, rmdir, seq, sha1sum,
-        sha224sum, sha256sum, sha384sum, sha512sum, shred, shuf, sleep, sort,
-        split, stat, stty, sum, sync, tac, tail, tee, test, touch, tr, true,
-        tsort, tty, uname, unexpand, uniq, unlink, users, vdir, wc, who,
-        whoami, and yes</seg>
+        mkdir, mkfifo, mknod, mktemp, mv, nice, nl, nohup, od, paste, pathchk,
+        pinky, pr, printenv, printf, ptx, pwd, readlink, rm, rmdir, seq,
+        sha1sum, sha224sum, sha256sum, sha384sum, sha512sum, shred, shuf,
+        sleep, sort, split, stat, stty, sum, sync, tac, tail, tee, test, touch,
+        tr, true, tsort, tty, uname, unexpand, uniq, unlink, users, vdir, wc,
+        who, whoami, and yes</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -568,6 +564,17 @@ ln -svf ../../bin/install /usr/bin</userinput></screen>
           character special file, a block special file, or a FIFO</para>
           <indexterm zone="ch-system-coreutils mknod">
             <primary sortas="b-mknod">mknod</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="mktemp">
+        <term><command>mktemp</command></term>
+        <listitem>
+          <para>Creates temporary files in a secure manner; it is used in
+          scripts</para>
+          <indexterm zone="ch-system-coreutils mktemp">
+            <primary sortas="b-mktemp">mktemp</primary>
           </indexterm>
         </listitem>
       </varlistentry>

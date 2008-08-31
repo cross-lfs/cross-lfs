@@ -1,16 +1,17 @@
 Submitted By: Jim Gifford <jim at linuxfromscratch dot org>
 Date: 2006-08-24
 Initial Package Version: 5.97
+        Rediffed against 6.12 by Joe Ciccone on 2008-08-30
 Upstream Status: Not Accepted
 Origin: Gentoo - http://sources.gentoo.org/viewcvs.py/gentoo/src/patchsets/coreutils
 Description: Display CPU Information from /proc/cpuinfo or /proc/sysinfo
 
 Original Patch by - Matthew Burgess and Scot McPherson
 
-diff -Naur coreutils-5.97.orig/src/uname.c coreutils-5.97/src/uname.c
---- coreutils-5.97.orig/src/uname.c	2005-09-15 12:57:04.000000000 -0700
-+++ coreutils-5.97/src/uname.c	2006-08-24 15:52:53.000000000 -0700
-@@ -51,6 +51,11 @@
+diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
+--- coreutils-6.12.orig/src/uname.c	2008-05-26 02:40:33.000000000 -0400
++++ coreutils-6.12/src/uname.c	2008-08-31 12:03:12.000000000 -0400
+@@ -50,6 +50,11 @@
  # include <mach-o/arch.h>
  #endif
  
@@ -22,7 +23,7 @@ diff -Naur coreutils-5.97.orig/src/uname.c coreutils-5.97/src/uname.c
  #include "system.h"
  #include "error.h"
  #include "quote.h"
-@@ -138,6 +143,106 @@
+@@ -158,6 +163,106 @@
    exit (status);
  }
  
@@ -129,7 +130,7 @@ diff -Naur coreutils-5.97.orig/src/uname.c coreutils-5.97/src/uname.c
  /* Print ELEMENT, preceded by a space if something has already been
     printed.  */
  
-@@ -250,10 +355,14 @@
+@@ -305,10 +410,14 @@
    if (toprint & PRINT_PROCESSOR)
      {
        char const *element = unknown;
@@ -145,7 +146,7 @@ diff -Naur coreutils-5.97.orig/src/uname.c coreutils-5.97/src/uname.c
  	  element = processor;
        }
  #endif
-@@ -306,9 +415,13 @@
+@@ -361,9 +470,13 @@
        if (element == unknown)
  	{
  	  static char hardware_platform[257];

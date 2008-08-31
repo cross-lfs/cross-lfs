@@ -1,12 +1,14 @@
 Submitted By: Ryan Oliver <ryan(dot)oliver(at)pha(dot)com(dot)au>
 Date: 2005-10-20
 Initial Package Version: 5.8.7
+        Rediffed against 5.10.0 by Joe Ciccone on 2008-08-30
 Origin: Ryan Oliver
 Description: this patch allows perl to be installed in /usr/lib32 or /usr/lib64 instead of /usr/lib.
 
---- perl-5.8.7/Configure-ORIG	2005-10-20 11:49:47.571389008 +1000
-+++ perl-5.8.7/Configure	2005-10-20 12:30:35.571236464 +1000
-@@ -5930,6 +5930,8 @@
+diff -Naur perl-5.10.0.orig/Configure perl-5.10.0/Configure
+--- perl-5.10.0.orig/Configure	2007-12-18 05:47:07.000000000 -0500
++++ perl-5.10.0/Configure	2008-08-31 11:56:58.000000000 -0400
+@@ -6174,6 +6174,8 @@
  : The default "style" setting is made in installstyle.U
  case "$installstyle" in
  *lib/perl5*) set dflt privlib lib/$package/$version ;;
@@ -15,7 +17,7 @@ Description: this patch allows perl to be installed in /usr/lib32 or /usr/lib64 
  *)	 set dflt privlib lib/$version ;;
  esac
  eval $prefixit
-@@ -6433,6 +6435,8 @@
+@@ -6406,6 +6408,8 @@
  case "$sitelib" in
  '') case "$installstyle" in
  	*lib/perl5*) dflt=$siteprefix/lib/$package/site_$prog/$version ;;
@@ -24,7 +26,7 @@ Description: this patch allows perl to be installed in /usr/lib32 or /usr/lib64 
  	*)	 dflt=$siteprefix/lib/site_$prog/$version ;;
  	esac
  	;;
-@@ -6560,6 +6564,8 @@
+@@ -6912,6 +6916,8 @@
  		prog=`echo $package | $sed 's/-*[0-9.]*$//'`
  		case "$installstyle" in
  		*lib/perl5*) dflt=$vendorprefix/lib/$package/vendor_$prog/$version ;;
