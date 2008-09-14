@@ -1,0 +1,617 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 2008-09-13
+Initial Package Version: 7.2
+Origin: Upstream
+Upstream Status: Applied
+Description: Contains all upstream patches up to 7.2.015
+             The following patches were skipped
+             007
+
+diff -Naur vim72.orig/runtime/scripts.vim vim72/runtime/scripts.vim
+--- vim72.orig/runtime/scripts.vim	2008-08-08 18:27:21.000000000 -0400
++++ vim72/runtime/scripts.vim	2008-09-13 12:01:16.000000000 -0400
+@@ -234,6 +234,10 @@
+   elseif s:line1 =~ '\<DTD\s\+XHTML\s'
+     set ft=xhtml
+ 
++    " HTML (e.g.: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN")
++  elseif s:line1 =~? '\<DOCTYPE\s\+html\>'
++    set ft=html
++
+     " PDF
+   elseif s:line1 =~ '^%PDF-'
+     set ft=pdf
+diff -Naur vim72.orig/src/buffer.c vim72/src/buffer.c
+--- vim72.orig/src/buffer.c	2008-08-06 07:00:48.000000000 -0400
++++ vim72/src/buffer.c	2008-09-13 12:01:16.000000000 -0400
+@@ -1351,11 +1351,12 @@
+ 	}
+     }
+ #ifdef FEAT_AUTOCMD
++    /* An autocommand may have deleted "buf", already entered it (e.g., when
++     * it did ":bunload") or aborted the script processing! */
+ # ifdef FEAT_EVAL
+-    /* An autocommand may have deleted buf or aborted the script processing! */
+-    if (buf_valid(buf) && !aborting())
++    if (buf_valid(buf) && buf != curbuf && !aborting())
+ # else
+-    if (buf_valid(buf))	    /* an autocommand may have deleted buf! */
++    if (buf_valid(buf) && buf != curbuf)
+ # endif
+ #endif
+ 	enter_buffer(buf);
+diff -Naur vim72.orig/src/eval.c vim72/src/eval.c
+--- vim72.orig/src/eval.c	2008-08-07 15:37:22.000000000 -0400
++++ vim72/src/eval.c	2008-09-13 12:01:16.000000000 -0400
+@@ -1256,23 +1256,26 @@
+ 
+ /*
+  * Top level evaluation function, returning a string.
++ * When "convert" is TRUE convert a List into a sequence of lines and convert
++ * a Float to a String.
+  * Return pointer to allocated memory, or NULL for failure.
+  */
+     char_u *
+-eval_to_string(arg, nextcmd, dolist)
++eval_to_string(arg, nextcmd, convert)
+     char_u	*arg;
+     char_u	**nextcmd;
+-    int		dolist;		/* turn List into sequence of lines */
++    int		convert;
+ {
+     typval_T	tv;
+     char_u	*retval;
+     garray_T	ga;
++    char_u	numbuf[NUMBUFLEN];
+ 
+     if (eval0(arg, &tv, nextcmd, TRUE) == FAIL)
+ 	retval = NULL;
+     else
+     {
+-	if (dolist && tv.v_type == VAR_LIST)
++	if (convert && tv.v_type == VAR_LIST)
+ 	{
+ 	    ga_init2(&ga, (int)sizeof(char), 80);
+ 	    if (tv.vval.v_list != NULL)
+@@ -1280,6 +1283,13 @@
+ 	    ga_append(&ga, NUL);
+ 	    retval = (char_u *)ga.ga_data;
+ 	}
++#ifdef FEAT_FLOAT
++	else if (convert && tv.v_type == VAR_FLOAT)
++	{
++	    vim_snprintf((char *)numbuf, NUMBUFLEN, "%g", tv.vval.v_float);
++	    retval = vim_strsave(numbuf);
++	}
++#endif
+ 	else
+ 	    retval = vim_strsave(get_tv_string(&tv));
+ 	clear_tv(&tv);
+@@ -3657,8 +3667,8 @@
+ }
+ 
+ /*
+- * Return TRUE if typeval "tv" is locked: Either tha value is locked itself or
+- * it refers to a List or Dictionary that is locked.
++ * Return TRUE if typeval "tv" is locked: Either that value is locked itself
++ * or it refers to a List or Dictionary that is locked.
+  */
+     static int
+ tv_islocked(tv)
+@@ -15838,10 +15848,9 @@
+     if (res == FAIL)
+ 	res = ITEM_COMPARE_FAIL;
+     else
+-	/* return value has wrong type */
+ 	res = get_tv_number_chk(&rettv, &item_compare_func_err);
+     if (item_compare_func_err)
+-	res = ITEM_COMPARE_FAIL;
++	res = ITEM_COMPARE_FAIL;  /* return value has wrong type */
+     clear_tv(&rettv);
+     return res;
+ }
+@@ -16658,7 +16667,7 @@
+     col = get_tv_number(&argvars[1]) - 1;	/* -1 on type error */
+ 
+     if (lnum >= 1 && lnum <= curbuf->b_ml.ml_line_count
+-	    && col >= 0 && col < (long)STRLEN(ml_get(lnum))
++	    && col >= 0 && (col == 0 || col < (long)STRLEN(ml_get(lnum)))
+ 	    && rettv_list_alloc(rettv) != FAIL)
+     {
+ 	(void)syn_get_id(curwin, lnum, (colnr_T)col, FALSE, NULL, TRUE);
+@@ -20590,6 +20599,9 @@
+     int		st_len = 0;
+ 
+     todo = (int)func_hashtab.ht_used;
++    if (todo == 0)
++	return;     /* nothing to dump */
++
+     sorttab = (ufunc_T **)alloc((unsigned)(sizeof(ufunc_T) * todo));
+ 
+     for (hi = func_hashtab.ht_array; todo > 0; ++hi)
+@@ -20638,6 +20650,8 @@
+ 							      prof_self_cmp);
+ 	prof_sort_list(fd, sorttab, st_len, "SELF", TRUE);
+     }
++
++    vim_free(sorttab);
+ }
+ 
+     static void
+@@ -21204,7 +21218,7 @@
+ 	if (!fp->uf_profiling && has_profiling(FALSE, fp->uf_name, NULL))
+ 	    func_do_profile(fp);
+ 	if (fp->uf_profiling
+-		       || (fc.caller != NULL && &fc.caller->func->uf_profiling))
++		       || (fc.caller != NULL && fc.caller->func->uf_profiling))
+ 	{
+ 	    ++fp->uf_tm_count;
+ 	    profile_start(&call_start);
+@@ -21235,13 +21249,13 @@
+ 
+ #ifdef FEAT_PROFILE
+     if (do_profiling == PROF_YES && (fp->uf_profiling
+-		    || (fc.caller != NULL && &fc.caller->func->uf_profiling)))
++		    || (fc.caller != NULL && fc.caller->func->uf_profiling)))
+     {
+ 	profile_end(&call_start);
+ 	profile_sub_wait(&wait_start, &call_start);
+ 	profile_add(&fp->uf_tm_total, &call_start);
+ 	profile_self(&fp->uf_tm_self, &call_start, &fp->uf_tm_children);
+-	if (fc.caller != NULL && &fc.caller->func->uf_profiling)
++	if (fc.caller != NULL && fc.caller->func->uf_profiling)
+ 	{
+ 	    profile_add(&fc.caller->func->uf_tm_children, &call_start);
+ 	    profile_add(&fc.caller->func->uf_tml_children, &call_start);
+diff -Naur vim72.orig/src/ex_cmds2.c vim72/src/ex_cmds2.c
+--- vim72.orig/src/ex_cmds2.c	2008-07-13 12:18:22.000000000 -0400
++++ vim72/src/ex_cmds2.c	2008-09-13 12:01:16.000000000 -0400
+@@ -3145,8 +3145,8 @@
+ 	verbose_leave();
+     }
+ #ifdef STARTUPTIME
+-    vim_snprintf(IObuff, IOSIZE, "sourcing %s", fname);
+-    time_msg(IObuff, &tv_start);
++    vim_snprintf((char *)IObuff, IOSIZE, "sourcing %s", fname);
++    time_msg((char *)IObuff, &tv_start);
+     time_pop(&tv_rel);
+ #endif
+ 
+diff -Naur vim72.orig/src/if_cscope.c vim72/src/if_cscope.c
+--- vim72.orig/src/if_cscope.c	2008-06-24 12:32:34.000000000 -0400
++++ vim72/src/if_cscope.c	2008-09-13 12:01:16.000000000 -0400
+@@ -74,7 +74,7 @@
+     { "add",	cs_add,
+ 		N_("Add a new database"),     "add file|dir [pre-path] [flags]", 0 },
+     { "find",	cs_find,
+-		N_("Query for a pattern"),    FIND_USAGE, 1 },
++		N_("Query for a pattern"),    "find c|d|e|f|g|i|s|t name", 1 },
+     { "help",	cs_help,
+ 		N_("Show this message"),      "help", 0 },
+     { "kill",	cs_kill,
+@@ -1180,7 +1180,16 @@
+ 	(void)smsg((char_u *)_("%-5s: %-30s (Usage: %s)"),
+ 				      cmdp->name, _(cmdp->help), cmdp->usage);
+ 	if (strcmp(cmdp->name, "find") == 0)
+-	    MSG_PUTS(FIND_HELP);
++	    MSG_PUTS(_("\n"
++		       "       c: Find functions calling this function\n"
++		       "       d: Find functions called by this function\n"
++		       "       e: Find this egrep pattern\n"
++		       "       f: Find this file\n"
++		       "       g: Find this definition\n"
++		       "       i: Find files #including this file\n"
++		       "       s: Find this C symbol\n"
++		       "       t: Find assignments to\n"));
++
+ 	cmdp++;
+     }
+ 
+diff -Naur vim72.orig/src/if_cscope.h vim72/src/if_cscope.h
+--- vim72.orig/src/if_cscope.h	2007-09-02 10:51:08.000000000 -0400
++++ vim72/src/if_cscope.h	2008-09-13 12:01:16.000000000 -0400
+@@ -42,17 +42,6 @@
+  * f 7name	Find this file
+  * i 8name	Find files #including this file
+  */
+-#define	FIND_USAGE "find c|d|e|f|g|i|s|t name"
+-#define FIND_HELP "\n\
+-       c: Find functions calling this function\n\
+-       d: Find functions called by this function\n\
+-       e: Find this egrep pattern\n\
+-       f: Find this file\n\
+-       g: Find this definition\n\
+-       i: Find files #including this file\n\
+-       s: Find this C symbol\n\
+-       t: Find assignments to\n"
+-
+ 
+ typedef struct {
+     char *  name;
+diff -Naur vim72.orig/src/if_perl.xs vim72/src/if_perl.xs
+--- vim72.orig/src/if_perl.xs	2008-07-17 16:55:09.000000000 -0400
++++ vim72/src/if_perl.xs	2008-09-13 12:01:16.000000000 -0400
+@@ -136,6 +136,9 @@
+ #  define Perl_newXS_flags dll_Perl_newXS_flags
+ #endif
+ # define Perl_sv_free dll_Perl_sv_free
++# if (PERL_REVISION == 5) && (PERL_VERSION >= 10)
++#  define Perl_sv_free2 dll_Perl_sv_free2
++# endif
+ # define Perl_sv_isa dll_Perl_sv_isa
+ # define Perl_sv_magic dll_Perl_sv_magic
+ # define Perl_sv_setiv dll_Perl_sv_setiv
+@@ -268,6 +271,7 @@
+ static void (*boot_DynaLoader)_((pTHX_ CV*));
+ 
+ #if (PERL_REVISION == 5) && (PERL_VERSION >= 10)
++static void (*Perl_sv_free2)(pTHX_ SV*);
+ static void (*Perl_sys_init3)(int* argc, char*** argv, char*** env);
+ static void (*Perl_sys_term)(void);
+ static SV** (*Perl_ISv_ptr)(register PerlInterpreter*);
+@@ -367,6 +371,7 @@
+     {"Perl_TXpv_ptr", (PERL_PROC*)&Perl_TXpv_ptr},
+     {"Perl_Tna_ptr", (PERL_PROC*)&Perl_Tna_ptr},
+ #else
++    {"Perl_sv_free2", (PERL_PROC*)&Perl_sv_free2},
+     {"Perl_sys_init3", (PERL_PROC*)&Perl_sys_init3},
+     {"Perl_sys_term", (PERL_PROC*)&Perl_sys_term},
+     {"Perl_ISv_ptr", (PERL_PROC*)&Perl_ISv_ptr},
+diff -Naur vim72.orig/src/mbyte.c vim72/src/mbyte.c
+--- vim72.orig/src/mbyte.c	2008-07-14 08:38:05.000000000 -0400
++++ vim72/src/mbyte.c	2008-09-13 12:01:16.000000000 -0400
+@@ -2540,7 +2540,6 @@
+     return (int)(p - q);
+ }
+ 
+-#if defined(FEAT_EVAL) || defined(PROTO)
+ /*
+  * Copy a character from "*fp" to "*tp" and advance the pointers.
+  */
+@@ -2555,7 +2554,6 @@
+     *tp += l;
+     *fp += l;
+ }
+-#endif
+ 
+ /*
+  * Return the offset from "p" to the first byte of a character.  When "p" is
+diff -Naur vim72.orig/src/menu.c vim72/src/menu.c
+--- vim72.orig/src/menu.c	2008-06-21 15:53:43.000000000 -0400
++++ vim72/src/menu.c	2008-09-13 12:01:16.000000000 -0400
+@@ -1120,6 +1120,7 @@
+ 	parent = menu;
+ 	menu = menu->children;
+     }
++    vim_free(path_name);
+ 
+     /* Now we have found the matching menu, and we list the mappings */
+ 						    /* Highlight title */
+diff -Naur vim72.orig/src/misc2.c vim72/src/misc2.c
+--- vim72.orig/src/misc2.c	2008-07-23 15:12:56.000000000 -0400
++++ vim72/src/misc2.c	2008-09-13 12:01:16.000000000 -0400
+@@ -1257,7 +1257,6 @@
+     return escaped_string;
+ }
+ 
+-#if !defined(BACKSLASH_IN_FILENAME) || defined(FEAT_EVAL) || defined(PROTO)
+ /*
+  * Return TRUE when 'shell' has "csh" in the tail.
+  */
+@@ -1266,9 +1265,7 @@
+ {
+     return (strstr((char *)gettail(p_sh), "csh") != NULL);
+ }
+-#endif
+ 
+-#if defined(FEAT_EVAL) || defined(PROTO)
+ /*
+  * Escape "string" for use as a shell argument with system().
+  * This uses single quotes, except when we know we need to use double qoutes
+@@ -1391,7 +1388,6 @@
+ 
+     return escaped_string;
+ }
+-#endif
+ 
+ /*
+  * Like vim_strsave(), but make all characters uppercase.
+diff -Naur vim72.orig/src/normal.c vim72/src/normal.c
+--- vim72.orig/src/normal.c	2008-07-31 16:03:08.000000000 -0400
++++ vim72/src/normal.c	2008-09-13 12:01:16.000000000 -0400
+@@ -5469,6 +5469,11 @@
+ 		STRCPY(buf, "he! ");
+ 	    else
+ 	    {
++		/* An external command will probably use an argument starting
++		 * with "-" as an option.  To avoid trouble we skip the "-". */
++		while (*ptr == '-')
++		    ++ptr;
++
+ 		/* When a count is given, turn it into a range.  Is this
+ 		 * really what we want? */
+ 		isman = (STRCMP(kp, "man") == 0);
+@@ -5511,37 +5516,57 @@
+     /*
+      * Now grab the chars in the identifier
+      */
+-    if (cmdchar == '*')
+-	aux_ptr = (char_u *)(p_magic ? "/.*~[^$\\" : "/^$\\");
+-    else if (cmdchar == '#')
+-	aux_ptr = (char_u *)(p_magic ? "/?.*~[^$\\" : "/?^$\\");
+-    else if (cmdchar == 'K' && !kp_help)
+-	aux_ptr = (char_u *)" \t\\\"|!";
+-    else
+-	/* Don't escape spaces and Tabs in a tag with a backslash */
+-	aux_ptr = (char_u *)"\\|\"";
+-
+-    p = buf + STRLEN(buf);
+-    while (n-- > 0)
+-    {
+-	/* put a backslash before \ and some others */
+-	if (vim_strchr(aux_ptr, *ptr) != NULL)
+-	    *p++ = '\\';
+-#ifdef FEAT_MBYTE
+-	/* When current byte is a part of multibyte character, copy all bytes
+-	 * of that character. */
+-	if (has_mbyte)
++    if (cmdchar == 'K' && !kp_help)
++    {
++	/* Escape the argument properly for a shell command */
++	p = vim_strsave_shellescape(ptr, TRUE);
++	if (p == NULL)
+ 	{
+-	    int i;
+-	    int len = (*mb_ptr2len)(ptr) - 1;
+-
+-	    for (i = 0; i < len && n >= 1; ++i, --n)
+-		*p++ = *ptr++;
++	    vim_free(buf);
++	    return;
+ 	}
++	buf = (char_u *)vim_realloc(buf, STRLEN(buf) + STRLEN(p) + 1);
++	if (buf == NULL)
++	{
++	    vim_free(buf);
++	    vim_free(p);
++	    return;
++	}
++	STRCAT(buf, p);
++	vim_free(p);
++    }
++    else
++    {
++	if (cmdchar == '*')
++	    aux_ptr = (char_u *)(p_magic ? "/.*~[^$\\" : "/^$\\");
++	else if (cmdchar == '#')
++	    aux_ptr = (char_u *)(p_magic ? "/?.*~[^$\\" : "/?^$\\");
++	else
++	    /* Don't escape spaces and Tabs in a tag with a backslash */
++	    aux_ptr = (char_u *)"\\|\"\n*?[";
++
++	p = buf + STRLEN(buf);
++	while (n-- > 0)
++	{
++	    /* put a backslash before \ and some others */
++	    if (vim_strchr(aux_ptr, *ptr) != NULL)
++		*p++ = '\\';
++#ifdef FEAT_MBYTE
++	    /* When current byte is a part of multibyte character, copy all
++	     * bytes of that character. */
++	    if (has_mbyte)
++	    {
++		int i;
++		int len = (*mb_ptr2len)(ptr) - 1;
++
++		for (i = 0; i < len && n >= 1; ++i, --n)
++		    *p++ = *ptr++;
++	    }
+ #endif
+-	*p++ = *ptr++;
++	    *p++ = *ptr++;
++	}
++	*p = NUL;
+     }
+-    *p = NUL;
+ 
+     /*
+      * Execute the command.
+diff -Naur vim72.orig/src/pty.c vim72/src/pty.c
+--- vim72.orig/src/pty.c	2008-06-21 14:52:58.000000000 -0400
++++ vim72/src/pty.c	2008-09-13 12:01:16.000000000 -0400
+@@ -270,9 +270,10 @@
+ }
+ #endif
+ 
+-#if defined(HAVE_SVR4_PTYS) && !defined(PTY_DONE) && !defined(hpux)
++#if defined(HAVE_SVR4_PTYS) && !defined(PTY_DONE) && !defined(hpux) && !defined(MACOS_X)
+ 
+-/* NOTE: Even though HPUX can have /dev/ptmx, the code below doesn't work! */
++/* NOTE: Even though HPUX can have /dev/ptmx, the code below doesn't work!
++ * Same for Mac OS X Leopard. */
+ #define PTY_DONE
+     int
+ OpenPTY(ttyn)
+diff -Naur vim72.orig/src/spell.c vim72/src/spell.c
+--- vim72.orig/src/spell.c	2008-07-12 15:20:55.000000000 -0400
++++ vim72/src/spell.c	2008-09-13 12:01:16.000000000 -0400
+@@ -77,7 +77,7 @@
+ 
+ /*
+  * Do the opposite: based on a maximum end score and a known sound score,
+- * compute the the maximum word score that can be used.
++ * compute the maximum word score that can be used.
+  */
+ #define MAXSCORE(word_score, sound_score) ((4 * word_score - sound_score) / 3)
+ 
+@@ -625,7 +625,7 @@
+ /* TRUE if a word appears in the list of banned words.  */
+ #define WAS_BANNED(su, word) (!HASHITEM_EMPTY(hash_find(&su->su_banned, word)))
+ 
+-/* Number of suggestions kept when cleaning up.  we need to keep more than
++/* Number of suggestions kept when cleaning up.  We need to keep more than
+  * what is displayed, because when rescore_suggestions() is called the score
+  * may change and wrong suggestions may be removed later. */
+ #define SUG_CLEAN_COUNT(su)    ((su)->su_maxcount < 130 ? 150 : (su)->su_maxcount + 20)
+@@ -5980,7 +5980,7 @@
+ 	else if (spin->si_newprefID == 0 || spin->si_newprefID == 127)
+ 	    MSG(_("Too many compound flags"));
+ 	else
+-	    MSG(_("Too many posponed prefixes and/or compound flags"));
++	    MSG(_("Too many postponed prefixes and/or compound flags"));
+     }
+ 
+     if (syllable != NULL)
+diff -Naur vim72.orig/src/testdir/Makefile vim72/src/testdir/Makefile
+--- vim72.orig/src/testdir/Makefile	2008-06-19 16:29:46.000000000 -0400
++++ vim72/src/testdir/Makefile	2008-09-13 12:01:16.000000000 -0400
+@@ -26,15 +26,17 @@
+ 
+ .SUFFIXES: .in .out
+ 
+-nongui:	nolog $(SCRIPTS)
+-	@echo
+-	@cat test.log
+-	@echo ALL DONE
++nongui:	nolog $(SCRIPTS) report
++
++gui:	nolog $(SCRIPTS) $(SCRIPTS_GUI) report
+ 
+-gui:	nolog $(SCRIPTS) $(SCRIPTS_GUI)
++report:
+ 	@echo
+-	@cat test.log
+-	@echo ALL DONE
++	@echo 'Test results:'
++	@/bin/sh -c "if test -f test.log; \
++		then cat test.log; echo TEST FAILURE; exit 1; \
++		else echo ALL DONE; \
++		fi"
+ 
+ $(SCRIPTS) $(SCRIPTS_GUI): $(VIMPROG)
+ 
+@@ -71,4 +73,4 @@
+ test60.out: test60.vim
+ 
+ nolog:
+-	-echo Test results: >test.log
++	-rm -f test.log
+diff -Naur vim72.orig/src/ui.c vim72/src/ui.c
+--- vim72.orig/src/ui.c	2008-07-14 14:14:56.000000000 -0400
++++ vim72/src/ui.c	2008-09-13 12:01:16.000000000 -0400
+@@ -2110,6 +2110,8 @@
+     int		i;
+     int		nbytes = 0;
+     char_u	*buffer;
++    time_t	start_time;
++    int		timed_out = FALSE;
+ 
+     for (i =
+ #ifdef FEAT_MBYTE
+@@ -2129,6 +2131,7 @@
+ 	    case 3:  type = text_atom;		break;
+ 	    default: type = XA_STRING;
+ 	}
++	success = FALSE;
+ 	XtGetSelectionValue(myShell, cbd->sel_atom, type,
+ 	    clip_x11_request_selection_cb, (XtPointer)&success, CurrentTime);
+ 
+@@ -2141,27 +2144,46 @@
+ 	 * characters, then they will appear before the one that requested the
+ 	 * paste!  Don't worry, we will catch up with any other events later.
+ 	 */
++	start_time = time(NULL);
+ 	for (;;)
+ 	{
+ 	    if (XCheckTypedEvent(dpy, SelectionNotify, &event))
++	    {
++		/* this is where clip_x11_request_selection_cb() is actually
++		 * called */
++		XtDispatchEvent(&event);
+ 		break;
++	    }
+ 	    if (XCheckTypedEvent(dpy, SelectionRequest, &event))
+ 		/* We may get a SelectionRequest here and if we don't handle
+ 		 * it we hang.  KDE klipper does this, for example. */
+ 		XtDispatchEvent(&event);
+ 
++	    /* Time out after 2 to 3 seconds to avoid that we hang when the
++	     * other process doesn't respond.  Note that the SelectionNotify
++	     * event may still come later when the selection owner comes back
++	     * to life and the text gets inserted unexpectedly (by xterm).
++	     * Don't know how to avoid that :-(. */
++	    if (time(NULL) > start_time + 2)
++	    {
++		timed_out = TRUE;
++		break;
++	    }
++
+ 	    /* Do we need this?  Probably not. */
+ 	    XSync(dpy, False);
+ 
+-	    /* Bernhard Walle solved a slow paste response in an X terminal by
+-	     * adding: usleep(10000); here. */
++	    /* Wait for 1 msec to avoid that we eat up all CPU time. */
++	    ui_delay(1L, TRUE);
+ 	}
+ 
+-	/* this is where clip_x11_request_selection_cb() is actually called */
+-	XtDispatchEvent(&event);
+-
+ 	if (success)
+ 	    return;
++
++	/* don't do a retry with another type after timing out, otherwise we
++	 * hang for 15 seconds. */
++	if (timed_out)
++	    break;
+     }
+ 
+     /* Final fallback position - use the X CUT_BUFFER0 store */
+diff -Naur vim72.orig/src/version.c vim72/src/version.c
+--- vim72.orig/src/version.c	2008-08-09 10:24:52.000000000 -0400
++++ vim72/src/version.c	2008-09-13 12:01:16.000000000 -0400
+@@ -677,6 +677,34 @@
+ static int included_patches[] =
+ {   /* Add new patch number below this line */
+ /**/
++    15,
++/**/
++    14,
++/**/
++    13,
++/**/
++    12,
++/**/
++    11,
++/**/
++    10,
++/**/
++    9,
++/**/
++    8,
++/**/
++    6,
++/**/
++    5,
++/**/
++    4,
++/**/
++    3,
++/**/
++    2,
++/**/
++    1,
++/**/
+     0
+ };
+ 
+@@ -786,7 +814,7 @@
+     MSG_PUTS(_("\nRISC OS version"));
+ #endif
+ #ifdef VMS
+-    MSG_PUTS("\nOpenVMS version");
++    MSG_PUTS(_("\nOpenVMS version"));
+ # ifdef HAVE_PATHDEF
+     if (*compiled_arch != NUL)
+     {
