@@ -55,7 +55,7 @@ hostname clfs</userinput></screen>
    -Dman1dir=/usr/share/man/man1 \
    -Dman3dir=/usr/share/man/man3 \
    -Dpager="/bin/less -isR" \
-   -Dusethreads</userinput></screen>
+   -Dusethreads -Duseshrplib</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure option:</title>
@@ -67,6 +67,7 @@ hostname clfs</userinput></screen>
           invokes the <command>less</command> program.</para>
         </listitem>
       </varlistentry>
+
       <varlistentry os="c2">
         <term><parameter>-Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3</parameter></term>
         <listitem>
@@ -75,12 +76,21 @@ hostname clfs</userinput></screen>
           man pages for Perl. Issuing these parameters overrides this decision.</para>
         </listitem>
       </varlistentry>
+
       <varlistentry os="c3">
         <term><parameter>-Dusethreads</parameter></term>
         <listitem>
           <para>This tells Perl to use threads.</para>
         </listitem>
       </varlistentry>
+
+      <varlistentry os="c4">
+        <term><parameter>-Duseshrplib</parameter></term>
+        <listitem>
+          <para>This tells Perl to build a shared libperl.</para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
 
     <para os="d">Compile the package:</para>

@@ -30,6 +30,22 @@
 
 <screen os="s2"><userinput>sed -i '/EXP_LIB_SPEC=/s@${exec_prefix}/lib@${libdir}@' configure</userinput></screen>
 
+    <para os="t1">The following sed adds a missing include to
+    <filename>Dbg.c</filename>:</para>
+
+<screen os="t2"><userinput>sed -i '1i\#include &lt;expect_cf.h&gt;' Dbg.c</userinput></screen>
+
+    <para os="t3">The following sed causes one of the source files to include
+    the correct header</para>
+
+<screen os="t4"><userinput>sed -i "s/tcl.h/tclInt.h/" exp_inter.c</userinput></screen>
+
+    <para os="p1">The following patch prevents Expect from using functions
+    that are internal to TCL and are no longer available for expect to
+    link against:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&expect-avoid_tcl_internals-patch;</userinput></screen>
+
     <para os="a">Fix a bug that can result in false failures during the GCC
     test suite run:</para>
 

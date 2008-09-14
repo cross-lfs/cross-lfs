@@ -51,7 +51,7 @@
    -Dman3dir=/usr/share/man/man3 \
    -Dpager="/bin/less -isR" \
    -Dcc="gcc ${BUILD32}" \
-   -Dusethreads</userinput></screen>
+   -Dusethreads -Duseshrplib</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
@@ -80,8 +80,8 @@
     <para os="l">Add a suffix to the <command>perl</command> binary which will
     be used by the multiarch wrapper:</para>
 
-<screen os="m"><userinput>mv /usr/bin/perl{,-32}
-mv /usr/bin/perl&perl-version;{,-32}</userinput></screen>
+<screen os="m"><userinput>mv -v /usr/bin/perl{,-32}
+mv -v /usr/bin/perl&perl-version;{,-32}</userinput></screen>
 
   </sect2>
 

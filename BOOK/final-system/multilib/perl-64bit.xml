@@ -55,7 +55,7 @@
    -Dpager="/bin/less -isR" \
    -Dlibpth="/usr/local/lib64 /lib64 /usr/lib64" \
    -Dcc="gcc ${BUILD64}" \
-   -Dusethreads</userinput></screen>
+   -Dusethreads -Duseshrplib</userinput></screen>
 
     <variablelist os="m4">
       <title>The meaning of the new configure option:</title>
@@ -78,6 +78,10 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/perl.xml"
     xpointer="xpointer(//*[@os='c3'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/perl.xml"
+    xpointer="xpointer(//*[@os='c4'])"/>
 
     </variablelist>
 
@@ -105,8 +109,8 @@
     href="perl.xml"
     xpointer="xpointer(//*[@os='l'])"/>
 
-<screen os="m"><userinput>mv /usr/bin/perl{,-64}
-mv /usr/bin/perl&perl-version;{,-64}</userinput></screen>
+<screen os="m"><userinput>mv -v /usr/bin/perl{,-64}
+mv -v /usr/bin/perl&perl-version;{,-64}</userinput></screen>
 
     <para os="n">Now we need to create a link to the multiarch wrapper that
     lets us choose which perl installation to use:</para>

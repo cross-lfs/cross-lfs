@@ -27,6 +27,14 @@
   <sect2 role="installation">
     <title>Installation of E2fsprogs</title>
 
+    <para os="s1">The following command adds <filename>libcom_err.so</filename>
+    to the list of libraries to link <filename>libblkid.so</filename>
+    to:</para>
+
+<screen os="s2"><userinput>cp -v misc/Makefile.in{,.orig}
+sed 's/_BLKID= .*$/&amp; $(LIBCOM_ERR)/' \
+    misc/Makefile.in.orig > misc/Makefile.in</userinput></screen>
+
     <para os="a">The E2fsprogs documentation recommends that the package be
     built in a subdirectory of the source tree:</para>
 

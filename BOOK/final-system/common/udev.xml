@@ -25,64 +25,28 @@
   <sect2 role="installation">
     <title>Installation of Udev</title>
 
-    <para os="a">Compile the package:</para>
+    <para os="a">Prepare Udev for compilation:</para>
 
-<screen os="b"><userinput>make EXTRAS="extras/ata_id extras/cdrom_id extras/collect \
-    extras/edd_id extras/firmware extras/floppy extras/path_id extras/rule_generator \
-    extras/scsi_id extras/usb_id extras/volume_id" udevdir=/dev</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --exec-prefix= \
+    --sysconfdir=/etc</userinput></screen>
 
-    <variablelist os="c">
-      <title>The meaning of the make parameter:</title>
+    <para os="c">Compile the package:</para>
 
-      <varlistentry>
-      <term><parameter>EXTRAS="extras/ata_id extras/cdrom_id extras/collect
-      extras/edd_id extras/firmware extras/floppy extras/path_id extras/rule_generator
-      extras/scsi_id extras/usb_id extras/volume_id"</parameter></term>
-        <listitem>
-          <para>This builds the helper applications that are used with
-          udev. The helper programs assist in correct handling of devices.</para>
-        </listitem>
-      </varlistentry>
-
-    </variablelist>
-
-    <para os="d">If you want to run the testsuite, you need to change
-    a hardcoded reference to the <command>test</command> program:</para>
-
-    <screen os="e"><userinput>sed -i 's@/usr/bin/test@/bin/test@' test/udev-test.pl</userinput></screen>
-
-    <para os="f">To test the results, issue:
-    <userinput>make test</userinput>.</para>
+<screen os="d"><userinput>make</userinput></screen>
 
     <para os="g">Install the package:</para>
 
-<screen os="h"><userinput>make EXTRAS="extras/ata_id extras/cdrom_id extras/collect \
-    extras/edd_id extras/firmware extras/floppy extras/path_id extras/rule_generator \
-    extras/scsi_id extras/usb_id extras/volume_id" DESTDIR=/ udevdir=/dev install</userinput></screen>
+<screen os="h"><userinput>make install</userinput></screen>
 
-    <variablelist os="i">
-      <title>The meaning of the make parameter:</title>
+    <para os="i">Install documentation:</para>
 
-      <varlistentry>
-      <term><parameter>DESTDIR=/</parameter></term>
-        <listitem>
-          <para>This prevents the Udev build process from killing any
-          <command>udevd</command> processes that may be running on the
-          system.</para>
-        </listitem>
-      </varlistentry>
-
-    </variablelist>
-
-    <para os="j">Install documentation:</para>
-
-<screen os="k"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html \
+<screen os="j"><userinput>install -v -m644 -D docs/writing_udev_rules/index.html \
     /usr/share/doc/udev-&udev-version;/index.html</userinput></screen>
 
-    <para os="l">Create a directory for storing firmware that can be
+    <para os="k">Create a directory for storing firmware that can be
     loaded by <command>udev</command>:</para>
 
-<screen os="m"><userinput>install -dv /lib/firmware</userinput></screen>
+<screen os="l"><userinput>install -dv /lib/firmware</userinput></screen>
 
   </sect2>
 
@@ -95,9 +59,8 @@
       <segtitle>Installed directory</segtitle>
 
       <seglistitem>
-        <seg>udevadm, udevd, udevinfo (symlink to udevadm),
-        udevsettle (symlink to udevadm)</seg>
-        <seg>libvolume_id</seg>
+        <seg>udevadm, udevd</seg>
+        <seg>libvolume_id, libudev</seg>
         <seg>/etc/udev, /lib/udev</seg>
       </seglistitem>
     </segmentedlist>
@@ -110,24 +73,10 @@
       <varlistentry id="udevadm">
         <term><command>udevadm</command></term>
         <listitem>
-          <para>This program combines <command>udevinfo</command>,
-          <command>udevtrigger</command>, <command>udevsettle</command>,
-          <command>udevcontrol</command>, <command>udevmonitor</command>,
-          and <command>udevtest</command> into one command.</para>
+        <para>udevadm controls the runtime behavior of udev, requests kernel
+        events, manages the event queue, and provides simple debugging.</para>
           <indexterm zone="ch-system-udev udevadm">
             <primary sortas="b-udevadm">udevadm</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="udevadm-control">
-        <term><command>udevadm control</command></term>
-        <listitem>
-          <para>Configures a number of options for the running
-          <command>udevd</command> daemon, such as the log level. (Symlink to
-          udevadm)</para>
-          <indexterm zone="ch-system-udev udevadm-control">
-            <primary sortas="b-udevadm-control">udevadm control</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -143,65 +92,6 @@
           </indexterm>
         </listitem>
       </varlistentry>
-
-      <varlistentry id="udevinfo">
-        <term><command>udevinfo</command></term>
-        <listitem>
-          <para>Allows users to query the <command>udev</command> database for
-          information on any device currently present on the system; it also
-          provides a way to query any device in the <systemitem
-          class="filesystem">sysfs</systemitem> tree to help create udev
-          rules. (Symlink to udevadm)</para>
-          <indexterm zone="ch-system-udev udevinfo">
-            <primary sortas="b-udevinfo">udevinfo</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="udevadm-monitor">
-        <term><command>udevadm monitor</command></term>
-        <listitem>
-          <para>Prints the event received from the kernel and the event which
-          <command>udev</command> sends out after rule processing</para>
-          <indexterm zone="ch-system-udev udevadm-monitor">
-            <primary sortas="b-udevadm-monitor">udevadm monitor</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="udevsettle">
-        <term><command>udevsettle</command></term>
-        <listitem>
-          <para>Watches the Udev event queue and exits if all current uevents
-          have been handled. (Symlink to udevadm)</para>
-          <indexterm zone="ch-system-udev udevsettle">
-            <primary sortas="b-udevsettle">udevsettle</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="udevadm-test">
-        <term><command>udevadm test</command></term>
-        <listitem>
-          <para>Simulates a <command>udev</command> run for the given device,
-          and prints out the name of the node the real <command>udev</command>
-          would have created or the name of the renamed network interface</para>
-          <indexterm zone="ch-system-udev udevadm-test">
-            <primary sortas="b-udevadm-test">udevadm test</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="udevadm-trigger">
-        <term><command>udevadm trigger</command></term>
-        <listitem>
-          <para>Walks the sysfs tree for devices that need to be added to the
-          system.</para>
-          <indexterm zone="ch-system-udev udevadm-trigger">
-            <primary sortas="b-udeadm-vtrigger">udevadm trigger</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>     
 
  <!-- Start of Helpers -->
       <varlistentry id="ata_id">
@@ -225,22 +115,22 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry id="collect">
+        <term><command>collect</command></term>
+        <listitem>
+          <para>DESCRIPTION REQUIRED</para>
+          <indexterm zone="ch-system-udev collect">
+            <primary sortas="b-collect">collect</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="create_floppy_devices">
         <term><command>create_floppy_devices</command></term>
         <listitem>
           <para>Creates all possible floppy devices based on the CMOS type</para>
           <indexterm zone="ch-system-udev create_floppy_devices">
             <primary sortas="b-create_floppy_devices">create_floppy_devices</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="dasd_id">
-        <term><command>dasd_id</command></term>
-        <listitem>
-          <para>Read the label from an s390 block device.</para>
-          <indexterm zone="ch-system-udev dasd_id">
-            <primary sortas="b-dasd_id">dasd_id</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -261,6 +151,16 @@
           <para>Script to load firmware for a device</para>
           <indexterm zone="ch-system-udev firmware.sh">
             <primary sortas="b-firmware.sh">firmware.sh</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fstab_import">
+        <term><command>fstab_import</command></term>
+        <listitem>
+          <para>DESCRIPTION REQUIRED</para>
+          <indexterm zone="ch-system-udev fstab_import">
+            <primary sortas="b-fstab_import">fstab_import</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -305,6 +205,26 @@
           </indexterm>
         </listitem>
       </varlistentry>
+
+      <varlistentry id="write_cd_rules">
+        <term><command>write_cd_rules</command></term>
+        <listitem>
+          <para>DESCRIPTION REQUIRED</para>
+          <indexterm zone="ch-system-udev write_cd_rules">
+            <primary sortas="b-write_cd_rules">write_cd_rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="write_net_rules">
+        <term><command>write_net_rules</command></term>
+        <listitem>
+          <para>DESCRIPTION REQUIRED</para>
+          <indexterm zone="ch-system-udev write_net_rules">
+            <primary sortas="b-write_net_rules">write_net_rules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
 <!-- End of Helpers -->
 
       <varlistentry id="libvolume_id">
@@ -315,6 +235,16 @@
           image.</para>
           <indexterm zone="ch-system-udev libvolume_id">
             <primary sortas="b-libvolume_id">libvolume_id</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libudev">
+        <term><filename class="libraryfile">libudev</filename></term>
+        <listitem>
+          <para>DESCRIPTION REQUIRED</para>
+          <indexterm zone="ch-system-udev libudev">
+            <primary sortas="b-libudev">libudev</primary>
           </indexterm>
         </listitem>
       </varlistentry>

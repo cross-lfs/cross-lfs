@@ -81,15 +81,35 @@ l6:6:wait:/etc/rc.d/init.d/rc 6
 ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -r now
 
 su:S016:once:/sbin/sulogin
+</literal>
+EOF</userinput></screen>
 
-1:2345:respawn:/sbin/agetty -I '\033(K' tty1 9600
+    <para>The following command adds the standard virtual terminals to
+    <filename>/etc/inittab</filename>. If your system only has a serial
+    console skip the following command:</para>
+
+<screen><userinput>cat &gt;&gt; /etc/inittab &lt;&lt; "EOF"
+<literal>1:2345:respawn:/sbin/agetty -I '\033(K' tty1 9600
 2:2345:respawn:/sbin/agetty -I '\033(K' tty2 9600
 3:2345:respawn:/sbin/agetty -I '\033(K' tty3 9600
 4:2345:respawn:/sbin/agetty -I '\033(K' tty4 9600
 5:2345:respawn:/sbin/agetty -I '\033(K' tty5 9600
 6:2345:respawn:/sbin/agetty -I '\033(K' tty6 9600
+</literal>
+EOF</userinput></screen>
 
-# End /etc/inittab</literal>
+    <para>If your system has a serial console run the following command to add
+    the entry to <filename>/etc/inittab</filename>.</para>
+
+<screen><userinput>cat &gt;&gt; /etc/inittab &lt;&lt; "EOF"
+<literal>c0:12345:respawn:/sbin/agetty 115200 ttyS0 vt100
+</literal>
+EOF</userinput></screen>
+
+   <para>Finally, Add the end line to <filename>/etc/inittab</filename>.</para>
+
+<screen><userinput>cat &gt;&gt; /etc/inittab &lt;&lt; "EOF"
+<literal># End /etc/inittab</literal>
 EOF</userinput></screen>
 
     <para>The <parameter>-I '\033(K'</parameter> option tells
