@@ -26,11 +26,18 @@
   <sect2 role="installation">
     <title>Installation of Libtool</title>
 
+    <para os="a1">The following <filename>config.cache</filename> entry sets
+    overrides the default search path. The default search path does not take
+    multilib into account:</para>
+
+<screen os="a2"><userinput>echo "lt_cv_sys_dlsearch_path='/lib /usr/lib /usr/local/lib /opt/lib'" &gt; config.cache</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/libtool.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILD32}" ./configure --prefix=/usr</userinput></screen>
+<screen os="b"><userinput>CC="gcc ${BUILD32}" ./configure --prefix=/usr \
+    --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/libtool.xml"
