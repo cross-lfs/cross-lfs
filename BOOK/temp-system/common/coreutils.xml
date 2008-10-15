@@ -33,15 +33,15 @@
     <para os="bs1">Coreutils attempts to use the <command>install</command>
     program it just built to perform the install. This will not work if the
     target architecture is incompatible with the host architecture. The
-    following command causes the Makefile to use the hosts
+    following command causes the Makefile to use the host's
     <command>install</command> to perform the install:</para>
 
 <screen os="bs2"><userinput>sed -i "/binPROGRAMS_INSTALL=/s:./ginstall:install:" src/Makefile.in</userinput></screen>
 
     <para os="ba">Configure can not properly determine how to get free space
-    when cross-compiling, Without putting the following entry into
-    <filename>config.cache</filename> the <command>df</command> program will
-    not be built.</para>
+    when cross-compiling - as a result, the <command>df</command> program will
+    not be built. Add the following entry to <filename>config.cache</filename>
+    to correct this:</para>
 
 <screen os="bb"><userinput>echo "fu_cv_sys_stat_statfs2_bsize=yes" &gt; config.cache</userinput></screen>
 
