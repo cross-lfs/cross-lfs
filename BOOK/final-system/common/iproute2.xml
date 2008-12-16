@@ -44,12 +44,22 @@
       <title>The meaning of the make option:</title>
 
       <varlistentry>
-        <term><parameter>SBINDIR=/sbin</parameter></term>
+        <term><parameter>DESTDIR=/</parameter></term>
         <listitem>
-          <para>This ensures that the IPRoute2 binaries will install into
+          <para>This option overrides the default DESTDIR of /usr, so that
+          that the IPRoute2 binaries will be installed into
           <filename class="directory">/sbin</filename>. This is the correct
           location according to the FHS, because some of the IPRoute2 binaries
           are used by the CLFS-Bootscripts package.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>DOCDIR=/usr/share/doc/iproute2 MANDIR=/usr/share/man</parameter></term>
+        <listitem>
+          <para>The DESTDIR=/ parameter would cause documentation to be
+          installed into /share/doc and /share/man. These options ensure
+          the docs are installed to the correct locations.</para>
         </listitem>
       </varlistentry>
     </variablelist>
