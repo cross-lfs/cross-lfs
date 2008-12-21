@@ -25,7 +25,8 @@
     href="../common/mpfr.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILD64}" ./configure --prefix=/usr \
+<screen os="b"><userinput>CC="gcc Wl,-rpath-link,/lib64 -isystem /usr/include ${BUILD64}" \
+    ./configure --prefix=/usr \
     --libdir=/usr/lib64 --enable-shared</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
