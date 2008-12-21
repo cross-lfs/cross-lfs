@@ -40,7 +40,9 @@ cd ../gcc-build</userinput></screen>
 
     <para os="h">Prepare GCC for compilation:</para>
 
-<screen os="i"><userinput>../gcc-&gcc-version;/configure --prefix=/usr \
+<screen os="i"><userinput>CC="gcc Wl,-rpath-link,/lib -isystem /usr/include" \
+    CXX="g++ Wl,-rpath-link,/lib -isystem /usr/include"
+    ../gcc-&gcc-version;/configure --prefix=/usr \
     --libexecdir=/usr/lib --enable-shared --enable-threads=posix \
     --enable-__cxa_atexit --enable-c99 --enable-long-long \
     --enable-clocale=gnu --enable-languages=c,c++ \
