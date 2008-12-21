@@ -49,8 +49,8 @@
     href="../common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="i"><userinput>CC="gcc Wl,-rpath-link,/lib -isystem /usr/include" \
-    CXX="g++ Wl,-rpath-link,/lib -isystem /usr/include" \
+<screen os="i"><userinput>CC="gcc -Wl,-rpath-link,/lib -isystem /usr/include" \
+    CXX="g++ -Wl,-rpath-link,/lib -isystem /usr/include" \
     ../gcc-&gcc-version;/configure --prefix=/usr \
     --libexecdir=/usr/lib --enable-shared --enable-threads=posix \
     --enable-__cxa_atexit --enable-c99 --enable-long-long --with-abi=64 \
