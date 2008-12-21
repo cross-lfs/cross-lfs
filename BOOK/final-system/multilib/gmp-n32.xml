@@ -26,7 +26,8 @@
     href="../common/gmp.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" \
+<screen os="b"><userinput>CC="gcc -Wl,-rpath-link,/lib32 -isystem /usr/include ${BUILDN32}" \
+   CXX="g++ -Wl,-rpath-link,/lib32 -isystem /usr/include ${BUILDN32}" \
     ./configure --prefix=/usr \
     --libdir=/usr/lib32 --enable-cxx \
     --enable-mpbsd</userinput></screen>
