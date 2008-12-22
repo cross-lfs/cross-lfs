@@ -124,7 +124,7 @@ a:active { color: #6b77b1 ! important;}
   padding: 0 1em;
 }
 
-.book h1, .book .authorgroup, .book .copyright, .book .legalnotice .revhistory {
+.book h1, .book .copyright, .book .legalnotice .revhistory {
   background: #f5f6f7;
   margin: 0px auto;
   padding: .1em 1em;
