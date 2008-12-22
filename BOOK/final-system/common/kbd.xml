@@ -25,18 +25,6 @@
   <sect2 role="installation">
     <title>Installation of Kbd</title>
 
-    <para os="s1">While installing Kbd the Makefile will attempt to execute
-    install with the strip option on all of the installed files. This will
-    create errors when installing shell scripts. Prevent the strip argument
-    from being passed to install with the following command:</para>
-
-<screen os="s2"><userinput>sed -i "/install -s/s/ -s//" src/Makefile.in</userinput></screen>
-
-    <para os="aa">The Kbd tarball does not include a pre-generated configure
-    script. Generate it with the following command:</para>
-
-<screen os="ab"><userinput>autoconf</userinput></screen>
-
     <para os="a">Prepare Kbd for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr --datadir=/lib/kbd</userinput></screen>
