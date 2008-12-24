@@ -96,6 +96,21 @@ hr {
       </div>
       <div class="toc">
         <h3>
+          <xsl:text>Native Build</xsl:text>
+        </h3>
+	<ul>
+          <h3>
+             <xsl:text>Work in Progress.</xsl:text>
+          </h3>
+          <li>
+            <h4>
+              <a href="native">
+                <xsl:text>Native</xsl:text>
+              </a>
+            </h4>
+          </li>
+        </ul>
+        <h3>
           <xsl:text>32 Bit Builds</xsl:text>
         </h3>
         <ul>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-cross-tools-gcc-final" role="wrap">
+  <?dbhtml filename="gcc-final.html"?>
+
+  <title>Cross GCC-&gcc-version; - Final</title>
+
+  <indexterm zone="ch-cross-tools-gcc-final">
+    <primary sortas="a-GCC">GCC</primary>
+    <secondary>cross tools, final</secondary>
+  </indexterm>
+
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../../final-system/common/gcc.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
+
+  <sect2 role="installation">
+    <title>Installation of GCC Cross Compiler</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='aa'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='ab'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='ac'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='ad'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='ag'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='ah'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='ai'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='aj'])"/>
+
+    <para os="bd">Finally, disable <option>-B</option> in <filename>configure</filename>,
+    so it doesn't pick up the host's header files:</para>
+
+<screen os="be"><userinput>cp -v configure{,.orig}
+sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig > \
+    configure</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='f'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="gcc-static.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
+
+<screen os="bf"><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
+    --disable-multilib --with-local-prefix=/tools --disable-nls \
+    --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
+    --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
+
+    <variablelist os="bg">
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry os="bg1">
+        <term><parameter>--enable-languages=c,c++</parameter></term>
+        <listitem>
+          <para>This option ensures that only the C and C++ compilers are built.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="bg2">
+        <term><parameter>--enable-__cxa_atexit</parameter></term>
+        <listitem>
+          <para>This option allows use of __cxa_atexit, rather than atexit,
+          to register C++ destructors for local statics and global objects
+          and is essential for fully standards-compliant handling of destructors.
+          It also affects the C++ ABI and therefore results in C++ shared libraries
+          and C++ programs that are interoperable with other Linux distributions.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="bg3">
+        <term><parameter>--enable-c99</parameter></term>
+        <listitem>
+          <para>Enable C99 support for C programs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="bg4">
+        <term><parameter>--enable-long-long</parameter></term>
+        <listitem>
+          <para>Enables long long support in the compiler.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="bg5">
+        <term><parameter>--enable-threads=posix</parameter></term>
+        <listitem>
+          <para>This enables C++ exception handling for multi-threaded code.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="bh">Continue with compiling the package:</para>
+
+<screen os="bi"><userinput>make AS_FOR_TARGET="${CLFS_TARGET}-as" \
+    LD_FOR_TARGET="${CLFS_TARGET}-ld"</userinput></screen>
+
+    <para os="bj">Install the package:</para>
+
+<screen os="bk"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-gcc" role="."/></para>
+
+  </sect2>
+
+</sect1>
