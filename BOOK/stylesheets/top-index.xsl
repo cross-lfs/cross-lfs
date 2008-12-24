@@ -105,7 +105,14 @@ hr {
           <li>
             <h4>
               <a href="native">
-                <xsl:text>Native</xsl:text>
+                <xsl:text>Native 32Bit</xsl:text>
+              </a>
+            </h4>
+          </li>
+          <li>
+            <h4>
+              <a href="native64">
+                <xsl:text>Native Multilib</xsl:text>
               </a>
             </h4>
           </li>

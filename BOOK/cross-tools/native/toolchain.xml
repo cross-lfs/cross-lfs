@@ -5,61 +5,109 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-cross-tools-gcc-final" role="wrap">
-  <?dbhtml filename="gcc-final.html"?>
+<sect1 id="ch-cross-tools-toolchain" role="wrap">
+  <?dbhtml filename="toolchain.html"?>
 
-  <title>Cross GCC-&gcc-version; - Final</title>
+  <title>Toolchain</title>
 
-  <indexterm zone="ch-cross-tools-gcc-final">
-    <primary sortas="a-GCC">GCC</primary>
-    <secondary>cross tools, final</secondary>
+  <indexterm zone="ch-cross-tools-toolchain">
+    <primary sortas="a-toolchain">ToolChain</primary>
+    <secondary>cross tools</secondary>
   </indexterm>
 
-  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../final-system/common/gcc.xml"
-  xpointer="xpointer(//*[@role='package'])"/>
+  <sect2 role="package">
+    <title/>
+
+    <para>This section combines Binutils, GCC, GMP, and MPFR  packages
+    to create a clean toolchain.</para>
+
+  </sect2>
 
   <sect2 role="installation">
-    <title>Installation of GCC Cross Compiler</title>
+    <title>Installation of our Toolchain</title>
+
+    <para os="na">We are going to extract all the files needed
+   to create our toolchain:</para>
+
+<screen os="nb"><userinput>tar -jxf ../gcc-&gcc-version;.tar.bz2
+tar -jxf ../binutils-&binutils-version;.tar.bz2
+tar -jxf ../mfpr-&mpfr-version;.tar.bz2
+tar -jxf ../gmp-&gmp-version;.tar.bz2</userinput></screen>
+
+    <para os="nc">We are going to create a combined directory for
+   or build:</para>
+
+<screen os="nd"><userinput>mkdir -pv sysroot-toolchain
+cd gcc-&gcc-version;; tar -c * | \
+  ( cd ../sysroot-toolchain ; tar xf - )
+cd ../binutils-&binutils-version;; tar -c * | \
+  ( cd ../sysroot-toolchain ; tar xf - )
+cd ../sysroot-toolchain
+mv ../mpfr-&mpfr-version; ./mpfr
+mv ../gmp-&gmp-version; ./gmp</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/binutils.xml"
+    xpointer="xpointer(//*[@os='ba'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/binutils.xml"
+    xpointer="xpointer(//*[@os='bb'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/binutils.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/binutils.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc-static.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc-static.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='aa'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ab'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ac'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ag'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ah'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ai'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='aj'])"/>
 
     <para os="bd">Finally, disable <option>-B</option> in <filename>configure</filename>,
@@ -70,22 +118,24 @@ sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig > \
     configure</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
+    href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="bf"><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
-    --disable-multilib --with-local-prefix=/tools --disable-nls \
-    --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
-    --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
+<screen os="bf"><userinput>AR=ar AS=as ../sysroot-toolchain/configure \
+  --with-sysroot=${CLFS} --prefix=/cross-tools \
+  --target=i686-pc-linux-gnu --with-local-prefix=/tools \
+  --without-headers --with-newlib  --disable-nls \
+  --disable-shared  --disable-decimal-float  --disable-libgomp \
+  --disable-libmudflap --disable-libssp --disable-threads \
+  --enable-languages=c --enable-64-bit-bfd --with-lib-path=/tools/lib</userinput></screen>
 
     <variablelist os="bg">
       <title>The meaning of the new configure options:</title>
@@ -133,8 +183,7 @@ sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig > \
 
     <para os="bh">Continue with compiling the package:</para>
 
-<screen os="bi"><userinput>make AS_FOR_TARGET="${CLFS_TARGET}-as" \
-    LD_FOR_TARGET="${CLFS_TARGET}-ld"</userinput></screen>
+<screen os="bi"><userinput>make</userinput></screen>
 
     <para os="bj">Install the package:</para>
 
