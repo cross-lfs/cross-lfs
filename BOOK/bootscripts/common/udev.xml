@@ -154,8 +154,8 @@
       <filename>/sys/bus/pci/devices/0000:00:0d.0/modalias</filename> file
       might contain the string
       <quote>pci:v00001319d00000801sv00001319sd00001319bc04sc01i00</quote>.
-      The rules that CLFS installs will cause <command>udevd</command> to call
-      out to <command>/sbin/modprobe</command> with the contents of the
+      The default rules provided by Udev will cause <command>udevd</command>
+      to call out to <command>/sbin/modprobe</command> with the contents of the
       <envar>MODALIAS</envar> uevent environment variable (that should be the
       same as the contents of the <filename>modalias</filename> file in sysfs),
       thus loading all modules whose aliases match this string after wildcard
@@ -267,7 +267,8 @@
       <para>This usually happens if a rule unexpectedly matches a device. For
       example, a poorly-writen rule can match both a SCSI disk (as desired)
       and the corresponding SCSI generic device (incorrectly) by vendor.
-      Find the offending rule and make it more specific.</para>
+      Find the offending rule and make it more specific, with the help of
+      <command>udevadm info</command>.</para>
 
     </sect3>
 
