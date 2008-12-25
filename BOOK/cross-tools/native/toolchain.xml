@@ -47,14 +47,6 @@ mv ../mpfr-&mpfr-version; ./mpfr
 mv ../gmp-&gmp-version; ./gmp</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-static.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-static.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/binutils.xml"
     xpointer="xpointer(//*[@os='ba'])"/>
 
@@ -94,13 +86,14 @@ mv ../gmp-&gmp-version; ./gmp</userinput></screen>
     href="../common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-static.xml"
-    xpointer="xpointer(//*[@os='ag'])"/>
+    <para os="ng">This ensures by default the compiler will look in
+/tools/lib/../lib or /tools/lib/../lib64 as appropriate:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc-static.xml"
-    xpointer="xpointer(//*[@os='ah'])"/>
+<screen os="nh"><userinput>echo "
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 \"/tools/lib/\"
+#define STANDARD_STARTFILE_PREFIX_2 \"\"" >> gcc/config/linux.h</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc-static.xml"
