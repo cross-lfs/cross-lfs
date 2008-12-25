@@ -44,8 +44,7 @@ cd build</userinput></screen>
     <para os="c">Prepare E2fsprogs for compilation:</para>
 
 <screen os="d"><userinput>../configure --prefix=/usr --with-root-prefix="" \
-    --enable-elf-shlibs --disable-evms \
-    --with-cc=gcc</userinput></screen>
+    --enable-elf-shlibs --with-cc=gcc</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
@@ -69,18 +68,6 @@ cd build</userinput></screen>
         <listitem>
           <para>This creates the shared libraries which some programs
           in this package use.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="e3">
-        <term><parameter>--disable-evms</parameter></term>
-        <listitem>
-          <para>This disables the building of the Enterprise Volume
-          Management System (EVMS) plugin. This plugin is not up-to-date with
-          the latest EVMS internal interfaces and EVMS is not installed as part
-          of a base CLFS system, so the plugin is not required. See the EVMS
-          website at <ulink url="http://evms.sourceforge.net/"/> for more
-          information regarding EVMS.</para>
         </listitem>
       </varlistentry>
 
