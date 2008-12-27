@@ -47,11 +47,11 @@
 
 <screen os="j"><userinput>ln -svf ../../lib/liblzmadec.so.0 /usr/lib/liblzmadec.so</userinput></screen>
 
-    <para os="k">Move the LZMA-Utils binaries to /bin to be available like other compressing utilities:</para>
+    <para os="k">Move the <command>lzma</command> binary, and a couple
+    symlinks to it, to <filename class="directory">/bin</filename> to be
+    available like other compressing utilities:</para>
 
-<screen os="l"><userinput>mv -v /usr/bin/lzma /bin
-ln -sfv lzma /bin/unlzma
-ln -sfv lzma /bin/lzmacat</userinput></screen>
+<screen os="l"><userinput>mv -v /usr/bin/{lzma,lzcat,unlzma} /bin</userinput></screen>
 
   </sect2>
 
@@ -63,7 +63,7 @@ ln -sfv lzma /bin/lzmacat</userinput></screen>
       <segtitle>Installed libraries</segtitle>
 
       <seglistitem>
-        <seg>lzma, lzmacat (link to lzma), lzmadec, lzmainfo,
+        <seg>lzma, lzcat (link to lzma), lzmadec, lzmainfo,
 	lzmore, and unlzma (link to lzma).</seg>
         <seg>liblzmadec.a, liblzmadec.la, liblzmadec.so, liblzmadec.so.0, and
 	 liblzmadec.so.0.0.0</seg>
@@ -85,12 +85,12 @@ ln -sfv lzma /bin/lzmacat</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="lzmacat">
-        <term><command>lzmacat</command></term>
+      <varlistentry id="lzcat">
+        <term><command>lzcat</command></term>
         <listitem>
           <para>Decompresses to standard output</para>
-          <indexterm zone="ch-system-lzma lzmacat">
-            <primary sortas="b-lzmacat">lzmacat</primary>
+          <indexterm zone="ch-system-lzma lzcat">
+            <primary sortas="b-lzcat">lzcat</primary>
           </indexterm>
         </listitem>
       </varlistentry>
