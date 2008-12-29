@@ -51,12 +51,12 @@
       <segtitle>Installed libraries</segtitle>
 
       <seglistitem>
-        <seg>autopoint, envsubst, gettext, gettext.sh, gettextize, hostname,
-        msgattrib, msgcat, msgcmp, msgcomm, msgconv, msgen, msgexec, msgfilter,
-        msgfmt, msggrep, msginit, msgmerge, msgunfmt, msguniq, ngettext,
-        recode-sr-latin, and xgettext</seg>
-        <seg>libasprintf.[a,so], libgettextlib.so, libgettextpo.[a,so], and
-        libgettextsrc.so</seg>
+        <seg>autopoint, config.charset, config.rpath, envsubst, gettext,
+        gettext.sh, gettextize, hostname, msgattrib, msgcat, msgcmp, msgcomm,
+        msgconv, msgen, msgexec, msgfilter, msgfmt, msggrep, msginit, msgmerge,
+        msgunfmt, msguniq, ngettext, recode-sr-latin, and xgettext</seg>
+        <seg>libasprintf.[a,so], libgettextlib.so, libgettextpo.[a,so],
+        libgettextsrc.so, and preloadable_libintl.so</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -72,6 +72,27 @@
           package</para>
           <indexterm zone="ch-system-gettext autopoint">
             <primary sortas="b-autopoint">autopoint</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="config.charset">
+        <term><command>config.charset</command></term>
+        <listitem>
+          <para>Outputs a system-dependent table of character encoding aliases</para>
+          <indexterm zone="ch-system-gettext config.charset">
+            <primary sortas="b-config.charset">config.charset</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="config.rpath">
+        <term><command>config.rpath</command></term>
+        <listitem>
+          <para>Outputs a system-dependent set of variables, describing how to
+          set the runtime search path of shared libraries in an executable</para>
+          <indexterm zone="ch-system-gettext config.rpath">
+            <primary sortas="b-config.rpath">config.rpath</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -358,6 +379,18 @@
           various Gettext programs; these are not intended for general use</para>
           <indexterm zone="ch-system-gettext libgettextsrc">
             <primary sortas="c-libgettextsrc">libgettextsrc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="preloadable_libintl.so">
+        <term><filename class="libraryfile">preloadable_libintl.so</filename></term>
+        <listitem>
+          <para>A library, intended to be used by LD_PRELOAD, that assists
+          <filename class="libraryfile">libintl</filename> in logging
+          untranslated messages.</para>
+          <indexterm zone="ch-system-gettext libgettextlib">
+            <primary sortas="c-libgettextlib">libgettextlib</primary>
           </indexterm>
         </listitem>
       </varlistentry>
