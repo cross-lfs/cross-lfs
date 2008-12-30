@@ -1,13 +1,13 @@
 Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
-Date: 12-21-2007
+Date: 12-20-2008
 Initial Package Version: 5.2
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 5.2-012
+Description: Contains all upstream patches up to 5.2-013
 
 diff -Naur readline-5.2.orig/complete.c readline-5.2/complete.c
---- readline-5.2.orig/complete.c	2006-07-28 11:35:49.000000000 -0400
-+++ readline-5.2/complete.c	2007-12-21 00:06:28.000000000 -0500
+--- readline-5.2.orig/complete.c	2006-07-28 08:35:49.000000000 -0700
++++ readline-5.2/complete.c	2008-12-20 14:28:42.000000000 -0800
 @@ -428,7 +428,7 @@
  	return (1);
        if (c == 'n' || c == 'N' || c == RUBOUT)
@@ -18,8 +18,8 @@ diff -Naur readline-5.2.orig/complete.c readline-5.2/complete.c
        if (for_pager && (c == NEWLINE || c == RETURN))
  	return (2);
 diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
---- readline-5.2.orig/display.c	2006-09-14 14:20:12.000000000 -0400
-+++ readline-5.2/display.c	2007-12-21 00:06:31.000000000 -0500
+--- readline-5.2.orig/display.c	2006-09-14 11:20:12.000000000 -0700
++++ readline-5.2/display.c	2008-12-20 14:28:55.000000000 -0800
 @@ -391,14 +391,14 @@
        t = ++p;
        local_prompt = expand_prompt (p, &prompt_visible_length,
@@ -63,7 +63,33 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
  
  #if defined (HANDLE_MULTIBYTE)	  
  #define CHECK_LPOS() \
-@@ -1036,7 +1048,7 @@
+@@ -898,6 +910,10 @@
+ 	     second and subsequent lines start at inv_lbreaks[N], offset by
+ 	     OFFSET (which has already been calculated above).  */
+ 
++#define INVIS_FIRST()	(prompt_physical_chars > _rl_screenwidth ? prompt_invis_chars_first_line : wrap_offset)
++#define WRAP_OFFSET(line, offset)  ((line == 0) \
++					? (offset ? INVIS_FIRST() : 0) \
++					: ((line == prompt_last_screen_line) ? wrap_offset-prompt_invis_chars_first_line : 0))
+ #define W_OFFSET(line, offset) ((line) == 0 ? offset : 0)
+ #define VIS_LLEN(l)	((l) > _rl_vis_botlin ? 0 : (vis_lbreaks[l+1] - vis_lbreaks[l]))
+ #define INV_LLEN(l)	(inv_lbreaks[l+1] - inv_lbreaks[l])
+@@ -932,7 +948,13 @@
+ 		  _rl_last_c_pos != o_cpos &&
+ 		  _rl_last_c_pos > wrap_offset &&
+ 		  o_cpos < prompt_last_invisible)
+-		_rl_last_c_pos -= wrap_offset;
++		_rl_last_c_pos -= prompt_invis_chars_first_line;	/* XXX - was wrap_offset */
++	      else if (linenum == prompt_last_screen_line && prompt_physical_chars > _rl_screenwidth &&
++			(MB_CUR_MAX > 1 && rl_byte_oriented == 0) &&
++			cpos_adjusted == 0 &&
++			_rl_last_c_pos != o_cpos &&
++			_rl_last_c_pos > (prompt_last_invisible - _rl_screenwidth - prompt_invis_chars_first_line))
++		_rl_last_c_pos -= (wrap_offset-prompt_invis_chars_first_line);
+ 		  
+ 	      /* If this is the line with the prompt, we might need to
+ 		 compensate for invisible characters in the new line. Do
+@@ -1036,7 +1058,7 @@
  		tx = _rl_col_width (&visible_line[pos], 0, nleft) - visible_wrap_offset;
  	      else
  		tx = nleft;
@@ -72,16 +98,25 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
  		{
  	          _rl_backspace (_rl_last_c_pos - tx);	/* XXX */
  	          _rl_last_c_pos = tx;
-@@ -1192,7 +1204,7 @@
+@@ -1192,7 +1214,7 @@
       int current_line, omax, nmax, inv_botlin;
  {
    register char *ofd, *ols, *oe, *nfd, *nls, *ne;
 -  int temp, lendiff, wsatend, od, nd;
-+  int temp, lendiff, wsatend, od, nd, o_cpos;
++  int temp, lendiff, wsatend, od, nd, twidth, o_cpos;
    int current_invis_chars;
    int col_lendiff, col_temp;
  #if defined (HANDLE_MULTIBYTE)
-@@ -1453,6 +1465,8 @@
+@@ -1208,7 +1230,7 @@
+   if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+     temp = _rl_last_c_pos;
+   else
+-    temp = _rl_last_c_pos - W_OFFSET(_rl_last_v_pos, visible_wrap_offset);
++    temp = _rl_last_c_pos - WRAP_OFFSET (_rl_last_v_pos, visible_wrap_offset);
+   if (temp == _rl_screenwidth && _rl_term_autowrap && !_rl_horizontal_scroll_mode
+ 	&& _rl_last_v_pos == current_line - 1)
+     {
+@@ -1453,6 +1475,8 @@
  	_rl_last_c_pos = lendiff;
      }
  
@@ -90,7 +125,7 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
    /* When this function returns, _rl_last_c_pos is correct, and an absolute
       cursor postion in multibyte mode, but a buffer index when not in a
       multibyte locale. */
-@@ -1462,7 +1476,9 @@
+@@ -1462,7 +1486,9 @@
    /* We need to indicate that the cursor position is correct in the presence of
       invisible characters in the prompt string.  Let's see if setting this when
       we make sure we're at the end of the drawn prompt string works. */
@@ -101,7 +136,7 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
      cpos_adjusted = 1;
  #endif
  #endif
-@@ -1506,11 +1522,31 @@
+@@ -1506,11 +1532,31 @@
      {
        /* Non-zero if we're increasing the number of lines. */
        int gl = current_line >= _rl_vis_botlin && inv_botlin > _rl_vis_botlin;
@@ -134,7 +169,7 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
  	{
  	  /* If lendiff > prompt_visible_length and _rl_last_c_pos == 0 and
  	     _rl_horizontal_scroll_mode == 1, inserting the characters with
-@@ -1533,11 +1569,16 @@
+@@ -1533,11 +1579,16 @@
  	    }
  	  else
  	    {
@@ -154,7 +189,28 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
  	      return;
  	    }
  	  /* Copy (new) chars to screen from first diff to last match. */
-@@ -1586,8 +1627,22 @@
+@@ -1545,15 +1596,15 @@
+ 	  if ((temp - lendiff) > 0)
+ 	    {
+ 	      _rl_output_some_chars (nfd + lendiff, temp - lendiff);
+-#if 1
+ 	     /* XXX -- this bears closer inspection.  Fixes a redisplay bug
+ 		reported against bash-3.0-alpha by Andreas Schwab involving
+ 		multibyte characters and prompt strings with invisible
+ 		characters, but was previously disabled. */
+-	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-col_lendiff);
+-#else
+-	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-lendiff);
+-#endif
++	      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
++		twidth = _rl_col_width (nfd+lendiff, 0, temp-col_lendiff);
++	      else
++		twidth = temp - lendiff;
++	      _rl_last_c_pos += twidth;
+ 	    }
+ 	}
+       else
+@@ -1586,8 +1637,22 @@
  	  temp = nls - nfd;
  	  if (temp > 0)
  	    {
@@ -178,7 +234,7 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
  	    }
  	}
        /* Otherwise, print over the existing material. */
-@@ -1595,8 +1650,20 @@
+@@ -1595,8 +1660,20 @@
  	{
  	  if (temp > 0)
  	    {
@@ -199,7 +255,16 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
  	    }
  	  lendiff = (oe - old) - (ne - new);
  	  if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
-@@ -1732,7 +1799,10 @@
+@@ -1721,7 +1798,7 @@
+   int woff;			/* number of invisible chars on current line */
+   int cpos, dpos;		/* current and desired cursor positions */
+ 
+-  woff = W_OFFSET (_rl_last_v_pos, wrap_offset);
++  woff = WRAP_OFFSET (_rl_last_v_pos, wrap_offset);
+   cpos = _rl_last_c_pos;
+ #if defined (HANDLE_MULTIBYTE)
+   /* If we have multibyte characters, NEW is indexed by the buffer point in
+@@ -1732,7 +1809,14 @@
    if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
      {
        dpos = _rl_col_width (data, 0, new);
@@ -207,11 +272,15 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
 +      /* Use NEW when comparing against the last invisible character in the
 +	 prompt string, since they're both buffer indices and DPOS is a
 +	 desired display position. */
-+      if (new > prompt_last_invisible)		/* XXX - don't use woff here */
++      if ((new > prompt_last_invisible) ||		/* XXX - don't use woff here */
++	  (prompt_physical_chars > _rl_screenwidth &&
++	   _rl_last_v_pos == prompt_last_screen_line &&
++	   wrap_offset != woff &&
++	   new > (prompt_last_invisible-_rl_screenwidth-wrap_offset)))
  	{
  	  dpos -= woff;
  	  /* Since this will be assigned to _rl_last_c_pos at the end (more
-@@ -2380,6 +2450,8 @@
+@@ -2380,6 +2464,8 @@
  
    if (end <= start)
      return 0;
@@ -221,8 +290,8 @@ diff -Naur readline-5.2.orig/display.c readline-5.2/display.c
    memset (&ps, 0, sizeof (mbstate_t));
  
 diff -Naur readline-5.2.orig/input.c readline-5.2/input.c
---- readline-5.2.orig/input.c	2006-08-16 15:15:16.000000000 -0400
-+++ readline-5.2/input.c	2007-12-21 00:06:32.000000000 -0500
+--- readline-5.2.orig/input.c	2006-08-16 12:15:16.000000000 -0700
++++ readline-5.2/input.c	2008-12-20 14:28:52.000000000 -0800
 @@ -133,8 +133,11 @@
      return (0);
  
@@ -307,8 +376,8 @@ diff -Naur readline-5.2.orig/input.c readline-5.2/input.c
        mb[i] = (char)c;
        memset (&ps, 0, sizeof (mbstate_t));
 diff -Naur readline-5.2.orig/isearch.c readline-5.2/isearch.c
---- readline-5.2.orig/isearch.c	2005-12-26 17:18:53.000000000 -0500
-+++ readline-5.2/isearch.c	2007-12-21 00:06:28.000000000 -0500
+--- readline-5.2.orig/isearch.c	2005-12-26 14:18:53.000000000 -0800
++++ readline-5.2/isearch.c	2008-12-20 14:28:42.000000000 -0800
 @@ -327,8 +327,15 @@
    rl_command_func_t *f;
  
@@ -328,8 +397,8 @@ diff -Naur readline-5.2.orig/isearch.c readline-5.2/isearch.c
      {
        f = _rl_keymap[c].function;
 diff -Naur readline-5.2.orig/misc.c readline-5.2/misc.c
---- readline-5.2.orig/misc.c	2005-12-26 17:20:46.000000000 -0500
-+++ readline-5.2/misc.c	2007-12-21 00:06:28.000000000 -0500
+--- readline-5.2.orig/misc.c	2005-12-26 14:20:46.000000000 -0800
++++ readline-5.2/misc.c	2008-12-20 14:28:42.000000000 -0800
 @@ -146,6 +146,8 @@
  	  rl_restore_prompt ();
  	  rl_clear_message ();
@@ -340,8 +409,8 @@ diff -Naur readline-5.2.orig/misc.c readline-5.2/misc.c
  	}
      }
 diff -Naur readline-5.2.orig/readline.c readline-5.2/readline.c
---- readline-5.2.orig/readline.c	2006-08-16 15:00:36.000000000 -0400
-+++ readline-5.2/readline.c	2007-12-21 00:06:28.000000000 -0500
+--- readline-5.2.orig/readline.c	2006-08-16 12:00:36.000000000 -0700
++++ readline-5.2/readline.c	2008-12-20 14:28:42.000000000 -0800
 @@ -645,6 +645,11 @@
    if ((cxt->flags & KSEQ_DISPATCHED) == 0)
      {
@@ -355,8 +424,8 @@ diff -Naur readline-5.2.orig/readline.c readline-5.2/readline.c
        cxt->flags |= KSEQ_DISPATCHED;
      }
 diff -Naur readline-5.2.orig/support/shobj-conf readline-5.2/support/shobj-conf
---- readline-5.2.orig/support/shobj-conf	2006-04-11 09:15:43.000000000 -0400
-+++ readline-5.2/support/shobj-conf	2007-12-21 00:06:32.000000000 -0500
+--- readline-5.2.orig/support/shobj-conf	2006-04-11 06:15:43.000000000 -0700
++++ readline-5.2/support/shobj-conf	2008-12-20 14:28:53.000000000 -0800
 @@ -10,7 +10,7 @@
  # Chet Ramey
  # chet@po.cwru.edu
@@ -448,8 +517,8 @@ diff -Naur readline-5.2.orig/support/shobj-conf readline-5.2/support/shobj-conf
  	SHLIB_XLDFLAGS='-Wl,+h,$@ -Wl,+b,$(libdir)'
  	SHLIB_LIBSUFF='sl'
 diff -Naur readline-5.2.orig/text.c readline-5.2/text.c
---- readline-5.2.orig/text.c	2006-07-28 11:55:27.000000000 -0400
-+++ readline-5.2/text.c	2007-12-21 00:06:28.000000000 -0500
+--- readline-5.2.orig/text.c	2006-07-28 08:55:27.000000000 -0700
++++ readline-5.2/text.c	2008-12-20 14:28:42.000000000 -0800
 @@ -857,6 +857,9 @@
    c = rl_read_key ();
    RL_UNSETSTATE(RL_STATE_MOREINPUT);
@@ -481,8 +550,8 @@ diff -Naur readline-5.2.orig/text.c readline-5.2/text.c
      return (_rl_char_search_internal (-count, bdir, c));
    else
 diff -Naur readline-5.2.orig/vi_mode.c readline-5.2/vi_mode.c
---- readline-5.2.orig/vi_mode.c	2006-07-29 16:42:28.000000000 -0400
-+++ readline-5.2/vi_mode.c	2007-12-21 00:06:28.000000000 -0500
+--- readline-5.2.orig/vi_mode.c	2006-07-29 13:42:28.000000000 -0700
++++ readline-5.2/vi_mode.c	2008-12-20 14:28:42.000000000 -0800
 @@ -886,6 +886,13 @@
    RL_SETSTATE(RL_STATE_MOREINPUT);
    c = rl_read_key ();
