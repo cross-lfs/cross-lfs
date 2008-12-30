@@ -1,13 +1,13 @@
 Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
-Date: 06-18-2008
+Date: 12-20-2008
 Initial Package Version: 3.2
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 3.2-039
+Description: Contains all upstream patches up to 3.2-048
 
 diff -Naur bash-3.2.orig/array.c bash-3.2/array.c
---- bash-3.2.orig/array.c	2005-06-01 16:39:22.000000000 -0400
-+++ bash-3.2/array.c	2008-06-18 06:46:19.000000000 -0400
+--- bash-3.2.orig/array.c	2005-06-01 13:39:22.000000000 -0700
++++ bash-3.2/array.c	2008-12-20 07:00:08.000000000 -0800
 @@ -120,7 +120,6 @@
  	return(a1);
  }
@@ -104,9 +104,18 @@ diff -Naur bash-3.2.orig/array.c bash-3.2/array.c
  	if (mflags & MATCH_STARSUB) {
  		ifs = getifs();
  		sifs[0] = ifs ? *ifs : '\0';
+@@ -655,7 +683,7 @@
+ 		is = inttostr (element_index(ae), indstr, sizeof(indstr));
+ 		valstr = element_value (ae) ? sh_double_quote (element_value(ae))
+ 					    : (char *)NULL;
+-		elen = STRLEN (indstr) + 8 + STRLEN (valstr);
++		elen = STRLEN (is) + 8 + STRLEN (valstr);
+ 		RESIZE_MALLOCED_BUFFER (result, rlen, (elen + 1), rsize, rsize);
+ 
+ 		result[rlen++] = '[';
 diff -Naur bash-3.2.orig/array.h bash-3.2/array.h
---- bash-3.2.orig/array.h	2003-06-01 15:50:30.000000000 -0400
-+++ bash-3.2/array.h	2008-06-18 06:46:19.000000000 -0400
+--- bash-3.2.orig/array.h	2003-06-01 12:50:30.000000000 -0700
++++ bash-3.2/array.h	2008-12-20 06:59:28.000000000 -0800
 @@ -55,6 +55,7 @@
  extern ARRAY_ELEMENT *array_unshift_element __P((ARRAY *));
  extern int	array_shift_element __P((ARRAY *, char *));
@@ -116,8 +125,8 @@ diff -Naur bash-3.2.orig/array.h bash-3.2/array.h
  extern char	*array_subrange __P((ARRAY *, arrayind_t, arrayind_t, int, int));
  extern char	*array_patsub __P((ARRAY *, char *, char *, int));
 diff -Naur bash-3.2.orig/arrayfunc.c bash-3.2/arrayfunc.c
---- bash-3.2.orig/arrayfunc.c	2006-07-27 09:37:59.000000000 -0400
-+++ bash-3.2/arrayfunc.c	2008-06-18 06:46:30.000000000 -0400
+--- bash-3.2.orig/arrayfunc.c	2006-07-27 06:37:59.000000000 -0700
++++ bash-3.2/arrayfunc.c	2008-12-20 06:59:57.000000000 -0800
 @@ -618,6 +618,8 @@
    if (expok == 0)
      {
@@ -136,9 +145,42 @@ diff -Naur bash-3.2.orig/arrayfunc.c bash-3.2/arrayfunc.c
        if (allow_all == 0)
  	{
  	  err_badarraysub (s);
+diff -Naur bash-3.2.orig/bashhist.c bash-3.2/bashhist.c
+--- bash-3.2.orig/bashhist.c	2005-12-26 10:31:16.000000000 -0800
++++ bash-3.2/bashhist.c	2008-12-20 07:00:10.000000000 -0800
+@@ -80,6 +80,7 @@
+    list.  This is different than the user-controlled behaviour; this
+    becomes zero when we read lines from a file, for example. */
+ int remember_on_history = 1;
++int enable_history_list = 1;	/* value for `set -o history' */
+ 
+ /* The number of lines that Bash has added to this history session.  The
+    difference between the number of the top element in the history list
+@@ -234,7 +235,7 @@
+   history_expansion = interact != 0;
+   history_expansion_inhibited = 1;
+ #endif
+-  remember_on_history = interact != 0;
++  remember_on_history = enable_history_list = interact != 0;
+   history_inhibit_expansion_function = bash_history_inhibit_expansion;
+ }
+ 
+diff -Naur bash-3.2.orig/bashhist.h bash-3.2/bashhist.h
+--- bash-3.2.orig/bashhist.h	2005-07-01 12:44:41.000000000 -0700
++++ bash-3.2/bashhist.h	2008-12-20 07:00:10.000000000 -0800
+@@ -31,6 +31,9 @@
+ #define HC_IGNBOTH	(HC_IGNSPACE|HC_IGNDUPS)
+ 
+ extern int remember_on_history;
++extern int enable_history_list;		/* value for `set -o history' */
++extern int literal_history;		/* controlled by `shopt lithist' */
++extern int force_append_history;
+ extern int history_lines_this_session;
+ extern int history_lines_in_file;
+ extern int history_expansion;
 diff -Naur bash-3.2.orig/bashline.c bash-3.2/bashline.c
---- bash-3.2.orig/bashline.c	2006-07-29 16:39:30.000000000 -0400
-+++ bash-3.2/bashline.c	2008-06-18 06:46:32.000000000 -0400
+--- bash-3.2.orig/bashline.c	2006-07-29 13:39:30.000000000 -0700
++++ bash-3.2/bashline.c	2008-12-20 07:00:04.000000000 -0800
 @@ -2357,7 +2357,7 @@
    if (should_expand_dirname)  
      {
@@ -149,8 +191,8 @@ diff -Naur bash-3.2.orig/bashline.c bash-3.2/bashline.c
  	{
  	  *dirname = string_list (wl);
 diff -Naur bash-3.2.orig/builtins/common.c bash-3.2/builtins/common.c
---- bash-3.2.orig/builtins/common.c	2006-07-27 09:39:51.000000000 -0400
-+++ bash-3.2/builtins/common.c	2008-06-18 06:46:23.000000000 -0400
+--- bash-3.2.orig/builtins/common.c	2006-07-27 06:39:51.000000000 -0700
++++ bash-3.2/builtins/common.c	2008-12-20 06:59:37.000000000 -0800
 @@ -1,4 +1,4 @@
 -/* Copyright (C) 1987-2005 Free Software Foundation, Inc.
 +/* Copyright (C) 1987-2007 Free Software Foundation, Inc.
@@ -189,9 +231,57 @@ diff -Naur bash-3.2.orig/builtins/common.c bash-3.2/builtins/common.c
        if (the_current_working_directory == 0)
  	{
  	  fprintf (stderr, _("%s: error retrieving current directory: %s: %s\n"),
+diff -Naur bash-3.2.orig/builtins/evalstring.c bash-3.2/builtins/evalstring.c
+--- bash-3.2.orig/builtins/evalstring.c	2006-07-28 12:12:16.000000000 -0700
++++ bash-3.2/builtins/evalstring.c	2008-12-20 07:00:21.000000000 -0800
+@@ -67,6 +67,14 @@
+ 
+ static int cat_file __P((REDIRECT *));
+ 
++#if defined (HISTORY)
++static void
++set_history_remembering ()
++{
++  remember_on_history = enable_history_list;
++}
++#endif
++
+ /* How to force parse_and_execute () to clean up after itself. */
+ void
+ parse_and_execute_cleanup ()
+@@ -115,7 +123,10 @@
+   lreset = flags & SEVAL_RESETLINE;
+ 
+ #if defined (HISTORY)
+-  unwind_protect_int (remember_on_history);	/* can be used in scripts */
++  if (parse_and_execute_level == 0)
++    add_unwind_protect (set_history_remembering, (char *)NULL);
++  else
++    unwind_protect_int (remember_on_history);	/* can be used in scripts */
+ #  if defined (BANG_HISTORY)
+   if (interactive_shell)
+     {
+@@ -237,6 +248,7 @@
+ 	       *   parse_and_execute has not been called recursively AND
+ 	       *   we're not running a trap AND
+ 	       *   we have parsed the full command (string == '\0') AND
++	       *   we're not going to run the exit trap AND
+ 	       *   we have a simple command without redirections AND
+ 	       *   the command is not being timed AND
+ 	       *   the command's return status is not being inverted
+@@ -247,7 +259,8 @@
+ 		  running_trap == 0 &&
+ 		  *bash_input.location.string == '\0' &&
+ 		  command->type == cm_simple &&
+-		  !command->redirects && !command->value.Simple->redirects &&
++		  signal_is_trapped (EXIT_TRAP) == 0 &&
++		  command->redirects == 0 && command->value.Simple->redirects == 0 &&
+ 		  ((command->flags & CMD_TIME_PIPELINE) == 0) &&
+ 		  ((command->flags & CMD_INVERT_RETURN) == 0))
+ 		{
 diff -Naur bash-3.2.orig/builtins/printf.def bash-3.2/builtins/printf.def
---- bash-3.2.orig/builtins/printf.def	2006-09-18 08:48:42.000000000 -0400
-+++ bash-3.2/builtins/printf.def	2008-06-18 06:46:18.000000000 -0400
+--- bash-3.2.orig/builtins/printf.def	2006-09-18 05:48:42.000000000 -0700
++++ bash-3.2/builtins/printf.def	2008-12-20 06:59:25.000000000 -0800
 @@ -1,7 +1,7 @@
  This file is printf.def, from which is created printf.c.
  It implements the builtin "printf" in Bash.
@@ -237,8 +327,8 @@ diff -Naur bash-3.2.orig/builtins/printf.def bash-3.2/builtins/printf.def
  static int printstr __P((char *, char *, int, int, int));
  static int tescape __P((char *, char *, int *));
 diff -Naur bash-3.2.orig/builtins/read.def bash-3.2/builtins/read.def
---- bash-3.2.orig/builtins/read.def	2006-09-19 08:45:48.000000000 -0400
-+++ bash-3.2/builtins/read.def	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/builtins/read.def	2006-09-19 05:45:48.000000000 -0700
++++ bash-3.2/builtins/read.def	2008-12-20 07:00:05.000000000 -0800
 @@ -127,14 +127,14 @@
       WORD_LIST *list;
  {
@@ -336,9 +426,50 @@ diff -Naur bash-3.2.orig/builtins/read.def bash-3.2/builtins/read.def
    if (var)
      VUNSETATTR (var, att_invisible);
    xfree (orig_input_string);
+diff -Naur bash-3.2.orig/builtins/set.def bash-3.2/builtins/set.def
+--- bash-3.2.orig/builtins/set.def	2006-07-27 06:41:43.000000000 -0700
++++ bash-3.2/builtins/set.def	2008-12-20 07:00:10.000000000 -0800
+@@ -189,7 +189,7 @@
+   { "histexpand", 'H', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+ #endif /* BANG_HISTORY */
+ #if defined (HISTORY)
+-  { "history",   '\0', &remember_on_history, bash_set_history, (setopt_get_func_t *)NULL },
++  { "history",   '\0', &enable_history_list, bash_set_history, (setopt_get_func_t *)NULL },
+ #endif
+   { "ignoreeof", '\0', &ignoreeof, set_ignoreeof, (setopt_get_func_t *)NULL },
+   { "interactive-comments", '\0', &interactive_comments, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+@@ -381,13 +381,17 @@
+ {
+   if (on_or_off == FLAG_ON)
+     {
++      enable_history_list = 1;
+       bash_history_enable ();
+       if (history_lines_this_session == 0)
+ 	load_history ();
+     }
+   else
+-    bash_history_disable ();
+-  return (1 - remember_on_history);
++    {
++      enable_history_list = 0;
++      bash_history_disable ();
++    }
++  return (1 - enable_history_list);
+ }
+ #endif
+ 
+@@ -565,7 +569,7 @@
+ reset_shell_options ()
+ {
+ #if defined (HISTORY)
+-  remember_on_history = 1;
++  remember_on_history = enable_history_list = 1;
+ #endif
+   ignoreeof = 0;
+ }
 diff -Naur bash-3.2.orig/builtins/shopt.def bash-3.2/builtins/shopt.def
---- bash-3.2.orig/builtins/shopt.def	2005-02-19 17:25:03.000000000 -0500
-+++ bash-3.2/builtins/shopt.def	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/builtins/shopt.def	2005-02-19 14:25:03.000000000 -0800
++++ bash-3.2/builtins/shopt.def	2008-12-20 07:00:07.000000000 -0800
 @@ -101,11 +101,14 @@
  
  static int set_shellopts_after_change __P((int));
@@ -382,8 +513,8 @@ diff -Naur bash-3.2.orig/builtins/shopt.def bash-3.2/builtins/shopt.def
  /* Don't allow the value of restricted_shell to be modified. */
  
 diff -Naur bash-3.2.orig/config-bot.h bash-3.2/config-bot.h
---- bash-3.2.orig/config-bot.h	2006-09-12 16:43:04.000000000 -0400
-+++ bash-3.2/config-bot.h	2008-06-18 06:46:18.000000000 -0400
+--- bash-3.2.orig/config-bot.h	2006-09-12 13:43:04.000000000 -0700
++++ bash-3.2/config-bot.h	2008-12-20 06:59:23.000000000 -0800
 @@ -1,7 +1,7 @@
  /* config-bot.h */
  /* modify settings or make new ones based on what autoconf tells us. */
@@ -409,8 +540,8 @@ diff -Naur bash-3.2.orig/config-bot.h bash-3.2/config-bot.h
  #endif
  
 diff -Naur bash-3.2.orig/config.h.in bash-3.2/config.h.in
---- bash-3.2.orig/config.h.in	2006-09-12 16:00:54.000000000 -0400
-+++ bash-3.2/config.h.in	2008-06-18 06:46:18.000000000 -0400
+--- bash-3.2.orig/config.h.in	2006-09-12 13:00:54.000000000 -0700
++++ bash-3.2/config.h.in	2008-12-20 06:59:25.000000000 -0800
 @@ -1,6 +1,6 @@
  /* config.h -- Configuration file for bash. */
  
@@ -439,8 +570,8 @@ diff -Naur bash-3.2.orig/config.h.in bash-3.2/config.h.in
  /* #undef HAVE_MALLOC */
  
 diff -Naur bash-3.2.orig/configure bash-3.2/configure
---- bash-3.2.orig/configure	2006-09-26 11:06:01.000000000 -0400
-+++ bash-3.2/configure	2008-06-18 06:46:26.000000000 -0400
+--- bash-3.2.orig/configure	2006-09-26 08:06:01.000000000 -0700
++++ bash-3.2/configure	2008-12-20 06:59:47.000000000 -0800
 @@ -4871,7 +4871,7 @@
  		# static version specified as -llibname to override the
  		# dynamic version
@@ -461,8 +592,8 @@ diff -Naur bash-3.2.orig/configure bash-3.2/configure
  linux*)		LOCAL_LDFLAGS=-rdynamic		 # allow dynamic loading
  		case "`uname -r`" in
 diff -Naur bash-3.2.orig/configure.in bash-3.2/configure.in
---- bash-3.2.orig/configure.in	2006-09-26 11:05:45.000000000 -0400
-+++ bash-3.2/configure.in	2008-06-18 06:46:26.000000000 -0400
+--- bash-3.2.orig/configure.in	2006-09-26 08:05:45.000000000 -0700
++++ bash-3.2/configure.in	2008-12-20 06:59:46.000000000 -0800
 @@ -5,7 +5,7 @@
  dnl
  dnl Process this file with autoconf to produce a configure script.
@@ -492,8 +623,8 @@ diff -Naur bash-3.2.orig/configure.in bash-3.2/configure.in
  linux*)		LOCAL_LDFLAGS=-rdynamic		 # allow dynamic loading
  		case "`uname -r`" in
 diff -Naur bash-3.2.orig/doc/bash.1 bash-3.2/doc/bash.1
---- bash-3.2.orig/doc/bash.1	2006-10-03 08:54:26.000000000 -0400
-+++ bash-3.2/doc/bash.1	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/doc/bash.1	2006-10-03 05:54:26.000000000 -0700
++++ bash-3.2/doc/bash.1	2008-12-20 07:00:07.000000000 -0800
 @@ -7977,6 +7977,12 @@
  command in the same history entry.  This allows
  easy re-editing of multi-line commands.
@@ -508,8 +639,8 @@ diff -Naur bash-3.2.orig/doc/bash.1 bash-3.2/doc/bash.1
  If set, 
  .B bash
 diff -Naur bash-3.2.orig/doc/bashref.texi bash-3.2/doc/bashref.texi
---- bash-3.2.orig/doc/bashref.texi	2006-09-28 10:25:28.000000000 -0400
-+++ bash-3.2/doc/bashref.texi	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/doc/bashref.texi	2006-09-28 07:25:28.000000000 -0700
++++ bash-3.2/doc/bashref.texi	2008-12-20 07:00:07.000000000 -0800
 @@ -3598,6 +3598,11 @@
  command in the same history entry.  This allows
  easy re-editing of multi-line commands.
@@ -523,8 +654,8 @@ diff -Naur bash-3.2.orig/doc/bashref.texi bash-3.2/doc/bashref.texi
  If set, Bash includes filenames beginning with a `.' in
  the results of filename expansion.
 diff -Naur bash-3.2.orig/doc/bashref.texi.orig bash-3.2/doc/bashref.texi.orig
---- bash-3.2.orig/doc/bashref.texi.orig	1969-12-31 19:00:00.000000000 -0500
-+++ bash-3.2/doc/bashref.texi.orig	2006-09-28 10:25:28.000000000 -0400
+--- bash-3.2.orig/doc/bashref.texi.orig	1969-12-31 16:00:00.000000000 -0800
++++ bash-3.2/doc/bashref.texi.orig	2006-09-28 07:25:28.000000000 -0700
 @@ -0,0 +1,7422 @@
 +\input texinfo.tex @c -*- texinfo -*-
 +@c %**start of header
@@ -7949,8 +8080,8 @@ diff -Naur bash-3.2.orig/doc/bashref.texi.orig bash-3.2/doc/bashref.texi.orig
 +
 +@bye
 diff -Naur bash-3.2.orig/execute_cmd.c bash-3.2/execute_cmd.c
---- bash-3.2.orig/execute_cmd.c	2006-08-26 00:23:17.000000000 -0400
-+++ bash-3.2/execute_cmd.c	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/execute_cmd.c	2006-08-25 21:23:17.000000000 -0700
++++ bash-3.2/execute_cmd.c	2008-12-20 07:00:16.000000000 -0800
 @@ -1,6 +1,6 @@
  /* execute_cmd.c -- Execute a COMMAND structure. */
  
@@ -7959,7 +8090,23 @@ diff -Naur bash-3.2.orig/execute_cmd.c bash-3.2/execute_cmd.c
  
     This file is part of GNU Bash, the Bourne Again SHell.
  
-@@ -614,7 +614,7 @@
+@@ -501,8 +501,15 @@
+   volatile int last_pid;
+   volatile int save_line_number;
+ 
++#if 0
+   if (command == 0 || breaking || continuing || read_but_dont_execute)
+     return (EXECUTION_SUCCESS);
++#else
++  if (breaking || continuing)
++    return (last_command_exit_value);
++  if (command == 0 || read_but_dont_execute)
++    return (EXECUTION_SUCCESS);
++#endif
+ 
+   QUIT;
+   run_pending_traps ();
+@@ -614,7 +621,7 @@
        cleanup_redirects (redirection_undo_list);
        redirection_undo_list = (REDIRECT *)NULL;
        dispose_exec_redirects ();
@@ -7968,7 +8115,7 @@ diff -Naur bash-3.2.orig/execute_cmd.c bash-3.2/execute_cmd.c
      }
  
    if (redirection_undo_list)
-@@ -2546,7 +2546,8 @@
+@@ -2546,7 +2553,8 @@
        arg1 = cond_expand_word (cond->left->op, 0);
        if (arg1 == 0)
  	arg1 = nullstr;
@@ -7978,7 +8125,7 @@ diff -Naur bash-3.2.orig/execute_cmd.c bash-3.2/execute_cmd.c
        if (arg2 == 0)
  	arg2 = nullstr;
  
-@@ -3050,6 +3051,11 @@
+@@ -3050,6 +3058,11 @@
    if (command_line == 0)
      command_line = savestring (the_printed_command_except_trap);
  
@@ -7990,7 +8137,7 @@ diff -Naur bash-3.2.orig/execute_cmd.c bash-3.2/execute_cmd.c
    execute_disk_command (words, simple_command->redirects, command_line,
  			pipe_in, pipe_out, async, fds_to_close,
  			simple_command->flags);
-@@ -3875,6 +3881,8 @@
+@@ -3875,6 +3888,8 @@
      shell_variables = shell_variables->down;
  
    clear_unwind_protect_list (0);
@@ -8000,8 +8147,8 @@ diff -Naur bash-3.2.orig/execute_cmd.c bash-3.2/execute_cmd.c
    /* We're no longer inside a shell function. */
    variable_context = return_catch_flag = 0;
 diff -Naur bash-3.2.orig/expr.c bash-3.2/expr.c
---- bash-3.2.orig/expr.c	2005-12-28 17:47:03.000000000 -0500
-+++ bash-3.2/expr.c	2008-06-18 06:46:28.000000000 -0400
+--- bash-3.2.orig/expr.c	2005-12-28 14:47:03.000000000 -0800
++++ bash-3.2/expr.c	2008-12-20 07:00:12.000000000 -0800
 @@ -286,6 +286,8 @@
        free (expr_stack[expr_depth]);
      }
@@ -8019,7 +8166,17 @@ diff -Naur bash-3.2.orig/expr.c bash-3.2/expr.c
  
    FASTCOPY (evalbuf, oevalbuf, sizeof (evalbuf));
  
-@@ -929,6 +932,7 @@
+@@ -517,7 +520,8 @@
+  	  set_noeval = 1;
+ 	  noeval++;
+  	}
+-      val2 = explor ();
++
++      val2 = expcond ();
+       if (set_noeval)
+ 	noeval--;
+       rval = cval ? val1 : val2;
+@@ -929,6 +933,7 @@
        if (interactive_shell)
  	{
  	  expr_unwind ();
@@ -8028,8 +8185,8 @@ diff -Naur bash-3.2.orig/expr.c bash-3.2/expr.c
  	}
        else
 diff -Naur bash-3.2.orig/findcmd.c bash-3.2/findcmd.c
---- bash-3.2.orig/findcmd.c	2005-08-17 16:49:54.000000000 -0400
-+++ bash-3.2/findcmd.c	2008-06-18 06:46:16.000000000 -0400
+--- bash-3.2.orig/findcmd.c	2005-08-17 13:49:54.000000000 -0700
++++ bash-3.2/findcmd.c	2008-12-20 06:59:18.000000000 -0800
 @@ -308,7 +308,7 @@
    if (hashed_file && (posixly_correct || check_hashed_filenames))
      {
@@ -8040,8 +8197,8 @@ diff -Naur bash-3.2.orig/findcmd.c bash-3.2/findcmd.c
  	  phash_remove (pathname);
  	  free (hashed_file);
 diff -Naur bash-3.2.orig/jobs.c bash-3.2/jobs.c
---- bash-3.2.orig/jobs.c	2006-07-29 16:40:48.000000000 -0400
-+++ bash-3.2/jobs.c	2008-06-18 06:46:31.000000000 -0400
+--- bash-3.2.orig/jobs.c	2006-07-29 13:40:48.000000000 -0700
++++ bash-3.2/jobs.c	2008-12-20 07:00:00.000000000 -0800
 @@ -250,6 +250,7 @@
  static int job_exit_signal __P((int));
  static int set_job_status_and_cleanup __P((int));
@@ -8199,8 +8356,8 @@ diff -Naur bash-3.2.orig/jobs.c bash-3.2/jobs.c
        /* Moved here from set_job_status_and_cleanup, which is in the SIGCHLD
           signal handler path */
 diff -Naur bash-3.2.orig/lib/readline/complete.c bash-3.2/lib/readline/complete.c
---- bash-3.2.orig/lib/readline/complete.c	2006-07-28 11:35:49.000000000 -0400
-+++ bash-3.2/lib/readline/complete.c	2008-06-18 06:46:22.000000000 -0400
+--- bash-3.2.orig/lib/readline/complete.c	2006-07-28 08:35:49.000000000 -0700
++++ bash-3.2/lib/readline/complete.c	2008-12-20 06:59:36.000000000 -0800
 @@ -428,7 +428,7 @@
  	return (1);
        if (c == 'n' || c == 'N' || c == RUBOUT)
@@ -8211,8 +8368,8 @@ diff -Naur bash-3.2.orig/lib/readline/complete.c bash-3.2/lib/readline/complete.
        if (for_pager && (c == NEWLINE || c == RETURN))
  	return (2);
 diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
---- bash-3.2.orig/lib/readline/display.c	2006-09-14 14:20:12.000000000 -0400
-+++ bash-3.2/lib/readline/display.c	2008-06-18 06:46:29.000000000 -0400
+--- bash-3.2.orig/lib/readline/display.c	2006-09-14 11:20:12.000000000 -0700
++++ bash-3.2/lib/readline/display.c	2008-12-20 07:00:15.000000000 -0800
 @@ -391,14 +391,14 @@
        t = ++p;
        local_prompt = expand_prompt (p, &prompt_visible_length,
@@ -8256,7 +8413,33 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
  
  #if defined (HANDLE_MULTIBYTE)	  
  #define CHECK_LPOS() \
-@@ -1036,7 +1048,7 @@
+@@ -898,6 +910,10 @@
+ 	     second and subsequent lines start at inv_lbreaks[N], offset by
+ 	     OFFSET (which has already been calculated above).  */
+ 
++#define INVIS_FIRST()	(prompt_physical_chars > _rl_screenwidth ? prompt_invis_chars_first_line : wrap_offset)
++#define WRAP_OFFSET(line, offset)  ((line == 0) \
++					? (offset ? INVIS_FIRST() : 0) \
++					: ((line == prompt_last_screen_line) ? wrap_offset-prompt_invis_chars_first_line : 0))
+ #define W_OFFSET(line, offset) ((line) == 0 ? offset : 0)
+ #define VIS_LLEN(l)	((l) > _rl_vis_botlin ? 0 : (vis_lbreaks[l+1] - vis_lbreaks[l]))
+ #define INV_LLEN(l)	(inv_lbreaks[l+1] - inv_lbreaks[l])
+@@ -932,7 +948,13 @@
+ 		  _rl_last_c_pos != o_cpos &&
+ 		  _rl_last_c_pos > wrap_offset &&
+ 		  o_cpos < prompt_last_invisible)
+-		_rl_last_c_pos -= wrap_offset;
++		_rl_last_c_pos -= prompt_invis_chars_first_line;	/* XXX - was wrap_offset */
++	      else if (linenum == prompt_last_screen_line && prompt_physical_chars > _rl_screenwidth &&
++			(MB_CUR_MAX > 1 && rl_byte_oriented == 0) &&
++			cpos_adjusted == 0 &&
++			_rl_last_c_pos != o_cpos &&
++			_rl_last_c_pos > (prompt_last_invisible - _rl_screenwidth - prompt_invis_chars_first_line))
++		_rl_last_c_pos -= (wrap_offset-prompt_invis_chars_first_line);
+ 		  
+ 	      /* If this is the line with the prompt, we might need to
+ 		 compensate for invisible characters in the new line. Do
+@@ -1036,7 +1058,7 @@
  		tx = _rl_col_width (&visible_line[pos], 0, nleft) - visible_wrap_offset;
  	      else
  		tx = nleft;
@@ -8265,16 +8448,25 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
  		{
  	          _rl_backspace (_rl_last_c_pos - tx);	/* XXX */
  	          _rl_last_c_pos = tx;
-@@ -1192,7 +1204,7 @@
+@@ -1192,7 +1214,7 @@
       int current_line, omax, nmax, inv_botlin;
  {
    register char *ofd, *ols, *oe, *nfd, *nls, *ne;
 -  int temp, lendiff, wsatend, od, nd;
-+  int temp, lendiff, wsatend, od, nd, o_cpos;
++  int temp, lendiff, wsatend, od, nd, twidth, o_cpos;
    int current_invis_chars;
    int col_lendiff, col_temp;
  #if defined (HANDLE_MULTIBYTE)
-@@ -1453,6 +1465,8 @@
+@@ -1208,7 +1230,7 @@
+   if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+     temp = _rl_last_c_pos;
+   else
+-    temp = _rl_last_c_pos - W_OFFSET(_rl_last_v_pos, visible_wrap_offset);
++    temp = _rl_last_c_pos - WRAP_OFFSET (_rl_last_v_pos, visible_wrap_offset);
+   if (temp == _rl_screenwidth && _rl_term_autowrap && !_rl_horizontal_scroll_mode
+ 	&& _rl_last_v_pos == current_line - 1)
+     {
+@@ -1453,6 +1475,8 @@
  	_rl_last_c_pos = lendiff;
      }
  
@@ -8283,7 +8475,7 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
    /* When this function returns, _rl_last_c_pos is correct, and an absolute
       cursor postion in multibyte mode, but a buffer index when not in a
       multibyte locale. */
-@@ -1462,7 +1476,9 @@
+@@ -1462,7 +1486,9 @@
    /* We need to indicate that the cursor position is correct in the presence of
       invisible characters in the prompt string.  Let's see if setting this when
       we make sure we're at the end of the drawn prompt string works. */
@@ -8294,7 +8486,7 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
      cpos_adjusted = 1;
  #endif
  #endif
-@@ -1506,11 +1522,31 @@
+@@ -1506,11 +1532,31 @@
      {
        /* Non-zero if we're increasing the number of lines. */
        int gl = current_line >= _rl_vis_botlin && inv_botlin > _rl_vis_botlin;
@@ -8327,7 +8519,7 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
  	{
  	  /* If lendiff > prompt_visible_length and _rl_last_c_pos == 0 and
  	     _rl_horizontal_scroll_mode == 1, inserting the characters with
-@@ -1533,11 +1569,16 @@
+@@ -1533,11 +1579,16 @@
  	    }
  	  else
  	    {
@@ -8347,7 +8539,28 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
  	      return;
  	    }
  	  /* Copy (new) chars to screen from first diff to last match. */
-@@ -1586,8 +1627,22 @@
+@@ -1545,15 +1596,15 @@
+ 	  if ((temp - lendiff) > 0)
+ 	    {
+ 	      _rl_output_some_chars (nfd + lendiff, temp - lendiff);
+-#if 1
+ 	     /* XXX -- this bears closer inspection.  Fixes a redisplay bug
+ 		reported against bash-3.0-alpha by Andreas Schwab involving
+ 		multibyte characters and prompt strings with invisible
+ 		characters, but was previously disabled. */
+-	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-col_lendiff);
+-#else
+-	      _rl_last_c_pos += _rl_col_width (nfd+lendiff, 0, temp-lendiff);
+-#endif
++	      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
++		twidth = _rl_col_width (nfd+lendiff, 0, temp-col_lendiff);
++	      else
++		twidth = temp - lendiff;
++	      _rl_last_c_pos += twidth;
+ 	    }
+ 	}
+       else
+@@ -1586,8 +1637,22 @@
  	  temp = nls - nfd;
  	  if (temp > 0)
  	    {
@@ -8371,7 +8584,7 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
  	    }
  	}
        /* Otherwise, print over the existing material. */
-@@ -1595,8 +1650,20 @@
+@@ -1595,8 +1660,20 @@
  	{
  	  if (temp > 0)
  	    {
@@ -8392,7 +8605,16 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
  	    }
  	  lendiff = (oe - old) - (ne - new);
  	  if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
-@@ -1732,7 +1799,10 @@
+@@ -1721,7 +1798,7 @@
+   int woff;			/* number of invisible chars on current line */
+   int cpos, dpos;		/* current and desired cursor positions */
+ 
+-  woff = W_OFFSET (_rl_last_v_pos, wrap_offset);
++  woff = WRAP_OFFSET (_rl_last_v_pos, wrap_offset);
+   cpos = _rl_last_c_pos;
+ #if defined (HANDLE_MULTIBYTE)
+   /* If we have multibyte characters, NEW is indexed by the buffer point in
+@@ -1732,7 +1809,14 @@
    if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
      {
        dpos = _rl_col_width (data, 0, new);
@@ -8400,11 +8622,15 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
 +      /* Use NEW when comparing against the last invisible character in the
 +	 prompt string, since they're both buffer indices and DPOS is a
 +	 desired display position. */
-+      if (new > prompt_last_invisible)		/* XXX - don't use woff here */
++      if ((new > prompt_last_invisible) ||		/* XXX - don't use woff here */
++	  (prompt_physical_chars > _rl_screenwidth &&
++	   _rl_last_v_pos == prompt_last_screen_line &&
++	   wrap_offset != woff &&
++	   new > (prompt_last_invisible-_rl_screenwidth-wrap_offset)))
  	{
  	  dpos -= woff;
  	  /* Since this will be assigned to _rl_last_c_pos at the end (more
-@@ -2380,6 +2450,8 @@
+@@ -2380,6 +2464,8 @@
  
    if (end <= start)
      return 0;
@@ -8414,8 +8640,8 @@ diff -Naur bash-3.2.orig/lib/readline/display.c bash-3.2/lib/readline/display.c
    memset (&ps, 0, sizeof (mbstate_t));
  
 diff -Naur bash-3.2.orig/lib/readline/display.c.orig bash-3.2/lib/readline/display.c.orig
---- bash-3.2.orig/lib/readline/display.c.orig	1969-12-31 19:00:00.000000000 -0500
-+++ bash-3.2/lib/readline/display.c.orig	2008-06-18 06:46:27.000000000 -0400
+--- bash-3.2.orig/lib/readline/display.c.orig	1969-12-31 16:00:00.000000000 -0800
++++ bash-3.2/lib/readline/display.c.orig	2008-12-20 06:59:50.000000000 -0800
 @@ -0,0 +1,2518 @@
 +/* display.c -- readline redisplay facility. */
 +
@@ -10936,8 +11162,8 @@ diff -Naur bash-3.2.orig/lib/readline/display.c.orig bash-3.2/lib/readline/displ
 +}
 +#endif /* HANDLE_MULTIBYTE */
 diff -Naur bash-3.2.orig/lib/readline/input.c bash-3.2/lib/readline/input.c
---- bash-3.2.orig/lib/readline/input.c	2006-08-16 15:15:16.000000000 -0400
-+++ bash-3.2/lib/readline/input.c	2008-06-18 06:46:29.000000000 -0400
+--- bash-3.2.orig/lib/readline/input.c	2006-08-16 12:15:16.000000000 -0700
++++ bash-3.2/lib/readline/input.c	2008-12-20 06:59:56.000000000 -0800
 @@ -133,8 +133,11 @@
      return (0);
  
@@ -11022,8 +11248,8 @@ diff -Naur bash-3.2.orig/lib/readline/input.c bash-3.2/lib/readline/input.c
        mb[i] = (char)c;
        memset (&ps, 0, sizeof (mbstate_t));
 diff -Naur bash-3.2.orig/lib/readline/isearch.c bash-3.2/lib/readline/isearch.c
---- bash-3.2.orig/lib/readline/isearch.c	2005-12-26 17:18:53.000000000 -0500
-+++ bash-3.2/lib/readline/isearch.c	2008-06-18 06:46:22.000000000 -0400
+--- bash-3.2.orig/lib/readline/isearch.c	2005-12-26 14:18:53.000000000 -0800
++++ bash-3.2/lib/readline/isearch.c	2008-12-20 06:59:36.000000000 -0800
 @@ -327,8 +327,15 @@
    rl_command_func_t *f;
  
@@ -11043,8 +11269,8 @@ diff -Naur bash-3.2.orig/lib/readline/isearch.c bash-3.2/lib/readline/isearch.c
      {
        f = _rl_keymap[c].function;
 diff -Naur bash-3.2.orig/lib/readline/misc.c bash-3.2/lib/readline/misc.c
---- bash-3.2.orig/lib/readline/misc.c	2005-12-26 17:20:46.000000000 -0500
-+++ bash-3.2/lib/readline/misc.c	2008-06-18 06:46:22.000000000 -0400
+--- bash-3.2.orig/lib/readline/misc.c	2005-12-26 14:20:46.000000000 -0800
++++ bash-3.2/lib/readline/misc.c	2008-12-20 06:59:36.000000000 -0800
 @@ -146,6 +146,8 @@
  	  rl_restore_prompt ();
  	  rl_clear_message ();
@@ -11055,8 +11281,8 @@ diff -Naur bash-3.2.orig/lib/readline/misc.c bash-3.2/lib/readline/misc.c
  	}
      }
 diff -Naur bash-3.2.orig/lib/readline/readline.c bash-3.2/lib/readline/readline.c
---- bash-3.2.orig/lib/readline/readline.c	2006-08-16 15:00:36.000000000 -0400
-+++ bash-3.2/lib/readline/readline.c	2008-06-18 06:46:22.000000000 -0400
+--- bash-3.2.orig/lib/readline/readline.c	2006-08-16 12:00:36.000000000 -0700
++++ bash-3.2/lib/readline/readline.c	2008-12-20 06:59:36.000000000 -0800
 @@ -645,6 +645,11 @@
    if ((cxt->flags & KSEQ_DISPATCHED) == 0)
      {
@@ -11070,8 +11296,8 @@ diff -Naur bash-3.2.orig/lib/readline/readline.c bash-3.2/lib/readline/readline.
        cxt->flags |= KSEQ_DISPATCHED;
      }
 diff -Naur bash-3.2.orig/lib/readline/text.c bash-3.2/lib/readline/text.c
---- bash-3.2.orig/lib/readline/text.c	2006-07-28 11:55:27.000000000 -0400
-+++ bash-3.2/lib/readline/text.c	2008-06-18 06:46:22.000000000 -0400
+--- bash-3.2.orig/lib/readline/text.c	2006-07-28 08:55:27.000000000 -0700
++++ bash-3.2/lib/readline/text.c	2008-12-20 06:59:36.000000000 -0800
 @@ -857,6 +857,9 @@
    c = rl_read_key ();
    RL_UNSETSTATE(RL_STATE_MOREINPUT);
@@ -11103,8 +11329,8 @@ diff -Naur bash-3.2.orig/lib/readline/text.c bash-3.2/lib/readline/text.c
      return (_rl_char_search_internal (-count, bdir, c));
    else
 diff -Naur bash-3.2.orig/lib/readline/vi_mode.c bash-3.2/lib/readline/vi_mode.c
---- bash-3.2.orig/lib/readline/vi_mode.c	2006-07-29 16:42:28.000000000 -0400
-+++ bash-3.2/lib/readline/vi_mode.c	2008-06-18 06:46:22.000000000 -0400
+--- bash-3.2.orig/lib/readline/vi_mode.c	2006-07-29 13:42:28.000000000 -0700
++++ bash-3.2/lib/readline/vi_mode.c	2008-12-20 06:59:36.000000000 -0800
 @@ -886,6 +886,13 @@
    RL_SETSTATE(RL_STATE_MOREINPUT);
    c = rl_read_key ();
@@ -11233,8 +11459,8 @@ diff -Naur bash-3.2.orig/lib/readline/vi_mode.c bash-3.2/lib/readline/vi_mode.c
        rl_ding ();
        return -1;
 diff -Naur bash-3.2.orig/lib/sh/getcwd.c bash-3.2/lib/sh/getcwd.c
---- bash-3.2.orig/lib/sh/getcwd.c	2004-07-21 17:15:19.000000000 -0400
-+++ bash-3.2/lib/sh/getcwd.c	2008-06-18 06:46:31.000000000 -0400
+--- bash-3.2.orig/lib/sh/getcwd.c	2004-07-21 14:15:19.000000000 -0700
++++ bash-3.2/lib/sh/getcwd.c	2008-12-20 06:59:59.000000000 -0800
 @@ -251,19 +251,21 @@
  
    {
@@ -11266,8 +11492,8 @@ diff -Naur bash-3.2.orig/lib/sh/getcwd.c bash-3.2/lib/sh/getcwd.c
    }
  
 diff -Naur bash-3.2.orig/lib/sh/snprintf.c bash-3.2/lib/sh/snprintf.c
---- bash-3.2.orig/lib/sh/snprintf.c	2006-04-06 09:48:40.000000000 -0400
-+++ bash-3.2/lib/sh/snprintf.c	2008-06-18 06:46:17.000000000 -0400
+--- bash-3.2.orig/lib/sh/snprintf.c	2006-04-06 06:48:40.000000000 -0700
++++ bash-3.2/lib/sh/snprintf.c	2008-12-20 06:59:20.000000000 -0800
 @@ -471,6 +471,8 @@
  	  10^x ~= r
   * log_10(200) = 2;
@@ -11395,8 +11621,8 @@ diff -Naur bash-3.2.orig/lib/sh/snprintf.c bash-3.2/lib/sh/snprintf.c
  		 * for '%g|%G' ANSI: use f if exponent
  		 * is in the range or [-4,p] exclusively
 diff -Naur bash-3.2.orig/parse.y bash-3.2/parse.y
---- bash-3.2.orig/parse.y	2006-09-19 16:37:21.000000000 -0400
-+++ bash-3.2/parse.y	2008-06-18 06:46:32.000000000 -0400
+--- bash-3.2.orig/parse.y	2006-09-19 13:37:21.000000000 -0700
++++ bash-3.2/parse.y	2008-12-20 07:00:04.000000000 -0800
 @@ -1029,6 +1029,7 @@
  #define PST_CMDTOKEN	0x1000		/* command token OK - unused */
  #define PST_COMPASSIGN	0x2000		/* parsing x=(...) compound assignment */
@@ -11527,19 +11753,19 @@ diff -Naur bash-3.2.orig/parse.y bash-3.2/parse.y
        result = string_list (list);
        dispose_words (list);
 diff -Naur bash-3.2.orig/patchlevel.h bash-3.2/patchlevel.h
---- bash-3.2.orig/patchlevel.h	2006-04-13 08:31:04.000000000 -0400
-+++ bash-3.2/patchlevel.h	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/patchlevel.h	2006-04-13 05:31:04.000000000 -0700
++++ bash-3.2/patchlevel.h	2008-12-20 07:00:21.000000000 -0800
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 39
++#define PATCHLEVEL 48
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-3.2.orig/pathexp.c bash-3.2/pathexp.c
---- bash-3.2.orig/pathexp.c	2002-05-06 13:43:05.000000000 -0400
-+++ bash-3.2/pathexp.c	2008-06-18 06:46:17.000000000 -0400
+--- bash-3.2.orig/pathexp.c	2002-05-06 10:43:05.000000000 -0700
++++ bash-3.2/pathexp.c	2008-12-20 06:59:21.000000000 -0800
 @@ -1,6 +1,6 @@
  /* pathexp.c -- The shell interface to the globbing library. */
  
@@ -11592,8 +11818,8 @@ diff -Naur bash-3.2.orig/pathexp.c bash-3.2/pathexp.c
  	  i++;
  	  if (pathname[i] == '\0')
 diff -Naur bash-3.2.orig/pathexp.h bash-3.2/pathexp.h
---- bash-3.2.orig/pathexp.h	2005-02-19 17:23:18.000000000 -0500
-+++ bash-3.2/pathexp.h	2008-06-18 06:46:17.000000000 -0400
+--- bash-3.2.orig/pathexp.h	2005-02-19 14:23:18.000000000 -0800
++++ bash-3.2/pathexp.h	2008-12-20 06:59:21.000000000 -0800
 @@ -1,6 +1,6 @@
  /* pathexp.h -- The shell interface to the globbing library. */
  
@@ -11611,8 +11837,8 @@ diff -Naur bash-3.2.orig/pathexp.h bash-3.2/pathexp.h
  #if defined (EXTENDED_GLOB)
  /* Flags to OR with other flag args to strmatch() to enabled the extended
 diff -Naur bash-3.2.orig/po/ru.po bash-3.2/po/ru.po
---- bash-3.2.orig/po/ru.po	2006-01-10 17:51:03.000000000 -0500
-+++ bash-3.2/po/ru.po	2008-06-18 06:46:13.000000000 -0400
+--- bash-3.2.orig/po/ru.po	2006-01-10 14:51:03.000000000 -0800
++++ bash-3.2/po/ru.po	2008-12-20 06:59:08.000000000 -0800
 @@ -12,7 +12,7 @@
  "Last-Translator: Evgeniy Dushistov <dushistov@mail.ru>\n"
  "Language-Team: Russian <ru@li.org>\n"
@@ -11623,8 +11849,8 @@ diff -Naur bash-3.2.orig/po/ru.po bash-3.2/po/ru.po
  "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
  
 diff -Naur bash-3.2.orig/shell.h bash-3.2/shell.h
---- bash-3.2.orig/shell.h	2003-06-01 15:04:36.000000000 -0400
-+++ bash-3.2/shell.h	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/shell.h	2003-06-01 12:04:36.000000000 -0700
++++ bash-3.2/shell.h	2008-12-20 07:00:07.000000000 -0800
 @@ -89,6 +89,7 @@
  extern int executing, login_shell;
  extern int interactive, interactive_shell;
@@ -11634,8 +11860,8 @@ diff -Naur bash-3.2.orig/shell.h bash-3.2/shell.h
  /* Structure to pass around that holds a bitmap of file descriptors
     to close, and the size of that structure.  Used in execute_cmd.c. */
 diff -Naur bash-3.2.orig/sig.c bash-3.2/sig.c
---- bash-3.2.orig/sig.c	2006-01-25 14:57:59.000000000 -0500
-+++ bash-3.2/sig.c	2008-06-18 06:46:23.000000000 -0400
+--- bash-3.2.orig/sig.c	2006-01-25 11:57:59.000000000 -0800
++++ bash-3.2/sig.c	2008-12-20 06:59:37.000000000 -0800
 @@ -350,6 +350,25 @@
  #undef XSIG
  #undef XHANDLER
@@ -11663,8 +11889,8 @@ diff -Naur bash-3.2.orig/sig.c bash-3.2/sig.c
  void
  throw_to_top_level ()
 diff -Naur bash-3.2.orig/sig.h bash-3.2/sig.h
---- bash-3.2.orig/sig.h	2006-01-25 14:50:27.000000000 -0500
-+++ bash-3.2/sig.h	2008-06-18 06:46:23.000000000 -0400
+--- bash-3.2.orig/sig.h	2006-01-25 11:50:27.000000000 -0800
++++ bash-3.2/sig.h	2008-12-20 06:59:37.000000000 -0800
 @@ -121,6 +121,7 @@
  extern void initialize_signals __P((int));
  extern void initialize_terminating_signals __P((void));
@@ -11674,8 +11900,8 @@ diff -Naur bash-3.2.orig/sig.h bash-3.2/sig.h
  extern void jump_to_top_level __P((int)) __attribute__((__noreturn__));
  
 diff -Naur bash-3.2.orig/subst.c bash-3.2/subst.c
---- bash-3.2.orig/subst.c	2006-09-19 08:35:09.000000000 -0400
-+++ bash-3.2/subst.c	2008-06-18 06:46:32.000000000 -0400
+--- bash-3.2.orig/subst.c	2006-09-19 05:35:09.000000000 -0700
++++ bash-3.2/subst.c	2008-12-20 07:00:19.000000000 -0800
 @@ -4,7 +4,7 @@
  /* ``Have a little faith, there's magic in the night.  You ain't a
       beauty, but, hey, you're alright.'' */
@@ -11685,6 +11911,15 @@ diff -Naur bash-3.2.orig/subst.c bash-3.2/subst.c
  
     This file is part of GNU Bash, the Bourne Again SHell.
  
+@@ -137,7 +137,7 @@
+ /* Extern functions and variables from different files. */
+ extern int last_command_exit_value, last_command_exit_signal;
+ extern int subshell_environment;
+-extern int subshell_level;
++extern int subshell_level, parse_and_execute_level;
+ extern int eof_encountered;
+ extern int return_catch_flag, return_catch_value;
+ extern pid_t dollar_dollar_pid;
 @@ -1278,7 +1278,7 @@
      {
        if (no_longjmp_on_fatal_error == 0)
@@ -11898,6 +12133,15 @@ diff -Naur bash-3.2.orig/subst.c bash-3.2/subst.c
        exit (rc);
      }
    else
+@@ -4763,7 +4812,7 @@
+   else
+     t = (ind == 0) ? value_cell (var) : (char *)NULL;
+ 
+-  len = STRLEN (t);
++  len = MB_STRLEN (t);
+   return (len);
+ }
+ #endif /* ARRAY_VARS */
 @@ -4860,10 +4909,11 @@
    char *temp, *tt;
    intmax_t arg_index;
@@ -11993,16 +12237,18 @@ diff -Naur bash-3.2.orig/subst.c bash-3.2/subst.c
        break;
  #endif
      }
-@@ -7607,6 +7672,8 @@
+@@ -7607,6 +7672,10 @@
    expand_no_split_dollar_star = 0;	/* XXX */
    expanding_redir = 0;
  
-+  top_level_cleanup ();			/* from sig.c */
++  if (parse_and_execute_level == 0)
++    top_level_cleanup ();			/* from sig.c */
++
 +
    jump_to_top_level (v);
  }
  
-@@ -7824,7 +7891,7 @@
+@@ -7824,7 +7893,7 @@
  	  else if (fail_glob_expansion != 0)
  	    {
  	      report_error (_("no match: %s"), tlist->word->word);
@@ -12012,8 +12258,8 @@ diff -Naur bash-3.2.orig/subst.c bash-3.2/subst.c
  	  else if (allow_null_glob_expansion == 0)
  	    {
 diff -Naur bash-3.2.orig/subst.h bash-3.2/subst.h
---- bash-3.2.orig/subst.h	2006-09-19 08:34:41.000000000 -0400
-+++ bash-3.2/subst.h	2008-06-18 06:46:32.000000000 -0400
+--- bash-3.2.orig/subst.h	2006-09-19 05:34:41.000000000 -0700
++++ bash-3.2/subst.h	2008-12-20 07:00:04.000000000 -0800
 @@ -135,7 +135,7 @@
  extern WORD_LIST *expand_string_assignment __P((char *, int));
  
@@ -12032,8 +12278,8 @@ diff -Naur bash-3.2.orig/subst.h bash-3.2/subst.h
  
  extern WORD_LIST *list_string_with_quotes __P((char *));
 diff -Naur bash-3.2.orig/tests/new-exp.right bash-3.2/tests/new-exp.right
---- bash-3.2.orig/tests/new-exp.right	2006-08-10 12:00:00.000000000 -0400
-+++ bash-3.2/tests/new-exp.right	2008-06-18 06:46:14.000000000 -0400
+--- bash-3.2.orig/tests/new-exp.right	2006-08-10 09:00:00.000000000 -0700
++++ bash-3.2/tests/new-exp.right	2008-12-20 06:59:12.000000000 -0800
 @@ -430,7 +430,7 @@
  Case06---1---A B C::---
  Case07---3---A:B:C---
@@ -12044,8 +12290,8 @@ diff -Naur bash-3.2.orig/tests/new-exp.right bash-3.2/tests/new-exp.right
  argv[2] = <b>
  argv[3] = <c>
 diff -Naur bash-3.2.orig/tests/shopt.right bash-3.2/tests/shopt.right
---- bash-3.2.orig/tests/shopt.right	2005-02-19 17:46:09.000000000 -0500
-+++ bash-3.2/tests/shopt.right	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/tests/shopt.right	2005-02-19 14:46:09.000000000 -0800
++++ bash-3.2/tests/shopt.right	2008-12-20 07:00:07.000000000 -0800
 @@ -6,6 +6,7 @@
  shopt -u checkhash
  shopt -u checkwinsize
@@ -12071,8 +12317,8 @@ diff -Naur bash-3.2.orig/tests/shopt.right bash-3.2/tests/shopt.right
  execfail       	off
  extdebug       	off
 diff -Naur bash-3.2.orig/variables.c bash-3.2/variables.c
---- bash-3.2.orig/variables.c	2006-09-08 13:33:32.000000000 -0400
-+++ bash-3.2/variables.c	2008-06-18 06:46:23.000000000 -0400
+--- bash-3.2.orig/variables.c	2006-09-08 10:33:32.000000000 -0700
++++ bash-3.2/variables.c	2008-12-20 07:00:13.000000000 -0800
 @@ -1821,11 +1821,17 @@
  	  oval = value_cell (var);
  	  lval = evalexp (oval, &expok);	/* ksh93 seems to do this */
@@ -12093,9 +12339,31 @@ diff -Naur bash-3.2.orig/variables.c bash-3.2/variables.c
        if (flags & ASS_APPEND)
  	rval += lval;
        retval = itos (rval);
+@@ -3452,9 +3458,11 @@
+       if (shell_variables == global_variables)
+ 	var->attributes &= ~(att_tempvar|att_propagate);
+       else
+-        shell_variables->flags |= VC_HASTMPVAR;
++	shell_variables->flags |= VC_HASTMPVAR;
+       v->attributes |= var->attributes;
+     }
++  else
++    stupidly_hack_special_variables (var->name);	/* XXX */
+ 
+   dispose_variable (var);
+ }
+@@ -3541,6 +3549,8 @@
+ 	var->attributes &= ~att_propagate;
+       v->attributes |= var->attributes;
+     }
++  else
++    stupidly_hack_special_variables (var->name);	/* XXX */
+ 
+   dispose_variable (var);
+ }
 diff -Naur bash-3.2.orig/version.c bash-3.2/version.c
---- bash-3.2.orig/version.c	2005-05-16 11:58:34.000000000 -0400
-+++ bash-3.2/version.c	2008-06-18 06:46:33.000000000 -0400
+--- bash-3.2.orig/version.c	2005-05-16 08:58:34.000000000 -0700
++++ bash-3.2/version.c	2008-12-20 07:00:07.000000000 -0800
 @@ -43,6 +43,9 @@
  #endif
  const char *sccs_version = SCCSVERSION;
