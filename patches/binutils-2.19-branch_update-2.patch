@@ -1,5 +1,5 @@
 Submitted By: Jim Gifford (jim at linuxfromscratch dot org)
-Date: 12-21-2008
+Date: 12-30-2008
 Initial Package Version: 2.19
 Origin: Upstream
 Upstream Status: Applied
@@ -8,8 +8,17 @@ Description: This is a branch update for binutils-2.19, and should be
 
 diff -Naur binutils-2.19.orig/bfd/ChangeLog binutils-2.19/bfd/ChangeLog
 --- binutils-2.19.orig/bfd/ChangeLog	2008-10-16 06:20:48.000000000 -0700
-+++ binutils-2.19/bfd/ChangeLog	2008-11-20 03:50:22.000000000 -0800
-@@ -1,3 +1,22 @@
++++ binutils-2.19/bfd/ChangeLog	2008-12-23 02:06:46.000000000 -0800
+@@ -1,3 +1,31 @@
++2008-12-23  Nick Clifton  <nickc@redhat.com>
++
++	* Import this patch from the mainline:
++	2008-11-10  Andreas Schwab  <schwab@suse.de>
++
++	PR 7011
++	* elf.c (assign_file_positions_for_non_load_sections): Handle
++	PT_GNU_RELRO specially.
++
 +2008-11-20  Alan Modra  <amodra@bigpond.net.au>
 +
 +	* elf32-ppc.c (allocate_dynrelocs): Always use tlsld_got for
@@ -34,7 +43,7 @@ diff -Naur binutils-2.19.orig/bfd/ChangeLog binutils-2.19/bfd/ChangeLog
  	* configure.in: Bump version to 2.19
 diff -Naur binutils-2.19.orig/bfd/Makefile.in binutils-2.19/bfd/Makefile.in
 --- binutils-2.19.orig/bfd/Makefile.in	2008-10-16 06:20:48.000000000 -0700
-+++ binutils-2.19/bfd/Makefile.in	2008-12-21 01:24:46.000000000 -0800
++++ binutils-2.19/bfd/Makefile.in	2008-12-30 16:34:28.000000000 -0800
 @@ -271,7 +271,7 @@
  ACLOCAL_AMFLAGS = -I . -I .. -I ../config
  
@@ -68,6 +77,171 @@ diff -Naur binutils-2.19.orig/bfd/configure.in binutils-2.19/bfd/configure.in
  
  dnl These must be called before LT_INIT, because it may want
  dnl to call AC_CHECK_PROG.
+diff -Naur binutils-2.19.orig/bfd/elf.c binutils-2.19/bfd/elf.c
+--- binutils-2.19.orig/bfd/elf.c	2008-10-09 05:18:23.000000000 -0700
++++ binutils-2.19/bfd/elf.c	2008-12-23 02:06:46.000000000 -0800
+@@ -4606,7 +4606,61 @@
+        m != NULL;
+        m = m->next, p++)
+     {
+-      if (m->count != 0)
++      if (p->p_type == PT_GNU_RELRO)
++	{
++	  const Elf_Internal_Phdr *lp;
++
++	  BFD_ASSERT (!m->includes_filehdr && !m->includes_phdrs);
++
++	  if (link_info != NULL)
++	    {
++	      /* During linking the range of the RELRO segment is passed
++		 in link_info.  */
++	      for (lp = phdrs; lp < phdrs + count; ++lp)
++		{
++		  if (lp->p_type == PT_LOAD
++		      && lp->p_vaddr >= link_info->relro_start
++		      && lp->p_vaddr < link_info->relro_end
++		      && lp->p_vaddr + lp->p_filesz >= link_info->relro_end)
++		    break;
++		}
++	    }
++	  else
++	    {
++	      /* Otherwise we are copying an executable or shared
++		 library, but we need to use the same linker logic.  */
++	      for (lp = phdrs; lp < phdrs + count; ++lp)
++		{
++		  if (lp->p_type == PT_LOAD
++		      && lp->p_paddr == p->p_paddr)
++		    break;
++		}
++	    }
++
++	  if (lp < phdrs + count)
++	    {
++	      p->p_vaddr = lp->p_vaddr;
++	      p->p_paddr = lp->p_paddr;
++	      p->p_offset = lp->p_offset;
++	      if (link_info != NULL)
++		p->p_filesz = link_info->relro_end - lp->p_vaddr;
++	      else if (m->p_size_valid)
++		p->p_filesz = m->p_size;
++	      else
++		abort ();
++	      p->p_memsz = p->p_filesz;
++	      p->p_align = 1;
++	      p->p_flags = (lp->p_flags & ~PF_W);
++	    }
++	  else if (link_info != NULL)
++	    {
++	      memset (p, 0, sizeof *p);
++	      p->p_type = PT_NULL;
++	    }
++	  else
++	    abort ();
++	}
++      else if (m->count != 0)
+ 	{
+ 	  if (p->p_type != PT_LOAD
+ 	      && (p->p_type != PT_NOTE
+@@ -4622,87 +4676,20 @@
+ 	      p->p_filesz = sect->filepos - m->sections[0]->filepos;
+ 	      if (hdr->sh_type != SHT_NOBITS)
+ 		p->p_filesz += hdr->sh_size;
+-
+-	      if (p->p_type == PT_GNU_RELRO)
+-		{
+-		  /* When we get here, we are copying executable
+-		     or shared library. But we need to use the same
+-		     linker logic.  */
+-		  Elf_Internal_Phdr *lp;
+-
+-		  for (lp = phdrs; lp < phdrs + count; ++lp)
+-		    {
+-		      if (lp->p_type == PT_LOAD
+-			  && lp->p_paddr == p->p_paddr)
+-			break;
+-		    }
+-	  
+-		  if (lp < phdrs + count)
+-		    {
+-		      /* We should use p_size if it is valid since it
+-			 may contain the first few bytes of the next
+-			 SEC_ALLOC section.  */
+-		      if (m->p_size_valid)
+-			p->p_filesz = m->p_size;
+-		      else
+-			abort ();
+-		      p->p_vaddr = lp->p_vaddr;
+-		      p->p_offset = lp->p_offset;
+-		      p->p_memsz = p->p_filesz;
+-		      p->p_align = 1;
+-		    }
+-		  else
+-		    abort ();
+-		}
+-	      else
+-		p->p_offset = m->sections[0]->filepos;
++	      p->p_offset = m->sections[0]->filepos;
+ 	    }
+ 	}
+-      else
++      else if (m->includes_filehdr)
+ 	{
+-	  if (m->includes_filehdr)
+-	    {
+-	      p->p_vaddr = filehdr_vaddr;
+-	      if (! m->p_paddr_valid)
+-		p->p_paddr = filehdr_paddr;
+-	    }
+-	  else if (m->includes_phdrs)
+-	    {
+-	      p->p_vaddr = phdrs_vaddr;
+-	      if (! m->p_paddr_valid)
+-		p->p_paddr = phdrs_paddr;
+-	    }
+-	  else if (p->p_type == PT_GNU_RELRO)
+-	    {
+-	      Elf_Internal_Phdr *lp;
+-
+-	      for (lp = phdrs; lp < phdrs + count; ++lp)
+-		{
+-		  if (lp->p_type == PT_LOAD
+-		      && lp->p_vaddr <= link_info->relro_end
+-		      && lp->p_vaddr >= link_info->relro_start
+-		      && (lp->p_vaddr + lp->p_filesz
+-			  >= link_info->relro_end))
+-		    break;
+-		}
+-
+-	      if (lp < phdrs + count
+-		  && link_info->relro_end > lp->p_vaddr)
+-		{
+-		  p->p_vaddr = lp->p_vaddr;
+-		  p->p_paddr = lp->p_paddr;
+-		  p->p_offset = lp->p_offset;
+-		  p->p_filesz = link_info->relro_end - lp->p_vaddr;
+-		  p->p_memsz = p->p_filesz;
+-		  p->p_align = 1;
+-		  p->p_flags = (lp->p_flags & ~PF_W);
+-		}
+-	      else
+-		{
+-		  memset (p, 0, sizeof *p);
+-		  p->p_type = PT_NULL;
+-		}
+-	    }
++	  p->p_vaddr = filehdr_vaddr;
++	  if (! m->p_paddr_valid)
++	    p->p_paddr = filehdr_paddr;
++	}
++      else if (m->includes_phdrs)
++	{
++	  p->p_vaddr = phdrs_vaddr;
++	  if (! m->p_paddr_valid)
++	    p->p_paddr = phdrs_paddr;
+ 	}
+     }
+ 
 diff -Naur binutils-2.19.orig/bfd/elf32-avr.c binutils-2.19/bfd/elf32-avr.c
 --- binutils-2.19.orig/bfd/elf32-avr.c	2008-08-08 22:35:12.000000000 -0700
 +++ binutils-2.19/bfd/elf32-avr.c	2008-11-17 07:26:01.000000000 -0800
@@ -229,17 +403,22 @@ diff -Naur binutils-2.19.orig/bfd/elf32-ppc.c binutils-2.19/bfd/elf32-ppc.c
  			    if (tls_ty & (TLS_GD | TLS_DTPREL | TLS_TPREL))
 diff -Naur binutils-2.19.orig/bfd/version.h binutils-2.19/bfd/version.h
 --- binutils-2.19.orig/bfd/version.h	2008-10-16 05:51:57.000000000 -0700
-+++ binutils-2.19/bfd/version.h	2008-12-19 16:00:10.000000000 -0800
++++ binutils-2.19/bfd/version.h	2008-12-30 16:00:14.000000000 -0800
 @@ -1,4 +1,4 @@
 -#define BFD_VERSION_DATE 20081016
-+#define BFD_VERSION_DATE 20081220
++#define BFD_VERSION_DATE 20081231
  #define BFD_VERSION @bfd_version@
  #define BFD_VERSION_STRING  @bfd_version_package@ @bfd_version_string@
  #define REPORT_BUGS_TO @report_bugs_to@
 diff -Naur binutils-2.19.orig/binutils/ChangeLog binutils-2.19/binutils/ChangeLog
 --- binutils-2.19.orig/binutils/ChangeLog	2008-10-02 01:07:16.000000000 -0700
-+++ binutils-2.19/binutils/ChangeLog	2008-12-01 02:05:34.000000000 -0800
-@@ -1,3 +1,11 @@
++++ binutils-2.19/binutils/ChangeLog	2008-12-23 03:49:58.000000000 -0800
+@@ -1,3 +1,16 @@
++2008-12-23  Nick Clifton  <nickc@redhat.com>
++
++	* windmc.c (main): Use correct type for file length.
++	* dlltool.c (gen_exp_file): Likewise.
++
 +2008-12-01  Nick Clifton  <nickc@redhat.com>
 +
 +	PR 7044
@@ -253,7 +432,7 @@ diff -Naur binutils-2.19.orig/binutils/ChangeLog binutils-2.19/binutils/ChangeLo
  	* dwarf.c (size_of_encoded_value, get_encoded_value): Move up.
 diff -Naur binutils-2.19.orig/binutils/dlltool.c binutils-2.19/binutils/dlltool.c
 --- binutils-2.19.orig/binutils/dlltool.c	2008-07-29 21:34:56.000000000 -0700
-+++ binutils-2.19/binutils/dlltool.c	2008-12-01 02:05:34.000000000 -0800
++++ binutils-2.19/binutils/dlltool.c	2008-12-23 03:49:58.000000000 -0800
 @@ -1206,7 +1206,7 @@
  
    if (pid == -1)
@@ -263,6 +442,15 @@ diff -Naur binutils-2.19.orig/binutils/dlltool.c binutils-2.19/binutils/dlltool.
  
        fatal (errmsg_fmt, errmsg_arg);
      }
+@@ -1980,7 +1980,7 @@
+       int addr;
+       long need[PAGE_SIZE];
+       long page_addr;
+-      int numbytes;
++      bfd_size_type numbytes;
+       int num_entries;
+       long *copy;
+       int j;
 @@ -1992,10 +1992,10 @@
        numbytes = ftell (base_file);
        fseek (base_file, 0, SEEK_SET);
@@ -278,7 +466,16 @@ diff -Naur binutils-2.19.orig/binutils/dlltool.c binutils-2.19/binutils/dlltool.
  	{
 diff -Naur binutils-2.19.orig/binutils/windmc.c binutils-2.19/binutils/windmc.c
 --- binutils-2.19.orig/binutils/windmc.c	2008-07-29 21:34:56.000000000 -0700
-+++ binutils-2.19/binutils/windmc.c	2008-12-01 02:05:34.000000000 -0800
++++ binutils-2.19/binutils/windmc.c	2008-12-23 03:49:58.000000000 -0800
+@@ -1144,7 +1144,7 @@
+     unichar *u;
+     rc_uint_type ul;
+     char *buff;
+-    long flen;
++    bfd_size_type flen;
+     FILE *fp = fopen (input_filename, "rb");
+ 
+     if (!fp)
 @@ -1155,7 +1155,8 @@
      fseek (fp, 0, SEEK_SET);
      buff = malloc (flen + 3);
@@ -303,8 +500,13 @@ diff -Naur binutils-2.19.orig/configure.ac binutils-2.19/configure.ac
  libgcj="target-libffi \
 diff -Naur binutils-2.19.orig/ld/ChangeLog binutils-2.19/ld/ChangeLog
 --- binutils-2.19.orig/ld/ChangeLog	2008-10-09 05:18:31.000000000 -0700
-+++ binutils-2.19/ld/ChangeLog	2008-11-13 22:55:50.000000000 -0800
-@@ -1,3 +1,8 @@
++++ binutils-2.19/ld/ChangeLog	2008-12-23 05:56:10.000000000 -0800
+@@ -1,3 +1,13 @@
++2008-12-23  Tristan Gingold  <gingold@adacore.com>
++
++	* Makefile.am (EXTRA_DIST): Add deffilep.c and deffilep.h
++	* Makefile.in: Regenerate.
++
 +2008-11-14  Alan Modra  <amodra@bigpond.net.au>
 +
 +	* Makefile.am (spu_ovl.o_c): Add missing line continuations.
@@ -315,7 +517,7 @@ diff -Naur binutils-2.19.orig/ld/ChangeLog binutils-2.19/ld/ChangeLog
  	PR 6943
 diff -Naur binutils-2.19.orig/ld/Makefile.am binutils-2.19/ld/Makefile.am
 --- binutils-2.19.orig/ld/Makefile.am	2008-09-09 01:02:19.000000000 -0700
-+++ binutils-2.19/ld/Makefile.am	2008-11-13 22:55:50.000000000 -0800
++++ binutils-2.19/ld/Makefile.am	2008-12-23 05:56:10.000000000 -0800
 @@ -758,9 +758,9 @@
  $(srcdir)/emultempl/spu_ovl.o_c: @MAINT@ $(srcdir)/emultempl/spu_ovl.S
  	if ../gas/as-new --version \
@@ -328,10 +530,31 @@ diff -Naur binutils-2.19.orig/ld/Makefile.am binutils-2.19/ld/Makefile.am
  	fi
  eelf32_i860.c: $(srcdir)/emulparams/elf32_i860.sh \
    $(ELF_GEN_DEPS) $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+@@ -1914,7 +1914,8 @@
+ 
+ # Stuff that should be included in a distribution.  The diststuff
+ # target is run by the taz target in ../Makefile.in.
+-EXTRA_DIST = ldgram.c ldgram.h ldlex.c emultempl/spu_ovl.o_c $(man_MANS)
++EXTRA_DIST = ldgram.c ldgram.h ldlex.c emultempl/spu_ovl.o_c \
++           deffilep.c deffilep.h $(man_MANS)
+ diststuff: info $(EXTRA_DIST)
+ all: info ld.1
+ 
 diff -Naur binutils-2.19.orig/ld/Makefile.in binutils-2.19/ld/Makefile.in
 --- binutils-2.19.orig/ld/Makefile.in	2008-09-09 01:02:19.000000000 -0700
-+++ binutils-2.19/ld/Makefile.in	2008-11-13 22:55:50.000000000 -0800
-@@ -1588,9 +1588,9 @@
++++ binutils-2.19/ld/Makefile.in	2008-12-23 05:56:10.000000000 -0800
+@@ -730,7 +730,9 @@
+ 
+ # Stuff that should be included in a distribution.  The diststuff
+ # target is run by the taz target in ../Makefile.in.
+-EXTRA_DIST = ldgram.c ldgram.h ldlex.c emultempl/spu_ovl.o_c $(man_MANS)
++EXTRA_DIST = ldgram.c ldgram.h ldlex.c emultempl/spu_ovl.o_c \
++           deffilep.c deffilep.h $(man_MANS)
++
+ DISTCLEANFILES = tdirs site.exp site.bak stringify.sed $(am__append_1)
+ all: config.h
+ 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+@@ -1588,9 +1590,9 @@
  $(srcdir)/emultempl/spu_ovl.o_c: @MAINT@ $(srcdir)/emultempl/spu_ovl.S
  	if ../gas/as-new --version \
  		| grep 'target.*spu' >/dev/null 2>/dev/null; then \
