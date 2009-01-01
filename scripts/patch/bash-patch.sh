@@ -91,7 +91,7 @@ done
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at linuxfromscratch dot org)" > bash-${VERSION}-fixes-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > bash-${VERSION}-fixes-x.patch
 echo "Date: `date +%m-%d-%Y`" >> bash-${VERSION}-fixes-x.patch
 echo "Initial Package Version: ${VERSION}" >> bash-${VERSION}-fixes-x.patch
 echo "Origin: Upstream" >> bash-${VERSION}-fixes-x.patch

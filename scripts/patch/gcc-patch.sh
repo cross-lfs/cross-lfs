@@ -55,7 +55,7 @@ done
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at linuxfromscratch dot org)" > gcc-${VERSION}-branch_update-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > gcc-${VERSION}-branch_update-x.patch
 echo "Date: `date +%m-%d-%Y`" >> gcc-${VERSION}-branch_update-x.patch
 echo "Initial Package Version: ${VERSION}" >> gcc-${VERSION}-branch_update-x.patch
 echo "Origin: Upstream" >> gcc-${VERSION}-branch_update-x.patch

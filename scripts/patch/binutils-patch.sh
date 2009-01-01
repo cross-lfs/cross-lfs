@@ -65,7 +65,7 @@ sed -i 's/# RELEASE=y/RELEASE=y/g' bfd/Makefile.in
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at linuxfromscratch dot org)" > binutils-${VERSION}-branch_update-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > binutils-${VERSION}-branch_update-x.patch
 echo "Date: `date +%m-%d-%Y`" >> binutils-${VERSION}-branch_update-x.patch
 echo "Initial Package Version: ${VERSION}" >> binutils-${VERSION}-branch_update-x.patch
 echo "Origin: Upstream" >> binutils-${VERSION}-branch_update-x.patch
