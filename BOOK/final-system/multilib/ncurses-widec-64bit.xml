@@ -5,32 +5,32 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-ncurses" role="wrap">
-  <?dbhtml filename="ncurses-64bit.html"?>
+<sect1 id="ch-system-ncurses-widec" role="wrap">
+  <?dbhtml filename="ncurses-widec-64bit.html"?>
 
-  <title>Ncurses-&ncurses-version; 64 Bit</title>
+  <title>Ncurses-&ncurses-version; Widec 64 Bit</title>
 
-  <indexterm zone="ch-system-ncurses">
-    <primary sortas="a-Ncurses">Ncurses</primary>
+  <indexterm zone="ch-system-ncurses-widec">
+    <primary sortas="a-Ncurses">Ncurses Widec</primary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/ncurses.xml"
+  href="../common/ncurses-widec.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
     <title>Installation of Ncurses</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
@@ -38,50 +38,50 @@
    --with-shared --without-debug</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para os="m1">Prepare <filename>ncurses5-config</filename> to be wrapped by
+    <para os="m1">Prepare <filename>ncursesw5-config</filename> to be wrapped by
     the multiarch wrapper and then wrap it:</para>
 
-<screen os="m2"><userinput>mv -v /usr/bin/ncurses5-config{,-64}
-ln -sv multiarch_wrapper /usr/bin/ncurses5-config</userinput></screen>
+<screen os="m2"><userinput>mv -v /usr/bin/ncursesw5-config{,-64}
+ln -sv multiarch_wrapper /usr/bin/ncursesw5-config</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="ncurses.xml"
+    href="ncurses-widec.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="i"><userinput>mv -v /lib64/lib{panel,menu,form,ncurses,ncurses++,curses}.a /usr/lib64</userinput></screen>
+<screen os="i"><userinput>mv -v /lib64/lib{panelw,menuw,formw,ncursesw,ncurses++w}.a /usr/lib64</userinput></screen>
 
     <para os="j">Create symlinks in <filename class="directory">/usr/lib64:</filename></para>
 
-<screen os="k"><userinput>rm -v /lib64/lib{ncurses,menu,panel,form,curses}.so
-ln -svf ../../lib64/libncurses.so.5 /usr/lib64/libncurses.so
-ln -svf ../../lib64/libncurses.so.5 /usr/lib64/libcurses.so
-ln -svf ../../lib64/libmenu.so.5 /usr/lib64/libmenu.so
-ln -svf ../../lib64/libpanel.so.5 /usr/lib64/libpanel.so
-ln -svf ../../lib64/libform.so.5 /usr/lib64/libform.so</userinput></screen>
+<screen os="k"><userinput>rm -v /lib64/lib{ncursesw,menuw,panelw,formw,cursesw}.so
+ln -svf ../../lib64/libncursesw.so.5 /usr/lib64/libcursesw.so
+ln -svf ../../lib64/libncursesw.so.5 /usr/lib64/libncursesw.so
+ln -svf ../../lib64/libmenuw.so.5 /usr/lib64/libmenuw.so
+ln -svf ../../lib64/libpanelw.so.5 /usr/lib64/libpanelw.so
+ln -svf ../../lib64/libformw.so.5 /usr/lib64/libformw.so</userinput></screen>
 
   </sect2>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../common/ncurses.xml"
-  xpointer="xpointer(id('contents-ncurses'))"/>
+  href="../common/ncurses-widec.xml"
+  xpointer="xpointer(id('contents-ncurses-widec'))"/>
 
 </sect1>
