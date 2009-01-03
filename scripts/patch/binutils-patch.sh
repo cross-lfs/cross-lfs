@@ -9,7 +9,7 @@ VERSION=$1
 #
 if [ "${VERSION}" = "" ]; then
 	echo "$0 - Binutils_Version"
-	echo "This will Create a Patch for Binutls Binutils_Version"
+	echo "This will Create a Patch for Binutils Binutils_Version"
 fi
 
 # Download Binutils Source
