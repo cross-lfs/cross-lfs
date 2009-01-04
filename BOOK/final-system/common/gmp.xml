@@ -33,8 +33,8 @@
 
     <para os="a">Prepare GMP for compilation:</para>
 
-<screen os="b"><userinput>CC="gcc -Wl,-rpath-link,/lib -isystem /usr/include" \
-   CXX="g++ -Wl,-rpath-link,/lib -isystem /usr/include" ./configure --prefix=/usr \
+<screen os="b"><userinput>CC="gcc -isystem /usr/include" CXX="g++ -isystem /usr/include" \
+    LDFLAGS="-Wl,-rpath-link,/lib" ./configure --prefix=/usr \
     --enable-cxx --enable-mpbsd</userinput></screen>
 
     <para os="c">Compile the package:</para>

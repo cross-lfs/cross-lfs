@@ -68,7 +68,8 @@
     href="../common/binutils.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen os="ca"><userinput>CC="gcc -Wl,-rpath-link,/lib64:/lib -isystem /usr/include ${BUILD64}" \
+<screen os="ca"><userinput>CC="gcc -isystem /usr/include ${BUILD64}" \
+    LDFLAGS="-Wl,-rpath-link,/lib64:/lib ${BUILD64}" \
     ../binutils-&binutils-version;/configure --prefix=/usr \
     --enable-shared --enable-64-bit-bfd --libdir=/usr/lib64</userinput></screen>
 

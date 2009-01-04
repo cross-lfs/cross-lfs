@@ -53,7 +53,8 @@ cd ../binutils-build</userinput></screen>
 
     <para os="i">Prepare Binutils for compilation:</para>
 
-<screen os="ca"><userinput>CC="gcc -Wl,-rpath-link,/lib -isystem /usr/include" \
+<screen os="ca"><userinput>CC="gcc -isystem /usr/include" \
+    LDFLAGS="-Wl,-rpath-link,/lib" \
     ../binutils-&binutils-version;/configure --prefix=/usr \
     --enable-shared</userinput></screen>
 

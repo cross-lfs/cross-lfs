@@ -26,9 +26,8 @@
     href="../common/mpfr.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc -Wl,-rpath-link,/lib -isystem /usr/include ${BUILD32}" \
-    ./configure --prefix=/usr \
-    --host=${CLFS_TARGET32} --enable-shared</userinput></screen>
+<screen os="b"><userinput>CC="gcc -isystem /usr/include ${BUILD32}" LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
+    ./configure --prefix=/usr --host=${CLFS_TARGET32} --enable-shared</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/mpfr.xml"

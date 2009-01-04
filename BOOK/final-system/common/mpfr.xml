@@ -28,7 +28,7 @@
 
     <para os="a">Prepare MPFR for compilation:</para>
 
-<screen os="b"><userinput>CC="gcc -Wl,-rpath-link,/lib -isystem /usr/include" \
+<screen os="b"><userinput>CC="gcc -isystem /usr/include" LDFLAGS="-Wl,-rpath-link,/lib" \
     ./configure --prefix=/usr --enable-shared</userinput></screen>
 
     <para os="c">Compile the package:</para>
