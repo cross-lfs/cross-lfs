@@ -24,7 +24,8 @@
 
     <para os="a">Prepare MPFR for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/cross-tools \
+<screen os="b"><userinput>LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+./configure --prefix=/cross-tools \
     --enable-shared --with-gmp=/cross-tools</userinput></screen>
 
     <para os="c">Compile the package:</para>
