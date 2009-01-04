@@ -75,10 +75,12 @@
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="al"><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+<screen os="al"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+    ../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
     --disable-multilib --with-local-prefix=/tools --disable-nls \
     --without-headers --with-newlib --disable-decimal-float \
+    --with-mpfr=/cross-tools --with-gmp=/cross-tools \
     --disable-libgomp --disable-libmudflap --disable-libssp \
     --disable-shared  --disable-threads --enable-languages=c \
     --with-abi=64</userinput></screen>

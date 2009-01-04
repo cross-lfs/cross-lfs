@@ -81,9 +81,11 @@ sed -e  '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig > \
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="bf"><userinput>AR=ar ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+<screen os="bf"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+    ../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
     --disable-multilib --with-local-prefix=/tools --disable-nls \
+    --with-mpfr=/cross-tools --with-gmp=/cross-tools \
     --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
     --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
 
