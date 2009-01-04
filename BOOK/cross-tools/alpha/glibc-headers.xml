@@ -22,10 +22,13 @@
   <sect2 role="installation">
     <title>Installation of Glibc Headers</title>
 
-    <para os="s1">The following sed removes a dependency of gcc 3.4.x from
-    the glibc we are using in cross-lfs. The reason we are changing it is
-    because this only installs the headers, no compiling takes place. In the
-    next Glibc installation, we use the GCC that's built right after this section:</para>
+    <para os="s1">Glibc's <filename>configure</filename> script checks the
+    version of GCC, and will fail if it's less than 3.4. The next Glibc build
+    will use the GCC that will be installed into
+    <filename class="directory">/cross-tools</filename> in the next step.
+    However, in this step only the Glibc headers are being installed - no
+    compiling is taking place - so the GCC version isn't important. The
+    following sed removes the dependency of GCC 3.4.x:</para>
 
 <screen os="s2"><userinput>cp -v configure{,.orig}
 sed -e 's/3.4/3.[0-9]/g' configure.orig > configure</userinput></screen>
