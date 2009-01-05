@@ -25,10 +25,14 @@
   <sect2 role="installation">
     <title>Installation of Tar</title>
 
-    <para os="p1">The following patch contains a fix for an issue that may occur
+    <para os="p1">The following patch add a man page for tar:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&tar-man_page-patch;</userinput></screen>
+
+    <para os="p3">The following patch contains a fix for an issue that may occur
     when tar calls an outside compression utility like bzip2:</para>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&tar-revert_pipe_drain-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np1 -i ../&tar-revert_pipe_drain-patch;</userinput></screen>
 
     <para os="a">Prepare Tar for compilation:</para>
 
