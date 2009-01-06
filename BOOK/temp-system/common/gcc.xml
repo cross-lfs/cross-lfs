@@ -46,7 +46,8 @@
     href="../../cross-tools/common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
 
-    <para os="cd">Now we will change <command>cpp</command>'s search path so it     won't look in <filename class="directory">/usr/include</filename>:</para>
+    <para os="cd">Now we will change <command>cpp</command>'s search path so it
+     won't look in <filename class="directory">/usr/include</filename>:</para>
 
 <screen os="ce"><userinput>cp -v gcc/cppdefault.c{,.orig}
 sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
@@ -57,7 +58,7 @@ sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
 
 <screen os="cg"><userinput>cp -v gcc/Makefile.in{,.orig}
 sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
-    gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
+    gcc/Makefile.in.orig &gt; gcc/Makefile.in</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
