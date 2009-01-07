@@ -32,6 +32,14 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="readline.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="readline.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="readline.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" \
@@ -61,17 +69,13 @@
     href="readline.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="readline.xml"
-    xpointer="xpointer(//*[@os='k'])"/>
+<screen os="i"><userinput>mv -v /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
 
-<screen os="l"><userinput>mv -v /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
-
-    <para os="m">Next, remove the <filename class="extension">.so</filename>
+    <para os="j">Next, remove the <filename class="extension">.so</filename>
     files in <filename class="directory">/lib32</filename> and relink them into
     <filename class="directory">/usr/lib32</filename>.</para>
 
-<screen os="n"><userinput>rm -v /lib32/lib{readline,history}.so
+<screen os="k"><userinput>rm -v /lib32/lib{readline,history}.so
 ln -svf ../../lib32/libreadline.so.5 /usr/lib32/libreadline.so
 ln -svf ../../lib32/libhistory.so.5 /usr/lib32/libhistory.so</userinput></screen>
 
