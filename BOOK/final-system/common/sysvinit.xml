@@ -24,19 +24,10 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-    <para os="a">When run-levels are changed (for example, when halting the
-    system), <command>init</command> sends termination signals to those
-    processes that <command>init</command> itself started and that should
-    not be running in the new run-level.  While doing this,
-    <command>init</command> outputs messages like <quote>Sending processes
-    the TERM signal</quote> which seem to imply that it is sending these
-    signals to all currently running processes. To avoid this
-    misinterpretation, modify the source so that these messages read like
-    <quote>Sending processes started by init the TERM signal</quote>
-    instead:</para>
+    <para os="p1">The following patch contains a number of updates to the
+    &sysvinit-version;:</para>
 
-<screen os="b"><userinput>sed -i 's@Sending processes@&amp; started by init@g' \
-    src/init.c</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&sysvinit-fixes-patch;</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
