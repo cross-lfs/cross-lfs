@@ -44,24 +44,25 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
     <para os="a">Prepare Util-linux-ng for compilation:</para>
 
-<screen os="b"><userinput>./configure --enable-partx \
-    --disable-wall --enable-write</userinput></screen>
+<screen os="b"><userinput>./configure --enable-arch \
+    --enable-partx --enable-write --disable-wall</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
 
       <varlistentry>
-        <term><parameter>--enable-partx</parameter></term>
+        <term><parameter>--enable-arch</parameter></term>
         <listitem>
-          <para>Enable partx stuff (need more description).</para>
+          <para>This option allows the <command>arch</command> program to be
+          installed.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-wall</parameter></term>
+        <term><parameter>--enable-partx</parameter></term>
         <listitem>
-          <para>Disables building the <command>wall</command> program,
-          as the Sysvinit package installs its own version.</para>
+          <para>Enables building the <command>addpart</command>, <command>delpart</command>,
+	   <command>partx</command> programs.</para>
         </listitem>
       </varlistentry>
 
@@ -70,6 +71,14 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         <listitem>
           <para>This option allows the <command>write</command> program to be
           installed.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-wall</parameter></term>
+        <listitem>
+          <para>Disables building the <command>wall</command> program,
+          as the Sysvinit package installs its own version.</para>
         </listitem>
       </varlistentry>
 
