@@ -79,29 +79,30 @@ done
 
 # Cleanup Directory
 #
-cd /usr/src
-cd bash-${VERSION}
-for file in $(find * -name *~); do
-	rm -f ${file}
-done
-for file in $(find * -name *.orig); do
-	rm -f ${file}
+for dir in $(find * -type d); do
+	cd /usr/src/bash-${VERSION}/${dir}
+	for file in $(find * -name *~); do
+		rm -f ${file}
+	done
+	for file in $(find * -name *.orig); do
+		rm -f ${file}
+	done
 done
 
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > bash-${VERSION}-fixes-x.patch
-echo "Date: `date +%m-%d-%Y`" >> bash-${VERSION}-fixes-x.patch
-echo "Initial Package Version: ${VERSION}" >> bash-${VERSION}-fixes-x.patch
-echo "Origin: Upstream" >> bash-${VERSION}-fixes-x.patch
-echo "Upstream Status: Applied" >> bash-${VERSION}-fixes-x.patch
-echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> bash-${VERSION}-fixes-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > bash-${VERSION}-branch_update-x.patch
+echo "Date: `date +%m-%d-%Y`" >> bash-${VERSION}-branch_update-x.patch
+echo "Initial Package Version: ${VERSION}" >> bash-${VERSION}-branch_update-x.patch
+echo "Origin: Upstream" >> bash-${VERSION}-branch_update-x.patch
+echo "Upstream Status: Applied" >> bash-${VERSION}-branch_update-x.patch
+echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> bash-${VERSION}-branch_update-x.patch
 if [ -n "${SKIPPED}" ]; then
-	echo "             The following patches were skipped" >> bash-${VERSION}-fixes-x.patch
-	echo "            ${SKIPPED}" >> bash-${VERSION}-fixes-x.patch
+	echo "             The following patches were skipped" >> bash-${VERSION}-branch_update-x.patch
+	echo "            ${SKIPPED}" >> bash-${VERSION}-branch_update-x.patch
 fi
-echo "" >> bash-${VERSION}-fixes-x.patch
-diff -Naur bash-${VERSION}.orig bash-${VERSION} >> bash-${VERSION}-fixes-x.patch
-echo "Created /usr/src/bash-${VERSION}-fixes-x.patch."
+echo "" >> bash-${VERSION}-branch_update-x.patch
+diff -Naur bash-${VERSION}.orig bash-${VERSION} >> bash-${VERSION}-branch_update-x.patch
+echo "Created /usr/src/bash-${VERSION}-branch_update-x.patch."
 

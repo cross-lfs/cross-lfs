@@ -79,29 +79,32 @@ done
 
 # Cleanup Directory
 #
-cd /usr/src
-cd readline-${VERSION}
-for file in $(find * -name *~); do
-	rm -f ${file}
-done
-for file in $(find * -name *.orig); do
-	rm -f ${file}
+# Cleanup Directory
+#
+for dir in $(find * -type d); do
+	cd /usr/src/readline-${VERSION}/${dir}
+	for file in $(find * -name *~); do
+		rm -f ${file}
+	done
+	for file in $(find * -name *.orig); do
+		rm -f ${file}
+	done
 done
 
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > readline-${VERSION}-fixes-x.patch
-echo "Date: `date +%m-%d-%Y`" >> readline-${VERSION}-fixes-x.patch
-echo "Initial Package Version: ${VERSION}" >> readline-${VERSION}-fixes-x.patch
-echo "Origin: Upstream" >> readline-${VERSION}-fixes-x.patch
-echo "Upstream Status: Applied" >> readline-${VERSION}-fixes-x.patch
-echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> readline-${VERSION}-fixes-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > readline-${VERSION}-branch_update-x.patch
+echo "Date: `date +%m-%d-%Y`" >> readline-${VERSION}-branch_update-x.patch
+echo "Initial Package Version: ${VERSION}" >> readline-${VERSION}-branch_update-x.patch
+echo "Origin: Upstream" >> readline-${VERSION}-branch_update-x.patch
+echo "Upstream Status: Applied" >> readline-${VERSION}-branch_update-x.patch
+echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> readline-${VERSION}-branch_update-x.patch
 if [ -n "${SKIPPED}" ]; then
-	echo "            Thee following patches were skipped" >> readline-${VERSION}-fixes-x.patch
-	echo "            ${SKIPPED}" >> readline-${VERSION}-fixes-x.patch
+	echo "            Thee following patches were skipped" >> readline-${VERSION}-branch_update-x.patch
+	echo "            ${SKIPPED}" >> readline-${VERSION}-branch_update-x.patch
 fi
-echo "" >> readline-${VERSION}-fixes-x.patch
-diff -Naur readline-${VERSION}.orig readline-${VERSION} >> readline-${VERSION}-fixes-x.patch
-echo "Created /usr/src/readline-${VERSION}-fixes-x.patch."
+echo "" >> readline-${VERSION}-branch_update-x.patch
+diff -Naur readline-${VERSION}.orig readline-${VERSION} >> readline-${VERSION}-branch_update-x.patch
+echo "Created /usr/src/readline-${VERSION}-branch_update-x.patch."
 
