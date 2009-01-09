@@ -41,11 +41,11 @@
 
 <screen os="ad"><userinput>patch -Np1 -i ../&gcc-posix-patch;</userinput></screen>
 
-    <para os="s1">We will change the default location of the Dynamic Linker /tools/lib:</para>
+    <para os="s1">We will change the default location of the Dynamic Linker to /tools/lib:</para>
 
 <screen os="s2"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h); do
 cp -v ${file}{,.orig}
-sed -e 's@/lib@/tools/lib@g' ${file}.orig > $file
+sed -e '/GLIBC_DYNAMIC_LINKER/s@"/lib@"/tools/lib@' ${file}.orig > $file
 done"</userinput></screen>
 
     <para os="ag">Change the StartFile Spec to point to the correct library
