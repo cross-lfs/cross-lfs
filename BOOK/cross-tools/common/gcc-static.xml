@@ -45,8 +45,10 @@
     location:</para>
 
 <screen os="ah"><userinput>echo "
-#undef STARTFILE_PREFIX_SPEC
-#define STARTFILE_PREFIX_SPEC \"/tools/lib/\"" &gt;&gt; gcc/config/linux.h</userinput></screen>
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 \"/tools/lib/\"
+#define STANDARD_STARTFILE_PREFIX_2 \"\"" &gt;&gt; gcc/config/linux.h</userinput></screen>
 
     <para os="ai">Now alter <command>gcc</command>'s c preprocessor's default
     include search path to use <filename class="directory">/tools</filename> only:</para>
