@@ -65,7 +65,8 @@ for dir in $(find * -type d); do
 		rm -f ${file}
 	done
 done
-
+cd /usr/src/binutils-${VERSION}
+rm -f *.orig *~
 rm -f /usr/src/binutils-${VERSION}.orig/md5.sum
 
 # Make Binutils a Release

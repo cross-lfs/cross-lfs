@@ -90,6 +90,8 @@ for dir in $(find * -type d); do
 		rm -f ${file}
 	done
 done
+cd /usr/src/vim${SERIES}/${dir}
+rm -f *.orig *~
 
 # Create Patch
 #

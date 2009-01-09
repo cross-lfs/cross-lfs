@@ -79,6 +79,7 @@ done
 
 # Cleanup Directory
 #
+
 for dir in $(find * -type d); do
 	cd /usr/src/bash-${VERSION}/${dir}
 	for file in $(find * -name *~); do
@@ -88,6 +89,8 @@ for dir in $(find * -type d); do
 		rm -f ${file}
 	done
 done
+cd /usr/src/bash-${VERSION}/${dir}
+rm -f *.orig *~
 
 # Create Patch
 #
