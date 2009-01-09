@@ -45,7 +45,7 @@
 
 <screen os="s2"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h); do
 cp -v ${file}{,.orig}
-sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&amp;@g' \
 -e 's@/usr@/tools@g' ${file}.orig > $file
 done"</userinput></screen>
 
