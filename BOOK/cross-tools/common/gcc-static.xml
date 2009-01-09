@@ -41,14 +41,23 @@
 
 <screen os="ad"><userinput>patch -Np1 -i ../&gcc-posix-patch;</userinput></screen>
 
+    <para os="s1">We will change the search locations from usr to tools:</para>
+
+<screen os="s2"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h); do
+cp -v ${file}{,.orig}
+sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+-e 's@/usr@/tools@g' ${file}.orig > $file
+done"</userinput></screen>
+
     <para os="ag">Change the StartFile Spec to point to the correct library
     location:</para>
 
-<screen os="ah"><userinput>echo "
+<screen os="ah"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h); do
+echo "
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
 #define STANDARD_STARTFILE_PREFIX_1 \"/tools/lib/\"
-#define STANDARD_STARTFILE_PREFIX_2 \"\"" &gt;&gt; gcc/config/linux.h</userinput></screen>
+#define STANDARD_STARTFILE_PREFIX_2 \"\"" &gt;&gt; ${file}</userinput></screen>
 
     <para os="ai">Now alter <command>gcc</command>'s c preprocessor's default
     include search path to use <filename class="directory">/tools</filename> only:</para>
