@@ -2,12 +2,12 @@ Submitted By: Jim Gifford <jim at cross-lfs dot org>
 Date: 2009-01-08
 Initial Package Version: 6.12
 Upstream Status: Unkown
-Origin: Fedora and Bryan Kadzban
+Origin: Mandriva
 Description: i18n Updates
 
 diff -Naur coreutils-6.12.orig/lib/linebuffer.h coreutils-6.12/lib/linebuffer.h
 --- coreutils-6.12.orig/lib/linebuffer.h	2007-10-17 06:47:26.000000000 -0700
-+++ coreutils-6.12/lib/linebuffer.h	2009-01-08 12:56:49.000000000 -0800
++++ coreutils-6.12/lib/linebuffer.h	2009-01-08 20:14:37.000000000 -0800
 @@ -21,6 +21,11 @@
  
  # include <stdio.h>
@@ -32,7 +32,7 @@ diff -Naur coreutils-6.12.orig/lib/linebuffer.h coreutils-6.12/lib/linebuffer.h
  /* Initialize linebuffer LINEBUFFER for use. */
 diff -Naur coreutils-6.12.orig/src/cut.c coreutils-6.12/src/cut.c
 --- coreutils-6.12.orig/src/cut.c	2008-05-25 23:40:33.000000000 -0700
-+++ coreutils-6.12/src/cut.c	2009-01-08 12:56:49.000000000 -0800
++++ coreutils-6.12/src/cut.c	2009-01-08 20:14:37.000000000 -0800
 @@ -28,6 +28,11 @@
  #include <assert.h>
  #include <getopt.h>
@@ -626,7 +626,7 @@ diff -Naur coreutils-6.12.orig/src/cut.c coreutils-6.12/src/cut.c
    if (optind == argc)
 diff -Naur coreutils-6.12.orig/src/expand.c coreutils-6.12/src/expand.c
 --- coreutils-6.12.orig/src/expand.c	2008-05-25 23:40:33.000000000 -0700
-+++ coreutils-6.12/src/expand.c	2009-01-08 12:56:49.000000000 -0800
++++ coreutils-6.12/src/expand.c	2009-01-08 20:14:37.000000000 -0800
 @@ -37,11 +37,28 @@
  #include <stdio.h>
  #include <getopt.h>
@@ -823,7 +823,7 @@ diff -Naur coreutils-6.12.orig/src/expand.c coreutils-6.12/src/expand.c
      error (EXIT_FAILURE, errno, "-");
 diff -Naur coreutils-6.12.orig/src/fold.c coreutils-6.12/src/fold.c
 --- coreutils-6.12.orig/src/fold.c	2008-05-25 23:40:33.000000000 -0700
-+++ coreutils-6.12/src/fold.c	2009-01-08 12:56:49.000000000 -0800
++++ coreutils-6.12/src/fold.c	2009-01-08 20:14:37.000000000 -0800
 @@ -22,11 +22,33 @@
  #include <getopt.h>
  #include <sys/types.h>
@@ -1229,7 +1229,7 @@ diff -Naur coreutils-6.12.orig/src/fold.c coreutils-6.12/src/fold.c
  	case 's':		/* Break at word boundaries. */
 diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
 --- coreutils-6.12.orig/src/join.c	2008-05-25 23:40:32.000000000 -0700
-+++ coreutils-6.12/src/join.c	2009-01-08 12:56:49.000000000 -0800
++++ coreutils-6.12/src/join.c	2009-01-08 20:14:37.000000000 -0800
 @@ -22,17 +22,31 @@
  #include <sys/types.h>
  #include <getopt.h>
@@ -1280,7 +1280,16 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  
  /* If nonzero, check that the input is correctly ordered. */
  static enum
-@@ -230,10 +246,11 @@
+@@ -221,6 +237,8 @@
+ 
+ /* Fill in the `fields' structure in LINE.  */
+ 
++/* Fill in the `fields' structure in LINE.  */
++
+ static void
+ xfields (struct line *line)
+ {
+@@ -230,10 +248,11 @@
    if (ptr == lim)
      return;
  
@@ -1294,8 +1303,147 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  	extract_field (line, ptr, sep - ptr);
      }
    else
-@@ -260,6 +277,148 @@
-   extract_field (line, ptr, lim - ptr);
+@@ -305,56 +324,115 @@
+ 	size_t jf_1, size_t jf_2)
+ {
+   /* Start of field to compare in each file.  */
+-  char *beg1;
+-  char *beg2;
+-
+-  size_t len1;
+-  size_t len2;		/* Length of fields to compare.  */
++  char *beg[2];
++  char *copy[2];
++  size_t len[2]; /* Length of fields to compare.  */
+   int diff;
++  int i, j;
+ 
+   if (jf_1 < line1->nfields)
+     {
+-      beg1 = line1->fields[jf_1].beg;
+-      len1 = line1->fields[jf_1].len;
++      beg[0] = line1->fields[jf_1].beg;
++      len[0] = line1->fields[jf_1].len;
+     }
+   else
+     {
+-      beg1 = NULL;
+-      len1 = 0;
++      beg[0] = NULL;
++      len[0] = 0;
+     }
+ 
+   if (jf_2 < line2->nfields)
+     {
+-      beg2 = line2->fields[jf_2].beg;
+-      len2 = line2->fields[jf_2].len;
++      beg[1] = line2->fields[jf_2].beg;
++      len[1] = line2->fields[jf_2].len;
+     }
+   else
+     {
+-      beg2 = NULL;
+-      len2 = 0;
++      beg[1] = NULL;
++      len[1] = 0;
+     }
+ 
+-  if (len1 == 0)
+-    return len2 == 0 ? 0 : -1;
+-  if (len2 == 0)
++  if (len[0] == 0)
++    return len[1] == 0 ? 0 : -1;
++  if (len[1] == 0)
+     return 1;
+ 
+   if (ignore_case)
+     {
+-      /* FIXME: ignore_case does not work with NLS (in particular,
+-         with multibyte chars).  */
+-      diff = memcasecmp (beg1, beg2, MIN (len1, len2));
++#ifdef HAVE_MBRTOWC
++      if (MB_CUR_MAX > 1)
++      {
++        size_t mblength;
++        wchar_t wc, uwc;
++        mbstate_t state, state_bak;
++
++        memset (&state, '\0', sizeof (mbstate_t));
++
++        for (i = 0; i < 2; i++)
++          {
++            copy[i] = alloca (len[i] + 1);
++
++            for (j = 0; j < MIN (len[0], len[1]);)
++              {
++                state_bak = state;
++                mblength = mbrtowc (&wc, beg[i] + j, len[i] - j, &state);
++
++                switch (mblength)
++                  {
++                  case (size_t) -1:
++                  case (size_t) -2:
++                    state = state_bak;
++                    /* Fall through */
++                  case 0:
++                    mblength = 1;
++                    break;
++
++                  default:
++                    uwc = towupper (wc);
++
++                    if (uwc != wc)
++                      {
++                        mbstate_t state_wc;
++
++                        memset (&state_wc, '\0', sizeof (mbstate_t));
++                        wcrtomb (copy[i] + j, uwc, &state_wc);
++                      }
++                    else
++                      memcpy (copy[i] + j, beg[i] + j, mblength);
++                  }
++                j += mblength;
++              }
++            copy[i][j] = '\0';
++          }
++      }
++      else
++#endif
++      {
++        for (i = 0; i < 2; i++)
++          {
++            copy[i] = alloca (len[i] + 1);
++
++            for (j = 0; j < MIN (len[0], len[1]); j++)
++              copy[i][j] = toupper (beg[i][j]);
++
++            copy[i][j] = '\0';
++          }
++      }
+     }
+   else
+     {
+-      if (hard_LC_COLLATE)
+-	return xmemcoll (beg1, len1, beg2, len2);
+-      diff = memcmp (beg1, beg2, MIN (len1, len2));
++      copy[0] = (unsigned char *) beg[0];
++      copy[1] = (unsigned char *) beg[1];  
+     }
+ 
++  if (hard_LC_COLLATE)
++    return xmemcoll ((char *) copy[0], len[0], (char *) copy[1], len[1]);
++  diff = memcmp (copy[0], copy[1], MIN (len[0], len[1]));
++
++
+   if (diff)
+     return diff;
+-  return len1 < len2 ? -1 : len1 != len2;
++  return len[0] - len[1];
+ }
+ 
+ /* Check that successive input lines PREV and CURRENT from input file
+@@ -393,6 +471,148 @@
+     }
  }
  
 +#if HAVE_MBRTOWC
@@ -1439,150 +1587,11 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
 +  extract_field (line, ptr, lim - ptr);
 +}
 +#endif
-+ 
- static struct line *
- dup_line (const struct line *old)
- {
-@@ -305,56 +464,115 @@
- 	size_t jf_1, size_t jf_2)
- {
-   /* Start of field to compare in each file.  */
--  char *beg1;
--  char *beg2;
--
--  size_t len1;
--  size_t len2;		/* Length of fields to compare.  */
-+  char *beg[2];
-+  char *copy[2];
-+  size_t len[2]; 	/* Length of fields to compare.  */
-   int diff;
-+  int i, j;
++
+ /* Read a line from FP into LINE and split it into fields.
+    Return true if successful.  */
  
-   if (jf_1 < line1->nfields)
-     {
--      beg1 = line1->fields[jf_1].beg;
--      len1 = line1->fields[jf_1].len;
-+      beg[0] = line1->fields[jf_1].beg;
-+      len[0] = line1->fields[jf_1].len;
-     }
-   else
-     {
--      beg1 = NULL;
--      len1 = 0;
-+      beg[0] = NULL;
-+      len[0] = 0;
-     }
- 
-   if (jf_2 < line2->nfields)
-     {
--      beg2 = line2->fields[jf_2].beg;
--      len2 = line2->fields[jf_2].len;
-+      beg[1] = line2->fields[jf_2].beg;
-+      len[1] = line2->fields[jf_2].len;
-     }
-   else
-     {
--      beg2 = NULL;
--      len2 = 0;
-+      beg[1] = NULL;
-+      len[1] = 0;
-     }
- 
--  if (len1 == 0)
--    return len2 == 0 ? 0 : -1;
--  if (len2 == 0)
-+  if (len[0] == 0)
-+    return len[1] == 0 ? 0 : -1;
-+  if (len[1] == 0)
-     return 1;
- 
-   if (ignore_case)
-     {
--      /* FIXME: ignore_case does not work with NLS (in particular,
--         with multibyte chars).  */
--      diff = memcasecmp (beg1, beg2, MIN (len1, len2));
-+#ifdef HAVE_MBRTOWC
-+      if (MB_CUR_MAX > 1)
-+      {
-+        size_t mblength;
-+        wchar_t wc, uwc;
-+        mbstate_t state, state_bak;
-+
-+        memset (&state, '\0', sizeof (mbstate_t));
-+
-+        for (i = 0; i < 2; i++)
-+          {
-+            copy[i] = alloca (len[i] + 1);
-+
-+            for (j = 0; j < MIN (len[0], len[1]);)
-+              {
-+                state_bak = state;
-+                mblength = mbrtowc (&wc, beg[i] + j, len[i] - j, &state);
-+
-+                switch (mblength)
-+                  {
-+                  case (size_t) -1:
-+                  case (size_t) -2:
-+                    state = state_bak;
-+                    /* Fall through */
-+                  case 0:
-+                    mblength = 1;
-+                    break;
-+
-+                  default:
-+                    uwc = towupper (wc);
-+
-+                    if (uwc != wc)
-+                      {
-+                        mbstate_t state_wc;
-+
-+                        memset (&state_wc, '\0', sizeof (mbstate_t));
-+                        wcrtomb (copy[i] + j, uwc, &state_wc);
-+                      }
-+                    else
-+                      memcpy (copy[i] + j, beg[i] + j, mblength);
-+                  }
-+                j += mblength;
-+              }
-+            copy[i][j] = '\0';
-+          }
-+      }
-+      else
-+#endif
-+      {
-+        for (i = 0; i < 2; i++)
-+          {
-+            copy[i] = alloca (len[i] + 1);
-+
-+            for (j = 0; j < MIN (len[0], len[1]); j++)
-+              copy[i][j] = toupper (beg[i][j]);
-+
-+            copy[i][j] = '\0';
-+          }
-+      }
-     }
-   else
-     {
--      if (hard_LC_COLLATE)
--	return xmemcoll (beg1, len1, beg2, len2);
--      diff = memcmp (beg1, beg2, MIN (len1, len2));
-+      copy[0] = (unsigned char *) beg[0];
-+      copy[1] = (unsigned char *) beg[1];  
-     }
- 
-+  if (hard_LC_COLLATE)
-+    return xmemcoll ((char *) copy[0], len[0], (char *) copy[1], len[1]);
-+  diff = memcmp (copy[0], copy[1], MIN (len[0], len[1]));
-+
-+
-   if (diff)
-     return diff;
--  return len1 < len2 ? -1 : len1 != len2;
-+  return len[0] - len[1];
- }
- 
- /* Check that successive input lines PREV and CURRENT from input file
-@@ -413,6 +631,11 @@
+@@ -413,6 +633,11 @@
    line->nfields_allocated = 0;
    line->nfields = 0;
    line->fields = NULL;
@@ -1594,7 +1603,7 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
    xfields (line);
  
    if (prevline[which - 1])
-@@ -509,11 +732,18 @@
+@@ -509,11 +734,18 @@
  
  /* Print the join of LINE1 and LINE2.  */
  
@@ -1614,7 +1623,7 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  
    outlist = outlist_head.next;
    if (outlist)
-@@ -529,12 +759,12 @@
+@@ -529,12 +761,12 @@
  	  if (o->file == 0)
  	    {
  	      if (line1 == &uni_blank)
@@ -1629,7 +1638,7 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  		  line = line1;
  		  field = join_field_1;
  		}
-@@ -548,7 +778,7 @@
+@@ -548,7 +780,7 @@
  	  o = o->next;
  	  if (o == NULL)
  	    break;
@@ -1638,7 +1647,7 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  	}
        putchar ('\n');
      }
-@@ -566,23 +796,23 @@
+@@ -566,23 +798,23 @@
        prfield (join_field_1, line1);
        for (i = 0; i < join_field_1 && i < line1->nfields; ++i)
  	{
@@ -1666,7 +1675,7 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  	  prfield (i, line2);
  	}
        putchar ('\n');
-@@ -1016,20 +1246,41 @@
+@@ -1016,20 +1248,41 @@
  
  	case 't':
  	  {
@@ -1720,7 +1729,7 @@ diff -Naur coreutils-6.12.orig/src/join.c coreutils-6.12/src/join.c
  
 diff -Naur coreutils-6.12.orig/src/pr.c coreutils-6.12/src/pr.c
 --- coreutils-6.12.orig/src/pr.c	2008-05-25 23:40:32.000000000 -0700
-+++ coreutils-6.12/src/pr.c	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/src/pr.c	2009-01-08 20:14:37.000000000 -0800
 @@ -312,6 +312,32 @@
  
  #include <getopt.h>
@@ -2445,7 +2454,7 @@ diff -Naur coreutils-6.12.orig/src/pr.c coreutils-6.12/src/pr.c
  
 diff -Naur coreutils-6.12.orig/src/sort.c coreutils-6.12/src/sort.c
 --- coreutils-6.12.orig/src/sort.c	2008-05-25 23:40:32.000000000 -0700
-+++ coreutils-6.12/src/sort.c	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/src/sort.c	2009-01-08 20:14:37.000000000 -0800
 @@ -22,10 +22,19 @@
  
  #include <config.h>
@@ -3314,7 +3323,7 @@ diff -Naur coreutils-6.12.orig/src/sort.c coreutils-6.12/src/sort.c
  
 diff -Naur coreutils-6.12.orig/src/unexpand.c coreutils-6.12/src/unexpand.c
 --- coreutils-6.12.orig/src/unexpand.c	2008-05-25 23:40:33.000000000 -0700
-+++ coreutils-6.12/src/unexpand.c	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/src/unexpand.c	2009-01-08 20:14:37.000000000 -0800
 @@ -38,11 +38,28 @@
  #include <stdio.h>
  #include <getopt.h>
@@ -3569,7 +3578,7 @@ diff -Naur coreutils-6.12.orig/src/unexpand.c coreutils-6.12/src/unexpand.c
      error (EXIT_FAILURE, errno, "-");
 diff -Naur coreutils-6.12.orig/src/uniq.c coreutils-6.12/src/uniq.c
 --- coreutils-6.12.orig/src/uniq.c	2008-05-25 23:40:32.000000000 -0700
-+++ coreutils-6.12/src/uniq.c	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/src/uniq.c	2009-01-08 20:14:37.000000000 -0800
 @@ -22,6 +22,16 @@
  #include <getopt.h>
  #include <sys/types.h>
@@ -3938,7 +3947,7 @@ diff -Naur coreutils-6.12.orig/src/uniq.c coreutils-6.12/src/uniq.c
    check_chars = SIZE_MAX;
 diff -Naur coreutils-6.12.orig/tests/Makefile.am coreutils-6.12/tests/Makefile.am
 --- coreutils-6.12.orig/tests/Makefile.am	2008-05-27 04:47:53.000000000 -0700
-+++ coreutils-6.12/tests/Makefile.am	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/tests/Makefile.am	2009-01-08 20:14:37.000000000 -0800
 @@ -191,6 +191,7 @@
    misc/shuf					\
    misc/sort					\
@@ -3958,62 +3967,41 @@ diff -Naur coreutils-6.12.orig/tests/Makefile.am coreutils-6.12/tests/Makefile.a
    pr/0F						\
    pr/0FF					\
    pr/0FFnt					\
-diff -Naur coreutils-6.12.orig/tests/misc/cut coreutils-6.12/tests/misc/cut
---- coreutils-6.12.orig/tests/misc/cut	2008-05-16 23:41:11.000000000 -0700
-+++ coreutils-6.12/tests/misc/cut	2009-01-08 12:56:50.000000000 -0800
-@@ -26,7 +26,7 @@
- my $prog = 'cut';
- my $try = "Try \`$prog --help' for more information.\n";
- my $from_1 = "$prog: fields and positions are numbered from 1\n$try";
--my $inval = "$prog: invalid byte or field list\n$try";
-+my $inval = "$prog: invalid byte, character or field list\n$try";
- my $no_endpoint = "$prog: invalid range with no endpoint: -\n$try";
- 
- my @Tests =
-@@ -141,7 +141,7 @@
- 
-   # None of the following invalid ranges provoked an error up to coreutils-6.9.
-   ['inval1', qw(-f 2-0), {IN=>''}, {OUT=>''}, {EXIT=>1},
--   {ERR=>"$prog: invalid decreasing range\n$try"}],
-+   {ERR=>"$inval"}],
-   ['inval2', qw(-f -), {IN=>''}, {OUT=>''}, {EXIT=>1}, {ERR=>$no_endpoint}],
-   ['inval3', '-f', '4,-', {IN=>''}, {OUT=>''}, {EXIT=>1}, {ERR=>$no_endpoint}],
-   ['inval4', '-f', '1-2,-', {IN=>''}, {OUT=>''}, {EXIT=>1}, {ERR=>$no_endpoint}],
 diff -Naur coreutils-6.12.orig/tests/misc/mb1.I coreutils-6.12/tests/misc/mb1.I
 --- coreutils-6.12.orig/tests/misc/mb1.I	1969-12-31 16:00:00.000000000 -0800
-+++ coreutils-6.12/tests/misc/mb1.I	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/tests/misc/mb1.I	2009-01-08 20:14:37.000000000 -0800
 @@ -0,0 +1,4 @@
-+Appleï¼ 10
-+Bananaï¼ 5
-+Citrusï¼ 20
-+Cherryï¼ 30
++Appleï¼ 10
++Bananaï¼ 5
++Citrusï¼ 20
++Cherryï¼ 30
 diff -Naur coreutils-6.12.orig/tests/misc/mb1.X coreutils-6.12/tests/misc/mb1.X
 --- coreutils-6.12.orig/tests/misc/mb1.X	1969-12-31 16:00:00.000000000 -0800
-+++ coreutils-6.12/tests/misc/mb1.X	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/tests/misc/mb1.X	2009-01-08 20:14:37.000000000 -0800
 @@ -0,0 +1,4 @@
-+Bananaï¼ 5
-+Appleï¼ 10
-+Citrusï¼ 20
-+Cherryï¼ 30
++Bananaï¼ 5
++Appleï¼ 10
++Citrusï¼ 20
++Cherryï¼ 30
 diff -Naur coreutils-6.12.orig/tests/misc/mb2.I coreutils-6.12/tests/misc/mb2.I
 --- coreutils-6.12.orig/tests/misc/mb2.I	1969-12-31 16:00:00.000000000 -0800
-+++ coreutils-6.12/tests/misc/mb2.I	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/tests/misc/mb2.I	2009-01-08 20:14:37.000000000 -0800
 @@ -0,0 +1,4 @@
-+Appleï¼ ï¼¡ï¼¡10ï¼ ï¼ 20
-+Bananaï¼ ï¼¡ï¼¡5ï¼ ï¼ 30
-+Citrusï¼ ï¼¡ï¼¡20ï¼ ï¼ 5
-+Cherryï¼ ï¼¡ï¼¡30ï¼ ï¼ 10
++Appleï¼ ï¼¡ï¼¡10ï¼ ï¼ 20
++Bananaï¼ ï¼¡ï¼¡5ï¼ ï¼ 30
++Citrusï¼ ï¼¡ï¼¡20ï¼ ï¼ 5
++Cherryï¼ ï¼¡ï¼¡30ï¼ ï¼ 10
 diff -Naur coreutils-6.12.orig/tests/misc/mb2.X coreutils-6.12/tests/misc/mb2.X
 --- coreutils-6.12.orig/tests/misc/mb2.X	1969-12-31 16:00:00.000000000 -0800
-+++ coreutils-6.12/tests/misc/mb2.X	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/tests/misc/mb2.X	2009-01-08 20:14:37.000000000 -0800
 @@ -0,0 +1,4 @@
-+Citrusï¼ ï¼¡ï¼¡20ï¼ ï¼ 5
-+Cherryï¼ ï¼¡ï¼¡30ï¼ ï¼ 10
-+Appleï¼ ï¼¡ï¼¡10ï¼ ï¼ 20
-+Bananaï¼ ï¼¡ï¼¡5ï¼ ï¼ 30
++Citrusï¼ ï¼¡ï¼¡20ï¼ ï¼ 5
++Cherryï¼ ï¼¡ï¼¡30ï¼ ï¼ 10
++Appleï¼ ï¼¡ï¼¡10ï¼ ï¼ 20
++Bananaï¼ ï¼¡ï¼¡5ï¼ ï¼ 30
 diff -Naur coreutils-6.12.orig/tests/misc/sort-mb-tests coreutils-6.12/tests/misc/sort-mb-tests
 --- coreutils-6.12.orig/tests/misc/sort-mb-tests	1969-12-31 16:00:00.000000000 -0800
-+++ coreutils-6.12/tests/misc/sort-mb-tests	2009-01-08 12:56:50.000000000 -0800
++++ coreutils-6.12/tests/misc/sort-mb-tests	2009-01-08 20:14:37.000000000 -0800
 @@ -0,0 +1,58 @@
 +#! /bin/sh
 +case $# in
@@ -4030,7 +4018,7 @@ diff -Naur coreutils-6.12.orig/tests/misc/sort-mb-tests coreutils-6.12/tests/mis
 +locale -k LC_CTYPE 2>&1 | grep -q charmap.*UTF-8 || exit 77
 +errors=0
 +
-+$xx -t ï¼  -k2 -n misc/mb1.I > misc/mb1.O
++$xx -t ï¼  -k2 -n misc/mb1.I > misc/mb1.O
 +code=$?
 +if test $code != 0; then
 +  $echo "Test mb1 failed: $xx return code $code differs from expected value 0" 1>&2
@@ -4048,7 +4036,7 @@ diff -Naur coreutils-6.12.orig/tests/misc/sort-mb-tests coreutils-6.12/tests/mis
 +  esac
 +fi
 +
-+$xx -t ï¼  -k4 -n misc/mb2.I > misc/mb2.O
++$xx -t ï¼  -k4 -n misc/mb2.I > misc/mb2.O
 +code=$?
 +if test $code != 0; then
 +  $echo "Test mb2 failed: $xx return code $code differs from expected value 0" 1>&2
