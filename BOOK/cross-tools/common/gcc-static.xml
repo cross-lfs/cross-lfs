@@ -43,16 +43,15 @@
 
     <para os="s1">We will change the search locations from usr to tools:</para>
 
-<screen os="s2"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h); do
+<screen os="s2"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h); do
 cp -v ${file}{,.orig}
-sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&amp;@g' \
--e 's@/usr@/tools@g' ${file}.orig > $file
+sed -e 's@/usr/lib@/tools/lib@g' ${file}.orig > $file
 done"</userinput></screen>
 
     <para os="ag">Change the StartFile Spec to point to the correct library
     location:</para>
 
-<screen os="ah"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h); do
+<screen os="ah"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h); do
 echo "
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
