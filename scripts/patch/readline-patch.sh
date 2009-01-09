@@ -90,7 +90,7 @@ for dir in $(find * -type d); do
 		rm -f ${file}
 	done
 done
-cd /usr/src/readline-${VERSION}/${dir}
+cd /usr/src/readline-${VERSION}
 rm -f *.orig *~
 
 # Create Patch

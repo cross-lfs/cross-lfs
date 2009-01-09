@@ -89,7 +89,7 @@ for dir in $(find * -type d); do
 		rm -f ${file}
 	done
 done
-cd /usr/src/bash-${VERSION}/${dir}
+cd /usr/src/bash-${VERSION}
 rm -f *.orig *~
 
 # Create Patch

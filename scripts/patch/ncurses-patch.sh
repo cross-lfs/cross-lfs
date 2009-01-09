@@ -86,7 +86,7 @@ for dir in $(find * -type d); do
 		rm -f ${file}
 	done
 done
-cd /usr/src/ncurses-${VERSION}/${dir}
+cd /usr/src/ncurses-${VERSION}
 rm -f *.orig *~
 
 # Create Patch
