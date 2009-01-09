@@ -33,6 +33,11 @@
 
 <screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
+    <para os="s1">Diffutils wants ed as the default editor, the following sed will allow us
+    to use vim:</para>
+
+<screen os="s2"><userinput>sed -i 's@\(^#define DEFAULT_EDITOR_PROGRAM \).*@\1"vi"@' config.h</userinput></screen>
+
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
