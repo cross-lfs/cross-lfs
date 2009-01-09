@@ -79,19 +79,17 @@ done
 
 # Cleanup Directory
 #
-# Cleanup Directory
-#
 for dir in $(find * -type d); do
-	cd /usr/src/vim${SERIES}/${dir}
-	for file in $(find * -name *~); do
+	cd /usr/src/vim${SERIES}
+	for file in $(find . -name '*~'); do
 		rm -f ${file}
 	done
-	for file in $(find * -name *.orig); do
+	for file in $(find . -name '*.orig'); do
 		rm -f ${file}
 	done
 done
 cd /usr/src/vim${SERIES}
-rm -f *.orig *~
+rm -f *~ *.orig
 
 # Create Patch
 #

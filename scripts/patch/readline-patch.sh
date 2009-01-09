@@ -83,15 +83,15 @@ done
 #
 for dir in $(find * -type d); do
 	cd /usr/src/readline-${VERSION}/${dir}
-	for file in $(find * -name *~); do
+	for file in $(find . -name '*~'); do
 		rm -f ${file}
 	done
-	for file in $(find * -name *.orig); do
+	for file in $(find . -name '*.orig'); do
 		rm -f ${file}
 	done
 done
 cd /usr/src/readline-${VERSION}
-rm -f *.orig *~
+rm -f *~ *.orig
 
 # Create Patch
 #
