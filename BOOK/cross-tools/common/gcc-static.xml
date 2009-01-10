@@ -41,18 +41,18 @@
 
 <screen os="ad"><userinput>patch -Np1 -i ../&gcc-posix-patch;</userinput></screen>
 
+    <para os="ag">Change the StartFile Spec to point to the correct library
+    location:</para>
+
+<screen os="ah"><userinput>for file in $(find gcc/config -name linux.h -o -name linux64.h); do
+echo -e '\n#undef STARTFILE_PREFIX_SPEC\n#define STARTFILE_PREFIX_SPEC "/tools/lib"\n' &gt;&gt; ${file}</userinput></screen>
+
     <para os="s1">We will change the default location of the Dynamic Linker to /tools/lib:</para>
 
 <screen os="s2"><userinput>for file in $(find gcc/config -name linux.h -o -name linux64.h); do
 cp -v ${file}{,.orig}
 sed -e '/GLIBC_DYNAMIC_LINKER/s@"/lib@"/tools/lib@' ${file}.orig > $file
 done"</userinput></screen>
-
-    <para os="ag">Change the StartFile Spec to point to the correct library
-    location:</para>
-
-<screen os="ah"><userinput>for file in $(find gcc/config -name linux.h -o -name linux64.h); do
-echo -e '\n#undef STARTFILE_PREFIX_SPEC\n#define STARTFILE_PREFIX_SPEC "/tools/lib"\n' &gt;&gt; ${file}</userinput></screen>
 
     <para os="ai">Now alter <command>gcc</command>'s c preprocessor's default
     include search path to use <filename class="directory">/tools</filename> only:</para>
