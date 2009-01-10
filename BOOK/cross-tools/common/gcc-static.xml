@@ -51,12 +51,8 @@ done"</userinput></screen>
     <para os="ag">Change the StartFile Spec to point to the correct library
     location:</para>
 
-<screen os="ah"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h); do
-echo "
-#undef STANDARD_STARTFILE_PREFIX_1
-#undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 \"/tools/lib/\"
-#define STANDARD_STARTFILE_PREFIX_2 \"\"" &gt;&gt; ${file}</userinput></screen>
+<screen os="ah"><userinput>for file in $(find gcc/config -name linux.h -o -name linux64.h); do
+echo -e '\n#undef STARTFILE_PREFIX_SPEC\n#define STARTFILE_PREFIX_SPEC "\\tools\lib"\n' &gt;&gt; ${file}</userinput></screen>
 
     <para os="ai">Now alter <command>gcc</command>'s c preprocessor's default
     include search path to use <filename class="directory">/tools</filename> only:</para>
