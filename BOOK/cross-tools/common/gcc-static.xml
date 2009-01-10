@@ -43,7 +43,7 @@
 
     <para os="s1">We will change the default location of the Dynamic Linker to /tools/lib:</para>
 
-<screen os="s2"><userinput>for file in $(find gcc/config -name linux64.h -o -name linux.h); do
+<screen os="s2"><userinput>for file in $(find gcc/config -name linux.h -o -name linux64.h); do
 cp -v ${file}{,.orig}
 sed -e '/GLIBC_DYNAMIC_LINKER/s@"/lib@"/tools/lib@' ${file}.orig > $file
 done"</userinput></screen>
