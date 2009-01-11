@@ -78,10 +78,25 @@ ln -svf ../../lib32/libmenuw.so.5 /usr/lib32/libmenuw.so
 ln -svf ../../lib32/libpanelw.so.5 /usr/lib32/libpanelw.so
 ln -svf ../../lib32/libformw.so.5 /usr/lib32/libformw.so</userinput></screen>
 
-    <para os="l">Now we will create a symlink for /usr/share/terminfo in
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="ncurses.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
+
+<screen os="m"><userinput>for lib in curses ncurses form panel menu ; do
+        echo "INPUT(-l${lib}w)" > /usr/lib32/lib${lib}.so
+        ln -sfv lib${lib}w.a /usr/lib32/lib${lib}.a
+done
+ln -sfv libcurses.so /usr/lib32/libcursesw.so
+ln -sfv libncurses.so /usr/lib32/libcurses.so
+ln -sfv libncursesw.a /usr/lib32/libcursesw.a
+ln -sfv libncurses.a /usr/lib32/libcurses.a
+ln -sfv libncurses++w.a /usr/lib32/libncurses++.a
+ln -sfv ncurses5-config-32 /usr/bin/ncursesw5-config-32</userinput></screen>
+
+    <para os="n">Now we will create a symlink for /usr/share/terminfo in
     <filename class="directory">/usr/lib32</filename> for compatibility:</para>
 
-<screen os="m"><userinput>ln -sf ../../usr/share/terminfo /usr/lib32/terminfo</userinput></screen>
+<screen os="o"><userinput>ln -sfv ../../usr/share/terminfo /usr/lib32/terminfo</userinput></screen>
 
   </sect2>
 

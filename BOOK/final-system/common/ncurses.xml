@@ -58,10 +58,24 @@ ln -svf ../../lib/libmenuw.so.5 /usr/lib/libmenuw.so
 ln -svf ../../lib/libpanelw.so.5 /usr/lib/libpanelw.so
 ln -svf ../../lib/libformw.so.5 /usr/lib/libformw.so</userinput></screen>
 
-    <para os="l">Now we will create a symlink for /usr/share/terminfo in
+    <para os="l">Now we will make our Ncurses compatible for older and non-widec compatible programs
+    can build properly:</para>
+
+<screen os="m"><userinput>for lib in curses ncurses form panel menu ; do
+        echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
+        ln -sfv lib${lib}w.a /usr/lib/lib${lib}.a
+done
+ln -sfv libcurses.so /usr/lib/libcursesw.so
+ln -sfv libncurses.so /usr/lib/libcurses.so
+ln -sfv libncursesw.a /usr/lib/libcursesw.a
+ln -sfv libncurses.a /usr/lib/libcurses.a
+ln -sfv libncurses++w.a /usr/lib/libncurses++.a
+ln -sfv ncurses5-config /usr/bin/ncursesw5-config</userinput></screen>
+
+    <para os="n">Now we will create a symlink for /usr/share/terminfo in
     <filename class="directory">/usr/lib</filename> for compatibility:</para>
 
-<screen os="m"><userinput>ln -sf ../../usr/share/terminfo /usr/lib/terminfo</userinput></screen>
+<screen os="o"><userinput>ln -sfv ../../usr/share/terminfo /usr/lib/terminfo</userinput></screen>
 
   </sect2>
 
