@@ -52,7 +52,6 @@
     <para os="j">Create symlinks in <filename class="directory">/usr/lib:</filename></para>
 
 <screen os="k"><userinput>rm -v /lib/lib{ncursesw,menuw,panelw,formw}.so
-ln -svf ../../lib/libncursesw.so.5 /usr/lib/libcursesw.so
 ln -svf ../../lib/libncursesw.so.5 /usr/lib/libncursesw.so
 ln -svf ../../lib/libmenuw.so.5 /usr/lib/libmenuw.so
 ln -svf ../../lib/libpanelw.so.5 /usr/lib/libpanelw.so
@@ -65,10 +64,8 @@ ln -svf ../../lib/libformw.so.5 /usr/lib/libformw.so</userinput></screen>
         echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
         ln -sfv lib${lib}w.a /usr/lib/lib${lib}.a
 done
-ln -sfv libcurses.so /usr/lib/libcursesw.so
-ln -sfv libncurses.so /usr/lib/libcurses.so
+ln -sfv libncursesw.so /usr/lib/libcursesw.so
 ln -sfv libncursesw.a /usr/lib/libcursesw.a
-ln -sfv libncurses.a /usr/lib/libcurses.a
 ln -sfv libncurses++w.a /usr/lib/libncurses++.a
 ln -sfv ncursesw5-config /usr/bin/ncurses5-config</userinput></screen>
 
