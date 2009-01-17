@@ -23,41 +23,36 @@
     <title>Installation of GCC</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/common/gcc-static.xml"
+    href="../../cross-tools/multilib/gcc-static.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/common/gcc-static.xml"
+    href="../../cross-tools/multilib/gcc-static.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/common/gcc-static.xml"
+    href="../../cross-tools/multilib/gcc-static.xml"
     xpointer="xpointer(//*[@os='aa'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/common/gcc-static.xml"
+    href="../../cross-tools/multilib/gcc-static.xml"
     xpointer="xpointer(//*[@os='ab'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/common/gcc-static.xml"
+    href="../../cross-tools/multilib/gcc-static.xml"
     xpointer="xpointer(//*[@os='ac'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/common/gcc-static.xml"
+    href="../../cross-tools/multilib/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
 
-    <para os="cd">Now we will change <command>cpp</command>'s search path so it     won't look in <filename class="directory">/usr/include</filename>:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='cf'])"/>
 
-<screen os="ce"><userinput>cp -v gcc/cppdefault.c{,.orig}
-sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
-    gcc/cppdefault.c.orig &gt; gcc/cppdefault.c</userinput></screen>
-
-    <para os="cf">Also, we need to set the directory searched by the fixincludes
-    process for system headers, so it won't look at the host's headers:</para>
-
-<screen os="cg"><userinput>cp -v gcc/Makefile.in{,.orig}
-sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
-    gcc/Makefile.in.orig &gt; gcc/Makefile.in</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='cg'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
@@ -67,40 +62,53 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para os="cj">Before starting to build GCC, remember to unset any environment
-    variables that override the default optimization flags.</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='cj'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
-    --with-local-prefix=/tools --enable-long-long --enable-c99 \
-    --enable-shared --enable-threads=posix --enable-__cxa_atexit \
-    --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
+<screen os="dc"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
+  ../gcc-&gcc-version;/configure --prefix=/tools \
+  --libdir=/tools/lib64 --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+  --target=${CLFS_TARGET} --with-sysroot=${CLFS} --with-local-prefix=/tools \
+  --enable-long-long --enable-c99 --enable-shared --enable-threads=posix \
+  --enable-__cxa_atexit --disable-nls --enable-languages=c,c++ \
+  --disable-libstdcxx-pch</userinput></screen>
 
-    <variablelist os="cl">
+    <variablelist os="dd">
       <title>The meaning of the new configure options:</title>
 
-      <varlistentry os="cl1">
-        <term><parameter>--disable-libstdcxx-pch</parameter></term>
+      <varlistentry os="dd1">
+        <term><parameter>CXX="${CXX} ${BUILD64}"</parameter></term>
         <listitem>
-          <para>Do not build the pre-compiled header (PCH) for
-          <filename class="libraryfile">libstdc++</filename>. It takes
-          up a lot of space, and we have no use for it.</para>
+          <para>This forces the C++ compiler to use our 64 Bit flags.</para>
         </listitem>
       </varlistentry>
 
+      <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+      href="../common/gcc.xml"
+      xpointer="xpointer(//*[@os='cl1'])"/>
+
     </variablelist>
 
-    <para os="cm">Compile the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='cm'])"/>
 
-<screen os="cn"><userinput>make AS_FOR_TARGET="${AS}" \
-    LD_FOR_TARGET="${LD}"</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='cn'])"/>
 
-    <para os="co">Install the package:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='co'])"/>
 
-<screen os="cp"><userinput>make install</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../common/gcc.xml"
+    xpointer="xpointer(//*[@os='cp'])"/>
 
   </sect2>
 

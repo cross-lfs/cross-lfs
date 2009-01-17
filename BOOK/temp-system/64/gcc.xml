@@ -23,36 +23,28 @@
     <title>Installation of GCC</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/mips64-64/gcc-static.xml"
+    href="../../cross-tools/64/gcc-static.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/mips64-64/gcc-static.xml"
+    href="../../cross-tools/64/gcc-static.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/mips64-64/gcc-static.xml"
+    href="../../cross-tools/64/gcc-static.xml"
     xpointer="xpointer(//*[@os='aa'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/mips64-64/gcc-static.xml"
+    href="../../cross-tools/64/gcc-static.xml"
     xpointer="xpointer(//*[@os='ab'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/mips64-64/gcc-static.xml"
+    href="../../cross-tools/64/gcc-static.xml"
     xpointer="xpointer(//*[@os='ac'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../cross-tools/mips64-64/gcc-static.xml"
+    href="../../cross-tools/64/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc.xml"
-    xpointer="xpointer(//*[@os='cd'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../common/gcc.xml"
-    xpointer="xpointer(//*[@os='ce'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc.xml"
@@ -61,14 +53,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc.xml"
     xpointer="xpointer(//*[@os='cg'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64/gcc.xml"
-    xpointer="xpointer(//*[@os='da'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64/gcc.xml"
-    xpointer="xpointer(//*[@os='db'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/gcc.xml"
@@ -89,7 +73,7 @@
 <screen os="ck"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
     ../gcc-&gcc-version;/configure --prefix=/tools --disable-multilib \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
-    --with-local-prefix=/tools --enable-long-long --with-abi=64 \
+    --libexecdir=/tools/lib --with-local-prefix=/tools --enable-long-long \
     --enable-c99 --enable-shared --enable-threads=posix --disable-nls \
     --enable-__cxa_atexit --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
 
@@ -97,7 +81,7 @@
       <title>The meaning of the new configure options:</title>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-      href="../x86_64/gcc.xml"
+      href="../multilib/gcc.xml"
       xpointer="xpointer(//*[@os='dd1'])"/>
 
       <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -122,13 +106,12 @@
     href="../common/gcc.xml"
     xpointer="xpointer(//*[@os='cp'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/gcc.xml"
-    xpointer="xpointer(//*[@os='dp'])"/>
+   <para os="dp">Now we copy the files that are placed in <filename class="directory">/tools/lib64
+   </filename> to <filename class="directory">/tools/lib</filename>.
+    We also delete the /tools/lib64 directory:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/gcc.xml"
-    xpointer="xpointer(//*[@os='dq'])"/>
+<screen os="dq"><userinput>cp -va /tools/lib64/* /tools/lib
+rm -rvf /tools/lib64</userinput></screen>
 
   </sect2>
 

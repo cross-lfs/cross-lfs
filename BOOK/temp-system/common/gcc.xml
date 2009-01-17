@@ -46,13 +46,6 @@
     href="../../cross-tools/common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
 
-    <para os="cd">Now we will change <command>cpp</command>'s search path so it
-     won't look in <filename class="directory">/usr/include</filename>:</para>
-
-<screen os="ce"><userinput>cp -v gcc/cppdefault.c{,.orig}
-sed -e '/#define STANDARD_INCLUDE_DIR/s@"/usr/include"@0@g' \
-    gcc/cppdefault.c.orig &gt; gcc/cppdefault.c</userinput></screen>
-
     <para os="cf">Also, we need to set the directory searched by the fixincludes
     process for system headers, so it won't look at the host's headers:</para>
 
@@ -76,10 +69,11 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
     xpointer="xpointer(//*[@os='h'])"/>
 
 <screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
-    --with-local-prefix=/tools --enable-long-long --enable-c99 \
-    --enable-shared --enable-threads=posix --enable-__cxa_atexit \
-    --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch</userinput></screen>
+  --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
+  --with-sysroot=${CLFS} --with-local-prefix=/tools --enable-long-long \
+  --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
+  --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch \
+  --disable-multilib</userinput></screen>
 
     <variablelist os="cl">
       <title>The meaning of the new configure options:</title>

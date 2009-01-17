@@ -28,7 +28,7 @@
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/gcc-static.xml"
+    href="../64/gcc-static.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -36,7 +36,7 @@
     xpointer="xpointer(//*[@os='aa'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../x86_64-64/gcc-static.xml"
+    href="../64/gcc-static.xml"
     xpointer="xpointer(//*[@os='ab'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -84,14 +84,13 @@
     xpointer="xpointer(//*[@os='h'])"/>
 
 <screen os="al"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
-    ../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
-    --disable-multilib --with-local-prefix=/tools --disable-nls \
-    --without-headers --with-newlib --disable-decimal-float \
-    --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --disable-libgomp --disable-libmudflap --disable-libssp \
-    --disable-shared  --disable-threads --enable-languages=c \
-    --with-abi=64</userinput></screen>
+  ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+  --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
+  --with-sysroot=${CLFS} --with-local-prefix=/tools --disable-nls \
+  --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
+  --without-headers --with-newlib --disable-decimal-float \
+  --disable-libgomp --disable-libmudflap --disable-libssp \
+  --disable-threads --enable-languages=c --with-abi=64</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc-static.xml"

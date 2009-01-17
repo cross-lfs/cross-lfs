@@ -74,14 +74,13 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="bf" ><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib \
-   ../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST}
-    --with-local-prefix=/tools --disable-nls --enable-shared \
-    --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --enable-languages=c,c++ --enable-__cxa_atexit --disable-multilib \
-    --enable-c99 --enable-long-long --enable-threads=posix \
-    --with-abi=64</userinput></screen>
+<screen os="bf"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+  ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+  --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
+  --with-sysroot=${CLFS} --with-local-prefix=/tools --disable-nls \
+  --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
+  --with-mpfr=/cross-tools --with-gmp=/cross-tools --enable-c99 \
+  --enable-long-long --enable-threads=posix --with-abi=64</userinput></screen>
 
     <variablelist os="bg">
       <title>The meaning of the new configure options:</title>

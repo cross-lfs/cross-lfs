@@ -62,13 +62,6 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='aj'])"/>
 
-    <para os="bd">Finally, disable <option>-B</option> in <filename>configure</filename>,
-    so it doesn't pick up the host's header files:</para>
-
-<screen os="be"><userinput>cp -v configure{,.orig}
-sed -e '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig &gt; \
-    configure</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='f'])"/>
@@ -82,12 +75,12 @@ sed -e '/FLAGS_FOR_TARGET.*\/lib\//s@-B[^ ]*/lib/@@g' configure.orig &gt; \
     xpointer="xpointer(//*[@os='h'])"/>
 
 <screen os="bf"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
-    ../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
-    --disable-multilib --with-local-prefix=/tools --disable-nls \
-    --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
-    --enable-c99 --enable-long-long --enable-threads=posix</userinput></screen>
+  ../gcc-&gcc-version;/configure --prefix=/cross-tools \
+  --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
+  --with-sysroot=${CLFS} --with-local-prefix=/tools --disable-nls \
+  --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
+  --with-mpfr=/cross-tools --with-gmp=/cross-tools --enable-c99 \
+  --enable-long-long --enable-threads=posix --disable-multilib</userinput></screen>
 
     <variablelist os="bg">
       <title>The meaning of the new configure options:</title>
