@@ -50,9 +50,9 @@
     href="../common/binutils.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen os="j"><userinput>CC="${CC} ${BUILD64}" \
-    ../binutils-&binutils-version;/configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
+<screen os="j"><userinput>CC="${CC} ${BUILD64}" ../binutils-&binutils-version;/configure \
+    --prefix=/tools --with-sysroot=${LFS} --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
     --disable-nls --enable-shared --enable-64-bit-bfd \
     --disable-multilib</userinput></screen>
 
