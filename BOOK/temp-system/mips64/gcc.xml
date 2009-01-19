@@ -47,6 +47,14 @@
     xpointer="xpointer(//*[@os='ad'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../cross-tools/multilib/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ag'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../cross-tools/multilib/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ah'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/gcc.xml"
     xpointer="xpointer(//*[@os='cf'])"/>
 
@@ -73,8 +81,8 @@
 <screen os="dc"><userinput>CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
   ../gcc-&gcc-version;/configure --prefix=/tools \
   --libdir=/tools/lib64 --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-  --target=${CLFS_TARGET} --with-sysroot=${CLFS} --with-local-prefix=/tools \
-  --enable-long-long --enable-c99 --enable-shared --enable-threads=posix \
+  --target=${CLFS_TARGET} --with-local-prefix=/tools --enable-long-long \
+  --enable-c99 --enable-shared --enable-threads=posix \
   --enable-__cxa_atexit --disable-nls --enable-languages=c,c++ \
   --disable-libstdcxx-pch --with-abi=64</userinput></screen>
 

@@ -46,6 +46,14 @@
     href="../../cross-tools/common/gcc-static.xml"
     xpointer="xpointer(//*[@os='ad'])"/>
 
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../cross-tools/common/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ag'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../../cross-tools/common/gcc-static.xml"
+    xpointer="xpointer(//*[@os='ah'])"/>
+
     <para os="cf">Also, we need to set the directory searched by the fixincludes
     process for system headers, so it won't look at the host's headers:</para>
 
@@ -70,8 +78,8 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
 
 <screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
   --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
-  --with-sysroot=${CLFS} --with-local-prefix=/tools --enable-long-long \
-  --enable-c99 --enable-shared --enable-threads=posix --enable-__cxa_atexit \
+  --with-local-prefix=/tools --enable-long-long --enable-c99 \
+  --enable-shared --enable-threads=posix --enable-__cxa_atexit \
   --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch \
   --disable-multilib</userinput></screen>
 
