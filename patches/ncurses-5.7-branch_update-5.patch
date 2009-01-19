@@ -1,18 +1,148 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 01-08-2009
+Date: 01-18-2009
 Initial Package Version: 5.7
 Origin: Upstream
 Upstream Status: Applied
 Description: This is a branch update for NCurses-5.7, and should be
-             rechecked periodically. This patch covers up to 5.7-20090105.
+             rechecked periodically. This patch covers up to 5.7-20090117.
 
+diff -Naur ncurses-5.7.orig/Ada95/gen/Makefile.in ncurses-5.7/Ada95/gen/Makefile.in
+--- ncurses-5.7.orig/Ada95/gen/Makefile.in	2008-10-04 15:58:31.000000000 -0700
++++ ncurses-5.7/Ada95/gen/Makefile.in	2009-01-18 23:56:40.000000000 -0800
+@@ -1,5 +1,5 @@
+ ##############################################################################
+-# Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
+ #                                                                            #
+ # Permission is hereby granted, free of charge, to any person obtaining a    #
+ # copy of this software and associated documentation files (the "Software"), #
+@@ -28,7 +28,7 @@
+ #
+ #  Author:  Juergen Pfeifer, 1996
+ #
+-#  $Id: Makefile.in,v 1.61 2008/10/04 22:58:31 tom Exp $
++#  $Id: Makefile.in,v 1.63 2009/01/11 01:11:35 tom Exp $
+ #
+ .SUFFIXES:
+ 
+@@ -81,7 +81,7 @@
+ M4		= m4
+ M4FLAGS		= -DNCURSES_EXT_FUNCS=@NCURSES_EXT_FUNCS@
+ 
+-ADACURSES_CONFIG = adacurses-config
++ADACURSES_CONFIG = adacurses@DFT_ARG_SUFFIX@-config
+ 
+ WRAPPER		= sh $(top_srcdir)/misc/shlib
+ GENERATE	= ./gen$x '@DFT_ARG_SUFFIX@'
+@@ -166,6 +166,7 @@
+ 
+ sources:
+ 
++$(DESTDIR)$(bindir) \
+ $(ADA_INCLUDE) \
+ $(ADA_OBJECTS) :
+ 	sh $(top_srcdir)/mkdirs.sh $@
+@@ -187,8 +188,8 @@
+ 	@-chmod u+x $(ADA_SRCDIR)/*.ali
+ 
+ install \
+-install.libs :: $(DESTDIR)$(bindir) adacurses-config
+-	$(INSTALL_PROG) adacurses-config $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
++install.libs :: $(DESTDIR)$(bindir) $(ADACURSES_CONFIG)
++	$(INSTALL_PROG) $(ADACURSES_CONFIG) $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
+ 
+ uninstall \
+ uninstall.libs ::
+@@ -398,7 +399,7 @@
+ 	-rm -f $(GEN_TARGETS) instab.tmp *.ad[bs] *.html *.ali *.tmp
+ 
+ distclean :: clean
+-	-rm -f adacurses-config
++	-rm -f $(ADACURSES_CONFIG)
+ 	-rm -f Makefile
+ 
+ realclean :: distclean
+diff -Naur ncurses-5.7.orig/Ada95/gen/adacurses-config.in ncurses-5.7/Ada95/gen/adacurses-config.in
+--- ncurses-5.7.orig/Ada95/gen/adacurses-config.in	2007-04-07 14:06:50.000000000 -0700
++++ ncurses-5.7/Ada95/gen/adacurses-config.in	2009-01-18 23:56:40.000000000 -0800
+@@ -1,18 +1,47 @@
+ #! /bin/sh
+-# $Id: adacurses-config.in,v 1.2 2007/04/07 21:06:50 tom Exp $
+-#
+-# This script will return the option to add to `gnatmake' for using
+-# AdaCurses.
++# $Id: adacurses-config.in,v 1.5 2009/01/11 00:08:19 tom Exp $
++##############################################################################
++# Copyright (c) 2007,2009 Free Software Foundation, Inc.                     #
++#                                                                            #
++# Permission is hereby granted, free of charge, to any person obtaining a    #
++# copy of this software and associated documentation files (the "Software"), #
++# to deal in the Software without restriction, including without limitation  #
++# the rights to use, copy, modify, merge, publish, distribute, distribute    #
++# with modifications, sublicense, and/or sell copies of the Software, and to #
++# permit persons to whom the Software is furnished to do so, subject to the  #
++# following conditions:                                                      #
++#                                                                            #
++# The above copyright notice and this permission notice shall be included in #
++# all copies or substantial portions of the Software.                        #
++#                                                                            #
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR #
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,   #
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL    #
++# THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER      #
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING    #
++# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER        #
++# DEALINGS IN THE SOFTWARE.                                                  #
++#                                                                            #
++# Except as contained in this notice, the name(s) of the above copyright     #
++# holders shall not be used in advertising or otherwise to promote the sale, #
++# use or other dealings in this Software without prior written               #
++# authorization.                                                             #
++##############################################################################
+ #
++# This script returns the options to add to `gnatmake' for using AdaCurses.
++
++DESTDIR=@DESTDIR@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
+ 
+-prefix="@prefix@"
+-exec_prefix="@exec_prefix@"
+-libdir="@libdir@"
++ADA_INCLUDE=@ADA_INCLUDE@
++ADA_OBJECTS=@ADA_OBJECTS@
+ 
+-VERSION="@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@"
++VERSION=@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@
+ 
+-CFLAGS="-I$libdir/adacurses -L$libdir/adacurses"
+-LIBS="-L$prefix/lib -lAdaCurses"
++CFLAGS="-I$ADA_INCLUDE -aO$ADA_OBJECTS"
++LIBS="-L$ADA_OBJECTS -lAdaCurses"
+ 
+ case "x$1" in
+     x--version)
+@@ -26,10 +55,10 @@
+         ;;
+     x)
+     	# if no parameter is given, give what gnatmake needs
+-        echo $CFLAGS -largs $LIBS
++        echo "$CFLAGS -i -largs $LIBS"
+         ;;
+     *)
+-        echo 'Usage: adacurses-config [--version | --cflags | --libs]' >&2
++        echo 'Usage: adacurses@DFT_ARG_SUFFIX@-config [--version | --cflags | --libs]' >&2
+         exit 1
+         ;;
+ esac
 diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/Makefile.in
 --- ncurses-5.7.orig/Ada95/samples/Makefile.in	2006-12-17 08:45:02.000000000 -0800
-+++ ncurses-5.7/Ada95/samples/Makefile.in	2009-01-08 19:48:08.000000000 -0800
++++ ncurses-5.7/Ada95/samples/Makefile.in	2009-01-18 23:56:40.000000000 -0800
 @@ -1,5 +1,5 @@
  ##############################################################################
 -# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
-+# Copyright (c) 1998-2005,2008 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
  #                                                                            #
  # Permission is hereby granted, free of charge, to any person obtaining a    #
  # copy of this software and associated documentation files (the "Software"), #
@@ -21,10 +151,21 @@ diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/
  #  Author:  Juergen Pfeifer, 1996
  #
 -#  $Id: Makefile.in,v 1.34 2006/12/17 16:45:02 tom Exp $
-+#  $Id: Makefile.in,v 1.35 2008/11/23 00:17:20 juergen Exp $
++#  $Id: Makefile.in,v 1.36 2009/01/11 01:11:54 tom Exp $
  #
  .SUFFIXES:
  
+@@ -88,8 +88,8 @@
+ 
+ CARGS        =-cargs $(ADAFLAGS)
+ LARGS        =-largs @TEST_ARG2@ $(LD_FLAGS) -lAdaCurses
+- 
+-PROGS        = tour rain ncurses 
++
++PROGS        = tour rain ncurses
+ 
+ TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
+ 		sample-form_demo.o sample-function_key_setting.o 		\
 @@ -145,7 +145,7 @@
  
  clean :: mostlyclean
@@ -36,7 +177,7 @@ diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/
  	rm -f Makefile
 diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile.in
 --- ncurses-5.7.orig/Ada95/src/Makefile.in	2007-09-15 11:22:24.000000000 -0700
-+++ ncurses-5.7/Ada95/src/Makefile.in	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/Ada95/src/Makefile.in	2009-01-18 23:56:40.000000000 -0800
 @@ -1,5 +1,5 @@
  ##############################################################################
 -# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
@@ -49,12 +190,29 @@ diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile
  #  Author:  Juergen Pfeifer, 1996
  #
 -#  $Id: Makefile.in,v 1.31 2007/09/15 18:22:24 tom Exp $
-+#  $Id: Makefile.in,v 1.32 2009/01/03 19:12:01 tom Exp $
++#  $Id: Makefile.in,v 1.34 2009/01/11 01:11:44 tom Exp $
  #
  .SUFFIXES:
  
-@@ -46,7 +46,7 @@
- INSTALL_DATA	= @INSTALL_DATA@
+@@ -36,17 +36,22 @@
+ THIS		= Makefile
+ 
+ MODEL		= ../../@DFT_OBJ_SUBDIR@
++
+ DESTDIR		= @DESTDIR@
++
++top_srcdir	= @top_srcdir@
+ srcdir		= @srcdir@
+ prefix		= @prefix@
+ exec_prefix	= @exec_prefix@
+-ADA_INCLUDE	= @ADA_INCLUDE@
++
++ADA_INCLUDE	= $(DESTDIR)@ADA_INCLUDE@
++ADA_OBJECTS	= $(DESTDIR)@ADA_OBJECTS@
+ 
+ INSTALL		= @INSTALL@
+-INSTALL_DATA	= @INSTALL_DATA@
++INSTALL_LIB	= @INSTALL@ @INSTALL_LIB@
  
  AR		= @AR@
 -AR_OPTS		= @AR_OPTS@
@@ -62,18 +220,56 @@ diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile
  AWK		= @AWK@
  LN_S		= @LN_S@
  
-@@ -168,7 +168,7 @@
+@@ -75,11 +80,12 @@
+ ADAFLAGS        = @ADAFLAGS@ -I. -I$(srcdir)
+ 
+ ADAMAKE         = @cf_ada_make@
+-ADAMAKEFLAGS    = 
++ADAMAKEFLAGS    =
+ 
+ CARGS           = -cargs $(ADAFLAGS)
+ LARGS           =
+ 
++LIBRARY_FILE	= libAdaCurses.a
+ ALIB            = @cf_ada_package@
+ ABASE           = $(ALIB)-curses
+ 
+@@ -164,21 +170,25 @@
+ 	$(ABASE)-text_io-complex_io.o
+ 
+ 
+-all ::  libAdaCurses.a
++all ::  $(LIBRARY_FILE)
  	@echo done
  
- libAdaCurses.a :: dotouch $(LIBOBJS) @cf_generic_objects@
+-libAdaCurses.a :: dotouch $(LIBOBJS) @cf_generic_objects@
 -	$(AR) $(AR_OPTS) $@ $(LIBOBJS) @cf_generic_objects@
+-
+-dotouch :
+-	@sh -c 'for f in $(LIBALIS) $(GENALIS); do test -f $$f || touch $$f; done'
++$(LIBRARY_FILE) :: $(LIBOBJS) @cf_generic_objects@
 +	$(AR) $(ARFLAGS) $@ $(LIBOBJS) @cf_generic_objects@
  
- dotouch :
- 	@sh -c 'for f in $(LIBALIS) $(GENALIS); do test -f $$f || touch $$f; done'
+ sources :
+ 	@echo made $@
+ 
+ libs \
+ install \
+-install.libs \
++install.libs :: $(LIBRARY_FILE)
++	@echo made $(LIBRARY_FILE)
++
++install \
++install.libs :: $(LIBRARY_FILE)
++	@$(top_srcdir)/tar-copy.sh $(LIBRARY_FILE) . $(ADA_OBJECTS)
++	@echo made $@
++
+ uninstall \
+ uninstall.libs ::
+ 	@echo made $@
 diff -Naur ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb
 --- ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb	2008-07-26 11:51:11.000000000 -0700
-+++ ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb	2009-01-08 19:48:08.000000000 -0800
++++ ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb	2009-01-18 23:56:21.000000000 -0800
 @@ -35,8 +35,8 @@
  ------------------------------------------------------------------------------
  --  Author:  Juergen Pfeifer, 1996
@@ -96,7 +292,7 @@ diff -Naur ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb ncurse
           return True;
 diff -Naur ncurses-5.7.orig/INSTALL ncurses-5.7/INSTALL
 --- ncurses-5.7.orig/INSTALL	2008-11-02 13:13:51.000000000 -0800
-+++ ncurses-5.7/INSTALL	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/INSTALL	2009-01-18 23:56:34.000000000 -0800
 @@ -1,5 +1,5 @@
  -------------------------------------------------------------------------------
 --- Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.               --
@@ -147,7 +343,7 @@ diff -Naur ncurses-5.7.orig/INSTALL ncurses-5.7/INSTALL
  	programs (e.g., tic).  The test applications will still be built if you
 diff -Naur ncurses-5.7.orig/MANIFEST ncurses-5.7/MANIFEST
 --- ncurses-5.7.orig/MANIFEST	2008-10-25 16:47:24.000000000 -0700
-+++ ncurses-5.7/MANIFEST	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/MANIFEST	2009-01-18 23:56:34.000000000 -0800
 @@ -640,6 +640,7 @@
  ./man/ncurses.3x
  ./man/panel.3x
@@ -190,7 +386,7 @@ diff -Naur ncurses-5.7.orig/MANIFEST ncurses-5.7/MANIFEST
  ./test/keynames.c
 diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
 --- ncurses-5.7.orig/NEWS	2008-11-01 17:56:22.000000000 -0700
-+++ ncurses-5.7/NEWS	2009-01-08 19:48:34.000000000 -0800
++++ ncurses-5.7/NEWS	2009-01-18 23:56:41.000000000 -0800
 @@ -1,5 +1,5 @@
  -------------------------------------------------------------------------------
 --- Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.               --
@@ -203,14 +399,34 @@ diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
  -- authorization.                                                            --
  -------------------------------------------------------------------------------
 --- $Id: NEWS,v 1.1320 2008/11/02 00:56:22 tom Exp $
-+-- $Id: NEWS,v 1.1353 2009/01/06 00:26:35 tom Exp $
++-- $Id: NEWS,v 1.1358 2009/01/17 23:54:20 tom Exp $
  -------------------------------------------------------------------------------
  
  This is a log of changes that ncurses has gone through since Zeyd started
-@@ -45,6 +45,105 @@
+@@ -45,6 +45,125 @@
  Changes through 1.9.9e did not credit all contributions;
  it is not possible to add this information.
  
++20090117
++	+ add -shared option to MK_SHARED_LIB when -Bsharable is used, for
++	  *BSD's, without which "main" might be one of the shared library's
++	  dependencies (report/analysis by Ken Dickey).
++	+ modify waddch_literal(), updating line-pointer after a multicolumn
++	  character is found to not fit on the current row, and wrapping is
++	  done.  Since the line-pointer was not updated, the wrapped
++	  multicolumn character was written to the beginning of the current row
++	  (cf: 20041023, reported by "Nick" regarding problem with ncmpc
++	  http://musicpd.org/mantis/bug_view_page.php?bug_id=1930).
++
++20090110
++	+ add screen.Eterm terminfo entry (GenToo #124887) -TD
++	+ modify adacurses-config to look for ".ali" files in the adalib
++	  directory.
++	+ correct install for Ada95, which omitted libAdaCurses.a used in
++	  adacurses-config
++	+ change install for adacurses-config to provide additional flavors
++	  such as adacursesw-config, for ncursesw (GenToo #167849).
++
 +20090105
 +	+ remove undeveloped feature in ncurses-config.in for setting
 +	  prefix variable.
@@ -315,7 +531,7 @@ diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
  20081025
 diff -Naur ncurses-5.7.orig/TO-DO ncurses-5.7/TO-DO
 --- ncurses-5.7.orig/TO-DO	2008-10-11 12:22:27.000000000 -0700
-+++ ncurses-5.7/TO-DO	2009-01-08 19:48:12.000000000 -0800
++++ ncurses-5.7/TO-DO	2009-01-18 23:56:23.000000000 -0800
 @@ -25,7 +25,7 @@
  -- sale, use or other dealings in this Software without prior written        --
  -- authorization.                                                            --
@@ -393,7 +609,7 @@ diff -Naur ncurses-5.7.orig/TO-DO ncurses-5.7/TO-DO
  These are the potentially important ones for ncurses.  Notes:
 diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
 --- ncurses-5.7.orig/aclocal.m4	2008-10-25 15:15:32.000000000 -0700
-+++ ncurses-5.7/aclocal.m4	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/aclocal.m4	2009-01-18 23:56:41.000000000 -0800
 @@ -1,5 +1,5 @@
  dnl***************************************************************************
 -dnl Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -406,7 +622,7 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  dnl Author: Thomas E. Dickey 1995-on
  dnl
 -dnl $Id: aclocal.m4,v 1.470 2008/10/25 22:15:32 tom Exp $
-+dnl $Id: aclocal.m4,v 1.481 2009/01/04 00:11:12 tom Exp $
++dnl $Id: aclocal.m4,v 1.482 2009/01/17 21:10:05 tom Exp $
  dnl Macros used in NCURSES auto-configuration script.
  dnl
  dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -864,7 +1080,7 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  ])dnl
  dnl ---------------------------------------------------------------------------
 -dnl CF_SHARED_OPTS version: 53 updated: 2008/10/25 18:14:20
-+dnl CF_SHARED_OPTS version: 56 updated: 2009/01/03 19:10:38
++dnl CF_SHARED_OPTS version: 57 updated: 2009/01/17 16:10:05
  dnl --------------
  dnl --------------
  dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -920,7 +1136,7 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
  		fi
  		CF_SHARED_SONAME
-@@ -4306,7 +4445,7 @@
+@@ -4306,12 +4445,12 @@
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
  		fi
  		if test "$cf_cv_ld_rpath" = yes ; then
@@ -929,7 +1145,13 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
  		fi
  		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
-@@ -4323,7 +4462,7 @@
+ 		CF_SHARED_SONAME
+-		MK_SHARED_LIB='${CC} ${CFLAGS} -Wl,-Bshareable,-soname,'$cf_cv_shared_soname',-stats,-lc -o $[@]'
++		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-Bshareable,-soname,'$cf_cv_shared_soname',-stats,-lc -o $[@]'
+ 		;;
+ 	nto-qnx*|openbsd*|freebsd[[12]].*)
+ 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
+@@ -4323,15 +4462,15 @@
  		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
  			LOCAL_LDFLAGS="-rpath \$(LOCAL_LIBDIR)"
  			LOCAL_LDFLAGS2="-rpath \${libdir} $LOCAL_LDFLAGS"
@@ -938,7 +1160,8 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  			EXTRA_LDFLAGS="-rpath \${libdir} $EXTRA_LDFLAGS"
  		fi
  		CF_SHARED_SONAME
-@@ -4331,7 +4470,7 @@
+-		MK_SHARED_LIB='${LD} -Bshareable -soname=`basename $[@]` -o $[@]'
++		MK_SHARED_LIB='${LD} -shared -Bshareable -soname=`basename $[@]` -o $[@]'
  		;;
  	netbsd*)
  		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
@@ -947,6 +1170,15 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
  			LOCAL_LDFLAGS="-Wl,-rpath,\$(LOCAL_LIBDIR)"
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+@@ -4346,7 +4485,7 @@
+ 			CF_SHARED_SONAME
+ 			MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,'$cf_cv_shared_soname' -o $[@]'
+ 		else
+-			MK_SHARED_LIB='${LD} -Bshareable -o $[@]'
++			MK_SHARED_LIB='${LD} -shared -Bshareable -o $[@]'
+ 		fi
+ 		;;
+ 	osf*|mls+*)
 @@ -4365,7 +4504,7 @@
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
  		fi
@@ -1135,7 +1367,7 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  mirbsd*) #(vi
 diff -Naur ncurses-5.7.orig/c++/Makefile.in ncurses-5.7/c++/Makefile.in
 --- ncurses-5.7.orig/c++/Makefile.in	2007-04-28 08:29:12.000000000 -0700
-+++ ncurses-5.7/c++/Makefile.in	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/c++/Makefile.in	2009-01-18 23:56:34.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.84 2007/04/28 15:29:12 tom Exp $
 +# $Id: Makefile.in,v 1.85 2009/01/03 19:10:40 tom Exp $
@@ -1169,7 +1401,7 @@ diff -Naur ncurses-5.7.orig/c++/Makefile.in ncurses-5.7/c++/Makefile.in
  ../lib/$(LIBNAME_LIBTOOL) : $(LIB_OBJS)
 diff -Naur ncurses-5.7.orig/c++/cursesw.cc ncurses-5.7/c++/cursesw.cc
 --- ncurses-5.7.orig/c++/cursesw.cc	2007-12-15 15:01:57.000000000 -0800
-+++ ncurses-5.7/c++/cursesw.cc	2009-01-08 19:48:09.000000000 -0800
++++ ncurses-5.7/c++/cursesw.cc	2009-01-18 23:56:21.000000000 -0800
 @@ -1,6 +1,6 @@
  // * this is for making emacs happy: -*-Mode: C++;-*-
  /****************************************************************************
@@ -1206,7 +1438,7 @@ diff -Naur ncurses-5.7.orig/c++/cursesw.cc ncurses-5.7/c++/cursesw.cc
  #endif
 diff -Naur ncurses-5.7.orig/config.guess ncurses-5.7/config.guess
 --- ncurses-5.7.orig/config.guess	2008-08-30 13:25:07.000000000 -0700
-+++ ncurses-5.7/config.guess	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/config.guess	2009-01-18 23:56:34.000000000 -0800
 @@ -4,7 +4,7 @@
  #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
  #   Free Software Foundation, Inc.
@@ -1276,7 +1508,7 @@ diff -Naur ncurses-5.7.orig/config.guess ncurses-5.7/config.guess
  	exit ;;
 diff -Naur ncurses-5.7.orig/config.sub ncurses-5.7/config.sub
 --- ncurses-5.7.orig/config.sub	2008-08-30 13:25:02.000000000 -0700
-+++ ncurses-5.7/config.sub	2009-01-08 19:48:29.000000000 -0800
++++ ncurses-5.7/config.sub	2009-01-18 23:56:34.000000000 -0800
 @@ -4,7 +4,7 @@
  #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
  #   Free Software Foundation, Inc.
@@ -1360,11 +1592,11 @@ diff -Naur ncurses-5.7.orig/config.sub ncurses-5.7/config.sub
  	sparc | sparcv8 | sparcv9 | sparcv9b | sparcv9v)
 diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
 --- ncurses-5.7.orig/configure	2008-10-25 17:04:38.000000000 -0700
-+++ ncurses-5.7/configure	2009-01-08 19:48:34.000000000 -0800
++++ ncurses-5.7/configure	2009-01-18 23:56:41.000000000 -0800
 @@ -1,7 +1,7 @@
  #! /bin/sh
 -# From configure.in Revision: 1.454 .
-+# From configure.in Revision: 1.463 .
++# From configure.in Revision: 1.464 .
  # Guess values for system-dependent variables and create Makefiles.
 -# Generated by Autoconf 2.52.20080325.
 +# Generated by Autoconf 2.52.20081225.
@@ -4751,6 +4983,15 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
  		fi
  		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
+@@ -5143,7 +5393,7 @@
+ 		cf_cv_shared_soname='`basename $@`'
+ 	fi
+ 
+-		MK_SHARED_LIB='${CC} ${CFLAGS} -Wl,-Bshareable,-soname,'$cf_cv_shared_soname',-stats,-lc -o $@'
++		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-Bshareable,-soname,'$cf_cv_shared_soname',-stats,-lc -o $@'
+ 		;;
+ 	nto-qnx*|openbsd*|freebsd[12].*)
+ 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 @@ -5155,7 +5405,7 @@
  		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
  			LOCAL_LDFLAGS="-rpath \$(LOCAL_LIBDIR)"
@@ -4760,7 +5001,12 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  			EXTRA_LDFLAGS="-rpath \${libdir} $EXTRA_LDFLAGS"
  		fi
  
-@@ -5170,7 +5420,7 @@
+@@ -5166,11 +5416,11 @@
+ 		cf_cv_shared_soname='`basename $@`'
+ 	fi
+ 
+-		MK_SHARED_LIB='${LD} -Bshareable -soname=`basename $@` -o $@'
++		MK_SHARED_LIB='${LD} -shared -Bshareable -soname=`basename $@` -o $@'
  		;;
  	netbsd*)
  		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
@@ -4769,6 +5015,15 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
  			LOCAL_LDFLAGS="-Wl,-rpath,\$(LOCAL_LIBDIR)"
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+@@ -5192,7 +5442,7 @@
+ 
+ 			MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,'$cf_cv_shared_soname' -o $@'
+ 		else
+-			MK_SHARED_LIB='${LD} -Bshareable -o $@'
++			MK_SHARED_LIB='${LD} -shared -Bshareable -o $@'
+ 		fi
+ 		;;
+ 	osf*|mls+*)
 @@ -5211,7 +5461,7 @@
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
  		fi
@@ -12577,7 +12832,7 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  fi
  
  SUB_MAKEFILES=
-@@ -16639,10 +16999,10 @@
+@@ -16639,15 +16999,15 @@
  done
  
  if test -n "$ADA_SUBDIRS"; then
@@ -12592,6 +12847,12 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  
  fi
  
+ if test "$cf_with_ada" != "no" && test "$cf_cv_prog_gnat_correct" != "no"; then
+-   SUB_MAKEFILES="$SUB_MAKEFILES Ada95/gen/adacurses-config"
++   SUB_MAKEFILES="$SUB_MAKEFILES Ada95/gen/adacurses${DFT_ARG_SUFFIX}-config:Ada95/gen/adacurses-config.in"
+ fi
+ 
+ DIRS_TO_MAKE="lib"
 @@ -16760,18 +17120,18 @@
  ### If we're building with rpath, try to link non-standard libs that way too.
  if test "$DFT_LWR_MODEL" = "shared"; then
@@ -13016,7 +13277,7 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  
 diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
 --- ncurses-5.7.orig/configure.in	2008-10-18 07:53:32.000000000 -0700
-+++ ncurses-5.7/configure.in	2009-01-08 19:48:34.000000000 -0800
++++ ncurses-5.7/configure.in	2009-01-18 23:56:40.000000000 -0800
 @@ -1,5 +1,5 @@
  dnl***************************************************************************
 -dnl Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -13029,7 +13290,7 @@ diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
  dnl Author: Thomas E. Dickey 1995-on
  dnl
 -dnl $Id: configure.in,v 1.454 2008/10/18 14:53:32 tom Exp $
-+dnl $Id: configure.in,v 1.463 2009/01/06 01:40:09 tom Exp $
++dnl $Id: configure.in,v 1.464 2009/01/10 19:18:03 tom Exp $
  dnl Process this file with autoconf to produce a configure script.
  dnl
  dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -13037,7 +13298,7 @@ diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
  dnl ---------------------------------------------------------------------------
  AC_PREREQ(2.13.20020210)
 -AC_REVISION($Revision: 1.454 $)
-+AC_REVISION($Revision: 1.463 $)
++AC_REVISION($Revision: 1.464 $)
  AC_INIT(ncurses/base/lib_initscr.c)
  AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
  
@@ -13158,6 +13419,15 @@ diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
  
  AC_SUBST(WITH_OVERWRITE)
  AC_SUBST(TICS_LIST)
+@@ -1742,7 +1778,7 @@
+ CF_SRC_MODULES($modules_to_build)
+ 
+ if test "$cf_with_ada" != "no" && test "$cf_cv_prog_gnat_correct" != "no"; then
+-   SUB_MAKEFILES="$SUB_MAKEFILES Ada95/gen/adacurses-config"
++   SUB_MAKEFILES="$SUB_MAKEFILES Ada95/gen/adacurses${DFT_ARG_SUFFIX}-config:Ada95/gen/adacurses-config.in"
+ fi
+ 
+ CF_DIRS_TO_MAKE
 @@ -1765,8 +1801,19 @@
  CF_SUBST_IF(["$ac_cv_header_termios_h" = yes], HAVE_TERMIOS_H, 1, 0)
  
@@ -13206,13 +13476,13 @@ diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
  
 diff -Naur ncurses-5.7.orig/dist.mk ncurses-5.7/dist.mk
 --- ncurses-5.7.orig/dist.mk	2008-11-01 17:58:38.000000000 -0700
-+++ ncurses-5.7/dist.mk	2009-01-08 19:48:34.000000000 -0800
++++ ncurses-5.7/dist.mk	2009-01-18 23:56:41.000000000 -0800
 @@ -25,7 +25,7 @@
  # use or other dealings in this Software without prior written               #
  # authorization.                                                             #
  ##############################################################################
 -# $Id: dist.mk,v 1.671 2008/11/02 00:58:38 tom Exp $
-+# $Id: dist.mk,v 1.681 2009/01/05 23:52:40 tom Exp $
++# $Id: dist.mk,v 1.683 2009/01/17 16:29:15 tom Exp $
  # Makefile for creating ncurses distributions.
  #
  # This only needs to be used directly as a makefile by developers, but
@@ -13221,13 +13491,13 @@ diff -Naur ncurses-5.7.orig/dist.mk ncurses-5.7/dist.mk
  NCURSES_MAJOR = 5
  NCURSES_MINOR = 7
 -NCURSES_PATCH = 20081102
-+NCURSES_PATCH = 20090105
++NCURSES_PATCH = 20090117
  
  # We don't append the patch to the version, since this only applies to releases
  VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
 diff -Naur ncurses-5.7.orig/form/Makefile.in ncurses-5.7/form/Makefile.in
 --- ncurses-5.7.orig/form/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/form/Makefile.in	2009-01-08 19:48:30.000000000 -0800
++++ ncurses-5.7/form/Makefile.in	2009-01-18 23:56:35.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.47 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.48 2009/01/03 19:09:26 tom Exp $
@@ -13248,7 +13518,7 @@ diff -Naur ncurses-5.7.orig/form/Makefile.in ncurses-5.7/form/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/form/frm_driver.c ncurses-5.7/form/frm_driver.c
 --- ncurses-5.7.orig/form/frm_driver.c	2008-10-18 09:25:00.000000000 -0700
-+++ ncurses-5.7/form/frm_driver.c	2009-01-08 19:48:14.000000000 -0800
++++ ncurses-5.7/form/frm_driver.c	2009-01-18 23:56:25.000000000 -0800
 @@ -32,7 +32,7 @@
  
  #include "form.priv.h"
@@ -13268,7 +13538,7 @@ diff -Naur ncurses-5.7.orig/form/frm_driver.c ncurses-5.7/form/frm_driver.c
  
 diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
 --- ncurses-5.7.orig/include/curses.h.in	2008-08-30 13:11:29.000000000 -0700
-+++ ncurses-5.7/include/curses.h.in	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/include/curses.h.in	2009-01-18 23:56:29.000000000 -0800
 @@ -32,7 +32,7 @@
   *     and: Thomas E. Dickey                        1996-on                 *
   ****************************************************************************/
@@ -13324,7 +13594,7 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
  #define curses_version() NCURSES_VERSION
 diff -Naur ncurses-5.7.orig/include/curses.tail ncurses-5.7/include/curses.tail
 --- ncurses-5.7.orig/include/curses.tail	2008-07-05 13:20:38.000000000 -0700
-+++ ncurses-5.7/include/curses.tail	2009-01-08 19:48:09.000000000 -0800
++++ ncurses-5.7/include/curses.tail	2009-01-18 23:56:21.000000000 -0800
 @@ -1,4 +1,4 @@
 -/* $Id: curses.tail,v 1.16 2008/07/05 20:20:38 tom Exp $ */
 +/* $Id: curses.tail,v 1.17 2008/11/23 00:12:12 tom Exp $ */
@@ -13341,7 +13611,7 @@ diff -Naur ncurses-5.7.orig/include/curses.tail ncurses-5.7/include/curses.tail
  extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
 diff -Naur ncurses-5.7.orig/include/curses.wide ncurses-5.7/include/curses.wide
 --- ncurses-5.7.orig/include/curses.wide	2007-03-10 09:52:23.000000000 -0800
-+++ ncurses-5.7/include/curses.wide	2009-01-08 19:48:12.000000000 -0800
++++ ncurses-5.7/include/curses.wide	2009-01-18 23:56:23.000000000 -0800
 @@ -1,9 +1,11 @@
 -/* $Id: curses.wide,v 1.34 2007/03/10 17:52:23 tom Exp $ */
 +/* $Id: curses.wide,v 1.36 2008/11/29 18:44:08 tom Exp $ */
@@ -13357,7 +13627,7 @@ diff -Naur ncurses-5.7.orig/include/curses.wide ncurses-5.7/include/curses.wide
  extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
 diff -Naur ncurses-5.7.orig/man/curs_mouse.3x ncurses-5.7/man/curs_mouse.3x
 --- ncurses-5.7.orig/man/curs_mouse.3x	2006-12-30 15:43:34.000000000 -0800
-+++ ncurses-5.7/man/curs_mouse.3x	2009-01-08 19:48:09.000000000 -0800
++++ ncurses-5.7/man/curs_mouse.3x	2009-01-18 23:56:21.000000000 -0800
 @@ -1,6 +1,6 @@
  '\" t
  .\"***************************************************************************
@@ -13403,7 +13673,7 @@ diff -Naur ncurses-5.7.orig/man/curs_mouse.3x ncurses-5.7/man/curs_mouse.3x
  function such as \fBgetstr\fR that expects a linefeed for input-loop
 diff -Naur ncurses-5.7.orig/man/keybound.3x ncurses-5.7/man/keybound.3x
 --- ncurses-5.7.orig/man/keybound.3x	2006-02-25 13:47:06.000000000 -0800
-+++ ncurses-5.7/man/keybound.3x	2009-01-08 19:48:18.000000000 -0800
++++ ncurses-5.7/man/keybound.3x	2009-01-18 23:56:27.000000000 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1999-2003,2006 Free Software Foundation, Inc.              *
@@ -13424,7 +13694,7 @@ diff -Naur ncurses-5.7.orig/man/keybound.3x ncurses-5.7/man/keybound.3x
  .SH SYNOPSIS
 diff -Naur ncurses-5.7.orig/man/tabs.1 ncurses-5.7/man/tabs.1
 --- ncurses-5.7.orig/man/tabs.1	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/man/tabs.1	2009-01-08 19:48:01.000000000 -0800
++++ ncurses-5.7/man/tabs.1	2009-01-18 23:56:19.000000000 -0800
 @@ -0,0 +1,143 @@
 +.\"***************************************************************************
 +.\" Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -13571,7 +13841,7 @@ diff -Naur ncurses-5.7.orig/man/tabs.1 ncurses-5.7/man/tabs.1
 +.\"# End:
 diff -Naur ncurses-5.7.orig/man/tset.1 ncurses-5.7/man/tset.1
 --- ncurses-5.7.orig/man/tset.1	2006-12-24 07:00:30.000000000 -0800
-+++ ncurses-5.7/man/tset.1	2009-01-08 19:48:01.000000000 -0800
++++ ncurses-5.7/man/tset.1	2009-01-18 23:56:19.000000000 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -13592,7 +13862,7 @@ diff -Naur ncurses-5.7.orig/man/tset.1 ncurses-5.7/man/tset.1
  .SH SYNOPSIS
 diff -Naur ncurses-5.7.orig/menu/Makefile.in ncurses-5.7/menu/Makefile.in
 --- ncurses-5.7.orig/menu/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/menu/Makefile.in	2009-01-08 19:48:30.000000000 -0800
++++ ncurses-5.7/menu/Makefile.in	2009-01-18 23:56:35.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.48 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.49 2009/01/03 19:09:26 tom Exp $
@@ -13613,7 +13883,7 @@ diff -Naur ncurses-5.7.orig/menu/Makefile.in ncurses-5.7/menu/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/misc/Makefile.in ncurses-5.7/misc/Makefile.in
 --- ncurses-5.7.orig/misc/Makefile.in	2007-03-31 08:54:17.000000000 -0700
-+++ ncurses-5.7/misc/Makefile.in	2009-01-08 19:48:30.000000000 -0800
++++ ncurses-5.7/misc/Makefile.in	2009-01-18 23:56:35.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.43 2007/03/31 15:54:17 tom Exp $
 +# $Id: Makefile.in,v 1.48 2009/01/03 23:52:41 tom Exp $
@@ -13678,7 +13948,7 @@ diff -Naur ncurses-5.7.orig/misc/Makefile.in ncurses-5.7/misc/Makefile.in
  realclean : distclean
 diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig.in
 --- ncurses-5.7.orig/misc/gen-pkgconfig.in	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/misc/gen-pkgconfig.in	2009-01-08 19:48:32.000000000 -0800
++++ ncurses-5.7/misc/gen-pkgconfig.in	2009-01-18 23:56:36.000000000 -0800
 @@ -0,0 +1,119 @@
 +#!@SHELL@
 +# $Id: gen-pkgconfig.in,v 1.4 2009/01/04 21:52:33 tom Exp $
@@ -13801,7 +14071,7 @@ diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig
 +# vile:shmode
 diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-config.in
 --- ncurses-5.7.orig/misc/ncurses-config.in	2007-03-17 13:02:19.000000000 -0700
-+++ ncurses-5.7/misc/ncurses-config.in	2009-01-08 19:48:34.000000000 -0800
++++ ncurses-5.7/misc/ncurses-config.in	2009-01-18 23:56:38.000000000 -0800
 @@ -1,7 +1,7 @@
  #!@SHELL@
 -# $Id: ncurses-config.in,v 1.12 2007/03/17 20:02:19 tom Exp $
@@ -13928,15 +14198,15 @@ diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-conf
    --terminfo         echos the \$TERMINFO terminfo database path
 diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
 --- ncurses-5.7.orig/misc/terminfo.src	2008-10-12 16:03:54.000000000 -0700
-+++ ncurses-5.7/misc/terminfo.src	2009-01-08 19:48:12.000000000 -0800
++++ ncurses-5.7/misc/terminfo.src	2009-01-18 23:56:40.000000000 -0800
 @@ -6,8 +6,8 @@
  # Report bugs and new terminal descriptions to
  #	bug-ncurses@gnu.org
  #
 -#	$Revision: 1.341 $
 -#	$Date: 2008/10/12 23:03:54 $
-+#	$Revision: 1.343 $
-+#	$Date: 2008/11/29 15:27:35 $
++#	$Revision: 1.345 $
++#	$Date: 2009/01/11 00:47:37 $
  #
  # The original header is preserved below for reference.  It is noted that there
  # is a "newer" version which differs in some cosmetic details (but actually
@@ -14012,7 +14282,16 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  # Entries for use by the `screen' program by Juergen Weigert,
  # Michael Schroeder, Oliver Laumann.  The screen and
  # screen-w entries came with version 3.7.1.  The screen2 and screen3 entries
-@@ -5247,7 +5267,7 @@
+@@ -4497,6 +4517,8 @@
+ 	cvvis@, flash@, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC,
+ 	kcuu1=\EOA, use=screen+fkeys, use=vt100+enq,
+ 	use=rxvt+pcfkeys, use=vt220+keypad, use=screen,
++screen.Eterm|screen in Eterm,
++	use=screen+fkeys, use=Eterm,
+ # fix the backspace key
+ screen.linux|screen in linux console,
+ 	bw,
+@@ -5247,7 +5269,7 @@
  	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
  	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%;m,
  	sgr0=\E[0;10m, smacs=\E[11m, smir=\E[4h, smso=\E[7m,
@@ -14021,7 +14300,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  
  # Key definitions:
  # The encodings for unshifted arrow keys, F1-F12, Home, Insert, etc.  match the
-@@ -11060,7 +11080,7 @@
+@@ -11060,7 +11082,7 @@
  	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p6%t1;%;m,
  	sgr0=\E[m,
  	smkx=\EP`>z~[[J`8xz~[[A`4xz~[[D`6xz~[[C`2xz~[[B\E\\,
@@ -14030,7 +14309,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  	vpa=\E[%p1%{1}%+%dd,
  
  aaa+rv|ann arbor ambassador in reverse video,
-@@ -12147,7 +12167,7 @@
+@@ -12147,7 +12169,7 @@
  	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p6%t1;%;m,
  	sgr0=\E[m, smacs=\017$<1>, smcup=\E[=4l\E[1;24w\E2\r,
  	smir=\E[4h, smkx=\E[1!z\E[0;3u, smso=\E[7m, smul=\E[4m,
@@ -14039,7 +14318,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  avt-rv-ns|concept avt in reverse video mode/no status line,
  	flash=\E[=205l$<200>\E[=205h, is1=\E[=103l\E[=205h,
  	use=avt-ns,
-@@ -14584,7 +14604,7 @@
+@@ -14584,7 +14606,7 @@
  	sc=\E[%y,
  	sgr=\E[%{0}%?%p1%p3%|%t%{7}%+%;%?%p2%t%{2}%+%;%?%p4%t%{5}%+%;%?%p6%t%{1}%+%;m%?%p8%t\E[%{32}%+%d%%{%;%?%p9%t\016%e\017%;,
  	sgr0=\E[0m\017, smir=\E[4h, smso=\E[7m, smul=\E[4m,
@@ -14048,7 +14327,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  
  # p9-w: Prism-9 in 132 column mode
  # --------------------------------
-@@ -16037,7 +16057,7 @@
+@@ -16037,7 +16059,7 @@
  	rep=%p1%c\E[%p2%{1}%-%db, rev=\E[7m, rmam=\E[?7l,
  	rmso=\E[m, rmul=\E[m,
  	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p6%t1;%;m,
@@ -14057,7 +14336,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  	vpa=\E[%p1%{1}%+%dd,
  # The tek4125 emulates a vt100 incorrectly - the scrolling region
  # command is ignored.  The following entry replaces <csr> with the needed
-@@ -17729,7 +17749,7 @@
+@@ -17729,7 +17751,7 @@
  	rmul=\E[m, rs2=\E[?=h\Ec, s0ds=^O, s1ds=^N,
  	sgr=\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
  	sgr0=\E[m\017, smacs=^N, smcup=\E[?>h\EPY99\:98\E\\,
@@ -14066,7 +14345,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  	tsl=\EPY99\:98\E\\\E[0;98v\E[2;7m,
  tws2102-sna|dku7102-sna|BULL Questar tws2102 for SNA,
  	dsl=\E[0;98v\E[2J\E[v, fsl=\E[v, is3=\Eb, tsl=\E[0;98v,
-@@ -21791,6 +21811,13 @@
+@@ -21791,6 +21813,16 @@
  #	* add "aterm" -TD
  #	* add "linux2.6.26" -TD
  #
@@ -14077,12 +14356,15 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
 +# 2008-11-29
 +#	* add eterm-color -TD
 +#
++# 2009-01-10
++#	* add screen.Eterm -TD
++#
  # The following sets edit modes for GNU EMACS.
  # Local Variables:
  # fill-prefix:"\t"
 diff -Naur ncurses-5.7.orig/mk-1st.awk ncurses-5.7/mk-1st.awk
 --- ncurses-5.7.orig/mk-1st.awk	2007-03-24 15:10:55.000000000 -0700
-+++ ncurses-5.7/mk-1st.awk	2009-01-08 19:48:32.000000000 -0800
++++ ncurses-5.7/mk-1st.awk	2009-01-18 23:56:36.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: mk-1st.awk,v 1.78 2007/03/24 22:10:55 tom Exp $
 +# $Id: mk-1st.awk,v 1.80 2009/01/04 21:51:38 tom Exp $
@@ -14112,7 +14394,7 @@ diff -Naur ncurses-5.7.orig/mk-1st.awk ncurses-5.7/mk-1st.awk
  				{
 diff -Naur ncurses-5.7.orig/ncurses/Makefile.in ncurses-5.7/ncurses/Makefile.in
 --- ncurses-5.7.orig/ncurses/Makefile.in	2008-10-18 07:11:54.000000000 -0700
-+++ ncurses-5.7/ncurses/Makefile.in	2009-01-08 19:48:30.000000000 -0800
++++ ncurses-5.7/ncurses/Makefile.in	2009-01-18 23:56:35.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.113 2008/10/18 14:11:54 tom Exp $
 +# $Id: Makefile.in,v 1.114 2009/01/03 19:09:26 tom Exp $
@@ -14133,13 +14415,20 @@ diff -Naur ncurses-5.7.orig/ncurses/Makefile.in ncurses-5.7/ncurses/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_addch.c ncurses-5.7/ncurses/base/lib_addch.c
 --- ncurses-5.7.orig/ncurses/base/lib_addch.c	2008-08-16 12:20:04.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_addch.c	2009-01-08 19:48:12.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_addch.c	2009-01-18 23:56:41.000000000 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
 @@ -36,7 +36,7 @@
  #include <curses.priv.h>
  #include <ctype.h>
  
 -MODULE_ID("$Id: lib_addch.c,v 1.113 2008/08/16 19:20:04 tom Exp $")
-+MODULE_ID("$Id: lib_addch.c,v 1.114 2008/11/29 21:02:10 tom Exp $")
++MODULE_ID("$Id: lib_addch.c,v 1.115 2009/01/17 20:37:32 tom Exp $")
  
  static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
  
@@ -14173,9 +14462,17 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_addch.c ncurses-5.7/ncurses/base/li
  	    } else {
  		return OK;
  	    }
+@@ -327,6 +337,7 @@
+ 		    return ERR;
+ 		x = win->_curx;
+ 		y = win->_cury;
++		line = win->_line + y;
+ 	    }
+ 	    /*
+ 	     * Check for cells which are orphaned by adding this character, set
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_freeall.c ncurses-5.7/ncurses/base/lib_freeall.c
 --- ncurses-5.7.orig/ncurses/base/lib_freeall.c	2008-09-27 06:09:57.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_freeall.c	2009-01-08 19:48:14.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_freeall.c	2009-01-18 23:56:25.000000000 -0800
 @@ -40,7 +40,7 @@
  extern int malloc_errfd;	/* FIXME */
  #endif
@@ -14196,7 +14493,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_freeall.c ncurses-5.7/ncurses/base/
  #ifdef TRACE
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_mouse.c ncurses-5.7/ncurses/base/lib_mouse.c
 --- ncurses-5.7.orig/ncurses/base/lib_mouse.c	2008-10-18 14:48:55.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_mouse.c	2009-01-08 19:48:15.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_mouse.c	2009-01-18 23:56:25.000000000 -0800
 @@ -79,7 +79,7 @@
  
  #include <curses.priv.h>
@@ -14255,7 +14552,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_mouse.c ncurses-5.7/ncurses/base/li
  NCURSES_EXPORT(bool)
 diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.priv.h
 --- ncurses-5.7.orig/ncurses/curses.priv.h	2008-10-04 14:37:45.000000000 -0700
-+++ ncurses-5.7/ncurses/curses.priv.h	2009-01-08 19:48:09.000000000 -0800
++++ ncurses-5.7/ncurses/curses.priv.h	2009-01-18 23:56:21.000000000 -0800
 @@ -34,7 +34,7 @@
  
  
@@ -14276,7 +14573,7 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  #define INFINITY	1000000	/* cost: too high to use */
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/entries.c ncurses-5.7/ncurses/tinfo/entries.c
 --- ncurses-5.7.orig/ncurses/tinfo/entries.c	2008-09-27 06:11:10.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/entries.c	2009-01-08 19:48:15.000000000 -0800
++++ ncurses-5.7/ncurses/tinfo/entries.c	2009-01-18 23:56:25.000000000 -0800
 @@ -37,7 +37,7 @@
  #include <tic.h>
  #include <term_entry.h>
@@ -14298,7 +14595,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/entries.c ncurses-5.7/ncurses/tinfo/en
      _nc_free_entries(_nc_head);
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/hashed_db.c ncurses-5.7/ncurses/tinfo/hashed_db.c
 --- ncurses-5.7.orig/ncurses/tinfo/hashed_db.c	2006-08-19 12:48:38.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/hashed_db.c	2009-01-08 19:48:18.000000000 -0800
++++ ncurses-5.7/ncurses/tinfo/hashed_db.c	2009-01-18 23:56:27.000000000 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2006 Free Software Foundation, Inc.                        *
@@ -14404,7 +14701,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/hashed_db.c ncurses-5.7/ncurses/tinfo/
  
 diff -Naur ncurses-5.7.orig/panel/Makefile.in ncurses-5.7/panel/Makefile.in
 --- ncurses-5.7.orig/panel/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/panel/Makefile.in	2009-01-08 19:48:30.000000000 -0800
++++ ncurses-5.7/panel/Makefile.in	2009-01-18 23:56:35.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.52 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.53 2009/01/03 19:09:26 tom Exp $
@@ -14425,7 +14722,7 @@ diff -Naur ncurses-5.7.orig/panel/Makefile.in ncurses-5.7/panel/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/progs/Makefile.in ncurses-5.7/progs/Makefile.in
 --- ncurses-5.7.orig/progs/Makefile.in	2008-09-07 06:58:55.000000000 -0700
-+++ ncurses-5.7/progs/Makefile.in	2009-01-08 19:48:01.000000000 -0800
++++ ncurses-5.7/progs/Makefile.in	2009-01-18 23:56:19.000000000 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.79 2008/09/07 13:58:55 tom Exp $
 +# $Id: Makefile.in,v 1.80 2008/11/15 19:04:19 tom Exp $
@@ -14491,7 +14788,7 @@ diff -Naur ncurses-5.7.orig/progs/Makefile.in ncurses-5.7/progs/Makefile.in
  
 diff -Naur ncurses-5.7.orig/progs/modules ncurses-5.7/progs/modules
 --- ncurses-5.7.orig/progs/modules	2006-12-23 16:53:21.000000000 -0800
-+++ ncurses-5.7/progs/modules	2009-01-08 19:48:01.000000000 -0800
++++ ncurses-5.7/progs/modules	2009-01-18 23:56:19.000000000 -0800
 @@ -1,7 +1,7 @@
 -# $Id: modules,v 1.13 2006/12/24 00:53:21 tom Exp $
 +# $Id: modules,v 1.14 2008/11/15 16:26:48 tom Exp $
@@ -14512,7 +14809,7 @@ diff -Naur ncurses-5.7.orig/progs/modules ncurses-5.7/progs/modules
  
 diff -Naur ncurses-5.7.orig/progs/tabs.c ncurses-5.7/progs/tabs.c
 --- ncurses-5.7.orig/progs/tabs.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/progs/tabs.c	2009-01-08 19:48:09.000000000 -0800
++++ ncurses-5.7/progs/tabs.c	2009-01-18 23:56:21.000000000 -0800
 @@ -0,0 +1,506 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -15022,7 +15319,7 @@ diff -Naur ncurses-5.7.orig/progs/tabs.c ncurses-5.7/progs/tabs.c
 +}
 diff -Naur ncurses-5.7.orig/test/README ncurses-5.7/test/README
 --- ncurses-5.7.orig/test/README	2008-10-18 14:02:45.000000000 -0700
-+++ ncurses-5.7/test/README	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/README	2009-01-18 23:56:30.000000000 -0800
 @@ -25,7 +25,7 @@
  -- sale, use or other dealings in this Software without prior written        --
  -- authorization.                                                            --
@@ -15318,7 +15615,7 @@ diff -Naur ncurses-5.7.orig/test/README ncurses-5.7/test/README
  wscrl				test: ncurses testcurs
 diff -Naur ncurses-5.7.orig/test/clip_printw.c ncurses-5.7/test/clip_printw.c
 --- ncurses-5.7.orig/test/clip_printw.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/test/clip_printw.c	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/clip_printw.c	2009-01-18 23:56:30.000000000 -0800
 @@ -0,0 +1,360 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -15682,7 +15979,7 @@ diff -Naur ncurses-5.7.orig/test/clip_printw.c ncurses-5.7/test/clip_printw.c
 +}
 diff -Naur ncurses-5.7.orig/test/demo_forms.c ncurses-5.7/test/demo_forms.c
 --- ncurses-5.7.orig/test/demo_forms.c	2008-10-18 13:38:20.000000000 -0700
-+++ ncurses-5.7/test/demo_forms.c	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/demo_forms.c	2009-01-18 23:56:30.000000000 -0800
 @@ -26,7 +26,7 @@
   * authorization.                                                           *
   ****************************************************************************/
@@ -15717,7 +16014,7 @@ diff -Naur ncurses-5.7.orig/test/demo_forms.c ncurses-5.7/test/demo_forms.c
      }
 diff -Naur ncurses-5.7.orig/test/edit_field.c ncurses-5.7/test/edit_field.c
 --- ncurses-5.7.orig/test/edit_field.c	2008-10-18 13:40:20.000000000 -0700
-+++ ncurses-5.7/test/edit_field.c	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/edit_field.c	2009-01-18 23:56:30.000000000 -0800
 @@ -26,7 +26,7 @@
   * authorization.                                                           *
   ****************************************************************************/
@@ -15740,7 +16037,7 @@ diff -Naur ncurses-5.7.orig/test/edit_field.c ncurses-5.7/test/edit_field.c
  int
 diff -Naur ncurses-5.7.orig/test/edit_field.h ncurses-5.7/test/edit_field.h
 --- ncurses-5.7.orig/test/edit_field.h	2006-06-03 09:38:57.000000000 -0700
-+++ ncurses-5.7/test/edit_field.h	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/edit_field.h	2009-01-18 23:56:30.000000000 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2003-2004,2005 Free Software Foundation, Inc.              *
@@ -15770,7 +16067,7 @@ diff -Naur ncurses-5.7.orig/test/edit_field.h ncurses-5.7/test/edit_field.h
  
 diff -Naur ncurses-5.7.orig/test/filter.c ncurses-5.7/test/filter.c
 --- ncurses-5.7.orig/test/filter.c	2006-12-09 08:53:47.000000000 -0800
-+++ ncurses-5.7/test/filter.c	2009-01-08 19:48:15.000000000 -0800
++++ ncurses-5.7/test/filter.c	2009-01-18 23:56:25.000000000 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -15842,7 +16139,7 @@ diff -Naur ncurses-5.7.orig/test/filter.c ncurses-5.7/test/filter.c
  
 diff -Naur ncurses-5.7.orig/test/insdelln.c ncurses-5.7/test/insdelln.c
 --- ncurses-5.7.orig/test/insdelln.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/test/insdelln.c	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/insdelln.c	2009-01-18 23:56:30.000000000 -0800
 @@ -0,0 +1,380 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -16226,7 +16523,7 @@ diff -Naur ncurses-5.7.orig/test/insdelln.c ncurses-5.7/test/insdelln.c
 +}
 diff -Naur ncurses-5.7.orig/test/modules ncurses-5.7/test/modules
 --- ncurses-5.7.orig/test/modules	2007-08-18 10:57:08.000000000 -0700
-+++ ncurses-5.7/test/modules	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/modules	2009-01-18 23:56:30.000000000 -0800
 @@ -1,4 +1,4 @@
 -# $Id: modules,v 1.36 2007/08/18 17:57:08 tom Exp $
 +# $Id: modules,v 1.37 2008/12/20 21:38:44 tom Exp $
@@ -16251,7 +16548,7 @@ diff -Naur ncurses-5.7.orig/test/modules ncurses-5.7/test/modules
  keynames	progs		$(srcdir)	$(HEADER_DEPS)
 diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
 --- ncurses-5.7.orig/test/ncurses.c	2008-09-27 07:34:58.000000000 -0700
-+++ ncurses-5.7/test/ncurses.c	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/ncurses.c	2009-01-18 23:56:30.000000000 -0800
 @@ -40,7 +40,7 @@
     Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
             Thomas E. Dickey (beginning revision 1.27 in 1996).
@@ -16527,7 +16824,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  	wbkgdset(win, ' ' | A_NORMAL);
 diff -Naur ncurses-5.7.orig/test/programs ncurses-5.7/test/programs
 --- ncurses-5.7.orig/test/programs	2008-08-16 14:47:39.000000000 -0700
-+++ ncurses-5.7/test/programs	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/programs	2009-01-18 23:56:30.000000000 -0800
 @@ -1,4 +1,4 @@
 -# $Id: programs,v 1.14 2008/08/16 21:47:39 tom Exp $
 +# $Id: programs,v 1.15 2008/12/20 21:38:44 tom Exp $
@@ -16552,7 +16849,7 @@ diff -Naur ncurses-5.7.orig/test/programs ncurses-5.7/test/programs
  keynames	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	keynames
 diff -Naur ncurses-5.7.orig/test/test.priv.h ncurses-5.7/test/test.priv.h
 --- ncurses-5.7.orig/test/test.priv.h	2008-10-04 14:53:41.000000000 -0700
-+++ ncurses-5.7/test/test.priv.h	2009-01-08 19:48:22.000000000 -0800
++++ ncurses-5.7/test/test.priv.h	2009-01-18 23:56:30.000000000 -0800
 @@ -29,7 +29,7 @@
  /****************************************************************************
   *  Author: Thomas E. Dickey                    1996-on                     *
