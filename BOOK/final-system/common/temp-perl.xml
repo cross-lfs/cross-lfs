@@ -27,12 +27,13 @@
 
 <screen os="b"><userinput>patch -Np1 -i ../&perl-libc-patch;</userinput></screen>
 
-<para os="c">Prepare Perl for compilation (make sure to get the 'Data/Dumper
-Fcntl IO POSIX' part of the command correct&mdash;they are all
-letters):</para>
+    <para os="s1">Change the hardcoded path from /usr/include to /tools/include:</para>
 
-<screen os="d"><userinput>./configure.gnu --prefix=/tools \
-   -Dstatic_ext='Data/Dumper IO Fcntl POSIX' -Dcc="gcc"</userinput></screen>
+<screen os="s2"><userinput>sed -i 's@/usr/include@/tools/include@g' ext/Errno/Errno_pm.PL</userinput></screen>
+
+<para os="c">Prepare Tar for compilation:</para>
+
+<screen os="d"><userinput>./configure.gnu --prefix=/tools -Dcc="gcc"</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure option:</title>
