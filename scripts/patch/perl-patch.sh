@@ -31,42 +31,33 @@ CURRENTDIR=$(pwd -P)
 #
 cd /usr/src
 FIXEDVERSION=$(echo ${VERSION} | sed -e 's ..$  ')
-rsync -avz rsync://perl5.git.perl.org/APC/perl-${FIXEDVERSION}.x perl-${VERSION}
+rsync -avz rsync://perl5.git.perl.org/APC/perl-${FIXEDVERSION}.x tmp
+cd tmp
+mv perl-${FIXEDVERSION}.x /usr/src/perl-${VERSION}
 
 # Cleanup
 #
-DIRS="perl-${VERSION} perl-${VERSION}.orig"
-for DIRECTORY in ${DIRS}; do
-  cd /usr/src/${DIRECTORY}
-  FILE_LIST=".patch"
-  for files in ${FILE_LIST}; do
-    REMOVE=$(find * -name ${files})
-    for file in $REMOVE; do
-      rm -f ${file}
-    done
-  done
-
-  REMOVE="Changes Changes5.10 Changes5.8"
-  for file in $REMOVE; do
-    rm -f ${file}
-    done
-    cd ..
-done
-
-# Cleanup Directory
-#
-for dir in $(find * -type d); do
-  cd /usr/src/perl-${VERSION}
-  for file in $(find . -name '*~'); do
-    rm -f ${file}
-  done
-  for file in $(find . -name '*.orig'); do
-    rm -f ${file}
-  done
-done
 cd /usr/src/perl-${VERSION}
-rm -f *~ *.orig
-rm -f /usr/src/perl-${VERSION}.orig/md5.sum
+REMOVE=".patch AUTHORS Changes*"
+for file in $REMOVE; do
+  cd /usr/src/perl-${VERSION}
+  rm -f ${file}
+  cd /usr/src/perl-${VERSION}.orig
+  rm -f ${file}
+done
+cd ..
+
+# Remove Directories
+#
+cd /usr/src/perl-${VERSION}
+REMOVE="os2 vms win32"
+for dir in $REMOVE; do
+  cd /usr/src/perl-${VERSION}
+  rm -rf ${dir}
+  cd /usr/src/perl-${VERSION}.orig
+  rm -rf ${dir}
+done
+cd ..
 
 # Create Patch
 #
