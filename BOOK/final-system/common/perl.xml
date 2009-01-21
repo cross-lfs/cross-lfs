@@ -32,6 +32,14 @@
 <screen os="s2"><userinput>sed -i -e "s@pldlflags=''@pldlflags=\"\$cccdlflags\"@g" \
     -e "s@static_target='static'@static_target='static_pic'@g" Makefile.SH</userinput></screen>
 
+    <para os="s3">By default, Perl's Compress::Raw::Zlib module builds and
+    links against its own internal copy of Zlib. The following command will
+    tell it use the system-installed Zlib:</para>
+
+<screen os="s4"><userinput>sed -i -e '/^BUILD_ZLIB/ s/True/False/' \
+        -e '/^INCLUDE\|^LIB/ s|\./zlib-src|/usr/include|' \
+        ext/Compress/Raw/Zlib/config.in</userinput></screen>
+
     <note os="a00">
       <para>If you are following the boot method you will need to enable the
       loopback device as well as set a hostname for some of the tests:</para>
