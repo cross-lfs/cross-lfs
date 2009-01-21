@@ -8,8 +8,9 @@ VERSION=$1
 # Check Input
 #
 if [ "${VERSION}" = "" ]; then
-	echo "$0 - Readline_Version"
-	echo "This will Create a Patch for Readline Readline_Version"
+  echo "$0 - Readline_Version"
+  echo "This will Create a Patch for Readline Readline_Version"
+  exit 255
 fi
 
 # Get the # of Patches
@@ -26,7 +27,7 @@ SKIPPED=""
 # Download BASH Source
 #
 if ! [ -e readline-${VERSION}.tar.gz ]; then
-	wget ftp://ftp.cwru.edu/pub/bash/readline-${VERSION}.tar.gz
+  wget ftp://ftp.cwru.edu/pub/bash/readline-${VERSION}.tar.gz
 fi
 
 # Cleanup Directory
@@ -43,38 +44,38 @@ PATCHURL=ftp://ftp.cwru.edu/pub/bash/readline-${VERSION}-patches
 mkdir /tmp/readline-${VERSION}
 COUNT=1
 while [ ${COUNT} -le ${FILES} ]; do
-	cd /tmp/readline-${VERSION}           
-	DLCOUNT="${COUNT}"
-	SKIPME=no
-	if [ "${COUNT}" -lt "100" ]; then
-		DLCOUNT="0${COUNT}"
-	fi
-	if [ "${COUNT}" -lt "10" ]; then
-		DLCOUNT="00${COUNT}"
-	fi
-	for skip in ${SKIPPATCH} ; do
-		if [ "${DLCOUNT}" = "$skip" ]; then
-			echo "Patch readline${VERSION2}-${DLCOUNT} skipped"
-			SKIPPED="${SKIPPED} ${DLCOUNT}"
-			SKIPME=yes
-		fi
-	done
-	if [ "${SKIPME}" != "yes" ]; then
-		if ! [ -e ${VERSION}.${DLCOUNT} ]; then
-			wget --quiet ${PATCHURL}/readline${VERSION2}-${DLCOUNT}
-		fi
-		cd ${CURRENTDIR}
-		patch --dry-run -s -f -Np0 -i /tmp/readline-${VERSION}/readline${VERSION2}-${DLCOUNT}
-		if [ "$?" = "0" ]; then
-			echo "Patch readline${VERSION2}-${DLCOUNT} applied"
-			patch -s -Np0 -i /tmp/readline-${VERSION}/readline${VERSION2}-${DLCOUNT}
-		else
-			echo "Patch readline${VERSION2}-${DLCOUNT} not applied"
-			rm -f /tmp/readline-${VERSION}/readline${VERSION2}-${DLCOUNT}
-			SKIPPED="${SKIPPED} ${DLCOUNT}"
-		fi
-	fi
-	COUNT=`expr ${COUNT} + 1`
+  cd /tmp/readline-${VERSION}           
+  DLCOUNT="${COUNT}"
+  SKIPME=no
+  if [ "${COUNT}" -lt "100" ]; then
+    DLCOUNT="0${COUNT}"
+  fi
+  if [ "${COUNT}" -lt "10" ]; then
+    DLCOUNT="00${COUNT}"
+  fi
+  for skip in ${SKIPPATCH} ; do
+    if [ "${DLCOUNT}" = "$skip" ]; then
+      echo "Patch readline${VERSION2}-${DLCOUNT} skipped"
+      SKIPPED="${SKIPPED} ${DLCOUNT}"
+      SKIPME=yes
+    fi
+  done
+  if [ "${SKIPME}" != "yes" ]; then
+    if ! [ -e ${VERSION}.${DLCOUNT} ]; then
+      wget --quiet ${PATCHURL}/readline${VERSION2}-${DLCOUNT}
+    fi
+    cd ${CURRENTDIR}
+    patch --dry-run -s -f -Np0 -i /tmp/readline-${VERSION}/readline${VERSION2}-${DLCOUNT}
+    if [ "$?" = "0" ]; then
+      echo "Patch readline${VERSION2}-${DLCOUNT} applied"
+      patch -s -Np0 -i /tmp/readline-${VERSION}/readline${VERSION2}-${DLCOUNT}
+    else
+      echo "Patch readline${VERSION2}-${DLCOUNT} not applied"
+      rm -f /tmp/readline-${VERSION}/readline${VERSION2}-${DLCOUNT}
+      SKIPPED="${SKIPPED} ${DLCOUNT}"
+     fi
+    fi
+    COUNT=`expr ${COUNT} + 1`
 done
 
 # Cleanup Directory
@@ -82,13 +83,13 @@ done
 # Cleanup Directory
 #
 for dir in $(find * -type d); do
-	cd /usr/src/readline-${VERSION}/${dir}
-	for file in $(find . -name '*~'); do
-		rm -f ${file}
-	done
-	for file in $(find . -name '*.orig'); do
-		rm -f ${file}
-	done
+  cd /usr/src/readline-${VERSION}/${dir}
+  for file in $(find . -name '*~'); do
+    rm -f ${file}
+  done
+  for file in $(find . -name '*.orig'); do
+    rm -f ${file}
+  done
 done
 cd /usr/src/readline-${VERSION}
 rm -f *~ *.orig
@@ -103,10 +104,9 @@ echo "Origin: Upstream" >> readline-${VERSION}-branch_update-x.patch
 echo "Upstream Status: Applied" >> readline-${VERSION}-branch_update-x.patch
 echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> readline-${VERSION}-branch_update-x.patch
 if [ -n "${SKIPPED}" ]; then
-	echo "            Thee following patches were skipped" >> readline-${VERSION}-branch_update-x.patch
-	echo "            ${SKIPPED}" >> readline-${VERSION}-branch_update-x.patch
+  echo "            Thee following patches were skipped" >> readline-${VERSION}-branch_update-x.patch
+  echo "            ${SKIPPED}" >> readline-${VERSION}-branch_update-x.patch
 fi
 echo "" >> readline-${VERSION}-branch_update-x.patch
 diff -Naur readline-${VERSION}.orig readline-${VERSION} >> readline-${VERSION}-branch_update-x.patch
 echo "Created /usr/src/readline-${VERSION}-branch_update-x.patch."
-

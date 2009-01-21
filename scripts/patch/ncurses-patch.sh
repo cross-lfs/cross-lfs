@@ -8,8 +8,9 @@ VERSION=$1
 # Check Input
 #
 if [ "${VERSION}" = "" ]; then
-        echo "$0 - Ncurses_Version"
-        echo "This will Create a Patch for Ncurses Ncurses_Version"
+  echo "$0 - Ncurses_Version"
+  echo "This will Create a Patch for Ncurses Ncurses_Version"
+  exit 255
 fi
 
 # Get Patch Names
@@ -25,7 +26,7 @@ rm -f index.html
 # Download Ncurses Source
 #
 if ! [ -e ncurses-${VERSION}.tar.gz ]; then
-	wget ftp://invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz
+  wget ftp://invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz
 fi
 
 # Cleanup Directory
@@ -41,36 +42,36 @@ CURRENTDIR=$(pwd -P)
 mkdir /tmp/ncurses-${VERSION}
 cd /tmp/ncurses-${VERSION}
 if [ "${ROLLUP}" != "" ]; then
-	echo "Getting Rollup ${ROLLUP} Patch..."
-	wget --quiet ftp://invisible-island.net/ncurses/${VERSION}/${ROLLUP}
-	cd ${CURRENTDIR}
-	echo "Applying Rollup ${ROLLUP} Patch..."
-	cp /tmp/ncurses-${VERSION}/${ROLLUP} ${CURRENTDIR}/${ROLLUP}
-	bunzip2 ${ROLLUP}
-	ROLLUP2=$(echo ${ROLLUP} | sed -e 's/.bz2//g')
-	sh ${ROLLUP2}
+  echo "Getting Rollup ${ROLLUP} Patch..."
+  wget --quiet ftp://invisible-island.net/ncurses/${VERSION}/${ROLLUP}
+  cd ${CURRENTDIR}
+  echo "Applying Rollup ${ROLLUP} Patch..."
+  cp /tmp/ncurses-${VERSION}/${ROLLUP} ${CURRENTDIR}/${ROLLUP}
+  bunzip2 ${ROLLUP}
+  ROLLUP2=$(echo ${ROLLUP} | sed -e 's/.bz2//g')
+  sh ${ROLLUP2}
 fi
 
 # Download and Apply Patches
 #
 for file in ${FILES}; do
-	if [ "${ROLLPATCH}" != "" ]; then
-		TEST=$(echo ${file} | grep -c ${ROLLPATCH})
-	else
-		TEST=0
-	fi
-	if [ "${TEST}" = "0" ]; then
-		cd /tmp/ncurses-${VERSION}
-		echo "Getting Patch ${file}..."
-		wget --quiet ftp://invisible-island.net/ncurses/${VERSION}/${file}
-		cd ${CURRENTDIR}
-		gunzip -c /tmp/ncurses-${VERSION}/${file} | patch --dry-run -s -f -Np1
-		if [ "$?" = "0" ]; then
-			echo "Apply Patch ${file}..."
-			gunzip -c /tmp/ncurses-${VERSION}/${file} | patch -Np1
-			LASTFILE=$(echo ${file} | cut -f2 -d. | cut -f2 -d-)
-		fi
-	fi
+  if [ "${ROLLPATCH}" != "" ]; then
+    TEST=$(echo ${file} | grep -c ${ROLLPATCH})
+  else
+    TEST=0
+  fi
+  if [ "${TEST}" = "0" ]; then
+    cd /tmp/ncurses-${VERSION}
+    echo "Getting Patch ${file}..."
+    wget --quiet ftp://invisible-island.net/ncurses/${VERSION}/${file}
+    cd ${CURRENTDIR}
+    gunzip -c /tmp/ncurses-${VERSION}/${file} | patch --dry-run -s -f -Np1
+    if [ "$?" = "0" ]; then
+      echo "Apply Patch ${file}..."
+      gunzip -c /tmp/ncurses-${VERSION}/${file} | patch -Np1
+      LASTFILE=$(echo ${file} | cut -f2 -d. | cut -f2 -d-)
+    fi
+  fi
 done
 
 # Cleanup Directory
@@ -78,13 +79,13 @@ done
 # Cleanup Directory
 #
 for dir in $(find * -type d); do
-	cd /usr/src/ncurses-${VERSION}/${dir}
-	for file in $(find . -name '*~'); do
-		rm -f ${file}
-	done
-	for file in $(find . -name '*.orig'); do
-		rm -f ${file}
-	done
+  cd /usr/src/ncurses-${VERSION}/${dir}
+  for file in $(find . -name '*~'); do
+    rm -f ${file}
+  done
+  for file in $(find . -name '*.orig'); do
+    rm -f ${file}
+  done
 done
 cd /usr/src/ncurses-${VERSION}
 rm -f *~ *.orig

@@ -8,15 +8,16 @@ VERSION=$1
 # Check Input
 #
 if [ "${VERSION}" = "" ]; then
-	echo "$0 - Binutils_Version"
-	echo "This will Create a Patch for Binutils Binutils_Version"
+  echo "$0 - Binutils_Version"
+  echo "This will Create a Patch for Binutils Binutils_Version"
+  exit 255
 fi
 
 # Download Binutils Source
 #
 cd /usr/src
 if ! [ -e binutils-${VERSION}.tar.bz2  ]; then
-	wget ftp://ftp.gnu.org/gnu/binutils/binutils-${VERSION}.tar.bz2
+  wget ftp://ftp.gnu.org/gnu/binutils/binutils-${VERSION}.tar.bz2
 fi
 
 # Cleanup Directory
@@ -37,33 +38,33 @@ mv src binutils-${VERSION}
 #
 DIRS="binutils-${VERSION} binutils-${VERSION}.orig"
 for DIRECTORY in ${DIRS}; do
-cd /usr/src/${DIRECTORY}
-	FILE_LIST=".cvsignore *.gmo"
-	for files in ${FILE_LIST}; do
-		REMOVE=$(find * -name ${files})
-		for file in $REMOVE; do
-			rm -f ${file}
-		done
-	done
+  cd /usr/src/${DIRECTORY}
+  FILE_LIST=".cvsignore *.gmo"
+  for files in ${FILE_LIST}; do
+    REMOVE=$(find * -name ${files})
+    for file in $REMOVE; do
+      rm -f ${file}
+    done
+  done
 
-	REMOVE=".cvsignore MAINTAINERS COPYING.LIBGLOSS COPYING.NEWLIB README-maintainer-mode depcomp
-		ChangeLog compile ltgcc.m4 lt~obsolete.m4 etc/ChangeLog etc/add-log.el etc/add-log.vi"
-	for file in $REMOVE; do
-		rm -f ${file}
-	done
-	cd ..
+  REMOVE=".cvsignore MAINTAINERS COPYING.LIBGLOSS COPYING.NEWLIB README-maintainer-mode depcomp
+    ChangeLog compile ltgcc.m4 lt~obsolete.m4 etc/ChangeLog etc/add-log.el etc/add-log.vi"
+  for file in $REMOVE; do
+    rm -f ${file}
+    done
+    cd ..
 done
 
 # Cleanup Directory
 #
 for dir in $(find * -type d); do
-	cd /usr/src/binutils-${VERSION}
-	for file in $(find . -name '*~'); do
-		rm -f ${file}
-	done
-	for file in $(find . -name '*.orig'); do
-		rm -f ${file}
-	done
+  cd /usr/src/binutils-${VERSION}
+  for file in $(find . -name '*~'); do
+    rm -f ${file}
+  done
+  for file in $(find . -name '*.orig'); do
+    rm -f ${file}
+  done
 done
 cd /usr/src/binutils-${VERSION}
 rm -f *~ *.orig
@@ -88,4 +89,3 @@ echo "             rechecked periodically." >> binutils-${VERSION}-branch_update
 echo "" >> binutils-${VERSION}-branch_update-x.patch
 diff -Naur binutils-${VERSION}.orig binutils-${VERSION} >> binutils-${VERSION}-branch_update-x.patch
 echo "Created /usr/src/binutils-${VERSION}-branch_update-x.patch."
-

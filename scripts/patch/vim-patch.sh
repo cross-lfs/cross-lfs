@@ -8,8 +8,9 @@ VERSION=$1
 # Check Input
 #
 if [ "${VERSION}" = "" ]; then
-	echo "$0 - Vim_Version"
-	echo "This will Create a Patch for Vim Vim_Version"
+  echo "$0 - Vim_Version"
+  echo "This will Create a Patch for Vim Vim_Version"
+  exit 255
 fi
 
 # Get the # of Patches
@@ -26,7 +27,7 @@ SKIPPED=""
 # Download VIM Source
 #
 if ! [ -e vim-${VERSION}.tar.bz2 ]; then
-	wget ftp://ftp.vim.org/pub/vim/unix/vim-${VERSION}.tar.bz2
+  wget ftp://ftp.vim.org/pub/vim/unix/vim-${VERSION}.tar.bz2
 fi
 
 # Cleanup Directory
@@ -43,50 +44,50 @@ PATCHURL=ftp://ftp.vim.org/pub/vim/patches/${VERSION}
 mkdir /tmp/vim-${VERSION}
 COUNT=1
 while [ ${COUNT} -le ${FILES} ]; do
-	cd /tmp/vim-${VERSION}            
-	DLCOUNT="${COUNT}"
-	SKIPME=no
-	if [ "${COUNT}" -lt "100" ]; then
-		DLCOUNT="0${COUNT}"
-	fi
-	if [ "${COUNT}" -lt "10" ]; then
-	DLCOUNT="00${COUNT}"
-	fi
-	for skip in ${SKIPPATCH} ; do
-		if [ "${DLCOUNT}" = "${skip}" ]; then
-			echo "Patch ${VERSION}.${DLCOUNT} skipped"
-			SKIPPED="${SKIPPED} ${DLCOUNT}"
-			SKIPME=yes
-		fi
-	done
-	if [ "${SKIPME}" != "yes" ]; then
-	if ! [ -e ${VERSION}.${DLCOUNT} ]; then
-		wget --quiet $PATCHURL/${VERSION}.${DLCOUNT}
-	fi
-		cd $CURRENTDIR
-		patch --dry-run -s -f -Np0 -i /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
-		if [ "$?" = "0" ]; then
-		echo "Patch ${VERSION}.${DLCOUNT} applied"
-			patch -s -Np0 -i /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
-		else
-			echo "Patch ${VERSION}.${DLCOUNT} not applied"
-			rm -f /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
-			SKIPPED="${SKIPPED} ${DLCOUNT}"
-		fi
-	fi
-	COUNT=`expr ${COUNT} + 1`
+  cd /tmp/vim-${VERSION}            
+  DLCOUNT="${COUNT}"
+  SKIPME=no
+  if [ "${COUNT}" -lt "100" ]; then
+    DLCOUNT="0${COUNT}"
+  fi
+  if [ "${COUNT}" -lt "10" ]; then
+    DLCOUNT="00${COUNT}"
+  fi
+  for skip in ${SKIPPATCH} ; do
+    if [ "${DLCOUNT}" = "${skip}" ]; then
+      echo "Patch ${VERSION}.${DLCOUNT} skipped"
+      SKIPPED="${SKIPPED} ${DLCOUNT}"
+      SKIPME=yes
+    fi
+  done
+  if [ "${SKIPME}" != "yes" ]; then
+    if ! [ -e ${VERSION}.${DLCOUNT} ]; then
+      wget --quiet $PATCHURL/${VERSION}.${DLCOUNT}
+    fi
+    cd $CURRENTDIR
+    patch --dry-run -s -f -Np0 -i /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
+    if [ "$?" = "0" ]; then
+      echo "Patch ${VERSION}.${DLCOUNT} applied"
+      patch -s -Np0 -i /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
+    else
+      echo "Patch ${VERSION}.${DLCOUNT} not applied"
+      rm -f /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
+      SKIPPED="${SKIPPED} ${DLCOUNT}"
+    fi
+   fi
+   COUNT=`expr ${COUNT} + 1`
 done
 
 # Cleanup Directory
 #
 for dir in $(find * -type d); do
-	cd /usr/src/vim${SERIES}
-	for file in $(find . -name '*~'); do
-		rm -f ${file}
-	done
-	for file in $(find . -name '*.orig'); do
-		rm -f ${file}
-	done
+  cd /usr/src/vim${SERIES}
+  for file in $(find . -name '*~'); do
+    rm -f ${file}
+  done
+  for file in $(find . -name '*.orig'); do
+    rm -f ${file}
+  done
 done
 cd /usr/src/vim${SERIES}
 rm -f *~ *.orig
@@ -101,10 +102,9 @@ echo "Origin: Upstream" >> vim-${VERSION}-branch_update-x.patch
 echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-x.patch
 echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> vim-${VERSION}-branch_update-x.patch
 if [ -n "${SKIPPED}" ]; then
-	echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-x.patch
-	echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-x.patch
+  echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-x.patch
+  echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-x.patch
 fi
 echo "" >> vim-${VERSION}-branch_update-x.patch
 diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-x.patch
 echo "Created /usr/src/vim-${VERSION}-branch_update-x.patch."
-
