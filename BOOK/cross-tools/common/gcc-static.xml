@@ -41,7 +41,8 @@
 
 <screen os="ad"><userinput>patch -Np1 -i ../&gcc-posix-patch;</userinput></screen>
 
-    <para os="ag">Change the StartFile Spec and Standard Include Dir to look at /tools:</para>
+    <para os="ag">Change the StartFile Spec and Standard Include Dir so that
+    GCC looks in <filename class="directory">/tools</filename>:</para>
 
 <screen os="ah"><userinput>echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
 echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
