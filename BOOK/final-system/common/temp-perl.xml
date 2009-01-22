@@ -41,27 +41,24 @@
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
-        <term><parameter>-Dstatic_ext='Data/Dumper IO Fcntl POSIX'</parameter></term>
+        <term><parameter>-Dcc="gcc"</parameter></term>
         <listitem>
-          <para>This tells Perl to build the minimum set of static
-          extensions needed for installing and testing the Glibc and
-          Coreutils packages later in this chapter.</para>
+          <para>Tells Perl to use <command>gcc</command> instead of the
+          default <command>cc</command>.</para>
         </listitem>
       </varlistentry>
 
     </variablelist>
 
-  <para os="f">Now we are ready to make our perl utilities:</para>
+  <para os="f">Compile the package:</para>
 
 <screen os="g"><userinput>make</userinput></screen>
 
   <para os="h">Although Perl comes with a test suite, it is not recommended
-  to run it at this point. Only part of Perl was built and running
-  <command>make test</command> now will cause the rest of Perl to be built
-  as well, which is unnecessary at this point. The test suite can be run
-  later in this chapter if desired.</para>
+  to run it at this point, as this Perl installation is only temporary. The
+  test suite can be run later in this chapter if desired.</para>
 
-    <para os="i">Install these tools and their libraries:</para>
+    <para os="i">Install the package:</para>
 
 <screen os="j"><userinput>make install</userinput></screen>
 
