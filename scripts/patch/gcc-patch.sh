@@ -17,7 +17,7 @@ fi
 #
 cd /usr/src
 if ! [ -e gcc-${VERSION}.tar.bz2  ]; then
-  wget ftp://ftp.gnu.org/gnu/gcc/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
+  wget ftp://gcc.gnu.org/pub/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 fi
 
 # Cleanup Directory

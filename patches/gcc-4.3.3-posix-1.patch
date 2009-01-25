@@ -1,17 +1,18 @@
-Submitted By: Joe Ciccone <jciccone@gmail.com>
-Date: 2008-08-24
-Initial Package Version: 4.1.2
+Submitted By: Jim Gifford (jim at cross-lfs dot org)
+Date: 01-25-2009
+Initial Package Version: 4.3.3
 Origin: Jim Gifford
         Rediffed against 4.1.0 by Chris Staub
         Rediffed against 4.1.2 by Jim Gifford
 	Rediffed and additions against 4.2.0 by Joe Ciccone
 	Rediffed against 4.3.0 by Joe Ciccone
+	Rediffed against 4.3.3 by Jim Gifford
 Upstream Status: On Hold
 Description: Makes GCC Posix Compliant
 
-diff -Naur gcc-4.3.1.orig/contrib/patch_tester.sh gcc-4.3.1/contrib/patch_tester.sh
---- gcc-4.3.1.orig/contrib/patch_tester.sh	2007-12-26 16:01:38.000000000 -0500
-+++ gcc-4.3.1/contrib/patch_tester.sh	2008-08-24 13:37:11.000000000 -0400
+diff -Naur gcc-4.3.3.orig/contrib/patch_tester.sh gcc-4.3.3/contrib/patch_tester.sh
+--- gcc-4.3.3.orig/contrib/patch_tester.sh	2007-12-26 13:01:38.000000000 -0800
++++ gcc-4.3.3/contrib/patch_tester.sh	2009-01-25 00:53:32.447636261 -0800
 @@ -287,7 +287,7 @@
  
      if ! make $dashj `grep "^make:" $PATCH | sed -e "s/^make://g"` bootstrap &> $1/bootstrap ; then
@@ -39,9 +40,9 @@ diff -Naur gcc-4.3.1.orig/contrib/patch_tester.sh gcc-4.3.1/contrib/patch_tester
      if [ x$PATCH = x ]; then
  	sleep ${standby}m
      else
-diff -Naur gcc-4.3.1.orig/contrib/test_summary gcc-4.3.1/contrib/test_summary
---- gcc-4.3.1.orig/contrib/test_summary	2007-02-09 19:30:46.000000000 -0500
-+++ gcc-4.3.1/contrib/test_summary	2008-08-24 13:37:11.000000000 -0400
+diff -Naur gcc-4.3.3.orig/contrib/test_summary gcc-4.3.3/contrib/test_summary
+--- gcc-4.3.3.orig/contrib/test_summary	2007-02-09 16:30:46.000000000 -0800
++++ gcc-4.3.3/contrib/test_summary	2009-01-25 00:53:32.447636261 -0800
 @@ -107,7 +107,7 @@
      srcdir = configflags;
      sub(/\/configure .*/, "", srcdir);
@@ -51,10 +52,10 @@ diff -Naur gcc-4.3.1.orig/contrib/test_summary gcc-4.3.1/contrib/test_summary
      print "";
  
      sub(/^[^ ]*\/configure */, " ", configflags);
-diff -Naur gcc-4.3.1.orig/gcc/configure gcc-4.3.1/gcc/configure
---- gcc-4.3.1.orig/gcc/configure	2008-05-21 04:54:15.000000000 -0400
-+++ gcc-4.3.1/gcc/configure	2008-08-24 13:37:38.000000000 -0400
-@@ -14265,7 +14265,7 @@
+diff -Naur gcc-4.3.3.orig/gcc/configure gcc-4.3.3/gcc/configure
+--- gcc-4.3.3.orig/gcc/configure	2008-08-01 02:51:03.000000000 -0700
++++ gcc-4.3.3/gcc/configure	2009-01-25 00:53:32.455839362 -0800
+@@ -20245,7 +20245,7 @@
    # Therefore, use diff -b for the comparisons.
    if test x$gcc_cv_objdump != x \
    && $gcc_cv_objdump -s -j .eh_frame conftest.o 2>/dev/null \
@@ -63,10 +64,10 @@ diff -Naur gcc-4.3.1.orig/gcc/configure gcc-4.3.1/gcc/configure
    && { diff -b conftest.lit conftest.got > /dev/null 2>&1 \
      || diff -b conftest.big conftest.got > /dev/null 2>&1; }
    then
-diff -Naur gcc-4.3.1.orig/gcc/configure.ac gcc-4.3.1/gcc/configure.ac
---- gcc-4.3.1.orig/gcc/configure.ac	2008-05-21 04:54:15.000000000 -0400
-+++ gcc-4.3.1/gcc/configure.ac	2008-08-24 13:37:25.000000000 -0400
-@@ -2226,7 +2226,7 @@
+diff -Naur gcc-4.3.3.orig/gcc/configure.ac gcc-4.3.3/gcc/configure.ac
+--- gcc-4.3.3.orig/gcc/configure.ac	2008-08-01 02:51:03.000000000 -0700
++++ gcc-4.3.3/gcc/configure.ac	2009-01-25 00:53:32.455839362 -0800
+@@ -2241,7 +2241,7 @@
    # Therefore, use diff -b for the comparisons.
    if test x$gcc_cv_objdump != x \
    && $gcc_cv_objdump -s -j .eh_frame conftest.o 2>/dev/null \
@@ -75,21 +76,9 @@ diff -Naur gcc-4.3.1.orig/gcc/configure.ac gcc-4.3.1/gcc/configure.ac
    && { diff -b conftest.lit conftest.got > /dev/null 2>&1 \
      || diff -b conftest.big conftest.got > /dev/null 2>&1; }
    then
-diff -Naur gcc-4.3.1.orig/gcc/gccbug.in gcc-4.3.1/gcc/gccbug.in
---- gcc-4.3.1.orig/gcc/gccbug.in	2007-07-26 04:37:01.000000000 -0400
-+++ gcc-4.3.1/gcc/gccbug.in	2008-08-24 13:37:38.000000000 -0400
-@@ -31,7 +31,7 @@
- 
- # The default release for this host.
- # We have to guess at what program_transform_name might have done.
--# "sed 1q" because neither "head -1" nor "head -n 1" is universal, argh.
-+# "sed 1q" because neither "head -n 1" nor "head -n n 1" is universal, argh.
- 
- DEFAULT_GCC="`echo $0 | sed -e 's/bug//'`"
- DEFAULT_RELEASE="`$DEFAULT_GCC --version | sed 1q`"
-diff -Naur gcc-4.3.1.orig/gcc/testsuite/ada/acats/run_all.sh gcc-4.3.1/gcc/testsuite/ada/acats/run_all.sh
---- gcc-4.3.1.orig/gcc/testsuite/ada/acats/run_all.sh	2006-09-14 06:12:03.000000000 -0400
-+++ gcc-4.3.1/gcc/testsuite/ada/acats/run_all.sh	2008-08-24 13:37:18.000000000 -0400
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/ada/acats/run_all.sh gcc-4.3.3/gcc/testsuite/ada/acats/run_all.sh
+--- gcc-4.3.3.orig/gcc/testsuite/ada/acats/run_all.sh	2006-09-14 03:12:03.000000000 -0700
++++ gcc-4.3.3/gcc/testsuite/ada/acats/run_all.sh	2009-01-25 00:53:32.459940773 -0800
 @@ -68,7 +68,7 @@
    ls ${i}?.adb > ${i}.lst 2> /dev/null
    ls ${i}*m.adb >> ${i}.lst 2> /dev/null
@@ -99,9 +88,9 @@ diff -Naur gcc-4.3.1.orig/gcc/testsuite/ada/acats/run_all.sh gcc-4.3.1/gcc/tests
  }
  
  EXTERNAL_OBJECTS=""
-diff -Naur gcc-4.3.1.orig/libgomp/acinclude.m4 gcc-4.3.1/libgomp/acinclude.m4
---- gcc-4.3.1.orig/libgomp/acinclude.m4	2007-03-18 07:17:44.000000000 -0400
-+++ gcc-4.3.1/libgomp/acinclude.m4	2008-08-24 13:37:09.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libgomp/acinclude.m4 gcc-4.3.3/libgomp/acinclude.m4
+--- gcc-4.3.3.orig/libgomp/acinclude.m4	2007-03-18 04:17:44.000000000 -0700
++++ gcc-4.3.3/libgomp/acinclude.m4	2009-01-25 00:53:32.459940773 -0800
 @@ -147,7 +147,7 @@
    # Start by getting the version number.  I think the libtool test already
    # does some of this, but throws away the result.
@@ -111,9 +100,9 @@ diff -Naur gcc-4.3.1.orig/libgomp/acinclude.m4 gcc-4.3.1/libgomp/acinclude.m4
           sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
    changequote([,])
    libgomp_gnu_ld_version=`echo $ldver | \
-diff -Naur gcc-4.3.1.orig/libgomp/configure gcc-4.3.1/libgomp/configure
---- gcc-4.3.1.orig/libgomp/configure	2008-01-24 11:23:13.000000000 -0500
-+++ gcc-4.3.1/libgomp/configure	2008-08-24 13:37:09.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libgomp/configure gcc-4.3.3/libgomp/configure
+--- gcc-4.3.3.orig/libgomp/configure	2008-01-24 08:23:13.000000000 -0800
++++ gcc-4.3.3/libgomp/configure	2009-01-25 00:53:32.464042184 -0800
 @@ -17600,7 +17600,7 @@
    # Start by getting the version number.  I think the libtool test already
    # does some of this, but throws away the result.
@@ -123,21 +112,9 @@ diff -Naur gcc-4.3.1.orig/libgomp/configure gcc-4.3.1/libgomp/configure
           sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
    libgomp_gnu_ld_version=`echo $ldver | \
-diff -Naur gcc-4.3.1.orig/libjava/classpath/ChangeLog-2004 gcc-4.3.1/libjava/classpath/ChangeLog-2004
---- gcc-4.3.1.orig/libjava/classpath/ChangeLog-2004	2007-01-09 14:58:05.000000000 -0500
-+++ gcc-4.3.1/libjava/classpath/ChangeLog-2004	2008-08-24 13:37:00.000000000 -0400
-@@ -8256,7 +8256,7 @@
- 
- 2004-08-17  Casey Marshall <csm@gnu.org>
- 
--	* autogen.sh: use `head -n 1' instead of `head -1'.
-+	* autogen.sh: use `head -n n 1' instead of `head -n 1'.
- 
- 2004-08-16  Andrew John Hughes  <gnu_andrew@member.fsf.org>
- 
-diff -Naur gcc-4.3.1.orig/libjava/classpath/configure gcc-4.3.1/libjava/classpath/configure
---- gcc-4.3.1.orig/libjava/classpath/configure	2008-02-29 18:47:54.000000000 -0500
-+++ gcc-4.3.1/libjava/classpath/configure	2008-08-24 13:37:00.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libjava/classpath/configure gcc-4.3.3/libjava/classpath/configure
+--- gcc-4.3.3.orig/libjava/classpath/configure	2008-02-29 15:47:54.000000000 -0800
++++ gcc-4.3.3/libjava/classpath/configure	2009-01-25 00:53:32.480448386 -0800
 @@ -29126,7 +29126,7 @@
  fi # shortcircut to system "stdint.h"
  # ------------------ PREPARE VARIABLES ------------------------------
@@ -147,9 +124,9 @@ diff -Naur gcc-4.3.1.orig/libjava/classpath/configure gcc-4.3.1/libjava/classpat
  else
  ac_cv_stdint_message="using $CC"
  fi
-diff -Naur gcc-4.3.1.orig/libjava/classpath/ltcf-c.sh gcc-4.3.1/libjava/classpath/ltcf-c.sh
---- gcc-4.3.1.orig/libjava/classpath/ltcf-c.sh	2006-01-17 13:09:40.000000000 -0500
-+++ gcc-4.3.1/libjava/classpath/ltcf-c.sh	2008-08-24 13:36:57.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libjava/classpath/ltcf-c.sh gcc-4.3.3/libjava/classpath/ltcf-c.sh
+--- gcc-4.3.3.orig/libjava/classpath/ltcf-c.sh	2006-01-17 10:09:40.000000000 -0800
++++ gcc-4.3.3/libjava/classpath/ltcf-c.sh	2009-01-25 00:53:32.484550356 -0800
 @@ -153,7 +153,7 @@
      # If the export-symbols file already is a .def file (1st line
      # is EXPORTS), use it as is.
@@ -159,9 +136,9 @@ diff -Naur gcc-4.3.1.orig/libjava/classpath/ltcf-c.sh gcc-4.3.1/libjava/classpat
          cp $export_symbols $output_objdir/$soname-def;
        else
          echo EXPORTS > $output_objdir/$soname-def;
-diff -Naur gcc-4.3.1.orig/libjava/classpath/ltcf-gcj.sh gcc-4.3.1/libjava/classpath/ltcf-gcj.sh
---- gcc-4.3.1.orig/libjava/classpath/ltcf-gcj.sh	2005-09-23 17:31:04.000000000 -0400
-+++ gcc-4.3.1/libjava/classpath/ltcf-gcj.sh	2008-08-24 13:36:55.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libjava/classpath/ltcf-gcj.sh gcc-4.3.3/libjava/classpath/ltcf-gcj.sh
+--- gcc-4.3.3.orig/libjava/classpath/ltcf-gcj.sh	2005-09-23 14:31:04.000000000 -0700
++++ gcc-4.3.3/libjava/classpath/ltcf-gcj.sh	2009-01-25 00:53:32.484550356 -0800
 @@ -156,7 +156,7 @@
      # If the export-symbols file already is a .def file (1st line
      # is EXPORTS), use it as is.
@@ -171,9 +148,9 @@ diff -Naur gcc-4.3.1.orig/libjava/classpath/ltcf-gcj.sh gcc-4.3.1/libjava/classp
          cp $export_symbols $output_objdir/$soname-def;
        else
          echo EXPORTS > $output_objdir/$soname-def;
-diff -Naur gcc-4.3.1.orig/libjava/classpath/m4/ax_create_stdint_h.m4 gcc-4.3.1/libjava/classpath/m4/ax_create_stdint_h.m4
---- gcc-4.3.1.orig/libjava/classpath/m4/ax_create_stdint_h.m4	2007-05-19 16:44:43.000000000 -0400
-+++ gcc-4.3.1/libjava/classpath/m4/ax_create_stdint_h.m4	2008-08-24 13:36:57.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libjava/classpath/m4/ax_create_stdint_h.m4 gcc-4.3.3/libjava/classpath/m4/ax_create_stdint_h.m4
+--- gcc-4.3.3.orig/libjava/classpath/m4/ax_create_stdint_h.m4	2007-05-19 13:44:43.000000000 -0700
++++ gcc-4.3.3/libjava/classpath/m4/ax_create_stdint_h.m4	2009-01-25 00:53:32.484550356 -0800
 @@ -217,7 +217,7 @@
  fi # shortcircut to system "stdint.h"
  # ------------------ PREPARE VARIABLES ------------------------------
@@ -183,9 +160,9 @@ diff -Naur gcc-4.3.1.orig/libjava/classpath/m4/ax_create_stdint_h.m4 gcc-4.3.1/l
  else
  ac_cv_stdint_message="using $CC"
  fi
-diff -Naur gcc-4.3.1.orig/libjava/configure gcc-4.3.1/libjava/configure
---- gcc-4.3.1.orig/libjava/configure	2008-06-06 10:49:11.000000000 -0400
-+++ gcc-4.3.1/libjava/configure	2008-08-24 13:37:03.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libjava/configure gcc-4.3.3/libjava/configure
+--- gcc-4.3.3.orig/libjava/configure	2009-01-24 02:32:29.000000000 -0800
++++ gcc-4.3.3/libjava/configure	2009-01-25 00:53:32.492753177 -0800
 @@ -18673,8 +18673,8 @@
  echo $ECHO_N "checking whether 'ld' is at least 2.13... $ECHO_C" >&6
  LD_PROG=`$CC --print-prog-name=ld`
@@ -197,9 +174,9 @@ diff -Naur gcc-4.3.1.orig/libjava/configure gcc-4.3.1/libjava/configure
  if expr "$LD_VERSION_MAJOR" \> 2 > /dev/null; then
    LD_OK="ok"
  else
-diff -Naur gcc-4.3.1.orig/libjava/mingwld.m4 gcc-4.3.1/libjava/mingwld.m4
---- gcc-4.3.1.orig/libjava/mingwld.m4	2005-08-22 18:36:35.000000000 -0400
-+++ gcc-4.3.1/libjava/mingwld.m4	2008-08-24 13:36:52.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libjava/mingwld.m4 gcc-4.3.3/libjava/mingwld.m4
+--- gcc-4.3.3.orig/libjava/mingwld.m4	2005-08-22 15:36:35.000000000 -0700
++++ gcc-4.3.3/libjava/mingwld.m4	2009-01-25 00:53:32.492753177 -0800
 @@ -3,8 +3,8 @@
  AC_MSG_CHECKING(whether 'ld' is at least 2.13)
  LD_PROG=`$CC --print-prog-name=ld`
@@ -211,9 +188,9 @@ diff -Naur gcc-4.3.1.orig/libjava/mingwld.m4 gcc-4.3.1/libjava/mingwld.m4
  if expr "$LD_VERSION_MAJOR" \> 2 > /dev/null; then
    LD_OK="ok"
  else
-diff -Naur gcc-4.3.1.orig/libstdc++-v3/acinclude.m4 gcc-4.3.1/libstdc++-v3/acinclude.m4
---- gcc-4.3.1.orig/libstdc++-v3/acinclude.m4	2008-04-25 12:52:57.000000000 -0400
-+++ gcc-4.3.1/libstdc++-v3/acinclude.m4	2008-08-24 13:37:07.000000000 -0400
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/acinclude.m4 gcc-4.3.3/libstdc++-v3/acinclude.m4
+--- gcc-4.3.3.orig/libstdc++-v3/acinclude.m4	2008-04-25 09:52:57.000000000 -0700
++++ gcc-4.3.3/libstdc++-v3/acinclude.m4	2009-01-25 00:53:32.500956558 -0800
 @@ -234,7 +234,7 @@
    if test x"$with_gnu_ld" = x"yes"; then
      AC_MSG_CHECKING([for ld version])
@@ -223,10 +200,10 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/acinclude.m4 gcc-4.3.1/libstdc++-v3/acinc
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
      changequote([,])
      glibcxx_gnu_ld_version=`echo $ldver | \
-diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configure
---- gcc-4.3.1.orig/libstdc++-v3/configure	2008-04-25 12:52:57.000000000 -0400
-+++ gcc-4.3.1/libstdc++-v3/configure	2008-08-24 13:37:09.000000000 -0400
-@@ -17488,7 +17488,7 @@
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/configure gcc-4.3.3/libstdc++-v3/configure
+--- gcc-4.3.3.orig/libstdc++-v3/configure	2008-07-07 12:49:54.000000000 -0700
++++ gcc-4.3.3/libstdc++-v3/configure	2009-01-25 00:53:32.582987288 -0800
+@@ -17490,7 +17490,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -235,7 +212,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -42213,7 +42213,7 @@
+@@ -42215,7 +42215,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -244,7 +221,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -84604,7 +84604,7 @@
+@@ -84606,7 +84606,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -253,7 +230,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -85620,7 +85620,7 @@
+@@ -85622,7 +85622,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -262,7 +239,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -86608,7 +86608,7 @@
+@@ -86610,7 +86610,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -271,7 +248,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -109087,7 +109087,7 @@
+@@ -109089,7 +109089,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -280,7 +257,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -109932,7 +109932,7 @@
+@@ -109934,7 +109934,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -289,7 +266,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -110826,7 +110826,7 @@
+@@ -110828,7 +110828,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -298,7 +275,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -112112,7 +112112,7 @@
+@@ -112114,7 +112114,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -307,7 +284,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -112848,7 +112848,7 @@
+@@ -112850,7 +112850,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
@@ -316,7 +293,7 @@ diff -Naur gcc-4.3.1.orig/libstdc++-v3/configure gcc-4.3.1/libstdc++-v3/configur
             sed -e 's/GNU ld \(version \)\{0,1\}\(([^)]*) \)\{0,1\}\([0-9.][0-9.]*\).*/\3/'`
  
      glibcxx_gnu_ld_version=`echo $ldver | \
-@@ -113349,7 +113349,7 @@
+@@ -113351,7 +113351,7 @@
      echo "$as_me:$LINENO: checking for ld version" >&5
  echo $ECHO_N "checking for ld version... $ECHO_C" >&6
  
