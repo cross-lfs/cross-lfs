@@ -1,615 +1,14 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 01-18-2009
+Date: 01-27-2009
 Initial Package Version: 5.7
 Origin: Upstream
 Upstream Status: Applied
 Description: This is a branch update for NCurses-5.7, and should be
-             rechecked periodically. This patch covers up to 5.7-20090117.
+             rechecked periodically. This patch covers up to 5.7-20090124.
 
-diff -Naur ncurses-5.7.orig/Ada95/gen/Makefile.in ncurses-5.7/Ada95/gen/Makefile.in
---- ncurses-5.7.orig/Ada95/gen/Makefile.in	2008-10-04 15:58:31.000000000 -0700
-+++ ncurses-5.7/Ada95/gen/Makefile.in	2009-01-18 23:56:40.000000000 -0800
-@@ -1,5 +1,5 @@
- ##############################################################################
--# Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
-+# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
- #                                                                            #
- # Permission is hereby granted, free of charge, to any person obtaining a    #
- # copy of this software and associated documentation files (the "Software"), #
-@@ -28,7 +28,7 @@
- #
- #  Author:  Juergen Pfeifer, 1996
- #
--#  $Id: Makefile.in,v 1.61 2008/10/04 22:58:31 tom Exp $
-+#  $Id: Makefile.in,v 1.63 2009/01/11 01:11:35 tom Exp $
- #
- .SUFFIXES:
- 
-@@ -81,7 +81,7 @@
- M4		= m4
- M4FLAGS		= -DNCURSES_EXT_FUNCS=@NCURSES_EXT_FUNCS@
- 
--ADACURSES_CONFIG = adacurses-config
-+ADACURSES_CONFIG = adacurses@DFT_ARG_SUFFIX@-config
- 
- WRAPPER		= sh $(top_srcdir)/misc/shlib
- GENERATE	= ./gen$x '@DFT_ARG_SUFFIX@'
-@@ -166,6 +166,7 @@
- 
- sources:
- 
-+$(DESTDIR)$(bindir) \
- $(ADA_INCLUDE) \
- $(ADA_OBJECTS) :
- 	sh $(top_srcdir)/mkdirs.sh $@
-@@ -187,8 +188,8 @@
- 	@-chmod u+x $(ADA_SRCDIR)/*.ali
- 
- install \
--install.libs :: $(DESTDIR)$(bindir) adacurses-config
--	$(INSTALL_PROG) adacurses-config $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
-+install.libs :: $(DESTDIR)$(bindir) $(ADACURSES_CONFIG)
-+	$(INSTALL_PROG) $(ADACURSES_CONFIG) $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
- 
- uninstall \
- uninstall.libs ::
-@@ -398,7 +399,7 @@
- 	-rm -f $(GEN_TARGETS) instab.tmp *.ad[bs] *.html *.ali *.tmp
- 
- distclean :: clean
--	-rm -f adacurses-config
-+	-rm -f $(ADACURSES_CONFIG)
- 	-rm -f Makefile
- 
- realclean :: distclean
-diff -Naur ncurses-5.7.orig/Ada95/gen/adacurses-config.in ncurses-5.7/Ada95/gen/adacurses-config.in
---- ncurses-5.7.orig/Ada95/gen/adacurses-config.in	2007-04-07 14:06:50.000000000 -0700
-+++ ncurses-5.7/Ada95/gen/adacurses-config.in	2009-01-18 23:56:40.000000000 -0800
-@@ -1,18 +1,47 @@
- #! /bin/sh
--# $Id: adacurses-config.in,v 1.2 2007/04/07 21:06:50 tom Exp $
--#
--# This script will return the option to add to `gnatmake' for using
--# AdaCurses.
-+# $Id: adacurses-config.in,v 1.5 2009/01/11 00:08:19 tom Exp $
-+##############################################################################
-+# Copyright (c) 2007,2009 Free Software Foundation, Inc.                     #
-+#                                                                            #
-+# Permission is hereby granted, free of charge, to any person obtaining a    #
-+# copy of this software and associated documentation files (the "Software"), #
-+# to deal in the Software without restriction, including without limitation  #
-+# the rights to use, copy, modify, merge, publish, distribute, distribute    #
-+# with modifications, sublicense, and/or sell copies of the Software, and to #
-+# permit persons to whom the Software is furnished to do so, subject to the  #
-+# following conditions:                                                      #
-+#                                                                            #
-+# The above copyright notice and this permission notice shall be included in #
-+# all copies or substantial portions of the Software.                        #
-+#                                                                            #
-+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR #
-+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,   #
-+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL    #
-+# THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER      #
-+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING    #
-+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER        #
-+# DEALINGS IN THE SOFTWARE.                                                  #
-+#                                                                            #
-+# Except as contained in this notice, the name(s) of the above copyright     #
-+# holders shall not be used in advertising or otherwise to promote the sale, #
-+# use or other dealings in this Software without prior written               #
-+# authorization.                                                             #
-+##############################################################################
- #
-+# This script returns the options to add to `gnatmake' for using AdaCurses.
-+
-+DESTDIR=@DESTDIR@
-+prefix=@prefix@
-+exec_prefix=@exec_prefix@
-+libdir=@libdir@
- 
--prefix="@prefix@"
--exec_prefix="@exec_prefix@"
--libdir="@libdir@"
-+ADA_INCLUDE=@ADA_INCLUDE@
-+ADA_OBJECTS=@ADA_OBJECTS@
- 
--VERSION="@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@"
-+VERSION=@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@
- 
--CFLAGS="-I$libdir/adacurses -L$libdir/adacurses"
--LIBS="-L$prefix/lib -lAdaCurses"
-+CFLAGS="-I$ADA_INCLUDE -aO$ADA_OBJECTS"
-+LIBS="-L$ADA_OBJECTS -lAdaCurses"
- 
- case "x$1" in
-     x--version)
-@@ -26,10 +55,10 @@
-         ;;
-     x)
-     	# if no parameter is given, give what gnatmake needs
--        echo $CFLAGS -largs $LIBS
-+        echo "$CFLAGS -i -largs $LIBS"
-         ;;
-     *)
--        echo 'Usage: adacurses-config [--version | --cflags | --libs]' >&2
-+        echo 'Usage: adacurses@DFT_ARG_SUFFIX@-config [--version | --cflags | --libs]' >&2
-         exit 1
-         ;;
- esac
-diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/Makefile.in
---- ncurses-5.7.orig/Ada95/samples/Makefile.in	2006-12-17 08:45:02.000000000 -0800
-+++ ncurses-5.7/Ada95/samples/Makefile.in	2009-01-18 23:56:40.000000000 -0800
-@@ -1,5 +1,5 @@
- ##############################################################################
--# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
-+# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
- #                                                                            #
- # Permission is hereby granted, free of charge, to any person obtaining a    #
- # copy of this software and associated documentation files (the "Software"), #
-@@ -28,7 +28,7 @@
- #
- #  Author:  Juergen Pfeifer, 1996
- #
--#  $Id: Makefile.in,v 1.34 2006/12/17 16:45:02 tom Exp $
-+#  $Id: Makefile.in,v 1.36 2009/01/11 01:11:54 tom Exp $
- #
- .SUFFIXES:
- 
-@@ -88,8 +88,8 @@
- 
- CARGS        =-cargs $(ADAFLAGS)
- LARGS        =-largs @TEST_ARG2@ $(LD_FLAGS) -lAdaCurses
-- 
--PROGS        = tour rain ncurses 
-+
-+PROGS        = tour rain ncurses
- 
- TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
- 		sample-form_demo.o sample-function_key_setting.o 		\
-@@ -145,7 +145,7 @@
- 
- clean :: mostlyclean
- 	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs] \
--	explain.msg trace screendump 
-+	explain.msg trace screendump b~*.ad[bs]
- 
- distclean :: clean
- 	rm -f Makefile
-diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile.in
---- ncurses-5.7.orig/Ada95/src/Makefile.in	2007-09-15 11:22:24.000000000 -0700
-+++ ncurses-5.7/Ada95/src/Makefile.in	2009-01-18 23:56:40.000000000 -0800
-@@ -1,5 +1,5 @@
- ##############################################################################
--# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
-+# Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.                #
- #                                                                            #
- # Permission is hereby granted, free of charge, to any person obtaining a    #
- # copy of this software and associated documentation files (the "Software"), #
-@@ -28,7 +28,7 @@
- #
- #  Author:  Juergen Pfeifer, 1996
- #
--#  $Id: Makefile.in,v 1.31 2007/09/15 18:22:24 tom Exp $
-+#  $Id: Makefile.in,v 1.34 2009/01/11 01:11:44 tom Exp $
- #
- .SUFFIXES:
- 
-@@ -36,17 +36,22 @@
- THIS		= Makefile
- 
- MODEL		= ../../@DFT_OBJ_SUBDIR@
-+
- DESTDIR		= @DESTDIR@
-+
-+top_srcdir	= @top_srcdir@
- srcdir		= @srcdir@
- prefix		= @prefix@
- exec_prefix	= @exec_prefix@
--ADA_INCLUDE	= @ADA_INCLUDE@
-+
-+ADA_INCLUDE	= $(DESTDIR)@ADA_INCLUDE@
-+ADA_OBJECTS	= $(DESTDIR)@ADA_OBJECTS@
- 
- INSTALL		= @INSTALL@
--INSTALL_DATA	= @INSTALL_DATA@
-+INSTALL_LIB	= @INSTALL@ @INSTALL_LIB@
- 
- AR		= @AR@
--AR_OPTS		= @AR_OPTS@
-+ARFLAGS		= @ARFLAGS@
- AWK		= @AWK@
- LN_S		= @LN_S@
- 
-@@ -75,11 +80,12 @@
- ADAFLAGS        = @ADAFLAGS@ -I. -I$(srcdir)
- 
- ADAMAKE         = @cf_ada_make@
--ADAMAKEFLAGS    = 
-+ADAMAKEFLAGS    =
- 
- CARGS           = -cargs $(ADAFLAGS)
- LARGS           =
- 
-+LIBRARY_FILE	= libAdaCurses.a
- ALIB            = @cf_ada_package@
- ABASE           = $(ALIB)-curses
- 
-@@ -164,21 +170,25 @@
- 	$(ABASE)-text_io-complex_io.o
- 
- 
--all ::  libAdaCurses.a
-+all ::  $(LIBRARY_FILE)
- 	@echo done
- 
--libAdaCurses.a :: dotouch $(LIBOBJS) @cf_generic_objects@
--	$(AR) $(AR_OPTS) $@ $(LIBOBJS) @cf_generic_objects@
--
--dotouch :
--	@sh -c 'for f in $(LIBALIS) $(GENALIS); do test -f $$f || touch $$f; done'
-+$(LIBRARY_FILE) :: $(LIBOBJS) @cf_generic_objects@
-+	$(AR) $(ARFLAGS) $@ $(LIBOBJS) @cf_generic_objects@
- 
- sources :
- 	@echo made $@
- 
- libs \
- install \
--install.libs \
-+install.libs :: $(LIBRARY_FILE)
-+	@echo made $(LIBRARY_FILE)
-+
-+install \
-+install.libs :: $(LIBRARY_FILE)
-+	@$(top_srcdir)/tar-copy.sh $(LIBRARY_FILE) . $(ADA_OBJECTS)
-+	@echo made $@
-+
- uninstall \
- uninstall.libs ::
- 	@echo made $@
-diff -Naur ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb
---- ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb	2008-07-26 11:51:11.000000000 -0700
-+++ ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb	2009-01-18 23:56:21.000000000 -0800
-@@ -35,8 +35,8 @@
- ------------------------------------------------------------------------------
- --  Author:  Juergen Pfeifer, 1996
- --  Version Control:
----  $Revision: 1.22 $
----  $Date: 2008/07/26 18:51:11 $
-+--  $Revision: 1.23 $
-+--  $Date: 2008/11/16 00:19:59 $
- --  Binding Version 01.00
- ------------------------------------------------------------------------------
- with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
-@@ -50,7 +50,7 @@
-    function Has_Mouse return Boolean
-    is
-       function Mouse_Avail return C_Int;
--      pragma Import (C, Mouse_Avail, "_nc_has_mouse");
-+      pragma Import (C, Mouse_Avail, "has_mouse");
-    begin
-       if Has_Key (Key_Mouse) or else Mouse_Avail /= 0 then
-          return True;
-diff -Naur ncurses-5.7.orig/INSTALL ncurses-5.7/INSTALL
---- ncurses-5.7.orig/INSTALL	2008-11-02 13:13:51.000000000 -0800
-+++ ncurses-5.7/INSTALL	2009-01-18 23:56:34.000000000 -0800
-@@ -1,5 +1,5 @@
- -------------------------------------------------------------------------------
---- Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.               --
-+-- Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.               --
- --                                                                           --
- -- Permission is hereby granted, free of charge, to any person obtaining a   --
- -- copy of this software and associated documentation files (the             --
-@@ -25,7 +25,7 @@
- -- sale, use or other dealings in this Software without prior written        --
- -- authorization.                                                            --
- -------------------------------------------------------------------------------
---- $Id: INSTALL,v 1.135 2008/11/02 21:13:51 tom Exp $
-+-- $Id: INSTALL,v 1.137 2009/01/03 23:59:23 tom Exp $
- ---------------------------------------------------------------------
-              How to install Ncurses/Terminfo on your system
- ---------------------------------------------------------------------
-@@ -525,6 +525,11 @@
- 	terminfo entries.  This is the default, unless you have disabled the
- 	extended functions.
- 
-+    --enable-pc-files
-+	If pkg-config is found (see --with-pkg-config), generate ".pc" files
-+	for each of the libraries, and install them in pkg-config's library
-+	directory.
-+
-     --enable-reentrant
- 	Compile experimental configuration which improves reentrant use of the
- 	library by reducing global and static variables.  This option is also
-@@ -850,6 +855,9 @@
- 	those using termcap, do not use the higher speeds.  Your application
- 	(or system, in general) may or may not.
- 
-+    --with-pkg-config=[DIR]
-+	Check for pkg-config, optionally specifying its path.
-+
-     --with-profile
- 	Generate profile-libraries These are named by adding "_p" to the root,
- 	e.g., libncurses_p.a
-@@ -975,6 +983,9 @@
-     --without-dlsym
- 	Do not use dlsym() to load GPM dynamically.
- 
-+    --without-manpages
-+	Tell the configure script to suppress the install of ncurses' manpages.
-+
-     --without-progs
- 	Tell the configure script to suppress the build of ncurses' application
- 	programs (e.g., tic).  The test applications will still be built if you
-diff -Naur ncurses-5.7.orig/MANIFEST ncurses-5.7/MANIFEST
---- ncurses-5.7.orig/MANIFEST	2008-10-25 16:47:24.000000000 -0700
-+++ ncurses-5.7/MANIFEST	2009-01-18 23:56:34.000000000 -0800
-@@ -640,6 +640,7 @@
- ./man/ncurses.3x
- ./man/panel.3x
- ./man/resizeterm.3x
-+./man/tabs.1
- ./man/term.5
- ./man/term.7
- ./man/terminfo.head
-@@ -694,6 +695,7 @@
- ./misc/emx.src
- ./misc/form.def
- ./misc/form.ref
-+./misc/gen-pkgconfig.in
- ./misc/gen_edit.sh
- ./misc/jpf-indent
- ./misc/makedef.cmd
-@@ -947,6 +949,7 @@
- ./progs/infocmp.c
- ./progs/modules
- ./progs/progs.priv.h
-+./progs/tabs.c
- ./progs/tic.c
- ./progs/toe.c
- ./progs/tput.c
-@@ -963,6 +966,7 @@
- ./test/cardfile.c
- ./test/cardfile.dat
- ./test/chgat.c
-+./test/clip_printw.c
- ./test/color_set.c
- ./test/configure
- ./test/configure.in
-@@ -990,6 +994,7 @@
- ./test/inch_wide.c
- ./test/inchs.c
- ./test/ins_wide.c
-+./test/insdelln.c
- ./test/inserts.c
- ./test/key_names.c
- ./test/keynames.c
-diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
---- ncurses-5.7.orig/NEWS	2008-11-01 17:56:22.000000000 -0700
-+++ ncurses-5.7/NEWS	2009-01-18 23:56:41.000000000 -0800
-@@ -1,5 +1,5 @@
- -------------------------------------------------------------------------------
---- Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.               --
-+-- Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.               --
- --                                                                           --
- -- Permission is hereby granted, free of charge, to any person obtaining a   --
- -- copy of this software and associated documentation files (the             --
-@@ -25,7 +25,7 @@
- -- sale, use or other dealings in this Software without prior written        --
- -- authorization.                                                            --
- -------------------------------------------------------------------------------
---- $Id: NEWS,v 1.1320 2008/11/02 00:56:22 tom Exp $
-+-- $Id: NEWS,v 1.1358 2009/01/17 23:54:20 tom Exp $
- -------------------------------------------------------------------------------
- 
- This is a log of changes that ncurses has gone through since Zeyd started
-@@ -45,6 +45,125 @@
- Changes through 1.9.9e did not credit all contributions;
- it is not possible to add this information.
- 
-+20090117
-+	+ add -shared option to MK_SHARED_LIB when -Bsharable is used, for
-+	  *BSD's, without which "main" might be one of the shared library's
-+	  dependencies (report/analysis by Ken Dickey).
-+	+ modify waddch_literal(), updating line-pointer after a multicolumn
-+	  character is found to not fit on the current row, and wrapping is
-+	  done.  Since the line-pointer was not updated, the wrapped
-+	  multicolumn character was written to the beginning of the current row
-+	  (cf: 20041023, reported by "Nick" regarding problem with ncmpc
-+	  http://musicpd.org/mantis/bug_view_page.php?bug_id=1930).
-+
-+20090110
-+	+ add screen.Eterm terminfo entry (GenToo #124887) -TD
-+	+ modify adacurses-config to look for ".ali" files in the adalib
-+	  directory.
-+	+ correct install for Ada95, which omitted libAdaCurses.a used in
-+	  adacurses-config
-+	+ change install for adacurses-config to provide additional flavors
-+	  such as adacursesw-config, for ncursesw (GenToo #167849).
-+
-+20090105
-+	+ remove undeveloped feature in ncurses-config.in for setting
-+	  prefix variable.
-+	+ recent change to ncurses-config.in did not take into account the
-+	  --disable-overwrite option, which sets $includedir to the
-+	  subdirectory and using just that for a -I option does not work - fix
-+	  (report by Frederic L W Meunier).
-+
-+20090104
-+	+ modify gen-pkgconfig.in to eliminate a dependency on rpath when
-+	  deciding whether to add $LIBS to --libs output; that should be shown
-+	  for the ncurses and tinfo libraries without taking rpath into
-+	  account.
-+	+ fix an overlooked change from $AR_OPTS to $ARFLAGS in mk-1st.awk,
-+	  used in static libraries (report by Marty Jack).
-+
-+20090103
-+	+ add a configure-time check to pick a suitable value for
-+	  CC_SHARED_OPTS for Solaris (report by Dagobert Michelsen).
-+	+ add configure --with-pkg-config and --enable-pc-files options, along
-+	  with misc/gen-pkgconfig.in which can be used to generate ".pc" files
-+	  for pkg-config (request by Jan Engelhardt).
-+	+ use $includedir symbol in misc/ncurses-config.in, add --includedir
-+	  option.
-+	+ change makefiles to use $ARFLAGS rather than $AR_OPTS, provide a
-+	  configure check to detect whether a "-" is needed before "ar"
-+	  options.
-+	+ update config.guess, config.sub from
-+		http://savannah.gnu.org/projects/config
-+
-+20081227
-+	+ modify mk-1st.awk to work with extra categories for tinfo library.
-+	+ modify configure script to allow building shared libraries with gcc
-+	  on AIX 5 or 6 (adapted from patch by Lital Natan).
-+
-+20081220
-+	+ modify to omit the opaque-functions from lib_gen.o when
-+	  --disable-ext-funcs is used.
-+	+ add test/clip_printw.c to illustrate how to use printw without
-+	  wrapping.
-+	+ modify ncurses 'F' test to demo wborder_set() with colored lines.
-+	+ modify ncurses 'f' test to demo wborder() with colored lines.
-+
-+20081213
-+	+ add check for failure to open hashed-database needed for db4.6
-+	  (GenToo #245370).
-+	+ corrected --without-manpages option; previous change only suppressed
-+	  the auxiliary rules install.man and uninstall.man
-+	+ add case for FreeMINT to configure macro CF_XOPEN_SOURCE (patch from
-+	  GenToo #250454).
-+	+ fixes from NetBSD port at
-+	  http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches
-+	  patch-ac (build-fix for DragonFly)
-+	  patch-ae (use INSTALL_SCRIPT for installing misc/ncurses*-config).
-+	+ improve configure script macros CF_HEADER_PATH and CF_LIBRARY_PATH
-+	  by adding CFLAGS, CPPFLAGS and LDFLAGS, LIBS values to the
-+	  search-lists.
-+	+ correct title string for keybound manpage (patch by Frederic Culot,
-+	  OpenBSD documentation/6019),
-+
-+20081206
-+	+ move del_curterm() call from _nc_freeall() to _nc_leaks_tinfo() to
-+	  work for progs/clear, progs/tabs, etc.
-+	+ correct buffer-size after internal resizing of wide-character
-+	  set_field_buffer(), broken in 20081018 changes (report by Mike Gran).
-+	+ add "-i" option to test/filter.c to tell it to use initscr() rather
-+	  than newterm(), to investigate report on comp.unix.programmer that
-+	  ncurses would clear the screen in that case (it does not - the issue
-+	  was xterm's alternate screen feature).
-+	+ add check in mouse-driver to disable connection if GPM returns a
-+	  zero, indicating that the connection is closed (Debian #506717,
-+	  adapted from patch by Samuel Thibault).
-+
-+20081129
-+	+ improve a workaround in adding wide-characters, when a control
-+	  character is found.  The library (cf: 20040207) uses unctrl() to
-+	  obtain a printable version of the control character, but was not
-+	  passing color or video attributes.
-+	+ improve test/ncurses.c 'a' test, using unctrl() more consistently to
-+	  display meta-characters.
-+	+ turn on _XOPEN_CURSES definition in curses.h
-+	+ add eterm-color entry (report by Vincent Lefevre) -TD
-+	+ correct use of key_name() in test/ncurses.c 'A' test, which only
-+	  displays wide-characters, not key-codes since 20070612 (report by
-+	  Ricardo Cantu).
-+
-+20081122
-+	+ change _nc_has_mouse() to has_mouse(), reflect its use in C++ and
-+	  Ada95 (patch by Juergen Pfeifer).
-+	+ document in TO-DO an issue with Cygwin's package for GNAT (report
-+	  by Mike Dennison).
-+	+ improve error-checking of command-line options in "tabs" program.
-+
-+20081115
-+	+ change several terminfo entries to make consistent use of ANSI
-+	  clear-all-tabs -TD
-+	+ add "tabs" program (prompted by Debian #502260).
-+	+ add configure --without-manpages option (request by Mike Frysinger).
-+
- 20081102 5.7 release for upload to ftp.gnu.org
- 
- 20081025
-diff -Naur ncurses-5.7.orig/TO-DO ncurses-5.7/TO-DO
---- ncurses-5.7.orig/TO-DO	2008-10-11 12:22:27.000000000 -0700
-+++ ncurses-5.7/TO-DO	2009-01-18 23:56:23.000000000 -0800
-@@ -25,7 +25,7 @@
- -- sale, use or other dealings in this Software without prior written        --
- -- authorization.                                                            --
- -------------------------------------------------------------------------------
---- $Id: TO-DO,v 1.51 2008/10/11 19:22:27 tom Exp $
-+-- $Id: TO-DO,v 1.53 2008/11/28 16:39:12 tom Exp $
- -------------------------------------------------------------------------------
- 
- SHORT-TERM TO-DO ITEMS:
-@@ -45,7 +45,7 @@
- + Scrolling optimization has holes:  for example, it forces repaints of the
-   screen between calls to refresh().
- 
--+ SVr4 uses slightly different rules for determining when softkeys are shown. 
-++ SVr4 uses slightly different rules for determining when softkeys are shown.
-   For example, they are initially displayed (before the ncurses 'e' test
-   activates them), and a touchwin can apparently also force them to be
-   displayed.
-@@ -58,7 +58,7 @@
- + The window classes defined in the c++ subdirectory need documentation.  Some
-   C++ programmer could earn a lot of good karma by doing this...
- 
--+ vid_attr() should support the set_a_attributes (sgr1) string, but does not. 
-++ vid_attr() should support the set_a_attributes (sgr1) string, but does not.
-   There appear to be no terminals that require that functionality.
- 
- + the configure --disable-ext-funcs option does not work for Ada95 tree.
-@@ -66,6 +66,24 @@
- + the --with-pthread configuration builds for Cygwin, but does not work
-   properly (test/worm.c shows all of the worms in the same location).
- 
-++ the Ada95 tree requires a small fix to build on Cygwin, since the GNAT port
-+  to that platform provides an incomplete Interrupts.Names package.  For
-+  instance (your gcc version may be different):
-+        /usr/lib/gcc/i686-pc-cygwin/3.4.4/adainclude/a-intnam.ads
-+
-+  cut here...
-+-------------------------------------------------------------------------------
-+--- a-intnam.ads.orig   2003-10-21 13:41:51.000000000 +0000
-++++ a-intnam.ads        2007-05-05 22:40:02.609375000 +0000
-+@@ -44,5 +44,6 @@
-+
-+    DUMMY_INTERRUPT_1 : constant Interrupt_ID := 1;
-+    DUMMY_INTERRUPT_2 : constant Interrupt_ID := 2;
-++   SIGINT : constant Interrupt_ID := 2;
-+
-+ end Ada.Interrupts.Names;
-+-------------------------------------------------------------------------------
-+
- + the --enable-rpath configure option builds for the corresponding platforms;
-   however combining it with --with-ticlib and --with-termlib does not always
-   produce libraries that can be run without setting environment variables.
-@@ -122,7 +140,7 @@
- 2. DOS port
- 
- Only a few of the files in the library depend on the terminfo format.
--It should be possible to further kernelize the package, then rewrite 
-+It should be possible to further kernelize the package, then rewrite
- a small number of core files to produce a functionally-compatible
- port that would do updates to a memory-mapped screen area.  The first
- result of this would be a DOS port.
-@@ -195,10 +213,10 @@
- 		move_insert, dest_tabs_magic_smso, transparent_underline,
- 		needs_xon_xoff, hard_cursor.
- 	Numerics: lines_of_memory, buttons.
--	Strings: pkey_key, pkey_local, pkey_xmit, underline_char, 
--		enter_xon_mode,	exit_xon_mode, xon_character, xoff_character, 
-+	Strings: pkey_key, pkey_local, pkey_xmit, underline_char,
-+		enter_xon_mode,	exit_xon_mode, xon_character, xoff_character,
- 		display_clock, remove_clock, user[0-5], display_pc_char,
--		enter_scancode_mode, exit_scancode_mode, pc_term_options, 
-+		enter_scancode_mode, exit_scancode_mode, pc_term_options,
- 		scancode_escape, alt_scancode_esc.
- 
- These are the potentially important ones for ncurses.  Notes:
 diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
 --- ncurses-5.7.orig/aclocal.m4	2008-10-25 15:15:32.000000000 -0700
-+++ ncurses-5.7/aclocal.m4	2009-01-18 23:56:41.000000000 -0800
++++ ncurses-5.7/aclocal.m4	2009-01-27 16:45:03.668729990 -0800
 @@ -1,5 +1,5 @@
  dnl***************************************************************************
 -dnl Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -1365,43 +764,293 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  	CF_GNU_SOURCE
  	;;
  mirbsd*) #(vi
-diff -Naur ncurses-5.7.orig/c++/Makefile.in ncurses-5.7/c++/Makefile.in
---- ncurses-5.7.orig/c++/Makefile.in	2007-04-28 08:29:12.000000000 -0700
-+++ ncurses-5.7/c++/Makefile.in	2009-01-18 23:56:34.000000000 -0800
-@@ -1,6 +1,6 @@
--# $Id: Makefile.in,v 1.84 2007/04/28 15:29:12 tom Exp $
-+# $Id: Makefile.in,v 1.85 2009/01/03 19:10:40 tom Exp $
+diff -Naur ncurses-5.7.orig/Ada95/gen/adacurses-config.in ncurses-5.7/Ada95/gen/adacurses-config.in
+--- ncurses-5.7.orig/Ada95/gen/adacurses-config.in	2007-04-07 14:06:50.000000000 -0700
++++ ncurses-5.7/Ada95/gen/adacurses-config.in	2009-01-27 16:45:02.332643665 -0800
+@@ -1,18 +1,47 @@
+ #! /bin/sh
+-# $Id: adacurses-config.in,v 1.2 2007/04/07 21:06:50 tom Exp $
+-#
+-# This script will return the option to add to `gnatmake' for using
+-# AdaCurses.
++# $Id: adacurses-config.in,v 1.5 2009/01/11 00:08:19 tom Exp $
++##############################################################################
++# Copyright (c) 2007,2009 Free Software Foundation, Inc.                     #
++#                                                                            #
++# Permission is hereby granted, free of charge, to any person obtaining a    #
++# copy of this software and associated documentation files (the "Software"), #
++# to deal in the Software without restriction, including without limitation  #
++# the rights to use, copy, modify, merge, publish, distribute, distribute    #
++# with modifications, sublicense, and/or sell copies of the Software, and to #
++# permit persons to whom the Software is furnished to do so, subject to the  #
++# following conditions:                                                      #
++#                                                                            #
++# The above copyright notice and this permission notice shall be included in #
++# all copies or substantial portions of the Software.                        #
++#                                                                            #
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR #
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,   #
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL    #
++# THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER      #
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING    #
++# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER        #
++# DEALINGS IN THE SOFTWARE.                                                  #
++#                                                                            #
++# Except as contained in this notice, the name(s) of the above copyright     #
++# holders shall not be used in advertising or otherwise to promote the sale, #
++# use or other dealings in this Software without prior written               #
++# authorization.                                                             #
++##############################################################################
+ #
++# This script returns the options to add to `gnatmake' for using AdaCurses.
++
++DESTDIR=@DESTDIR@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
+ 
+-prefix="@prefix@"
+-exec_prefix="@exec_prefix@"
+-libdir="@libdir@"
++ADA_INCLUDE=@ADA_INCLUDE@
++ADA_OBJECTS=@ADA_OBJECTS@
+ 
+-VERSION="@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@"
++VERSION=@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@
+ 
+-CFLAGS="-I$libdir/adacurses -L$libdir/adacurses"
+-LIBS="-L$prefix/lib -lAdaCurses"
++CFLAGS="-I$ADA_INCLUDE -aO$ADA_OBJECTS"
++LIBS="-L$ADA_OBJECTS -lAdaCurses"
+ 
+ case "x$1" in
+     x--version)
+@@ -26,10 +55,10 @@
+         ;;
+     x)
+     	# if no parameter is given, give what gnatmake needs
+-        echo $CFLAGS -largs $LIBS
++        echo "$CFLAGS -i -largs $LIBS"
+         ;;
+     *)
+-        echo 'Usage: adacurses-config [--version | --cflags | --libs]' >&2
++        echo 'Usage: adacurses@DFT_ARG_SUFFIX@-config [--version | --cflags | --libs]' >&2
+         exit 1
+         ;;
+ esac
+diff -Naur ncurses-5.7.orig/Ada95/gen/Makefile.in ncurses-5.7/Ada95/gen/Makefile.in
+--- ncurses-5.7.orig/Ada95/gen/Makefile.in	2008-10-04 15:58:31.000000000 -0700
++++ ncurses-5.7/Ada95/gen/Makefile.in	2009-01-27 16:45:02.332643665 -0800
+@@ -1,5 +1,5 @@
  ##############################################################################
--# Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
+-# Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
+ #                                                                            #
+ # Permission is hereby granted, free of charge, to any person obtaining a    #
+ # copy of this software and associated documentation files (the "Software"), #
+@@ -28,7 +28,7 @@
+ #
+ #  Author:  Juergen Pfeifer, 1996
+ #
+-#  $Id: Makefile.in,v 1.61 2008/10/04 22:58:31 tom Exp $
++#  $Id: Makefile.in,v 1.63 2009/01/11 01:11:35 tom Exp $
+ #
+ .SUFFIXES:
+ 
+@@ -81,7 +81,7 @@
+ M4		= m4
+ M4FLAGS		= -DNCURSES_EXT_FUNCS=@NCURSES_EXT_FUNCS@
+ 
+-ADACURSES_CONFIG = adacurses-config
++ADACURSES_CONFIG = adacurses@DFT_ARG_SUFFIX@-config
+ 
+ WRAPPER		= sh $(top_srcdir)/misc/shlib
+ GENERATE	= ./gen$x '@DFT_ARG_SUFFIX@'
+@@ -166,6 +166,7 @@
+ 
+ sources:
+ 
++$(DESTDIR)$(bindir) \
+ $(ADA_INCLUDE) \
+ $(ADA_OBJECTS) :
+ 	sh $(top_srcdir)/mkdirs.sh $@
+@@ -187,8 +188,8 @@
+ 	@-chmod u+x $(ADA_SRCDIR)/*.ali
+ 
+ install \
+-install.libs :: $(DESTDIR)$(bindir) adacurses-config
+-	$(INSTALL_PROG) adacurses-config $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
++install.libs :: $(DESTDIR)$(bindir) $(ADACURSES_CONFIG)
++	$(INSTALL_PROG) $(ADACURSES_CONFIG) $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
+ 
+ uninstall \
+ uninstall.libs ::
+@@ -398,7 +399,7 @@
+ 	-rm -f $(GEN_TARGETS) instab.tmp *.ad[bs] *.html *.ali *.tmp
+ 
+ distclean :: clean
+-	-rm -f adacurses-config
++	-rm -f $(ADACURSES_CONFIG)
+ 	-rm -f Makefile
+ 
+ realclean :: distclean
+diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/Makefile.in
+--- ncurses-5.7.orig/Ada95/samples/Makefile.in	2006-12-17 08:45:02.000000000 -0800
++++ ncurses-5.7/Ada95/samples/Makefile.in	2009-01-27 16:45:02.332643665 -0800
+@@ -1,5 +1,5 @@
+ ##############################################################################
+-# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
+ #                                                                            #
+ # Permission is hereby granted, free of charge, to any person obtaining a    #
+ # copy of this software and associated documentation files (the "Software"), #
+@@ -28,7 +28,7 @@
+ #
+ #  Author:  Juergen Pfeifer, 1996
+ #
+-#  $Id: Makefile.in,v 1.34 2006/12/17 16:45:02 tom Exp $
++#  $Id: Makefile.in,v 1.36 2009/01/11 01:11:54 tom Exp $
+ #
+ .SUFFIXES:
+ 
+@@ -88,8 +88,8 @@
+ 
+ CARGS        =-cargs $(ADAFLAGS)
+ LARGS        =-largs @TEST_ARG2@ $(LD_FLAGS) -lAdaCurses
+- 
+-PROGS        = tour rain ncurses 
++
++PROGS        = tour rain ncurses
+ 
+ TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
+ 		sample-form_demo.o sample-function_key_setting.o 		\
+@@ -145,7 +145,7 @@
+ 
+ clean :: mostlyclean
+ 	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs] \
+-	explain.msg trace screendump 
++	explain.msg trace screendump b~*.ad[bs]
+ 
+ distclean :: clean
+ 	rm -f Makefile
+diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile.in
+--- ncurses-5.7.orig/Ada95/src/Makefile.in	2007-09-15 11:22:24.000000000 -0700
++++ ncurses-5.7/Ada95/src/Makefile.in	2009-01-27 16:45:02.332643665 -0800
+@@ -1,5 +1,5 @@
+ ##############################################################################
+-# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
 +# Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.                #
  #                                                                            #
  # Permission is hereby granted, free of charge, to any person obtaining a    #
  # copy of this software and associated documentation files (the "Software"), #
-@@ -61,10 +61,10 @@
- INSTALL_DATA	= @INSTALL_DATA@
+@@ -28,7 +28,7 @@
+ #
+ #  Author:  Juergen Pfeifer, 1996
+ #
+-#  $Id: Makefile.in,v 1.31 2007/09/15 18:22:24 tom Exp $
++#  $Id: Makefile.in,v 1.34 2009/01/11 01:11:44 tom Exp $
+ #
+ .SUFFIXES:
+ 
+@@ -36,17 +36,22 @@
+ THIS		= Makefile
+ 
+ MODEL		= ../../@DFT_OBJ_SUBDIR@
++
+ DESTDIR		= @DESTDIR@
++
++top_srcdir	= @top_srcdir@
+ srcdir		= @srcdir@
+ prefix		= @prefix@
+ exec_prefix	= @exec_prefix@
+-ADA_INCLUDE	= @ADA_INCLUDE@
++
++ADA_INCLUDE	= $(DESTDIR)@ADA_INCLUDE@
++ADA_OBJECTS	= $(DESTDIR)@ADA_OBJECTS@
+ 
+ INSTALL		= @INSTALL@
+-INSTALL_DATA	= @INSTALL_DATA@
++INSTALL_LIB	= @INSTALL@ @INSTALL_LIB@
  
  AR		= @AR@
 -AR_OPTS		= @AR_OPTS@
 +ARFLAGS		= @ARFLAGS@
+ AWK		= @AWK@
+ LN_S		= @LN_S@
  
- CXX_AR		= @CXX_AR@
--CXX_AR_OPTS	= @CXX_AR_OPTS@
-+CXX_ARFLAGS	= @CXX_ARFLAGS@
- RANLIB		= @LIB_PREP@
+@@ -75,11 +80,12 @@
+ ADAFLAGS        = @ADAFLAGS@ -I. -I$(srcdir)
  
- CXX		= @CXX@
-@@ -153,7 +153,7 @@
- 	$(MODEL)/cursesmain$o
+ ADAMAKE         = @cf_ada_make@
+-ADAMAKEFLAGS    = 
++ADAMAKEFLAGS    =
  
- ../lib/$(LIBNAME_NORMAL) : $(LIB_OBJS)
--	$(CXX_AR) $(CXX_AR_OPTS) $@ $?
-+	$(CXX_AR) $(CXX_ARFLAGS) $@ $?
- 	$(RANLIB) $@
+ CARGS           = -cargs $(ADAFLAGS)
+ LARGS           =
  
- ../lib/$(LIBNAME_LIBTOOL) : $(LIB_OBJS)
++LIBRARY_FILE	= libAdaCurses.a
+ ALIB            = @cf_ada_package@
+ ABASE           = $(ALIB)-curses
+ 
+@@ -164,21 +170,25 @@
+ 	$(ABASE)-text_io-complex_io.o
+ 
+ 
+-all ::  libAdaCurses.a
++all ::  $(LIBRARY_FILE)
+ 	@echo done
+ 
+-libAdaCurses.a :: dotouch $(LIBOBJS) @cf_generic_objects@
+-	$(AR) $(AR_OPTS) $@ $(LIBOBJS) @cf_generic_objects@
+-
+-dotouch :
+-	@sh -c 'for f in $(LIBALIS) $(GENALIS); do test -f $$f || touch $$f; done'
++$(LIBRARY_FILE) :: $(LIBOBJS) @cf_generic_objects@
++	$(AR) $(ARFLAGS) $@ $(LIBOBJS) @cf_generic_objects@
+ 
+ sources :
+ 	@echo made $@
+ 
+ libs \
+ install \
+-install.libs \
++install.libs :: $(LIBRARY_FILE)
++	@echo made $(LIBRARY_FILE)
++
++install \
++install.libs :: $(LIBRARY_FILE)
++	@$(top_srcdir)/tar-copy.sh $(LIBRARY_FILE) . $(ADA_OBJECTS)
++	@echo made $@
++
+ uninstall \
+ uninstall.libs ::
+ 	@echo made $@
+diff -Naur ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb
+--- ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb	2008-07-26 11:51:11.000000000 -0700
++++ ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb	2009-01-27 16:44:46.507629836 -0800
+@@ -35,8 +35,8 @@
+ ------------------------------------------------------------------------------
+ --  Author:  Juergen Pfeifer, 1996
+ --  Version Control:
+---  $Revision: 1.22 $
+---  $Date: 2008/07/26 18:51:11 $
++--  $Revision: 1.23 $
++--  $Date: 2008/11/16 00:19:59 $
+ --  Binding Version 01.00
+ ------------------------------------------------------------------------------
+ with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
+@@ -50,7 +50,7 @@
+    function Has_Mouse return Boolean
+    is
+       function Mouse_Avail return C_Int;
+-      pragma Import (C, Mouse_Avail, "_nc_has_mouse");
++      pragma Import (C, Mouse_Avail, "has_mouse");
+    begin
+       if Has_Key (Key_Mouse) or else Mouse_Avail /= 0 then
+          return True;
 diff -Naur ncurses-5.7.orig/c++/cursesw.cc ncurses-5.7/c++/cursesw.cc
 --- ncurses-5.7.orig/c++/cursesw.cc	2007-12-15 15:01:57.000000000 -0800
-+++ ncurses-5.7/c++/cursesw.cc	2009-01-18 23:56:21.000000000 -0800
++++ ncurses-5.7/c++/cursesw.cc	2009-01-27 16:44:46.511630953 -0800
 @@ -1,6 +1,6 @@
  // * this is for making emacs happy: -*-Mode: C++;-*-
  /****************************************************************************
@@ -1436,9 +1085,43 @@ diff -Naur ncurses-5.7.orig/c++/cursesw.cc ncurses-5.7/c++/cursesw.cc
  	     ? TRUE : FALSE);
  }
  #endif
+diff -Naur ncurses-5.7.orig/c++/Makefile.in ncurses-5.7/c++/Makefile.in
+--- ncurses-5.7.orig/c++/Makefile.in	2007-04-28 08:29:12.000000000 -0700
++++ ncurses-5.7/c++/Makefile.in	2009-01-27 16:44:58.008364855 -0800
+@@ -1,6 +1,6 @@
+-# $Id: Makefile.in,v 1.84 2007/04/28 15:29:12 tom Exp $
++# $Id: Makefile.in,v 1.85 2009/01/03 19:10:40 tom Exp $
+ ##############################################################################
+-# Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.                #
+ #                                                                            #
+ # Permission is hereby granted, free of charge, to any person obtaining a    #
+ # copy of this software and associated documentation files (the "Software"), #
+@@ -61,10 +61,10 @@
+ INSTALL_DATA	= @INSTALL_DATA@
+ 
+ AR		= @AR@
+-AR_OPTS		= @AR_OPTS@
++ARFLAGS		= @ARFLAGS@
+ 
+ CXX_AR		= @CXX_AR@
+-CXX_AR_OPTS	= @CXX_AR_OPTS@
++CXX_ARFLAGS	= @CXX_ARFLAGS@
+ RANLIB		= @LIB_PREP@
+ 
+ CXX		= @CXX@
+@@ -153,7 +153,7 @@
+ 	$(MODEL)/cursesmain$o
+ 
+ ../lib/$(LIBNAME_NORMAL) : $(LIB_OBJS)
+-	$(CXX_AR) $(CXX_AR_OPTS) $@ $?
++	$(CXX_AR) $(CXX_ARFLAGS) $@ $?
+ 	$(RANLIB) $@
+ 
+ ../lib/$(LIBNAME_LIBTOOL) : $(LIB_OBJS)
 diff -Naur ncurses-5.7.orig/config.guess ncurses-5.7/config.guess
 --- ncurses-5.7.orig/config.guess	2008-08-30 13:25:07.000000000 -0700
-+++ ncurses-5.7/config.guess	2009-01-18 23:56:34.000000000 -0800
++++ ncurses-5.7/config.guess	2009-01-27 16:44:58.008364855 -0800
 @@ -4,7 +4,7 @@
  #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
  #   Free Software Foundation, Inc.
@@ -1508,7 +1191,7 @@ diff -Naur ncurses-5.7.orig/config.guess ncurses-5.7/config.guess
  	exit ;;
 diff -Naur ncurses-5.7.orig/config.sub ncurses-5.7/config.sub
 --- ncurses-5.7.orig/config.sub	2008-08-30 13:25:02.000000000 -0700
-+++ ncurses-5.7/config.sub	2009-01-18 23:56:34.000000000 -0800
++++ ncurses-5.7/config.sub	2009-01-27 16:44:58.008364855 -0800
 @@ -4,7 +4,7 @@
  #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
  #   Free Software Foundation, Inc.
@@ -1592,7 +1275,7 @@ diff -Naur ncurses-5.7.orig/config.sub ncurses-5.7/config.sub
  	sparc | sparcv8 | sparcv9 | sparcv9b | sparcv9v)
 diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
 --- ncurses-5.7.orig/configure	2008-10-25 17:04:38.000000000 -0700
-+++ ncurses-5.7/configure	2009-01-18 23:56:41.000000000 -0800
++++ ncurses-5.7/configure	2009-01-27 16:45:03.672730548 -0800
 @@ -1,7 +1,7 @@
  #! /bin/sh
 -# From configure.in Revision: 1.454 .
@@ -13277,7 +12960,7 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  
 diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
 --- ncurses-5.7.orig/configure.in	2008-10-18 07:53:32.000000000 -0700
-+++ ncurses-5.7/configure.in	2009-01-18 23:56:40.000000000 -0800
++++ ncurses-5.7/configure.in	2009-01-27 16:45:02.344642827 -0800
 @@ -1,5 +1,5 @@
  dnl***************************************************************************
 -dnl Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -13476,13 +13159,13 @@ diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
  
 diff -Naur ncurses-5.7.orig/dist.mk ncurses-5.7/dist.mk
 --- ncurses-5.7.orig/dist.mk	2008-11-01 17:58:38.000000000 -0700
-+++ ncurses-5.7/dist.mk	2009-01-18 23:56:41.000000000 -0800
++++ ncurses-5.7/dist.mk	2009-01-27 16:45:05.084820505 -0800
 @@ -25,7 +25,7 @@
  # use or other dealings in this Software without prior written               #
  # authorization.                                                             #
  ##############################################################################
 -# $Id: dist.mk,v 1.671 2008/11/02 00:58:38 tom Exp $
-+# $Id: dist.mk,v 1.683 2009/01/17 16:29:15 tom Exp $
++# $Id: dist.mk,v 1.684 2009/01/24 20:49:01 tom Exp $
  # Makefile for creating ncurses distributions.
  #
  # This only needs to be used directly as a makefile by developers, but
@@ -13491,13 +13174,33 @@ diff -Naur ncurses-5.7.orig/dist.mk ncurses-5.7/dist.mk
  NCURSES_MAJOR = 5
  NCURSES_MINOR = 7
 -NCURSES_PATCH = 20081102
-+NCURSES_PATCH = 20090117
++NCURSES_PATCH = 20090124
  
  # We don't append the patch to the version, since this only applies to releases
  VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
+diff -Naur ncurses-5.7.orig/form/frm_driver.c ncurses-5.7/form/frm_driver.c
+--- ncurses-5.7.orig/form/frm_driver.c	2008-10-18 09:25:00.000000000 -0700
++++ ncurses-5.7/form/frm_driver.c	2009-01-27 16:44:49.391812822 -0800
+@@ -32,7 +32,7 @@
+ 
+ #include "form.priv.h"
+ 
+-MODULE_ID("$Id: frm_driver.c,v 1.88 2008/10/18 16:25:00 tom Exp $")
++MODULE_ID("$Id: frm_driver.c,v 1.89 2008/12/06 23:08:12 tom Exp $")
+ 
+ /*----------------------------------------------------------------------------
+   This is the core module of the form library. It contains the majority
+@@ -4366,6 +4366,7 @@
+       delwin(field->working);
+       field->working = newpad(field->drows, field->dcols);
+     }
++  len = Buffer_Length(field);
+   wclear(field->working);
+   mvwaddstr(field->working, 0, 0, value);
+ 
 diff -Naur ncurses-5.7.orig/form/Makefile.in ncurses-5.7/form/Makefile.in
 --- ncurses-5.7.orig/form/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/form/Makefile.in	2009-01-18 23:56:35.000000000 -0800
++++ ncurses-5.7/form/Makefile.in	2009-01-27 16:44:58.024366252 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.47 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.48 2009/01/03 19:09:26 tom Exp $
@@ -13516,29 +13219,9 @@ diff -Naur ncurses-5.7.orig/form/Makefile.in ncurses-5.7/form/Makefile.in
  AWK		= @AWK@
  LD		= @LD@
  LN_S		= @LN_S@
-diff -Naur ncurses-5.7.orig/form/frm_driver.c ncurses-5.7/form/frm_driver.c
---- ncurses-5.7.orig/form/frm_driver.c	2008-10-18 09:25:00.000000000 -0700
-+++ ncurses-5.7/form/frm_driver.c	2009-01-18 23:56:25.000000000 -0800
-@@ -32,7 +32,7 @@
- 
- #include "form.priv.h"
- 
--MODULE_ID("$Id: frm_driver.c,v 1.88 2008/10/18 16:25:00 tom Exp $")
-+MODULE_ID("$Id: frm_driver.c,v 1.89 2008/12/06 23:08:12 tom Exp $")
- 
- /*----------------------------------------------------------------------------
-   This is the core module of the form library. It contains the majority
-@@ -4366,6 +4366,7 @@
-       delwin(field->working);
-       field->working = newpad(field->drows, field->dcols);
-     }
-+  len = Buffer_Length(field);
-   wclear(field->working);
-   mvwaddstr(field->working, 0, 0, value);
- 
 diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
 --- ncurses-5.7.orig/include/curses.h.in	2008-08-30 13:11:29.000000000 -0700
-+++ ncurses-5.7/include/curses.h.in	2009-01-18 23:56:29.000000000 -0800
++++ ncurses-5.7/include/curses.h.in	2009-01-27 16:44:52.892037156 -0800
 @@ -32,7 +32,7 @@
   *     and: Thomas E. Dickey                        1996-on                 *
   ****************************************************************************/
@@ -13594,7 +13277,7 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
  #define curses_version() NCURSES_VERSION
 diff -Naur ncurses-5.7.orig/include/curses.tail ncurses-5.7/include/curses.tail
 --- ncurses-5.7.orig/include/curses.tail	2008-07-05 13:20:38.000000000 -0700
-+++ ncurses-5.7/include/curses.tail	2009-01-18 23:56:21.000000000 -0800
++++ ncurses-5.7/include/curses.tail	2009-01-27 16:44:46.511630953 -0800
 @@ -1,4 +1,4 @@
 -/* $Id: curses.tail,v 1.16 2008/07/05 20:20:38 tom Exp $ */
 +/* $Id: curses.tail,v 1.17 2008/11/23 00:12:12 tom Exp $ */
@@ -13611,7 +13294,7 @@ diff -Naur ncurses-5.7.orig/include/curses.tail ncurses-5.7/include/curses.tail
  extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
 diff -Naur ncurses-5.7.orig/include/curses.wide ncurses-5.7/include/curses.wide
 --- ncurses-5.7.orig/include/curses.wide	2007-03-10 09:52:23.000000000 -0800
-+++ ncurses-5.7/include/curses.wide	2009-01-18 23:56:23.000000000 -0800
++++ ncurses-5.7/include/curses.wide	2009-01-27 16:44:48.051726777 -0800
 @@ -1,9 +1,11 @@
 -/* $Id: curses.wide,v 1.34 2007/03/10 17:52:23 tom Exp $ */
 +/* $Id: curses.wide,v 1.36 2008/11/29 18:44:08 tom Exp $ */
@@ -13625,9 +13308,91 @@ diff -Naur ncurses-5.7.orig/include/curses.wide ncurses-5.7/include/curses.wide
  #ifdef _XOPEN_SOURCE_EXTENDED
  
  extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
+diff -Naur ncurses-5.7.orig/INSTALL ncurses-5.7/INSTALL
+--- ncurses-5.7.orig/INSTALL	2008-11-02 13:13:51.000000000 -0800
++++ ncurses-5.7/INSTALL	2009-01-27 16:44:58.000364576 -0800
+@@ -1,5 +1,5 @@
+ -------------------------------------------------------------------------------
+--- Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.               --
++-- Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.               --
+ --                                                                           --
+ -- Permission is hereby granted, free of charge, to any person obtaining a   --
+ -- copy of this software and associated documentation files (the             --
+@@ -25,7 +25,7 @@
+ -- sale, use or other dealings in this Software without prior written        --
+ -- authorization.                                                            --
+ -------------------------------------------------------------------------------
+--- $Id: INSTALL,v 1.135 2008/11/02 21:13:51 tom Exp $
++-- $Id: INSTALL,v 1.137 2009/01/03 23:59:23 tom Exp $
+ ---------------------------------------------------------------------
+              How to install Ncurses/Terminfo on your system
+ ---------------------------------------------------------------------
+@@ -525,6 +525,11 @@
+ 	terminfo entries.  This is the default, unless you have disabled the
+ 	extended functions.
+ 
++    --enable-pc-files
++	If pkg-config is found (see --with-pkg-config), generate ".pc" files
++	for each of the libraries, and install them in pkg-config's library
++	directory.
++
+     --enable-reentrant
+ 	Compile experimental configuration which improves reentrant use of the
+ 	library by reducing global and static variables.  This option is also
+@@ -850,6 +855,9 @@
+ 	those using termcap, do not use the higher speeds.  Your application
+ 	(or system, in general) may or may not.
+ 
++    --with-pkg-config=[DIR]
++	Check for pkg-config, optionally specifying its path.
++
+     --with-profile
+ 	Generate profile-libraries These are named by adding "_p" to the root,
+ 	e.g., libncurses_p.a
+@@ -975,6 +983,9 @@
+     --without-dlsym
+ 	Do not use dlsym() to load GPM dynamically.
+ 
++    --without-manpages
++	Tell the configure script to suppress the install of ncurses' manpages.
++
+     --without-progs
+ 	Tell the configure script to suppress the build of ncurses' application
+ 	programs (e.g., tic).  The test applications will still be built if you
+diff -Naur ncurses-5.7.orig/man/curs_color.3x ncurses-5.7/man/curs_color.3x
+--- ncurses-5.7.orig/man/curs_color.3x	2005-12-17 16:00:37.000000000 -0800
++++ ncurses-5.7/man/curs_color.3x	2009-01-27 16:45:05.084820505 -0800
+@@ -1,5 +1,5 @@
+ .\"***************************************************************************
+-.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
++.\" Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
+ .\"                                                                          *
+ .\" Permission is hereby granted, free of charge, to any person obtaining a  *
+ .\" copy of this software and associated documentation files (the            *
+@@ -26,7 +26,7 @@
+ .\" authorization.                                                           *
+ .\"***************************************************************************
+ .\"
+-.\" $Id: curs_color.3x,v 1.28 2005/12/18 00:00:37 tom Exp $
++.\" $Id: curs_color.3x,v 1.29 2009/01/24 23:10:02 tom Exp $
+ .TH curs_color 3X ""
+ .na
+ .hy 0
+@@ -96,7 +96,10 @@
+ .TP 5
+ -
+ The value of the first argument
+-must be between \fB1\fR and \fBCOLOR_PAIRS-1\fR.
++must be between \fB1\fR and \fBCOLOR_PAIRS-1\fR,
++except that if default colors are used (see \fBuse_default_colors\fP)
++the upper limit is adjusted to allow for extra pairs which use
++a default color in foreground and/or background.
+ .TP 5
+ -
+ The value of the second and
 diff -Naur ncurses-5.7.orig/man/curs_mouse.3x ncurses-5.7/man/curs_mouse.3x
 --- ncurses-5.7.orig/man/curs_mouse.3x	2006-12-30 15:43:34.000000000 -0800
-+++ ncurses-5.7/man/curs_mouse.3x	2009-01-18 23:56:21.000000000 -0800
++++ ncurses-5.7/man/curs_mouse.3x	2009-01-27 16:44:46.515630395 -0800
 @@ -1,6 +1,6 @@
  '\" t
  .\"***************************************************************************
@@ -13673,7 +13438,7 @@ diff -Naur ncurses-5.7.orig/man/curs_mouse.3x ncurses-5.7/man/curs_mouse.3x
  function such as \fBgetstr\fR that expects a linefeed for input-loop
 diff -Naur ncurses-5.7.orig/man/keybound.3x ncurses-5.7/man/keybound.3x
 --- ncurses-5.7.orig/man/keybound.3x	2006-02-25 13:47:06.000000000 -0800
-+++ ncurses-5.7/man/keybound.3x	2009-01-18 23:56:27.000000000 -0800
++++ ncurses-5.7/man/keybound.3x	2009-01-27 16:44:51.023917306 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1999-2003,2006 Free Software Foundation, Inc.              *
@@ -13694,7 +13459,7 @@ diff -Naur ncurses-5.7.orig/man/keybound.3x ncurses-5.7/man/keybound.3x
  .SH SYNOPSIS
 diff -Naur ncurses-5.7.orig/man/tabs.1 ncurses-5.7/man/tabs.1
 --- ncurses-5.7.orig/man/tabs.1	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/man/tabs.1	2009-01-18 23:56:19.000000000 -0800
++++ ncurses-5.7/man/tabs.1	2009-01-27 16:44:45.091537644 -0800
 @@ -0,0 +1,143 @@
 +.\"***************************************************************************
 +.\" Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -13841,7 +13606,7 @@ diff -Naur ncurses-5.7.orig/man/tabs.1 ncurses-5.7/man/tabs.1
 +.\"# End:
 diff -Naur ncurses-5.7.orig/man/tset.1 ncurses-5.7/man/tset.1
 --- ncurses-5.7.orig/man/tset.1	2006-12-24 07:00:30.000000000 -0800
-+++ ncurses-5.7/man/tset.1	2009-01-18 23:56:19.000000000 -0800
++++ ncurses-5.7/man/tset.1	2009-01-27 16:44:45.091537644 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -13860,9 +13625,52 @@ diff -Naur ncurses-5.7.orig/man/tset.1 ncurses-5.7/man/tset.1
  .SH NAME
  \fBtset\fR, \fBreset\fR - terminal initialization
  .SH SYNOPSIS
+diff -Naur ncurses-5.7.orig/MANIFEST ncurses-5.7/MANIFEST
+--- ncurses-5.7.orig/MANIFEST	2008-10-25 16:47:24.000000000 -0700
++++ ncurses-5.7/MANIFEST	2009-01-27 16:44:58.000364576 -0800
+@@ -640,6 +640,7 @@
+ ./man/ncurses.3x
+ ./man/panel.3x
+ ./man/resizeterm.3x
++./man/tabs.1
+ ./man/term.5
+ ./man/term.7
+ ./man/terminfo.head
+@@ -694,6 +695,7 @@
+ ./misc/emx.src
+ ./misc/form.def
+ ./misc/form.ref
++./misc/gen-pkgconfig.in
+ ./misc/gen_edit.sh
+ ./misc/jpf-indent
+ ./misc/makedef.cmd
+@@ -947,6 +949,7 @@
+ ./progs/infocmp.c
+ ./progs/modules
+ ./progs/progs.priv.h
++./progs/tabs.c
+ ./progs/tic.c
+ ./progs/toe.c
+ ./progs/tput.c
+@@ -963,6 +966,7 @@
+ ./test/cardfile.c
+ ./test/cardfile.dat
+ ./test/chgat.c
++./test/clip_printw.c
+ ./test/color_set.c
+ ./test/configure
+ ./test/configure.in
+@@ -990,6 +994,7 @@
+ ./test/inch_wide.c
+ ./test/inchs.c
+ ./test/ins_wide.c
++./test/insdelln.c
+ ./test/inserts.c
+ ./test/key_names.c
+ ./test/keynames.c
 diff -Naur ncurses-5.7.orig/menu/Makefile.in ncurses-5.7/menu/Makefile.in
 --- ncurses-5.7.orig/menu/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/menu/Makefile.in	2009-01-18 23:56:35.000000000 -0800
++++ ncurses-5.7/menu/Makefile.in	2009-01-27 16:44:58.024366252 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.48 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.49 2009/01/03 19:09:26 tom Exp $
@@ -13881,77 +13689,12 @@ diff -Naur ncurses-5.7.orig/menu/Makefile.in ncurses-5.7/menu/Makefile.in
  AWK		= @AWK@
  LD		= @LD@
  LN_S		= @LN_S@
-diff -Naur ncurses-5.7.orig/misc/Makefile.in ncurses-5.7/misc/Makefile.in
---- ncurses-5.7.orig/misc/Makefile.in	2007-03-31 08:54:17.000000000 -0700
-+++ ncurses-5.7/misc/Makefile.in	2009-01-18 23:56:35.000000000 -0800
-@@ -1,6 +1,6 @@
--# $Id: Makefile.in,v 1.43 2007/03/31 15:54:17 tom Exp $
-+# $Id: Makefile.in,v 1.48 2009/01/03 23:52:41 tom Exp $
- ##############################################################################
--# Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
-+# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
- #                                                                            #
- # Permission is hereby granted, free of charge, to any person obtaining a    #
- # copy of this software and associated documentation files (the "Software"), #
-@@ -66,9 +66,11 @@
- source		= @TERMINFO_SRC@
- 
- INSTALL		= @INSTALL@
--INSTALL_PROG	= @INSTALL_PROGRAM@
-+INSTALL_PROG	= @INSTALL_SCRIPT@
- INSTALL_DATA	= @INSTALL_DATA@
- 
-+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
-+
- ################################################################################
- all :	terminfo.tmp
- 
-@@ -103,9 +105,16 @@
- 
- NCURSES_CONFIG	= ncurses@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config
- 
--install.libs : $(DESTDIR)$(bindir) ncurses-config
-+install.libs :: $(DESTDIR)$(bindir) ncurses-config
- 	$(INSTALL_PROG) ncurses-config $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
- 
-+@MAKE_PC_FILES@install.libs :: pc-files
-+@MAKE_PC_FILES@	$(SHELL) -c 'for name in *.pc; do $(INSTALL_DATA) $$name $(PKG_CONFIG_LIBDIR)/$$name; done'
-+
-+@MAKE_PC_FILES@pc-files :
-+@MAKE_PC_FILES@	$(SHELL) ./gen-pkgconfig
-+@MAKE_PC_FILES@	touch $@
-+
- terminfo.tmp : run_tic.sed $(source)
- 	echo '** adjusting tabset paths'
- 	sed -f run_tic.sed $(source) >terminfo.tmp
-@@ -130,6 +139,7 @@
- 
- uninstall.libs :
- 	-rm -f $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
-+@MAKE_PC_FILES@	$(SHELL) 'for name in *.pc; do rm -f $(PKG_CONFIG_LIBDIR)/$$name; done'
- 
- tags :
- 
-@@ -138,11 +148,13 @@
- mostlyclean :
- 	-rm -f terminfo.tmp
- 	-rm -f run_tic.sed
-+@MAKE_PC_FILES@	-rm -f *.pc pc-files
- 	-rm -f core tags TAGS *~ *.bak *.ln *.atac trace
- 
- clean :: mostlyclean
- 
- distclean : clean
-+@MAKE_PC_FILES@	-rm -f gen-pkgconfig
- 	-rm -f Makefile run_tic.sh ncurses-config
- 
- realclean : distclean
 diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig.in
 --- ncurses-5.7.orig/misc/gen-pkgconfig.in	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/misc/gen-pkgconfig.in	2009-01-18 23:56:36.000000000 -0800
++++ ncurses-5.7/misc/gen-pkgconfig.in	2009-01-27 16:45:05.084820505 -0800
 @@ -0,0 +1,119 @@
 +#!@SHELL@
-+# $Id: gen-pkgconfig.in,v 1.4 2009/01/04 21:52:33 tom Exp $
++# $Id: gen-pkgconfig.in,v 1.5 2009/01/24 21:06:36 tom Exp $
 +##############################################################################
 +# Copyright (c) 2009 Free Software Foundation, Inc.                          #
 +#                                                                            #
@@ -14011,9 +13754,9 @@ diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig
 +do
 +	name=`basename $lib`
 +	root=`basename $name "$DFT_DEP_SUFFIX"`
-+	if test "$name" == "$root" ; then
++	if test "$name" = "$root" ; then
 +		root=`basename $name "$CXX_LIB_SUFFIX"`
-+		if test "$name" == "$root" ; then
++		if test "$name" = "$root" ; then
 +			continue
 +		fi
 +	fi
@@ -14069,13 +13812,86 @@ diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig
 +	# pr -f ${name}.pc
 +done
 +# vile:shmode
+diff -Naur ncurses-5.7.orig/misc/Makefile.in ncurses-5.7/misc/Makefile.in
+--- ncurses-5.7.orig/misc/Makefile.in	2007-03-31 08:54:17.000000000 -0700
++++ ncurses-5.7/misc/Makefile.in	2009-01-27 16:45:05.084820505 -0800
+@@ -1,6 +1,6 @@
+-# $Id: Makefile.in,v 1.43 2007/03/31 15:54:17 tom Exp $
++# $Id: Makefile.in,v 1.50 2009/01/24 21:42:15 tom Exp $
+ ##############################################################################
+-# Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
+ #                                                                            #
+ # Permission is hereby granted, free of charge, to any person obtaining a    #
+ # copy of this software and associated documentation files (the "Software"), #
+@@ -66,15 +66,17 @@
+ source		= @TERMINFO_SRC@
+ 
+ INSTALL		= @INSTALL@
+-INSTALL_PROG	= @INSTALL_PROGRAM@
++INSTALL_PROG	= @INSTALL_SCRIPT@
+ INSTALL_DATA	= @INSTALL_DATA@
+ 
++PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
++
+ ################################################################################
+ all :	terminfo.tmp
+ 
+ depend :
+ 
+-sources :
++sources :: terminfo.tmp 
+ 
+ install : install.data install.libs
+ 
+@@ -103,9 +105,17 @@
+ 
+ NCURSES_CONFIG	= ncurses@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config
+ 
+-install.libs : $(DESTDIR)$(bindir) ncurses-config
++install.libs :: $(DESTDIR)$(bindir) ncurses-config
+ 	$(INSTALL_PROG) ncurses-config $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
+ 
++@MAKE_PC_FILES@install.libs :: pc-files
++@MAKE_PC_FILES@	$(SHELL) -c 'for name in *.pc; do $(INSTALL_DATA) $$name $(PKG_CONFIG_LIBDIR)/$$name; done'
++
++@MAKE_PC_FILES@sources :: pc-files
++@MAKE_PC_FILES@pc-files :
++@MAKE_PC_FILES@	$(SHELL) ./gen-pkgconfig
++@MAKE_PC_FILES@	touch $@
++
+ terminfo.tmp : run_tic.sed $(source)
+ 	echo '** adjusting tabset paths'
+ 	sed -f run_tic.sed $(source) >terminfo.tmp
+@@ -130,6 +140,7 @@
+ 
+ uninstall.libs :
+ 	-rm -f $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
++@MAKE_PC_FILES@	$(SHELL) 'for name in *.pc; do rm -f $(PKG_CONFIG_LIBDIR)/$$name; done'
+ 
+ tags :
+ 
+@@ -138,11 +149,13 @@
+ mostlyclean :
+ 	-rm -f terminfo.tmp
+ 	-rm -f run_tic.sed
++@MAKE_PC_FILES@	-rm -f *.pc pc-files
+ 	-rm -f core tags TAGS *~ *.bak *.ln *.atac trace
+ 
+ clean :: mostlyclean
+ 
+ distclean : clean
++@MAKE_PC_FILES@	-rm -f gen-pkgconfig
+ 	-rm -f Makefile run_tic.sh ncurses-config
+ 
+ realclean : distclean
 diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-config.in
 --- ncurses-5.7.orig/misc/ncurses-config.in	2007-03-17 13:02:19.000000000 -0700
-+++ ncurses-5.7/misc/ncurses-config.in	2009-01-18 23:56:38.000000000 -0800
++++ ncurses-5.7/misc/ncurses-config.in	2009-01-27 16:45:05.084820505 -0800
 @@ -1,7 +1,7 @@
  #!@SHELL@
 -# $Id: ncurses-config.in,v 1.12 2007/03/17 20:02:19 tom Exp $
-+# $Id: ncurses-config.in,v 1.21 2009/01/06 01:06:21 tom Exp $
++# $Id: ncurses-config.in,v 1.22 2009/01/24 21:06:45 tom Exp $
  ##############################################################################
 -# Copyright (c) 2006,2007 Free Software Foundation, Inc.                     #
 +# Copyright (c) 2006-2007,2009 Free Software Foundation, Inc.                #
@@ -14154,7 +13970,7 @@ diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-conf
  		fi
 -		if test "@WITH_OVERWRITE@" != no ; then
 -			INCS="$INCS -I${prefix}/include/${THIS}"
-+		if test "x@WITH_OVERWRITE@" == xno ; then
++		if test "x@WITH_OVERWRITE@" = xno ; then
 +			INCS="$INCS -I${includedir}/${THIS}"
  		fi
  		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
@@ -14198,7 +14014,7 @@ diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-conf
    --terminfo         echos the \$TERMINFO terminfo database path
 diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
 --- ncurses-5.7.orig/misc/terminfo.src	2008-10-12 16:03:54.000000000 -0700
-+++ ncurses-5.7/misc/terminfo.src	2009-01-18 23:56:40.000000000 -0800
++++ ncurses-5.7/misc/terminfo.src	2009-01-27 16:45:02.352643385 -0800
 @@ -6,8 +6,8 @@
  # Report bugs and new terminal descriptions to
  #	bug-ncurses@gnu.org
@@ -14364,7 +14180,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  # fill-prefix:"\t"
 diff -Naur ncurses-5.7.orig/mk-1st.awk ncurses-5.7/mk-1st.awk
 --- ncurses-5.7.orig/mk-1st.awk	2007-03-24 15:10:55.000000000 -0700
-+++ ncurses-5.7/mk-1st.awk	2009-01-18 23:56:36.000000000 -0800
++++ ncurses-5.7/mk-1st.awk	2009-01-27 16:44:59.364453973 -0800
 @@ -1,6 +1,6 @@
 -# $Id: mk-1st.awk,v 1.78 2007/03/24 22:10:55 tom Exp $
 +# $Id: mk-1st.awk,v 1.80 2009/01/04 21:51:38 tom Exp $
@@ -14392,30 +14208,9 @@ diff -Naur ncurses-5.7.orig/mk-1st.awk ncurses-5.7/mk-1st.awk
  				printf "\t$(RANLIB) $@\n"
  				if ( host == "vxworks" )
  				{
-diff -Naur ncurses-5.7.orig/ncurses/Makefile.in ncurses-5.7/ncurses/Makefile.in
---- ncurses-5.7.orig/ncurses/Makefile.in	2008-10-18 07:11:54.000000000 -0700
-+++ ncurses-5.7/ncurses/Makefile.in	2009-01-18 23:56:35.000000000 -0800
-@@ -1,6 +1,6 @@
--# $Id: Makefile.in,v 1.113 2008/10/18 14:11:54 tom Exp $
-+# $Id: Makefile.in,v 1.114 2009/01/03 19:09:26 tom Exp $
- ##############################################################################
--# Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
-+# Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.                #
- #                                                                            #
- # Permission is hereby granted, free of charge, to any person obtaining a    #
- # copy of this software and associated documentation files (the "Software"), #
-@@ -78,7 +78,7 @@
- INSTALL_DATA	= @INSTALL_DATA@
- 
- AR		= @AR@
--AR_OPTS		= @AR_OPTS@
-+ARFLAGS		= @ARFLAGS@
- AWK		= @AWK@
- LD		= @LD@
- LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_addch.c ncurses-5.7/ncurses/base/lib_addch.c
 --- ncurses-5.7.orig/ncurses/base/lib_addch.c	2008-08-16 12:20:04.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_addch.c	2009-01-18 23:56:41.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_addch.c	2009-01-27 16:45:03.676729990 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
@@ -14470,9 +14265,225 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_addch.c ncurses-5.7/ncurses/base/li
  	    }
  	    /*
  	     * Check for cells which are orphaned by adding this character, set
+diff -Naur ncurses-5.7.orig/ncurses/base/lib_color.c ncurses-5.7/ncurses/base/lib_color.c
+--- ncurses-5.7.orig/ncurses/base/lib_color.c	2007-04-07 10:07:28.000000000 -0700
++++ ncurses-5.7/ncurses/base/lib_color.c	2009-01-27 16:45:05.088820784 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+@@ -42,7 +42,7 @@
+ #include <term.h>
+ #include <tic.h>
+ 
+-MODULE_ID("$Id: lib_color.c,v 1.85 2007/04/07 17:07:28 tom Exp $")
++MODULE_ID("$Id: lib_color.c,v 1.87 2009/01/25 00:25:31 tom Exp $")
+ 
+ /*
+  * These should be screen structure members.  They need to be globals for
+@@ -108,6 +108,13 @@
+ };
+ /* *INDENT-ON* */
+ 
++/*
++ * Ensure that we use color pairs only when colors have been started, and also
++ * that the index is within the limits of the table which we allocated.
++ */
++#define ValidPair(pair) \
++    ((SP != 0) && (pair >= 0) && (pair < SP->_pair_limit) && SP->_coloron)
++
+ #if NCURSES_EXT_FUNCS
+ /*
+  * These are called from _nc_do_color(), which in turn is called from
+@@ -255,6 +262,15 @@
+ 	}
+ 
+ 	if (max_pairs > 0 && max_colors > 0) {
++	    SP->_pair_limit = max_pairs;
++
++#if NCURSES_EXT_FUNCS
++	    /*
++	     * If using default colors, allocate extra space in table to
++	     * allow for default-color as a component of a color-pair.
++	     */
++	    SP->_pair_limit += (1 + (2 * max_colors));
++#endif
+ 	    SP->_pair_count = max_pairs;
+ 	    SP->_color_count = max_colors;
+ #if !USE_REENTRANT
+@@ -263,7 +279,7 @@
+ #endif
+ 
+ 	    if ((SP->_color_pairs = TYPE_CALLOC(colorpair_t,
+-						max_pairs)) != 0) {
++						SP->_pair_limit)) != 0) {
+ 		if ((SP->_color_table = TYPE_CALLOC(color_t,
+ 						    max_colors)) != 0) {
+ 		    SP->_color_pairs[0] = PAIR_OF(default_fg(), default_bg());
+@@ -331,21 +347,69 @@
+ init_pair(short pair, short f, short b)
+ {
+     colorpair_t result;
++    colorpair_t previous;
+ 
+     T((T_CALLED("init_pair(%d,%d,%d)"), pair, f, b));
+ 
+-    if ((pair < 0) || (pair >= COLOR_PAIRS) || SP == 0 || !SP->_coloron)
++    if (!ValidPair(pair))
+ 	returnCode(ERR);
++
++    previous = SP->_color_pairs[pair];
+ #if NCURSES_EXT_FUNCS
+     if (SP->_default_color) {
+-	if (f < 0)
++	bool isDefault = FALSE;
++	bool wasDefault = FALSE;
++	int default_pairs = SP->_default_pairs;
++
++	/*
++	 * Map caller's color number, e.g., -1, 0, 1, .., 7, etc., into
++	 * internal unsigned values which we will store in the _color_pairs[]
++	 * table.
++	 */
++	if (isDefaultColor(f)) {
+ 	    f = COLOR_DEFAULT;
+-	if (b < 0)
++	    isDefault = TRUE;
++	} else if (!OkColorHi(f)) {
++	    returnCode(ERR);
++	}
++
++	if (isDefaultColor(b)) {
+ 	    b = COLOR_DEFAULT;
+-	if (!OkColorHi(f) && !isDefaultColor(f))
++	    isDefault = TRUE;
++	} else if (!OkColorHi(b)) {
+ 	    returnCode(ERR);
+-	if (!OkColorHi(b) && !isDefaultColor(b))
++	}
++
++	/*
++	 * Check if the table entry that we are going to init/update used
++	 * default colors.
++	 */
++	if ((FORE_OF(previous) == COLOR_DEFAULT)
++	    || (BACK_OF(previous) == COLOR_DEFAULT))
++	    wasDefault = TRUE;
++
++	/*
++	 * Keep track of the number of entries in the color pair table which
++	 * used a default color.
++	 */
++	if (isDefault && !wasDefault) {
++	    ++default_pairs;
++	} else if (wasDefault && !isDefault) {
++	    --default_pairs;
++	}
++
++	/*
++	 * As an extension, ncurses allows the pair number to exceed the
++	 * terminal's color_pairs value for pairs using a default color.
++	 *
++	 * Note that updating a pair which used a default color with one
++	 * that does not will decrement the count - and possibly interfere
++	 * with sequentially adding new pairs.
++	 */
++	if (pair > (SP->_pair_count + default_pairs)) {
+ 	    returnCode(ERR);
++	}
++	SP->_default_pairs = default_pairs;
+     } else
+ #endif
+     {
+@@ -361,8 +425,8 @@
+      * pair colors with the new ones).
+      */
+     result = PAIR_OF(f, b);
+-    if (SP->_color_pairs[pair] != 0
+-	&& SP->_color_pairs[pair] != result) {
++    if (previous != 0
++	&& previous != result) {
+ 	int y, x;
+ 
+ 	for (y = 0; y <= curscr->_maxy; y++) {
+@@ -496,11 +560,11 @@
+ 
+     T((T_CALLED("pair_content(%d,%p,%p)"), pair, f, b));
+ 
+-    if ((pair < 0) || (pair >= COLOR_PAIRS) || SP == 0 || !SP->_coloron) {
++    if (!ValidPair(pair)) {
+ 	result = ERR;
+     } else {
+-	NCURSES_COLOR_T fg = ((SP->_color_pairs[pair] >> C_SHIFT) & C_MASK);
+-	NCURSES_COLOR_T bg = (SP->_color_pairs[pair] & C_MASK);
++	NCURSES_COLOR_T fg = FORE_OF(SP->_color_pairs[pair]);
++	NCURSES_COLOR_T bg = BACK_OF(SP->_color_pairs[pair]);
+ 
+ #if NCURSES_EXT_FUNCS
+ 	if (fg == COLOR_DEFAULT)
+@@ -527,7 +591,7 @@
+     NCURSES_COLOR_T bg = COLOR_DEFAULT;
+     NCURSES_COLOR_T old_fg, old_bg;
+ 
+-    if (pair < 0 || pair >= COLOR_PAIRS) {
++    if (!ValidPair(pair)) {
+ 	return;
+     } else if (pair != 0) {
+ 	if (set_color_pair) {
+diff -Naur ncurses-5.7.orig/ncurses/base/lib_colorset.c ncurses-5.7/ncurses/base/lib_colorset.c
+--- ncurses-5.7.orig/ncurses/base/lib_colorset.c	2005-01-29 13:40:51.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_colorset.c	2009-01-27 16:45:05.088820784 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+@@ -28,7 +28,7 @@
+ 
+ /****************************************************************************
+  *  Author: Juergen Pfeifer,  1998                                          *
+- *     and: Thomas E. Dickey, 2005                                          *
++ *     and: Thomas E. Dickey, 2005-on                                       *
+  ****************************************************************************/
+ 
+ /*
+@@ -41,20 +41,23 @@
+ #include <curses.priv.h>
+ #include <ctype.h>
+ 
+-MODULE_ID("$Id: lib_colorset.c,v 1.11 2005/01/29 21:40:51 tom Exp $")
++MODULE_ID("$Id: lib_colorset.c,v 1.12 2009/01/25 00:44:40 tom Exp $")
+ 
+ NCURSES_EXPORT(int)
+ wcolor_set(WINDOW *win, short color_pair_number, void *opts)
+ {
++    int code = ERR;
++
+     T((T_CALLED("wcolor_set(%p,%d)"), win, color_pair_number));
+     if (win
+ 	&& !opts
++	&& (SP != 0)
+ 	&& (color_pair_number >= 0)
+-	&& (color_pair_number < COLOR_PAIRS)) {
++	&& (color_pair_number < SP->_pair_limit)) {
+ 	TR(TRACE_ATTRS, ("... current %ld", (long) GET_WINDOW_PAIR(win)));
+ 	SET_WINDOW_PAIR(win, color_pair_number);
+ 	if_EXT_COLORS(win->_color = color_pair_number);
+-	returnCode(OK);
+-    } else
+-	returnCode(ERR);
++	code = OK;
++    }
++    returnCode(code);
+ }
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_freeall.c ncurses-5.7/ncurses/base/lib_freeall.c
 --- ncurses-5.7.orig/ncurses/base/lib_freeall.c	2008-09-27 06:09:57.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_freeall.c	2009-01-18 23:56:25.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_freeall.c	2009-01-27 16:44:49.391812822 -0800
 @@ -40,7 +40,7 @@
  extern int malloc_errfd;	/* FIXME */
  #endif
@@ -14493,7 +14504,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_freeall.c ncurses-5.7/ncurses/base/
  #ifdef TRACE
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_mouse.c ncurses-5.7/ncurses/base/lib_mouse.c
 --- ncurses-5.7.orig/ncurses/base/lib_mouse.c	2008-10-18 14:48:55.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_mouse.c	2009-01-18 23:56:25.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_mouse.c	2009-01-27 16:44:49.391812822 -0800
 @@ -79,7 +79,7 @@
  
  #include <curses.priv.h>
@@ -14550,19 +14561,151 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_mouse.c ncurses-5.7/ncurses/base/li
  }
  
  NCURSES_EXPORT(bool)
+diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c ncurses-5.7/ncurses/base/lib_slkatr_set.c
+--- ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c	2005-01-28 13:11:53.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_slkatr_set.c	2009-01-27 16:45:05.088820784 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+@@ -28,7 +28,7 @@
+ 
+ /****************************************************************************
+  *  Author:  Juergen Pfeifer, 1998                                          *
+- *     and:  Thomas E. Dickey 2005                                          *
++ *     and:  Thomas E. Dickey 2005-on                                       *
+  ****************************************************************************/
+ 
+ /*
+@@ -38,22 +38,27 @@
+  */
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: lib_slkatr_set.c,v 1.10 2005/01/28 21:11:53 tom Exp $")
++MODULE_ID("$Id: lib_slkatr_set.c,v 1.11 2009/01/25 00:47:15 tom Exp $")
+ 
+ NCURSES_EXPORT(int)
+ slk_attr_set(const attr_t attr, short color_pair_number, void *opts)
+ {
++    int code = ERR;
++
+     T((T_CALLED("slk_attr_set(%s,%d)"), _traceattr(attr), color_pair_number));
+ 
+-    if (SP != 0 && SP->_slk != 0 && !opts &&
+-	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
++    if (SP != 0
++	&& SP->_slk != 0
++	&& !opts
++	&& color_pair_number >= 0
++	&& color_pair_number < SP->_pair_limit) {
+ 	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(SP->_slk->attr))));
+ 	SetAttr(SP->_slk->attr, attr);
+ 	if (color_pair_number > 0) {
+ 	    SetPair(SP->_slk->attr, color_pair_number);
+ 	}
+ 	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
+-	returnCode(OK);
+-    } else
+-	returnCode(ERR);
++	code = OK;
++    }
++    returnCode(code);
+ }
+diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkcolor.c ncurses-5.7/ncurses/base/lib_slkcolor.c
+--- ncurses-5.7.orig/ncurses/base/lib_slkcolor.c	2005-01-28 13:11:53.000000000 -0800
++++ ncurses-5.7/ncurses/base/lib_slkcolor.c	2009-01-27 16:45:05.088820784 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+@@ -28,7 +28,7 @@
+ 
+ /****************************************************************************
+  *  Author:  Juergen Pfeifer, 1998                                          *
+- *     and:  Thomas E. Dickey 2005                                          *
++ *     and:  Thomas E. Dickey 2005-on                                       *
+  ****************************************************************************/
+ 
+ /*
+@@ -38,19 +38,23 @@
+  */
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: lib_slkcolor.c,v 1.12 2005/01/28 21:11:53 tom Exp $")
++MODULE_ID("$Id: lib_slkcolor.c,v 1.13 2009/01/25 00:48:07 tom Exp $")
+ 
+ NCURSES_EXPORT(int)
+ slk_color(short color_pair_number)
+ {
++    int code = ERR;
++
+     T((T_CALLED("slk_color(%d)"), color_pair_number));
+ 
+-    if (SP != 0 && SP->_slk != 0 &&
+-	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
++    if (SP != 0
++	&& SP->_slk != 0
++	&& color_pair_number >= 0
++	&& color_pair_number < SP->_pair_limit) {
+ 	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(SP->_slk->attr))));
+ 	SetPair(SP->_slk->attr, color_pair_number);
+ 	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
+-	returnCode(OK);
+-    } else
+-	returnCode(ERR);
++	code = OK;
++    }
++    returnCode(code);
+ }
 diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.priv.h
 --- ncurses-5.7.orig/ncurses/curses.priv.h	2008-10-04 14:37:45.000000000 -0700
-+++ ncurses-5.7/ncurses/curses.priv.h	2009-01-18 23:56:21.000000000 -0800
++++ ncurses-5.7/ncurses/curses.priv.h	2009-01-27 16:45:05.088820784 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
 @@ -34,7 +34,7 @@
  
  
  /*
 - * $Id: curses.priv.h,v 1.394 2008/10/04 21:37:45 tom Exp $
-+ * $Id: curses.priv.h,v 1.395 2008/11/23 00:09:04 tom Exp $
++ * $Id: curses.priv.h,v 1.396 2009/01/24 23:04:59 tom Exp $
   *
   *	curses.priv.h
   *
-@@ -1519,7 +1519,7 @@
+@@ -404,6 +404,8 @@
+ #define C_SHIFT 9		/* we need more bits than there are colors */
+ #define C_MASK			((1 << C_SHIFT) - 1)
+ #define PAIR_OF(fg, bg)		((((fg) & C_MASK) << C_SHIFT) | ((bg) & C_MASK))
++#define FORE_OF(c)		(((c) >> C_SHIFT) & C_MASK)
++#define BACK_OF(c)		((c) & C_MASK)
+ #define isDefaultColor(c)	((c) >= COLOR_DEFAULT || (c) < 0)
+ 
+ #define COLOR_DEFAULT		C_MASK
+@@ -794,11 +796,13 @@
+ 	int		_color_count;	/* count of colors in palette	     */
+ 	colorpair_t	*_color_pairs;	/* screen's color pair list	     */
+ 	int		_pair_count;	/* count of color pairs		     */
++	int		_pair_limit;	/* actual limit of color-pairs       */
+ #if NCURSES_EXT_FUNCS
+ 	bool		_default_color; /* use default colors		     */
+ 	bool		_has_sgr_39_49; /* has ECMA default color support    */
+ 	int		_default_fg;	/* assumed default foreground	     */
+ 	int		_default_bg;	/* assumed default background	     */
++	int		_default_pairs;	/* count pairs using default color   */
+ #endif
+ 	chtype		_ok_attributes; /* valid attributes for terminal     */
+ 	chtype		_xmc_suppress;	/* attributes to suppress if xmc     */
+@@ -1519,7 +1523,7 @@
  extern NCURSES_EXPORT(void) _nc_screen_wrap (void);
  
  /* lib_mouse.c */
@@ -14571,9 +14714,30 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  
  /* lib_mvcur.c */
  #define INFINITY	1000000	/* cost: too high to use */
+diff -Naur ncurses-5.7.orig/ncurses/Makefile.in ncurses-5.7/ncurses/Makefile.in
+--- ncurses-5.7.orig/ncurses/Makefile.in	2008-10-18 07:11:54.000000000 -0700
++++ ncurses-5.7/ncurses/Makefile.in	2009-01-27 16:44:58.028366252 -0800
+@@ -1,6 +1,6 @@
+-# $Id: Makefile.in,v 1.113 2008/10/18 14:11:54 tom Exp $
++# $Id: Makefile.in,v 1.114 2009/01/03 19:09:26 tom Exp $
+ ##############################################################################
+-# Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
++# Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.                #
+ #                                                                            #
+ # Permission is hereby granted, free of charge, to any person obtaining a    #
+ # copy of this software and associated documentation files (the "Software"), #
+@@ -78,7 +78,7 @@
+ INSTALL_DATA	= @INSTALL_DATA@
+ 
+ AR		= @AR@
+-AR_OPTS		= @AR_OPTS@
++ARFLAGS		= @ARFLAGS@
+ AWK		= @AWK@
+ LD		= @LD@
+ LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/entries.c ncurses-5.7/ncurses/tinfo/entries.c
 --- ncurses-5.7.orig/ncurses/tinfo/entries.c	2008-09-27 06:11:10.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/entries.c	2009-01-18 23:56:25.000000000 -0800
++++ ncurses-5.7/ncurses/tinfo/entries.c	2009-01-27 16:44:49.391812822 -0800
 @@ -37,7 +37,7 @@
  #include <tic.h>
  #include <term_entry.h>
@@ -14595,7 +14759,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/entries.c ncurses-5.7/ncurses/tinfo/en
      _nc_free_entries(_nc_head);
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/hashed_db.c ncurses-5.7/ncurses/tinfo/hashed_db.c
 --- ncurses-5.7.orig/ncurses/tinfo/hashed_db.c	2006-08-19 12:48:38.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/hashed_db.c	2009-01-18 23:56:27.000000000 -0800
++++ ncurses-5.7/ncurses/tinfo/hashed_db.c	2009-01-27 16:44:51.023917306 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2006 Free Software Foundation, Inc.                        *
@@ -14699,9 +14863,192 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/hashed_db.c ncurses-5.7/ncurses/tinfo/
      return result;
  }
  
+diff -Naur ncurses-5.7.orig/ncurses/tty/tty_update.c ncurses-5.7/ncurses/tty/tty_update.c
+--- ncurses-5.7.orig/ncurses/tty/tty_update.c	2008-08-30 13:08:19.000000000 -0700
++++ ncurses-5.7/ncurses/tty/tty_update.c	2009-01-27 16:45:05.088820784 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+@@ -78,7 +78,7 @@
+ #include <ctype.h>
+ #include <term.h>
+ 
+-MODULE_ID("$Id: tty_update.c,v 1.246 2008/08/30 20:08:19 tom Exp $")
++MODULE_ID("$Id: tty_update.c,v 1.247 2009/01/25 00:48:36 tom Exp $")
+ 
+ /*
+  * This define controls the line-breakout optimization.  Every once in a
+@@ -1165,8 +1165,8 @@
+ 		newPair = GetPair(newLine[n]);
+ 		if (oldPair != newPair
+ 		    && unColor(oldLine[n]) == unColor(newLine[n])) {
+-		    if (oldPair < COLOR_PAIRS
+-			&& newPair < COLOR_PAIRS
++		    if (oldPair < SP->_pair_limit
++			&& newPair < SP->_pair_limit
+ 			&& SP->_color_pairs[oldPair] == SP->_color_pairs[newPair]) {
+ 			SetPair(oldLine[n], GetPair(newLine[n]));
+ 		    }
+diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
+--- ncurses-5.7.orig/NEWS	2008-11-01 17:56:22.000000000 -0700
++++ ncurses-5.7/NEWS	2009-01-27 16:45:05.084820505 -0800
+@@ -1,5 +1,5 @@
+ -------------------------------------------------------------------------------
+--- Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.               --
++-- Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.               --
+ --                                                                           --
+ -- Permission is hereby granted, free of charge, to any person obtaining a   --
+ -- copy of this software and associated documentation files (the             --
+@@ -25,7 +25,7 @@
+ -- sale, use or other dealings in this Software without prior written        --
+ -- authorization.                                                            --
+ -------------------------------------------------------------------------------
+--- $Id: NEWS,v 1.1320 2008/11/02 00:56:22 tom Exp $
++-- $Id: NEWS,v 1.1360 2009/01/24 23:06:51 tom Exp $
+ -------------------------------------------------------------------------------
+ 
+ This is a log of changes that ncurses has gone through since Zeyd started
+@@ -45,6 +45,133 @@
+ Changes through 1.9.9e did not credit all contributions;
+ it is not possible to add this information.
+ 
++20090124
++	+ modify init_pair() to allow caller to create extra color pairs beyond
++	  the color_pairs limit, which use default colors (request by Emanuele
++	  Giaquinta).
++	+ add misc/terminfo.tmp and misc/*.pc to "sources" rule.
++	+ fix typo "==" where "=" is needed in ncurses-config.in and
++	  gen-pkgconfig.in files (Debian #512161).
++
++20090117
++	+ add -shared option to MK_SHARED_LIB when -Bsharable is used, for
++	  *BSD's, without which "main" might be one of the shared library's
++	  dependencies (report/analysis by Ken Dickey).
++	+ modify waddch_literal(), updating line-pointer after a multicolumn
++	  character is found to not fit on the current row, and wrapping is
++	  done.  Since the line-pointer was not updated, the wrapped
++	  multicolumn character was written to the beginning of the current row
++	  (cf: 20041023, reported by "Nick" regarding problem with ncmpc
++	  http://musicpd.org/mantis/bug_view_page.php?bug_id=1930).
++
++20090110
++	+ add screen.Eterm terminfo entry (GenToo #124887) -TD
++	+ modify adacurses-config to look for ".ali" files in the adalib
++	  directory.
++	+ correct install for Ada95, which omitted libAdaCurses.a used in
++	  adacurses-config
++	+ change install for adacurses-config to provide additional flavors
++	  such as adacursesw-config, for ncursesw (GenToo #167849).
++
++20090105
++	+ remove undeveloped feature in ncurses-config.in for setting
++	  prefix variable.
++	+ recent change to ncurses-config.in did not take into account the
++	  --disable-overwrite option, which sets $includedir to the
++	  subdirectory and using just that for a -I option does not work - fix
++	  (report by Frederic L W Meunier).
++
++20090104
++	+ modify gen-pkgconfig.in to eliminate a dependency on rpath when
++	  deciding whether to add $LIBS to --libs output; that should be shown
++	  for the ncurses and tinfo libraries without taking rpath into
++	  account.
++	+ fix an overlooked change from $AR_OPTS to $ARFLAGS in mk-1st.awk,
++	  used in static libraries (report by Marty Jack).
++
++20090103
++	+ add a configure-time check to pick a suitable value for
++	  CC_SHARED_OPTS for Solaris (report by Dagobert Michelsen).
++	+ add configure --with-pkg-config and --enable-pc-files options, along
++	  with misc/gen-pkgconfig.in which can be used to generate ".pc" files
++	  for pkg-config (request by Jan Engelhardt).
++	+ use $includedir symbol in misc/ncurses-config.in, add --includedir
++	  option.
++	+ change makefiles to use $ARFLAGS rather than $AR_OPTS, provide a
++	  configure check to detect whether a "-" is needed before "ar"
++	  options.
++	+ update config.guess, config.sub from
++		http://savannah.gnu.org/projects/config
++
++20081227
++	+ modify mk-1st.awk to work with extra categories for tinfo library.
++	+ modify configure script to allow building shared libraries with gcc
++	  on AIX 5 or 6 (adapted from patch by Lital Natan).
++
++20081220
++	+ modify to omit the opaque-functions from lib_gen.o when
++	  --disable-ext-funcs is used.
++	+ add test/clip_printw.c to illustrate how to use printw without
++	  wrapping.
++	+ modify ncurses 'F' test to demo wborder_set() with colored lines.
++	+ modify ncurses 'f' test to demo wborder() with colored lines.
++
++20081213
++	+ add check for failure to open hashed-database needed for db4.6
++	  (GenToo #245370).
++	+ corrected --without-manpages option; previous change only suppressed
++	  the auxiliary rules install.man and uninstall.man
++	+ add case for FreeMINT to configure macro CF_XOPEN_SOURCE (patch from
++	  GenToo #250454).
++	+ fixes from NetBSD port at
++	  http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/devel/ncurses/patches
++	  patch-ac (build-fix for DragonFly)
++	  patch-ae (use INSTALL_SCRIPT for installing misc/ncurses*-config).
++	+ improve configure script macros CF_HEADER_PATH and CF_LIBRARY_PATH
++	  by adding CFLAGS, CPPFLAGS and LDFLAGS, LIBS values to the
++	  search-lists.
++	+ correct title string for keybound manpage (patch by Frederic Culot,
++	  OpenBSD documentation/6019),
++
++20081206
++	+ move del_curterm() call from _nc_freeall() to _nc_leaks_tinfo() to
++	  work for progs/clear, progs/tabs, etc.
++	+ correct buffer-size after internal resizing of wide-character
++	  set_field_buffer(), broken in 20081018 changes (report by Mike Gran).
++	+ add "-i" option to test/filter.c to tell it to use initscr() rather
++	  than newterm(), to investigate report on comp.unix.programmer that
++	  ncurses would clear the screen in that case (it does not - the issue
++	  was xterm's alternate screen feature).
++	+ add check in mouse-driver to disable connection if GPM returns a
++	  zero, indicating that the connection is closed (Debian #506717,
++	  adapted from patch by Samuel Thibault).
++
++20081129
++	+ improve a workaround in adding wide-characters, when a control
++	  character is found.  The library (cf: 20040207) uses unctrl() to
++	  obtain a printable version of the control character, but was not
++	  passing color or video attributes.
++	+ improve test/ncurses.c 'a' test, using unctrl() more consistently to
++	  display meta-characters.
++	+ turn on _XOPEN_CURSES definition in curses.h
++	+ add eterm-color entry (report by Vincent Lefevre) -TD
++	+ correct use of key_name() in test/ncurses.c 'A' test, which only
++	  displays wide-characters, not key-codes since 20070612 (report by
++	  Ricardo Cantu).
++
++20081122
++	+ change _nc_has_mouse() to has_mouse(), reflect its use in C++ and
++	  Ada95 (patch by Juergen Pfeifer).
++	+ document in TO-DO an issue with Cygwin's package for GNAT (report
++	  by Mike Dennison).
++	+ improve error-checking of command-line options in "tabs" program.
++
++20081115
++	+ change several terminfo entries to make consistent use of ANSI
++	  clear-all-tabs -TD
++	+ add "tabs" program (prompted by Debian #502260).
++	+ add configure --without-manpages option (request by Mike Frysinger).
++
+ 20081102 5.7 release for upload to ftp.gnu.org
+ 
+ 20081025
 diff -Naur ncurses-5.7.orig/panel/Makefile.in ncurses-5.7/panel/Makefile.in
 --- ncurses-5.7.orig/panel/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/panel/Makefile.in	2009-01-18 23:56:35.000000000 -0800
++++ ncurses-5.7/panel/Makefile.in	2009-01-27 16:44:58.028366252 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.52 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.53 2009/01/03 19:09:26 tom Exp $
@@ -14722,7 +15069,7 @@ diff -Naur ncurses-5.7.orig/panel/Makefile.in ncurses-5.7/panel/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/progs/Makefile.in ncurses-5.7/progs/Makefile.in
 --- ncurses-5.7.orig/progs/Makefile.in	2008-09-07 06:58:55.000000000 -0700
-+++ ncurses-5.7/progs/Makefile.in	2009-01-18 23:56:19.000000000 -0800
++++ ncurses-5.7/progs/Makefile.in	2009-01-27 16:44:45.103540717 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.79 2008/09/07 13:58:55 tom Exp $
 +# $Id: Makefile.in,v 1.80 2008/11/15 19:04:19 tom Exp $
@@ -14788,7 +15135,7 @@ diff -Naur ncurses-5.7.orig/progs/Makefile.in ncurses-5.7/progs/Makefile.in
  
 diff -Naur ncurses-5.7.orig/progs/modules ncurses-5.7/progs/modules
 --- ncurses-5.7.orig/progs/modules	2006-12-23 16:53:21.000000000 -0800
-+++ ncurses-5.7/progs/modules	2009-01-18 23:56:19.000000000 -0800
++++ ncurses-5.7/progs/modules	2009-01-27 16:44:45.103540717 -0800
 @@ -1,7 +1,7 @@
 -# $Id: modules,v 1.13 2006/12/24 00:53:21 tom Exp $
 +# $Id: modules,v 1.14 2008/11/15 16:26:48 tom Exp $
@@ -14809,7 +15156,7 @@ diff -Naur ncurses-5.7.orig/progs/modules ncurses-5.7/progs/modules
  
 diff -Naur ncurses-5.7.orig/progs/tabs.c ncurses-5.7/progs/tabs.c
 --- ncurses-5.7.orig/progs/tabs.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/progs/tabs.c	2009-01-18 23:56:21.000000000 -0800
++++ ncurses-5.7/progs/tabs.c	2009-01-27 16:44:46.515630395 -0800
 @@ -0,0 +1,506 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -15317,305 +15664,9 @@ diff -Naur ncurses-5.7.orig/progs/tabs.c ncurses-5.7/progs/tabs.c
 +	free(append);
 +    ExitProgram(rc);
 +}
-diff -Naur ncurses-5.7.orig/test/README ncurses-5.7/test/README
---- ncurses-5.7.orig/test/README	2008-10-18 14:02:45.000000000 -0700
-+++ ncurses-5.7/test/README	2009-01-18 23:56:30.000000000 -0800
-@@ -25,7 +25,7 @@
- -- sale, use or other dealings in this Software without prior written        --
- -- authorization.                                                            --
- -------------------------------------------------------------------------------
---- $Id: README,v 1.38 2008/10/18 21:02:45 tom Exp $
-+-- $Id: README,v 1.39 2008/12/20 23:38:13 tom Exp $
- -------------------------------------------------------------------------------
- 
- The programs in this directory are designed to test your newest toy :-)
-@@ -87,7 +87,7 @@
- field_status			test: demo_forms
- field_term			-
- field_type			test: demo_forms
--field_userptr			test: edit_field ncurses
-+field_userptr			test: demo_forms edit_field ncurses
- form_driver			test: cardfile demo_forms edit_field ncurses
- form_fields			test: cardfile demo_forms
- form_init			-
-@@ -211,7 +211,7 @@
- ----------
- BC				-
- COLORS				test: echochar ncurses savescreen xmas
--COLOR_PAIR			test: background blue bs cardfile demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
-+COLOR_PAIR			test: background blue bs cardfile clip_printw demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
- COLOR_PAIRS			test: echochar ncurses newdemo savescreen
- COLS				test: cardfile demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto echochar edit_field firework foldkeys hashtest inch_wide inchs ins_wide inserts lrtest movewindow ncurses newdemo rain savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm
- ESCDELAY			test: test_opaque
-@@ -239,9 +239,9 @@
- attr_set			test: ncurses
- attroff				test: echochar filter gdc ncurses tclock
- attron				test: bs echochar filter gdc ncurses
--attrset				test: bs firework gdc hanoi ncurses rain tclock testaddch testcurs
-+attrset				test: bs firework gdc hanoi insdelln ncurses rain tclock testaddch testcurs
- baudrate			lib: ncurses
--beep				test: blue bs cardfile chgat demo_forms demo_menus demo_panels edit_field hanoi inch_wide inchs ins_wide inserts knight movewindow ncurses savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view xmas
-+beep				test: blue bs cardfile chgat clip_printw demo_forms demo_menus demo_panels edit_field hanoi inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view xmas
- bkgd				test: background cardfile demo_forms ncurses savescreen tclock view
- bkgdset				test: background ncurses testaddch
- bkgrnd				test: ncurses
-@@ -251,10 +251,10 @@
- boolnames			test: test_arrays progs: dump_entry infocmp
- border				-
- border_set			-
--box				test: cardfile chgat demo_forms demo_menus demo_panels ditto edit_field inch_wide inchs ins_wide inserts lrtest ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
-+box				test: cardfile chgat clip_printw demo_forms demo_menus demo_panels ditto edit_field inch_wide inchs ins_wide insdelln inserts lrtest ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
- box_set				test: ncurses
- can_change_color		test: ncurses
--cbreak				test: background blue bs cardfile chgat color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts knight lrtest movewindow ncurses newdemo savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
-+cbreak				test: background blue bs cardfile chgat clip_printw color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts knight lrtest movewindow ncurses newdemo savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
- chgat				test: chgat
- clear				test: blue bs gdc ncurses testcurs xmas
- clearok				test: bs knight
-@@ -263,7 +263,7 @@
- color_content			test: ncurses
- color_set			test: color_set ncurses
- copywin				test: ncurses testcurs
--cur_term			test: dots dots_mvcur lrtest progs: clear tput tset
-+cur_term			test: dots dots_mvcur lrtest progs: clear tabs tput tset
- curs_set			test: echochar firework gdc hanoi lrtest ncurses newdemo rain savescreen tclock testcurs worm xmas
- curscr				test: demo_panels edit_field knight lrtest ncurses savescreen tclock view
- curses_version			test: ncurses progs: infocmp tic toe tput tset
-@@ -273,16 +273,16 @@
- del_curterm			lib: ncurses
- delay_output			test: newdemo
- delch				-
--deleteln			-
-+deleteln			test: insdelln
- delscreen			test: ditto dots_mvcur
--delwin				test: cardfile chgat demo_forms demo_panels edit_field inch_wide inchs ins_wide inserts movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
--derwin				test: cardfile chgat demo_forms demo_menus ditto inch_wide inchs ins_wide inserts movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque
-+delwin				test: cardfile chgat clip_printw demo_forms demo_panels edit_field inch_wide inchs ins_wide insdelln inserts movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
-+derwin				test: cardfile chgat clip_printw demo_forms demo_menus ditto inch_wide inchs ins_wide insdelln inserts movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque
- doupdate			test: cardfile demo_menus demo_panels ditto edit_field ins_wide inserts knight movewindow ncurses redraw savescreen test_get_wstr test_getstr
- dupwin				test: edit_field
- echo				test: bs hanoi ncurses test_get_wstr test_getstr testcurs testscanw
- echo_wchar			test: ncurses
- echochar			test: echochar ncurses
--endwin				test: background blue bs cardfile chgat color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto dots_mvcur echochar filter firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts key_names keynames knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
-+endwin				test: background blue bs cardfile chgat clip_printw color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto dots_mvcur echochar filter firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
- erase				test: cardfile demo_menus filter firework firstlast hanoi lrtest ncurses tclock test_opaque testcurs
- erasechar			lib: ncurses
- erasewchar			-
-@@ -292,16 +292,16 @@
- get_wch				-
- get_wstr			test: test_get_wstr
- getattrs			-
--getbegx				test: chgat demo_menus demo_panels movewindow ncurses newdemo redraw testcurs
--getbegy				test: chgat demo_menus demo_panels movewindow ncurses newdemo redraw testcurs
-+getbegx				test: chgat clip_printw demo_menus demo_panels insdelln movewindow ncurses newdemo redraw testcurs
-+getbegy				test: chgat clip_printw demo_menus demo_panels insdelln movewindow ncurses newdemo redraw testcurs
- getbkgd				test: ncurses
- getbkgrnd			test: ncurses
- getcchar			test: ncurses view
--getch				test: background blue bs chgat color_set demo_altkeys filter firework firstlast foldkeys hanoi hashtest lrtest savescreen tclock test_opaque testaddch testcurs view xmas
--getcurx				test: bs chgat demo_altkeys demo_defkey demo_panels foldkeys movewindow ncurses redraw savescreen test_get_wstr test_getstr test_opaque testcurs
--getcury				test: bs chgat demo_altkeys demo_defkey demo_panels edit_field foldkeys movewindow ncurses redraw savescreen test_opaque testcurs
--getmaxx				test: chgat demo_panels inch_wide inchs movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
--getmaxy				test: chgat demo_forms demo_panels inch_wide inchs movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
-+getch				test: background blue bs chgat color_set demo_altkeys filter firework firstlast foldkeys hanoi hashtest insdelln lrtest savescreen tclock test_opaque testaddch testcurs view xmas
-+getcurx				test: bs chgat clip_printw demo_altkeys demo_defkey demo_panels foldkeys insdelln movewindow ncurses redraw savescreen test_get_wstr test_getstr test_opaque testcurs
-+getcury				test: bs chgat clip_printw demo_altkeys demo_defkey demo_panels edit_field foldkeys insdelln movewindow ncurses redraw savescreen test_opaque testcurs
-+getmaxx				test: chgat clip_printw demo_panels inch_wide inchs insdelln movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
-+getmaxy				test: chgat clip_printw demo_forms demo_panels inch_wide inchs insdelln movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
- getmouse			test: bs knight movewindow ncurses
- getn_wstr			test: test_get_wstr
- getnstr				test: filter ncurses test_getstr
-@@ -310,10 +310,11 @@
- getstr				test: test_getstr
- getwin				test: ncurses
- halfdelay			test: view
--has_colors			test: background bs cardfile chgat color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testcurs view worm xmas
-+has_colors			test: background bs cardfile chgat clip_printw color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testcurs view worm xmas
- has_ic				test: lrtest
- has_il				lib: ncurses
- has_key				lib: ncurses
-+has_mouse			-
- hline				test: gdc ncurses
- hline_set			-
- idcok				test: test_opaque
-@@ -326,16 +327,16 @@
- inchnstr			test: inchs
- inchstr				test: inchs
- init_color			test: ncurses
--init_pair			test: background blue bs cardfile chgat color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
--initscr				test: background blue bs cardfile chgat color_set demo_defkey demo_forms demo_keyok demo_menus demo_panels echochar firework firstlast gdc hanoi hashtest inch_wide inchs ins_wide inserts knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
-+init_pair			test: background blue bs cardfile chgat clip_printw color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
-+initscr				test: background blue bs cardfile chgat clip_printw color_set demo_defkey demo_forms demo_keyok demo_menus demo_panels echochar filter firework firstlast gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
- innstr				test: test_instr
- innwstr				test: test_inwstr
- ins_nwstr			test: ins_wide
- ins_wch				test: ins_wide
- ins_wstr			test: ins_wide
- insch				test: ins_wide inserts
--insdelln			-
--insertln			-
-+insdelln			test: insdelln
-+insertln			test: insdelln
- insnstr				test: inserts
- insstr				test: inserts
- instr				test: test_instr
-@@ -360,7 +361,7 @@
- keybound			test: demo_altkeys demo_defkey
- keyname				test: demo_altkeys demo_defkey demo_keyok demo_menus edit_field foldkeys keynames movewindow ncurses redraw testcurs view progs: tic
- keyok				test: demo_keyok foldkeys
--keypad				test: bs cardfile chgat demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field filter firework foldkeys hashtest inch_wide inchs ins_wide inserts key_names keynames knight lrtest movewindow ncurses redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view
-+keypad				test: bs cardfile chgat clip_printw demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field filter firework foldkeys hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight lrtest movewindow ncurses redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view
- killchar			lib: ncurses
- killwchar			-
- leaveok				test: hanoi test_opaque
-@@ -450,7 +451,7 @@
- mvwinsstr			test: inserts testcurs
- mvwinstr			test: test_instr
- mvwinwstr			test: test_inwstr
--mvwprintw			test: chgat demo_panels inch_wide inchs ncurses test_instr test_inwstr testcurs
-+mvwprintw			test: chgat clip_printw demo_panels inch_wide inchs insdelln ncurses test_instr test_inwstr testcurs
- mvwscanw			test: testcurs
- mvwvline			test: ins_wide inserts movewindow
- mvwvline_set			-
-@@ -458,11 +459,11 @@
- newpad				test: edit_field ncurses testcurs
- newscr				lib: ncurses
- newterm				test: demo_altkeys ditto dots_mvcur filter foldkeys gdc key_names keynames
--newwin				test: cardfile chgat demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field firstlast inch_wide inchs ins_wide inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs xmas
-+newwin				test: cardfile chgat clip_printw demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field firstlast inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs xmas
- nl				test: demo_forms ncurses rain testcurs
- nocbreak			test: testcurs
- nodelay				test: ditto firework gdc lrtest ncurses newdemo rain tclock test_opaque view worm xmas
--noecho				test: background bs cardfile chgat color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
-+noecho				test: background bs cardfile chgat clip_printw color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
- nofilter			-
- nonl				test: bs demo_forms hashtest movewindow ncurses view worm xmas
- noqiflush			-
-@@ -501,14 +502,14 @@
- scr_set				test: savescreen
- scrl				test: view
- scroll				test: testcurs
--scrollok			test: demo_altkeys demo_defkey demo_keyok demo_panels ditto foldkeys hashtest knight ncurses redraw test_opaque testcurs testscanw view
-+scrollok			test: clip_printw demo_altkeys demo_defkey demo_keyok demo_panels ditto foldkeys hashtest knight ncurses redraw test_opaque testcurs testscanw view
- set_curterm			lib: ncurses
- set_escdelay			test: test_opaque
- set_tabsize			test: test_opaque
- set_term			lib: ncurses
- setcchar			test: demo_panels ins_wide ncurses view
- setscrreg			test: view
--setupterm			test: dots progs: clear tput tset
-+setupterm			test: dots progs: clear tabs tput tset
- slk_attr			-
- slk_attr_off			-
- slk_attr_on			-
-@@ -528,8 +529,8 @@
- slk_wset			test: ncurses
- standend			test: blue gdc ncurses
- standout			test: blue ncurses
--start_color			test: background blue bs cardfile chgat color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
--stdscr				test: bs chgat demo_altkeys demo_forms demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts key_names keynames knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view worm xmas
-+start_color			test: background blue bs cardfile chgat clip_printw color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
-+stdscr				test: bs chgat clip_printw demo_altkeys demo_forms demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view worm xmas
- strcodes			test: test_arrays progs: dump_entry
- strfnames			test: test_arrays progs: dump_entry
- strnames			test: foldkeys test_arrays progs: dump_entry infocmp tic
-@@ -548,10 +549,10 @@
- tigetnum			test: ncurses progs: tput
- tigetstr			test: blue demo_defkey foldkeys testcurs progs: tput
- timeout				test: rain savescreen
--touchline			test: chgat
--touchwin			test: chgat demo_menus edit_field filter firstlast inch_wide inchs ins_wide inserts movewindow ncurses redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque xmas
--tparm				test: dots dots_mvcur progs: tic tput
--tputs				test: dots dots_mvcur railroad progs: clear tset
-+touchline			test: chgat clip_printw insdelln
-+touchwin			test: chgat clip_printw demo_menus edit_field filter firstlast inch_wide inchs ins_wide insdelln inserts movewindow ncurses redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque xmas
-+tparm				test: dots dots_mvcur progs: tabs tic tput
-+tputs				test: dots dots_mvcur railroad progs: clear tabs tset
- trace				test: demo_menus hanoi hashtest lrtest ncurses testcurs view worm
- ttytype				lib: ncurses
- typeahead			test: testcurs
-@@ -572,7 +573,7 @@
- vidputs				lib: ncurses
- vline				test: gdc ncurses
- vline_set			-
--vw_printw			-
-+vw_printw			test: clip_printw
- vw_scanw			-
- vwprintw			test: movewindow
- vwscanw				lib: ncurses
-@@ -584,7 +585,7 @@
- waddchstr			-
- waddnstr			lib: menu
- waddnwstr			test: ncurses
--waddstr				test: chgat demo_forms demo_panels edit_field firstlast ins_wide knight ncurses redraw testcurs
-+waddstr				test: chgat clip_printw demo_forms demo_panels edit_field firstlast ins_wide insdelln knight ncurses redraw testcurs
- waddwstr			test: ins_wide test_get_wstr
- wattr_get			-
- wattr_off			lib: ncurses
-@@ -592,21 +593,21 @@
- wattr_set			-
- wattroff			test: demo_forms ncurses testcurs xmas
- wattron				test: testcurs xmas
--wattrset			test: demo_forms ncurses newdemo test_get_wstr test_getstr testcurs xmas
-+wattrset			test: clip_printw demo_forms insdelln ncurses newdemo test_get_wstr test_getstr testcurs xmas
- wbkgd				test: cardfile demo_forms demo_menus ncurses newdemo testcurs
- wbkgdset			test: demo_panels ins_wide inserts ncurses
- wbkgrnd				lib: ncurses
- wbkgrndset			lib: ncurses
--wborder				lib: ncurses
--wborder_set			lib: ncurses
-+wborder				test: ncurses
-+wborder_set			test: ncurses
- wchgat				test: chgat test_get_wstr test_getstr view
- wclear				test: ncurses test_opaque testcurs
- wclrtobot			test: firstlast inch_wide inchs ncurses test_instr test_inwstr testcurs
--wclrtoeol			test: chgat demo_defkey demo_keyok demo_panels firstlast inch_wide inchs ins_wide inserts knight ncurses test_instr test_inwstr testcurs
-+wclrtoeol			test: chgat clip_printw demo_defkey demo_keyok demo_panels firstlast inch_wide inchs ins_wide insdelln inserts knight ncurses test_instr test_inwstr testcurs
- wcolor_set			lib: ncurses
- wcursyncup			lib: form
- wdelch				test: ncurses testcurs
--wdeleteln			test: testcurs
-+wdeleteln			test: insdelln testcurs
- wecho_wchar			lib: ncurses
- wechochar			lib: ncurses
- wenclose			lib: form
-@@ -614,7 +615,7 @@
- wget_wch			test: ins_wide ncurses
- wget_wstr			test: test_get_wstr
- wgetbkgrnd			lib: ncurses
--wgetch				test: cardfile chgat demo_defkey demo_keyok demo_menus demo_panels ditto edit_field gdc inserts knight movewindow ncurses newdemo rain redraw test_opaque testcurs worm
-+wgetch				test: cardfile chgat clip_printw demo_defkey demo_keyok demo_menus demo_panels ditto edit_field gdc insdelln inserts knight movewindow ncurses newdemo rain redraw test_opaque testcurs worm
- wgetn_wstr			test: ncurses test_get_wstr
- wgetnstr			test: ncurses test_getstr
- wgetparent			test: test_opaque
-@@ -634,18 +635,18 @@
- wins_wch			test: ins_wide
- wins_wstr			test: ins_wide
- winsch				test: ins_wide inserts testcurs
--winsdelln			lib: ncurses
--winsertln			test: testcurs
-+winsdelln			test: insdelln
-+winsertln			test: insdelln testcurs
- winsnstr			test: inserts
- winsstr				test: inserts
- winstr				test: test_instr
- winwstr				test: test_inwstr
- wmouse_trafo			lib: form
--wmove				test: chgat demo_altkeys demo_defkey demo_keyok demo_menus demo_panels firstlast foldkeys inch_wide inchs ins_wide inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs worm
-+wmove				test: chgat clip_printw demo_altkeys demo_defkey demo_keyok demo_menus demo_panels firstlast foldkeys inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs worm
- wnoutrefresh			test: demo_menus ditto edit_field inch_wide inchs ins_wide inserts knight movewindow ncurses redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque
--wprintw				test: chgat demo_defkey demo_forms demo_keyok demo_menus demo_panels edit_field inch_wide inchs ins_wide inserts knight movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
-+wprintw				test: chgat clip_printw demo_defkey demo_forms demo_keyok demo_menus demo_panels edit_field inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
- wredrawln			test: redraw
--wrefresh			test: chgat demo_forms demo_keyok demo_menus demo_panels edit_field firstlast knight lrtest movewindow ncurses newdemo redraw savescreen tclock testcurs view worm xmas
-+wrefresh			test: chgat clip_printw demo_forms demo_keyok demo_menus demo_panels edit_field firstlast insdelln knight lrtest movewindow ncurses newdemo redraw savescreen tclock testcurs view worm xmas
- wresize				test: cardfile ncurses
- wscanw				test: testcurs
- wscrl				test: ncurses testcurs
 diff -Naur ncurses-5.7.orig/test/clip_printw.c ncurses-5.7/test/clip_printw.c
 --- ncurses-5.7.orig/test/clip_printw.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/test/clip_printw.c	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/clip_printw.c	2009-01-27 16:44:52.892037156 -0800
 @@ -0,0 +1,360 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -15979,7 +16030,7 @@ diff -Naur ncurses-5.7.orig/test/clip_printw.c ncurses-5.7/test/clip_printw.c
 +}
 diff -Naur ncurses-5.7.orig/test/demo_forms.c ncurses-5.7/test/demo_forms.c
 --- ncurses-5.7.orig/test/demo_forms.c	2008-10-18 13:38:20.000000000 -0700
-+++ ncurses-5.7/test/demo_forms.c	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/demo_forms.c	2009-01-27 16:44:52.892037156 -0800
 @@ -26,7 +26,7 @@
   * authorization.                                                           *
   ****************************************************************************/
@@ -16014,7 +16065,7 @@ diff -Naur ncurses-5.7.orig/test/demo_forms.c ncurses-5.7/test/demo_forms.c
      }
 diff -Naur ncurses-5.7.orig/test/edit_field.c ncurses-5.7/test/edit_field.c
 --- ncurses-5.7.orig/test/edit_field.c	2008-10-18 13:40:20.000000000 -0700
-+++ ncurses-5.7/test/edit_field.c	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/edit_field.c	2009-01-27 16:44:52.892037156 -0800
 @@ -26,7 +26,7 @@
   * authorization.                                                           *
   ****************************************************************************/
@@ -16037,7 +16088,7 @@ diff -Naur ncurses-5.7.orig/test/edit_field.c ncurses-5.7/test/edit_field.c
  int
 diff -Naur ncurses-5.7.orig/test/edit_field.h ncurses-5.7/test/edit_field.h
 --- ncurses-5.7.orig/test/edit_field.h	2006-06-03 09:38:57.000000000 -0700
-+++ ncurses-5.7/test/edit_field.h	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/edit_field.h	2009-01-27 16:44:52.896037435 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2003-2004,2005 Free Software Foundation, Inc.              *
@@ -16067,7 +16118,7 @@ diff -Naur ncurses-5.7.orig/test/edit_field.h ncurses-5.7/test/edit_field.h
  
 diff -Naur ncurses-5.7.orig/test/filter.c ncurses-5.7/test/filter.c
 --- ncurses-5.7.orig/test/filter.c	2006-12-09 08:53:47.000000000 -0800
-+++ ncurses-5.7/test/filter.c	2009-01-18 23:56:25.000000000 -0800
++++ ncurses-5.7/test/filter.c	2009-01-27 16:44:49.391812822 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -16139,7 +16190,7 @@ diff -Naur ncurses-5.7.orig/test/filter.c ncurses-5.7/test/filter.c
  
 diff -Naur ncurses-5.7.orig/test/insdelln.c ncurses-5.7/test/insdelln.c
 --- ncurses-5.7.orig/test/insdelln.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/test/insdelln.c	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/insdelln.c	2009-01-27 16:44:52.896037435 -0800
 @@ -0,0 +1,380 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -16523,7 +16574,7 @@ diff -Naur ncurses-5.7.orig/test/insdelln.c ncurses-5.7/test/insdelln.c
 +}
 diff -Naur ncurses-5.7.orig/test/modules ncurses-5.7/test/modules
 --- ncurses-5.7.orig/test/modules	2007-08-18 10:57:08.000000000 -0700
-+++ ncurses-5.7/test/modules	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/modules	2009-01-27 16:44:52.896037435 -0800
 @@ -1,4 +1,4 @@
 -# $Id: modules,v 1.36 2007/08/18 17:57:08 tom Exp $
 +# $Id: modules,v 1.37 2008/12/20 21:38:44 tom Exp $
@@ -16548,13 +16599,13 @@ diff -Naur ncurses-5.7.orig/test/modules ncurses-5.7/test/modules
  keynames	progs		$(srcdir)	$(HEADER_DEPS)
 diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
 --- ncurses-5.7.orig/test/ncurses.c	2008-09-27 07:34:58.000000000 -0700
-+++ ncurses-5.7/test/ncurses.c	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/ncurses.c	2009-01-27 16:45:05.092821064 -0800
 @@ -40,7 +40,7 @@
     Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
             Thomas E. Dickey (beginning revision 1.27 in 1996).
  
 -$Id: ncurses.c,v 1.329 2008/09/27 14:34:58 tom Exp $
-+$Id: ncurses.c,v 1.334 2008/12/20 17:13:27 tom Exp $
++$Id: ncurses.c,v 1.336 2009/01/25 00:39:14 tom Exp $
  
  ***************************************************************************/
  
@@ -16688,7 +16739,223 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  }
  
  static void
-@@ -2802,6 +2821,7 @@
+@@ -1840,6 +1859,8 @@
+ 	    width = 4;
+ 	} else if (color >= 8) {
+ 	    sprintf(temp, "[%02d]", color);
++	} else if (color < 0) {
++	    strcpy(temp, "default");
+ 	} else {
+ 	    strcpy(temp, the_color_names[color]);
+ 	}
+@@ -1874,6 +1895,8 @@
+     mvwprintw(helpwin, row++, col,
+ 	      "  n/N     toggle text/number on/off");
+     mvwprintw(helpwin, row++, col,
++	      "  r/R     toggle reverse on/off");
++    mvwprintw(helpwin, row++, col,
+ 	      "  w/W     toggle width between 8/16 colors");
+ #if USE_WIDEC_SUPPORT
+     if (wide) {
+@@ -1906,12 +1929,19 @@
+     bool done = FALSE;
+     bool opt_acsc = FALSE;
+     bool opt_bold = FALSE;
+-    bool opt_wide = FALSE;
++    bool opt_revs = FALSE;
+     bool opt_nums = FALSE;
++    bool opt_wide = FALSE;
+     WINDOW *helpwin;
+ 
+-    if (pairs_max > COLOR_PAIRS)
+-	pairs_max = COLOR_PAIRS;
++    if (COLORS * COLORS == COLOR_PAIRS) {
++	int limit = (COLORS - min_colors) * (COLORS - min_colors);
++	if (pairs_max > limit)
++	    pairs_max = limit;
++    } else {
++	if (pairs_max > COLOR_PAIRS)
++	    pairs_max = COLOR_PAIRS;
++    }
+ 
+     while (!done) {
+ 	int shown = 0;
+@@ -1926,12 +1956,14 @@
+ 	    hello = "Hello";
+ 	    per_row = 8;
+ 	}
++	per_row -= min_colors;
+ 
+ 	row_limit = (pairs_max + per_row - 1) / per_row;
+ 
+ 	move(0, 0);
+-	(void) printw("There are %d color pairs and %d colors\n",
+-		      pairs_max, COLORS);
++	(void) printw("There are %d color pairs and %d colors%s\n",
++		      pairs_max, COLORS,
++		      min_colors ? " besides 'default'" : "");
+ 
+ 	clrtobot();
+ 	(void) mvprintw(top + 1, 0,
+@@ -1942,7 +1974,7 @@
+ 
+ 	/* show color names/numbers across the top */
+ 	for (i = 0; i < per_row; i++)
+-	    show_color_name(top + 2, (i + 1) * width, i, opt_wide);
++	    show_color_name(top + 2, (i + 1) * width, i + min_colors, opt_wide);
+ 
+ 	/* show a grid of colors, with color names/ numbers on the left */
+ 	for (i = (short) (base_row * per_row); i < pairs_max; i++) {
+@@ -1950,9 +1982,11 @@
+ 	    int col = (i % per_row + 1) * width;
+ 	    short pair = i;
+ 
++#define InxToFG(i) (short) ((i % (COLORS - min_colors)) + min_colors)
++#define InxToBG(i) (short) ((i / (COLORS - min_colors)) + min_colors)
+ 	    if (row >= 0 && move(row, col) != ERR) {
+-		short fg = (short) (i % COLORS);
+-		short bg = (short) (i / COLORS);
++		short fg = InxToFG(i);
++		short bg = InxToBG(i);
+ 
+ 		init_pair(pair, fg, bg);
+ 		attron((attr_t) COLOR_PAIR(pair));
+@@ -1960,6 +1994,8 @@
+ 		    attron((attr_t) A_ALTCHARSET);
+ 		if (opt_bold)
+ 		    attron((attr_t) A_BOLD);
++		if (opt_revs)
++		    attron((attr_t) A_REVERSE);
+ 
+ 		if (opt_nums) {
+ 		    sprintf(numbered, "{%02X}", i);
+@@ -1968,8 +2004,8 @@
+ 		printw("%-*.*s", width, width, hello);
+ 		attrset(A_NORMAL);
+ 
+-		if ((i % per_row) == 0 && (i % COLORS) == 0) {
+-		    show_color_name(row, 0, i / COLORS, opt_wide);
++		if ((i % per_row) == 0 && InxToFG(i) == min_colors) {
++		    show_color_name(row, 0, InxToBG(i), opt_wide);
+ 		}
+ 		++shown;
+ 	    } else if (shown) {
+@@ -1996,6 +2032,12 @@
+ 	case 'N':
+ 	    opt_nums = TRUE;
+ 	    break;
++	case 'r':
++	    opt_revs = FALSE;
++	    break;
++	case 'R':
++	    opt_revs = TRUE;
++	    break;
+ 	case case_QUIT:
+ 	    done = TRUE;
+ 	    continue;
+@@ -2073,7 +2115,7 @@
+     int base_row = 0;
+     int grid_top = top + 3;
+     int page_size = (LINES - grid_top);
+-    int pairs_max = COLOR_PAIRS;
++    int pairs_max = (unsigned short) (-1);
+     int row_limit;
+     int per_row;
+     char numbered[80];
+@@ -2081,12 +2123,22 @@
+     bool done = FALSE;
+     bool opt_acsc = FALSE;
+     bool opt_bold = FALSE;
++    bool opt_revs = FALSE;
+     bool opt_wide = FALSE;
+     bool opt_nums = FALSE;
+     bool opt_xchr = FALSE;
+     wchar_t buffer[10];
+     WINDOW *helpwin;
+ 
++    if (COLORS * COLORS == COLOR_PAIRS) {
++	int limit = (COLORS - min_colors) * (COLORS - min_colors);
++	if (pairs_max > limit)
++	    pairs_max = limit;
++    } else {
++	if (pairs_max > COLOR_PAIRS)
++	    pairs_max = COLOR_PAIRS;
++    }
++
+     while (!done) {
+ 	int shown = 0;
+ 
+@@ -2100,6 +2152,8 @@
+ 	    hello = "Hello";
+ 	    per_row = 8;
+ 	}
++	per_row -= min_colors;
++
+ 	if (opt_xchr) {
+ 	    make_fullwidth_text(buffer, hello);
+ 	    width *= 2;
+@@ -2111,8 +2165,9 @@
+ 	row_limit = (pairs_max + per_row - 1) / per_row;
+ 
+ 	move(0, 0);
+-	(void) printw("There are %d color pairs and %d colors\n",
+-		      pairs_max, COLORS);
++	(void) printw("There are %d color pairs and %d colors%s\n",
++		      pairs_max, COLORS,
++		      min_colors ? " besides 'default'" : "");
+ 
+ 	clrtobot();
+ 	(void) mvprintw(top + 1, 0,
+@@ -2123,7 +2178,7 @@
+ 
+ 	/* show color names/numbers across the top */
+ 	for (i = 0; i < per_row; i++)
+-	    show_color_name(top + 2, (i + 1) * width, i, opt_wide);
++	    show_color_name(top + 2, (i + 1) * width, i + min_colors, opt_wide);
+ 
+ 	/* show a grid of colors, with color names/ numbers on the left */
+ 	for (i = (base_row * per_row); i < pairs_max; i++) {
+@@ -2132,12 +2187,14 @@
+ 	    short pair = (short) i;
+ 
+ 	    if (row >= 0 && move(row, col) != ERR) {
+-		init_pair(pair, (short) (i % COLORS), (short) (i / COLORS));
++		init_pair(pair, InxToFG(i), InxToBG(i));
+ 		color_set(pair, NULL);
+ 		if (opt_acsc)
+ 		    attr_on((attr_t) A_ALTCHARSET, NULL);
+ 		if (opt_bold)
+ 		    attr_on((attr_t) A_BOLD, NULL);
++		if (opt_revs)
++		    attr_on((attr_t) A_REVERSE, NULL);
+ 
+ 		if (opt_nums) {
+ 		    sprintf(numbered, "{%02X}", i);
+@@ -2150,8 +2207,8 @@
+ 		addnwstr(buffer, width);
+ 		attr_set(A_NORMAL, 0, NULL);
+ 
+-		if ((i % per_row) == 0 && (i % COLORS) == 0) {
+-		    show_color_name(row, 0, i / COLORS, opt_wide);
++		if ((i % per_row) == 0 && InxToFG(i) == min_colors) {
++		    show_color_name(row, 0, InxToBG(i), opt_wide);
+ 		}
+ 		++shown;
+ 	    } else if (shown) {
+@@ -2178,6 +2235,12 @@
+ 	case 'N':
+ 	    opt_nums = TRUE;
+ 	    break;
++	case 'r':
++	    opt_revs = FALSE;
++	    break;
++	case 'R':
++	    opt_revs = TRUE;
++	    break;
+ 	case case_QUIT:
+ 	    done = TRUE;
+ 	    continue;
+@@ -2802,6 +2865,7 @@
  } attrs_to_cycle[] = {
      { A_NORMAL,		"normal" },
      { A_BOLD,		"bold" },
@@ -16696,7 +16963,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
      { A_REVERSE,	"reverse" },
      { A_UNDERLINE,	"underline" },
  };
-@@ -2902,7 +2922,7 @@
+@@ -2902,7 +2966,7 @@
  	do {
  	    if (C1)
  		nodelay(stdscr, TRUE);
@@ -16705,7 +16972,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  	    if (C1) {
  		/* (yes, this _is_ crude) */
  		while ((reply = Getchar()) != ERR) {
-@@ -2951,7 +2971,7 @@
+@@ -2951,7 +3015,7 @@
  		 */
  		break;
  	    default:
@@ -16714,7 +16981,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  		break;
  	    }
  	} while (--count > 0);
-@@ -2969,15 +2989,23 @@
+@@ -2969,15 +3033,23 @@
      mvaddstr(0, 20, "Display of the ACS Line-Drawing Set");
      attroff(A_BOLD);
      refresh();
@@ -16746,7 +17013,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
      /* *INDENT-ON* */
  
  }
-@@ -3002,7 +3030,7 @@
+@@ -3002,7 +3074,7 @@
  {
      int n;
  
@@ -16755,7 +17022,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  
      erase();
      attron(A_BOLD);
-@@ -3238,7 +3266,7 @@
+@@ -3238,7 +3310,7 @@
      int col = (n / height) * COLS / 2;
  
      mvprintw(row, col, "%*s : ", COLS / 4, name);
@@ -16764,7 +17031,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  	add_wch(code);
      }
      return n + 1;
-@@ -3307,12 +3335,12 @@
+@@ -3307,12 +3379,12 @@
  
  #undef MERGE_ATTR
  
@@ -16779,7 +17046,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  
      (void) repeat;
      erase();
-@@ -3321,17 +3349,23 @@
+@@ -3321,17 +3393,23 @@
      attroff(A_BOLD);
      refresh();
  
@@ -16813,7 +17080,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
      /* *INDENT-ON* */
  
  }
-@@ -5804,7 +5838,7 @@
+@@ -5804,7 +5882,7 @@
  	break;
      case 2:
  	init_pair(cpair, COLOR_RED, COLOR_GREEN);
@@ -16824,7 +17091,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  	wbkgdset(win, ' ' | A_NORMAL);
 diff -Naur ncurses-5.7.orig/test/programs ncurses-5.7/test/programs
 --- ncurses-5.7.orig/test/programs	2008-08-16 14:47:39.000000000 -0700
-+++ ncurses-5.7/test/programs	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/programs	2009-01-27 16:44:52.896037435 -0800
 @@ -1,4 +1,4 @@
 -# $Id: programs,v 1.14 2008/08/16 21:47:39 tom Exp $
 +# $Id: programs,v 1.15 2008/12/20 21:38:44 tom Exp $
@@ -16847,9 +17114,305 @@ diff -Naur ncurses-5.7.orig/test/programs ncurses-5.7/test/programs
  inserts		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	inserts
  key_names	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	key_names
  keynames	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	keynames
+diff -Naur ncurses-5.7.orig/test/README ncurses-5.7/test/README
+--- ncurses-5.7.orig/test/README	2008-10-18 14:02:45.000000000 -0700
++++ ncurses-5.7/test/README	2009-01-27 16:44:52.892037156 -0800
+@@ -25,7 +25,7 @@
+ -- sale, use or other dealings in this Software without prior written        --
+ -- authorization.                                                            --
+ -------------------------------------------------------------------------------
+--- $Id: README,v 1.38 2008/10/18 21:02:45 tom Exp $
++-- $Id: README,v 1.39 2008/12/20 23:38:13 tom Exp $
+ -------------------------------------------------------------------------------
+ 
+ The programs in this directory are designed to test your newest toy :-)
+@@ -87,7 +87,7 @@
+ field_status			test: demo_forms
+ field_term			-
+ field_type			test: demo_forms
+-field_userptr			test: edit_field ncurses
++field_userptr			test: demo_forms edit_field ncurses
+ form_driver			test: cardfile demo_forms edit_field ncurses
+ form_fields			test: cardfile demo_forms
+ form_init			-
+@@ -211,7 +211,7 @@
+ ----------
+ BC				-
+ COLORS				test: echochar ncurses savescreen xmas
+-COLOR_PAIR			test: background blue bs cardfile demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
++COLOR_PAIR			test: background blue bs cardfile clip_printw demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
+ COLOR_PAIRS			test: echochar ncurses newdemo savescreen
+ COLS				test: cardfile demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto echochar edit_field firework foldkeys hashtest inch_wide inchs ins_wide inserts lrtest movewindow ncurses newdemo rain savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm
+ ESCDELAY			test: test_opaque
+@@ -239,9 +239,9 @@
+ attr_set			test: ncurses
+ attroff				test: echochar filter gdc ncurses tclock
+ attron				test: bs echochar filter gdc ncurses
+-attrset				test: bs firework gdc hanoi ncurses rain tclock testaddch testcurs
++attrset				test: bs firework gdc hanoi insdelln ncurses rain tclock testaddch testcurs
+ baudrate			lib: ncurses
+-beep				test: blue bs cardfile chgat demo_forms demo_menus demo_panels edit_field hanoi inch_wide inchs ins_wide inserts knight movewindow ncurses savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view xmas
++beep				test: blue bs cardfile chgat clip_printw demo_forms demo_menus demo_panels edit_field hanoi inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view xmas
+ bkgd				test: background cardfile demo_forms ncurses savescreen tclock view
+ bkgdset				test: background ncurses testaddch
+ bkgrnd				test: ncurses
+@@ -251,10 +251,10 @@
+ boolnames			test: test_arrays progs: dump_entry infocmp
+ border				-
+ border_set			-
+-box				test: cardfile chgat demo_forms demo_menus demo_panels ditto edit_field inch_wide inchs ins_wide inserts lrtest ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
++box				test: cardfile chgat clip_printw demo_forms demo_menus demo_panels ditto edit_field inch_wide inchs ins_wide insdelln inserts lrtest ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
+ box_set				test: ncurses
+ can_change_color		test: ncurses
+-cbreak				test: background blue bs cardfile chgat color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts knight lrtest movewindow ncurses newdemo savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
++cbreak				test: background blue bs cardfile chgat clip_printw color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts knight lrtest movewindow ncurses newdemo savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
+ chgat				test: chgat
+ clear				test: blue bs gdc ncurses testcurs xmas
+ clearok				test: bs knight
+@@ -263,7 +263,7 @@
+ color_content			test: ncurses
+ color_set			test: color_set ncurses
+ copywin				test: ncurses testcurs
+-cur_term			test: dots dots_mvcur lrtest progs: clear tput tset
++cur_term			test: dots dots_mvcur lrtest progs: clear tabs tput tset
+ curs_set			test: echochar firework gdc hanoi lrtest ncurses newdemo rain savescreen tclock testcurs worm xmas
+ curscr				test: demo_panels edit_field knight lrtest ncurses savescreen tclock view
+ curses_version			test: ncurses progs: infocmp tic toe tput tset
+@@ -273,16 +273,16 @@
+ del_curterm			lib: ncurses
+ delay_output			test: newdemo
+ delch				-
+-deleteln			-
++deleteln			test: insdelln
+ delscreen			test: ditto dots_mvcur
+-delwin				test: cardfile chgat demo_forms demo_panels edit_field inch_wide inchs ins_wide inserts movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
+-derwin				test: cardfile chgat demo_forms demo_menus ditto inch_wide inchs ins_wide inserts movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque
++delwin				test: cardfile chgat clip_printw demo_forms demo_panels edit_field inch_wide inchs ins_wide insdelln inserts movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
++derwin				test: cardfile chgat clip_printw demo_forms demo_menus ditto inch_wide inchs ins_wide insdelln inserts movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque
+ doupdate			test: cardfile demo_menus demo_panels ditto edit_field ins_wide inserts knight movewindow ncurses redraw savescreen test_get_wstr test_getstr
+ dupwin				test: edit_field
+ echo				test: bs hanoi ncurses test_get_wstr test_getstr testcurs testscanw
+ echo_wchar			test: ncurses
+ echochar			test: echochar ncurses
+-endwin				test: background blue bs cardfile chgat color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto dots_mvcur echochar filter firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts key_names keynames knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
++endwin				test: background blue bs cardfile chgat clip_printw color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto dots_mvcur echochar filter firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
+ erase				test: cardfile demo_menus filter firework firstlast hanoi lrtest ncurses tclock test_opaque testcurs
+ erasechar			lib: ncurses
+ erasewchar			-
+@@ -292,16 +292,16 @@
+ get_wch				-
+ get_wstr			test: test_get_wstr
+ getattrs			-
+-getbegx				test: chgat demo_menus demo_panels movewindow ncurses newdemo redraw testcurs
+-getbegy				test: chgat demo_menus demo_panels movewindow ncurses newdemo redraw testcurs
++getbegx				test: chgat clip_printw demo_menus demo_panels insdelln movewindow ncurses newdemo redraw testcurs
++getbegy				test: chgat clip_printw demo_menus demo_panels insdelln movewindow ncurses newdemo redraw testcurs
+ getbkgd				test: ncurses
+ getbkgrnd			test: ncurses
+ getcchar			test: ncurses view
+-getch				test: background blue bs chgat color_set demo_altkeys filter firework firstlast foldkeys hanoi hashtest lrtest savescreen tclock test_opaque testaddch testcurs view xmas
+-getcurx				test: bs chgat demo_altkeys demo_defkey demo_panels foldkeys movewindow ncurses redraw savescreen test_get_wstr test_getstr test_opaque testcurs
+-getcury				test: bs chgat demo_altkeys demo_defkey demo_panels edit_field foldkeys movewindow ncurses redraw savescreen test_opaque testcurs
+-getmaxx				test: chgat demo_panels inch_wide inchs movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
+-getmaxy				test: chgat demo_forms demo_panels inch_wide inchs movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
++getch				test: background blue bs chgat color_set demo_altkeys filter firework firstlast foldkeys hanoi hashtest insdelln lrtest savescreen tclock test_opaque testaddch testcurs view xmas
++getcurx				test: bs chgat clip_printw demo_altkeys demo_defkey demo_panels foldkeys insdelln movewindow ncurses redraw savescreen test_get_wstr test_getstr test_opaque testcurs
++getcury				test: bs chgat clip_printw demo_altkeys demo_defkey demo_panels edit_field foldkeys insdelln movewindow ncurses redraw savescreen test_opaque testcurs
++getmaxx				test: chgat clip_printw demo_panels inch_wide inchs insdelln movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
++getmaxy				test: chgat clip_printw demo_forms demo_panels inch_wide inchs insdelln movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
+ getmouse			test: bs knight movewindow ncurses
+ getn_wstr			test: test_get_wstr
+ getnstr				test: filter ncurses test_getstr
+@@ -310,10 +310,11 @@
+ getstr				test: test_getstr
+ getwin				test: ncurses
+ halfdelay			test: view
+-has_colors			test: background bs cardfile chgat color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testcurs view worm xmas
++has_colors			test: background bs cardfile chgat clip_printw color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testcurs view worm xmas
+ has_ic				test: lrtest
+ has_il				lib: ncurses
+ has_key				lib: ncurses
++has_mouse			-
+ hline				test: gdc ncurses
+ hline_set			-
+ idcok				test: test_opaque
+@@ -326,16 +327,16 @@
+ inchnstr			test: inchs
+ inchstr				test: inchs
+ init_color			test: ncurses
+-init_pair			test: background blue bs cardfile chgat color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
+-initscr				test: background blue bs cardfile chgat color_set demo_defkey demo_forms demo_keyok demo_menus demo_panels echochar firework firstlast gdc hanoi hashtest inch_wide inchs ins_wide inserts knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
++init_pair			test: background blue bs cardfile chgat clip_printw color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
++initscr				test: background blue bs cardfile chgat clip_printw color_set demo_defkey demo_forms demo_keyok demo_menus demo_panels echochar filter firework firstlast gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts knight lrtest movewindow ncurses newdemo rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testaddch testcurs testscanw view worm xmas
+ innstr				test: test_instr
+ innwstr				test: test_inwstr
+ ins_nwstr			test: ins_wide
+ ins_wch				test: ins_wide
+ ins_wstr			test: ins_wide
+ insch				test: ins_wide inserts
+-insdelln			-
+-insertln			-
++insdelln			test: insdelln
++insertln			test: insdelln
+ insnstr				test: inserts
+ insstr				test: inserts
+ instr				test: test_instr
+@@ -360,7 +361,7 @@
+ keybound			test: demo_altkeys demo_defkey
+ keyname				test: demo_altkeys demo_defkey demo_keyok demo_menus edit_field foldkeys keynames movewindow ncurses redraw testcurs view progs: tic
+ keyok				test: demo_keyok foldkeys
+-keypad				test: bs cardfile chgat demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field filter firework foldkeys hashtest inch_wide inchs ins_wide inserts key_names keynames knight lrtest movewindow ncurses redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view
++keypad				test: bs cardfile chgat clip_printw demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field filter firework foldkeys hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight lrtest movewindow ncurses redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view
+ killchar			lib: ncurses
+ killwchar			-
+ leaveok				test: hanoi test_opaque
+@@ -450,7 +451,7 @@
+ mvwinsstr			test: inserts testcurs
+ mvwinstr			test: test_instr
+ mvwinwstr			test: test_inwstr
+-mvwprintw			test: chgat demo_panels inch_wide inchs ncurses test_instr test_inwstr testcurs
++mvwprintw			test: chgat clip_printw demo_panels inch_wide inchs insdelln ncurses test_instr test_inwstr testcurs
+ mvwscanw			test: testcurs
+ mvwvline			test: ins_wide inserts movewindow
+ mvwvline_set			-
+@@ -458,11 +459,11 @@
+ newpad				test: edit_field ncurses testcurs
+ newscr				lib: ncurses
+ newterm				test: demo_altkeys ditto dots_mvcur filter foldkeys gdc key_names keynames
+-newwin				test: cardfile chgat demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field firstlast inch_wide inchs ins_wide inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs xmas
++newwin				test: cardfile chgat clip_printw demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto edit_field firstlast inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs xmas
+ nl				test: demo_forms ncurses rain testcurs
+ nocbreak			test: testcurs
+ nodelay				test: ditto firework gdc lrtest ncurses newdemo rain tclock test_opaque view worm xmas
+-noecho				test: background bs cardfile chgat color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
++noecho				test: background bs cardfile chgat clip_printw color_set demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto firework firstlast foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view worm xmas
+ nofilter			-
+ nonl				test: bs demo_forms hashtest movewindow ncurses view worm xmas
+ noqiflush			-
+@@ -501,14 +502,14 @@
+ scr_set				test: savescreen
+ scrl				test: view
+ scroll				test: testcurs
+-scrollok			test: demo_altkeys demo_defkey demo_keyok demo_panels ditto foldkeys hashtest knight ncurses redraw test_opaque testcurs testscanw view
++scrollok			test: clip_printw demo_altkeys demo_defkey demo_keyok demo_panels ditto foldkeys hashtest knight ncurses redraw test_opaque testcurs testscanw view
+ set_curterm			lib: ncurses
+ set_escdelay			test: test_opaque
+ set_tabsize			test: test_opaque
+ set_term			lib: ncurses
+ setcchar			test: demo_panels ins_wide ncurses view
+ setscrreg			test: view
+-setupterm			test: dots progs: clear tput tset
++setupterm			test: dots progs: clear tabs tput tset
+ slk_attr			-
+ slk_attr_off			-
+ slk_attr_on			-
+@@ -528,8 +529,8 @@
+ slk_wset			test: ncurses
+ standend			test: blue gdc ncurses
+ standout			test: blue ncurses
+-start_color			test: background blue bs cardfile chgat color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
+-stdscr				test: bs chgat demo_altkeys demo_forms demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide inserts key_names keynames knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view worm xmas
++start_color			test: background blue bs cardfile chgat clip_printw color_set demo_forms demo_menus demo_panels echochar filter firework gdc hanoi ins_wide insdelln inserts knight ncurses newdemo rain savescreen tclock testaddch testcurs view worm xmas
++stdscr				test: bs chgat clip_printw demo_altkeys demo_forms demo_menus demo_panels ditto filter firework foldkeys gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight lrtest movewindow ncurses rain redraw savescreen tclock test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs testscanw view worm xmas
+ strcodes			test: test_arrays progs: dump_entry
+ strfnames			test: test_arrays progs: dump_entry
+ strnames			test: foldkeys test_arrays progs: dump_entry infocmp tic
+@@ -548,10 +549,10 @@
+ tigetnum			test: ncurses progs: tput
+ tigetstr			test: blue demo_defkey foldkeys testcurs progs: tput
+ timeout				test: rain savescreen
+-touchline			test: chgat
+-touchwin			test: chgat demo_menus edit_field filter firstlast inch_wide inchs ins_wide inserts movewindow ncurses redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque xmas
+-tparm				test: dots dots_mvcur progs: tic tput
+-tputs				test: dots dots_mvcur railroad progs: clear tset
++touchline			test: chgat clip_printw insdelln
++touchwin			test: chgat clip_printw demo_menus edit_field filter firstlast inch_wide inchs ins_wide insdelln inserts movewindow ncurses redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque xmas
++tparm				test: dots dots_mvcur progs: tabs tic tput
++tputs				test: dots dots_mvcur railroad progs: clear tabs tset
+ trace				test: demo_menus hanoi hashtest lrtest ncurses testcurs view worm
+ ttytype				lib: ncurses
+ typeahead			test: testcurs
+@@ -572,7 +573,7 @@
+ vidputs				lib: ncurses
+ vline				test: gdc ncurses
+ vline_set			-
+-vw_printw			-
++vw_printw			test: clip_printw
+ vw_scanw			-
+ vwprintw			test: movewindow
+ vwscanw				lib: ncurses
+@@ -584,7 +585,7 @@
+ waddchstr			-
+ waddnstr			lib: menu
+ waddnwstr			test: ncurses
+-waddstr				test: chgat demo_forms demo_panels edit_field firstlast ins_wide knight ncurses redraw testcurs
++waddstr				test: chgat clip_printw demo_forms demo_panels edit_field firstlast ins_wide insdelln knight ncurses redraw testcurs
+ waddwstr			test: ins_wide test_get_wstr
+ wattr_get			-
+ wattr_off			lib: ncurses
+@@ -592,21 +593,21 @@
+ wattr_set			-
+ wattroff			test: demo_forms ncurses testcurs xmas
+ wattron				test: testcurs xmas
+-wattrset			test: demo_forms ncurses newdemo test_get_wstr test_getstr testcurs xmas
++wattrset			test: clip_printw demo_forms insdelln ncurses newdemo test_get_wstr test_getstr testcurs xmas
+ wbkgd				test: cardfile demo_forms demo_menus ncurses newdemo testcurs
+ wbkgdset			test: demo_panels ins_wide inserts ncurses
+ wbkgrnd				lib: ncurses
+ wbkgrndset			lib: ncurses
+-wborder				lib: ncurses
+-wborder_set			lib: ncurses
++wborder				test: ncurses
++wborder_set			test: ncurses
+ wchgat				test: chgat test_get_wstr test_getstr view
+ wclear				test: ncurses test_opaque testcurs
+ wclrtobot			test: firstlast inch_wide inchs ncurses test_instr test_inwstr testcurs
+-wclrtoeol			test: chgat demo_defkey demo_keyok demo_panels firstlast inch_wide inchs ins_wide inserts knight ncurses test_instr test_inwstr testcurs
++wclrtoeol			test: chgat clip_printw demo_defkey demo_keyok demo_panels firstlast inch_wide inchs ins_wide insdelln inserts knight ncurses test_instr test_inwstr testcurs
+ wcolor_set			lib: ncurses
+ wcursyncup			lib: form
+ wdelch				test: ncurses testcurs
+-wdeleteln			test: testcurs
++wdeleteln			test: insdelln testcurs
+ wecho_wchar			lib: ncurses
+ wechochar			lib: ncurses
+ wenclose			lib: form
+@@ -614,7 +615,7 @@
+ wget_wch			test: ins_wide ncurses
+ wget_wstr			test: test_get_wstr
+ wgetbkgrnd			lib: ncurses
+-wgetch				test: cardfile chgat demo_defkey demo_keyok demo_menus demo_panels ditto edit_field gdc inserts knight movewindow ncurses newdemo rain redraw test_opaque testcurs worm
++wgetch				test: cardfile chgat clip_printw demo_defkey demo_keyok demo_menus demo_panels ditto edit_field gdc insdelln inserts knight movewindow ncurses newdemo rain redraw test_opaque testcurs worm
+ wgetn_wstr			test: ncurses test_get_wstr
+ wgetnstr			test: ncurses test_getstr
+ wgetparent			test: test_opaque
+@@ -634,18 +635,18 @@
+ wins_wch			test: ins_wide
+ wins_wstr			test: ins_wide
+ winsch				test: ins_wide inserts testcurs
+-winsdelln			lib: ncurses
+-winsertln			test: testcurs
++winsdelln			test: insdelln
++winsertln			test: insdelln testcurs
+ winsnstr			test: inserts
+ winsstr				test: inserts
+ winstr				test: test_instr
+ winwstr				test: test_inwstr
+ wmouse_trafo			lib: form
+-wmove				test: chgat demo_altkeys demo_defkey demo_keyok demo_menus demo_panels firstlast foldkeys inch_wide inchs ins_wide inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs worm
++wmove				test: chgat clip_printw demo_altkeys demo_defkey demo_keyok demo_menus demo_panels firstlast foldkeys inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses newdemo redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs worm
+ wnoutrefresh			test: demo_menus ditto edit_field inch_wide inchs ins_wide inserts knight movewindow ncurses redraw test_get_wstr test_getstr test_instr test_inwstr test_opaque
+-wprintw				test: chgat demo_defkey demo_forms demo_keyok demo_menus demo_panels edit_field inch_wide inchs ins_wide inserts knight movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
++wprintw				test: chgat clip_printw demo_defkey demo_forms demo_keyok demo_menus demo_panels edit_field inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs
+ wredrawln			test: redraw
+-wrefresh			test: chgat demo_forms demo_keyok demo_menus demo_panels edit_field firstlast knight lrtest movewindow ncurses newdemo redraw savescreen tclock testcurs view worm xmas
++wrefresh			test: chgat clip_printw demo_forms demo_keyok demo_menus demo_panels edit_field firstlast insdelln knight lrtest movewindow ncurses newdemo redraw savescreen tclock testcurs view worm xmas
+ wresize				test: cardfile ncurses
+ wscanw				test: testcurs
+ wscrl				test: ncurses testcurs
 diff -Naur ncurses-5.7.orig/test/test.priv.h ncurses-5.7/test/test.priv.h
 --- ncurses-5.7.orig/test/test.priv.h	2008-10-04 14:53:41.000000000 -0700
-+++ ncurses-5.7/test/test.priv.h	2009-01-18 23:56:30.000000000 -0800
++++ ncurses-5.7/test/test.priv.h	2009-01-27 16:44:52.896037435 -0800
 @@ -29,7 +29,7 @@
  /****************************************************************************
   *  Author: Thomas E. Dickey                    1996-on                     *
@@ -16869,3 +17432,81 @@ diff -Naur ncurses-5.7.orig/test/test.priv.h ncurses-5.7/test/test.priv.h
  /*
   * Workaround for HPUX
   */
+diff -Naur ncurses-5.7.orig/TO-DO ncurses-5.7/TO-DO
+--- ncurses-5.7.orig/TO-DO	2008-10-11 12:22:27.000000000 -0700
++++ ncurses-5.7/TO-DO	2009-01-27 16:44:48.051726777 -0800
+@@ -25,7 +25,7 @@
+ -- sale, use or other dealings in this Software without prior written        --
+ -- authorization.                                                            --
+ -------------------------------------------------------------------------------
+--- $Id: TO-DO,v 1.51 2008/10/11 19:22:27 tom Exp $
++-- $Id: TO-DO,v 1.53 2008/11/28 16:39:12 tom Exp $
+ -------------------------------------------------------------------------------
+ 
+ SHORT-TERM TO-DO ITEMS:
+@@ -45,7 +45,7 @@
+ + Scrolling optimization has holes:  for example, it forces repaints of the
+   screen between calls to refresh().
+ 
+-+ SVr4 uses slightly different rules for determining when softkeys are shown. 
+++ SVr4 uses slightly different rules for determining when softkeys are shown.
+   For example, they are initially displayed (before the ncurses 'e' test
+   activates them), and a touchwin can apparently also force them to be
+   displayed.
+@@ -58,7 +58,7 @@
+ + The window classes defined in the c++ subdirectory need documentation.  Some
+   C++ programmer could earn a lot of good karma by doing this...
+ 
+-+ vid_attr() should support the set_a_attributes (sgr1) string, but does not. 
+++ vid_attr() should support the set_a_attributes (sgr1) string, but does not.
+   There appear to be no terminals that require that functionality.
+ 
+ + the configure --disable-ext-funcs option does not work for Ada95 tree.
+@@ -66,6 +66,24 @@
+ + the --with-pthread configuration builds for Cygwin, but does not work
+   properly (test/worm.c shows all of the worms in the same location).
+ 
+++ the Ada95 tree requires a small fix to build on Cygwin, since the GNAT port
++  to that platform provides an incomplete Interrupts.Names package.  For
++  instance (your gcc version may be different):
++        /usr/lib/gcc/i686-pc-cygwin/3.4.4/adainclude/a-intnam.ads
++
++  cut here...
++-------------------------------------------------------------------------------
++--- a-intnam.ads.orig   2003-10-21 13:41:51.000000000 +0000
+++++ a-intnam.ads        2007-05-05 22:40:02.609375000 +0000
++@@ -44,5 +44,6 @@
++
++    DUMMY_INTERRUPT_1 : constant Interrupt_ID := 1;
++    DUMMY_INTERRUPT_2 : constant Interrupt_ID := 2;
+++   SIGINT : constant Interrupt_ID := 2;
++
++ end Ada.Interrupts.Names;
++-------------------------------------------------------------------------------
++
+ + the --enable-rpath configure option builds for the corresponding platforms;
+   however combining it with --with-ticlib and --with-termlib does not always
+   produce libraries that can be run without setting environment variables.
+@@ -122,7 +140,7 @@
+ 2. DOS port
+ 
+ Only a few of the files in the library depend on the terminfo format.
+-It should be possible to further kernelize the package, then rewrite 
++It should be possible to further kernelize the package, then rewrite
+ a small number of core files to produce a functionally-compatible
+ port that would do updates to a memory-mapped screen area.  The first
+ result of this would be a DOS port.
+@@ -195,10 +213,10 @@
+ 		move_insert, dest_tabs_magic_smso, transparent_underline,
+ 		needs_xon_xoff, hard_cursor.
+ 	Numerics: lines_of_memory, buttons.
+-	Strings: pkey_key, pkey_local, pkey_xmit, underline_char, 
+-		enter_xon_mode,	exit_xon_mode, xon_character, xoff_character, 
++	Strings: pkey_key, pkey_local, pkey_xmit, underline_char,
++		enter_xon_mode,	exit_xon_mode, xon_character, xoff_character,
+ 		display_clock, remove_clock, user[0-5], display_pc_char,
+-		enter_scancode_mode, exit_scancode_mode, pc_term_options, 
++		enter_scancode_mode, exit_scancode_mode, pc_term_options,
+ 		scancode_escape, alt_scancode_esc.
+ 
+ These are the potentially important ones for ncurses.  Notes:
