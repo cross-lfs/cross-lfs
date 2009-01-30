@@ -1,0 +1,44 @@
+Submitted By: Jim Gifford < jim at cross-lfs dot org>
+Date: 2009-01-30
+Upstream Status: Unknown
+Origin: Joe Ciccone 
+Description: This patch gives the ability to change the libdir.
+             Updated for Iproute2-2.6.28 by Jim Gifford
+
+diff -Naur iproute2-2.6.28.orig/Config iproute2-2.6.28/Config
+--- iproute2-2.6.28.orig/Config	2009-01-30 11:13:05.350488894 -0800
++++ iproute2-2.6.28/Config	1969-12-31 16:00:00.000000000 -0800
+@@ -1 +0,0 @@
+-# Generated config based on /tmp/iproute2-2.6.28.orig/include
+diff -Naur iproute2-2.6.28.orig/include/iptables.h iproute2-2.6.28/include/iptables.h
+--- iproute2-2.6.28.orig/include/iptables.h	2009-01-15 12:25:04.000000000 -0800
++++ iproute2-2.6.28/include/iptables.h	2009-01-30 11:16:03.557906690 -0800
+@@ -4,8 +4,12 @@
+ #include "iptables_common.h"
+ #include "libiptc/libiptc.h"
+ 
++#ifndef LIBDIR
++#define LIBDIR "/lib"
++#endif
++
+ #ifndef IPT_LIB_DIR
+-#define IPT_LIB_DIR "/usr/local/lib/iptables"
++#define IPT_LIB_DIR LIBDIR "/iptables"
+ #endif
+ 
+ #ifndef IPPROTO_SCTP
+diff -Naur iproute2-2.6.28.orig/netem/Makefile iproute2-2.6.28/netem/Makefile
+--- iproute2-2.6.28.orig/netem/Makefile	2009-01-15 12:25:04.000000000 -0800
++++ iproute2-2.6.28/netem/Makefile	2009-01-30 11:18:31.907412487 -0800
+@@ -20,9 +20,9 @@
+ 	$(HOSTCC) $(CCOPTS) -I../include -o $@ $@.c -lm
+ 
+ install: all
+-	mkdir -p $(DESTDIR)/lib/tc
++	mkdir -p $(DESTDIR)$(LIBDIR)/tc
+ 	for i in $(DISTDATA); \
+-	do install -m 755 $$i $(DESTDIR)/lib/tc; \
++	do install -m 755 $$i $(DESTDIR)$(LIBDIR)/tc; \
+ 	done
+ 
+ clean:
