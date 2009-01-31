@@ -63,22 +63,22 @@
 
       <varlistentry>
         <term><parameter>LDEMULATION=[emulation]</parameter></term>
-	<!-- <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-	href="../ppc64/libtool.xml"
-	xpointer="xpointer(//*[@os='c2'])"/> -->
+        <!-- <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+        href="../ppc64/libtool.xml"
+        xpointer="xpointer(//*[@os='c2'])"/> -->
         <listitem os="c2">
           <para>Libtool tends to do the wrong thing when building for multilib,
-	  at least on the non-default size(s) of architecture.  The causes of
-	  these errors are not well understood and they can appear, or disappear,
-	  as a result of apparently innocuous other changes in the build.  In
-	  this version of the book, one of the tests (pdemo-make) fails to link
-	  because it tries to link the 32-bit objects against 64-bit system
-	  libraries. This option enables the test to succeed without impacting
-	  the other tests (compare the common alternative fixes of
-	  <literal>LD="gcc ${BUILD32}"</literal> which causes far fewer tests
-	  to be executed, and configuring with
-	  <literal>LDFLAGS='-L/lib -L/usr/lib'</literal> which in this case
-	  causes other tests to fail.)</para>
+          at least on the non-default size(s) of architecture.  The causes of
+          these errors are not well understood and they can appear, or disappear,
+          as a result of apparently innocuous other changes in the build.  In
+          this version of the book, one of the tests (pdemo-make) fails to link
+          because it tries to link the 32-bit objects against 64-bit system
+          libraries. This option enables the test to succeed without impacting
+          the other tests (compare the common alternative fixes of
+          <literal>LD="gcc ${BUILD32}"</literal> which causes far fewer tests
+          to be executed, and configuring with
+          <literal>LDFLAGS='-L/lib -L/usr/lib'</literal> which in this case
+          causes other tests to fail.)</para>
         </listitem>
       </varlistentry>
 
