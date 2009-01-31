@@ -39,6 +39,10 @@
 
 <screen os="g"><userinput>make install</userinput></screen>
 
+    <para os="h">Create a directory for expansion snippets:</para>
+
+<screen os="i"><userinput>install -dv /etc/rsyslog.d</userinput></screen>
+
   </sect2>
 
   <sect2 id="conf-rsyslog" role="configuration">
@@ -87,6 +91,11 @@ $UDPServerRun 514
 
 # Disable Repating of Entries
 $RepeatedMsgReduction on
+
+#######################################################################
+# Include Rsyslog Config Snippets
+
+$IncludeConfig /etc/rsyslog.d/*.conf
 
 #######################################################################
 # Standard Log Files
