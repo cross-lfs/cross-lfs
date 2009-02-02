@@ -54,20 +54,7 @@ for DIRECTORY in ${DIRS}; do
     done
     cd ..
 done
-
-# Cleanup Directory
-#
-for dir in $(find * -type d); do
-  cd /usr/src/binutils-${VERSION}
-  for file in $(find . -name '*~'); do
-    rm -f ${file}
-  done
-  for file in $(find . -name '*.orig'); do
-    rm -f ${file}
-  done
-done
 cd /usr/src/binutils-${VERSION}
-rm -f *~ *.orig
 rm -f /usr/src/binutils-${VERSION}.orig/md5.sum
 
 # Make Binutils a Release
