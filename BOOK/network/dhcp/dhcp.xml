@@ -10,6 +10,28 @@
 
   <title>DHCP Networking</title>
 
-  <para os="a">Coming Soon.</para>
+    <para os="a">You will need to install the service from the CLFS Bootscripts package.</para>
+
+<screen os="b"><userinput>tar -jxvf ../bootscripts-cross-lfs-&clfs-bootscripts-version;.tar.bz2
+cd -v bootscripts-cross-lfs-&clfs-bootscripts-version;
+make install-service-dhcpcd</userinput></screen>
+
+  <para os="c">Finally, create the /etc/sysconfig/network-devices/ifconfig.eth0/dhcpcd
+   configuration file using the following commands. Adjust appropriately for additional interfaces:</para>
+
+<screen os="d"><userinput><literal>install -v -d /etc/sysconfig/network-devices/ifconfig.eth0 
+cat > /etc/sysconfig/network-devices/ifconfig.eth0/dhcpcd &lt;&lt; "EOF"
+ONBOOT="yes"
+SERVICE="dhcpcd"
+
+# Start Command for DHCPCD
+#
+DHCP_START="-q"
+
+# Stop Command for DHCPCD
+#
+DHCP_STOP="-k"
+EOF</literal>
+</userinput></screen>
 
 </sect1>
