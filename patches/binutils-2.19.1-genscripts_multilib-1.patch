@@ -1,8 +1,10 @@
 Submitted By: Ryan Oliver (ryan dot oliver at pha dot com dot au)
 Origin: Ryan Oliver
-Date: 2005-04-03
+Date: 2009-02-03
 Initial package version: 2.15 (problem also exists in 2.14 series)
 Description:
+        Rediffed for 2.19.1 by Jim Gifford
+      
         Updated patch, use this for all binutils 2.15 series instead of the
         binutils-2.15.90.0.1-genscripts-multilib.patch
 
@@ -22,13 +24,13 @@ Description:
         any of the supported emulations for this target (as opposed to only the
         one genscripts.sh is currently processing) and if so ignore ${libpath}.
 
-	This patch differs from the preceding genscripts-multilib patch as now
-	USE_LIBPATH will always be set if LIB_PATH is non empty
+        This patch differs from the preceding genscripts-multilib patch as now
+        USE_LIBPATH will always be set if LIB_PATH is non empty
 
-diff -uNr binutils-2.15.91.0.1-orig/ld/genscripts.sh binutils-2.15.91.0.1/ld/genscripts.sh
---- binutils-2.15.91.0.1-orig/ld/genscripts.sh	2004-05-28 04:26:04.000000000 +1000
-+++ binutils-2.15.91.0.1/ld/genscripts.sh	2005-04-03 16:14:51.000000000 +1000
-@@ -110,7 +110,8 @@
+diff -Naur binutils-2.19.1.orig/ld/genscripts.sh binutils-2.19.1/ld/genscripts.sh
+--- binutils-2.19.1.orig/ld/genscripts.sh	2008-01-28 03:07:44.000000000 -0800
++++ binutils-2.19.1/ld/genscripts.sh	2009-02-03 08:42:35.330001955 -0800
+@@ -132,7 +132,8 @@
  esac
  
  # If the emulparams file sets NATIVE, make sure USE_LIBPATH is set also.
@@ -38,7 +40,7 @@ diff -uNr binutils-2.15.91.0.1-orig/ld/genscripts.sh binutils-2.15.91.0.1/ld/gen
    USE_LIBPATH=yes
  fi
  
-@@ -125,17 +126,17 @@
+@@ -147,17 +148,17 @@
  #
  # If the emulparams file set LIBPATH_SUFFIX, prepend an extra copy of
  # the library path with the suffix applied.
