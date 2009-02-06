@@ -1,0 +1,106 @@
+Submitted By: Jim Gifford (jim at cross-lfs dot org)
+Date: 2009-02-05
+Initial Package Version: 1.15
+Origin: Fedora
+Upstream Status: Unknown
+Description: Sparc Linux Headers doesn't have asm/kbio.h anymore
+
+diff -Naur kbd-1.15.orig/man/man8/kbdrate.8 kbd-1.15/man/man8/kbdrate.8
+--- kbd-1.15.orig/man/man8/kbdrate.8	2008-03-13 09:46:23.000000000 -0700
++++ kbd-1.15/man/man8/kbdrate.8	2009-02-05 20:18:28.014455370 -0800
+@@ -22,7 +22,7 @@
+ without any options will reset the repeat rate to 10.9 characters per second (cps)
+ and the delay to 250 milliseconds (ms) for Intel- and M68K-based systems.
+ These are the IBM defaults. On SPARC-based systems it will reset the repeat rate
+-to 5 cps and the delay to 200 ms.
++to 20 cps and the delay to 200 ms.
+ 
+ .SH OPTIONS
+ .TP
+@@ -69,3 +69,5 @@
+ .I /etc/rc.local
+ .br
+ .I /dev/port
++.br
++.I /dev/kbd
+diff -Naur kbd-1.15.orig/src/kbdrate.c kbd-1.15/src/kbdrate.c
+--- kbd-1.15.orig/src/kbdrate.c	2008-03-14 01:03:43.000000000 -0700
++++ kbd-1.15/src/kbdrate.c	2009-02-05 20:18:28.014455370 -0800
+@@ -77,7 +77,6 @@
+ 
+ #ifdef __sparc__
+ #include <asm/param.h>
+-#include <asm/kbio.h>
+ #endif
+ 
+ #ifndef KDKBDREP
+@@ -109,11 +108,15 @@
+ 
+ static int
+ KDKBDREP_ioctl_ok(double rate, int delay, int silent) {
++#if defined(KDKBDREP) && !defined(__sparc__)
+ 	/*
+ 	 * This ioctl is defined in <linux/kd.h> but is not
+ 	 * implemented anywhere - must be in some m68k patches.
++         * We cannot blindly try unimplemented ioctls on sparc64 -
++         * the 32<->64bit transition layer does not like it.
+ 	 * Since 2.4.9 also on i386.
+-	 */
++         */
++
+ 	struct my_kbd_repeat kbdrep_s;
+ 
+ 	/* don't change, just test */
+@@ -177,6 +180,9 @@
+ 			rate, kbdrep_s.delay );
+ 
+ 	return 1;			/* success! */
++#else /* no KDKBDREP or __sparc__ */
++        return 0;
++#endif /* KDKBDREP */
+ }
+ 
+ static int
+@@ -221,7 +227,7 @@
+ int
+ main( int argc, char **argv ) {
+ #ifdef __sparc__
+-	double      rate = 5.0;      /* Default rate */
++        double      rate = 20.0;      /* Default rate */
+ 	int         delay = 200;     /* Default delay */
+ #else
+ 	double      rate = 10.9;     /* Default rate */
+@@ -272,7 +278,9 @@
+ 
+ 
+ 	/* The ioport way */
++        /* The ioport way - will crash on sparc */
+ 
++#ifndef __sparc__
+ 	for (i = 0; i < RATE_COUNT; i++)
+ 		if (rate * 10 >= valid_rates[i]) {
+ 			value &= 0x60;
+@@ -335,5 +343,7 @@
+ 			valid_rates[value & 0x1f] / 10.0,
+ 			valid_delays[ (value & 0x60) >> 5 ] );
+ 
++#endif
++
+ 	return 0;
+ }
+diff -Naur kbd-1.15.orig/src/setleds.c kbd-1.15/src/setleds.c
+--- kbd-1.15.orig/src/setleds.c	2008-03-14 01:03:43.000000000 -0700
++++ kbd-1.15/src/setleds.c	2009-02-05 20:18:28.014455370 -0800
+@@ -14,10 +14,6 @@
+ #include "nls.h"
+ #include "version.h"
+ 
+-#ifdef __sparc__
+-#include <asm/kbio.h>
+-#endif
+-
+ static void
+ usage(void)
+ {
+
+
