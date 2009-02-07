@@ -85,16 +85,16 @@
   safest to choose the canonical name for a particular locale. To determine
   the canonical name, run the following command, where <replaceable>[locale
   name]</replaceable> is the output given by <command>locale -a</command> for
-  your preferred locale (<quote>en_GB.iso88591</quote> in our example).</para>
+  your preferred locale (<quote>en_US.utf8</quote> in our example).</para>
 
 <screen role="nodump"><userinput>LC_ALL=<replaceable>[locale name]</replaceable> locale charmap</userinput></screen>
 
-  <para>For the <quote>en_GB.iso88591</quote> locale, the above command
+  <para>For the <quote>en_US.utf8</quote> locale, the above command
   will print:</para>
 
-<screen><computeroutput>ISO-8859-1</computeroutput></screen>
+<screen><computeroutput>UTF-8</computeroutput></screen>
 
-  <para>This results in a final locale setting of <quote>en_GB.ISO-8859-1</quote>.
+  <para>This results in a final locale setting of <quote>en_US.UTF-8</quote>.
   It is important that the locale found using the heuristic above is tested prior
   to it being added to the Bash startup files:</para>
 
@@ -148,19 +148,11 @@ export INPUTRC=/etc/inputrc
 # End /etc/profile</literal>
 EOF</userinput></screen>
 
-  <note>
-    <para>The <quote>C</quote> (default) and <quote>en_US</quote>
-    (the recommended one for United States English users) locales are
-    different.</para>
-  </note>
-
   <para>Setting the keyboard layout, screen font, and locale-related
   environment variables are the only internationalization steps needed to
   support locales that use ordinary single-byte encodings and left-to-right
-  writing direction. More complex cases (including UTF-8 based locales)
-  require additional steps and additional patches because many applications
-  tend to not work properly under such conditions. These steps and patches
-  are not included in the CLFS book and such locales are not yet supported
-  by CLFS.</para>
+  writing direction. UTF-8 has been testing on the English, French, and
+  German, Spanish locales. All other locales are untested. If you discover
+  issues with any other locale please open a ticket in our trac system.</para>
 
 </sect1>
