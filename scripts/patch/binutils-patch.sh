@@ -8,9 +8,10 @@ SOURCEVERSION=$2
 
 # Check Input
 #
-if [ "${VERSION}" = "" ]; then
+if [ "${VERSION}" = "" -o "${SOURCEVERSION}" = "" ]; then
   echo "$0 - Binutils_Version"
   echo "This will Create a Patch for Binutils Binutils_Series Binutils_Version"
+  echo "Example $0 2.19 2.19.1"
   exit 255
 fi
 
