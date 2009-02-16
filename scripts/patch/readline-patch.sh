@@ -30,6 +30,14 @@ if ! [ -e readline-${VERSION}.tar.gz ]; then
   wget ftp://ftp.cwru.edu/pub/bash/readline-${VERSION}.tar.gz
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep readline | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf readline-${VERSION} readline-${VERSION}.orig
@@ -97,16 +105,16 @@ rm -f *~ *.orig
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > readline-${VERSION}-branch_update-x.patch
-echo "Date: `date +%m-%d-%Y`" >> readline-${VERSION}-branch_update-x.patch
-echo "Initial Package Version: ${VERSION}" >> readline-${VERSION}-branch_update-x.patch
-echo "Origin: Upstream" >> readline-${VERSION}-branch_update-x.patch
-echo "Upstream Status: Applied" >> readline-${VERSION}-branch_update-x.patch
-echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> readline-${VERSION}-branch_update-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
 if [ -n "${SKIPPED}" ]; then
-  echo "            Thee following patches were skipped" >> readline-${VERSION}-branch_update-x.patch
-  echo "            ${SKIPPED}" >> readline-${VERSION}-branch_update-x.patch
+  echo "            Thee following patches were skipped" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+  echo "            ${SKIPPED}" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
 fi
-echo "" >> readline-${VERSION}-branch_update-x.patch
-diff -Naur readline-${VERSION}.orig readline-${VERSION} >> readline-${VERSION}-branch_update-x.patch
-echo "Created /usr/src/readline-${VERSION}-branch_update-x.patch."
+echo "" >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur readline-${VERSION}.orig readline-${VERSION} >> readline-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created /usr/src/readline-${VERSION}-branch_update-${PATCH_NUM}.patch."

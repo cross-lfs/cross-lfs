@@ -23,6 +23,14 @@ if ! [ -e binutils-${SOURCEVERSION}.tar.bz2  ]; then
   wget ftp://ftp.gnu.org/gnu/binutils/binutils-${SOURCEVERSION}.tar.bz2
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep binutils | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf binutils-${SOURCEVERSION} binutils-${SOURCEVERSION}.orig
@@ -69,13 +77,13 @@ sed -i 's/# RELEASE=y/RELEASE=y/g' bfd/Makefile.in
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "Date: `date +%m-%d-%Y`" >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "Initial Package Version: ${SOURCEVERSION}" >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "Origin: Upstream" >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "Upstream Status: Applied" >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "Description: This is a branch update for binutils-${SOURCEVERSION}, and should be" >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "             rechecked periodically." >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "" >> binutils-${SOURCEVERSION}-branch_update-x.patch
-diff -Naur binutils-${SOURCEVERSION}.orig binutils-${SOURCEVERSION} >> binutils-${SOURCEVERSION}-branch_update-x.patch
-echo "Created /usr/src/binutils-${SOURCEVERSION}-branch_update-x.patch."
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${SOURCEVERSION}" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: This is a branch update for binutils-${SOURCEVERSION}, and should be" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "             rechecked periodically." >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur binutils-${SOURCEVERSION}.orig binutils-${SOURCEVERSION} >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created /usr/src/binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch."

@@ -30,6 +30,14 @@ if ! [ -e vim-${VERSION}.tar.bz2 ]; then
   wget ftp://ftp.vim.org/pub/vim/unix/vim-${VERSION}.tar.bz2
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep vim | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf vim${SERIES} vim${SERIES}.orig
@@ -75,7 +83,7 @@ while [ ${COUNT} -le ${FILES} ]; do
       SKIPPED="${SKIPPED} ${DLCOUNT}"
     fi
    fi
-   COUNT=`expr ${COUNT} + 1`
+   COUNT=$(expr ${COUNT} + 1)
 done
 
 # Cleanup Directory
@@ -95,16 +103,16 @@ rm -f *~ *.orig
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > vim-${VERSION}-branch_update-x.patch
-echo "Date: `date +%m-%d-%Y`" >> vim-${VERSION}-branch_update-x.patch
-echo "Initial Package Version: ${VERSION}" >> vim-${VERSION}-branch_update-x.patch
-echo "Origin: Upstream" >> vim-${VERSION}-branch_update-x.patch
-echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-x.patch
-echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> vim-${VERSION}-branch_update-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Origin: Upstream" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
 if [ -n "${SKIPPED}" ]; then
-  echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-x.patch
-  echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-x.patch
+  echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+  echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
 fi
-echo "" >> vim-${VERSION}-branch_update-x.patch
-diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-x.patch
-echo "Created /usr/src/vim-${VERSION}-branch_update-x.patch."
+echo "" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Created /usr/src/vim-${VERSION}-branch_update-$(PATCH_NUM}.patch."

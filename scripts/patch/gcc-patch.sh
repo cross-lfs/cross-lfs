@@ -20,6 +20,14 @@ if ! [ -e gcc-${VERSION}.tar.bz2  ]; then
   wget ftp://gcc.gnu.org/pub/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep gcc | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
@@ -56,13 +64,13 @@ done
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > gcc-${VERSION}-branch_update-x.patch
-echo "Date: `date +%m-%d-%Y`" >> gcc-${VERSION}-branch_update-x.patch
-echo "Initial Package Version: ${VERSION}" >> gcc-${VERSION}-branch_update-x.patch
-echo "Origin: Upstream" >> gcc-${VERSION}-branch_update-x.patch
-echo "Upstream Status: Applied" >> gcc-${VERSION}-branch_update-x.patch
-echo "Description: This is a branch update for gcc-${VERSION}, and should be" >> gcc-${VERSION}-branch_update-x.patch
-echo "             rechecked periodically." >> gcc-${VERSION}-branch_update-x.patch
-echo "" >> gcc-${VERSION}-branch_update-x.patch
-diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> gcc-${VERSION}-branch_update-x.patch
-echo "Created /usr/src/gcc-${VERSION}-branch_update-x.patch."
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: This is a branch update for gcc-${VERSION}, and should be" >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "             rechecked periodically." >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "" >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> gcc-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created /usr/src/gcc-${VERSION}-branch_update-${PATCH_NUM}.patch."

@@ -29,6 +29,14 @@ if ! [ -e ncurses-${VERSION}.tar.gz ]; then
   wget ftp://invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep ncurses | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf ncurses-${VERSION} ncurses-${VERSION}.orig
@@ -93,13 +101,13 @@ rm -f *~ *.orig
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ncurses-${VERSION}-branch_update-x.patch
-echo "Date: `date +%m-%d-%Y`" >> ncurses-${VERSION}-branch_update-x.patch
-echo "Initial Package Version: ${VERSION}" >> ncurses-${VERSION}-branch_update-x.patch
-echo "Origin: Upstream" >> ncurses-${VERSION}-branch_update-x.patch
-echo "Upstream Status: Applied" >> ncurses-${VERSION}-branch_update-x.patch
-echo "Description: This is a branch update for NCurses-${VERSION}, and should be" >> ncurses-${VERSION}-branch_update-x.patch
-echo "             rechecked periodically. This patch covers up to ${VERSION}-${LASTFILE}." >> ncurses-${VERSION}-branch_update-x.patch
-echo "" >> ncurses-${VERSION}-branch_update-x.patch
-diff -Naur ncurses-${VERSION}.orig ncurses-${VERSION} >> ncurses-${VERSION}-branch_update-x.patch
-echo "Created /usr/src/ncurses-${VERSION}-branch_update-x.patch."
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: This is a branch update for NCurses-${VERSION}, and should be" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "             rechecked periodically. This patch covers up to ${VERSION}-${LASTFILE}." >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur ncurses-${VERSION}.orig ncurses-${VERSION} >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created /usr/src/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch."

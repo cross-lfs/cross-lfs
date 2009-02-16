@@ -30,6 +30,14 @@ if ! [ -e bash-${VERSION}.tar.gz ]; then
   wget ftp://ftp.cwru.edu/pub/bash/bash-${VERSION}.tar.gz
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep bash | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf bash-${VERSION} bash-${VERSION}.orig
@@ -96,16 +104,16 @@ rm -f *~ *.orig
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > bash-${VERSION}-branch_update-x.patch
-echo "Date: `date +%m-%d-%Y`" >> bash-${VERSION}-branch_update-x.patch
-echo "Initial Package Version: ${VERSION}" >> bash-${VERSION}-branch_update-x.patch
-echo "Origin: Upstream" >> bash-${VERSION}-branch_update-x.patch
-echo "Upstream Status: Applied" >> bash-${VERSION}-branch_update-x.patch
-echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> bash-${VERSION}-branch_update-x.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: Contains all upstream patches up to ${VERSION}-${FILES}" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
 if [ -n "${SKIPPED}" ]; then
-  echo "             The following patches were skipped" >> bash-${VERSION}-branch_update-x.patch
-  echo "            ${SKIPPED}" >> bash-${VERSION}-branch_update-x.patch
+  echo "             The following patches were skipped" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+  echo "            ${SKIPPED}" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
 fi
-echo "" >> bash-${VERSION}-branch_update-x.patch
-diff -Naur bash-${VERSION}.orig bash-${VERSION} >> bash-${VERSION}-branch_update-x.patch
-echo "Created /usr/src/bash-${VERSION}-branch_update-x.patch."
+echo "" >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur bash-${VERSION}.orig bash-${VERSION} >> bash-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created /usr/src/bash-${VERSION}-branch_update-${PATCH_NUM}.patch."
