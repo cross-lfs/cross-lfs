@@ -74,6 +74,11 @@ cd /usr/src/binutils-${SOURCEVERSION}
 sed -i 's/# RELEASE=y/RELEASE=y/g' bfd/Makefile.am
 sed -i 's/# RELEASE=y/RELEASE=y/g' bfd/Makefile.in
 
+# Customize the version string, so we know it's patched
+#
+cd /usr/src/binutils-${SOURCEVERSION}
+sed -i "s:@PKGVERSION@:\"(Cross-LFS - Branch Update ${PATCH_NUM}) \":" Makefile.in 
+
 # Create Patch
 #
 cd /usr/src
