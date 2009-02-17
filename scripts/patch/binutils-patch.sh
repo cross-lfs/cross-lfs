@@ -79,7 +79,7 @@ sed -i 's/# RELEASE=y/RELEASE=y/g' bfd/Makefile.in
 cd /usr/src/binutils-${SOURCEVERSION}
 DATE_STAMP="`date +%Y%m%d`"
 cd /usr/src/binutils-${SOURCEVERSION}
-sed -i "s:@PKGVERSION@:\"(GNU Binutils for Cross-LFS) \":" bfd/Makefile.in
+sed -i "s:@PKGVERSION@:(GNU Binutils for Cross-LFS) :" bfd/Makefile.in
 sed -i "s:^[[:space:]]VERSION=\(.*\)$:VERSION=\1.${DATE_STAMP}:g" bfd/configure
 # Cleanliness is the name of my game!
 unset DATE_STAMP
