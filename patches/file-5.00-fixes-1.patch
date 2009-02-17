@@ -1,0 +1,86 @@
+Submitted by: Jim Gifford (jim at cross-lfs dot org)
+Date: 2009-12-16
+Initial Package Version: 5.00
+Upstream Status: Already Applied
+Origin: Jim Gifford
+Description: Fixes Various Build Issues in File
+             Localization Fixes
+
+diff -Naur file-5.00.orig/magic/Magdir/msdos file-5.00/magic/Magdir/msdos
+--- file-5.00.orig/magic/Magdir/msdos	2008-12-12 13:04:45.000000000 -0800
++++ file-5.00/magic/Magdir/msdos	2009-02-16 20:28:57.440188294 -0800
+@@ -294,22 +294,37 @@
+ >10	string	>\x23			
+ >>10	string	!\x2e			
+ >>>17	string	<\x5B			
+->>>>10	string	x			\b, name: %.8s
+-#UDMA.SYS KEYB.SYS CMD640X2.SYS
++>>>>10	string	CMD640X2.SYS			\b, name: %.8s
++#UDMA.SYS
+ >10	string	<\x41			
+ >>12	string	>\x40			
+ >>>10	string	!$			
+->>>>12	string	x			\b, name: %.8s
+-#BTCDROM.SYS ASPICD.SYS
++>>>>12	string	UDMA.SYS			\b, name: %.8s
++#CMD640X2.SYS
++>10	string	<\x41			
++>>12	string	>\x40			
++>>>10	string	!$			
++>>>>12	string	CMD640X2.SYS			\b, name: %.8s
++#KEYB.SYS
++>10	string	<\x41			
++>>12	string	>\x40			
++>>>10	string	!$			
++>>>>12	string	KEYB.SYS			\b, name: %.8s
++#BTCDROM.SYS
++>22	string	>\x40			
++>>22	string	<\x5B			
++>>>23	string	<\x5B			
++>>>>22	string	BTCDROM.SYS			\b, name: %.8s
++#ASPICD.SYS
+ >22	string	>\x40			
+ >>22	string	<\x5B			
+ >>>23	string	<\x5B			
+->>>>22	string	x			\b, name: %.8s
++>>>>22	string	ASPICD.SYS			\b, name: %.8s
+ #ATAPICD.SYS
+ >76	string	\0			
+ >>77	string	>\x40			
+ >>>77	string	<\x5B			
+->>>>77	string	x			\b, name: %.8s
++>>>>77	string	ATAPICD.SYS			\b, name: %.8s
+ # test too generic ?
+ 0	byte		0x8c		DOS executable (COM)
+ # updated by Joerg Jenderek at Oct 2008
+diff -Naur file-5.00.orig/src/readcdf.c file-5.00/src/readcdf.c
+--- file-5.00.orig/src/readcdf.c	2009-02-03 12:27:51.000000000 -0800
++++ file-5.00/src/readcdf.c	2009-02-16 20:29:17.397467243 -0800
+@@ -75,9 +75,23 @@
+ 			if (len > 1) {
+ 				s = info[i].pi_str.s_buf;
+ 				if (NOTMIME(ms)) {
+-					if (file_printf(ms, ", %s: %.*s", buf,
+-					    len, s) == -1)
+-						return -1;
++					char vbuf[1024];
++					size_t j;
++					for (j = 0; j < sizeof(vbuf) && len--;
++					    j++, s++) {
++						if (*s == '\0')
++							break;
++						if (isprint((unsigned char)*s))
++							vbuf[j] = *s;
++					}
++					if (j == sizeof(vbuf))
++						--j;
++					vbuf[j] = '\0';
++					if (vbuf[0]) {
++						if (file_printf(ms, ", %s: %s",
++						    buf, vbuf) == -1)
++							return -1;
++					}
+ 				} else if (info[i].pi_id == 
+ 					CDF_PROPERTY_NAME_OF_APPLICATION) {
+ 					if (strstr(s, "Word"))
+
