@@ -1,0 +1,36 @@
+Submitted by: Jim Gifford (jim at cross-lfs dot org)
+Date: 2009-12-16
+Initial Package Version: 3.2.6
+Upstream Status: Already Applied
+Origin: Jim Gifford
+Description: Missing Errno
+             Support Drives Larger the 2gb
+
+diff -Naur hfsutils-3.2.6.orig/libhfs/os/unix.c hfsutils-3.2.6/libhfs/os/unix.c
+--- hfsutils-3.2.6.orig/libhfs/os/unix.c	1998-11-02 14:09:13.000000000 -0800
++++ hfsutils-3.2.6/libhfs/os/unix.c	2009-02-17 15:09:36.025977091 -0800
+@@ -19,6 +19,11 @@
+  * $Id: unix.c,v 1.8 1998/11/02 22:09:13 rob Exp $
+  */
+ 
++#ifdef __linux__
++#define _FILE_OFFSET_BITS 64
++#define _LARGE_FILES
++#endif
++
+ # ifdef HAVE_CONFIG_H
+ #  include "config.h"
+ # endif
+diff -Naur hfsutils-3.2.6.orig/tclhfs.c hfsutils-3.2.6/tclhfs.c
+--- hfsutils-3.2.6.orig/tclhfs.c	1998-11-02 14:08:32.000000000 -0800
++++ hfsutils-3.2.6/tclhfs.c	2009-02-17 15:09:15.124637798 -0800
+@@ -43,8 +43,7 @@
+ # include "charset.h"
+ # include "suid.h"
+ # include "version.h"
+-
+-extern int errno;
++# include <errno.h>
+ 
+ # define ERROR(code, str)	(hfs_error = (str), errno = (code))
+ 
