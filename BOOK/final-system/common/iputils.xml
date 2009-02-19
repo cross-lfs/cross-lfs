@@ -28,6 +28,10 @@
 
 <screen os="p2"><userinput>patch -Np1 -i ../&iputils-fixes-patch;</userinput></screen>
 
+    <para os="p3">The following patch contains the man-pages for IPutils:</para>
+
+<screen os="p4"><userinput>patch -Np1 -i ../&iputils-manpages-patch;</userinput></screen>
+
     <para os="a">Compile the package:</para>
 
 <screen os="b"><userinput>make</userinput></screen>
@@ -39,7 +43,8 @@
 <screen os="e"><userinput>cp -v ping{,6} /bin
 cp -v arping /usr/bin
 cp -v tracepath /usr/bin
-cp -v trace{path,route}6 /usr/bin</userinput></screen>
+cp -v trace{path,route}6 /usr/bin
+install -v -m644 doc/*.8 /usr/share/man/man8</userinput></screen>
 
   </sect2>
 
