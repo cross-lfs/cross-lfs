@@ -30,7 +30,7 @@
 
     <para os="p3">The following patch contains the man-pages for IPutils:</para>
 
-<screen os="p4"><userinput>patch -Np1 -i ../&iputils-manpages-patch;</userinput></screen>
+<screen os="p4"><userinput>patch -Np0 -i ../&iputils-manpages-patch;</userinput></screen>
 
     <para os="a">Compile the package:</para>
 
@@ -41,9 +41,11 @@
     <para os="d">Install the package:</para>
 
 <screen os="e"><userinput>cp -v ping{,6} /bin
-cp -v arping /usr/bin
-cp -v tracepath /usr/bin
-cp -v trace{path,route}6 /usr/bin
+install -v -m755 arping /usr/bin
+install -v -m755 clockdiff /usr/bin
+install -v -m755 rdisc /usr/bin
+install -v -m755 tracepath /usr/bin
+install -v -m755 trace{path,route}6 /usr/bin
 install -v -m644 doc/*.8 /usr/share/man/man8</userinput></screen>
 
   </sect2>
@@ -55,7 +57,7 @@ install -v -m644 doc/*.8 /usr/share/man/man8</userinput></screen>
       <segtitle>Installed programs</segtitle>
 
       <seglistitem>
-        <seg>arping, ping, ping6, tracepath, tracepath6, and traceroute6</seg>
+        <seg>arping, clockdiff, ping, ping6, rdisc. tracepath, tracepath6, and traceroute6</seg>
       </seglistitem>
     </segmentedlist>
 

@@ -1,13 +1,81 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 01-15-2009
+Date: 02-18-2009
 Initial Package Version: s20071127
-Origin: Debian
+Origin: Debian and Fedora
 Upstream Status: Unknown
 Description: Fixes Various Issues
 
+diff -Naur iputils-s20071127.orig/arping.c iputils-s20071127/arping.c
+--- iputils-s20071127.orig/arping.c	2007-11-26 16:57:27.000000000 -0800
++++ iputils-s20071127/arping.c	2009-02-18 23:18:09.239954184 -0800
+@@ -168,12 +168,17 @@
+ 	if (start.tv_sec==0)
+ 		start = tv;
+ 
+-	if (count-- == 0 || (timeout && MS_TDIFF(tv,start) > timeout*1000 + 500))
+-		finish();
++	if (timeout && MS_TDIFF(tv,start) > timeout*1000 + 500)
++ 		finish();
+ 
+-	if (last.tv_sec==0 || MS_TDIFF(tv,last) > 500) {
++	if ((!timeout) && (count == 0))
++		finish();
++ 
++	if ( count!=0  && (last.tv_sec==0 || MS_TDIFF(tv,last) > 500 ) ) {
+ 		send_pack(s, src, dst, &me, &he);
+-		if (count == 0 && unsolicited)
++		if (count >= 0)
++			count--;
++		if (count==0 && unsolicited)
+ 			finish();
+ 	}
+ 	alarm(1);
+diff -Naur iputils-s20071127.orig/doc/docbook2man-spec.pl iputils-s20071127/doc/docbook2man-spec.pl
+--- iputils-s20071127.orig/doc/docbook2man-spec.pl	2007-11-26 16:57:27.000000000 -0800
++++ iputils-s20071127/doc/docbook2man-spec.pl	2009-02-18 23:18:09.239954184 -0800
+@@ -428,7 +428,7 @@
+ 	output ' ';
+ 
+ 	if($_[0]->attribute('CHOICE')->value =~ /opt/i) {
+-		output '[ ';
++		output '[';
+ 	}
+ 	bold_on();
+ }
+@@ -441,7 +441,7 @@
+ 		font_off();
+ 	}
+ 	if($_[0]->attribute('CHOICE')->value =~ /opt/i) {
+-		output '] ';
++		output ']';
+ 	}
+ }
+ 
+diff -Naur iputils-s20071127.orig/doc/Makefile iputils-s20071127/doc/Makefile
+--- iputils-s20071127.orig/doc/Makefile	2007-11-26 16:57:27.000000000 -0800
++++ iputils-s20071127/doc/Makefile	2009-02-18 23:18:09.239954184 -0800
+@@ -6,7 +6,7 @@
+ 
+ html: $(HTMLFILES) iputils.html
+ 
+-man: $(MANFILES)
++man: $(MANFILES) fix_sgml2man
+ 
+ # docbook scripts are incredibly dirty in the sense that they leak
+ # lots of some strange temporary junk directories and files.
+@@ -33,6 +33,9 @@
+ 	@set -e; cd tmp.db2man; nsgmls ../$< | sgmlspl ../docbook2man-spec.pl ;	mv $@ ..
+ 	@-rm -rf tmp.db2man
+ 
++fix_sgml2man:
++	@sed -i -e 's!\\fB\\fIdestination\\fB\\fR \[\\fB/\\fIport\\fB\\fR\]!\\fB\\fIdestination\\fB\\fR[\\fB/\\fIport\\fB\\fR]!g' tracepath.8
++
+ clean:
+ 	@rm -rf $(MANFILES) $(HTMLFILES) iputils.html tmp.db2html tmp.db2man
+ 
 diff -Naur iputils-s20071127.orig/Makefile iputils-s20071127/Makefile
 --- iputils-s20071127.orig/Makefile	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/Makefile	2009-01-15 22:02:32.000000000 -0800
++++ iputils-s20071127/Makefile	2009-02-18 23:18:09.239954184 -0800
 @@ -16,7 +16,7 @@
  CCOPT=-D_GNU_SOURCE -O2 -Wstrict-prototypes -Wall -g
  CFLAGS=$(CCOPT) $(GLIBCFIX) $(DEFINES) 
@@ -33,77 +101,29 @@ diff -Naur iputils-s20071127.orig/Makefile iputils-s20071127/Makefile
  check-kernel:
  ifeq ($(KERNEL_INCLUDE),)
  	@echo "Please, set correct KERNEL_INCLUDE"; false
-diff -Naur iputils-s20071127.orig/arping.c iputils-s20071127/arping.c
---- iputils-s20071127.orig/arping.c	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/arping.c	2009-01-15 22:02:51.000000000 -0800
-@@ -168,12 +168,17 @@
- 	if (start.tv_sec==0)
- 		start = tv;
+diff -Naur iputils-s20071127.orig/ping6.c iputils-s20071127/ping6.c
+--- iputils-s20071127.orig/ping6.c	2007-11-26 16:57:27.000000000 -0800
++++ iputils-s20071127/ping6.c	2009-02-18 23:18:09.239954184 -0800
+@@ -414,7 +414,7 @@
+ 			fprintf(stderr, "ping: unknown iface %s\n", device);
+ 			exit(2);
+ 		}
+-		cmsg = (struct cmsghdr*)cmsgbuf;
++		cmsg = (struct cmsghdr*)(cmsgbuf+cmsglen);
+ 		cmsglen += CMSG_SPACE(sizeof(*ipi));
+ 		cmsg->cmsg_len = CMSG_LEN(sizeof(*ipi));
+ 		cmsg->cmsg_level = SOL_IPV6;
+@@ -486,7 +486,6 @@
+ 	/*
+ 	 *	select icmp echo reply as icmp type to receive
+ 	 */
+-
+ 	ICMP6_FILTER_SETBLOCKALL(&filter);
  
--	if (count-- == 0 || (timeout && MS_TDIFF(tv,start) > timeout*1000 + 500))
--		finish();
-+	if (timeout && MS_TDIFF(tv,start) > timeout*1000 + 500)
-+ 		finish();
- 
--	if (last.tv_sec==0 || MS_TDIFF(tv,last) > 500) {
-+	if ((!timeout) && (count == 0))
-+		finish();
-+ 
-+	if ( count!=0  && (last.tv_sec==0 || MS_TDIFF(tv,last) > 500 ) ) {
- 		send_pack(s, src, dst, &me, &he);
--		if (count == 0 && unsolicited)
-+		if (count >= 0)
-+			count--;
-+		if (count==0 && unsolicited)
- 			finish();
- 	}
- 	alarm(1);
-diff -Naur iputils-s20071127.orig/doc/Makefile iputils-s20071127/doc/Makefile
---- iputils-s20071127.orig/doc/Makefile	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/doc/Makefile	2009-01-15 22:02:41.000000000 -0800
-@@ -6,7 +6,7 @@
- 
- html: $(HTMLFILES) iputils.html
- 
--man: $(MANFILES)
-+man: $(MANFILES) fix_sgml2man
- 
- # docbook scripts are incredibly dirty in the sense that they leak
- # lots of some strange temporary junk directories and files.
-@@ -33,6 +33,9 @@
- 	@set -e; cd tmp.db2man; nsgmls ../$< | sgmlspl ../docbook2man-spec.pl ;	mv $@ ..
- 	@-rm -rf tmp.db2man
- 
-+fix_sgml2man:
-+	@sed -i -e 's!\\fB\\fIdestination\\fB\\fR \[\\fB/\\fIport\\fB\\fR\]!\\fB\\fIdestination\\fB\\fR[\\fB/\\fIport\\fB\\fR]!g' tracepath.8
-+
- clean:
- 	@rm -rf $(MANFILES) $(HTMLFILES) iputils.html tmp.db2html tmp.db2man
- 
-diff -Naur iputils-s20071127.orig/doc/docbook2man-spec.pl iputils-s20071127/doc/docbook2man-spec.pl
---- iputils-s20071127.orig/doc/docbook2man-spec.pl	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/doc/docbook2man-spec.pl	2009-01-15 22:02:19.000000000 -0800
-@@ -428,7 +428,7 @@
- 	output ' ';
- 
- 	if($_[0]->attribute('CHOICE')->value =~ /opt/i) {
--		output '[ ';
-+		output '[';
- 	}
- 	bold_on();
- }
-@@ -441,7 +441,7 @@
- 		font_off();
- 	}
- 	if($_[0]->attribute('CHOICE')->value =~ /opt/i) {
--		output '] ';
-+		output ']';
- 	}
- }
- 
+ 	if (!working_recverr) {
 diff -Naur iputils-s20071127.orig/ping.c iputils-s20071127/ping.c
 --- iputils-s20071127.orig/ping.c	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/ping.c	2009-01-15 22:01:59.000000000 -0800
++++ iputils-s20071127/ping.c	2009-02-18 23:18:09.239954184 -0800
 @@ -249,7 +249,7 @@
  			if (argc == 1)
  				options |= F_NUMERIC;
@@ -150,29 +170,9 @@ diff -Naur iputils-s20071127.orig/ping.c iputils-s20071127/ping.c
  		default:
  			printf("Dest Unreachable, Bad Code: %d\n", code);
  			break;
-diff -Naur iputils-s20071127.orig/ping6.c iputils-s20071127/ping6.c
---- iputils-s20071127.orig/ping6.c	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/ping6.c	2009-01-15 22:02:11.000000000 -0800
-@@ -414,7 +414,7 @@
- 			fprintf(stderr, "ping: unknown iface %s\n", device);
- 			exit(2);
- 		}
--		cmsg = (struct cmsghdr*)cmsgbuf;
-+		cmsg = (struct cmsghdr*)(cmsgbuf+cmsglen);
- 		cmsglen += CMSG_SPACE(sizeof(*ipi));
- 		cmsg->cmsg_len = CMSG_LEN(sizeof(*ipi));
- 		cmsg->cmsg_level = SOL_IPV6;
-@@ -486,7 +486,6 @@
- 	/*
- 	 *	select icmp echo reply as icmp type to receive
- 	 */
--
- 	ICMP6_FILTER_SETBLOCKALL(&filter);
- 
- 	if (!working_recverr) {
 diff -Naur iputils-s20071127.orig/ping_common.c iputils-s20071127/ping_common.c
 --- iputils-s20071127.orig/ping_common.c	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/ping_common.c	2009-01-15 22:01:42.000000000 -0800
++++ iputils-s20071127/ping_common.c	2009-02-18 23:18:09.239954184 -0800
 @@ -818,7 +818,8 @@
  	}
  	if (pipesize > 1)
@@ -188,9 +188,39 @@ diff -Naur iputils-s20071127.orig/ping_common.c iputils-s20071127/ping_common.c
  	fprintf(stderr, "\n");
  }
 -
+diff -Naur iputils-s20071127.orig/rdisc.c iputils-s20071127/rdisc.c
+--- iputils-s20071127.orig/rdisc.c	2007-11-26 16:57:27.000000000 -0800
++++ iputils-s20071127/rdisc.c	2009-02-18 23:18:31.745396284 -0800
+@@ -240,14 +240,25 @@
+ {
+ 	int t;
+ 	pid_t pid;
++	long open_max;
+ 
+ 	if (trace)
+ 		return;
++	if ((open_max = sysconf(_SC_OPEN_MAX)) == -1) {
++		if (errno == 0) {
++			(void) fprintf(stderr, "OPEN_MAX is not supported\n");
++		} 
++		else {
++			(void) fprintf(stderr, "sysconf() error\n");
++		}
++		exit(1);
++	}
++
+ 
+ 	if ((pid=fork()) != 0)
+ 		exit(0);
+ 
+-	for (t = 0; t < OPEN_MAX; t++)
++	for (t = 0; t < open_max; t++)
+ 		if (t != s)
+ 			close(t);
+ 
 diff -Naur iputils-s20071127.orig/tracepath.c iputils-s20071127/tracepath.c
 --- iputils-s20071127.orig/tracepath.c	2007-11-26 16:57:27.000000000 -0800
-+++ iputils-s20071127/tracepath.c	2009-01-15 22:01:59.000000000 -0800
++++ iputils-s20071127/tracepath.c	2009-02-18 23:18:09.239954184 -0800
 @@ -318,9 +318,9 @@
  		base_port = atoi(p+1);
  	} else
@@ -203,5 +233,3 @@ diff -Naur iputils-s20071127.orig/tracepath.c iputils-s20071127/tracepath.c
  		exit(1);
  	}
  	memcpy(&target.sin_addr, he->h_addr, 4);
-
-
