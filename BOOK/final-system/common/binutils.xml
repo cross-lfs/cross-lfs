@@ -31,14 +31,13 @@
 
 <screen os="c" role="nodump"><userinput>expect -c "spawn ls"</userinput></screen>
 
-    <para os="d">If the following message shows up, the environment is not
-    set up for proper PTY operation:</para>
+    <para os="d">This command should give the following output:</para>
 
-<screen os="e"><computeroutput>The system has no more ptys.
-Ask your system administrator to create more.</computeroutput></screen>
+<screen os="e"><computeroutput>spawn ls</computeroutput></screen>
 
-    <para os="f">This issue needs to be resolved before running the test suites
-    for Binutils and GCC.</para>
+    <para os="f">If, instead, it gives a message saying to create more ptys,
+    then the environment is not set up for proper PTY operation. This issue
+    needs to be resolved before running the test suites for Binutils and GCC.</para>
 
 <!--
     <para os="p1">The following patch contains a number of updates to the
