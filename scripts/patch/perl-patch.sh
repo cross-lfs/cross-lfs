@@ -20,6 +20,14 @@ if ! [ -e perl-${VERSION}.tar.gz  ]; then
   wget http://www.cpan.org/src/perl-${VERSION}.tar.gz
 fi
 
+# Set Patch Number
+#
+cd /usr/src
+wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+PATCH_NUM=$(cat index.html | grep perl | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+rm -f index.html
+
 # Cleanup Directory
 #
 rm -rf perl-${VERSION} perl-${VERSION}.orig
@@ -27,13 +35,12 @@ tar xvf perl-${VERSION}.tar.gz
 mv perl-${VERSION} perl-${VERSION}.orig
 CURRENTDIR=$(pwd -P)
 
-# Get Current Updates from CVS
+# Get Current Updates from GIT
 #
 cd /usr/src
-FIXEDVERSION=$(echo ${VERSION} | sed -e 's ..$  ')
-rsync -avz rsync://perl5.git.perl.org/APC/perl-${FIXEDVERSION}.x tmp
-cd tmp
-mv perl-${FIXEDVERSION}.x /usr/src/perl-${VERSION}
+mkdir perl.git
+cd perl.git
+git clone git://perl5.git.perl.org/perl.git
 
 # Cleanup
 #
