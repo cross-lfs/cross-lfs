@@ -45,11 +45,8 @@ svn export svn://gcc.gnu.org/svn/gcc/branches/gcc-${FIXEDVERSION}-branch gcc-${V
 
 # Add a custom version string
 #
-DATE_STAMP=$(date +%Y%m%d)
-sed -i "s:PKGVERSION:\"(GCC for Cross-LFS) \":" gcc-${VERSION}/gcc/version.c
-sed -i 's@\(^DATESTAMP_s := \).*@\1\"\\\"$(DATESTAMP_c\)\\\"\"@' gcc-${VERSION}/gcc/Makefile.in
-echo "${VERSION}" > gcc-${VERSION}/gcc/BASE-VER
-echo "${DATE_STAMP}" > gcc-${VERSION}/gcc/DATESTAMP
+DATE_STAMP=$(cat gcc-${VERSION}/gcc/DATESTAMP)
+sed -i "s:PKGVERSION:\"(GCC for Cross-LFS ${VERSION}.${DATE_STAMP}) \":" gcc-${VERSION}/gcc/version.c
 
 # Cleanup
 DIRS="gcc-${VERSION} gcc-${VERSION}.orig"
