@@ -44,7 +44,11 @@ FIXEDVERSION=$(echo -n "$NUM1" ; echo -n "_" ; echo -e "$NUM2")
 svn export svn://gcc.gnu.org/svn/gcc/branches/gcc-${FIXEDVERSION}-branch gcc-${VERSION}
 
 # Add a custom version string
-sed -i "s:PKGVERSION:\"(Cross-LFS - Branch Update ${PATCH_NUM}) \":" gcc-${VERSION}/gcc/version.c
+#
+DATE_STAMP="`date +%Y%m%d`"
+sed -i "s:PKGVERSION:\"(GCC for Cross-LFS) \":" gcc-${VERSION}/gcc/version.c
+BASE_VER=$(cat gcc-${VERSION}/gcc/BASE-VER}
+echo "${BASE_VER} - ${DATE_STAMP}" > gcc-${VERSION}/gcc/BASE-VER
 
 # Cleanup
 DIRS="gcc-${VERSION} gcc-${VERSION}.orig"
