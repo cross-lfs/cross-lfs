@@ -49,15 +49,19 @@
 
 <screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="h">Now move the static libraries to a more appropriate location:</para>
+    <para os="h">Install the documentation:</para>
 
-<screen os="i"><userinput>mv -v /lib/lib{readline,history}.a /usr/lib</userinput></screen>
+<screen os="i"><userinput>make install-doc</userinput></screen>
 
-    <para os="j">Next, remove the <filename class="extension">.so</filename>
+    <para os="j">Now move the static libraries to a more appropriate location:</para>
+
+<screen os="k"><userinput>mv -v /lib/lib{readline,history}.a /usr/lib</userinput></screen>
+
+    <para os="l">Next, remove the <filename class="extension">.so</filename>
     files in <filename class="directory">/lib</filename> and relink them into
     <filename class="directory">/usr/lib</filename>.</para>
 
-<screen os="k"><userinput>rm -v /lib/lib{readline,history}.so
+<screen os="m"><userinput>rm -v /lib/lib{readline,history}.so
 ln -svf ../../lib/libreadline.so.&readline-version2; /usr/lib/libreadline.so
 ln -svf ../../lib/libhistory.so.&readline-version2; /usr/lib/libhistory.so</userinput></screen>
 
