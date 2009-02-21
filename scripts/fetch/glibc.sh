@@ -59,7 +59,9 @@ find "glibc-${TARver}" "glibc-ports-${TARver}" -name .cvsignore | xargs rm -rf
 
 # Add a custom version string
 DATE_STAMP=$(date +%Y%m%d)
-sed -i "s@Copyright (C)@Built for Cross-LFS - ${DATE_STAMP}\\n\Copyright (C)@" csu/version.c
+GLIBC_VERSION=$(cat version.h | grep VERSION | cut -f3 -d' ' | sed -e 's/"//g')
+sed -i "s@\(^#define VERSION \).*@\1\"${GLIBC_VERSION}.${DATE_STAMP}\"@" version.h
+sed -i "s@Copyright@Built for Cross-LFS\\\\n\\\\\nCopyright@" csu/version.c
 
 # Create tarballs
 echo "Creating Tarballs"
