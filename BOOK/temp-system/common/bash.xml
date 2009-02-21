@@ -22,6 +22,7 @@
   <sect2 role="installation">
     <title>Installation of Bash</title>
 
+<!--
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
@@ -29,8 +30,9 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
+-->
 
-    <para os="c1">When bash is cross-compiled, it cannot test for the presence
+    <para os="t1">When bash is cross-compiled, it cannot test for the presence
     of named pipes, amoung other things. If you used <command>su</command> to
     become an unprivileged user, this combination will cause Bash to build
     without <emphasis>process substitution</emphasis>, which will break one
@@ -38,7 +40,7 @@
     future problems by skipping tests that can not run while cross-compiling
     or that do not run properly:</para>
 
-<screen os="c2"><userinput>cat &gt; config.cache &lt;&lt; "EOF"
+<screen os="t2"><userinput>cat &gt; config.cache &lt;&lt; "EOF"
 ac_cv_func_mmap_fixed_mapped=yes
 ac_cv_func_strcoll_works=yes
 ac_cv_func_working_mktime=yes
@@ -55,13 +57,13 @@ EOF</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
-    xpointer="xpointer(//*[@os='g'])"/>
+    xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="h"><userinput>./configure --prefix=/tools \
+<screen os="b"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --without-bash-malloc --cache-file=config.cache</userinput></screen>
 
-    <variablelist os="ad">
+    <variablelist os="c">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -78,22 +80,22 @@ EOF</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+    xpointer="xpointer(//*[@os='d'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
-    xpointer="xpointer(//*[@os='k'])"/>
+    xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/bash.xml"
-    xpointer="xpointer(//*[@os='m'])"/>
+    xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="n"><userinput>make install</userinput></screen>
+<screen os="h"><userinput>make install</userinput></screen>
 
-    <para os="ae">Make a link for programs that use <command>sh</command> for
+    <para os="t3">Make a link for programs that use <command>sh</command> for
     a shell:</para>
 
-<screen os="af"><userinput>ln -sv bash /tools/bin/sh</userinput></screen>
+<screen os="t4"><userinput>ln -sv bash /tools/bin/sh</userinput></screen>
 
   </sect2>
 

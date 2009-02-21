@@ -24,27 +24,18 @@
   <sect2 role="installation">
     <title>Installation of Bash</title>
 
-    <para os="a">If you downloaded the Bash documentation tarball and wish to
-    install HTML documentation, issue the following command:</para>
-
-<screen os="b"><userinput>tar -xvf ../bash-doc-&bash-doc-version;.tar.gz</userinput></screen>
-
+<!--
     <para os="p1">The following patch contains updates from the maintainer. The
     maintainer of Bash only releases these patches to fix serious issues:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&bash-branch_update-patch;</userinput></screen>
+-->
+    <para os="a">Prepare Bash for compilation:</para>
 
-    <para os="p3">The following patch contains fixes that affect a CLFS system. These are
-    validated issues by the CLFS developers:</para>
-
-<screen os="p4"><userinput>patch -Np1 -i ../&bash-fixes-patch;</userinput></screen>
-
-    <para os="g">Prepare Bash for compilation:</para>
-
-<screen os="h"><userinput>./configure --prefix=/usr --bindir=/bin \
+<screen os="b"><userinput>./configure --prefix=/usr --bindir=/bin \
     --without-bash-malloc --with-installed-readline</userinput></screen>
 
-    <variablelist os="i">
+    <variablelist os="c">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -58,23 +49,23 @@
       </varlistentry>
     </variablelist>
 
-    <para os="j">Compile the package:</para>
+    <para os="d">Compile the package:</para>
 
-<screen os="k"><userinput>make</userinput></screen>
+<screen os="e"><userinput>make</userinput></screen>
 
-    <para os="l">To test the results, issue:
+    <para os="f">To test the results, issue:
     <userinput>make tests</userinput>.</para>
 
-    <para os="m">Install the package:</para>
+    <para os="g">Install the package:</para>
 
-<screen os="n"><userinput>make htmldir=/usr/share/doc/bash-&bash-version; install</userinput></screen>
+<screen os="h"><userinput>make htmldir=/usr/share/doc/bash-&bash-version; install</userinput></screen>
 
-    <para os="o">Run the newly compiled <command>bash</command> program (replacing
+    <para os="i">Run the newly compiled <command>bash</command> program (replacing
     the one that is currently being executed):</para>
 
-<screen os="p" role="nodump"><userinput>exec /bin/bash --login +h</userinput></screen>
+<screen os="j" role="nodump"><userinput>exec /bin/bash --login +h</userinput></screen>
 
-    <note os="q">
+    <note os="k">
       <para>The parameters used make the <command>bash</command>
       process an interactive login shell and continue to disable hashing so
       that new programs are found as they become available.</para>
