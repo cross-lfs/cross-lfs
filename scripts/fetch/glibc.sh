@@ -57,6 +57,10 @@ find "glibc-${TARver}" "glibc-ports-${TARver}" -name configure | xargs touch
 find "glibc-${TARver}" "glibc-ports-${TARver}" -name CVS -type d | xargs rm -rf
 find "glibc-${TARver}" "glibc-ports-${TARver}" -name .cvsignore | xargs rm -rf
 
+# Add a custom version string
+DATE_STAMP=$(date +%Y%m%d)
+sed -i "s@Copyright (C)@Built for Cross-LFS - ${DATE_STAMP}\\n\Copyright (C)@" csu/version.c
+
 # Create tarballs
 echo "Creating Tarballs"
 tar cvjf "glibc-${TARver}.tar.bz2" "glibc-${TARver}"

@@ -45,7 +45,7 @@ svn export svn://gcc.gnu.org/svn/gcc/branches/gcc-${FIXEDVERSION}-branch gcc-${V
 
 # Add a custom version string
 #
-DATE_STAMP="`date +%Y%m%d`"
+DATE_STAMP=$(date +%Y%m%d)
 sed -i "s:PKGVERSION:\"(GCC for Cross-LFS) \":" gcc-${VERSION}/gcc/version.c
 BASE_VER=$(cat gcc-${VERSION}/gcc/BASE-VER}
 echo "${BASE_VER} - ${DATE_STAMP}" > gcc-${VERSION}/gcc/BASE-VER
