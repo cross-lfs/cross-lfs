@@ -1,16 +1,16 @@
-Submitted By: Jim Gifford <jim at linuxfromscratch dot org>
-Date: 2006-08-24
-Initial Package Version: 5.97
-        Rediffed against 6.12 by Joe Ciccone on 2008-08-30
+Submitted By: Jim Gifford <jim at cross-lfs dot org>
+Date: 2009-02-21
+Initial Package Version: 7.1
 Upstream Status: Not Accepted
 Origin: Gentoo - http://sources.gentoo.org/viewcvs.py/gentoo/src/patchsets/coreutils
 Description: Display CPU Information from /proc/cpuinfo or /proc/sysinfo
 
+Rediffed for 7.1 by Jim Gifford
 Original Patch by - Matthew Burgess and Scot McPherson
 
-diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
---- coreutils-6.12.orig/src/uname.c	2008-05-26 02:40:33.000000000 -0400
-+++ coreutils-6.12/src/uname.c	2008-08-31 12:03:12.000000000 -0400
+diff -Naur coreutils-7.1.orig/src/uname.c coreutils-7.1/src/uname.c
+--- coreutils-7.1.orig/src/uname.c	2008-09-18 00:06:57.000000000 -0700
++++ coreutils-7.1/src/uname.c	2009-02-21 21:48:22.417139823 -0800
 @@ -50,6 +50,11 @@
  # include <mach-o/arch.h>
  #endif
@@ -23,7 +23,7 @@ diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
  #include "system.h"
  #include "error.h"
  #include "quote.h"
-@@ -158,6 +163,106 @@
+@@ -155,6 +160,117 @@
    exit (status);
  }
  
@@ -52,6 +52,15 @@ diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
 +		tmp++;
 +	if (tmp != buf)
 +		memmove(buf, tmp, strlen(tmp)+1);
++	/* finally collapse whitespace */
++	tmp = buf;
++	while (tmp[0] && tmp[1]) {
++		if (isspace(tmp[0]) && isspace(tmp[1])) {
++			memmove(tmp, tmp+1, strlen(tmp));
++			continue;
++		}
++		++tmp;
++	}
 +}
 +
 +static int __linux_procinfo (int x, char *fstr, size_t s)
@@ -64,7 +73,9 @@ diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
 +			"cpu model", "system type"
 +		#elif defined(__arm__)
 +			"Processor", "Hardware"
-+		#elif defined(bfin)
++		#elif defined(__avr32__)
++			"processor", "cpu family"
++		#elif defined(__bfin__)
 +			"CPU", "BOARD Name"
 +		#elif defined(__cris__)
 +			"cpu", "cpu model"
@@ -130,7 +141,7 @@ diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
  /* Print ELEMENT, preceded by a space if something has already been
     printed.  */
  
-@@ -305,10 +410,14 @@
+@@ -302,10 +418,14 @@
    if (toprint & PRINT_PROCESSOR)
      {
        char const *element = unknown;
@@ -146,7 +157,7 @@ diff -Naur coreutils-6.12.orig/src/uname.c coreutils-6.12/src/uname.c
  	  element = processor;
        }
  #endif
-@@ -361,9 +470,13 @@
+@@ -358,9 +478,13 @@
        if (element == unknown)
  	{
  	  static char hardware_platform[257];
