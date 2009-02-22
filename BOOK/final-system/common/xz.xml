@@ -5,29 +5,29 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-lzma" role="wrap">
-  <?dbhtml filename="lzma.html"?>
+<sect1 id="ch-system-xz" role="wrap">
+  <?dbhtml filename="xz.html"?>
 
-  <title>LZMA-Utils-&lzma-version;</title>
+  <title>XZ-Utils-&xz-version;</title>
 
-  <indexterm zone="ch-system-lzma">
-    <primary sortas="a-LZMA-Utils">LZMA-Utils</primary>
+  <indexterm zone="ch-system-xz">
+    <primary sortas="a-XZ-Utils">XZ-Utils</primary>
   </indexterm>
 
   <sect2 role="package">
     <title/>
 
-    <para>The LZMA-Utils package contains programs for compressing and
-    decompressing files. Compressing text files with <command>LZMA-Utils</command>
+    <para>The XZ-Utils package contains programs for compressing and
+    decompressing files. Compressing text files with <command>XZ-Utils</command>
     yields a much better compression percentage than with the traditional
     <command>gzip</command>.</para>
 
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of LZMA-Utils</title>
+    <title>Installation of XZ-Utils</title>
 
-    <para os="a">Prepare LZMA-Utils for compilation:</para>
+    <para os="a">Prepare XZ-Utils for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
@@ -39,20 +39,30 @@
 
 <screen os="f"><userinput>make install</userinput></screen>
 
+    <para os="g">Install the xz binary into the /bin directory, make some necessary symbolic links, and clean up: :</para>
+
+<screen os="h"><userinput>mv -v /usr/bin/xz /bin
+ln -sfv xz /bin/lzma
+ln -sfv xz /bin/lzcat
+ln -sfv xz /bin/unlzma
+ln -sfv xz /bin/unxz
+ln -sfv xz /bin/xzcat</userinput></screen>
+
   </sect2>
 
-  <sect2 id="contents-lzma" role="content">
-    <title>Contents of LZMA-Utils</title>
+  <sect2 id="contents-xz" role="content">
+    <title>Contents of XZ-Utils</title>
 
     <segmentedlist>
       <segtitle>Installed programs</segtitle>
       <segtitle>Installed libraries</segtitle>
 
       <seglistitem>
-        <seg>lzcat (link to lzma), lzcmp, lzdiff, lzegrep, lzfgrep, lzgrep,
-        lzless, lzma, lzmadec, lzmainfo, lzmore, and unlzma (link to lzma).</seg>
-        <seg>liblzmadec.a, liblzmadec.la, liblzmadec.so, liblzmadec.so.0, and
-         liblzmadec.so.0.0.0</seg>
+        <seg>lzcat (link to xz), lzcmp (link to lzdiff), lzdiff, lzegrep (link to lzgrep),
+        lzfgrep (link to lzgrep), lzgrep, lzless (link to lzmore), lzma (link to xz),
+        lzmadec, lzmore, unlzma (link to lzma), unxz (link to xz), xz, xzdec, and
+        xzcat (link to xz).</seg>
+        <seg>/liblzma.a liblzma.la liblzma.so liblzma.so.0 liblzma.so.0.0.0</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -65,7 +75,7 @@
         <term><command>lzcat</command></term>
         <listitem>
           <para>Decompresses to standard output</para>
-          <indexterm zone="ch-system-lzma lzcat">
+          <indexterm zone="ch-system-xz lzcat">
             <primary sortas="b-lzcat">lzcat</primary>
           </indexterm>
         </listitem>
@@ -75,7 +85,7 @@
         <term><command>lzcmp</command></term>
         <listitem>
           <para>Compares lzma compressed files</para>
-          <indexterm zone="ch-system-lzma lzcmp">
+          <indexterm zone="ch-system-xz lzcmp">
             <primary sortas="b-lzcmp">lzcmp</primary>
           </indexterm>
         </listitem>
@@ -85,7 +95,7 @@
         <term><command>lzdiff</command></term>
         <listitem>
           <para>Compares lzma compressed files</para>
-          <indexterm zone="ch-system-lzma lzdiff">
+          <indexterm zone="ch-system-xz lzdiff">
             <primary sortas="b-lzdiff">lzdiff</primary>
           </indexterm>
         </listitem>
@@ -95,7 +105,7 @@
         <term><command>lzegrep</command></term>
         <listitem>
           <para>Runs <command>egrep</command> on lzma compressed files</para>
-          <indexterm zone="ch-system-lzma lzegrep">
+          <indexterm zone="ch-system-xz lzegrep">
             <primary sortas="b-lzegrep">lzegrep</primary>
           </indexterm>
         </listitem>
@@ -105,7 +115,7 @@
         <term><command>lzfgrep</command></term>
         <listitem>
           <para>Runs <command>fgrep</command> on lzma compressed files</para>
-          <indexterm zone="ch-system-lzma lzfgrep">
+          <indexterm zone="ch-system-xz lzfgrep">
             <primary sortas="b-lzfgrep">lzfgrep</primary>
           </indexterm>
         </listitem>
@@ -115,7 +125,7 @@
         <term><command>lzgrep</command></term>
         <listitem>
           <para>Runs <command>grep</command> on lzma compressed files</para>
-          <indexterm zone="ch-system-lzma lzgrep">
+          <indexterm zone="ch-system-xz lzgrep">
             <primary sortas="b-lzgrep">lzgrep</primary>
           </indexterm>
         </listitem>
@@ -125,7 +135,7 @@
         <term><command>lzless</command></term>
         <listitem>
           <para>Runs <command>less</command> on lzma files</para>
-          <indexterm zone="ch-system-lzma lzless">
+          <indexterm zone="ch-system-xz lzless">
             <primary sortas="b-lzless">lzless</primary>
           </indexterm>
         </listitem>
@@ -135,7 +145,7 @@
         <term><command>lzma</command></term>
         <listitem>
           <para>Compresses lzma files</para>
-          <indexterm zone="ch-system-lzma lzma">
+          <indexterm zone="ch-system-xz lzma">
             <primary sortas="b-lzma">lzma</primary>
           </indexterm>
         </listitem>
@@ -145,7 +155,7 @@
         <term><command>lzmadec</command></term>
         <listitem>
           <para>Decompresses lzma files</para>
-          <indexterm zone="ch-system-lzma lzmadec">
+          <indexterm zone="ch-system-xz lzmadec">
             <primary sortas="b-lzmadec">lzmadec</primary>
           </indexterm>
         </listitem>
@@ -155,7 +165,7 @@
         <term><command>lzmainfo</command></term>
         <listitem>
           <para>Shows information about the lzma file.</para>
-          <indexterm zone="ch-system-lzma lzmainfo">
+          <indexterm zone="ch-system-xz lzmainfo">
             <primary sortas="b-lzmainfo">lzmainfo</primary>
           </indexterm>
         </listitem>
@@ -165,7 +175,7 @@
         <term><command>lzmore</command></term>
         <listitem>
           <para>Runs <command>more</command> on lzma files</para>
-          <indexterm zone="ch-system-lzma lzmore">
+          <indexterm zone="ch-system-xz lzmore">
             <primary sortas="b-lzmore">lzmore</primary>
           </indexterm>
         </listitem>
@@ -175,19 +185,8 @@
         <term><command>unlzma</command></term>
         <listitem>
           <para>Uncompresses lzma files</para>
-          <indexterm zone="ch-system-lzma unlzma">
+          <indexterm zone="ch-system-xz unlzma">
             <primary sortas="b-unlzma">unlzma</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="liblzmadec">
-        <term><filename class="libraryfile">liblzmadec*</filename></term>
-        <listitem>
-          <para>The library implements the Improved and optimized
-          version of LZ77 algorithm</para>
-          <indexterm zone="ch-system-lzma liblzmadec">
-            <primary sortas="c-liblzmadec*">liblzmadec*</primary>
           </indexterm>
         </listitem>
       </varlistentry>
