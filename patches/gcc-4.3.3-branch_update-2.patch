@@ -1,5 +1,5 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 02-03-2009
+Date: 02-22-2009
 Initial Package Version: 4.3.3
 Origin: Upstream
 Upstream Status: Applied
@@ -58,7 +58,7 @@ diff -Naur gcc-4.3.3.orig/gcc/alias.c gcc-4.3.3/gcc/alias.c
       stack references using different base registers do not alias,
 diff -Naur gcc-4.3.3.orig/gcc/calls.c gcc-4.3.3/gcc/calls.c
 --- gcc-4.3.3.orig/gcc/calls.c	2008-06-24 00:58:17.000000000 -0700
-+++ gcc-4.3.3/gcc/calls.c	2009-01-29 02:05:17.651873000 -0800
++++ gcc-4.3.3/gcc/calls.c	2009-02-21 03:08:24.357177000 -0800
 @@ -978,7 +978,6 @@
  	    && targetm.calls.split_complex_arg (argtype))
  	  {
@@ -67,10 +67,208 @@ diff -Naur gcc-4.3.3.orig/gcc/calls.c gcc-4.3.3/gcc/calls.c
  	    args[j].tree_value = build1 (REALPART_EXPR, subtype, arg);
  	    j += inc;
  	    args[j].tree_value = build1 (IMAGPART_EXPR, subtype, arg);
+@@ -3678,10 +3677,10 @@
+ #ifdef ARGS_GROW_DOWNWARD
+ 	      /* stack_slot is negative, but we want to index stack_usage_map
+ 		 with positive values.  */
+-	      upper_bound = -argvec[argnum].locate.offset.constant + 1;
++	      upper_bound = -argvec[argnum].locate.slot_offset.constant + 1;
+ 	      lower_bound = upper_bound - argvec[argnum].locate.size.constant;
+ #else
+-	      lower_bound = argvec[argnum].locate.offset.constant;
++	      lower_bound = argvec[argnum].locate.slot_offset.constant;
+ 	      upper_bound = lower_bound + argvec[argnum].locate.size.constant;
+ #endif
+ 
+diff -Naur gcc-4.3.3.orig/gcc/c-common.c gcc-4.3.3/gcc/c-common.c
+--- gcc-4.3.3.orig/gcc/c-common.c	2008-11-12 14:08:01.000000000 -0800
++++ gcc-4.3.3/gcc/c-common.c	2009-02-08 11:02:56.473953000 -0800
+@@ -5534,7 +5534,12 @@
+ {
+   tree decl = *node;
+ 
+-  if ((TREE_CODE (decl) == FUNCTION_DECL && DECL_INITIAL (decl))
++  if (TREE_CODE (decl) != FUNCTION_DECL && TREE_CODE (decl) != VAR_DECL)
++    {
++      warning (OPT_Wattributes, "%qE attribute ignored", name);
++      *no_add_attrs = true;
++    }
++  else if ((TREE_CODE (decl) == FUNCTION_DECL && DECL_INITIAL (decl))
+       || (TREE_CODE (decl) != FUNCTION_DECL 
+ 	  && TREE_PUBLIC (decl) && !DECL_EXTERNAL (decl))
+       /* A static variable declaration is always a tentative definition,
+@@ -5782,7 +5787,7 @@
+ 
+   *no_add_attrs = true;
+ 
+-  if (!DECL_THREAD_LOCAL_P (decl))
++  if (TREE_CODE (decl) != VAR_DECL || !DECL_THREAD_LOCAL_P (decl))
+     {
+       warning (OPT_Wattributes, "%qE attribute ignored", name);
+       return NULL_TREE;
+diff -Naur gcc-4.3.3.orig/gcc/c-decl.c gcc-4.3.3/gcc/c-decl.c
+--- gcc-4.3.3.orig/gcc/c-decl.c	2008-06-26 08:42:07.000000000 -0700
++++ gcc-4.3.3/gcc/c-decl.c	2009-02-10 08:43:49.527149000 -0800
+@@ -4386,12 +4386,20 @@
+ 	      }
+ 	    else if (decl_context == FIELD)
+ 	      {
+-		if (pedantic && !flag_isoc99 && !in_system_header)
++		bool flexible_array_member = false;
++		const struct c_declarator *t = declarator;
++		while (t->kind == cdk_attrs)
++		  t = t->declarator;
++		flexible_array_member = (t->kind == cdk_id);
++		if (flexible_array_member
++		    && pedantic && !flag_isoc99 && !in_system_header)
+ 		  pedwarn ("ISO C90 does not support flexible array members");
+ 
+ 		/* ISO C99 Flexible array members are effectively
+ 		   identical to GCC's zero-length array extension.  */
+-		itype = build_range_type (sizetype, size_zero_node, NULL_TREE);
++		if (flexible_array_member || array_parm_vla_unspec_p)
++		  itype = build_range_type (sizetype, size_zero_node,
++					    NULL_TREE);
+ 	      }
+ 	    else if (decl_context == PARM)
+ 	      {
+@@ -5362,6 +5370,8 @@
+ 	    error ("redefinition of %<union %E%>", name);
+ 	  else
+ 	    error ("redefinition of %<struct %E%>", name);
++	  /* Don't create structures using a name already in use.  */
++	  ref = NULL_TREE;
+ 	}
+       else if (C_TYPE_BEING_DEFINED (ref))
+ 	{
 diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
 --- gcc-4.3.3.orig/gcc/ChangeLog	2009-01-24 02:16:13.000000000 -0800
-+++ gcc-4.3.3/gcc/ChangeLog	2009-02-02 12:31:19.548659000 -0800
-@@ -1,3 +1,138 @@
++++ gcc-4.3.3/gcc/ChangeLog	2009-02-21 03:08:24.357177000 -0800
+@@ -1,3 +1,262 @@
++2009-02-21  Uros Bizjak  <ubizjak@gmail.com>
++
++	Backport from mainline:
++	2009-02-20  Jaka Mocnik  <jaka@xlab.si>
++
++	* calls.c (emit_library_call_value_1): Use slot_offset instead of
++	offset when calculating bounds for indexing stack_usage_map.  Fixes
++	a buffer overflow with certain target setups.
++
++2009-02-20  Steve Ellcey  <sje@cup.hp.com>
++
++	PR target/38056
++	* config/ia64/ia64.c (ia64_function_ok_for_sibcall): Check
++	TARGET_CONST_GP.
++
++2009-02-19  Uros Bizjak  <ubizjak@gmail.com>
++
++	PR target/39228
++	* config/i386/i386.md (isinfxf2): Split from isinf<mode>2.
++	(UNSPEC_FXAM_MEM): New unspec.
++	(fxam<mode>2_i387_with_temp): New insn and split pattern.
++	(isinf<mode>2): Use MODEF mode iterator.  Force operand[1] through
++	memory using fxam<mode>2_i387_with_temp to remove excess precision.
++
++2009-02-17  Uros Bizjak  <ubizjak@gmail.com>
++
++	* config/soft-fp/double.h: Update from glibc CVS.
++
++2009-02-17  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35446
++	* c-parser.c (c_parser_braced_init): Call pop_init_level when
++	skipping until next close brace.
++
++2009-02-13  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35444
++	* c-parser.c (c_parser_parms_list_declarator): Discard pending
++	sizes on syntax error after some arguments have been parsed.
++
++2009-02-11  Uros Bizjak  <ubizjak@gmail.com>
++	    Jakub Jelinek  <jakub@redhat.com>
++
++	PR target/39118
++	* config/i386/i386.md (UNSPEC_MEMORY_BLOCKAGE): New constant.
++	(memory_blockage): New expander.
++	(*memory_blockage): New insn pattern.
++	* config/i386/i386.c (ix86_expand_prologue): Use memory_blockage
++	instead of general blockage at the end of function prologue when
++	frame pointer is used to access red zone area.  Do not emit blockage
++	when profiling, it is emitted in generic code.
++	(ix86_expand_epilogue): Emit memory_blockage at the beginning of
++	function epilogue when frame pointer is used to access red zone area.
++
++2009-02-10  Steve Ellcey  <sje@cup.hp.com>
++
++	PR c/39084
++	* c-decl.c (start_struct): Return NULL on error.
++
++2009-02-10  Uros Bizjak  <ubizjak@gmail.com>
++
++	PR target/39118
++	* config/i386/i386.c (expand_prologue): Emit blockage at the end
++	of function prologue when frame pointer is used to access
++	red zone area.
++
++2009-02-09  Janis Johnson  <janis187@us.ibm.com>
++
++	PR c/39035
++	* real.c (do_compare): Special-case compare of zero against
++	decimal float value.
++
++2009-02-08  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35434
++	* c-common.c (handle_alias_attribute): Disallow attribute for
++	anything not a FUNCTION_DECL or VAR_DECL.
++
++2009-02-08  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/36432
++	* c-decl.c (grokdeclarator): Don't treat [] declarators in fields
++	as indicating flexible array members unless the field itself is
++	being declarared as the incomplete array.
++
++2009-02-07  Kaz Kojima  <kkojima@gcc.gnu.org>
++
++	Backport from mainline:
++	2009-02-05  Kaz Kojima  <kkojima@gcc.gnu.org>
++
++	PR target/38991
++	* config/sh/predicates.md (general_movsrc_operand): Don't check
++	the subreg of system registers here.
++
++2009-02-05  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35435
++	* c-common.c (handle_tls_model_attribute): Ignore attribute for
++	non-VAR_DECLs without checking DECL_THREAD_LOCAL_P.
++
++2009-02-05  Richard Guenther  <rguenther@suse.de>
++
++	Backport from mainline
++	2009-02-05  Daniel Berlin  <dberlin@dberlin.org>
++	    Richard Guenther  <rguenther@suse.de>
++
++	PR tree-optimization/39100
++	* tree-ssa-structalias.c (do_ds_constraint): Actually do what the
++	comment says and add edges.
++
++2009-02-04  Ramana Radhakrishnan  <ramana.r@gmail.com>
++
++	PR rtl-optimization/39076
++	Backport from mainline:
++	2008-06-28  Andrew Jenner  <andrew@codesourcery.com>
++	
++	* regrename.c (build_def_use): Don't copy RTX.
++
++2009-02-04  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35433
++	* c-typeck.c (composite_type): Set TYPE_SIZE and TYPE_SIZE_UNIT
++	for composite type involving a zero-length array type.
++
 +2009-02-02  Catherine Moore  <clm@codesourcery.com>
 +
 +	* sde.h (SUBTARGET_ARM_SPEC): Don't assemble -fpic code as
@@ -209,7 +407,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
-@@ -5,8 +140,7 @@
+@@ -5,8 +264,7 @@
  2009-01-20  Joseph Myers  <joseph@codesourcery.com>
  
  	PR other/38758
@@ -219,7 +417,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  
  2009-01-19  Richard Guenther  <rguenther@suse.de>
  
-@@ -41,7 +175,8 @@
+@@ -41,7 +299,8 @@
  	
  2009-01-11  Matthias Klose  <doko@ubuntu.com>
  
@@ -229,7 +427,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  	2008-05-04  Uros Bizjak  <ubizjak@gmail.com>
  
  	* config/i386/i386.md (*strmovsi_1): Simplify asm alternatives.
-@@ -509,8 +644,8 @@
+@@ -509,8 +768,8 @@
  	PR tree-optimization/37102
  	* tree-outof-ssa.c (remove_gimple_phi_args): Remove all the PHI args  
  	from a node. Check to see if another PHI is dead.
@@ -240,7 +438,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  	(rewrite_out_of_ssa): Call eliminate_useless_phis.
  
  2008-10-08  Simon Martin  <simartin@users.sourceforge.net>
-@@ -986,8 +1121,10 @@
+@@ -986,8 +1245,10 @@
  
  	(MFC_MIN_DMA_LIST_ELEMENTS): New define.
  	(MFC_MAX_DMA_LIST_ELEMENTS): Likewise.
@@ -472,8 +670,50 @@ diff -Naur gcc-4.3.3.orig/gcc/config/alpha/elf.h gcc-4.3.3/gcc/config/alpha/elf.
 +#endif
 diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.c gcc-4.3.3/gcc/config/i386/i386.c
 --- gcc-4.3.3.orig/gcc/config/i386/i386.c	2008-08-28 06:31:33.000000000 -0700
-+++ gcc-4.3.3/gcc/config/i386/i386.c	2009-01-24 07:31:13.971031000 -0800
-@@ -14773,6 +14773,22 @@
++++ gcc-4.3.3/gcc/config/i386/i386.c	2009-02-11 03:53:47.721500000 -0800
+@@ -6483,14 +6483,21 @@
+         insn = emit_insn (gen_set_got (pic_offset_table_rtx));
+     }
+ 
+-  /* Prevent function calls from being scheduled before the call to mcount.
+-     In the pic_reg_used case, make sure that the got load isn't deleted.  */
+-  if (current_function_profile)
+-    {
+-      if (pic_reg_used)
+-	emit_insn (gen_prologue_use (pic_offset_table_rtx));
+-      emit_insn (gen_blockage ());
+-    }
++  /* In the pic_reg_used case, make sure that the got load isn't deleted
++     when mcount needs it.  Blockage to avoid call movement across mcount
++     call is emitted in generic code after the NOTE_INSN_PROLOGUE_END
++     note.  */
++  if (current_function_profile && pic_reg_used)
++    emit_insn (gen_prologue_use (pic_offset_table_rtx));
++
++  /* Prevent instructions from being scheduled into register save push
++     sequence when access to the redzone area is done through frame pointer.
++     The offset betweeh the frame pointer and the stack pointer is calculated
++     relative to the value of the stack pointer at the end of the function
++     prologue, and moving instructions that access redzone area via frame
++     pointer inside push sequence violates this assumption.  */
++  if (frame_pointer_needed && frame.red_zone_size)
++    emit_insn (gen_memory_blockage ());
+ 
+   /* Emit cld instruction if stringops are used in the function.  */
+   if (TARGET_CLD && ix86_current_function_needs_cld)
+@@ -6539,6 +6546,11 @@
+ 
+   ix86_compute_frame_layout (&frame);
+ 
++  /* See the comment about red zone and frame
++     pointer usage in ix86_expand_prologue.  */
++  if (frame_pointer_needed && frame.red_zone_size)
++    emit_insn (gen_memory_blockage ()); 
++
+   /* Calculate start of saved registers relative to ebp.  Special care
+      must be taken for the normal return case of a function using
+      eh_return: the eax and edx registers are marked as saved, but not
+@@ -14773,6 +14785,22 @@
        destexp = gen_rtx_PLUS (Pmode, destptr, countreg);
        srcexp = gen_rtx_PLUS (Pmode, srcptr, countreg);
      }
@@ -496,7 +736,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.c gcc-4.3.3/gcc/config/i386/i386.
    emit_insn (gen_rep_mov (destptr, destmem, srcptr, srcmem, countreg,
  			  destexp, srcexp));
  }
-@@ -14781,8 +14797,8 @@
+@@ -14781,8 +14809,8 @@
     Arguments have same meaning as for previous function */
  static void
  expand_setmem_via_rep_stos (rtx destmem, rtx destptr, rtx value,
@@ -507,7 +747,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.c gcc-4.3.3/gcc/config/i386/i386.
  {
    rtx destexp;
    rtx countreg;
-@@ -14799,6 +14815,15 @@
+@@ -14799,6 +14827,15 @@
      }
    else
      destexp = gen_rtx_PLUS (Pmode, destptr, countreg);
@@ -523,7 +763,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.c gcc-4.3.3/gcc/config/i386/i386.
    emit_insn (gen_rep_stos (destptr, countreg, destmem, value, destexp));
  }
  
-@@ -15871,15 +15896,15 @@
+@@ -15871,15 +15908,15 @@
        break;
      case rep_prefix_8_byte:
        expand_setmem_via_rep_stos (dst, destreg, promoted_val, count_exp,
@@ -544,8 +784,34 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.c gcc-4.3.3/gcc/config/i386/i386.
    /* Adjust properly the offset of src and dest memory for aliasing.  */
 diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386.md
 --- gcc-4.3.3.orig/gcc/config/i386/i386.md	2009-01-11 09:29:23.000000000 -0800
-+++ gcc-4.3.3/gcc/config/i386/i386.md	2009-01-29 02:05:17.651873000 -0800
-@@ -1397,7 +1397,7 @@
++++ gcc-4.3.3/gcc/config/i386/i386.md	2009-02-19 04:44:40.878358000 -0800
+@@ -67,12 +67,13 @@
+    (UNSPEC_DEF_CFA		15)
+    (UNSPEC_SET_RIP		16)
+    (UNSPEC_SET_GOT_OFFSET	17)
++   (UNSPEC_MEMORY_BLOCKAGE	18)
+ 
+    ; TLS support
+-   (UNSPEC_TP			18)
+-   (UNSPEC_TLS_GD		19)
+-   (UNSPEC_TLS_LD_BASE		20)
+-   (UNSPEC_TLSDESC		21)
++   (UNSPEC_TP			20)
++   (UNSPEC_TLS_GD		21)
++   (UNSPEC_TLS_LD_BASE		22)
++   (UNSPEC_TLSDESC		23)
+ 
+    ; Other random patterns
+    (UNSPEC_SCAS			30)
+@@ -144,6 +145,7 @@
+    (UNSPEC_FPREM1_U		91)
+ 
+    (UNSPEC_C2_FLAG		95)
++   (UNSPEC_FXAM_MEM		96)
+ 
+    ; SSP patterns
+    (UNSPEC_SP_SET		100)
+@@ -1397,7 +1399,7 @@
  	  gcc_unreachable ();
  	}
  
@@ -554,7 +820,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386
        return "pxor\t%0, %0";
  
      case TYPE_MMXMOV:
-@@ -1415,7 +1415,7 @@
+@@ -1415,7 +1417,7 @@
  }
    [(set (attr "type")
       (cond [(eq_attr "alternative" "2")
@@ -563,7 +829,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386
  	    (eq_attr "alternative" "3,4,5")
  	      (const_string "mmxmov")
  	    (eq_attr "alternative" "6")
-@@ -2231,7 +2231,7 @@
+@@ -2231,7 +2233,7 @@
        return "movq\t{%1, %0|%0, %1}";
  
      case TYPE_SSELOG1:
@@ -572,7 +838,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386
        return "pxor\t%0, %0";
  
      case TYPE_MULTI:
-@@ -2252,7 +2252,7 @@
+@@ -2252,7 +2254,7 @@
  }
    [(set (attr "type")
       (cond [(eq_attr "alternative" "5")
@@ -581,7 +847,32 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386
  	    (eq_attr "alternative" "6,7,8,9,10")
  	      (const_string "mmxmov")
  	    (eq_attr "alternative" "11")
-@@ -15001,7 +15001,7 @@
+@@ -14877,6 +14879,24 @@
+   ""
+   [(set_attr "length" "0")])
+ 
++;; Do not schedule instructions accessing memory across this point.
++
++(define_expand "memory_blockage"
++  [(set (match_dup 0)
++	(unspec:BLK [(match_dup 0)] UNSPEC_MEMORY_BLOCKAGE))]
++  ""
++{
++  operands[0] = gen_rtx_MEM (BLKmode, gen_rtx_SCRATCH (Pmode));
++  MEM_VOLATILE_P (operands[0]) = 1;
++})
++
++(define_insn "*memory_blockage"
++  [(set (match_operand:BLK 0 "" "")
++	(unspec:BLK [(match_dup 0)] UNSPEC_MEMORY_BLOCKAGE))]
++  ""
++  ""
++  [(set_attr "length" "0")])
++
+ ;; As USE insns aren't meaningful after reload, this is used instead
+ ;; to prevent deleting instructions setting registers for PIC code
+ (define_insn "prologue_use"
+@@ -15001,7 +15021,7 @@
  
  (define_insn "set_rip_rex64"
    [(set (match_operand:DI 0 "register_operand" "=r")
@@ -590,7 +881,7 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386
    "TARGET_64BIT"
    "lea{q}\t{%l1(%%rip), %0|%0, %l1[rip]}"
    [(set_attr "type" "lea")
-@@ -15009,7 +15009,9 @@
+@@ -15009,7 +15029,9 @@
  
  (define_insn "set_got_offset_rex64"
    [(set (match_operand:DI 0 "register_operand" "=r")
@@ -601,6 +892,99 @@ diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.md gcc-4.3.3/gcc/config/i386/i386
    "TARGET_64BIT"
    "movabs{q}\t{$_GLOBAL_OFFSET_TABLE_-%l1, %0|%0, OFFSET FLAT:_GLOBAL_OFFSET_TABLE_-%l1}"
    [(set_attr "type" "imov")
+@@ -18472,9 +18494,56 @@
+    (set_attr "unit" "i387")
+    (set_attr "mode" "<MODE>")])
+ 
++(define_insn_and_split "fxam<mode>2_i387_with_temp"
++  [(set (match_operand:HI 0 "register_operand" "")
++	(unspec:HI
++	  [(match_operand:MODEF 1 "memory_operand" "")]
++	  UNSPEC_FXAM_MEM))]
++  "TARGET_USE_FANCY_MATH_387
++   && !(reload_completed || reload_in_progress)"
++  "#"
++  "&& 1"
++  [(set (match_dup 2)(match_dup 1))
++   (set (match_dup 0)
++	(unspec:HI [(match_dup 2)] UNSPEC_FXAM))]
++{
++  operands[2] = gen_reg_rtx (<MODE>mode);
++
++  MEM_VOLATILE_P (operands[1]) = 1;
++}
++  [(set_attr "type" "multi")
++   (set_attr "unit" "i387")
++   (set_attr "mode" "<MODE>")])
++
++(define_expand "isinfxf2"
++  [(use (match_operand:SI 0 "register_operand" ""))
++   (use (match_operand:XF 1 "register_operand" ""))]
++  "TARGET_USE_FANCY_MATH_387
++   && TARGET_C99_FUNCTIONS"
++{
++  rtx mask = GEN_INT (0x45);
++  rtx val = GEN_INT (0x05);
++
++  rtx cond;
++
++  rtx scratch = gen_reg_rtx (HImode);
++  rtx res = gen_reg_rtx (QImode);
++
++  emit_insn (gen_fxamxf2_i387 (scratch, operands[1]));
++
++  emit_insn (gen_andqi_ext_0 (scratch, scratch, mask));
++  emit_insn (gen_cmpqi_ext_3 (scratch, val));
++  cond = gen_rtx_fmt_ee (EQ, QImode,
++			 gen_rtx_REG (CCmode, FLAGS_REG),
++			 const0_rtx);
++  emit_insn (gen_rtx_SET (VOIDmode, res, cond));
++  emit_insn (gen_zero_extendqisi2 (operands[0], res));
++  DONE;
++})
++
+ (define_expand "isinf<mode>2"
+   [(use (match_operand:SI 0 "register_operand" ""))
+-   (use (match_operand:X87MODEF 1 "register_operand" ""))]
++   (use (match_operand:MODEF 1 "nonimmediate_operand" ""))]
+   "TARGET_USE_FANCY_MATH_387
+    && TARGET_C99_FUNCTIONS
+    && !(SSE_FLOAT_MODE_P (<MODE>mode) && TARGET_SSE_MATH)"
+@@ -18487,7 +18556,18 @@
+   rtx scratch = gen_reg_rtx (HImode);
+   rtx res = gen_reg_rtx (QImode);
+ 
+-  emit_insn (gen_fxam<mode>2_i387 (scratch, operands[1]));
++  /* Remove excess precision by forcing value through memory. */
++  if (memory_operand (operands[1], VOIDmode))
++    emit_insn (gen_fxam<mode>2_i387_with_temp (scratch, operands[1]));
++  else
++    {
++      int slot = virtuals_instantiated ? SLOT_TEMP : SLOT_VIRTUAL;
++      rtx temp = assign_386_stack_local (<MODE>mode, slot);
++
++      emit_move_insn (temp, operands[1]);
++      emit_insn (gen_fxam<mode>2_i387_with_temp (scratch, temp));
++    }
++
+   emit_insn (gen_andqi_ext_0 (scratch, scratch, mask));
+   emit_insn (gen_cmpqi_ext_3 (scratch, val));
+   cond = gen_rtx_fmt_ee (EQ, QImode,
+diff -Naur gcc-4.3.3.orig/gcc/config/ia64/ia64.c gcc-4.3.3/gcc/config/ia64/ia64.c
+--- gcc-4.3.3.orig/gcc/config/ia64/ia64.c	2008-07-01 13:59:19.000000000 -0700
++++ gcc-4.3.3/gcc/config/ia64/ia64.c	2009-02-20 09:18:20.718912000 -0800
+@@ -4328,8 +4328,9 @@
+     return false;
+ 
+   /* We must always return with our current GP.  This means we can
+-     only sibcall to functions defined in the current module.  */
+-  return decl && (*targetm.binds_local_p) (decl);
++     only sibcall to functions defined in the current module unless
++     TARGET_CONST_GP is set to true.  */
++  return (decl && (*targetm.binds_local_p) (decl)) || TARGET_CONST_GP;
+ }
+ 
+ 
 diff -Naur gcc-4.3.3.orig/gcc/config/mips/sde.h gcc-4.3.3/gcc/config/mips/sde.h
 --- gcc-4.3.3.orig/gcc/config/mips/sde.h	2007-09-19 10:13:33.000000000 -0700
 +++ gcc-4.3.3/gcc/config/mips/sde.h	2009-02-02 12:31:19.548659000 -0800
@@ -660,6 +1044,57 @@ diff -Naur gcc-4.3.3.orig/gcc/config/pa/milli64.S gcc-4.3.3/gcc/config/pa/milli6
  
  #ifdef pa64
          .level  2.0w
+diff -Naur gcc-4.3.3.orig/gcc/config/sh/predicates.md gcc-4.3.3/gcc/config/sh/predicates.md
+--- gcc-4.3.3.orig/gcc/config/sh/predicates.md	2007-08-02 03:49:31.000000000 -0700
++++ gcc-4.3.3/gcc/config/sh/predicates.md	2009-02-07 16:53:30.513258000 -0800
+@@ -1,5 +1,5 @@
+ ;; Predicate definitions for Renesas / SuperH SH.
+-;; Copyright (C) 2005, 2006, 2007 Free Software Foundation, Inc.
++;; Copyright (C) 2005, 2006, 2007, 2009 Free Software Foundation, Inc.
+ ;;
+ ;; This file is part of GCC.
+ ;;
+@@ -392,12 +392,6 @@
+ 	return 0;
+     }
+ 
+-  if ((mode == QImode || mode == HImode)
+-      && (GET_CODE (op) == SUBREG
+-	  && GET_CODE (XEXP (op, 0)) == REG
+-	  && system_reg_operand (XEXP (op, 0), mode)))
+-    return 0;
+-
+   if (TARGET_SHMEDIA
+       && (GET_CODE (op) == PARALLEL || GET_CODE (op) == CONST_VECTOR)
+       && sh_rep_vec (op, mode))
+diff -Naur gcc-4.3.3.orig/gcc/config/soft-fp/double.h gcc-4.3.3/gcc/config/soft-fp/double.h
+--- gcc-4.3.3.orig/gcc/config/soft-fp/double.h	2007-05-03 12:05:39.000000000 -0700
++++ gcc-4.3.3/gcc/config/soft-fp/double.h	2009-02-17 05:54:43.208764000 -0800
+@@ -1,6 +1,7 @@
+ /* Software floating-point emulation.
+    Definitions for IEEE Double Precision
+-   Copyright (C) 1997,1998,1999,2006,2007 Free Software Foundation, Inc.
++   Copyright (C) 1997, 1998, 1999, 2006, 2007, 2008, 2009
++   Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Richard Henderson (rth@cygnus.com),
+ 		  Jakub Jelinek (jj@ultra.linux.cz),
+@@ -203,13 +204,13 @@
+ 
+ #define FP_UNPACK_SEMIRAW_D(X,val)	\
+   do {					\
+-    _FP_UNPACK_RAW_2(1,X,val);		\
++    _FP_UNPACK_RAW_1(D,X,val);		\
+     _FP_UNPACK_SEMIRAW(D,1,X);		\
+   } while (0)
+ 
+ #define FP_UNPACK_SEMIRAW_DP(X,val)	\
+   do {					\
+-    _FP_UNPACK_RAW_2_P(1,X,val);	\
++    _FP_UNPACK_RAW_1_P(D,X,val);	\
+     _FP_UNPACK_SEMIRAW(D,1,X);		\
+   } while (0)
+ 
 diff -Naur gcc-4.3.3.orig/gcc/config/sparc/linux64.h gcc-4.3.3/gcc/config/sparc/linux64.h
 --- gcc-4.3.3.orig/gcc/config/sparc/linux64.h	2007-10-18 21:29:38.000000000 -0700
 +++ gcc-4.3.3/gcc/config/sparc/linux64.h	2009-01-24 12:49:51.463535000 -0800
@@ -716,8 +1151,26 @@ diff -Naur gcc-4.3.3.orig/gcc/config/sparc/sysv4.h gcc-4.3.3/gcc/config/sparc/sy
     in all places where we simply want to switch to a section, and
 diff -Naur gcc-4.3.3.orig/gcc/cp/ChangeLog gcc-4.3.3/gcc/cp/ChangeLog
 --- gcc-4.3.3.orig/gcc/cp/ChangeLog	2009-01-24 02:15:39.000000000 -0800
-+++ gcc-4.3.3/gcc/cp/ChangeLog	2009-02-03 07:56:05.128711000 -0800
-@@ -1,3 +1,26 @@
++++ gcc-4.3.3/gcc/cp/ChangeLog	2009-02-20 07:21:51.443104000 -0800
+@@ -1,3 +1,44 @@
++2009-02-20  Jason Merrill  <jason@redhat.com>
++
++	PR c++/39225
++	* decl.c (grokdeclarator): Handle ~identifier.
++
++2009-02-17  Jason Merrill  <jason@redhat.com>
++
++	PR c++/38950
++	* pt.c (unify)[TEMPLATE_PARM_INDEX]: Convert to the tsubsted type.
++
++2009-02-13  Jason Merrill  <jason@redhat.com>
++
++	PR c++/39070
++	* semantics.c (finish_call_expr): Change koenig_p parm to int.
++	If -1, don't set KOENIG_LOOKUP_P but do keep hidden candidates.
++	* cp-tree.h: Adjust prototype.
++	* pt.c (tsubst_copy_and_build) [CALL_EXPR]: Pass -1.
++
 +2009-02-03  Paolo Bonzini  <bonzini@gnu.org>
 +
 +	PR c++/36897
@@ -744,6 +1197,71 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/ChangeLog gcc-4.3.3/gcc/cp/ChangeLog
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
+diff -Naur gcc-4.3.3.orig/gcc/cp/cp-tree.h gcc-4.3.3/gcc/cp/cp-tree.h
+--- gcc-4.3.3.orig/gcc/cp/cp-tree.h	2009-01-15 14:34:20.000000000 -0800
++++ gcc-4.3.3/gcc/cp/cp-tree.h	2009-02-13 13:53:38.261573000 -0800
+@@ -4623,7 +4623,7 @@
+ extern tree finish_stmt_expr			(tree, bool);
+ extern tree stmt_expr_value_expr		(tree);
+ extern tree perform_koenig_lookup		(tree, tree);
+-extern tree finish_call_expr			(tree, tree, bool, bool);
++extern tree finish_call_expr			(tree, tree, bool, int);
+ extern tree finish_increment_expr		(tree, enum tree_code);
+ extern tree finish_this_expr			(void);
+ extern tree finish_pseudo_destructor_expr       (tree, tree, tree);
+diff -Naur gcc-4.3.3.orig/gcc/cp/decl.c gcc-4.3.3/gcc/cp/decl.c
+--- gcc-4.3.3.orig/gcc/cp/decl.c	2008-09-30 12:56:13.000000000 -0700
++++ gcc-4.3.3/gcc/cp/decl.c	2009-02-20 07:21:51.443104000 -0800
+@@ -7512,7 +7512,9 @@
+ 		    }
+ 
+ 		  type = TREE_OPERAND (decl, 0);
+-		  name = IDENTIFIER_POINTER (constructor_name (type));
++		  if (TYPE_P (type))
++		    type = constructor_name (type);
++		  name = IDENTIFIER_POINTER (type);
+ 		  dname = decl;
+ 		}
+ 		break;
+@@ -8009,8 +8011,9 @@
+       switch (TREE_CODE (unqualified_id))
+ 	{
+ 	case BIT_NOT_EXPR:
+-	  unqualified_id
+-	    = constructor_name (TREE_OPERAND (unqualified_id, 0));
++	  unqualified_id = TREE_OPERAND (unqualified_id, 0);
++	  if (TYPE_P (unqualified_id))
++	    unqualified_id = constructor_name (unqualified_id);
+ 	  break;
+ 
+ 	case IDENTIFIER_NODE:
+@@ -8856,21 +8859,20 @@
+ 	    /* Check that the name used for a destructor makes sense.  */
+ 	    if (sfk == sfk_destructor)
+ 	      {
++		tree uqname = id_declarator->u.id.unqualified_name;
++
+ 		if (!ctype)
+ 		  {
+ 		    gcc_assert (friendp);
+ 		    error ("expected qualified name in friend declaration "
+-			   "for destructor %qD",
+-			   id_declarator->u.id.unqualified_name);
++			   "for destructor %qD", uqname);
+ 		    return error_mark_node;
+ 		  }
+ 
+-		if (!same_type_p (TREE_OPERAND
+-				  (id_declarator->u.id.unqualified_name, 0),
+-				  ctype))
++		if (!check_dtor_name (ctype, TREE_OPERAND (uqname, 0)))
+ 		  {
+ 		    error ("declaration of %qD as member of %qT",
+-			   id_declarator->u.id.unqualified_name, ctype);
++			   uqname, ctype);
+ 		    return error_mark_node;
+ 		  }
+ 	      }
 diff -Naur gcc-4.3.3.orig/gcc/cp/parser.c gcc-4.3.3/gcc/cp/parser.c
 --- gcc-4.3.3.orig/gcc/cp/parser.c	2008-11-19 13:00:23.000000000 -0800
 +++ gcc-4.3.3/gcc/cp/parser.c	2009-02-02 11:57:29.682708000 -0800
@@ -775,7 +1293,7 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/parser.c gcc-4.3.3/gcc/cp/parser.c
  	   destructor is the same as the name of the qualifying
 diff -Naur gcc-4.3.3.orig/gcc/cp/pt.c gcc-4.3.3/gcc/cp/pt.c
 --- gcc-4.3.3.orig/gcc/cp/pt.c	2009-01-16 14:35:24.000000000 -0800
-+++ gcc-4.3.3/gcc/cp/pt.c	2009-02-03 07:56:05.128711000 -0800
++++ gcc-4.3.3/gcc/cp/pt.c	2009-02-17 10:27:32.576290000 -0800
 @@ -4555,6 +4555,13 @@
        expr = convert_nontype_argument_function (type, expr);
        if (!expr || expr == error_mark_node)
@@ -790,6 +1308,67 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/pt.c gcc-4.3.3/gcc/cp/pt.c
      }
    /* [temp.arg.nontype]/5, bullet 5
  
+@@ -11054,12 +11061,12 @@
+ 		       qualified_p ? LOOKUP_NONVIRTUAL : LOOKUP_NORMAL,
+ 		       /*fn_p=*/NULL));
+ 	  }
+-	/* Pass true for koenig_p so that build_new_function_call will
++	/* Pass -1 for koenig_p so that build_new_function_call will
+ 	   allow hidden friends found by arg-dependent lookup at template
+ 	   parsing time.  */
+ 	return finish_call_expr (function, call_args,
+ 				 /*disallow_virtual=*/qualified_p,
+-				 /*koenig_p*/true);
++				 /*koenig_p*/-1);
+       }
+ 
+     case COND_EXPR:
+@@ -13051,7 +13058,7 @@
+ 	/* Convert the ARG to the type of PARM; the deduced non-type
+ 	   template argument must exactly match the types of the
+ 	   corresponding parameter.  */
+-	arg = fold (build_nop (TREE_TYPE (parm), arg));
++	arg = fold (build_nop (tparm, arg));
+       else if (uses_template_parms (tparm))
+ 	/* We haven't deduced the type of this parameter yet.  Try again
+ 	   later.  */
+diff -Naur gcc-4.3.3.orig/gcc/cp/semantics.c gcc-4.3.3/gcc/cp/semantics.c
+--- gcc-4.3.3.orig/gcc/cp/semantics.c	2008-11-14 14:01:12.000000000 -0800
++++ gcc-4.3.3/gcc/cp/semantics.c	2009-02-13 13:53:38.261573000 -0800
+@@ -1832,10 +1832,14 @@
+    qualified.  For example a call to `X::f' never generates a virtual
+    call.)
+ 
++   KOENIG_P is 1 if we want to perform argument-dependent lookup,
++   -1 if we don't, but we want to accept functions found by previous
++   argument-dependent lookup, and 0 if we want nothing to do with it.
++
+    Returns code for the call.  */
+ 
+ tree
+-finish_call_expr (tree fn, tree args, bool disallow_virtual, bool koenig_p)
++finish_call_expr (tree fn, tree args, bool disallow_virtual, int koenig_p)
+ {
+   tree result;
+   tree orig_fn;
+@@ -1857,7 +1861,7 @@
+ 	  || any_type_dependent_arguments_p (args))
+ 	{
+ 	  result = build_nt_call_list (fn, args);
+-	  KOENIG_LOOKUP_P (result) = koenig_p;
++	  KOENIG_LOOKUP_P (result) = koenig_p > 0;
+ 	  if (cfun)
+ 	    {
+ 	      do
+@@ -1946,7 +1950,7 @@
+ 
+       if (!result)
+ 	/* A call to a namespace-scope function.  */
+-	result = build_new_function_call (fn, args, koenig_p);
++	result = build_new_function_call (fn, args, koenig_p != 0);
+     }
+   else if (TREE_CODE (fn) == PSEUDO_DTOR_EXPR)
+     {
 diff -Naur gcc-4.3.3.orig/gcc/cp/typeck.c gcc-4.3.3/gcc/cp/typeck.c
 --- gcc-4.3.3.orig/gcc/cp/typeck.c	2009-01-15 14:34:20.000000000 -0800
 +++ gcc-4.3.3/gcc/cp/typeck.c	2009-02-03 07:56:05.128711000 -0800
@@ -848,6 +1427,73 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/typeck.c gcc-4.3.3/gcc/cp/typeck.c
      {
        error ("the type being destroyed is %qT, but the destructor refers to %qT",
  	     TYPE_MAIN_VARIANT (object_type), dtor_type);
+diff -Naur gcc-4.3.3.orig/gcc/c-parser.c gcc-4.3.3/gcc/c-parser.c
+--- gcc-4.3.3.orig/gcc/c-parser.c	2008-04-03 14:24:28.000000000 -0700
++++ gcc-4.3.3/gcc/c-parser.c	2009-02-17 05:00:40.440258000 -0800
+@@ -2680,6 +2680,7 @@
+ 			     "expected %<;%>, %<,%> or %<)%>"))
+ 	{
+ 	  c_parser_skip_until_found (parser, CPP_CLOSE_PAREN, NULL);
++	  get_pending_sizes ();
+ 	  return NULL;
+ 	}
+       if (c_parser_next_token_is (parser, CPP_ELLIPSIS))
+@@ -2707,6 +2708,7 @@
+ 	    {
+ 	      c_parser_skip_until_found (parser, CPP_CLOSE_PAREN,
+ 					 "expected %<)%>");
++	      get_pending_sizes ();
+ 	      return NULL;
+ 	    }
+ 	}
+@@ -3132,6 +3134,7 @@
+       ret.value = error_mark_node;
+       ret.original_code = ERROR_MARK;
+       c_parser_skip_until_found (parser, CPP_CLOSE_BRACE, "expected %<}%>");
++      pop_init_level (0);
+       return ret;
+     }
+   c_parser_consume_token (parser);
+diff -Naur gcc-4.3.3.orig/gcc/c-typeck.c gcc-4.3.3/gcc/c-typeck.c
+--- gcc-4.3.3.orig/gcc/c-typeck.c	2008-01-29 15:19:07.000000000 -0800
++++ gcc-4.3.3/gcc/c-typeck.c	2009-02-04 05:07:43.805620000 -0800
+@@ -327,10 +327,14 @@
+ 	tree d2 = TYPE_DOMAIN (t2);
+ 	bool d1_variable, d2_variable;
+ 	bool d1_zero, d2_zero;
++	bool t1_complete, t2_complete;
+ 
+ 	/* We should not have any type quals on arrays at all.  */
+ 	gcc_assert (!TYPE_QUALS (t1) && !TYPE_QUALS (t2));
+ 
++	t1_complete = COMPLETE_TYPE_P (t1);
++	t2_complete = COMPLETE_TYPE_P (t2);
++
+ 	d1_zero = d1 == 0 || !TYPE_MAX_VALUE (d1);
+ 	d2_zero = d2 == 0 || !TYPE_MAX_VALUE (d2);
+ 
+@@ -370,6 +374,15 @@
+ 						 || !d1_variable))
+ 					    ? t1
+ 					    : t2));
++	/* Ensure a composite type involving a zero-length array type
++	   is a zero-length type not an incomplete type.  */
++	if (d1_zero && d2_zero
++	    && (t1_complete || t2_complete)
++	    && !COMPLETE_TYPE_P (t1))
++	  {
++	    TYPE_SIZE (t1) = bitsize_zero_node;
++	    TYPE_SIZE_UNIT (t1) = size_zero_node;
++	  }
+ 	t1 = c_build_qualified_type (t1, quals);
+ 	return build_type_attribute_variant (t1, attributes);
+       }
+diff -Naur gcc-4.3.3.orig/gcc/DATESTAMP gcc-4.3.3/gcc/DATESTAMP
+--- gcc-4.3.3.orig/gcc/DATESTAMP	2009-01-23 16:16:35.000000000 -0800
++++ gcc-4.3.3/gcc/DATESTAMP	2009-02-22 16:16:27.324527000 -0800
+@@ -1 +1 @@
+-20090124
++20090223
 diff -Naur gcc-4.3.3.orig/gcc/doc/invoke.texi gcc-4.3.3/gcc/doc/invoke.texi
 --- gcc-4.3.3.orig/gcc/doc/invoke.texi	2008-11-21 08:21:50.000000000 -0800
 +++ gcc-4.3.3/gcc/doc/invoke.texi	2009-01-27 10:45:49.519017000 -0800
@@ -903,8 +1549,16 @@ diff -Naur gcc-4.3.3.orig/gcc/fold-const.c gcc-4.3.3/gcc/fold-const.c
  
 diff -Naur gcc-4.3.3.orig/gcc/fortran/ChangeLog gcc-4.3.3/gcc/fortran/ChangeLog
 --- gcc-4.3.3.orig/gcc/fortran/ChangeLog	2009-01-24 02:15:54.000000000 -0800
-+++ gcc-4.3.3/gcc/fortran/ChangeLog	2009-01-25 22:15:41.225652000 -0800
-@@ -1,3 +1,35 @@
++++ gcc-4.3.3/gcc/fortran/ChangeLog	2009-02-18 22:43:15.919035000 -0800
+@@ -1,3 +1,43 @@
++2009-02-19  Paul Thomas  <pault@gcc.gnu.org>
++
++	PR fortran/38852
++	PR fortran/39006
++	Backport from trunk
++	* trans-intrinsic.c (gfc_conv_intrinsic_bound): Use the array
++	descriptor ubound for UBOUND, when the array lbound == 1.
++
 +2009-01-26  Paul Thomas  <pault@gcc.gnu.org>
 +
 +	PR fortran/38907
@@ -1148,6 +1802,28 @@ diff -Naur gcc-4.3.3.orig/gcc/fortran/simplify.c gcc-4.3.3/gcc/fortran/simplify.
  
  	    case AR_SECTION:
  	    case AR_UNKNOWN:
+diff -Naur gcc-4.3.3.orig/gcc/fortran/trans-intrinsic.c gcc-4.3.3/gcc/fortran/trans-intrinsic.c
+--- gcc-4.3.3.orig/gcc/fortran/trans-intrinsic.c	2008-07-27 04:41:35.000000000 -0700
++++ gcc-4.3.3/gcc/fortran/trans-intrinsic.c	2009-02-18 22:43:15.919035000 -0800
+@@ -917,12 +917,17 @@
+ 
+       cond4 = fold_build2 (LT_EXPR, boolean_type_node, stride,
+ 			   gfc_index_zero_node);
+-      cond4 = fold_build2 (TRUTH_AND_EXPR, boolean_type_node, cond4, cond2);
+ 
+       if (upper)
+ 	{
++	  tree cond5;
+ 	  cond = fold_build2 (TRUTH_OR_EXPR, boolean_type_node, cond3, cond4);
+ 
++	  cond5 = fold_build2 (EQ_EXPR, boolean_type_node, gfc_index_one_node, lbound);
++	  cond5 = fold_build2 (TRUTH_AND_EXPR, boolean_type_node, cond4, cond5);
++
++	  cond = fold_build2 (TRUTH_OR_EXPR, boolean_type_node, cond, cond5);
++
+ 	  se->expr = fold_build3 (COND_EXPR, gfc_array_index_type, cond,
+ 				  ubound, gfc_index_zero_node);
+ 	}
 diff -Naur gcc-4.3.3.orig/gcc/gimplify.c gcc-4.3.3/gcc/gimplify.c
 --- gcc-4.3.3.orig/gcc/gimplify.c	2008-12-18 13:55:31.000000000 -0800
 +++ gcc-4.3.3/gcc/gimplify.c	2009-01-27 10:45:49.519017000 -0800
@@ -1161,10 +1837,147 @@ diff -Naur gcc-4.3.3.orig/gcc/gimplify.c gcc-4.3.3/gcc/gimplify.c
  	  {
  	    if (notify_temp_creation)
  	      return GS_ERROR;
+diff -Naur gcc-4.3.3.orig/gcc/real.c gcc-4.3.3/gcc/real.c
+--- gcc-4.3.3.orig/gcc/real.c	2008-10-22 04:33:04.000000000 -0700
++++ gcc-4.3.3/gcc/real.c	2009-02-09 10:51:31.855521000 -0800
+@@ -905,15 +905,23 @@
+       /* Sign of zero doesn't matter for compares.  */
+       return 0;
+ 
++    case CLASS2 (rvc_normal, rvc_zero):
++      /* Decimal float zero is special and uses rvc_normal, not rvc_zero.  */
++      if (a->decimal)
++	return decimal_do_compare (a, b, nan_result);
++      /* Fall through.  */
+     case CLASS2 (rvc_inf, rvc_zero):
+     case CLASS2 (rvc_inf, rvc_normal):
+-    case CLASS2 (rvc_normal, rvc_zero):
+       return (a->sign ? -1 : 1);
+ 
+     case CLASS2 (rvc_inf, rvc_inf):
+       return -a->sign - -b->sign;
+ 
+     case CLASS2 (rvc_zero, rvc_normal):
++      /* Decimal float zero is special and uses rvc_normal, not rvc_zero.  */
++      if (b->decimal)
++	return decimal_do_compare (a, b, nan_result);
++      /* Fall through.  */
+     case CLASS2 (rvc_zero, rvc_inf):
+     case CLASS2 (rvc_normal, rvc_inf):
+       return (b->sign ? 1 : -1);
+diff -Naur gcc-4.3.3.orig/gcc/regrename.c gcc-4.3.3/gcc/regrename.c
+--- gcc-4.3.3.orig/gcc/regrename.c	2008-11-25 13:26:19.000000000 -0800
++++ gcc-4.3.3/gcc/regrename.c	2009-02-04 13:42:04.642083000 -0800
+@@ -820,7 +820,7 @@
+ 		    OP_IN, 0);
+ 
+ 	  for (i = 0; i < recog_data.n_dups; i++)
+-	    *recog_data.dup_loc[i] = copy_rtx (old_dups[i]);
++	    *recog_data.dup_loc[i] = old_dups[i];
+ 	  for (i = 0; i < n_ops; i++)
+ 	    *recog_data.operand_loc[i] = old_operands[i];
+ 	  if (recog_data.n_dups)
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/ChangeLog gcc-4.3.3/gcc/testsuite/ChangeLog
 --- gcc-4.3.3.orig/gcc/testsuite/ChangeLog	2009-01-24 02:15:24.000000000 -0800
-+++ gcc-4.3.3/gcc/testsuite/ChangeLog	2009-02-03 07:56:05.128711000 -0800
-@@ -1,3 +1,204 @@
++++ gcc-4.3.3/gcc/testsuite/ChangeLog	2009-02-21 05:04:37.075689000 -0800
+@@ -1,3 +1,301 @@
++2009-02-21  Kaz Kojima  <kkojima@gcc.gnu.org>
++
++	* gcc.c-torture/execute/pr39228.x: New.
++
++2009-02-20  Steve Ellcey  <sje@cup.hp.com>
++
++	PR target/38056
++	* gcc.target/ia64/sibcall-opt-1.c: New test.
++	* gcc.target/ia64/sibcall-opt-2.c: New test.
++
++2009-02-20  Jason Merrill  <jason@redhat.com>
++
++	PR c++/39225
++	* g++.dg/parse/dtor15.C: New test.
++
++2009-02-19  Uros Bizjak  <ubizjak@gmail.com>
++
++	PR target/39228
++	* gcc.c-torture/execute/pr39228.c: New test.
++
++2009-02-19  Paul Thomas  <pault@gcc.gnu.org>
++
++	PR fortran/38852
++	PR fortran/39006
++	Backport from mainline:
++	* gfortran.dg/bound_6.f90: New test.
++
++2009-02-17  Jason Merrill  <jason@redhat.com>
++
++	PR c++/38950
++	* g++.dg/template/array20.C: New test.
++
++2009-02-17  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35446
++	* gcc.dg/noncompile/init-5.c: New test.
++	* gcc.dg/init-bad-4.c: Adjust expected errors.
++
++2009-02-15  Uros Bizjak  <ubizjak@gmail.com>
++
++	* gcc.dg/struct/w_prof_single_str_global.c: Mask return value.
++
++	Backport from mainline:
++	2009-01-12  Mark Mitchell  <mark@codesourcery.com>
++
++	* gcc.dg/struct/wo_prof_single_str_global.c: Mask return value.
++	* gcc.dg/struct/wo_prof_single_str_local.c: Mask return value.
++	* gcc.dg/struct/wo_prof_single_str_pointer.c: Mask return value.
++
++2009-02-13  Jason Merrill  <jason@redhat.com>
++
++	PR c++/39070
++	* g++.dg/cpp0x/decltype16.C: New.
++
++2009-02-13  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35444
++	* gcc.dg/noncompile/pr35444-1.c, gcc.dg/noncompile/pr35444-2.c:
++	New tests.
++
++2009-02-10  Steve Ellcey  <sje@cup.hp.com>
++
++	PR c/39084
++	* gcc.dg/pr39084.c: New test.
++
++2009-02-09  Janis Johnson  <janis187@us.ibm.com>
++
++	PR c/39035
++	* gcc.dg/dfp/pr39035.c: New test.
++
++2009-02-08  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35434
++	* gcc.dg/attr-alias-4.c: New test.
++
++2009-02-08  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/36432
++	* gcc.dg/c90-flex-array-2.c, gcc.dg/c99-flex-array-6.c: New tests.
++
++2009-02-05  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35435
++	* gcc.dg/tls/diag-6.c: New test.
++
++2009-02-05  Richard Guenther  <rguenther@suse.de>
++
++	Backport from mainline
++	2009-02-05  Daniel Berlin  <dberlin@dberlin.org>
++
++	* gcc.c-torture/execute/pr39100.c: New.
++
++2009-02-04  Joseph Myers  <joseph@codesourcery.com>
++
++	PR c/35433
++	* gcc.dg/init-bad-6.c: New test.
++
 +2009-02-03  Paolo Bonzini  <bonzini@gnu.org>
 +
 +	PR c++/36897
@@ -1369,7 +2182,7 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/ChangeLog gcc-4.3.3/gcc/testsuite/Change
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
-@@ -89,7 +290,7 @@
+@@ -89,7 +387,7 @@
  
  	Backport from mainline:
  	2008-12-29  Dorit Nuzman  <dorit@il.ibm.com>
@@ -1378,7 +2191,7 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/ChangeLog gcc-4.3.3/gcc/testsuite/Change
  
  	PR tree-optimization/38529
  	* gcc.dg/vect/pr38529.c: New test.
-@@ -426,8 +627,8 @@
+@@ -426,8 +724,8 @@
  
  2008-11-14  Paul Thomas  <pault@gcc.gnu.org>
  
@@ -1564,6 +2377,129 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr38969.c gcc-4.3.
 +
 +  return 0;
 +}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr39100.c gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/pr39100.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr39100.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/pr39100.c	2009-02-05 03:10:02.086542000 -0800
+@@ -0,0 +1,65 @@
++/* Bad PTA results (incorrect store handling) was causing us to delete
++   *na = 0 store.  */
++
++typedef struct E
++{
++  int p;
++  struct E *n;
++} *EP;   
++
++typedef struct C
++{
++  EP x;
++  short cn, cp; 
++} *CP;
++
++__attribute__((noinline)) CP
++foo (CP h, EP x)
++{
++  EP pl = 0, *pa = &pl;
++  EP nl = 0, *na = &nl;
++  EP n;
++
++  while (x)
++    {
++      n = x->n;   
++      if ((x->p & 1) == 1) 
++        {
++          h->cp++;
++          *pa = x;
++          pa = &((*pa)->n);
++        }
++      else
++        {
++          h->cn++;
++          *na = x;
++          na = &((*na)->n);
++        }    
++      x = n;
++    }
++  *pa = nl;
++  *na = 0;
++  h->x = pl;
++  return h;
++}
++
++int
++main (void)
++{  
++  struct C c = { 0, 0, 0 };
++  struct E e[2] = { { 0, &e[1] }, { 1, 0 } };
++  EP p;
++
++  foo (&c, &e[0]);
++  if (c.cn != 1 || c.cp != 1)
++    __builtin_abort ();
++  if (c.x != &e[1])
++    __builtin_abort ();
++  if (e[1].n != &e[0])
++    __builtin_abort ();
++  if (e[0].n)
++    __builtin_abort ();
++  return 0;  
++}
++
++
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr39228.c gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/pr39228.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr39228.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/pr39228.c	2009-02-19 04:44:40.878358000 -0800
+@@ -0,0 +1,36 @@
++extern void abort (void);
++
++static int __attribute__((always_inline)) testf (float b)
++{
++  float c = 1.01f * b;
++
++  return __builtin_isinff (c);
++}
++
++static int __attribute__((always_inline)) test (double b)
++{
++  double c = 1.01 * b;
++
++  return __builtin_isinf (c);
++}
++
++static int __attribute__((always_inline)) testl (long double b)
++{
++  long double c = 1.01L * b;
++
++  return __builtin_isinfl (c);
++}
++
++int main()
++{
++  if (testf (__FLT_MAX__) < 1)
++    abort ();
++
++  if (test (__DBL_MAX__) < 1)
++    abort ();
++
++  if (testl (__LDBL_MAX__) < 1)
++    abort ();
++
++  return 0;
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr39228.x gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/pr39228.x
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/pr39228.x	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/pr39228.x	2009-02-21 05:04:37.075689000 -0800
+@@ -0,0 +1,10 @@
++if { [istarget "alpha*-*-*"] || [istarget "sh*-*-*"] } {
++	# alpha and SH require -mieee for this test.
++	set additional_flags "-mieee"
++}
++if [istarget "spu-*-*"] {
++	# No Inf/NaN support on SPU.
++	return 1
++}
++
++return 0
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/shiftopt-1.c gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/shiftopt-1.c
 --- gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/shiftopt-1.c	2002-12-16 10:23:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/gcc.c-torture/execute/shiftopt-1.c	2009-01-24 15:26:56.556617000 -0800
@@ -1601,6 +2537,185 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.c-torture/execute/struct-aliasing-1.
 +    abort ();
 +  return (0);
 +}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/attr-alias-4.c gcc-4.3.3/gcc/testsuite/gcc.dg/attr-alias-4.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/attr-alias-4.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/attr-alias-4.c	2009-02-08 11:02:56.473953000 -0800
+@@ -0,0 +1,4 @@
++/* ICE on invalid alias attribute: PR 35434.  */
++/* { dg-do compile } */
++/* { dg-options "" } */
++typedef int i __attribute__((alias("j"))); /* { dg-warning "ignored" } */
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/c90-flex-array-2.c gcc-4.3.3/gcc/testsuite/gcc.dg/c90-flex-array-2.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/c90-flex-array-2.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/c90-flex-array-2.c	2009-02-08 11:01:57.311455000 -0800
+@@ -0,0 +1,15 @@
++/* [] does not indicate a flexible array member unless it is the field
++   itself being declared as an incomplete array type rather than a
++   pointer or other type derived from such a type.  PR 36432.  */
++/* { dg-do compile } */
++/* { dg-options "-std=iso9899:1990 -pedantic-errors" } */
++
++void
++f (void)
++{
++  int a[3];
++  int (*p)[];
++  struct { int (*p)[]; } s;
++  p = &a;
++  s.p = &a;
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/c99-flex-array-6.c gcc-4.3.3/gcc/testsuite/gcc.dg/c99-flex-array-6.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/c99-flex-array-6.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/c99-flex-array-6.c	2009-02-08 11:01:57.311455000 -0800
+@@ -0,0 +1,15 @@
++/* [] does not indicate a flexible array member unless it is the field
++   itself being declared as an incomplete array type rather than a
++   pointer or other type derived from such a type.  PR 36432.  */
++/* { dg-do compile } */
++/* { dg-options "-std=iso9899:1999 -pedantic-errors" } */
++
++void
++f (void)
++{
++  int a[3];
++  int (*p)[];
++  struct { int (*p)[]; } s;
++  p = &a;
++  s.p = &a;
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/dfp/pr39035.c gcc-4.3.3/gcc/testsuite/gcc.dg/dfp/pr39035.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/dfp/pr39035.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/dfp/pr39035.c	2009-02-09 10:51:31.855521000 -0800
+@@ -0,0 +1,81 @@
++/* { dg-do run } */
++/* { dg-options "-std=gnu99 -O" } */
++
++/* DFP TR 24732 == WG14 / N1176, N1312 */
++/* Based on a test from Fred Tydeman.  */
++
++extern void abort (void);
++int failures = 0;
++
++#ifdef DBG
++#include <stdio.h>
++#define FAILURE(MSG) { printf ("line %d: %s\n", __LINE__, MSG); failures++; }
++#else
++#define FAILURE(MSG) failures++;
++#endif
++
++/* Test runtime computations.  */
++
++void
++runtime32 (void)
++{
++  volatile _Decimal32 d;
++  d = 0.0DF;
++  if (d)
++    FAILURE ("0.0DF should be zero")
++}
++
++void
++runtime64 (void)
++{
++  volatile _Decimal64 d;
++  d = 0.0DD;
++  if (d)
++    FAILURE ("0.0DD should be zero")
++}
++
++void
++runtime128 (void)
++{
++  volatile _Decimal128 d;
++  d = 0.0DL;
++  if (d)
++    FAILURE ("0.0DL should be zero")
++}
++
++void
++fold32 (void)
++{
++  if (0.0DF)
++    FAILURE ("0.0DF should be zero")
++}
++
++void
++fold64 (void)
++{
++  if (0.0DD)
++    FAILURE ("0.0DD should be zero")
++}
++
++void
++fold128 (void)
++{
++  if (0.0DL)
++    FAILURE ("0.0DL should be zero")
++}
++
++int
++main(void)
++{
++  runtime32 ();
++  runtime64 ();
++  runtime128 ();
++
++  fold32 ();
++  fold64 ();
++  fold128 ();
++
++  if (failures != 0)
++    abort ();
++  return 0;
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/init-bad-4.c gcc-4.3.3/gcc/testsuite/gcc.dg/init-bad-4.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/init-bad-4.c	2006-04-21 16:02:26.000000000 -0700
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/init-bad-4.c	2009-02-17 05:00:40.440258000 -0800
+@@ -2,4 +2,4 @@
+ /* Origin: Richard Guenther <rguenth@gcc.gnu.org> */
+ /* { dg-do compile } */
+ 
+-struct A { } a = (struct A) {{ (X)0 }};  /* { dg-error "no members|extra brace|near|undeclared|constant|compound" } */
++struct A { } a = (struct A) {{ (X)0 }};  /* { dg-error "no members|extra brace|near|undeclared|constant|compound|excess" } */
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/init-bad-6.c gcc-4.3.3/gcc/testsuite/gcc.dg/init-bad-6.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/init-bad-6.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/init-bad-6.c	2009-02-04 05:07:43.805620000 -0800
+@@ -0,0 +1,12 @@
++/* ICE arising from bug computing composite type of zero-length array
++   types: PR 35433.  */
++/* { dg-do compile } */
++/* { dg-options "" } */
++
++typedef int* X;
++typedef int* Y;
++
++X (*p)[][0];
++Y (*q)[][0];
++
++typeof(*(0 ? p : q)) x = { 0 }; /* { dg-warning "excess elements in array initializer|near initialization" } */
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/noncompile/init-5.c gcc-4.3.3/gcc/testsuite/gcc.dg/noncompile/init-5.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/noncompile/init-5.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/noncompile/init-5.c	2009-02-17 05:00:40.440258000 -0800
+@@ -0,0 +1,4 @@
++/* Test for ICE after syntax error in initializer with range
++   designator: PR 35446.  */
++
++int a[2][2] = { [0 ... 1] = { ; } }; /* { dg-error "expected expression" } */
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/noncompile/pr35444-1.c gcc-4.3.3/gcc/testsuite/gcc.dg/noncompile/pr35444-1.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/noncompile/pr35444-1.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/noncompile/pr35444-1.c	2009-02-13 05:10:52.921838000 -0800
+@@ -0,0 +1,3 @@
++/* PR 35444: ICE from pending VLA sizes in invalid parameter list.  */
++void foo(int n, int a[n], int 0); /* { dg-error "expected" } */
++void bar() {}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/noncompile/pr35444-2.c gcc-4.3.3/gcc/testsuite/gcc.dg/noncompile/pr35444-2.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/noncompile/pr35444-2.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/noncompile/pr35444-2.c	2009-02-13 05:10:52.921838000 -0800
+@@ -0,0 +1,4 @@
++/* PR 35444: ICE from pending VLA sizes in invalid parameter list.
++   Similar case to the PR, but with "..." before the syntax error.  */
++void foo(int n, int a[n], ... 0); /* { dg-error "expected" } */
++void bar() {}
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/pr38245-3.c gcc-4.3.3/gcc/testsuite/gcc.dg/pr38245-3.c
 --- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/pr38245-3.c	1969-12-31 16:00:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/gcc.dg/pr38245-3.c	2009-01-30 14:36:22.577619000 -0800
@@ -2131,6 +3246,89 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/pr38932.c gcc-4.3.3/gcc/testsuite
 +}
 +
 +
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/pr39084.c gcc-4.3.3/gcc/testsuite/gcc.dg/pr39084.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/pr39084.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/pr39084.c	2009-02-10 08:45:37.511311000 -0800
+@@ -0,0 +1,11 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++struct color { int i; };
++static const struct color col;
++struct color * f(void)
++{
++    return (struct color *) &col;
++}
++
++struct color { int j; }; /* { dg-error "redefinition of" } */
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_global.c gcc-4.3.3/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_global.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_global.c	2007-12-13 05:47:22.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_global.c	2009-02-15 00:09:49.211979000 -0800
+@@ -25,7 +25,9 @@
+   if (str.a != res)
+     abort ();
+ 
+-  return str.a;
++  /* POSIX ignores all but the 8 low-order bits, but other
++     environments may not.  */
++  return (str.a & 255);
+ }
+ 
+ /*--------------------------------------------------------------------------*/
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_local.c gcc-4.3.3/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_local.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_local.c	2007-12-13 05:47:22.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_local.c	2009-02-15 00:09:49.211979000 -0800
+@@ -25,7 +25,9 @@
+   if (str.a != res)
+     abort ();
+ 
+-  return str.a;
++  /* POSIX ignores all but the 8 low-order bits, but other
++     environments may not.  */
++  return (str.a & 255);
+ }
+ 
+ /*--------------------------------------------------------------------------*/
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_pointer.c gcc-4.3.3/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_pointer.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_pointer.c	2007-12-13 05:47:22.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/struct/wo_prof_single_str_pointer.c	2009-02-15 00:09:49.211979000 -0800
+@@ -29,7 +29,9 @@
+   if (p->a != res)
+     abort ();
+   
+-  return p->a;
++  /* POSIX ignores all but the 8 low-order bits, but other
++     environments may not.  */
++  return (p->a & 255);
+ }
+ 
+ /*--------------------------------------------------------------------------*/
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/w_prof_single_str_global.c gcc-4.3.3/gcc/testsuite/gcc.dg/struct/w_prof_single_str_global.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/struct/w_prof_single_str_global.c	2007-12-13 05:47:22.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/struct/w_prof_single_str_global.c	2009-02-15 00:09:49.211979000 -0800
+@@ -22,7 +22,9 @@
+   if (str.a != res)
+     abort ();
+ 
+-  return str.a;
++  /* POSIX ignores all but the 8 low-order bits, but other
++     environments may not.  */
++  return (str.a & 255);
+ }
+ 
+ /*--------------------------------------------------------------------------*/
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/tls/diag-6.c gcc-4.3.3/gcc/testsuite/gcc.dg/tls/diag-6.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/tls/diag-6.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.dg/tls/diag-6.c	2009-02-05 04:13:52.859351000 -0800
+@@ -0,0 +1,8 @@
++/* Invalid tls_model attributes.  PR 35435.  */
++/* { dg-require-effective-target tls } */
++
++int v __attribute__((tls_model("initial-exec"))); /* { dg-warning "attribute ignored" } */
++typedef int X __attribute__((tls_model("initial-exec"))); /* { dg-warning "attribute ignored" } */
++void f(int x __attribute__((tls_model("initial-exec")))); /* { dg-warning "attribute ignored" } */
++__thread int a __attribute__((tls_model(1))); /* { dg-error "tls_model argument not a string" } */
++__thread int b __attribute__((tls_model("unknown"))); /* { dg-error "tls_model argument must be one of" } */
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.dg/tree-ssa/struct-aliasing-1.c gcc-4.3.3/gcc/testsuite/gcc.dg/tree-ssa/struct-aliasing-1.c
 --- gcc-4.3.3.orig/gcc/testsuite/gcc.dg/tree-ssa/struct-aliasing-1.c	1969-12-31 16:00:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/gcc.dg/tree-ssa/struct-aliasing-1.c	2009-01-30 09:31:24.050790000 -0800
@@ -2205,6 +3403,52 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.target/i386/pr38988.c gcc-4.3.3/gcc/
 +      f ();
 +    }
 +}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.target/ia64/sibcall-opt-1.c gcc-4.3.3/gcc/testsuite/gcc.target/ia64/sibcall-opt-1.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.target/ia64/sibcall-opt-1.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.target/ia64/sibcall-opt-1.c	2009-02-20 09:18:20.718912000 -0800
+@@ -0,0 +1,12 @@
++/* PR target/38056.  Do not do sibcall optimization across object file
++   boundery when -mconstant-gp is not used.  */
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++/* { dg-final { scan-assembler "br.call.*bar" } } */
++
++int bar(int x);
++
++int foo(int x)
++{
++  return (bar(x + 1));
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gcc.target/ia64/sibcall-opt-2.c gcc-4.3.3/gcc/testsuite/gcc.target/ia64/sibcall-opt-2.c
+--- gcc-4.3.3.orig/gcc/testsuite/gcc.target/ia64/sibcall-opt-2.c	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gcc.target/ia64/sibcall-opt-2.c	2009-02-20 09:18:20.718912000 -0800
+@@ -0,0 +1,12 @@
++/* PR target/38056.  Do sibcall optimization across object file
++   boundery when -mconstant-gp is used.  */
++/* { dg-do compile } */
++/* { dg-options "-O2 -mconstant-gp" } */
++/* { dg-final { scan-assembler-not "br.call.*bar" } } */
++
++int bar(int x);
++
++int foo(int x)
++{
++  return (bar(x + 1));
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/cpp0x/decltype16.C gcc-4.3.3/gcc/testsuite/g++.dg/cpp0x/decltype16.C
+--- gcc-4.3.3.orig/gcc/testsuite/g++.dg/cpp0x/decltype16.C	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/g++.dg/cpp0x/decltype16.C	2009-02-13 13:53:38.261573000 -0800
+@@ -0,0 +1,10 @@
++// PR c++/39070
++// { dg-options "-std=c++0x" }
++
++template<typename X> struct junk {
++   template<typename Z> static Z y();
++   template<typename Y> static int  test(...);
++   template<typename Y> static char test(decltype(y<Y>())*);
++   static int const value=sizeof(test<X>(0));
++};
++typedef char type[junk<int>::value==sizeof(char) ? 1 : -1];
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/other/pr38706.C gcc-4.3.3/gcc/testsuite/g++.dg/other/pr38706.C
 --- gcc-4.3.3.orig/gcc/testsuite/g++.dg/other/pr38706.C	1969-12-31 16:00:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/g++.dg/other/pr38706.C	2009-01-27 03:39:42.241832000 -0800
@@ -2239,6 +3483,40 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/parse/dtor14.C gcc-4.3.3/gcc/test
 +template<typename> void foo()
 +{ 
 +  A().~int();			// { dg-error "expected" }
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/parse/dtor15.C gcc-4.3.3/gcc/testsuite/g++.dg/parse/dtor15.C
+--- gcc-4.3.3.orig/gcc/testsuite/g++.dg/parse/dtor15.C	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/g++.dg/parse/dtor15.C	2009-02-20 07:21:51.443104000 -0800
+@@ -0,0 +1,16 @@
++// PR c++/39225
++
++template <class T>
++class A
++{
++public:
++    A() {}
++    ~B() {}			// { dg-error "~B" }
++};
++
++int main()
++{
++    A<int> *a = new A<int>;
++
++    return 0;
++}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/array20.C gcc-4.3.3/gcc/testsuite/g++.dg/template/array20.C
+--- gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/array20.C	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/g++.dg/template/array20.C	2009-02-17 10:27:32.576290000 -0800
+@@ -0,0 +1,10 @@
++// PR c++/38950
++
++template <typename T, T N> void f(T(&)[N]);
++
++int main() {
++    int x[2];
++    unsigned int y[2];
++    f(x); // works
++    f(y); // ICE
 +}
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/dtor5.C gcc-4.3.3/gcc/testsuite/g++.dg/template/dtor5.C
 --- gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/dtor5.C	1969-12-31 16:00:00.000000000 -0800
@@ -2475,6 +3753,58 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/warn/Wuninitialized-2.C gcc-4.3.3
 +void S15(S11<void()>);
 +void S16() { S9 x; S15(x); }
 +
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/bound_6.f90 gcc-4.3.3/gcc/testsuite/gfortran.dg/bound_6.f90
+--- gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/bound_6.f90	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gfortran.dg/bound_6.f90	2009-02-18 22:43:15.919035000 -0800
+@@ -0,0 +1,48 @@
++! { dg-do run }
++! Test the fix for PR38852 and PR39006 in which LBOUND did not work
++! for some arrays with negative strides.
++!
++! Contributed by Dick Hendrickson  <dick.hendrickson@gmail.com>
++! and Clive Page <clivegpage@googlemail.com>
++!
++program try_je0031
++  integer ida(4)
++  real dda(5,5,5,5,5)
++  integer, parameter :: nx = 4, ny = 3
++  integer :: array1(nx,ny), array2(nx,ny) 
++  data array2 / 1,2,3,4, 10,20,30,40, 100,200,300,400 /
++  array1 = array2
++  call PR38852(IDA,DDA,2,5,-2)
++  call PR39006(array1, array2(:,ny:1:-1))
++contains
++  subroutine PR39006(array1, array2)
++    integer, intent(in) :: array1(:,:), array2(:,:)
++    integer :: j
++    do j = 1, ubound(array2,2)
++      if (any (array1(:,j) .ne. array2(:,4-j))) call abort
++    end do
++  end subroutine
++end 
++
++SUBROUTINE PR38852(IDA,DDA,nf2,nf5,mf2)
++  INTEGER IDA(4)
++  REAL DLA(:,:,:,:)
++  REAL DDA(5,5,5,5,5)
++  POINTER DLA
++  TARGET DDA
++  DLA => DDA(2:3, 1:3:2, 5:4:-1, NF2, NF5:NF2:MF2)
++  IDA = UBOUND(DLA)
++  if (any(ida /= 2)) call abort
++  DLA => DDA(2:3, 1:3:2, 5:4:-1, 2, 5:2:-2)
++  IDA = UBOUND(DLA)
++  if (any(ida /= 2)) call abort
++!
++! These worked.
++!
++  DLA => DDA(2:3, 1:3:2, 5:4:-1, 2, 5:2:-2)
++  IDA = shape(DLA)
++  if (any(ida /= 2)) call abort
++  DLA => DDA(2:3, 1:3:2, 5:4:-1, 2, 5:2:-2)
++  IDA = LBOUND(DLA)
++  if (any(ida /= 1)) call abort
++END SUBROUTINE
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/bounds_5.f90 gcc-4.3.3/gcc/testsuite/gfortran.dg/bounds_5.f90
 --- gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/bounds_5.f90	1969-12-31 16:00:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/gfortran.dg/bounds_5.f90	2009-01-25 21:43:44.109708000 -0800
@@ -2870,6 +4200,52 @@ diff -Naur gcc-4.3.3.orig/gcc/tree-ssa-sccvn.c gcc-4.3.3/gcc/tree-ssa-sccvn.c
    if (result)
      {
        STRIP_USELESS_TYPE_CONVERSION (result);
+diff -Naur gcc-4.3.3.orig/gcc/tree-ssa-structalias.c gcc-4.3.3/gcc/tree-ssa-structalias.c
+--- gcc-4.3.3.orig/gcc/tree-ssa-structalias.c	2009-01-07 05:12:17.000000000 -0800
++++ gcc-4.3.3/gcc/tree-ssa-structalias.c	2009-02-05 03:10:02.086542000 -0800
+@@ -1509,24 +1509,23 @@
+ 	  varinfo_t v;
+ 	  unsigned int t;
+ 	  unsigned HOST_WIDE_INT fieldoffset = get_varinfo (j)->offset + loff;
+-	  bitmap tmp;
+ 
+ 	  v = first_vi_for_offset (get_varinfo (j), fieldoffset);
+ 	  /* If the access is outside of the variable we can ignore it.  */
+ 	  if (!v)
+ 	    continue;
+ 	  t = find (v->id);
+-	  tmp = get_varinfo (t)->solution;
+-
+-	  if (set_union_with_increment (tmp, sol, 0))
++	  if (add_graph_edge (graph, t, rhs))
+ 	    {
+-	      get_varinfo (t)->solution = tmp;
+-	      if (t == rhs)
+-		sol = get_varinfo (rhs)->solution;
+-	      if (!TEST_BIT (changed, t))
++	      if (bitmap_ior_into (get_varinfo (t)->solution, sol))
+ 		{
+-		  SET_BIT (changed, t);
+-		  changed_count++;
++		  if (t == rhs)
++		    sol = get_varinfo (rhs)->solution;
++		  if (!TEST_BIT (changed, t))
++		    {
++		      SET_BIT (changed, t);
++		      changed_count++;
++		    }
+ 		}
+ 	    }
+ 	}
+diff -Naur gcc-4.3.3.orig/gcc/version.c gcc-4.3.3/gcc/version.c
+--- gcc-4.3.3.orig/gcc/version.c	2007-08-21 08:35:30.000000000 -0700
++++ gcc-4.3.3/gcc/version.c	2009-02-22 22:23:11.339429250 -0800
+@@ -14,4 +14,4 @@
+    Makefile.  */
+ 
+ const char version_string[] = BASEVER DATESTAMP DEVPHASE REVISION;
+-const char pkgversion_string[] = PKGVERSION;
++const char pkgversion_string[] = "(GCC for Cross-LFS 4.3.3.20090223) ";
 diff -Naur gcc-4.3.3.orig/libjava/classpath/doc/cp-tools.info gcc-4.3.3/libjava/classpath/doc/cp-tools.info
 --- gcc-4.3.3.orig/libjava/classpath/doc/cp-tools.info	2009-01-24 04:05:54.000000000 -0800
 +++ gcc-4.3.3/libjava/classpath/doc/cp-tools.info	1969-12-31 16:00:00.000000000 -0800
@@ -7395,8 +8771,25 @@ diff -Naur gcc-4.3.3.orig/libjava/classpath/doc/gtnameserv.1 gcc-4.3.3/libjava/c
 -\&\fIjava\fR\|(1), ...
 diff -Naur gcc-4.3.3.orig/libstdc++-v3/ChangeLog gcc-4.3.3/libstdc++-v3/ChangeLog
 --- gcc-4.3.3.orig/libstdc++-v3/ChangeLog	2009-01-24 02:16:26.000000000 -0800
-+++ gcc-4.3.3/libstdc++-v3/ChangeLog	2009-01-27 03:39:42.241832000 -0800
-@@ -1,3 +1,11 @@
++++ gcc-4.3.3/libstdc++-v3/ChangeLog	2009-02-09 02:08:11.942408000 -0800
+@@ -1,3 +1,28 @@
++2009-02-09  Johannes Singler  <singler@ira.uka.de>
++
++        Backport from mainline:
++        2009-02-03  Johannes Singler  <singler@ira.uka.de>
++
++        * include/parallel/algorithmfwd.h:
++        Add parallelism default for many declarations.
++        * include/parallel/numericfwd.h: Likewise.
++        * include/parallel/iterator.h: Use iterator_traits as usual.
++        * include/parallel/par_loop.h:
++        Include equally_split.h.
++        (for_each_template_random_access_ed):
++        Avoid calling the Result default constructor.
++        * include/parallel/numeric: Replace
++        for_each_template_random_access by
++        for_each_template_random_access_ed in numeric functions.
++
 +2009-01-27  Uros Bizjak  <ubizjak@gmail.com>
 +
 +	Backport from mainline:
@@ -7408,6 +8801,264 @@ diff -Naur gcc-4.3.3.orig/libstdc++-v3/ChangeLog gcc-4.3.3/libstdc++-v3/ChangeLo
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/include/parallel/algorithmfwd.h gcc-4.3.3/libstdc++-v3/include/parallel/algorithmfwd.h
+--- gcc-4.3.3.orig/libstdc++-v3/include/parallel/algorithmfwd.h	2008-02-17 16:00:00.000000000 -0800
++++ gcc-4.3.3/libstdc++-v3/include/parallel/algorithmfwd.h	2009-02-09 02:08:11.942408000 -0800
+@@ -99,7 +99,8 @@
+   template<typename _RAIter, typename _Tp>
+     typename iterator_traits<_RAIter>::difference_type
+     count_switch(_RAIter, _RAIter, const _Tp&, random_access_iterator_tag,
+-		 __gnu_parallel::_Parallelism);
++		 __gnu_parallel::_Parallelism parallelism
++		 = __gnu_parallel::parallel_unbalanced);
+ 
+ 
+   template<typename _IIter, typename _Predicate>
+@@ -121,7 +122,8 @@
+   template<typename _RAIter, typename _Predicate>
+     typename iterator_traits<_RAIter>::difference_type
+     count_if_switch(_RAIter, _RAIter, _Predicate, random_access_iterator_tag,
+-		    __gnu_parallel::_Parallelism);
++		    __gnu_parallel::_Parallelism parallelism
++		    = __gnu_parallel::parallel_unbalanced);
+ 
+   // algobase.h
+   template<typename _IIter1, typename _IIter2>
+@@ -228,7 +230,8 @@
+   template<typename _RAIter, typename _Function>
+     _Function
+     for_each_switch(_RAIter, _RAIter, _Function, random_access_iterator_tag, 
+-		    __gnu_parallel::_Parallelism);
++		    __gnu_parallel::_Parallelism  parallelism
++		    = __gnu_parallel::parallel_balanced);
+ 
+ 
+   template<typename _FIter, typename _Generator>
+@@ -250,7 +253,8 @@
+   template<typename _RAIter, typename _Generator>
+     void
+     generate_switch(_RAIter, _RAIter, _Generator, random_access_iterator_tag, 
+-		    __gnu_parallel::_Parallelism);
++		    __gnu_parallel::_Parallelism parallelism
++		    = __gnu_parallel::parallel_balanced);
+ 
+   template<typename _OIter, typename _Size, typename _Generator>
+     _OIter
+@@ -272,7 +276,8 @@
+   template<typename _RAIter, typename _Size, typename _Generator>
+     _RAIter
+     generate_n_switch(_RAIter, _Size, _Generator, random_access_iterator_tag, 
+-		      __gnu_parallel::_Parallelism);
++		      __gnu_parallel::_Parallelism parallelism
++		      = __gnu_parallel::parallel_balanced);
+ 
+   template<typename _IIter1, typename _IIter2>
+     bool
+@@ -429,7 +434,8 @@
+     _RAOIter
+     transform1_switch(_RAIIter, _RAIIter, _RAOIter, UnaryOperation, 
+ 		      random_access_iterator_tag, random_access_iterator_tag, 
+-		      __gnu_parallel::_Parallelism);
++		      __gnu_parallel::_Parallelism parallelism
++		      = __gnu_parallel::parallel_balanced);
+ 
+ 
+   template<typename _IIter1, typename _IIter2, typename _OIter,
+@@ -455,7 +461,8 @@
+     transform2_switch(_RAIter1, _RAIter1, _RAIter2, _RAIter3, _BiOperation, 
+ 		      random_access_iterator_tag, random_access_iterator_tag, 
+ 		      random_access_iterator_tag,
+-		      __gnu_parallel::_Parallelism);
++		      __gnu_parallel::_Parallelism parallelism
++		      = __gnu_parallel::parallel_balanced);
+ 
+   template<typename _IIter1, typename _IIter2, typename _OIter,
+ 	   typename _BiOperation, typename _Tag1,
+@@ -546,7 +553,8 @@
+   template<typename _RAIter, typename _Compare>
+     _RAIter
+     max_element_switch(_RAIter, _RAIter, _Compare, random_access_iterator_tag, 
+-		       __gnu_parallel::_Parallelism);
++		       __gnu_parallel::_Parallelism parallelism
++		       = __gnu_parallel::parallel_balanced);
+ 
+ 
+   template<typename _IIter1, typename _IIter2, typename _OIter>
+@@ -615,7 +623,8 @@
+   template<typename _RAIter, typename _Compare>
+     _RAIter
+     min_element_switch(_RAIter, _RAIter, _Compare, random_access_iterator_tag, 
+-		       __gnu_parallel::_Parallelism);
++		       __gnu_parallel::_Parallelism parallelism
++		       = __gnu_parallel::parallel_balanced);
+ 
+   template<typename _RAIter>
+     void
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/include/parallel/iterator.h gcc-4.3.3/libstdc++-v3/include/parallel/iterator.h
+--- gcc-4.3.3.orig/libstdc++-v3/include/parallel/iterator.h	2008-01-09 10:27:27.000000000 -0800
++++ gcc-4.3.3/libstdc++-v3/include/parallel/iterator.h	2009-02-09 02:08:11.942408000 -0800
+@@ -131,7 +131,8 @@
+     public:
+       typedef IteratorCategory iterator_category;
+       typedef void value_type;
+-      typedef typename Iterator1::difference_type difference_type;
++      typedef typename std::iterator_traits<Iterator1>::difference_type
++                                                            difference_type;
+       typedef type* pointer;
+       typedef type& reference;
+ 
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/include/parallel/numeric gcc-4.3.3/libstdc++-v3/include/parallel/numeric
+--- gcc-4.3.3.orig/libstdc++-v3/include/parallel/numeric	2008-02-17 16:00:00.000000000 -0800
++++ gcc-4.3.3/libstdc++-v3/include/parallel/numeric	2009-02-09 02:08:11.942408000 -0800
+@@ -103,13 +103,13 @@
+ 	  __gnu_parallel::accumulate_selector<_RandomAccessIterator>
+ 	    my_selector;
+ 	  __gnu_parallel::
+-	    for_each_template_random_access(begin, end,
++	    for_each_template_random_access_ed(begin, end,
+ 					    __gnu_parallel::nothing(),
+ 					    my_selector,
+ 					    __gnu_parallel::
+ 					    accumulate_binop_reduct
+ 					    <BinaryOperation>(binary_op),
+-					    res, res, -1, parallelism_tag);
++					    res, res, -1);
+ 	  return res;
+ 	}
+       else
+@@ -211,9 +211,9 @@
+ 	    inner_product_selector<RandomAccessIterator1,
+ 	    RandomAccessIterator2, T> my_selector(first1, first2);
+ 	  __gnu_parallel::
+-	    for_each_template_random_access(first1, last1, binary_op2,
++	    for_each_template_random_access_ed(first1, last1, binary_op2,
+ 					    my_selector, binary_op1,
+-					    res, res, -1, parallelism_tag);
++					    res, res, -1);
+ 	  return res;
+ 	}
+       else
+@@ -432,10 +432,10 @@
+ 	    end_pair(end, result + (end - begin));
+ 	  __gnu_parallel::adjacent_difference_selector<ip> functionality;
+ 	  __gnu_parallel::
+-	    for_each_template_random_access(begin_pair, end_pair, bin_op,
++	    for_each_template_random_access_ed(begin_pair, end_pair, bin_op,
+ 					    functionality,
+ 					    __gnu_parallel::dummy_reduct(),
+-					    dummy, dummy, -1, parallelism_tag);
++					    dummy, dummy, -1);
+ 	  return functionality.finish_iterator;
+ 	}
+       else
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/include/parallel/numericfwd.h gcc-4.3.3/libstdc++-v3/include/parallel/numericfwd.h
+--- gcc-4.3.3.orig/libstdc++-v3/include/parallel/numericfwd.h	2008-02-17 16:00:00.000000000 -0800
++++ gcc-4.3.3/libstdc++-v3/include/parallel/numericfwd.h	2009-02-09 02:08:11.942408000 -0800
+@@ -83,7 +83,8 @@
+     _Tp
+     accumulate_switch(_RAIter, _RAIter, _Tp, _BinaryOper,
+ 		      random_access_iterator_tag,
+-		      __gnu_parallel::_Parallelism);
++		      __gnu_parallel::_Parallelism parallelism
++		      = __gnu_parallel::parallel_unbalanced);
+ 
+   template<typename _IIter, typename _OIter>
+     _OIter
+@@ -124,7 +125,8 @@
+     adjacent_difference_switch(_IIter, _IIter, _OIter, _BinaryOper, 
+ 			       random_access_iterator_tag, 
+ 			       random_access_iterator_tag, 
+-			       __gnu_parallel::_Parallelism);
++			       __gnu_parallel::_Parallelism parallelism
++			       = __gnu_parallel::parallel_unbalanced);
+ 
+   template<typename _IIter1, typename _IIter2, typename _Tp>
+     _Tp
+@@ -164,7 +166,8 @@
+     inner_product_switch(_RAIter1, _RAIter1, _RAIter2, _Tp, BinaryFunction1, 
+ 			 BinaryFunction2, random_access_iterator_tag, 
+ 			 random_access_iterator_tag, 
+-			 __gnu_parallel::_Parallelism);
++			 __gnu_parallel::_Parallelism
++			 = __gnu_parallel::parallel_unbalanced);
+ 
+   template<typename _IIter1, typename _IIter2, typename _Tp,
+ 	   typename _BinaryFunction1, typename _BinaryFunction2,
+diff -Naur gcc-4.3.3.orig/libstdc++-v3/include/parallel/par_loop.h gcc-4.3.3/libstdc++-v3/include/parallel/par_loop.h
+--- gcc-4.3.3.orig/libstdc++-v3/include/parallel/par_loop.h	2008-01-09 18:07:41.000000000 -0800
++++ gcc-4.3.3/libstdc++-v3/include/parallel/par_loop.h	2009-02-09 02:08:11.942408000 -0800
+@@ -42,6 +42,7 @@
+ #include <omp.h>
+ #include <parallel/settings.h>
+ #include <parallel/base.h>
++#include <parallel/equally_split.h>
+ 
+ namespace __gnu_parallel
+ {
+@@ -80,9 +81,9 @@
+   {
+     typedef std::iterator_traits<RandomAccessIterator> traits_type;
+     typedef typename traits_type::difference_type difference_type;
+-
+     const difference_type length = end - begin;
+     Result *thread_results;
++    bool* constructed;
+ 
+     thread_index_t num_threads =
+       __gnu_parallel::min<difference_type>(get_max_threads(), length);
+@@ -92,13 +93,15 @@
+ #       pragma omp single
+           {
+             num_threads = omp_get_num_threads();
+-            thread_results = new Result[num_threads];
++            thread_results = static_cast<Result*>(
++                                ::operator new(num_threads * sizeof(Result)));
++            constructed = new bool[num_threads];
+           }
+ 
+         thread_index_t iam = omp_get_thread_num();
+ 
+         // Neutral element.
+-        Result reduct = Result();
++        Result* reduct = static_cast<Result*>(::operator new(sizeof(Result)));
+ 
+         difference_type
+             start = equally_split_point(length, num_threads, iam),
+@@ -106,23 +109,30 @@
+ 
+         if (start < stop)
+           {
+-            reduct = f(o, begin + start);
++            new(reduct) Result(f(o, begin + start));
+             ++start;
++            constructed[iam] = true;
+           }
++        else
++          constructed[iam] = false;
+ 
+         for (; start < stop; ++start)
+-          reduct = r(reduct, f(o, begin + start));
++          *reduct = r(*reduct, f(o, begin + start));
+ 
+-        thread_results[iam] = reduct;
++        thread_results[iam] = *reduct;
+       } //parallel
+ 
+     for (thread_index_t i = 0; i < num_threads; ++i)
+-      output = r(output, thread_results[i]);
++        if (constructed[i])
++            output = r(output, thread_results[i]);
+ 
+     // Points to last element processed (needed as return value for
+     // some algorithms like transform).
+     f.finish_iterator = begin + length;
+ 
++    delete[] thread_results;
++    delete[] constructed;
++
+     return o;
+   }
+ 
 diff -Naur gcc-4.3.3.orig/libstdc++-v3/scripts/extract_symvers gcc-4.3.3/libstdc++-v3/scripts/extract_symvers
 --- gcc-4.3.3.orig/libstdc++-v3/scripts/extract_symvers	2005-08-16 19:28:44.000000000 -0700
 +++ gcc-4.3.3/libstdc++-v3/scripts/extract_symvers	2009-01-27 03:39:42.241832000 -0800

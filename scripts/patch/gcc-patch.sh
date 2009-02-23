@@ -46,6 +46,7 @@ svn export svn://gcc.gnu.org/svn/gcc/branches/gcc-${FIXEDVERSION}-branch gcc-${V
 # Add a custom version string
 #
 DATE_STAMP=$(cat gcc-${VERSION}/gcc/DATESTAMP)
+echo "${VERSION}" > gcc-${VERSION}/gcc/BASE-VER
 sed -i "s:PKGVERSION:\"(GCC for Cross-LFS ${VERSION}.${DATE_STAMP}) \":" gcc-${VERSION}/gcc/version.c
 
 # Cleanup
@@ -54,7 +55,7 @@ for DIRECTORY in ${DIRS}; do
   cd ${DIRECTORY}
   REMOVE="ABOUT-NLS COPYING COPYING.LIB ChangeLog ChangeLog.tree-ssa MAINTAINERS Makefile.def
     Makefile.in Makefile.tpl README README.SCO boehm-gc/ChangeLog BUGS FAQ LAST_UPDATED
-    MD5SUMS NEWS bugs.html faq.html gcc/DEV-PHASE gcc/c-parse.c
+    MD5SUMS NEWS bugs.html faq.html gcc/BASE-VER gcc/DEV-PHASE gcc/c-parse.c
     gcc/gengtype-lex.c gcc/c-parse.y gcc/gengtype-yacc.c gcc/gengtype-yacc.h gcc/f/BUGS gcc/f/NEWS
     gcc/java/parse-scan.c gcc/java/parse.c gcc/objc/objc-parse.c gcc/objc/objc-parse.y"
   for file in ${REMOVE}; do
