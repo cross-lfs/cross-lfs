@@ -103,16 +103,16 @@ rm -f *~ *.orig
 # Create Patch
 #
 cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-echo "Date: `date +%m-%d-%Y`" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-echo "Initial Package Version: ${VERSION}" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-echo "Origin: Upstream" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
 if [ -n "${SKIPPED}" ]; then
-  echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-  echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
+  echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+  echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
 fi
-echo "" >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-$(PATCH_NUM}.patch
-echo "Created /usr/src/vim-${VERSION}-branch_update-$(PATCH_NUM}.patch."
+echo "" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created /usr/src/vim-${VERSION}-branch_update-${PATCH_NUM}.patch."
