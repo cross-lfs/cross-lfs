@@ -1,14 +1,14 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 02-15-2009
+Date: 02-22-2009
 Initial Package Version: 5.7
 Origin: Upstream
 Upstream Status: Applied
 Description: This is a branch update for NCurses-5.7, and should be
-             rechecked periodically. This patch covers up to 5.7-20090214.
+             rechecked periodically. This patch covers up to 5.7-20090221.
 
 diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
 --- ncurses-5.7.orig/aclocal.m4	2008-10-25 15:15:32.000000000 -0700
-+++ ncurses-5.7/aclocal.m4	2009-02-15 23:21:19.692164827 -0800
++++ ncurses-5.7/aclocal.m4	2009-02-22 21:40:16.166419890 -0800
 @@ -1,5 +1,5 @@
  dnl***************************************************************************
 -dnl Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -885,7 +885,7 @@ diff -Naur ncurses-5.7.orig/aclocal.m4 ncurses-5.7/aclocal.m4
  mirbsd*) #(vi
 diff -Naur ncurses-5.7.orig/Ada95/gen/adacurses-config.in ncurses-5.7/Ada95/gen/adacurses-config.in
 --- ncurses-5.7.orig/Ada95/gen/adacurses-config.in	2007-04-07 14:06:50.000000000 -0700
-+++ ncurses-5.7/Ada95/gen/adacurses-config.in	2009-02-15 23:21:14.347823438 -0800
++++ ncurses-5.7/Ada95/gen/adacurses-config.in	2009-02-22 21:40:06.801819807 -0800
 @@ -1,18 +1,47 @@
  #! /bin/sh
 -# $Id: adacurses-config.in,v 1.2 2007/04/07 21:06:50 tom Exp $
@@ -959,7 +959,7 @@ diff -Naur ncurses-5.7.orig/Ada95/gen/adacurses-config.in ncurses-5.7/Ada95/gen/
  esac
 diff -Naur ncurses-5.7.orig/Ada95/gen/Makefile.in ncurses-5.7/Ada95/gen/Makefile.in
 --- ncurses-5.7.orig/Ada95/gen/Makefile.in	2008-10-04 15:58:31.000000000 -0700
-+++ ncurses-5.7/Ada95/gen/Makefile.in	2009-02-15 23:21:14.347823438 -0800
++++ ncurses-5.7/Ada95/gen/Makefile.in	2009-02-22 21:40:06.801819807 -0800
 @@ -1,5 +1,5 @@
  ##############################################################################
 -# Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
@@ -1015,7 +1015,7 @@ diff -Naur ncurses-5.7.orig/Ada95/gen/Makefile.in ncurses-5.7/Ada95/gen/Makefile
  realclean :: distclean
 diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/Makefile.in
 --- ncurses-5.7.orig/Ada95/samples/Makefile.in	2006-12-17 08:45:02.000000000 -0800
-+++ ncurses-5.7/Ada95/samples/Makefile.in	2009-02-15 23:21:14.347823438 -0800
++++ ncurses-5.7/Ada95/samples/Makefile.in	2009-02-22 21:40:06.805818410 -0800
 @@ -1,5 +1,5 @@
  ##############################################################################
 -# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
@@ -1054,7 +1054,7 @@ diff -Naur ncurses-5.7.orig/Ada95/samples/Makefile.in ncurses-5.7/Ada95/samples/
  	rm -f Makefile
 diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile.in
 --- ncurses-5.7.orig/Ada95/src/Makefile.in	2007-09-15 11:22:24.000000000 -0700
-+++ ncurses-5.7/Ada95/src/Makefile.in	2009-02-15 23:21:14.347823438 -0800
++++ ncurses-5.7/Ada95/src/Makefile.in	2009-02-22 21:40:06.805818410 -0800
 @@ -1,5 +1,5 @@
  ##############################################################################
 -# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
@@ -1146,7 +1146,7 @@ diff -Naur ncurses-5.7.orig/Ada95/src/Makefile.in ncurses-5.7/Ada95/src/Makefile
  	@echo made $@
 diff -Naur ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb
 --- ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb	2008-07-26 11:51:11.000000000 -0700
-+++ ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb	2009-02-15 23:21:00.210918563 -0800
++++ ncurses-5.7/Ada95/src/terminal_interface-curses-mouse.adb	2009-02-22 21:39:52.800922475 -0800
 @@ -35,8 +35,8 @@
  ------------------------------------------------------------------------------
  --  Author:  Juergen Pfeifer, 1996
@@ -1169,7 +1169,7 @@ diff -Naur ncurses-5.7.orig/Ada95/src/terminal_interface-curses-mouse.adb ncurse
           return True;
 diff -Naur ncurses-5.7.orig/c++/cursesw.cc ncurses-5.7/c++/cursesw.cc
 --- ncurses-5.7.orig/c++/cursesw.cc	2007-12-15 15:01:57.000000000 -0800
-+++ ncurses-5.7/c++/cursesw.cc	2009-02-15 23:21:00.214919122 -0800
++++ ncurses-5.7/c++/cursesw.cc	2009-02-22 21:39:52.804923033 -0800
 @@ -1,6 +1,6 @@
  // * this is for making emacs happy: -*-Mode: C++;-*-
  /****************************************************************************
@@ -1206,7 +1206,7 @@ diff -Naur ncurses-5.7.orig/c++/cursesw.cc ncurses-5.7/c++/cursesw.cc
  #endif
 diff -Naur ncurses-5.7.orig/c++/Makefile.in ncurses-5.7/c++/Makefile.in
 --- ncurses-5.7.orig/c++/Makefile.in	2007-04-28 08:29:12.000000000 -0700
-+++ ncurses-5.7/c++/Makefile.in	2009-02-15 23:21:09.899537365 -0800
++++ ncurses-5.7/c++/Makefile.in	2009-02-22 21:40:02.885566699 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.84 2007/04/28 15:29:12 tom Exp $
 +# $Id: Makefile.in,v 1.85 2009/01/03 19:10:40 tom Exp $
@@ -1240,7 +1240,7 @@ diff -Naur ncurses-5.7.orig/c++/Makefile.in ncurses-5.7/c++/Makefile.in
  ../lib/$(LIBNAME_LIBTOOL) : $(LIB_OBJS)
 diff -Naur ncurses-5.7.orig/config.guess ncurses-5.7/config.guess
 --- ncurses-5.7.orig/config.guess	2008-08-30 13:25:07.000000000 -0700
-+++ ncurses-5.7/config.guess	2009-02-15 23:21:09.899537365 -0800
++++ ncurses-5.7/config.guess	2009-02-22 21:40:02.885566699 -0800
 @@ -4,7 +4,7 @@
  #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
  #   Free Software Foundation, Inc.
@@ -1310,7 +1310,7 @@ diff -Naur ncurses-5.7.orig/config.guess ncurses-5.7/config.guess
  	exit ;;
 diff -Naur ncurses-5.7.orig/config.sub ncurses-5.7/config.sub
 --- ncurses-5.7.orig/config.sub	2008-08-30 13:25:02.000000000 -0700
-+++ ncurses-5.7/config.sub	2009-02-15 23:21:09.903537644 -0800
++++ ncurses-5.7/config.sub	2009-02-22 21:40:02.885566699 -0800
 @@ -4,7 +4,7 @@
  #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
  #   Free Software Foundation, Inc.
@@ -1394,7 +1394,7 @@ diff -Naur ncurses-5.7.orig/config.sub ncurses-5.7/config.sub
  	sparc | sparcv8 | sparcv9 | sparcv9b | sparcv9v)
 diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
 --- ncurses-5.7.orig/configure	2008-10-25 17:04:38.000000000 -0700
-+++ ncurses-5.7/configure	2009-02-15 23:21:24.616480793 -0800
++++ ncurses-5.7/configure	2009-02-22 21:40:17.902529403 -0800
 @@ -1,7 +1,7 @@
  #! /bin/sh
 -# From configure.in Revision: 1.454 .
@@ -13281,7 +13281,7 @@ diff -Naur ncurses-5.7.orig/configure ncurses-5.7/configure
  
 diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
 --- ncurses-5.7.orig/configure.in	2008-10-18 07:53:32.000000000 -0700
-+++ ncurses-5.7/configure.in	2009-02-15 23:21:24.616480793 -0800
++++ ncurses-5.7/configure.in	2009-02-22 21:40:17.902529403 -0800
 @@ -1,5 +1,5 @@
  dnl***************************************************************************
 -dnl Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -13549,13 +13549,13 @@ diff -Naur ncurses-5.7.orig/configure.in ncurses-5.7/configure.in
  
 diff -Naur ncurses-5.7.orig/dist.mk ncurses-5.7/dist.mk
 --- ncurses-5.7.orig/dist.mk	2008-11-01 17:58:38.000000000 -0700
-+++ ncurses-5.7/dist.mk	2009-02-15 23:21:24.616480793 -0800
++++ ncurses-5.7/dist.mk	2009-02-22 21:40:19.474632211 -0800
 @@ -25,7 +25,7 @@
  # use or other dealings in this Software without prior written               #
  # authorization.                                                             #
  ##############################################################################
 -# $Id: dist.mk,v 1.671 2008/11/02 00:58:38 tom Exp $
-+# $Id: dist.mk,v 1.686 2009/02/14 21:09:27 tom Exp $
++# $Id: dist.mk,v 1.687 2009/02/21 21:20:20 tom Exp $
  # Makefile for creating ncurses distributions.
  #
  # This only needs to be used directly as a makefile by developers, but
@@ -13564,13 +13564,13 @@ diff -Naur ncurses-5.7.orig/dist.mk ncurses-5.7/dist.mk
  NCURSES_MAJOR = 5
  NCURSES_MINOR = 7
 -NCURSES_PATCH = 20081102
-+NCURSES_PATCH = 20090214
++NCURSES_PATCH = 20090221
  
  # We don't append the patch to the version, since this only applies to releases
  VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
 diff -Naur ncurses-5.7.orig/form/frm_driver.c ncurses-5.7/form/frm_driver.c
 --- ncurses-5.7.orig/form/frm_driver.c	2008-10-18 09:25:00.000000000 -0700
-+++ ncurses-5.7/form/frm_driver.c	2009-02-15 23:21:03.083101270 -0800
++++ ncurses-5.7/form/frm_driver.c	2009-02-22 21:39:55.861116636 -0800
 @@ -32,7 +32,7 @@
  
  #include "form.priv.h"
@@ -13590,7 +13590,7 @@ diff -Naur ncurses-5.7.orig/form/frm_driver.c ncurses-5.7/form/frm_driver.c
  
 diff -Naur ncurses-5.7.orig/form/Makefile.in ncurses-5.7/form/Makefile.in
 --- ncurses-5.7.orig/form/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/form/Makefile.in	2009-02-15 23:21:09.919538762 -0800
++++ ncurses-5.7/form/Makefile.in	2009-02-22 21:40:02.905568096 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.47 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.48 2009/01/03 19:09:26 tom Exp $
@@ -13609,9 +13609,35 @@ diff -Naur ncurses-5.7.orig/form/Makefile.in ncurses-5.7/form/Makefile.in
  AWK		= @AWK@
  LD		= @LD@
  LN_S		= @LN_S@
+diff -Naur ncurses-5.7.orig/include/capdefaults.c ncurses-5.7/include/capdefaults.c
+--- ncurses-5.7.orig/include/capdefaults.c	2008-08-04 05:33:42.000000000 -0700
++++ ncurses-5.7/include/capdefaults.c	2009-02-22 21:40:19.474632211 -0800
+@@ -32,7 +32,7 @@
+  *     and: Thomas E. Dickey                        1996-on                 *
+  ****************************************************************************/
+ 
+-/* $Id: capdefaults.c,v 1.13 2008/08/04 12:33:42 tom Exp $ */
++/* $Id: capdefaults.c,v 1.14 2008/11/16 00:19:59 juergen Exp $ */
+ 
+     /*
+      * Compute obsolete capabilities.  The reason this is an include file is
+@@ -44,11 +44,11 @@
+      * postprocess_termcap().
+      */
+ {
+-    char *sp;
++    char *strp;
+     short capval;
+ 
+ #define EXTRACT_DELAY(str) \
+-    	(short) (sp = strchr(str, '*'), sp ? atoi(sp+1) : 0)
++    	(short) (strp = strchr(str, '*'), strp ? atoi(strp+1) : 0)
+ 
+     /* current (4.4BSD) capabilities marked obsolete */
+     if (VALID_STRING(carriage_return)
 diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
 --- ncurses-5.7.orig/include/curses.h.in	2008-08-30 13:11:29.000000000 -0700
-+++ ncurses-5.7/include/curses.h.in	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/include/curses.h.in	2009-02-22 21:40:19.474632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -13624,7 +13650,7 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
   ****************************************************************************/
  
 -/* $Id: curses.h.in,v 1.187 2008/08/30 20:11:29 tom Exp $ */
-+/* $Id: curses.h.in,v 1.193 2009/02/15 00:04:23 tom Exp $ */
++/* $Id: curses.h.in,v 1.194 2009/02/21 22:44:41 tom Exp $ */
  
  #ifndef __NCURSES_H
  #define __NCURSES_H
@@ -13694,7 +13720,7 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
  extern NCURSES_EXPORT(int) standout (void);				/* generated */
  extern NCURSES_EXPORT(int) standend (void);				/* generated */
  extern NCURSES_EXPORT(int) start_color (void);				/* implemented */
-@@ -856,23 +857,117 @@
+@@ -856,23 +857,119 @@
   * These extensions provide access to information stored in the WINDOW even
   * when NCURSES_OPAQUE is set:
   */
@@ -13782,6 +13808,8 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
 +extern NCURSES_EXPORT(int) NCURSES_SP_NAME(reset_prog_mode) (SCREEN*); /* implemented */
 +extern NCURSES_EXPORT(int) NCURSES_SP_NAME(reset_shell_mode) (SCREEN*); /* implemented */
 +extern NCURSES_EXPORT(int) NCURSES_SP_NAME(ripoffline) (SCREEN*, int, int (*)(WINDOW *, int));	/* implemented */
++extern NCURSES_EXPORT(int) NCURSES_SP_NAME(scr_init) (SCREEN*, const char *); /* implemented */
++extern NCURSES_EXPORT(int) NCURSES_SP_NAME(scr_restore) (SCREEN*, const char *); /* implemented */
 +extern NCURSES_EXPORT(int) NCURSES_SP_NAME(scr_set) (SCREEN*, const char *); /* implemented */
 +extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_attroff) (SCREEN*, const chtype); /* implemented */
 +extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_attron) (SCREEN*, const chtype); /* implemented */
@@ -13824,7 +13852,7 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
  /* attributes */
  
  #define NCURSES_ATTR_SHIFT       8
-@@ -1173,7 +1268,7 @@
+@@ -1173,7 +1270,7 @@
   *	   It gives the ESC expire time in milliseconds.
   *	b. ttytype is needed for backward compatibility
   */
@@ -13835,7 +13863,7 @@ diff -Naur ncurses-5.7.orig/include/curses.h.in ncurses-5.7/include/curses.h.in
  NCURSES_WRAPPED_VAR(WINDOW *, newscr);
 diff -Naur ncurses-5.7.orig/include/curses.tail ncurses-5.7/include/curses.tail
 --- ncurses-5.7.orig/include/curses.tail	2008-07-05 13:20:38.000000000 -0700
-+++ ncurses-5.7/include/curses.tail	2009-02-15 23:21:00.214919122 -0800
++++ ncurses-5.7/include/curses.tail	2009-02-22 21:39:52.804923033 -0800
 @@ -1,4 +1,4 @@
 -/* $Id: curses.tail,v 1.16 2008/07/05 20:20:38 tom Exp $ */
 +/* $Id: curses.tail,v 1.17 2008/11/23 00:12:12 tom Exp $ */
@@ -13852,7 +13880,7 @@ diff -Naur ncurses-5.7.orig/include/curses.tail ncurses-5.7/include/curses.tail
  extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
 diff -Naur ncurses-5.7.orig/include/curses.wide ncurses-5.7/include/curses.wide
 --- ncurses-5.7.orig/include/curses.wide	2007-03-10 09:52:23.000000000 -0800
-+++ ncurses-5.7/include/curses.wide	2009-02-15 23:21:01.799020254 -0800
++++ ncurses-5.7/include/curses.wide	2009-02-22 21:39:54.289015784 -0800
 @@ -1,9 +1,11 @@
 -/* $Id: curses.wide,v 1.34 2007/03/10 17:52:23 tom Exp $ */
 +/* $Id: curses.wide,v 1.36 2008/11/29 18:44:08 tom Exp $ */
@@ -13868,7 +13896,7 @@ diff -Naur ncurses-5.7.orig/include/curses.wide ncurses-5.7/include/curses.wide
  extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
 diff -Naur ncurses-5.7.orig/INSTALL ncurses-5.7/INSTALL
 --- ncurses-5.7.orig/INSTALL	2008-11-02 13:13:51.000000000 -0800
-+++ ncurses-5.7/INSTALL	2009-02-15 23:21:09.895537365 -0800
++++ ncurses-5.7/INSTALL	2009-02-22 21:40:02.877566978 -0800
 @@ -1,5 +1,5 @@
  -------------------------------------------------------------------------------
 --- Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.               --
@@ -13919,7 +13947,7 @@ diff -Naur ncurses-5.7.orig/INSTALL ncurses-5.7/INSTALL
  	programs (e.g., tic).  The test applications will still be built if you
 diff -Naur ncurses-5.7.orig/man/curs_color.3x ncurses-5.7/man/curs_color.3x
 --- ncurses-5.7.orig/man/curs_color.3x	2005-12-17 16:00:37.000000000 -0800
-+++ ncurses-5.7/man/curs_color.3x	2009-02-15 23:21:17.376018158 -0800
++++ ncurses-5.7/man/curs_color.3x	2009-02-22 21:40:14.670322949 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
@@ -13950,7 +13978,7 @@ diff -Naur ncurses-5.7.orig/man/curs_color.3x ncurses-5.7/man/curs_color.3x
  The value of the second and
 diff -Naur ncurses-5.7.orig/man/curs_mouse.3x ncurses-5.7/man/curs_mouse.3x
 --- ncurses-5.7.orig/man/curs_mouse.3x	2006-12-30 15:43:34.000000000 -0800
-+++ ncurses-5.7/man/curs_mouse.3x	2009-02-15 23:21:00.214919122 -0800
++++ ncurses-5.7/man/curs_mouse.3x	2009-02-22 21:39:52.804923033 -0800
 @@ -1,6 +1,6 @@
  '\" t
  .\"***************************************************************************
@@ -13996,7 +14024,7 @@ diff -Naur ncurses-5.7.orig/man/curs_mouse.3x ncurses-5.7/man/curs_mouse.3x
  function such as \fBgetstr\fR that expects a linefeed for input-loop
 diff -Naur ncurses-5.7.orig/man/keybound.3x ncurses-5.7/man/keybound.3x
 --- ncurses-5.7.orig/man/keybound.3x	2006-02-25 13:47:06.000000000 -0800
-+++ ncurses-5.7/man/keybound.3x	2009-02-15 23:21:04.663202123 -0800
++++ ncurses-5.7/man/keybound.3x	2009-02-22 21:39:57.593227825 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1999-2003,2006 Free Software Foundation, Inc.              *
@@ -14017,7 +14045,7 @@ diff -Naur ncurses-5.7.orig/man/keybound.3x ncurses-5.7/man/keybound.3x
  .SH SYNOPSIS
 diff -Naur ncurses-5.7.orig/man/tabs.1 ncurses-5.7/man/tabs.1
 --- ncurses-5.7.orig/man/tabs.1	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/man/tabs.1	2009-02-15 23:20:58.758823578 -0800
++++ ncurses-5.7/man/tabs.1	2009-02-22 21:39:51.140814638 -0800
 @@ -0,0 +1,143 @@
 +.\"***************************************************************************
 +.\" Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -14164,7 +14192,7 @@ diff -Naur ncurses-5.7.orig/man/tabs.1 ncurses-5.7/man/tabs.1
 +.\"# End:
 diff -Naur ncurses-5.7.orig/man/tset.1 ncurses-5.7/man/tset.1
 --- ncurses-5.7.orig/man/tset.1	2006-12-24 07:00:30.000000000 -0800
-+++ ncurses-5.7/man/tset.1	2009-02-15 23:20:58.758823578 -0800
++++ ncurses-5.7/man/tset.1	2009-02-22 21:39:51.140814638 -0800
 @@ -1,5 +1,5 @@
  .\"***************************************************************************
 -.\" Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -14185,7 +14213,7 @@ diff -Naur ncurses-5.7.orig/man/tset.1 ncurses-5.7/man/tset.1
  .SH SYNOPSIS
 diff -Naur ncurses-5.7.orig/MANIFEST ncurses-5.7/MANIFEST
 --- ncurses-5.7.orig/MANIFEST	2008-10-25 16:47:24.000000000 -0700
-+++ ncurses-5.7/MANIFEST	2009-02-15 23:21:09.895537365 -0800
++++ ncurses-5.7/MANIFEST	2009-02-22 21:40:02.877566978 -0800
 @@ -640,6 +640,7 @@
  ./man/ncurses.3x
  ./man/panel.3x
@@ -14228,7 +14256,7 @@ diff -Naur ncurses-5.7.orig/MANIFEST ncurses-5.7/MANIFEST
  ./test/keynames.c
 diff -Naur ncurses-5.7.orig/menu/Makefile.in ncurses-5.7/menu/Makefile.in
 --- ncurses-5.7.orig/menu/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/menu/Makefile.in	2009-02-15 23:21:09.919538762 -0800
++++ ncurses-5.7/menu/Makefile.in	2009-02-22 21:40:02.905568096 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.48 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.49 2009/01/03 19:09:26 tom Exp $
@@ -14249,7 +14277,7 @@ diff -Naur ncurses-5.7.orig/menu/Makefile.in ncurses-5.7/menu/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig.in
 --- ncurses-5.7.orig/misc/gen-pkgconfig.in	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/misc/gen-pkgconfig.in	2009-02-15 23:21:17.376018158 -0800
++++ ncurses-5.7/misc/gen-pkgconfig.in	2009-02-22 21:40:14.670322949 -0800
 @@ -0,0 +1,119 @@
 +#!@SHELL@
 +# $Id: gen-pkgconfig.in,v 1.5 2009/01/24 21:06:36 tom Exp $
@@ -14372,7 +14400,7 @@ diff -Naur ncurses-5.7.orig/misc/gen-pkgconfig.in ncurses-5.7/misc/gen-pkgconfig
 +# vile:shmode
 diff -Naur ncurses-5.7.orig/misc/Makefile.in ncurses-5.7/misc/Makefile.in
 --- ncurses-5.7.orig/misc/Makefile.in	2007-03-31 08:54:17.000000000 -0700
-+++ ncurses-5.7/misc/Makefile.in	2009-02-15 23:21:19.700165665 -0800
++++ ncurses-5.7/misc/Makefile.in	2009-02-22 21:40:16.170420449 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.43 2007/03/31 15:54:17 tom Exp $
 +# $Id: Makefile.in,v 1.51 2009/02/07 18:17:17 Miroslav.Lichvar Exp $
@@ -14455,7 +14483,7 @@ diff -Naur ncurses-5.7.orig/misc/Makefile.in ncurses-5.7/misc/Makefile.in
  realclean : distclean
 diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-config.in
 --- ncurses-5.7.orig/misc/ncurses-config.in	2007-03-17 13:02:19.000000000 -0700
-+++ ncurses-5.7/misc/ncurses-config.in	2009-02-15 23:21:17.376018158 -0800
++++ ncurses-5.7/misc/ncurses-config.in	2009-02-22 21:40:14.670322949 -0800
 @@ -1,7 +1,7 @@
  #!@SHELL@
 -# $Id: ncurses-config.in,v 1.12 2007/03/17 20:02:19 tom Exp $
@@ -14582,7 +14610,7 @@ diff -Naur ncurses-5.7.orig/misc/ncurses-config.in ncurses-5.7/misc/ncurses-conf
    --terminfo         echos the \$TERMINFO terminfo database path
 diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
 --- ncurses-5.7.orig/misc/terminfo.src	2008-10-12 16:03:54.000000000 -0700
-+++ ncurses-5.7/misc/terminfo.src	2009-02-15 23:21:14.363823718 -0800
++++ ncurses-5.7/misc/terminfo.src	2009-02-22 21:40:06.821818969 -0800
 @@ -6,8 +6,8 @@
  # Report bugs and new terminal descriptions to
  #	bug-ncurses@gnu.org
@@ -14748,7 +14776,7 @@ diff -Naur ncurses-5.7.orig/misc/terminfo.src ncurses-5.7/misc/terminfo.src
  # fill-prefix:"\t"
 diff -Naur ncurses-5.7.orig/mk-1st.awk ncurses-5.7/mk-1st.awk
 --- ncurses-5.7.orig/mk-1st.awk	2007-03-24 15:10:55.000000000 -0700
-+++ ncurses-5.7/mk-1st.awk	2009-02-15 23:21:11.279628160 -0800
++++ ncurses-5.7/mk-1st.awk	2009-02-22 21:40:04.169651068 -0800
 @@ -1,6 +1,6 @@
 -# $Id: mk-1st.awk,v 1.78 2007/03/24 22:10:55 tom Exp $
 +# $Id: mk-1st.awk,v 1.80 2009/01/04 21:51:38 tom Exp $
@@ -14778,7 +14806,7 @@ diff -Naur ncurses-5.7.orig/mk-1st.awk ncurses-5.7/mk-1st.awk
  				{
 diff -Naur ncurses-5.7.orig/ncurses/base/define_key.c ncurses-5.7/ncurses/base/define_key.c
 --- ncurses-5.7.orig/ncurses/base/define_key.c	2006-12-30 15:23:31.000000000 -0800
-+++ ncurses-5.7/ncurses/base/define_key.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/define_key.c	2009-02-22 21:40:17.906529403 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -14847,7 +14875,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/define_key.c ncurses-5.7/ncurses/base/d
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/keybound.c ncurses-5.7/ncurses/base/keybound.c
 --- ncurses-5.7.orig/ncurses/base/keybound.c	2006-06-17 11:19:24.000000000 -0700
-+++ ncurses-5.7/ncurses/base/keybound.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/keybound.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1999-2005,2006 Free Software Foundation, Inc.              *
@@ -14867,7 +14895,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/keybound.c ncurses-5.7/ncurses/base/key
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: keybound.c,v 1.7 2006/06/17 18:19:24 tom Exp $")
-+MODULE_ID("$Id: keybound.c,v 1.8 2009/02/15 00:31:10 tom Exp $")
++MODULE_ID("$Id: keybound.c,v 1.9 2009/02/21 16:32:34 tom Exp $")
  
  /*
   * Returns the count'th string definition which is associated with the
@@ -14879,9 +14907,10 @@ diff -Naur ncurses-5.7.orig/ncurses/base/keybound.c ncurses-5.7/ncurses/base/key
  {
      char *result = 0;
  
-     T((T_CALLED("keybound(%d,%d)"), code, count));
+-    T((T_CALLED("keybound(%d,%d)"), code, count));
 -    if (SP != 0 && code >= 0) {
 -	result = _nc_expand_try(SP->_keytry, (unsigned) code, &count, 0);
++    T((T_CALLED("keybound(%p, %d,%d)"), SP_PARM, code, count));
 +    if (SP_PARM != 0 && code >= 0) {
 +	result = _nc_expand_try(SP_PARM->_keytry, (unsigned) code, &count, 0);
      }
@@ -14897,7 +14926,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/keybound.c ncurses-5.7/ncurses/base/key
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/key_defined.c ncurses-5.7/ncurses/base/key_defined.c
 --- ncurses-5.7.orig/ncurses/base/key_defined.c	2006-12-30 15:22:55.000000000 -0800
-+++ ncurses-5.7/ncurses/base/key_defined.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/key_defined.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2003,2006 Free Software Foundation, Inc.                   *
@@ -14905,23 +14934,16 @@ diff -Naur ncurses-5.7.orig/ncurses/base/key_defined.c ncurses-5.7/ncurses/base/
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
-@@ -27,12 +27,13 @@
-  ****************************************************************************/
- 
- /****************************************************************************
-- *  Author: Thomas E. Dickey, 2003                                          *
-+ *  Author: Thomas E. Dickey                        2003                    *
-+ *     and: Juergen Pfeifer                         2009                    *
-  ****************************************************************************/
+@@ -32,7 +32,7 @@
  
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: key_defined.c,v 1.6 2006/12/30 23:22:55 tom Exp $")
-+MODULE_ID("$Id: key_defined.c,v 1.7 2009/02/15 00:30:00 tom Exp $")
++MODULE_ID("$Id: key_defined.c,v 1.8 2009/02/21 16:24:26 tom Exp $")
  
  static int
  find_definition(TRIES * tree, const char *str)
-@@ -65,14 +66,22 @@
+@@ -65,14 +65,22 @@
   * Otherwise, return the keycode's value (neither OK/ERR).
   */
  NCURSES_EXPORT(int)
@@ -14930,9 +14952,10 @@ diff -Naur ncurses-5.7.orig/ncurses/base/key_defined.c ncurses-5.7/ncurses/base/
  {
      int code = ERR;
  
-     T((T_CALLED("key_defined(%s)"), _nc_visbuf(str)));
+-    T((T_CALLED("key_defined(%s)"), _nc_visbuf(str)));
 -    if (SP != 0 && str != 0) {
 -	code = find_definition(SP->_keytry, str);
++    T((T_CALLED("key_defined(%p, %s)"), SP_PARM, _nc_visbuf(str)));
 +    if (SP_PARM != 0 && str != 0) {
 +	code = find_definition(SP_PARM->_keytry, str);
      }
@@ -14949,7 +14972,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/key_defined.c ncurses-5.7/ncurses/base/
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/keyok.c ncurses-5.7/ncurses/base/keyok.c
 --- ncurses-5.7.orig/ncurses/base/keyok.c	2006-12-30 08:22:33.000000000 -0800
-+++ ncurses-5.7/ncurses/base/keyok.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/keyok.c	2009-02-22 21:40:17.906529403 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2006 Free Software Foundation, Inc.              *
@@ -15021,7 +15044,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/keyok.c ncurses-5.7/ncurses/base/keyok.
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/legacy_coding.c ncurses-5.7/ncurses/base/legacy_coding.c
 --- ncurses-5.7.orig/ncurses/base/legacy_coding.c	2005-12-17 15:38:17.000000000 -0800
-+++ ncurses-5.7/ncurses/base/legacy_coding.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/legacy_coding.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2005 Free Software Foundation, Inc.                        *
@@ -15041,7 +15064,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/legacy_coding.c ncurses-5.7/ncurses/bas
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: legacy_coding.c,v 1.2 2005/12/17 23:38:17 tom Exp $")
-+MODULE_ID("$Id: legacy_coding.c,v 1.3 2009/02/14 21:46:14 tom Exp $")
++MODULE_ID("$Id: legacy_coding.c,v 1.4 2009/02/21 16:16:38 tom Exp $")
  
  NCURSES_EXPORT(int)
 -use_legacy_coding(int level)
@@ -15049,10 +15072,11 @@ diff -Naur ncurses-5.7.orig/ncurses/base/legacy_coding.c ncurses-5.7/ncurses/bas
  {
      int result = ERR;
  
-     T((T_CALLED("use_legacy_coding(%d)"), level));
+-    T((T_CALLED("use_legacy_coding(%d)"), level));
 -    if (level >= 0 && level <= 2 && SP != 0) {
 -	result = SP->_legacy_coding;
 -	SP->_legacy_coding = level;
++    T((T_CALLED("use_legacy_coding(%p,%d)"), SP_PARM, level));
 +    if (level >= 0 && level <= 2 && SP_PARM != 0) {
 +	result = SP_PARM->_legacy_coding;
 +	SP_PARM->_legacy_coding = level;
@@ -15069,7 +15093,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/legacy_coding.c ncurses-5.7/ncurses/bas
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_addch.c ncurses-5.7/ncurses/base/lib_addch.c
 --- ncurses-5.7.orig/ncurses/base/lib_addch.c	2008-08-16 12:20:04.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_addch.c	2009-02-15 23:21:15.875920379 -0800
++++ ncurses-5.7/ncurses/base/lib_addch.c	2009-02-22 21:40:13.074219583 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
@@ -15126,7 +15150,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_addch.c ncurses-5.7/ncurses/base/li
  	     * Check for cells which are orphaned by adding this character, set
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_beep.c ncurses-5.7/ncurses/base/lib_beep.c
 --- ncurses-5.7.orig/ncurses/base/lib_beep.c	2005-04-09 08:20:04.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_beep.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/lib_beep.c	2009-02-22 21:40:17.906529403 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
@@ -15174,7 +15198,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_beep.c ncurses-5.7/ncurses/base/lib
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_color.c ncurses-5.7/ncurses/base/lib_color.c
 --- ncurses-5.7.orig/ncurses/base/lib_color.c	2007-04-07 10:07:28.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_color.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/lib_color.c	2009-02-22 21:40:17.906529403 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
@@ -15587,7 +15611,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_color.c ncurses-5.7/ncurses/base/li
  	if (set_color_pair) {
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_colorset.c ncurses-5.7/ncurses/base/lib_colorset.c
 --- ncurses-5.7.orig/ncurses/base/lib_colorset.c	2005-01-29 13:40:51.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_colorset.c	2009-02-15 23:21:17.376018158 -0800
++++ ncurses-5.7/ncurses/base/lib_colorset.c	2009-02-22 21:40:14.670322949 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
@@ -15635,7 +15659,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_colorset.c ncurses-5.7/ncurses/base
  }
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_dft_fgbg.c ncurses-5.7/ncurses/base/lib_dft_fgbg.c
 --- ncurses-5.7.orig/ncurses/base/lib_dft_fgbg.c	2005-11-26 12:03:38.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_dft_fgbg.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/lib_dft_fgbg.c	2009-02-22 21:40:17.906529403 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
@@ -15723,11 +15747,11 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_dft_fgbg.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_echo.c ncurses-5.7/ncurses/base/lib_echo.c
 --- ncurses-5.7.orig/ncurses/base/lib_echo.c	2000-12-09 18:43:27.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_echo.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/lib_echo.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
-+ * Copyright (c) 1998-2000,2009 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -15740,51 +15764,56 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_echo.c ncurses-5.7/ncurses/base/lib
   ****************************************************************************/
  
  /*
-@@ -42,20 +44,36 @@
+@@ -42,20 +44,40 @@
  
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_echo.c,v 1.5 2000/12/10 02:43:27 tom Exp $")
-+MODULE_ID("$Id: lib_echo.c,v 1.6 2009/02/15 00:34:19 tom Exp $")
++MODULE_ID("$Id: lib_echo.c,v 1.7 2009/02/21 20:20:40 tom Exp $")
  
  NCURSES_EXPORT(int)
--echo(void)
 +NCURSES_SP_NAME(echo) (NCURSES_SP_DCL0)
- {
-     T((T_CALLED("echo()")));
--    SP->_echo = TRUE;
-+    SP_PARM->_echo = TRUE;
-     returnCode(OK);
- }
- 
-+#if NCURSES_SP_FUNCS
- NCURSES_EXPORT(int)
--noecho(void)
-+echo(void)
 +{
++    T((T_CALLED("echo(%p)"), SP_PARM));
++    if (0 == SP_PARM)
++	returnCode(ERR);
++    SP_PARM->_echo = TRUE;
++    returnCode(OK);
++}
++
++#if NCURSES_SP_FUNCS
++NCURSES_EXPORT(int)
+ echo(void)
+ {
+-    T((T_CALLED("echo()")));
+-    SP->_echo = TRUE;
 +    return NCURSES_SP_NAME(echo) (CURRENT_SCREEN);
 +}
 +#endif
 +
 +NCURSES_EXPORT(int)
 +NCURSES_SP_NAME(noecho) (NCURSES_SP_DCL0)
- {
-     T((T_CALLED("noecho()")));
--    SP->_echo = FALSE;
++{
++    T((T_CALLED("noecho(%p)"), SP_PARM));
++    if (0 == SP_PARM)
++	returnCode(ERR);
 +    SP_PARM->_echo = FALSE;
      returnCode(OK);
  }
-+
+ 
 +#if NCURSES_SP_FUNCS
-+NCURSES_EXPORT(int)
-+noecho(void)
-+{
+ NCURSES_EXPORT(int)
+ noecho(void)
+ {
+-    T((T_CALLED("noecho()")));
+-    SP->_echo = FALSE;
+-    returnCode(OK);
 +    return NCURSES_SP_NAME(noecho) (CURRENT_SCREEN);
-+}
+ }
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_endwin.c ncurses-5.7/ncurses/base/lib_endwin.c
 --- ncurses-5.7.orig/ncurses/base/lib_endwin.c	2000-12-09 18:43:27.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_endwin.c	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/lib_endwin.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
@@ -15837,7 +15866,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_endwin.c ncurses-5.7/ncurses/base/l
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_flash.c ncurses-5.7/ncurses/base/lib_flash.c
 --- ncurses-5.7.orig/ncurses/base/lib_flash.c	2000-12-09 18:43:27.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_flash.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_flash.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
@@ -15886,7 +15915,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_flash.c ncurses-5.7/ncurses/base/li
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_freeall.c ncurses-5.7/ncurses/base/lib_freeall.c
 --- ncurses-5.7.orig/ncurses/base/lib_freeall.c	2008-09-27 06:09:57.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_freeall.c	2009-02-15 23:21:03.083101270 -0800
++++ ncurses-5.7/ncurses/base/lib_freeall.c	2009-02-22 21:39:55.861116636 -0800
 @@ -40,7 +40,7 @@
  extern int malloc_errfd;	/* FIXME */
  #endif
@@ -15907,7 +15936,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_freeall.c ncurses-5.7/ncurses/base/
  #ifdef TRACE
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_getch.c ncurses-5.7/ncurses/base/lib_getch.c
 --- ncurses-5.7.orig/ncurses/base/lib_getch.c	2008-09-20 12:46:13.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_getch.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_getch.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -15976,7 +16005,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_getch.c ncurses-5.7/ncurses/base/li
  _nc_use_meta(WINDOW *win)
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_isendwin.c ncurses-5.7/ncurses/base/lib_isendwin.c
 --- ncurses-5.7.orig/ncurses/base/lib_isendwin.c	2000-12-09 18:43:27.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_isendwin.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_isendwin.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
@@ -16020,7 +16049,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_isendwin.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_mouse.c ncurses-5.7/ncurses/base/lib_mouse.c
 --- ncurses-5.7.orig/ncurses/base/lib_mouse.c	2008-10-18 14:48:55.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_mouse.c	2009-02-15 23:21:03.083101270 -0800
++++ ncurses-5.7/ncurses/base/lib_mouse.c	2009-02-22 21:39:55.861116636 -0800
 @@ -79,7 +79,7 @@
  
  #include <curses.priv.h>
@@ -16079,7 +16108,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_mouse.c ncurses-5.7/ncurses/base/li
  NCURSES_EXPORT(bool)
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_newterm.c ncurses-5.7/ncurses/base/lib_newterm.c
 --- ncurses-5.7.orig/ncurses/base/lib_newterm.c	2008-08-16 14:20:48.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_newterm.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_newterm.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -16190,7 +16219,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_newterm.c ncurses-5.7/ncurses/base/
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_newwin.c ncurses-5.7/ncurses/base/lib_newwin.c
 --- ncurses-5.7.orig/ncurses/base/lib_newwin.c	2008-06-07 06:58:09.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_newwin.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_newwin.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -16252,11 +16281,11 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_newwin.c ncurses-5.7/ncurses/base/l
  {
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_nl.c ncurses-5.7/ncurses/base/lib_nl.c
 --- ncurses-5.7.orig/ncurses/base/lib_nl.c	2000-12-09 18:43:27.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_nl.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_nl.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
-+ * Copyright (c) 1998-2000,2009 Free Software Foundation, Inc.              *
++ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -16269,12 +16298,12 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_nl.c ncurses-5.7/ncurses/base/lib_n
   ****************************************************************************/
  
  /*
-@@ -42,18 +44,18 @@
+@@ -42,38 +44,52 @@
  
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_nl.c,v 1.8 2000/12/10 02:43:27 tom Exp $")
-+MODULE_ID("$Id: lib_nl.c,v 1.9 2009/02/15 00:38:22 tom Exp $")
++MODULE_ID("$Id: lib_nl.c,v 1.10 2009/02/21 20:58:21 tom Exp $")
  
  #ifdef __EMX__
  #include <io.h>
@@ -16284,14 +16313,19 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_nl.c ncurses-5.7/ncurses/base/lib_n
 -nl(void)
 +NCURSES_SP_NAME(nl) (NCURSES_SP_DCL0)
  {
-     T((T_CALLED("nl()")));
- 
+-    T((T_CALLED("nl()")));
+-
 -    SP->_nl = TRUE;
+-
++    T((T_CALLED("nl(%p)"), SP_PARM));
++    if (0 == SP_PARM)
++	returnCode(ERR);
 +    SP_PARM->_nl = TRUE;
- 
  #ifdef __EMX__
      _nc_flush();
-@@ -63,12 +65,20 @@
+     _fsetmode(NC_OUTPUT, "t");
+ #endif
+-
      returnCode(OK);
  }
  
@@ -16299,23 +16333,26 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_nl.c ncurses-5.7/ncurses/base/lib_n
  NCURSES_EXPORT(int)
 -nonl(void)
 +nl(void)
-+{
+ {
+-    T((T_CALLED("nonl()")));
+-
+-    SP->_nl = FALSE;
 +    return NCURSES_SP_NAME(nl) (CURRENT_SCREEN);
 +}
 +#endif
-+
+ 
 +NCURSES_EXPORT(int)
 +NCURSES_SP_NAME(nonl) (NCURSES_SP_DCL0)
- {
-     T((T_CALLED("nonl()")));
- 
--    SP->_nl = FALSE;
++{
++    T((T_CALLED("nonl(%p)"), SP_PARM));
++    if (0 == SP_PARM)
++	returnCode(ERR);
 +    SP_PARM->_nl = FALSE;
- 
  #ifdef __EMX__
      _nc_flush();
-@@ -77,3 +87,11 @@
- 
+     _fsetmode(NC_OUTPUT, "b");
+ #endif
+-
      returnCode(OK);
  }
 +
@@ -16328,7 +16365,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_nl.c ncurses-5.7/ncurses/base/lib_n
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_pad.c ncurses-5.7/ncurses/base/lib_pad.c
 --- ncurses-5.7.orig/ncurses/base/lib_pad.c	2006-10-14 13:47:13.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_pad.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_pad.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2004,2006 Free Software Foundation, Inc.                   *
@@ -16375,7 +16412,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_pad.c ncurses-5.7/ncurses/base/lib_
  {
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_screen.c ncurses-5.7/ncurses/base/lib_screen.c
 --- ncurses-5.7.orig/ncurses/base/lib_screen.c	2008-08-16 12:05:37.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_screen.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_screen.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -16493,7 +16530,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_screen.c ncurses-5.7/ncurses/base/l
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_set_term.c ncurses-5.7/ncurses/base/lib_set_term.c
 --- ncurses-5.7.orig/ncurses/base/lib_set_term.c	2008-08-04 11:11:12.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_set_term.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_set_term.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -16543,7 +16580,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_set_term.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatrof.c ncurses-5.7/ncurses/base/lib_slkatrof.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkatrof.c	2005-01-08 15:01:32.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkatrof.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_slkatrof.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
@@ -16556,13 +16593,14 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatrof.c ncurses-5.7/ncurses/base
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkatrof.c,v 1.8 2005/01/08 23:01:32 tom Exp $")
-+MODULE_ID("$Id: lib_slkatrof.c,v 1.9 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkatrof.c,v 1.10 2009/02/21 17:35:28 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_attroff(const chtype attr)
 +NCURSES_SP_NAME(slk_attroff) (NCURSES_SP_DCLx const chtype attr)
  {
-     T((T_CALLED("slk_attroff(%s)"), _traceattr(attr)));
+-    T((T_CALLED("slk_attroff(%s)"), _traceattr(attr)));
++    T((T_CALLED("slk_attroff(%p,%s)"), SP_PARM, _traceattr(attr)));
  
 -    if (SP != 0 && SP->_slk != 0) {
 -	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(SP->_slk->attr))));
@@ -16590,7 +16628,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatrof.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatron.c ncurses-5.7/ncurses/base/lib_slkatron.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkatron.c	2005-01-08 15:02:01.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkatron.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_slkatron.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
@@ -16603,13 +16641,14 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatron.c ncurses-5.7/ncurses/base
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkatron.c,v 1.8 2005/01/08 23:02:01 tom Exp $")
-+MODULE_ID("$Id: lib_slkatron.c,v 1.9 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkatron.c,v 1.10 2009/02/21 18:16:04 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_attron(const chtype attr)
 +NCURSES_SP_NAME(slk_attron) (NCURSES_SP_DCLx const chtype attr)
  {
-     T((T_CALLED("slk_attron(%s)"), _traceattr(attr)));
+-    T((T_CALLED("slk_attron(%s)"), _traceattr(attr)));
++    T((T_CALLED("slk_attron(%p,%s)"), SP_PARM, _traceattr(attr)));
  
 -    if (SP != 0 && SP->_slk != 0) {
 -	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(SP->_slk->attr))));
@@ -16637,7 +16676,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatron.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c ncurses-5.7/ncurses/base/lib_slkatr_set.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c	2005-01-28 13:11:53.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkatr_set.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_slkatr_set.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
@@ -16659,7 +16698,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c ncurses-5.7/ncurses/ba
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkatr_set.c,v 1.10 2005/01/28 21:11:53 tom Exp $")
-+MODULE_ID("$Id: lib_slkatr_set.c,v 1.12 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkatr_set.c,v 1.13 2009/02/21 17:20:17 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_attr_set(const attr_t attr, short color_pair_number, void *opts)
@@ -16668,9 +16707,10 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c ncurses-5.7/ncurses/ba
 +			       short color_pair_number,
 +			       void *opts)
  {
+-    T((T_CALLED("slk_attr_set(%s,%d)"), _traceattr(attr), color_pair_number));
 +    int code = ERR;
 +
-     T((T_CALLED("slk_attr_set(%s,%d)"), _traceattr(attr), color_pair_number));
++    T((T_CALLED("slk_attr_set(%p,%s,%d)"), SP_PARM, _traceattr(attr), color_pair_number));
  
 -    if (SP != 0 && SP->_slk != 0 && !opts &&
 -	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
@@ -16707,7 +16747,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatr_set.c ncurses-5.7/ncurses/ba
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatrset.c ncurses-5.7/ncurses/base/lib_slkatrset.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkatrset.c	2005-01-08 13:46:47.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkatrset.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkatrset.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
@@ -16720,13 +16760,14 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatrset.c ncurses-5.7/ncurses/bas
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkatrset.c,v 1.7 2005/01/08 21:46:47 tom Exp $")
-+MODULE_ID("$Id: lib_slkatrset.c,v 1.8 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkatrset.c,v 1.9 2009/02/21 17:49:07 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_attrset(const chtype attr)
 +NCURSES_SP_NAME(slk_attrset) (NCURSES_SP_DCLx const chtype attr)
  {
-     T((T_CALLED("slk_attrset(%s)"), _traceattr(attr)));
+-    T((T_CALLED("slk_attrset(%s)"), _traceattr(attr)));
++    T((T_CALLED("slk_attrset(%p,%s)"), SP_PARM, _traceattr(attr)));
  
 -    if (SP != 0 && SP->_slk != 0) {
 -	SetAttr(SP->_slk->attr, attr);
@@ -16746,7 +16787,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkatrset.c ncurses-5.7/ncurses/bas
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkattr.c ncurses-5.7/ncurses/base/lib_slkattr.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkattr.c	2005-01-08 13:44:28.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkattr.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkattr.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
@@ -16759,13 +16800,14 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkattr.c ncurses-5.7/ncurses/base/
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkattr.c,v 1.6 2005/01/08 21:44:28 tom Exp $")
-+MODULE_ID("$Id: lib_slkattr.c,v 1.7 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkattr.c,v 1.8 2009/02/21 17:48:14 tom Exp $")
  
  NCURSES_EXPORT(attr_t)
 -slk_attr(void)
 +NCURSES_SP_NAME(slk_attr) (NCURSES_SP_DCL0)
  {
-     T((T_CALLED("slk_attr()")));
+-    T((T_CALLED("slk_attr()")));
++    T((T_CALLED("slk_attr(%p)"), SP_PARM));
  
 -    if (SP != 0 && SP->_slk != 0) {
 -	attr_t result = AttrOf(SP->_slk->attr) & ALL_BUT_COLOR;
@@ -16789,7 +16831,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkattr.c ncurses-5.7/ncurses/base/
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slk.c ncurses-5.7/ncurses/base/lib_slk.c
 --- ncurses-5.7.orig/ncurses/base/lib_slk.c	2008-09-27 07:07:33.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_slk.c	2009-02-15 23:21:24.624480793 -0800
++++ ncurses-5.7/ncurses/base/lib_slk.c	2009-02-22 21:40:17.910529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2008 Free Software Foundation, Inc.              *
@@ -16835,7 +16877,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slk.c ncurses-5.7/ncurses/base/lib_
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkclear.c ncurses-5.7/ncurses/base/lib_slkclear.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkclear.c	2007-12-29 09:51:47.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkclear.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkclear.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
@@ -16848,7 +16890,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkclear.c ncurses-5.7/ncurses/base
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkclear.c,v 1.10 2007/12/29 17:51:47 tom Exp $")
-+MODULE_ID("$Id: lib_slkclear.c,v 1.11 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkclear.c,v 1.12 2009/02/21 17:47:14 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_clear(void)
@@ -16856,20 +16898,21 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkclear.c ncurses-5.7/ncurses/base
  {
      int rc = ERR;
  
-     T((T_CALLED("slk_clear()")));
+-    T((T_CALLED("slk_clear()")));
++    T((T_CALLED("slk_clear(%p)"), SP_PARM));
  
 -    if (SP != NULL && SP->_slk != NULL) {
 -	SP->_slk->hidden = TRUE;
-+    if (SP_PARM != NULL && SP_PARM->_slk != NULL) {
++    if (SP_PARM != 0 && SP_PARM->_slk != 0) {
 +	SP_PARM->_slk->hidden = TRUE;
  	/* For simulated SLK's it looks much more natural to
  	   inherit those attributes from the standard screen */
 -	SP->_slk->win->_nc_bkgd = stdscr->_nc_bkgd;
 -	WINDOW_ATTRS(SP->_slk->win) = WINDOW_ATTRS(stdscr);
 -	if (SP->_slk->win == stdscr) {
-+	SP_PARM->_slk->win->_nc_bkgd = stdscr->_nc_bkgd;
-+	WINDOW_ATTRS(SP_PARM->_slk->win) = WINDOW_ATTRS(stdscr);
-+	if (SP_PARM->_slk->win == stdscr) {
++	SP_PARM->_slk->win->_nc_bkgd = SP_PARM->_stdscr->_nc_bkgd;
++	WINDOW_ATTRS(SP_PARM->_slk->win) = WINDOW_ATTRS(SP_PARM->_stdscr);
++	if (SP_PARM->_slk->win == SP_PARM->_stdscr) {
  	    rc = OK;
  	} else {
 -	    werase(SP->_slk->win);
@@ -16890,7 +16933,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkclear.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkcolor.c ncurses-5.7/ncurses/base/lib_slkcolor.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkcolor.c	2005-01-28 13:11:53.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkcolor.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkcolor.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
@@ -16898,11 +16941,13 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkcolor.c ncurses-5.7/ncurses/base
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
-@@ -28,7 +28,7 @@
+@@ -27,8 +27,8 @@
+  ****************************************************************************/
  
  /****************************************************************************
-  *  Author:  Juergen Pfeifer, 1998                                          *
+- *  Author:  Juergen Pfeifer, 1998                                          *
 - *     and:  Thomas E. Dickey 2005                                          *
++ *  Author:  Juergen Pfeifer, 1998,2009                                     *
 + *     and:  Thomas E. Dickey 2005-on                                       *
   ****************************************************************************/
  
@@ -16912,24 +16957,17 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkcolor.c ncurses-5.7/ncurses/base
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slkcolor.c,v 1.12 2005/01/28 21:11:53 tom Exp $")
-+MODULE_ID("$Id: lib_slkcolor.c,v 1.14 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkcolor.c,v 1.15 2009/02/21 16:59:50 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_color(short color_pair_number)
 +NCURSES_SP_NAME(slk_color) (NCURSES_SP_DCLx short color_pair_number)
  {
+-    T((T_CALLED("slk_color(%d)"), color_pair_number));
 +    int code = ERR;
 +
-     T((T_CALLED("slk_color(%d)"), color_pair_number));
- 
--    if (SP != 0 && SP->_slk != 0 &&
--	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
--	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(SP->_slk->attr))));
--	SetPair(SP->_slk->attr, color_pair_number);
--	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
--	returnCode(OK);
--    } else
--	returnCode(ERR);
++    T((T_CALLED("slk_color(%p,%d)"), SP_PARM, color_pair_number));
++
 +    if (SP_PARM != 0
 +	&& SP_PARM->_slk != 0
 +	&& color_pair_number >= 0
@@ -16941,7 +16979,15 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkcolor.c ncurses-5.7/ncurses/base
 +    }
 +    returnCode(code);
 +}
-+
+ 
+-    if (SP != 0 && SP->_slk != 0 &&
+-	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
+-	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(SP->_slk->attr))));
+-	SetPair(SP->_slk->attr, color_pair_number);
+-	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
+-	returnCode(OK);
+-    } else
+-	returnCode(ERR);
 +#if NCURSES_SP_FUNCS
 +NCURSES_EXPORT(int)
 +slk_color(short color_pair_number)
@@ -16951,7 +16997,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkcolor.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkinit.c ncurses-5.7/ncurses/base/lib_slkinit.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkinit.c	2008-01-12 12:23:39.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slkinit.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkinit.c	2009-02-22 21:40:17.914529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -16994,7 +17040,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkinit.c ncurses-5.7/ncurses/base/
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slklab.c ncurses-5.7/ncurses/base/lib_slklab.c
 --- ncurses-5.7.orig/ncurses/base/lib_slklab.c	2003-03-29 14:53:48.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slklab.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slklab.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.              *
@@ -17006,8 +17052,8 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slklab.c ncurses-5.7/ncurses/base/l
  /****************************************************************************
   *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
   *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
-+ *     and: Thomas E. Dickey                        1996-on                 *
-+ *     and: Juergen Pfeifer                         2009                    *
++ *     and:  Juergen Pfeifer,                       1998,2009               *
++ *     and:  Thomas E. Dickey                       1998-on                 *
   ****************************************************************************/
  
  /*
@@ -17016,16 +17062,17 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slklab.c ncurses-5.7/ncurses/base/l
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slklab.c,v 1.7 2003/03/29 22:53:48 tom Exp $")
-+MODULE_ID("$Id: lib_slklab.c,v 1.8 2009/02/15 00:42:53 tom Exp $")
++MODULE_ID("$Id: lib_slklab.c,v 1.9 2009/02/21 18:48:42 tom Exp $")
  
  NCURSES_EXPORT(char *)
 -slk_label(int n)
 +NCURSES_SP_NAME(slk_label) (NCURSES_SP_DCLx int n)
  {
-     T((T_CALLED("slk_label(%d)"), n));
+-    T((T_CALLED("slk_label(%d)"), n));
++    T((T_CALLED("slk_label(%p,%d)"), SP_PARM, n));
  
 -    if (SP == NULL || SP->_slk == NULL || n < 1 || n > SP->_slk->labcnt)
-+    if (SP_PARM == NULL || SP_PARM->_slk == NULL || n < 1 || n > SP_PARM->_slk->labcnt)
++    if (SP_PARM == 0 || SP_PARM->_slk == 0 || n < 1 || n > SP_PARM->_slk->labcnt)
  	returnPtr(0);
 -    returnPtr(SP->_slk->ent[n - 1].ent_text);
 +    returnPtr(SP_PARM->_slk->ent[n - 1].ent_text);
@@ -17040,7 +17087,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slklab.c ncurses-5.7/ncurses/base/l
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkrefr.c ncurses-5.7/ncurses/base/lib_slkrefr.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkrefr.c	2008-09-27 07:07:53.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_slkrefr.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkrefr.c	2009-02-22 21:40:17.914529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
@@ -17118,7 +17165,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkrefr.c ncurses-5.7/ncurses/base/
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkset.c ncurses-5.7/ncurses/base/lib_slkset.c
 --- ncurses-5.7.orig/ncurses/base/lib_slkset.c	2007-10-13 13:08:46.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_slkset.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slkset.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2007 Free Software Foundation, Inc.              *
@@ -17131,7 +17178,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkset.c ncurses-5.7/ncurses/base/l
  #endif
  
 -MODULE_ID("$Id: lib_slkset.c,v 1.17 2007/10/13 20:08:46 tom Exp $")
-+MODULE_ID("$Id: lib_slkset.c,v 1.18 2009/02/15 00:33:48 tom Exp $")
++MODULE_ID("$Id: lib_slkset.c,v 1.19 2009/02/21 17:34:06 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_set(int i, const char *astr, int format)
@@ -17139,9 +17186,12 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkset.c ncurses-5.7/ncurses/base/l
  {
      SLK *slk;
      int offset;
-@@ -59,8 +59,8 @@
+@@ -57,20 +57,20 @@
+     const char *str = astr;
+     const char *p;
  
-     T((T_CALLED("slk_set(%d, \"%s\", %d)"), i, str, format));
+-    T((T_CALLED("slk_set(%d, \"%s\", %d)"), i, str, format));
++    T((T_CALLED("slk_set(%p, %d, \"%s\", %d)"), SP_PARM, i, str, format));
  
 -    if (SP == 0
 -	|| (slk = SP->_slk) == 0
@@ -17150,7 +17200,10 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkset.c ncurses-5.7/ncurses/base/l
  	|| i < 1
  	|| i > slk->labcnt
  	|| format < 0
-@@ -70,7 +70,7 @@
+ 	|| format > 2)
+ 	returnCode(ERR);
+-    if (str == NULL)
++    if (str == 0)
  	str = "";
      --i;			/* Adjust numbering of labels */
  
@@ -17173,7 +17226,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slkset.c ncurses-5.7/ncurses/base/l
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_slktouch.c ncurses-5.7/ncurses/base/lib_slktouch.c
 --- ncurses-5.7.orig/ncurses/base/lib_slktouch.c	2000-12-09 18:43:27.000000000 -0800
-+++ ncurses-5.7/ncurses/base/lib_slktouch.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_slktouch.c	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
@@ -17197,16 +17250,17 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slktouch.c ncurses-5.7/ncurses/base
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_slktouch.c,v 1.5 2000/12/10 02:43:27 tom Exp $")
-+MODULE_ID("$Id: lib_slktouch.c,v 1.6 2009/02/15 00:44:36 tom Exp $")
++MODULE_ID("$Id: lib_slktouch.c,v 1.7 2009/02/21 17:42:59 tom Exp $")
  
  NCURSES_EXPORT(int)
 -slk_touch(void)
 +NCURSES_SP_NAME(slk_touch) (NCURSES_SP_DCL0)
  {
-     T((T_CALLED("slk_touch()")));
+-    T((T_CALLED("slk_touch()")));
++    T((T_CALLED("slk_touch(%p)"), SP_PARM));
  
 -    if (SP == NULL || SP->_slk == NULL)
-+    if (SP_PARM == NULL || SP_PARM->_slk == NULL)
++    if (SP_PARM == 0 || SP_PARM->_slk == 0)
  	returnCode(ERR);
 -    SP->_slk->dirty = TRUE;
 +    SP_PARM->_slk->dirty = TRUE;
@@ -17223,7 +17277,7 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_slktouch.c ncurses-5.7/ncurses/base
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/base/lib_ungetch.c ncurses-5.7/ncurses/base/lib_ungetch.c
 --- ncurses-5.7.orig/ncurses/base/lib_ungetch.c	2008-05-31 09:44:54.000000000 -0700
-+++ ncurses-5.7/ncurses/base/lib_ungetch.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/base/lib_ungetch.c	2009-02-22 21:40:17.914529962 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -17267,9 +17321,33 @@ diff -Naur ncurses-5.7.orig/ncurses/base/lib_ungetch.c ncurses-5.7/ncurses/base/
 +    return NCURSES_SP_NAME(ungetch) (CURRENT_SCREEN, ch);
  }
 +#endif
+diff -Naur ncurses-5.7.orig/ncurses/base/lib_winch.c ncurses-5.7/ncurses/base/lib_winch.c
+--- ncurses-5.7.orig/ncurses/base/lib_winch.c	2001-06-02 16:42:08.000000000 -0700
++++ ncurses-5.7/ncurses/base/lib_winch.c	2009-02-22 21:40:19.478632211 -0800
+@@ -39,16 +39,16 @@
+ 
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: lib_winch.c,v 1.5 2001/06/02 23:42:08 skimo Exp $")
++MODULE_ID("$Id: lib_winch.c,v 1.6 2008/11/16 00:19:59 juergen Exp $")
+ 
+ NCURSES_EXPORT(chtype)
+ winch(WINDOW *win)
+ {
+     T((T_CALLED("winch(%p)"), win));
+     if (win != 0) {
+-	returnChar(CharOf(win->_line[win->_cury].text[win->_curx]) |
+-		   AttrOf(win->_line[win->_cury].text[win->_curx]));
++	returnChtype(CharOf(win->_line[win->_cury].text[win->_curx]) |
++		     AttrOf(win->_line[win->_cury].text[win->_curx]));
+     } else {
+-	returnChar(0);
++	returnChtype(0);
+     }
+ }
 diff -Naur ncurses-5.7.orig/ncurses/base/MKkeyname.awk ncurses-5.7/ncurses/base/MKkeyname.awk
 --- ncurses-5.7.orig/ncurses/base/MKkeyname.awk	2008-07-12 11:40:00.000000000 -0700
-+++ ncurses-5.7/ncurses/base/MKkeyname.awk	2009-02-15 23:21:24.620481072 -0800
++++ ncurses-5.7/ncurses/base/MKkeyname.awk	2009-02-22 21:40:17.906529403 -0800
 @@ -1,6 +1,6 @@
 -# $Id: MKkeyname.awk,v 1.40 2008/07/12 18:40:00 tom Exp $
 +# $Id: MKkeyname.awk,v 1.41 2009/02/15 00:24:58 tom Exp $
@@ -17302,9 +17380,53 @@ diff -Naur ncurses-5.7.orig/ncurses/base/MKkeyname.awk ncurses-5.7/ncurses/base/
  	print "#if NO_LEAKS"
  	print "void _nc_keyname_leaks(void)"
  	print "{"
+diff -Naur ncurses-5.7.orig/ncurses/base/MKlib_gen.sh ncurses-5.7/ncurses/base/MKlib_gen.sh
+--- ncurses-5.7.orig/ncurses/base/MKlib_gen.sh	2008-08-30 12:20:50.000000000 -0700
++++ ncurses-5.7/ncurses/base/MKlib_gen.sh	2009-02-22 21:40:19.478632211 -0800
+@@ -2,7 +2,7 @@
+ #
+ # MKlib_gen.sh -- generate sources from curses.h macro definitions
+ #
+-# ($Id: MKlib_gen.sh,v 1.34 2008/08/30 19:20:50 tom Exp $)
++# ($Id: MKlib_gen.sh,v 1.35 2008/11/16 00:19:59 juergen Exp $)
+ #
+ ##############################################################################
+ # Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
+@@ -199,7 +199,7 @@
+ 	}
+ 	second = first + 1;
+ 	if ( $first == "chtype" ) {
+-		returnType = "Char";
++		returnType = "Chtype";
+ 	} else if ( $first == "SCREEN" ) {
+ 		returnType = "SP";
+ 	} else if ( $first == "WINDOW" ) {
+diff -Naur ncurses-5.7.orig/ncurses/base/tries.c ncurses-5.7/ncurses/base/tries.c
+--- ncurses-5.7.orig/ncurses/base/tries.c	2008-08-16 12:22:55.000000000 -0700
++++ ncurses-5.7/ncurses/base/tries.c	2009-02-22 21:40:19.478632211 -0800
+@@ -39,7 +39,7 @@
+ 
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: tries.c,v 1.27 2008/08/16 19:22:55 tom Exp $")
++MODULE_ID("$Id: tries.c,v 1.28 2008/11/16 00:19:59 juergen Exp $")
+ 
+ /*
+  * Expand a keycode into the string that it corresponds to, returning null if
+@@ -72,7 +72,9 @@
+ 	    *((unsigned char *) (result + len)) = 128;
+ #ifdef TRACE
+ 	if (len == 0 && USE_TRACEF(TRACE_MAXIMUM)) {
+-	    _tracef("expand_key %s %s", _nc_tracechar(SP, code), _nc_visbuf(result));
++	    _tracef("expand_key %s %s",
++		    _nc_tracechar(CURRENT_SCREEN, code),
++		    _nc_visbuf(result));
+ 	    _nc_unlock_global(tracef);
+ 	}
+ #endif
 diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.priv.h
 --- ncurses-5.7.orig/ncurses/curses.priv.h	2008-10-04 14:37:45.000000000 -0700
-+++ ncurses-5.7/ncurses/curses.priv.h	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/curses.priv.h	2009-02-22 21:40:19.478632211 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -17317,7 +17439,7 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  
  /*
 - * $Id: curses.priv.h,v 1.394 2008/10/04 21:37:45 tom Exp $
-+ * $Id: curses.priv.h,v 1.399 2009/02/15 01:05:47 tom Exp $
++ * $Id: curses.priv.h,v 1.402 2009/02/21 22:54:34 tom Exp $
   *
   *	curses.priv.h
   *
@@ -17369,6 +17491,15 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  #include <term.h>
  #include <term_entry.h>
  #include <nc_tparm.h>
+@@ -289,7 +319,7 @@
+ #if NCURSES_NO_PADDING
+ #define GetNoPadding(sp)	((sp) ? (sp)->_no_padding : _nc_prescreen._no_padding)
+ #define SetNoPadding(sp)	_nc_set_no_padding(sp)
+-extern NCURSES_EXPORT(void) _nc_set_no_padding(SCREEN *);
++extern NCURSES_EXPORT(void)     _nc_set_no_padding(SCREEN *);
+ #else
+ #define GetNoPadding(sp)	FALSE
+ #define SetNoPadding(sp)	/*nothing*/
 @@ -404,6 +434,8 @@
  #define C_SHIFT 9		/* we need more bits than there are colors */
  #define C_MASK			((1 << C_SHIFT) - 1)
@@ -17378,12 +17509,32 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  #define isDefaultColor(c)	((c) >= COLOR_DEFAULT || (c) < 0)
  
  #define COLOR_DEFAULT		C_MASK
+@@ -464,13 +496,13 @@
+ } slk_ent;
+ 
+ typedef struct _SLK {
+-	char dirty;		/* all labels have changed */
+-	char hidden;		/* soft labels are hidden */
+-	WINDOW *win;
++	bool    dirty;		/* all labels have changed */
++	bool    hidden;		/* soft labels are hidden */
++	WINDOW  *win;
+ 	slk_ent *ent;
+-	short  maxlab;		/* number of available labels */
+-	short  labcnt;		/* number of allocated labels */
+-	short  maxlen;		/* length of labels */
++	short   maxlab;		/* number of available labels */
++	short   labcnt;		/* number of allocated labels */
++	short   maxlen;		/* length of labels */
+ 	NCURSES_CH_T attr;	/* soft label attribute */
+ } SLK;
+ 
 @@ -703,6 +735,8 @@
  	char		*_setbuf;	/* buffered I/O for output	    */
  	bool		_filtered;	/* filter() was called		    */
  	bool		_buffered;	/* setvbuf uses _setbuf data	    */
-+        bool            _prescreen;     /* is in prescreen phase            */
-+        bool            _use_env;       /* LINES & COLS from environment?   */
++	bool		_prescreen;	/* is in prescreen phase	    */
++	bool		_use_env;	/* LINES & COLS from environment?   */
  	int		_checkfd;	/* filedesc for typeahead check	    */
  	TERMINAL	*_term;		/* terminal type information	    */
  	TTY		_saved_tty;	/* savetty/resetty information	    */
@@ -17401,6 +17552,24 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  #endif
  	chtype		_ok_attributes; /* valid attributes for terminal     */
  	chtype		_xmc_suppress;	/* attributes to suppress if xmc     */
+@@ -1263,7 +1299,7 @@
+ #define returnBool(code)	TRACE_RETURN(code,bool)
+ #define returnCPtr(code)	TRACE_RETURN(code,cptr)
+ #define returnCVoidPtr(code)	TRACE_RETURN(code,cvoid_ptr)
+-#define returnChar(code)	TRACE_RETURN(code,chtype)
++#define returnChtype(code)	TRACE_RETURN(code,chtype)
+ #define returnCode(code)	TRACE_RETURN(code,int)
+ #define returnPtr(code)		TRACE_RETURN(code,ptr)
+ #define returnSP(code)		TRACE_RETURN(code,sp)
+@@ -1322,7 +1358,7 @@
+ #define returnBool(code)	return code
+ #define returnCPtr(code)	return code
+ #define returnCVoidPtr(code)	return code
+-#define returnChar(code)	return code
++#define returnChtype(code)	return code
+ #define returnCode(code)	return code
+ #define returnPtr(code)		return code
+ #define returnSP(code)		return code
 @@ -1519,7 +1555,7 @@
  extern NCURSES_EXPORT(void) _nc_screen_wrap (void);
  
@@ -17419,9 +17588,76 @@ diff -Naur ncurses-5.7.orig/ncurses/curses.priv.h ncurses-5.7/ncurses/curses.pri
  /*
   * We don't want to use the lines or columns capabilities internally, because
   * if the application is running multiple screens under X, it's quite possible
+@@ -1715,6 +1753,66 @@
+ #define MSG_NO_MEMORY "Out of memory"
+ #define MSG_NO_INPUTS "Premature EOF"
+ 
++/* timed_wait flag definitions */
++#define TW_NONE    0
++#define TW_INPUT   1
++#define TW_MOUSE   2
++#define TW_ANY     (TW_INPUT | TW_MOUSE)
++#define TW_EVENT   4
++
++/*
++ * Exported entrypoints beyond the published API
++ */
++extern NCURSES_EXPORT(WINDOW *) _nc_curscr_of(SCREEN*);
++extern NCURSES_EXPORT(WINDOW *) _nc_newscr_of(SCREEN*);
++extern NCURSES_EXPORT(WINDOW *) _nc_stdscr_of(SCREEN*);
++extern NCURSES_EXPORT(int)      _nc_outc_wrapper(SCREEN*,int);
++
++extern NCURSES_EXPORT(TERMINAL*) NCURSES_SP_NAME(_nc_set_curterm)(SCREEN*,TERMINAL*);
++extern NCURSES_EXPORT(int)       NCURSES_SP_NAME(_nc_del_curterm)(SCREEN*,TERMINAL*);
++
++#if NCURSES_EXT_FUNCS
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_set_tabsize)(SCREEN*, int);
++#endif
++
++extern NCURSES_EXPORT(chtype)   NCURSES_SP_NAME(_nc_acs_char)(SCREEN*,int);
++
++/*
++ * We put the safe versions of various calls here as they are not published
++ * part of the API up to now
++ */
++extern NCURSES_EXPORT(SCREEN*)  _nc_SP(void);
++
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vidputs)(SCREEN*,chtype,int(*) (SCREEN*, int));
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vidattr)(SCREEN *, chtype);
++
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_scr_restore)(SCREEN*, const char*);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_scr_init)(SCREEN*,const char*);
++
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_restartterm)(SCREEN*,NCURSES_CONST char*,int,int*);
++extern NCURSES_EXPORT(bool)     NCURSES_SP_NAME(_nc_is_term_resized)(SCREEN*,int,int);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resize_term)(SCREEN*,int,int);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resizeterm)(SCREEN*,int,int);
++
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tgetent)(SCREEN*,char*,const char *);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tputs)(SCREEN*,const char*,int,int(*)(SCREEN*, int));
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_savetty)(SCREEN*);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resetty)(SCREEN*);
++
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_mcprint)(SCREEN*,char*, int);
++extern NCURSES_EXPORT(char *)   NCURSES_SP_NAME(_nc_tgetstr)(SCREEN*,NCURSES_CONST char*,char**);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tgetflag)(SCREEN*,NCURSES_CONST char*);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tgetnum)(SCREEN*,NCURSES_CONST char*);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tigetflag)(SCREEN*,NCURSES_CONST char*);
++extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tigetnum)(SCREEN*,NCURSES_CONST char*);
++extern NCURSES_EXPORT(char *)   NCURSES_SP_NAME(_nc_tigetstr)(SCREEN*, NCURSES_CONST char*);
++extern NCURSES_EXPORT(void)     _nc_cookie_init(SCREEN *sp);
++extern NCURSES_EXPORT(int)      _nc_tinfo_doupdate(SCREEN *sp);
++extern NCURSES_EXPORT(int)      _nc_tinfo_mcprint(SCREEN*,char*,int);
++#if USE_WIDEC_SUPPORT
++extern NCURSES_EXPORT(wchar_t *) NCURSES_SP_NAME(_nc_wunctrl)(SCREEN*, cchar_t *);
++#endif
++
+ #ifdef __cplusplus
+ }
+ #endif
 diff -Naur ncurses-5.7.orig/ncurses/Makefile.in ncurses-5.7/ncurses/Makefile.in
 --- ncurses-5.7.orig/ncurses/Makefile.in	2008-10-18 07:11:54.000000000 -0700
-+++ ncurses-5.7/ncurses/Makefile.in	2009-02-15 23:21:09.919538762 -0800
++++ ncurses-5.7/ncurses/Makefile.in	2009-02-22 21:40:02.905568096 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.113 2008/10/18 14:11:54 tom Exp $
 +# $Id: Makefile.in,v 1.114 2009/01/03 19:09:26 tom Exp $
@@ -17442,7 +17678,7 @@ diff -Naur ncurses-5.7.orig/ncurses/Makefile.in ncurses-5.7/ncurses/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/entries.c ncurses-5.7/ncurses/tinfo/entries.c
 --- ncurses-5.7.orig/ncurses/tinfo/entries.c	2008-09-27 06:11:10.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/entries.c	2009-02-15 23:21:03.083101270 -0800
++++ ncurses-5.7/ncurses/tinfo/entries.c	2009-02-22 21:39:55.861116636 -0800
 @@ -37,7 +37,7 @@
  #include <tic.h>
  #include <term_entry.h>
@@ -17464,7 +17700,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/entries.c ncurses-5.7/ncurses/tinfo/en
      _nc_free_entries(_nc_head);
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/hashed_db.c ncurses-5.7/ncurses/tinfo/hashed_db.c
 --- ncurses-5.7.orig/ncurses/tinfo/hashed_db.c	2006-08-19 12:48:38.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/hashed_db.c	2009-02-15 23:21:04.663202123 -0800
++++ ncurses-5.7/ncurses/tinfo/hashed_db.c	2009-02-22 21:39:57.593227825 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2006 Free Software Foundation, Inc.                        *
@@ -17570,7 +17806,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/hashed_db.c ncurses-5.7/ncurses/tinfo/
  
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_baudrate.c ncurses-5.7/ncurses/tinfo/lib_baudrate.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_baudrate.c	2008-06-28 08:19:24.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_baudrate.c	2009-02-15 23:21:24.628481072 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_baudrate.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -17619,7 +17855,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_baudrate.c ncurses-5.7/ncurses/tin
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_has_cap.c ncurses-5.7/ncurses/tinfo/lib_has_cap.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_has_cap.c	2003-10-25 12:43:55.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_has_cap.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_has_cap.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.              *
@@ -17679,7 +17915,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_has_cap.c ncurses-5.7/ncurses/tinf
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_kernel.c ncurses-5.7/ncurses/tinfo/lib_kernel.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_kernel.c	2004-05-08 10:11:21.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_kernel.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_kernel.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
@@ -17790,7 +18026,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_kernel.c ncurses-5.7/ncurses/tinfo
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_longname.c ncurses-5.7/ncurses/tinfo/lib_longname.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_longname.c	2000-12-09 18:55:07.000000000 -0800
-+++ ncurses-5.7/ncurses/tinfo/lib_longname.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_longname.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
@@ -17834,7 +18070,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_longname.c ncurses-5.7/ncurses/tin
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_napms.c ncurses-5.7/ncurses/tinfo/lib_napms.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_napms.c	2008-05-03 14:34:13.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_napms.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_napms.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2008 Free Software Foundation, Inc.              *
@@ -17878,7 +18114,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_napms.c ncurses-5.7/ncurses/tinfo/
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_options.c ncurses-5.7/ncurses/tinfo/lib_options.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_options.c	2008-08-16 14:20:48.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_options.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_options.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
@@ -17964,7 +18200,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_options.c ncurses-5.7/ncurses/tinf
  **
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_raw.c ncurses-5.7/ncurses/tinfo/lib_raw.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_raw.c	2007-09-29 14:50:22.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_raw.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_raw.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2002,2007 Free Software Foundation, Inc.              *
@@ -18213,7 +18449,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_raw.c ncurses-5.7/ncurses/tinfo/li
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_setup.c ncurses-5.7/ncurses/tinfo/lib_setup.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_setup.c	2008-08-03 15:42:33.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_setup.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_setup.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -18302,7 +18538,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_setup.c ncurses-5.7/ncurses/tinfo/
  /* Obtain lines/columns values from the environment and/or terminfo entry */
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_termname.c ncurses-5.7/ncurses/tinfo/lib_termname.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_termname.c	2003-12-27 10:23:01.000000000 -0800
-+++ ncurses-5.7/ncurses/tinfo/lib_termname.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_termname.c	2009-02-22 21:40:19.482631931 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2001,2003 Free Software Foundation, Inc.              *
@@ -18315,7 +18551,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_termname.c ncurses-5.7/ncurses/tin
  #include <curses.priv.h>
  
 -MODULE_ID("$Id: lib_termname.c,v 1.8 2003/12/27 18:23:01 tom Exp $")
-+MODULE_ID("$Id: lib_termname.c,v 1.10 2009/02/15 01:07:06 tom Exp $")
++MODULE_ID("$Id: lib_termname.c,v 1.11 2009/02/21 16:37:12 tom Exp $")
  
  NCURSES_EXPORT(char *)
 -termname(void)
@@ -18323,7 +18559,8 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_termname.c ncurses-5.7/ncurses/tin
  {
      char *name = 0;
  
-     T((T_CALLED("termname()")));
+-    T((T_CALLED("termname()")));
++    T((T_CALLED("termname(%p)"), SP_PARM));
  
 +#if NCURSES_SP_FUNCS
 +    if (TerminalOf(SP_PARM) != 0) {
@@ -18344,9 +18581,24 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_termname.c ncurses-5.7/ncurses/tin
 +    return NCURSES_SP_NAME(termname) (CURRENT_SCREEN);
 +}
 +#endif
+diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_tparm.c ncurses-5.7/ncurses/tinfo/lib_tparm.c
+--- ncurses-5.7.orig/ncurses/tinfo/lib_tparm.c	2008-08-16 12:22:55.000000000 -0700
++++ ncurses-5.7/ncurses/tinfo/lib_tparm.c	2009-02-22 21:40:19.482631931 -0800
+@@ -40,10 +40,9 @@
+ #include <curses.priv.h>
+ 
+ #include <ctype.h>
+-#include <term.h>
+ #include <tic.h>
+ 
+-MODULE_ID("$Id: lib_tparm.c,v 1.76 2008/08/16 19:22:55 tom Exp $")
++MODULE_ID("$Id: lib_tparm.c,v 1.77 2008/11/16 00:19:59 juergen Exp $")
+ 
+ /*
+  *	char *
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_tputs.c ncurses-5.7/ncurses/tinfo/lib_tputs.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_tputs.c	2008-06-28 06:12:15.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_tputs.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_tputs.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -18397,7 +18649,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_tputs.c ncurses-5.7/ncurses/tinfo/
  {
 diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_ttyflags.c ncurses-5.7/ncurses/tinfo/lib_ttyflags.c
 --- ncurses-5.7.orig/ncurses/tinfo/lib_ttyflags.c	2008-08-03 15:10:44.000000000 -0700
-+++ ncurses-5.7/ncurses/tinfo/lib_ttyflags.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tinfo/lib_ttyflags.c	2009-02-22 21:40:17.918530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -18511,9 +18763,167 @@ diff -Naur ncurses-5.7.orig/ncurses/tinfo/lib_ttyflags.c ncurses-5.7/ncurses/tin
  static TTY *
  saved_tty(void)
  {
+diff -Naur ncurses-5.7.orig/ncurses/tinfo/make_keys.c ncurses-5.7/ncurses/tinfo/make_keys.c
+--- ncurses-5.7.orig/ncurses/tinfo/make_keys.c	2008-08-03 14:57:22.000000000 -0700
++++ ncurses-5.7/ncurses/tinfo/make_keys.c	2009-02-22 21:40:19.482631931 -0800
+@@ -39,16 +39,16 @@
+ #define USE_TERMLIB 1
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: make_keys.c,v 1.14 2008/08/03 21:57:22 tom Exp $")
++MODULE_ID("$Id: make_keys.c,v 1.15 2008/11/16 00:19:59 juergen Exp $")
+ 
+ #include <names.c>
+ 
+ #define UNKNOWN (SIZEOF(strnames) + SIZEOF(strfnames))
+ 
+-static size_t
++static unsigned
+ lookup(const char *name)
+ {
+-    size_t n;
++    unsigned n;
+     bool found = FALSE;
+     for (n = 0; strnames[n] != 0; n++) {
+ 	if (!strcmp(name, strnames[n])) {
+@@ -73,7 +73,7 @@
+     char buffer[BUFSIZ];
+     char from[256];
+     char to[256];
+-    int maxlen = 16;
++    unsigned maxlen = 16;
+     int scanned;
+ 
+     while (fgets(buffer, sizeof(buffer), ifp) != 0) {
+@@ -85,10 +85,10 @@
+ 
+ 	scanned = sscanf(buffer, "%255s %255s", to, from);
+ 	if (scanned == 2) {
+-	    int code = lookup(from);
++	    unsigned code = lookup(from);
+ 	    if (code == UNKNOWN)
+ 		continue;
+-	    if ((int) strlen(from) > maxlen)
++	    if (strlen(from) > maxlen)
+ 		maxlen = strlen(from);
+ 	    fprintf(ofp, "\t{ %4d, %-*.*s },\t/* %s */\n",
+ 		    code,
+diff -Naur ncurses-5.7.orig/ncurses/tinfo/MKnames.awk ncurses-5.7/ncurses/tinfo/MKnames.awk
+--- ncurses-5.7.orig/ncurses/tinfo/MKnames.awk	2008-10-11 14:07:56.000000000 -0700
++++ ncurses-5.7/ncurses/tinfo/MKnames.awk	2009-02-22 21:40:19.482631931 -0800
+@@ -25,7 +25,7 @@
+ # use or other dealings in this Software without prior written               #
+ # authorization.                                                             #
+ ##############################################################################
+-# $Id: MKnames.awk,v 1.20 2008/10/11 21:07:56 tom Exp $
++# $Id: MKnames.awk,v 1.21 2008/11/16 00:19:59 juergen Exp $
+ function large_item(value) {
+ 	result = sprintf("%d,", offset);
+ 	offset = offset + length(value) + 1;
+@@ -107,8 +107,6 @@
+ 		print  ""
+ 		print  "#if BROKEN_LINKER || USE_REENTRANT"
+ 		print  ""
+-		print  "#include <term.h>"
+-		print  ""
+ 		if (bigstrings) {
+ 			printf "static const char _nc_name_blob[] = \n"
+ 			printf "%s;\n", bigstr;
+diff -Naur ncurses-5.7.orig/ncurses/tinfo/name_match.c ncurses-5.7/ncurses/tinfo/name_match.c
+--- ncurses-5.7.orig/ncurses/tinfo/name_match.c	2008-08-03 12:49:33.000000000 -0700
++++ ncurses-5.7/ncurses/tinfo/name_match.c	2009-02-22 21:40:19.482631931 -0800
+@@ -31,10 +31,9 @@
+  ****************************************************************************/
+ 
+ #include <curses.priv.h>
+-#include <term.h>
+ #include <tic.h>
+ 
+-MODULE_ID("$Id: name_match.c,v 1.17 2008/08/03 19:49:33 tom Exp $")
++MODULE_ID("$Id: name_match.c,v 1.18 2008/11/16 00:19:59 juergen Exp $")
+ 
+ /*
+  *	_nc_first_name(char *names)
+diff -Naur ncurses-5.7.orig/ncurses/tinfo/use_screen.c ncurses-5.7/ncurses/tinfo/use_screen.c
+--- ncurses-5.7.orig/ncurses/tinfo/use_screen.c	2008-06-07 12:16:56.000000000 -0700
++++ ncurses-5.7/ncurses/tinfo/use_screen.c	2009-02-22 21:40:19.482631931 -0800
+@@ -32,7 +32,7 @@
+ 
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: use_screen.c,v 1.6 2008/06/07 19:16:56 tom Exp $")
++MODULE_ID("$Id: use_screen.c,v 1.7 2008/11/16 00:19:59 juergen Exp $")
+ 
+ NCURSES_EXPORT(int)
+ use_screen(SCREEN *screen, NCURSES_SCREEN_CB func, void *data)
+@@ -47,7 +47,7 @@
+      * recurred through this point, return an error if so.
+      */
+     _nc_lock_global(curses);
+-    save_SP = SP;
++    save_SP = CURRENT_SCREEN;
+     set_term(screen);
+ 
+     code = func(screen, data);
+diff -Naur ncurses-5.7.orig/ncurses/trace/lib_tracebits.c ncurses-5.7/ncurses/trace/lib_tracebits.c
+--- ncurses-5.7.orig/ncurses/trace/lib_tracebits.c	2008-08-03 09:09:26.000000000 -0700
++++ ncurses-5.7/ncurses/trace/lib_tracebits.c	2009-02-22 21:40:19.482631931 -0800
+@@ -33,9 +33,8 @@
+  ****************************************************************************/
+ 
+ #include <curses.priv.h>
+-#include <term.h>		/* cur_term */
+ 
+-MODULE_ID("$Id: lib_tracebits.c,v 1.17 2008/08/03 16:09:26 tom Exp $")
++MODULE_ID("$Id: lib_tracebits.c,v 1.18 2008/11/16 00:19:59 juergen Exp $")
+ 
+ #if SVR4_TERMIO && !defined(_POSIX_SOURCE)
+ #define _POSIX_SOURCE
+diff -Naur ncurses-5.7.orig/ncurses/trace/lib_tracemse.c ncurses-5.7/ncurses/trace/lib_tracemse.c
+--- ncurses-5.7.orig/ncurses/trace/lib_tracemse.c	2008-08-03 08:39:29.000000000 -0700
++++ ncurses-5.7/ncurses/trace/lib_tracemse.c	2009-02-22 21:40:19.482631931 -0800
+@@ -38,7 +38,7 @@
+ 
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: lib_tracemse.c,v 1.15 2008/08/03 15:39:29 tom Exp $")
++MODULE_ID("$Id: lib_tracemse.c,v 1.16 2008/11/16 00:19:59 juergen Exp $")
+ 
+ #ifdef TRACE
+ 
+@@ -117,7 +117,7 @@
+ NCURSES_EXPORT(char *)
+ _tracemouse(MEVENT const *ep)
+ {
+-    return _nc_tracemouse(SP, ep);
++    return _nc_tracemouse(CURRENT_SCREEN, ep);
+ }
+ 
+ #else /* !TRACE */
+diff -Naur ncurses-5.7.orig/ncurses/trace/varargs.c ncurses-5.7/ncurses/trace/varargs.c
+--- ncurses-5.7.orig/ncurses/trace/varargs.c	2008-08-03 08:42:49.000000000 -0700
++++ ncurses-5.7/ncurses/trace/varargs.c	2009-02-22 21:40:19.482631931 -0800
+@@ -34,7 +34,7 @@
+ 
+ #include <ctype.h>
+ 
+-MODULE_ID("$Id: varargs.c,v 1.7 2008/08/03 15:42:49 tom Exp $")
++MODULE_ID("$Id: varargs.c,v 1.8 2008/11/16 00:19:59 juergen Exp $")
+ 
+ #ifdef TRACE
+ 
+@@ -44,7 +44,7 @@
+     atUnknown = 0, atInteger, atFloat, atPoint, atString
+ } ARGTYPE;
+ 
+-#define VA_INT(type) ival = va_arg(ap, type)
++#define VA_INT(type) ival = (int) va_arg(ap, type)
+ #define VA_FLT(type) fval = va_arg(ap, type)
+ #define VA_PTR(type) pval = (char *)va_arg(ap, type)
+ #define VA_STR(type) sval = va_arg(ap, type)
 diff -Naur ncurses-5.7.orig/ncurses/tty/lib_mvcur.c ncurses-5.7/ncurses/tty/lib_mvcur.c
 --- ncurses-5.7.orig/ncurses/tty/lib_mvcur.c	2008-08-16 12:30:58.000000000 -0700
-+++ ncurses-5.7/ncurses/tty/lib_mvcur.c	2009-02-15 23:21:24.632481631 -0800
++++ ncurses-5.7/ncurses/tty/lib_mvcur.c	2009-02-22 21:40:17.922530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -18604,7 +19014,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tty/lib_mvcur.c ncurses-5.7/ncurses/tty/lib_
  #endif
 diff -Naur ncurses-5.7.orig/ncurses/tty/lib_vidattr.c ncurses-5.7/ncurses/tty/lib_vidattr.c
 --- ncurses-5.7.orig/ncurses/tty/lib_vidattr.c	2007-06-30 14:58:04.000000000 -0700
-+++ ncurses-5.7/ncurses/tty/lib_vidattr.c	2009-02-15 23:21:24.636481910 -0800
++++ ncurses-5.7/ncurses/tty/lib_vidattr.c	2009-02-22 21:40:19.482631931 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
@@ -18627,7 +19037,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tty/lib_vidattr.c ncurses-5.7/ncurses/tty/li
  #include <term.h>
  
 -MODULE_ID("$Id: lib_vidattr.c,v 1.49 2007/06/30 21:58:04 tom Exp $")
-+MODULE_ID("$Id: lib_vidattr.c,v 1.50 2009/02/15 00:51:03 tom Exp $")
++MODULE_ID("$Id: lib_vidattr.c,v 1.51 2009/02/21 21:43:40 tom Exp $")
  
  #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
  
@@ -18648,7 +19058,8 @@ diff -Naur ncurses-5.7.orig/ncurses/tty/lib_vidattr.c ncurses-5.7/ncurses/tty/li
 +    if (SP_PARM->_coloron)
  	attrs |= A_COLOR;
  
-     returnChar(attrs);
+-    returnChar(attrs);
++    returnChtype(attrs);
  }
 +
 +#if NCURSES_SP_FUNCS
@@ -18660,7 +19071,7 @@ diff -Naur ncurses-5.7.orig/ncurses/tty/lib_vidattr.c ncurses-5.7/ncurses/tty/li
 +#endif
 diff -Naur ncurses-5.7.orig/ncurses/tty/tty_update.c ncurses-5.7/ncurses/tty/tty_update.c
 --- ncurses-5.7.orig/ncurses/tty/tty_update.c	2008-08-30 13:08:19.000000000 -0700
-+++ ncurses-5.7/ncurses/tty/tty_update.c	2009-02-15 23:21:24.636481910 -0800
++++ ncurses-5.7/ncurses/tty/tty_update.c	2009-02-22 21:40:17.922530520 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
@@ -18805,9 +19216,67 @@ diff -Naur ncurses-5.7.orig/ncurses/tty/tty_update.c ncurses-5.7/ncurses/tty/tty
  			&& SP->_color_pairs[oldPair] == SP->_color_pairs[newPair]) {
  			SetPair(oldLine[n], GetPair(newLine[n]));
  		    }
+diff -Naur ncurses-5.7.orig/ncurses/widechar/lib_cchar.c ncurses-5.7/ncurses/widechar/lib_cchar.c
+--- ncurses-5.7.orig/ncurses/widechar/lib_cchar.c	2007-05-12 12:03:06.000000000 -0700
++++ ncurses-5.7/ncurses/widechar/lib_cchar.c	2009-02-22 21:40:19.482631931 -0800
+@@ -1,5 +1,5 @@
+ /****************************************************************************
+- * Copyright (c) 2001-2005,2007 Free Software Foundation, Inc.              *
++ * Copyright (c) 2001-2007,2008 Free Software Foundation, Inc.              *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+@@ -35,7 +35,7 @@
+ 
+ #include <curses.priv.h>
+ 
+-MODULE_ID("$Id: lib_cchar.c,v 1.12 2007/05/12 19:03:06 tom Exp $")
++MODULE_ID("$Id: lib_cchar.c,v 1.13 2008/11/16 00:19:59 juergen Exp $")
+ 
+ /* 
+  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
+@@ -50,8 +50,8 @@
+ 	 short color_pair,
+ 	 const void *opts)
+ {
+-    int i;
+-    int len;
++    unsigned i;
++    unsigned len;
+     int code = OK;
+ 
+     TR(TRACE_CCALLS, (T_CALLED("setcchar(%p,%s,%lu,%d,%p)"),
+diff -Naur ncurses-5.7.orig/ncurses/widechar/lib_get_wstr.c ncurses-5.7/ncurses/widechar/lib_get_wstr.c
+--- ncurses-5.7.orig/ncurses/widechar/lib_get_wstr.c	2008-08-16 12:25:33.000000000 -0700
++++ ncurses-5.7/ncurses/widechar/lib_get_wstr.c	2009-02-22 21:40:19.482631931 -0800
+@@ -38,9 +38,8 @@
+ */
+ 
+ #include <curses.priv.h>
+-#include <term.h>
+ 
+-MODULE_ID("$Id: lib_get_wstr.c,v 1.10 2008/08/16 19:25:33 tom Exp $")
++MODULE_ID("$Id: lib_get_wstr.c,v 1.11 2008/11/16 00:19:59 juergen Exp $")
+ 
+ static int
+ wadd_wint(WINDOW *win, wint_t *src)
+diff -Naur ncurses-5.7.orig/ncurses/widechar/lib_wacs.c ncurses-5.7/ncurses/widechar/lib_wacs.c
+--- ncurses-5.7.orig/ncurses/widechar/lib_wacs.c	2006-12-17 07:16:17.000000000 -0800
++++ ncurses-5.7/ncurses/widechar/lib_wacs.c	2009-02-22 21:40:19.482631931 -0800
+@@ -31,9 +31,8 @@
+  ****************************************************************************/
+ 
+ #include <curses.priv.h>
+-#include <term.h>
+ 
+-MODULE_ID("$Id: lib_wacs.c,v 1.7 2006/12/17 15:16:17 tom Exp $")
++MODULE_ID("$Id: lib_wacs.c,v 1.8 2008/11/16 00:19:59 juergen Exp $")
+ 
+ NCURSES_EXPORT_VAR(cchar_t) * _nc_wacs = 0;
+ 
 diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
 --- ncurses-5.7.orig/NEWS	2008-11-01 17:56:22.000000000 -0700
-+++ ncurses-5.7/NEWS	2009-02-15 23:21:24.600479396 -0800
++++ ncurses-5.7/NEWS	2009-02-22 21:40:19.474632211 -0800
 @@ -1,5 +1,5 @@
  -------------------------------------------------------------------------------
 --- Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.               --
@@ -18820,14 +19289,17 @@ diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
  -- authorization.                                                            --
  -------------------------------------------------------------------------------
 --- $Id: NEWS,v 1.1320 2008/11/02 00:56:22 tom Exp $
-+-- $Id: NEWS,v 1.1364 2009/02/15 00:20:00 tom Exp $
++-- $Id: NEWS,v 1.1365 2009/02/22 02:05:30 tom Exp $
  -------------------------------------------------------------------------------
  
  This is a log of changes that ncurses has gone through since Zeyd started
-@@ -45,6 +45,150 @@
+@@ -45,6 +45,153 @@
  Changes through 1.9.9e did not credit all contributions;
  it is not possible to add this information.
  
++20090221
++	+ continue integrating "sp-funcs" by Juergen Pfeifer (incomplete).
++
 +20090214
 +	+ add configure script --enable-sp-funcs to enable the new set of
 +	  extended functions.
@@ -18977,7 +19449,7 @@ diff -Naur ncurses-5.7.orig/NEWS ncurses-5.7/NEWS
  20081025
 diff -Naur ncurses-5.7.orig/panel/Makefile.in ncurses-5.7/panel/Makefile.in
 --- ncurses-5.7.orig/panel/Makefile.in	2007-04-28 07:56:11.000000000 -0700
-+++ ncurses-5.7/panel/Makefile.in	2009-02-15 23:21:09.919538762 -0800
++++ ncurses-5.7/panel/Makefile.in	2009-02-22 21:40:02.905568096 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.52 2007/04/28 14:56:11 tom Exp $
 +# $Id: Makefile.in,v 1.53 2009/01/03 19:09:26 tom Exp $
@@ -18998,7 +19470,7 @@ diff -Naur ncurses-5.7.orig/panel/Makefile.in ncurses-5.7/panel/Makefile.in
  LN_S		= @LN_S@
 diff -Naur ncurses-5.7.orig/progs/Makefile.in ncurses-5.7/progs/Makefile.in
 --- ncurses-5.7.orig/progs/Makefile.in	2008-09-07 06:58:55.000000000 -0700
-+++ ncurses-5.7/progs/Makefile.in	2009-02-15 23:20:58.766824137 -0800
++++ ncurses-5.7/progs/Makefile.in	2009-02-22 21:39:51.152816873 -0800
 @@ -1,6 +1,6 @@
 -# $Id: Makefile.in,v 1.79 2008/09/07 13:58:55 tom Exp $
 +# $Id: Makefile.in,v 1.80 2008/11/15 19:04:19 tom Exp $
@@ -19064,7 +19536,7 @@ diff -Naur ncurses-5.7.orig/progs/Makefile.in ncurses-5.7/progs/Makefile.in
  
 diff -Naur ncurses-5.7.orig/progs/modules ncurses-5.7/progs/modules
 --- ncurses-5.7.orig/progs/modules	2006-12-23 16:53:21.000000000 -0800
-+++ ncurses-5.7/progs/modules	2009-02-15 23:20:58.766824137 -0800
++++ ncurses-5.7/progs/modules	2009-02-22 21:39:51.152816873 -0800
 @@ -1,7 +1,7 @@
 -# $Id: modules,v 1.13 2006/12/24 00:53:21 tom Exp $
 +# $Id: modules,v 1.14 2008/11/15 16:26:48 tom Exp $
@@ -19085,7 +19557,7 @@ diff -Naur ncurses-5.7.orig/progs/modules ncurses-5.7/progs/modules
  
 diff -Naur ncurses-5.7.orig/progs/tabs.c ncurses-5.7/progs/tabs.c
 --- ncurses-5.7.orig/progs/tabs.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/progs/tabs.c	2009-02-15 23:21:00.214919122 -0800
++++ ncurses-5.7/progs/tabs.c	2009-02-22 21:39:52.804923033 -0800
 @@ -0,0 +1,506 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -19595,7 +20067,7 @@ diff -Naur ncurses-5.7.orig/progs/tabs.c ncurses-5.7/progs/tabs.c
 +}
 diff -Naur ncurses-5.7.orig/test/clip_printw.c ncurses-5.7/test/clip_printw.c
 --- ncurses-5.7.orig/test/clip_printw.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/test/clip_printw.c	2009-02-15 23:21:06.503320016 -0800
++++ ncurses-5.7/test/clip_printw.c	2009-02-22 21:39:59.253333985 -0800
 @@ -0,0 +1,360 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -19959,7 +20431,7 @@ diff -Naur ncurses-5.7.orig/test/clip_printw.c ncurses-5.7/test/clip_printw.c
 +}
 diff -Naur ncurses-5.7.orig/test/demo_forms.c ncurses-5.7/test/demo_forms.c
 --- ncurses-5.7.orig/test/demo_forms.c	2008-10-18 13:38:20.000000000 -0700
-+++ ncurses-5.7/test/demo_forms.c	2009-02-15 23:21:06.503320016 -0800
++++ ncurses-5.7/test/demo_forms.c	2009-02-22 21:39:59.253333985 -0800
 @@ -26,7 +26,7 @@
   * authorization.                                                           *
   ****************************************************************************/
@@ -19994,7 +20466,7 @@ diff -Naur ncurses-5.7.orig/test/demo_forms.c ncurses-5.7/test/demo_forms.c
      }
 diff -Naur ncurses-5.7.orig/test/edit_field.c ncurses-5.7/test/edit_field.c
 --- ncurses-5.7.orig/test/edit_field.c	2008-10-18 13:40:20.000000000 -0700
-+++ ncurses-5.7/test/edit_field.c	2009-02-15 23:21:06.503320016 -0800
++++ ncurses-5.7/test/edit_field.c	2009-02-22 21:39:59.253333985 -0800
 @@ -26,7 +26,7 @@
   * authorization.                                                           *
   ****************************************************************************/
@@ -20017,7 +20489,7 @@ diff -Naur ncurses-5.7.orig/test/edit_field.c ncurses-5.7/test/edit_field.c
  int
 diff -Naur ncurses-5.7.orig/test/edit_field.h ncurses-5.7/test/edit_field.h
 --- ncurses-5.7.orig/test/edit_field.h	2006-06-03 09:38:57.000000000 -0700
-+++ ncurses-5.7/test/edit_field.h	2009-02-15 23:21:06.507320016 -0800
++++ ncurses-5.7/test/edit_field.h	2009-02-22 21:39:59.253333985 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 2003-2004,2005 Free Software Foundation, Inc.              *
@@ -20047,7 +20519,7 @@ diff -Naur ncurses-5.7.orig/test/edit_field.h ncurses-5.7/test/edit_field.h
  
 diff -Naur ncurses-5.7.orig/test/filter.c ncurses-5.7/test/filter.c
 --- ncurses-5.7.orig/test/filter.c	2006-12-09 08:53:47.000000000 -0800
-+++ ncurses-5.7/test/filter.c	2009-02-15 23:21:03.083101270 -0800
++++ ncurses-5.7/test/filter.c	2009-02-22 21:39:55.861116636 -0800
 @@ -1,5 +1,5 @@
  /****************************************************************************
 - * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
@@ -20119,7 +20591,7 @@ diff -Naur ncurses-5.7.orig/test/filter.c ncurses-5.7/test/filter.c
  
 diff -Naur ncurses-5.7.orig/test/insdelln.c ncurses-5.7/test/insdelln.c
 --- ncurses-5.7.orig/test/insdelln.c	1969-12-31 16:00:00.000000000 -0800
-+++ ncurses-5.7/test/insdelln.c	2009-02-15 23:21:06.507320016 -0800
++++ ncurses-5.7/test/insdelln.c	2009-02-22 21:39:59.253333985 -0800
 @@ -0,0 +1,380 @@
 +/****************************************************************************
 + * Copyright (c) 2008 Free Software Foundation, Inc.                        *
@@ -20503,7 +20975,7 @@ diff -Naur ncurses-5.7.orig/test/insdelln.c ncurses-5.7/test/insdelln.c
 +}
 diff -Naur ncurses-5.7.orig/test/modules ncurses-5.7/test/modules
 --- ncurses-5.7.orig/test/modules	2007-08-18 10:57:08.000000000 -0700
-+++ ncurses-5.7/test/modules	2009-02-15 23:21:06.507320016 -0800
++++ ncurses-5.7/test/modules	2009-02-22 21:39:59.253333985 -0800
 @@ -1,4 +1,4 @@
 -# $Id: modules,v 1.36 2007/08/18 17:57:08 tom Exp $
 +# $Id: modules,v 1.37 2008/12/20 21:38:44 tom Exp $
@@ -20528,7 +21000,7 @@ diff -Naur ncurses-5.7.orig/test/modules ncurses-5.7/test/modules
  keynames	progs		$(srcdir)	$(HEADER_DEPS)
 diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
 --- ncurses-5.7.orig/test/ncurses.c	2008-09-27 07:34:58.000000000 -0700
-+++ ncurses-5.7/test/ncurses.c	2009-02-15 23:21:17.380017041 -0800
++++ ncurses-5.7/test/ncurses.c	2009-02-22 21:40:14.674322391 -0800
 @@ -40,7 +40,7 @@
     Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
             Thomas E. Dickey (beginning revision 1.27 in 1996).
@@ -21020,7 +21492,7 @@ diff -Naur ncurses-5.7.orig/test/ncurses.c ncurses-5.7/test/ncurses.c
  	wbkgdset(win, ' ' | A_NORMAL);
 diff -Naur ncurses-5.7.orig/test/programs ncurses-5.7/test/programs
 --- ncurses-5.7.orig/test/programs	2008-08-16 14:47:39.000000000 -0700
-+++ ncurses-5.7/test/programs	2009-02-15 23:21:06.507320016 -0800
++++ ncurses-5.7/test/programs	2009-02-22 21:39:59.257334543 -0800
 @@ -1,4 +1,4 @@
 -# $Id: programs,v 1.14 2008/08/16 21:47:39 tom Exp $
 +# $Id: programs,v 1.15 2008/12/20 21:38:44 tom Exp $
@@ -21045,7 +21517,7 @@ diff -Naur ncurses-5.7.orig/test/programs ncurses-5.7/test/programs
  keynames	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	keynames
 diff -Naur ncurses-5.7.orig/test/README ncurses-5.7/test/README
 --- ncurses-5.7.orig/test/README	2008-10-18 14:02:45.000000000 -0700
-+++ ncurses-5.7/test/README	2009-02-15 23:21:06.503320016 -0800
++++ ncurses-5.7/test/README	2009-02-22 21:39:59.253333985 -0800
 @@ -25,7 +25,7 @@
  -- sale, use or other dealings in this Software without prior written        --
  -- authorization.                                                            --
@@ -21341,7 +21813,7 @@ diff -Naur ncurses-5.7.orig/test/README ncurses-5.7/test/README
  wscrl				test: ncurses testcurs
 diff -Naur ncurses-5.7.orig/test/test.priv.h ncurses-5.7/test/test.priv.h
 --- ncurses-5.7.orig/test/test.priv.h	2008-10-04 14:53:41.000000000 -0700
-+++ ncurses-5.7/test/test.priv.h	2009-02-15 23:21:06.507320016 -0800
++++ ncurses-5.7/test/test.priv.h	2009-02-22 21:39:59.257334543 -0800
 @@ -29,7 +29,7 @@
  /****************************************************************************
   *  Author: Thomas E. Dickey                    1996-on                     *
@@ -21363,7 +21835,7 @@ diff -Naur ncurses-5.7.orig/test/test.priv.h ncurses-5.7/test/test.priv.h
   */
 diff -Naur ncurses-5.7.orig/TO-DO ncurses-5.7/TO-DO
 --- ncurses-5.7.orig/TO-DO	2008-10-11 12:22:27.000000000 -0700
-+++ ncurses-5.7/TO-DO	2009-02-15 23:21:01.795020533 -0800
++++ ncurses-5.7/TO-DO	2009-02-22 21:39:54.285016622 -0800
 @@ -25,7 +25,7 @@
  -- sale, use or other dealings in this Software without prior written        --
  -- authorization.                                                            --
