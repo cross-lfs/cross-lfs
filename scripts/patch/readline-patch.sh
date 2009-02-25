@@ -24,7 +24,7 @@ rm -f index.html
 SKIPPATCH=""
 SKIPPED=""
 
-# Download BASH Source
+# Download Readline Source
 #
 if ! [ -e readline-${VERSION}.tar.gz ]; then
   wget ftp://ftp.cwru.edu/pub/bash/readline-${VERSION}.tar.gz

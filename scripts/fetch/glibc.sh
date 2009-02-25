@@ -4,7 +4,7 @@
 # Usage, glibc.sh [cvs-tag] [tarball-version]
 # An example of a CVS tag would be HEAD or glibc-2_9
 # An example of a tarball version would be say the date, or 2.9, it will be
-#   inserted into the output tarbal filename,
+#   inserted into the output tarball filename,
 #   eg, glibc-[tarball-version].tar.bz2
 
 CVStag=${1-HEAD}
@@ -49,7 +49,7 @@ if test $? -ne 0; then
   exit 1
 fi
 
-# If the timestamp of configure.in is newer the configure glibc will try to
+# If the timestamp of configure.in is newer than configure glibc will try to
 # reconfigure itself, this can cause some errors while cross-compiling.
 find "glibc-${TARver}" "glibc-ports-${TARver}" -name configure | xargs touch
 
