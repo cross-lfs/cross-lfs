@@ -1,0 +1,356 @@
+Submitted By: Jim Gifford (jim at cross-lfs dot org)
+Date: 01-08-2009
+Initial Package Version: 4.0
+Origin: Upstream
+Upstream Status: Applied
+Description: Fixes from the Mailing List - Bash Bug 
+             http://lists.gnu.org/archive/html/bug-bash/2009-02/index.html
+
+diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
+--- bash-4.0.orig/arrayfunc.c	2009-01-04 11:32:21.000000000 -0800
++++ bash-4.0/arrayfunc.c	2009-02-27 08:59:33.307629837 -0800
+@@ -604,64 +604,7 @@
+     }
+ }
+ 
+-/* This function assumes s[i] == '['; returns with s[ret] == ']' if
+-   an array subscript is correctly parsed. */
+-int
+-skipsubscript (s, i)
+-     const char *s;
+-     int i;
+-{
+-  int count, c;
+-#if defined (HANDLE_MULTIBYTE)
+-  mbstate_t state, state_bak;
+-  size_t slength, mblength;
+-#endif
+-
+-#if defined (HANDLE_MULTIBYTE)
+-  memset (&state, '\0', sizeof (mbstate_t));
+-  slength = strlen (s + i);
+-#endif
+-  
+-  count = 1;
+-  while (count)
+-    {
+-      /* Advance one (possibly multibyte) character in S starting at I. */
+-#if defined (HANDLE_MULTIBYTE)
+-      if (MB_CUR_MAX > 1)
+-	{
+-	  state_bak = state;
+-	  mblength = mbrlen (s + i, slength, &state);
+-
+-	  if (MB_INVALIDCH (mblength))
+-	    {
+-	      state = state_bak;
+-	      i++;
+-	      slength--;
+-	    }
+-	  else if (MB_NULLWCH (mblength))
+-	    return i;
+-	  else
+-	    {
+-	      i += mblength;
+-	      slength -= mblength;
+-	    }
+-	}
+-      else
+-#endif
+-      ++i;
+-
+-      c = s[i];
+-
+-      if (c == 0)
+-	break;
+-      else if (c == '[')
+-	count++;
+-      else if (c == ']')
+-	count--;
+-    }
+-
+-  return i;
+-}
++/* skipsubscript moved to subst.c to use private functions. 2009/02/24. */
+ 
+ /* This function is called with SUB pointing to just after the beginning
+    `[' of an array subscript and removes the array element to which SUB
+diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
+--- bash-4.0.orig/builtins/declare.def	2009-01-04 11:32:22.000000000 -0800
++++ bash-4.0/builtins/declare.def	2009-02-27 08:59:13.626367370 -0800
+@@ -287,6 +287,12 @@
+ 	      name[offset - 1] = '\0';
+ 	    }
+ 	}
++      else if (legal_identifier (name) == 0)
++	{
++	  sh_invalidid (name);
++	  assign_error++;
++	  NEXT_VARIABLE ();
++	}
+       else
+ 	value = "";
+ 
+@@ -295,6 +301,13 @@
+       subscript_start = (char *)NULL;
+       if (t = strchr (name, '['))	/* ] */
+ 	{
++	  /* If offset != 0 we have already validated any array reference */
++	  if (offset == 0 && valid_array_reference (name) == 0)
++	    {
++	      sh_invalidid (name);
++	      assign_error++;
++	      NEXT_VARIABLE ();
++	    }
+ 	  subscript_start = t;
+ 	  *t = '\0';
+ 	  making_array_special = 1;
+@@ -484,7 +497,7 @@
+ 	    }
+ 	  /* declare -a name[[n]] or declare name[n] makes name an indexed
+ 	     array variable. */
+-	  else if ((making_array_special || (flags_on & att_array)) && array_p (var) == 0)
++	  else if ((making_array_special || (flags_on & att_array)) && array_p (var) == 0 && assoc_p (var) == 0)
+ 	    var = convert_var_to_array (var);
+ #endif /* ARRAY_VARS */
+ 
+diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
+--- bash-4.0.orig/builtins/exit.def	2009-01-04 11:32:22.000000000 -0800
++++ bash-4.0/builtins/exit.def	2009-02-27 08:57:04.682105881 -0800
+@@ -113,7 +113,7 @@
+       for (i = stopmsg = 0; i < js.j_jobslots; i++)
+ 	if (jobs[i] && STOPPED (i))
+ 	  stopmsg = JSTOPPED;
+-	else if (check_jobs_at_exit && stopmsg == 0 && RUNNING (i))
++	else if (check_jobs_at_exit && stopmsg == 0 && jobs[i] && RUNNING (i))
+ 	  stopmsg = JRUNNING;
+ 
+       if (stopmsg == JSTOPPED)
+diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
+--- bash-4.0.orig/parse.y	2009-01-08 05:29:12.000000000 -0800
++++ bash-4.0/parse.y	2009-02-27 08:59:51.884818830 -0800
+@@ -1615,10 +1615,11 @@
+ {
+   int *ret;
+ 
+-  ret = (int *)xmalloc (3 * sizeof (int));
++  ret = (int *)xmalloc (4 * sizeof (int));
+   ret[0] = last_read_token;
+   ret[1] = token_before_that;
+   ret[2] = two_tokens_ago;
++  ret[3] = current_token;
+   return ret;
+ }
+ 
+@@ -1631,6 +1632,7 @@
+   last_read_token = ts[0];
+   token_before_that = ts[1];
+   two_tokens_ago = ts[2];
++  current_token = ts[3];
+ }
+ 
+ /*
+@@ -2668,6 +2670,7 @@
+   FREE (word_desc_to_read);
+   word_desc_to_read = (WORD_DESC *)NULL;
+ 
++  current_token = '\n';		/* XXX */
+   last_read_token = '\n';
+   token_to_read = '\n';
+ }
+@@ -2915,6 +2918,7 @@
+ #define P_DQUOTE	0x04
+ #define P_COMMAND	0x08	/* parsing a command, so look for comments */
+ #define P_BACKQUOTE	0x10	/* parsing a backquoted command substitution */
++#define P_ARRAYSUB	0x20	/* parsing a [...] array subscript for assignment */
+ 
+ /* Lexical state while parsing a grouping construct or $(...). */
+ #define LEX_WASDOL	0x001
+@@ -3129,6 +3133,8 @@
+ 	      APPEND_NESTRET ();
+ 	      FREE (nestret);
+ 	    }
++	  else if ((flags & P_ARRAYSUB) && (tflags & LEX_WASDOL) && (ch == '(' || ch == '{' || ch == '['))	/* ) } ] */
++	    goto parse_dollar_word;
+ 	}
+       /* Parse an old-style command substitution within double quotes as a
+ 	 single word. */
+@@ -3145,6 +3151,7 @@
+       else if MBTEST(open != '`' && (tflags & LEX_WASDOL) && (ch == '(' || ch == '{' || ch == '['))	/* ) } ] */
+ 	/* check for $(), $[], or ${} inside quoted string. */
+ 	{
++parse_dollar_word:
+ 	  if (open == ch)	/* undo previous increment */
+ 	    count--;
+ 	  if (ch == '(')		/* ) */
+@@ -3306,7 +3313,7 @@
+ 	}
+ 
+       /* Meta-characters that can introduce a reserved word.  Not perfect yet. */
+-      if MBTEST((tflags & LEX_RESWDOK) == 0 && (tflags & LEX_CKCASE) && (tflags & LEX_INCOMMENT) == 0 && shellmeta(ch))
++      if MBTEST((tflags & LEX_PASSNEXT) == 0 && (tflags & LEX_RESWDOK) == 0 && (tflags & LEX_CKCASE) && (tflags & LEX_INCOMMENT) == 0 && shellmeta(ch))
+ 	{
+ 	  /* Add this character. */
+ 	  RESIZE_MALLOCED_BUFFER (ret, retind, 1, retsize, 64);
+@@ -3394,8 +3401,11 @@
+ 		}
+ 	      else
+ 		shell_ungetc (peekc);
+-	      tflags |= LEX_HEREDELIM;
+-	      lex_firstind = -1;
++	      if (peekc != '<')
++		{
++		  tflags |= LEX_HEREDELIM;
++		  lex_firstind = -1;
++		}
+ 	      continue;
+ 	    }
+ 	  else
+@@ -4248,7 +4258,7 @@
+ 		     ((token_index > 0 && assignment_acceptable (last_read_token) && token_is_ident (token, token_index)) ||
+ 		      (token_index == 0 && (parser_state&PST_COMPASSIGN))))
+         {
+-	  ttok = parse_matched_pair (cd, '[', ']', &ttoklen, 0);
++	  ttok = parse_matched_pair (cd, '[', ']', &ttoklen, P_ARRAYSUB);
+ 	  if (ttok == &matched_pair_error)
+ 	    return -1;		/* Bail immediately. */
+ 	  RESIZE_MALLOCED_BUFFER (token, token_index, ttoklen + 2,
+@@ -4449,6 +4459,7 @@
+     case '}':		/* XXX */
+     case AND_AND:
+     case BANG:
++    case BAR_AND:
+     case DO:
+     case DONE:
+     case ELIF:
+diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
+--- bash-4.0.orig/pcomplete.c	2009-02-01 14:12:31.000000000 -0800
++++ bash-4.0/pcomplete.c	2009-02-27 08:56:48.837092332 -0800
+@@ -1032,6 +1032,7 @@
+   cmdlist = build_arg_list (funcname, text, lwords, cw);
+ 
+   pps = &ps;
++  save_parser_state (pps);
+   begin_unwind_frame ("gen-shell-function-matches");
+   add_unwind_protect (restore_parser_state, (char *)pps);
+   add_unwind_protect (dispose_words, (char *)cmdlist);
+diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
+--- bash-4.0.orig/subst.c	2009-01-28 11:34:12.000000000 -0800
++++ bash-4.0/subst.c	2009-02-27 08:59:33.307629837 -0800
+@@ -222,6 +222,7 @@
+ static int skip_double_quoted __P((char *, size_t, int));
+ static char *extract_delimited_string __P((char *, int *, char *, char *, char *, int));
+ static char *extract_dollar_brace_string __P((char *, int *, int, int));
++static int skip_matched_pair __P((const char *, int, int, int, int));
+ 
+ static char *pos_params __P((char *, int, int, int));
+ 
+@@ -1374,6 +1375,107 @@
+ 
+ #define CQ_RETURN(x) do { no_longjmp_on_fatal_error = 0; return (x); } while (0)
+ 
++/* This function assumes s[i] == open; returns with s[ret] == close; used to
++   parse array subscripts.  FLAGS currently unused. */
++static int
++skip_matched_pair (string, start, open, close, flags)
++     const char *string;
++     int start, open, close, flags;
++{
++  int i, pass_next, backq, si, c, count;
++  size_t slen;
++  char *temp, *ss;
++  DECLARE_MBSTATE;
++
++  slen = strlen (string + start) + start;
++  no_longjmp_on_fatal_error = 1;
++
++  i = start + 1;		/* skip over leading bracket */
++  count = 1;
++  pass_next = backq = 0;
++  ss = (char *)string;
++  while (c = string[i])
++    {
++      if (pass_next)
++	{
++	  pass_next = 0;
++	  if (c == 0)
++	    CQ_RETURN(i);
++	  ADVANCE_CHAR (string, slen, i);
++	  continue;
++	}
++      else if (c == '\\')
++	{
++	  pass_next = 1;
++	  i++;
++	  continue;
++	}
++      else if (backq)
++	{
++	  if (c == '`')
++	    backq = 0;
++	  ADVANCE_CHAR (string, slen, i);
++	  continue;
++	}
++      else if (c == '`')
++	{
++	  backq = 1;
++	  i++;
++	  continue;
++	}
++      else if (c == open)
++	{
++	  count++;
++	  i++;
++	  continue;
++	}
++      else if (c == close)
++	{
++	  count--;
++	  if (count == 0)
++	    break;
++	  i++;
++	  continue;
++	}
++      else if (c == '\'' || c == '"')
++	{
++	  i = (c == '\'') ? skip_single_quoted (ss, slen, ++i)
++			  : skip_double_quoted (ss, slen, ++i);
++	  /* no increment, the skip functions increment past the closing quote. */
++	}
++      else if (c == '$' && (string[i+1] == LPAREN || string[i+1] == LBRACE))
++	{
++	  si = i + 2;
++	  if (string[si] == '\0')
++	    CQ_RETURN(si);
++
++	  if (string[i+1] == LPAREN)
++	    temp = extract_delimited_string (ss, &si, "$(", "(", ")", SX_NOALLOC|SX_COMMAND); /* ) */
++	  else
++	    temp = extract_dollar_brace_string (ss, &si, 0, SX_NOALLOC);
++	  i = si;
++	  if (string[i] == '\0')	/* don't increment i past EOS in loop */
++	    break;
++	  i++;
++	  continue;
++	}
++      else
++	ADVANCE_CHAR (string, slen, i);
++    }
++
++  CQ_RETURN(i);
++}
++
++#if defined (ARRAY_VARS)
++int
++skipsubscript (string, start)
++     const char *string;
++     int start;
++{
++  return (skip_matched_pair (string, start, '[', ']', 0));
++}
++#endif
++
+ /* Skip characters in STRING until we find a character in DELIMS, and return
+    the index of that character.  START is the index into string at which we
+    begin.  This is similar in spirit to strpbrk, but it returns an index into
+
