@@ -1,0 +1,68 @@
+Submitted By: Jim Gifford <jim at cross-lfs dot org>
+Date: 2009-02-21
+Initial Package Version: 4.13a
+Upstream Status: Unknown
+Origin: Jim Gifford
+Description: For using xz compression
+
+diff -Naur texinfo-4.13.orig/doc/texinfo.txi texinfo-4.13/doc/texinfo.txi
+--- texinfo-4.13.orig/doc/texinfo.txi	2008-09-18 11:31:57.000000000 -0700
++++ texinfo-4.13/doc/texinfo.txi	2009-02-22 19:41:37.874296689 -0800
+@@ -16488,6 +16488,7 @@
+ 
+ @cindex Compressed dir files, reading
+ @cindex Bzipped dir files, reading
++@cindex XZ-compressed dir files, reading
+ @cindex LZMA-compressed dir files, reading
+ @cindex Dir files, compressed
+ If any input file is compressed with @code{gzip} (@pxref{Top,,,gzip,
+@@ -16495,8 +16496,8 @@
+ for reading.  And if @var{dir-file} is compressed, @code{install-info}
+ also automatically leaves it compressed after writing any changes.
+ If @var{dir-file} itself does not exist, @code{install-info} tries to
+-open @file{@var{dir-file}.gz}, @file{@var{dir-file}.bz2}, and 
+-@file{@var{dir-file}.lzma}, in that order.
++open @file{@var{dir-file}.gz}, @file{@var{dir-file}.bz2},
++@file{@var{dir-file}.xz} and @file{@var{dir-file}.lzma}, in that order.
+ 
+ Options:
+ 
+diff -Naur texinfo-4.13.orig/info/filesys.c texinfo-4.13/info/filesys.c
+--- texinfo-4.13.orig/info/filesys.c	2008-06-12 05:39:20.000000000 -0700
++++ texinfo-4.13/info/filesys.c	2009-02-22 19:41:37.874296689 -0800
+@@ -55,6 +55,7 @@
+ static COMPRESSION_ALIST compress_suffixes[] = {
+   { ".gz", "gunzip" },
+   { ".bz2", "bunzip2" },
++  { ".xz", "unxz" },
+   { ".lzma", "unlzma" },
+   { ".z", "gunzip" },
+   { ".Z", "uncompress" },
+diff -Naur texinfo-4.13.orig/install-info/install-info.c texinfo-4.13/install-info/install-info.c
+--- texinfo-4.13.orig/install-info/install-info.c	2008-05-22 05:11:33.000000000 -0700
++++ texinfo-4.13/install-info/install-info.c	2009-02-22 19:41:37.874296689 -0800
+@@ -739,15 +739,20 @@
+ #else
+     *compression_program = "bzip";
+ #endif
++  else if (data[0] == '\xFD' && data[1] == '7' && data[2] == 'z'
++               && data[3] == 'X' && data[4] == 'Z' && data[5] == 0x00)
++#ifndef STRIP_DOT_EXE
++    *compression_program = "xz.exe";
++#else
++    *compression_program = "xz";
++#endif
+     /* We (try to) match against old lzma format (which lacks proper
+-       header, two first matches), as well as the new format (last match).  */
++       header, two first matches). */
+   else if ((data[9] == 0x00 && data[10] == 0x00 && data[11] == 0x00
+             && data[12] == 0x00)
+            || (data[5] == '\xFF' && data[6] == '\xFF' && data[7] == '\xFF'
+                && data[8] == '\xFF' && data[9] == '\xFF' && data[10] == '\xFF'
+-               && data[11] == '\xFF' && data[12] == '\xFF') 
+-           || (data[0] == '\xFF' && data[1] == 'L' && data[2] == 'Z'
+-               && data[3] == 'M' && data[4] == 'A' && data[5] == 0x00))
++               && data[11] == '\xFF' && data[12] == '\xFF'))
+ #ifndef STRIP_DOT_EXE
+     *compression_program = "lzma.exe";
+ #else
