@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-network-dhcp">
+  <?dbhtml filename="network-dhcp.html"?>
+
+  <title>DHCP Networking Configuration</title>
+
+  <sect2>
+    <title>Creating the DHCP Network Interface Configuration Files</title>
+
+    <para>First install the service from the CLFS Bootscripts package:</para>
+
+<screen><userinput>tar -jxvf bootscripts-cross-lfs-&bootscripts-clfs-version;.tar.bz2
+cd -v bootscripts-cross-lfs-&bootscripts-clfs-version;
+make install-service-dhcpcd</userinput></screen>
+
+    <para>Finally, create the
+    <filename>/etc/sysconfig/network-devices/ifconfig.eth0/dhcpcd</filename>
+    configuration file using the following commands. Adjust appropriately for
+    additional interfaces:</para>
+
+<screen><userinput><literal>install -v -d /etc/sysconfig/network-devices/ifconfig.eth0 
+cat > /etc/sysconfig/network-devices/ifconfig.eth0/dhcpcd &lt;&lt; "EOF"
+ONBOOT="yes"
+SERVICE="dhcpcd"
+
+# Start Command for DHCPCD
+#
+DHCP_START="-q"
+
+# Stop Command for DHCPCD
+#
+DHCP_STOP="-k"
+EOF</literal>
+</userinput></screen>
+
+    <para>To configure another Static Interface, Follow <xref linkend="ch-network-static"/>.</para>
+
+  </sect2>
+
+</sect1>

@@ -5,26 +5,13 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-network-static-network">
-  <?dbhtml filename="network.html"?>
+<sect1 id="ch-network-static">
+  <?dbhtml filename="network-static.html"?>
 
-  <title>Configuring the network Script</title>
-
-  <indexterm zone="ch-network-static-network">
-    <primary sortas="d-network">network</primary>
-  <secondary>configuring</secondary></indexterm>
-
-  <para>This section only applies if a network card is to be
-  configured.</para>
-
-  <para>If a network card will not be used, there is likely no need to
-  create any configuration files relating to network cards. If that is
-  the case, remove the <filename class="symlink">network</filename>
-  symlinks from all run-level directories (<filename
-  class="directory">/etc/rc.d/rc*.d</filename>).</para>
+  <title>Static Networking Configuration</title>
 
   <sect2>
-    <title>Creating Network Interface Configuration Files</title>
+    <title>Creating the Static Network Interface Configuration Files</title>
 
     <para>Which interfaces are brought up and down by the network script
     depends on the files and directories in the <filename
@@ -76,39 +63,7 @@ EOF</userinput></screen>
     In this example (PREFIX=24), the netmask is 255.255.255.0. Adjust the
     <envar>PREFIX</envar> variable according to your specific subnet.</para>
 
-  </sect2>
-
-  <sect2 id="resolv.conf">
-    <title>Creating the /etc/resolv.conf File</title>
-
-    <indexterm zone="resolv.conf">
-      <primary sortas="e-/etc/resolv.conf">/etc/resolv.conf</primary>
-    </indexterm>
-
-    <para>If the system is going to be connected to the Internet, it will
-    need some means of Domain Name Service (DNS) name resolution to
-    resolve Internet domain names to IP addresses, and vice versa. This is
-    best achieved by placing the IP address of the DNS server, available
-    from the ISP or network administrator, into
-    <filename>/etc/resolv.conf</filename>. Create the file by running the
-    following:</para>
-
-<screen><userinput>cat &gt; /etc/resolv.conf &lt;&lt; "EOF"
-<literal># Begin /etc/resolv.conf
-
-domain <replaceable>[Your Domain Name]</replaceable>
-nameserver <replaceable>[IP address of your primary nameserver]</replaceable>
-nameserver <replaceable>[IP address of your secondary nameserver]</replaceable>
-
-# End /etc/resolv.conf</literal>
-EOF</userinput></screen>
-
-    <para>Replace <replaceable>[IP address of the nameserver]</replaceable>
-    with the IP address of the DNS most appropriate for the setup. There will
-    often be more than one entry (requirements demand secondary servers for
-    fallback capability). If you only need or want one DNS server, remove the
-    second <emphasis>nameserver</emphasis> line from the file. The IP address
-    may also be a router on the local network.</para>
+    <para>To configure another DHCP Interface, Follow <xref linkend="ch-network-dhcp"/>.</para>
 
   </sect2>
 
