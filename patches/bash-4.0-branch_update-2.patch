@@ -1,5 +1,5 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 01-08-2009
+Date: 03-02-2009
 Initial Package Version: 4.0
 Origin: Upstream
 Upstream Status: Applied
@@ -8,7 +8,7 @@ Description: Fixes from the Mailing List - Bash Bug
 
 diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
 --- bash-4.0.orig/arrayfunc.c	2009-01-04 11:32:21.000000000 -0800
-+++ bash-4.0/arrayfunc.c	2009-02-27 08:59:33.307629837 -0800
++++ bash-4.0/arrayfunc.c	2009-03-02 12:37:07.363274758 -0800
 @@ -604,64 +604,7 @@
      }
  }
@@ -77,7 +77,7 @@ diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
     `[' of an array subscript and removes the array element to which SUB
 diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
 --- bash-4.0.orig/builtins/declare.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/declare.def	2009-02-27 08:59:13.626367370 -0800
++++ bash-4.0/builtins/declare.def	2009-03-02 12:37:07.363274758 -0800
 @@ -287,6 +287,12 @@
  	      name[offset - 1] = '\0';
  	    }
@@ -116,7 +116,7 @@ diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
  
 diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
 --- bash-4.0.orig/builtins/exit.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/exit.def	2009-02-27 08:57:04.682105881 -0800
++++ bash-4.0/builtins/exit.def	2009-03-02 12:37:07.367275038 -0800
 @@ -113,7 +113,7 @@
        for (i = stopmsg = 0; i < js.j_jobslots; i++)
  	if (jobs[i] && STOPPED (i))
@@ -126,9 +126,32 @@ diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
  	  stopmsg = JRUNNING;
  
        if (stopmsg == JSTOPPED)
+diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
+--- bash-4.0.orig/builtins/read.def	2009-01-15 20:11:21.000000000 -0800
++++ bash-4.0/builtins/read.def	2009-03-02 13:01:12.743891046 -0800
+@@ -369,14 +369,14 @@
+       code = setjmp (alrmbuf);
+       if (code)
+ 	{
+-#if 0
++	  /* Tricky.  The top of the unwind-protect stack is the free of
++	     input_string.  We want to run all the rest and use input_string,
++	     so we have to remove it from the stack. */
++	  remove_unwind_protect ();
+ 	  run_unwind_frame ("read_builtin");
+-	  return (EXECUTION_FAILURE);
+-#else
+ 	  input_string[i] = '\0';	/* make sure it's terminated */
+-	  retval = 128+SIGALRM;;
++	  retval = 128+SIGALRM;
+ 	  goto assign_vars;
+-#endif
+ 	}
+       old_alrm = set_signal_handler (SIGALRM, sigalrm);
+       add_unwind_protect (reset_alarm, (char *)NULL);
 diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
 --- bash-4.0.orig/parse.y	2009-01-08 05:29:12.000000000 -0800
-+++ bash-4.0/parse.y	2009-02-27 08:59:51.884818830 -0800
++++ bash-4.0/parse.y	2009-03-02 12:37:07.367275038 -0800
 @@ -1615,10 +1615,11 @@
  {
    int *ret;
@@ -225,7 +248,7 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
      case ELIF:
 diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
 --- bash-4.0.orig/pcomplete.c	2009-02-01 14:12:31.000000000 -0800
-+++ bash-4.0/pcomplete.c	2009-02-27 08:56:48.837092332 -0800
++++ bash-4.0/pcomplete.c	2009-03-02 12:37:07.367275038 -0800
 @@ -1032,6 +1032,7 @@
    cmdlist = build_arg_list (funcname, text, lwords, cw);
  
@@ -236,7 +259,7 @@ diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
    add_unwind_protect (dispose_words, (char *)cmdlist);
 diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
 --- bash-4.0.orig/subst.c	2009-01-28 11:34:12.000000000 -0800
-+++ bash-4.0/subst.c	2009-02-27 08:59:33.307629837 -0800
++++ bash-4.0/subst.c	2009-03-02 12:37:07.371275038 -0800
 @@ -222,6 +222,7 @@
  static int skip_double_quoted __P((char *, size_t, int));
  static char *extract_delimited_string __P((char *, int *, char *, char *, char *, int));
