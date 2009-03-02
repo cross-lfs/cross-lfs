@@ -38,6 +38,11 @@
 
 <screen os="s2"><userinput>sed -i 's@\(^#define DEFAULT_EDITOR_PROGRAM \).*@\1"vi"@' config.h</userinput></screen>
 
+    <para os="s3">Diffutils man-pages want to be recreated, but it requires help2man. So we update the time on the
+    files to prevent them from being recreated:</para>
+
+<screen os="s4"><userinput>touch man/*.1</userinput></screen>
+
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
