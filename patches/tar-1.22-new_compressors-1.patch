@@ -1,0 +1,86 @@
+Submitted By: Jim Gifford <jim at cross-lfs dot org>
+Date: 2009-03-05
+Initial Package Version: 1.22
+Upstream Status: Unknown
+Origin: Jim Gifford
+Description: For using lzip compression
+
+diff -Naur tar-1.22.orig/src/buffer.c tar-1.22/src/buffer.c
+--- tar-1.22.orig/src/buffer.c	2009-03-04 23:04:13.000000000 -0800
++++ tar-1.22/src/buffer.c	2009-03-05 20:46:39.763509707 -0800
+@@ -203,6 +203,7 @@
+   ct_compress,
+   ct_gzip,
+   ct_bzip2,
++  ct_lzip,
+   ct_lzma,
+   ct_lzop,
+   ct_xz
+@@ -221,10 +222,11 @@
+   { ct_tar },
+   { ct_none, },
+   { ct_compress, 2, "\037\235", "compress", "-Z" },
+-  { ct_gzip,     2, "\037\213", "gzip", "-z"  },
+-  { ct_bzip2,    3, "BZh",      "bzip2", "-j" },
+-  { ct_lzma,     6, "\xFFLZMA", "lzma", "--lzma" }, /* FIXME: ???? */
+-  { ct_lzop,     4, "\211LZO",  "lzop", "--lzop" },
++  { ct_gzip,     2, "\037\213", "gzip",     "-z"  },
++  { ct_bzip2,    3, "BZh",      "bzip2",    "-j" },
++  { ct_lzip,     4, "LZIP",     "lzip",     "--lzip" },
++  { ct_lzma,     6, "\xFFLZMA", "lzma",     "--lzma" }, /* FIXME: ???? */
++  { ct_lzop,     4, "\211LZO",  "lzop",     "--lzop" },
+   { ct_xz,       6, "\0xFD7zXZ", "-J" },
+ };
+ 
+diff -Naur tar-1.22.orig/src/tar.c tar-1.22/src/tar.c
+--- tar-1.22.orig/src/tar.c	2009-03-04 23:04:13.000000000 -0800
++++ tar-1.22/src/tar.c	2009-03-05 20:48:09.989291521 -0800
+@@ -271,6 +271,7 @@
+   IGNORE_FAILED_READ_OPTION,
+   INDEX_FILE_OPTION,
+   KEEP_NEWER_FILES_OPTION,
++  LZIP_OPTION,
+   LZMA_OPTION,
+   LZOP_OPTION,
+   MODE_OPTION,
+@@ -328,7 +329,8 @@
+   VERSION_OPTION,
+   VOLNO_FILE_OPTION,
+   WILDCARDS_MATCH_SLASH_OPTION,
+-  WILDCARDS_OPTION
++  WILDCARDS_OPTION,
++  XZ_OPTION
+ };
+ 
+ const char *argp_program_version = "tar (" PACKAGE_NAME ") " VERSION;
+@@ -605,6 +607,8 @@
+   {"compress", 'Z', 0, 0,
+    N_("filter the archive through compress"), GRID+1 },
+   {"uncompress", 0, 0, OPTION_ALIAS, NULL, GRID+1 },
++  {"lzip", LZIP_OPTION, 0, 0,
++   N_("filter the archive through lzip"), GRID+8 },
+   {"lzma", LZMA_OPTION, 0, 0,
+    N_("filter the archive through lzma"), GRID+1 },
+   {"lzop", LZOP_OPTION, 0, 0,
+@@ -1404,6 +1408,10 @@
+       }
+       break;
+ 
++    case LZIP_OPTION:
++      set_use_compress_program_option ("lzip");
++      break;
++
+     case LZMA_OPTION:
+       set_use_compress_program_option ("lzma");
+       break;
+@@ -1561,6 +1569,10 @@
+ 	}
+       break;
+ 
++    case XZ_OPTION:
++      set_use_compress_program_option ("xz");
++      break;
++
+     case 'z':
+       set_use_compress_program_option ("gzip");
+       break;

@@ -1,14 +1,14 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 2009-01-04
-Initial Package Version: 1.21
+Date: 2009-03-06
+Initial Package Version: 1.22
 Origin: Debian
 Upstream Status: N/A
 Description: This Patch adds and man-page to TAR. This has been
 	     added as per numerous requests.
 
-diff -Naur tar-1.21.orig/doc/Makefile.am tar-1.21/doc/Makefile.am
---- tar-1.21.orig/doc/Makefile.am	2008-04-14 05:03:12.000000000 -0700
-+++ tar-1.21/doc/Makefile.am	2009-01-04 21:40:09.000000000 -0800
+diff -Naur tar-1.22.orig/doc/Makefile.am tar-1.22/doc/Makefile.am
+--- tar-1.22.orig/doc/Makefile.am	2008-04-14 05:03:12.000000000 -0700
++++ tar-1.22/doc/Makefile.am	2009-03-05 20:50:20.245637658 -0800
 @@ -17,6 +17,8 @@
  ## along with this program; if not, write to the Free Software Foundation,
  ## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -18,10 +18,10 @@ diff -Naur tar-1.21.orig/doc/Makefile.am tar-1.21/doc/Makefile.am
  info_TEXINFOS = tar.texi
  tar_TEXINFOS = \
   dumpdir.texi\
-diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
---- tar-1.21.orig/doc/Makefile.in	2008-12-26 14:41:47.000000000 -0800
-+++ tar-1.21/doc/Makefile.in	2009-01-04 21:41:05.000000000 -0800
-@@ -143,13 +143,16 @@
+diff -Naur tar-1.22.orig/doc/Makefile.in tar-1.22/doc/Makefile.in
+--- tar-1.22.orig/doc/Makefile.in	2009-03-04 23:05:25.000000000 -0800
++++ tar-1.22/doc/Makefile.in	2009-03-05 20:50:20.245637658 -0800
+@@ -146,13 +146,16 @@
  MAKEINFOHTML = $(MAKEINFO) --html
  AM_MAKEINFOHTMLFLAGS = $(AM_MAKEINFOFLAGS)
  DVIPS = dvips
@@ -39,7 +39,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
  ACLOCAL = @ACLOCAL@
  ALLOCA = @ALLOCA@
-@@ -592,6 +595,7 @@
+@@ -645,6 +648,7 @@
  target_alias = @target_alias@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -47,7 +47,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  info_TEXINFOS = tar.texi
  tar_TEXINFOS = \
   dumpdir.texi\
-@@ -805,6 +809,51 @@
+@@ -858,6 +862,51 @@
  	  echo " rm -f $$i $$i-[0-9] $$i-[0-9][0-9] $$i_i[0-9] $$i_i[0-9][0-9]"; \
  	  rm -f $$i $$i-[0-9] $$i-[0-9][0-9] $$i_i[0-9] $$i_i[0-9][0-9]; \
  	done
@@ -99,7 +99,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  tags: TAGS
  TAGS:
  
-@@ -843,9 +892,9 @@
+@@ -896,9 +945,9 @@
  	  dist-info
  check-am: all-am
  check: check-am
@@ -111,7 +111,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
  	done
  install: install-am
-@@ -892,7 +941,7 @@
+@@ -945,7 +994,7 @@
  
  info-am: $(INFO_DEPS)
  
@@ -120,7 +120,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  
  install-dvi: install-dvi-am
  
-@@ -957,7 +1006,7 @@
+@@ -1010,7 +1059,7 @@
  	    install-info --info-dir="$(DESTDIR)$(infodir)" "$(DESTDIR)$(infodir)/$$relfile" || :;\
  	  done; \
  	else : ; fi
@@ -129,7 +129,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  
  install-pdf: install-pdf-am
  
-@@ -1001,7 +1050,9 @@
+@@ -1054,7 +1103,9 @@
  ps-am: $(PSS)
  
  uninstall-am: uninstall-dvi-am uninstall-html-am uninstall-info-am \
@@ -140,7 +140,7 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  
  .MAKE: install-am install-strip
  
-@@ -1010,14 +1061,15 @@
+@@ -1063,14 +1114,15 @@
  	html-am info info-am install install-am install-data \
  	install-data-am install-dvi install-dvi-am install-exec \
  	install-exec-am install-html install-html-am install-info \
@@ -160,10 +160,10 @@ diff -Naur tar-1.21.orig/doc/Makefile.in tar-1.21/doc/Makefile.in
  
  
  header.texi: $(top_srcdir)/src/tar.h
-diff -Naur tar-1.21.orig/doc/tar.1 tar-1.21/doc/tar.1
---- tar-1.21.orig/doc/tar.1	1969-12-31 16:00:00.000000000 -0800
-+++ tar-1.21/doc/tar.1	2009-01-04 21:30:00.000000000 -0800
-@@ -0,0 +1,394 @@
+diff -Naur tar-1.22.orig/doc/tar.1 tar-1.22/doc/tar.1
+--- tar-1.22.orig/doc/tar.1	1969-12-31 16:00:00.000000000 -0800
++++ tar-1.22/doc/tar.1	2009-03-05 20:52:59.235825673 -0800
+@@ -0,0 +1,400 @@
 +.\" @(#)tar.1 1.11.1 93/19/22 PJV;
 +.TH TAR 1 "29 Aug 2007"
 +.SH NAME
@@ -329,11 +329,17 @@ diff -Naur tar-1.21.orig/doc/tar.1 tar-1.21/doc/tar.1
 +instead of \-j so that both older and newer tar versions
 +will work.
 +.TP
++.B \-J, \-\-xz
++selects XZ compression algorithm
++.TP
 +.B \-k, \-\-keep\-old\-files	
 +keep existing files; don't overwrite them from archive
 +.TP
 +.B \-K, \-\-starting\-file F	
 +begin at file F in the archive
++.TP
++.B \-\-lzip
++selects LZMA compression algorithm
 +.TP
 +.B \-\-lzma
 +selects LZMA compression algorithm
