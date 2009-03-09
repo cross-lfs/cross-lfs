@@ -1,14 +1,13 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 03-02-2009
+Date: 03-09-2009
 Initial Package Version: 4.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Fixes from the Mailing List - Bash Bug 
-             http://lists.gnu.org/archive/html/bug-bash/2009-02/index.html
+Description: Contains all upstream patches up to 4.0-010
 
 diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
 --- bash-4.0.orig/arrayfunc.c	2009-01-04 11:32:21.000000000 -0800
-+++ bash-4.0/arrayfunc.c	2009-03-02 12:37:07.363274758 -0800
++++ bash-4.0/arrayfunc.c	2009-03-09 15:07:05.270012850 -0700
 @@ -604,64 +604,7 @@
      }
  }
@@ -77,21 +76,8 @@ diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
     `[' of an array subscript and removes the array element to which SUB
 diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
 --- bash-4.0.orig/builtins/declare.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/declare.def	2009-03-02 12:37:07.363274758 -0800
-@@ -287,6 +287,12 @@
- 	      name[offset - 1] = '\0';
- 	    }
- 	}
-+      else if (legal_identifier (name) == 0)
-+	{
-+	  sh_invalidid (name);
-+	  assign_error++;
-+	  NEXT_VARIABLE ();
-+	}
-       else
- 	value = "";
- 
-@@ -295,6 +301,13 @@
++++ bash-4.0/builtins/declare.def	2009-03-09 15:07:02.561839362 -0700
+@@ -295,6 +295,13 @@
        subscript_start = (char *)NULL;
        if (t = strchr (name, '['))	/* ] */
  	{
@@ -105,7 +91,7 @@ diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
  	  subscript_start = t;
  	  *t = '\0';
  	  making_array_special = 1;
-@@ -484,7 +497,7 @@
+@@ -484,7 +491,7 @@
  	    }
  	  /* declare -a name[[n]] or declare name[n] makes name an indexed
  	     array variable. */
@@ -116,7 +102,7 @@ diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
  
 diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
 --- bash-4.0.orig/builtins/exit.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/exit.def	2009-03-02 12:37:07.367275038 -0800
++++ bash-4.0/builtins/exit.def	2009-03-09 15:07:01.245754993 -0700
 @@ -113,7 +113,7 @@
        for (i = stopmsg = 0; i < js.j_jobslots; i++)
  	if (jobs[i] && STOPPED (i))
@@ -128,7 +114,7 @@ diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
        if (stopmsg == JSTOPPED)
 diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
 --- bash-4.0.orig/builtins/read.def	2009-01-15 20:11:21.000000000 -0800
-+++ bash-4.0/builtins/read.def	2009-03-02 13:01:12.743891046 -0800
++++ bash-4.0/builtins/read.def	2009-03-09 15:07:07.890180751 -0700
 @@ -369,14 +369,14 @@
        code = setjmp (alrmbuf);
        if (code)
@@ -151,7 +137,7 @@ diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
        add_unwind_protect (reset_alarm, (char *)NULL);
 diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
 --- bash-4.0.orig/parse.y	2009-01-08 05:29:12.000000000 -0800
-+++ bash-4.0/parse.y	2009-03-02 12:37:07.367275038 -0800
++++ bash-4.0/parse.y	2009-03-09 15:07:09.194264282 -0700
 @@ -1615,10 +1615,11 @@
  {
    int *ret;
@@ -189,7 +175,15 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
  
  /* Lexical state while parsing a grouping construct or $(...). */
  #define LEX_WASDOL	0x001
-@@ -3129,6 +3133,8 @@
+@@ -2927,6 +2931,7 @@
+ #define LEX_INHEREDOC	0x080
+ #define LEX_HEREDELIM	0x100		/* reading here-doc delimiter */
+ #define LEX_STRIPDOC	0x200		/* <<- strip tabs from here doc delim */
++#define LEX_INWORD	0x400
+ 
+ #define COMSUB_META(ch)		((ch) == ';' || (ch) == '&' || (ch) == '|')
+ 
+@@ -3129,6 +3134,8 @@
  	      APPEND_NESTRET ();
  	      FREE (nestret);
  	    }
@@ -198,7 +192,7 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
  	}
        /* Parse an old-style command substitution within double quotes as a
  	 single word. */
-@@ -3145,6 +3151,7 @@
+@@ -3145,6 +3152,7 @@
        else if MBTEST(open != '`' && (tflags & LEX_WASDOL) && (ch == '(' || ch == '{' || ch == '['))	/* ) } ] */
  	/* check for $(), $[], or ${} inside quoted string. */
  	{
@@ -206,16 +200,96 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
  	  if (open == ch)	/* undo previous increment */
  	    count--;
  	  if (ch == '(')		/* ) */
-@@ -3306,7 +3313,7 @@
+@@ -3179,7 +3187,7 @@
+      int open, close;
+      int *lenp, flags;
+ {
+-  int count, ch, peekc, tflags, lex_rwlen, lex_firstind;
++  int count, ch, peekc, tflags, lex_rwlen, lex_wlen, lex_firstind;
+   int nestlen, ttranslen, start_lineno;
+   char *ret, *nestret, *ttrans, *heredelim;
+   int retind, retsize, rflags, hdlen;
+@@ -3200,7 +3208,7 @@
+   retind = 0;
+ 
+   start_lineno = line_number;
+-  lex_rwlen = 0;
++  lex_rwlen = lex_wlen = 0;
+ 
+   heredelim = 0;
+   lex_firstind = -1;
+@@ -3267,6 +3275,46 @@
+ 	  continue;
  	}
  
-       /* Meta-characters that can introduce a reserved word.  Not perfect yet. */
--      if MBTEST((tflags & LEX_RESWDOK) == 0 && (tflags & LEX_CKCASE) && (tflags & LEX_INCOMMENT) == 0 && shellmeta(ch))
-+      if MBTEST((tflags & LEX_PASSNEXT) == 0 && (tflags & LEX_RESWDOK) == 0 && (tflags & LEX_CKCASE) && (tflags & LEX_INCOMMENT) == 0 && shellmeta(ch))
- 	{
- 	  /* Add this character. */
- 	  RESIZE_MALLOCED_BUFFER (ret, retind, 1, retsize, 64);
-@@ -3394,8 +3401,11 @@
++      if (tflags & LEX_PASSNEXT)		/* last char was backslash */
++	{
++/*itrace("parse_comsub:%d: lex_passnext -> 0 ch = `%c' (%d)", line_number, ch, __LINE__);*/
++	  tflags &= ~LEX_PASSNEXT;
++	  if (qc != '\'' && ch == '\n')	/* double-quoted \<newline> disappears. */
++	    {
++	      if (retind > 0)
++		retind--;	/* swallow previously-added backslash */
++	      continue;
++	    }
++
++	  RESIZE_MALLOCED_BUFFER (ret, retind, 2, retsize, 64);
++	  if MBTEST(ch == CTLESC || ch == CTLNUL)
++	    ret[retind++] = CTLESC;
++	  ret[retind++] = ch;
++	  continue;
++	}
++
++      /* If this is a shell break character, we are not in a word.  If not,
++	 we either start or continue a word. */
++      if MBTEST(shellbreak (ch))
++	{
++	  tflags &= ~LEX_INWORD;
++/*itrace("parse_comsub:%d: lex_inword -> 0 ch = `%c' (%d)", line_number, ch, __LINE__);*/
++	}
++      else
++	{
++	  if (tflags & LEX_INWORD)
++	    {
++	      lex_wlen++;
++/*itrace("parse_comsub:%d: lex_inword == 1 ch = `%c' lex_wlen = %d (%d)", line_number, ch, lex_wlen, __LINE__);*/
++	    }	      
++	  else
++	    {
++/*itrace("parse_comsub:%d: lex_inword -> 1 ch = `%c' (%d)", line_number, ch, __LINE__);*/
++	      tflags |= LEX_INWORD;
++	      lex_wlen = 0;
++	    }
++	}
++
+       /* Skip whitespace */
+       if MBTEST(shellblank (ch) && lex_rwlen == 0)
+         {
+@@ -3364,9 +3412,21 @@
+ }	        
+ 	      tflags &= ~LEX_RESWDOK;
+ 	    }
+-	  else if (shellbreak (ch) == 0)
++	  else if MBTEST((tflags & LEX_CKCOMMENT) && ch == '#' && (lex_rwlen == 0 || ((tflags & LEX_INWORD) && lex_wlen == 0)))
++	    ;	/* don't modify LEX_RESWDOK if we're starting a comment */
++	  else if MBTEST((tflags & LEX_INCASE) && ch != '\n')
++	    /* If we can read a reserved word and we're in case, we're at the
++	       point where we can read a new pattern list or an esac.  We
++	       handle the esac case above.  If we read a newline, we want to
++	       leave LEX_RESWDOK alone.  If we read anything else, we want to
++	       turn off LEX_RESWDOK, since we're going to read a pattern list. */
+ {
+-	      tflags &= ~LEX_RESWDOK;
++	    tflags &= ~LEX_RESWDOK;
++/*itrace("parse_comsub:%d: lex_incase == 1 found `%c', lex_reswordok -> 0", line_number, ch);*/
++}
++	  else if MBTEST(shellbreak (ch) == 0)
++{
++	    tflags &= ~LEX_RESWDOK;
+ /*itrace("parse_comsub:%d: found `%c', lex_reswordok -> 0", line_number, ch);*/
+ }
+ 	}
+@@ -3394,36 +3454,23 @@
  		}
  	      else
  		shell_ungetc (peekc);
@@ -229,7 +303,41 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
  	      continue;
  	    }
  	  else
-@@ -4248,7 +4258,7 @@
+-	    ch = peekc;		/* fall through and continue XXX - this skips comments if peekc == '#' */
++	    ch = peekc;		/* fall through and continue XXX */
+ 	}
+-      /* Not exactly right yet, should handle shell metacharacters, too.  If
+-	 any changes are made to this test, make analogous changes to subst.c:
+-	 extract_delimited_string(). */
+-      else if MBTEST((tflags & LEX_CKCOMMENT) && (tflags & LEX_INCOMMENT) == 0 && ch == '#' && (retind == 0 || ret[retind-1] == '\n' || shellblank (ret[retind - 1])))
++      else if MBTEST((tflags & LEX_CKCOMMENT) && (tflags & LEX_INCOMMENT) == 0 && ch == '#' && (((tflags & LEX_RESWDOK) && lex_rwlen == 0) || ((tflags & LEX_INWORD) && lex_wlen == 0)))
++{
++/*itrace("parse_comsub:%d: lex_incomment -> 1 (%d)", line_number, __LINE__);*/
+ 	tflags |= LEX_INCOMMENT;
++}
+ 
+-      if (tflags & LEX_PASSNEXT)		/* last char was backslash */
+-	{
+-	  tflags &= ~LEX_PASSNEXT;
+-	  if (qc != '\'' && ch == '\n')	/* double-quoted \<newline> disappears. */
+-	    {
+-	      if (retind > 0)
+-		retind--;	/* swallow previously-added backslash */
+-	      continue;
+-	    }
+-
+-	  RESIZE_MALLOCED_BUFFER (ret, retind, 2, retsize, 64);
+-	  if MBTEST(ch == CTLESC || ch == CTLNUL)
+-	    ret[retind++] = CTLESC;
+-	  ret[retind++] = ch;
+-	  continue;
+-	}
+-      else if MBTEST(ch == CTLESC || ch == CTLNUL)	/* special shell escapes */
++      if MBTEST(ch == CTLESC || ch == CTLNUL)	/* special shell escapes */
+ 	{
+ 	  RESIZE_MALLOCED_BUFFER (ret, retind, 2, retsize, 64);
+ 	  ret[retind++] = CTLESC;
+@@ -4248,7 +4295,7 @@
  		     ((token_index > 0 && assignment_acceptable (last_read_token) && token_is_ident (token, token_index)) ||
  		      (token_index == 0 && (parser_state&PST_COMPASSIGN))))
          {
@@ -238,7 +346,7 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
  	  if (ttok == &matched_pair_error)
  	    return -1;		/* Bail immediately. */
  	  RESIZE_MALLOCED_BUFFER (token, token_index, ttoklen + 2,
-@@ -4449,6 +4459,7 @@
+@@ -4449,6 +4496,7 @@
      case '}':		/* XXX */
      case AND_AND:
      case BANG:
@@ -246,9 +354,20 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
      case DO:
      case DONE:
      case ELIF:
+diff -Naur bash-4.0.orig/patchlevel.h bash-4.0/patchlevel.h
+--- bash-4.0.orig/patchlevel.h	2009-01-04 11:32:40.000000000 -0800
++++ bash-4.0/patchlevel.h	2009-03-09 15:07:09.194264282 -0700
+@@ -25,6 +25,6 @@
+    regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
+    looks for to find the patch level (for the sccs version string). */
+ 
+-#define PATCHLEVEL 0
++#define PATCHLEVEL 10
+ 
+ #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
 --- bash-4.0.orig/pcomplete.c	2009-02-01 14:12:31.000000000 -0800
-+++ bash-4.0/pcomplete.c	2009-03-02 12:37:07.367275038 -0800
++++ bash-4.0/pcomplete.c	2009-03-09 15:06:58.589584858 -0700
 @@ -1032,6 +1032,7 @@
    cmdlist = build_arg_list (funcname, text, lwords, cw);
  
@@ -259,7 +378,7 @@ diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
    add_unwind_protect (dispose_words, (char *)cmdlist);
 diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
 --- bash-4.0.orig/subst.c	2009-01-28 11:34:12.000000000 -0800
-+++ bash-4.0/subst.c	2009-03-02 12:37:07.371275038 -0800
++++ bash-4.0/subst.c	2009-03-09 15:07:05.274015365 -0700
 @@ -222,6 +222,7 @@
  static int skip_double_quoted __P((char *, size_t, int));
  static char *extract_delimited_string __P((char *, int *, char *, char *, char *, int));
@@ -376,4 +495,3 @@ diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
  /* Skip characters in STRING until we find a character in DELIMS, and return
     the index of that character.  START is the index into string at which we
     begin.  This is similar in spirit to strpbrk, but it returns an index into
-
