@@ -1,5 +1,5 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 03-01-2009
+Date: 03-12-2009
 Initial Package Version: 4.3.3
 Origin: Upstream
 Upstream Status: Applied
@@ -8,12 +8,12 @@ Description: This is a branch update for gcc-4.3.3, and should be
 
 diff -Naur gcc-4.3.3.orig/gcc/ada/ChangeLog gcc-4.3.3/gcc/ada/ChangeLog
 --- gcc-4.3.3.orig/gcc/ada/ChangeLog	2009-01-24 02:15:46.000000000 -0800
-+++ gcc-4.3.3/gcc/ada/ChangeLog	2009-02-28 09:30:26.328421000 -0800
++++ gcc-4.3.3/gcc/ada/ChangeLog	2009-03-01 15:05:14.694633000 -0800
 @@ -1,3 +1,8 @@
 +2009-02-28  Eric Botcazou  <ebotcazou@adacore.com>
 +
 +	* Makefile.in (cygwin/mingw): Revert accidental EH_MECHANISM change
-+	in r130816.
++	made on 2007-12-06.
 +
  2009-01-24  Release Manager
  
@@ -166,8 +166,22 @@ diff -Naur gcc-4.3.3.orig/gcc/c-decl.c gcc-4.3.3/gcc/c-decl.c
  	{
 diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
 --- gcc-4.3.3.orig/gcc/ChangeLog	2009-01-24 02:16:13.000000000 -0800
-+++ gcc-4.3.3/gcc/ChangeLog	2009-02-28 10:33:27.113860000 -0800
-@@ -1,3 +1,309 @@
++++ gcc-4.3.3/gcc/ChangeLog	2009-03-09 13:49:28.992696000 -0700
+@@ -1,3 +1,323 @@
++2009-03-09  Denis Chertykov  <denisc@overta.ru>
++
++	* config/avr/avr.md ("andsi3"): Fix wrong cc attribute.
++
++2009-03-02  Richard Sandiford  <rdsandiford@googlemail.com>
++
++	* config/mips/mips.c (mips_mdebug_abi_name): Fix the handling
++	of ABI_64.
++
++2009-03-02  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
++
++	* config/spu/spu.c (TARGET_SECTION_TYPE_FLAGS): Define.
++	(spu_section_type_flags): New function.
++
 +2009-02-28  Martin Jambor  <mjambor@suse.cz>
 +
 +	Backport from mainline:
@@ -477,7 +491,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
-@@ -5,8 +311,7 @@
+@@ -5,8 +325,7 @@
  2009-01-20  Joseph Myers  <joseph@codesourcery.com>
  
  	PR other/38758
@@ -487,7 +501,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  
  2009-01-19  Richard Guenther  <rguenther@suse.de>
  
-@@ -41,7 +346,8 @@
+@@ -41,7 +360,8 @@
  	
  2009-01-11  Matthias Klose  <doko@ubuntu.com>
  
@@ -497,7 +511,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  	2008-05-04  Uros Bizjak  <ubizjak@gmail.com>
  
  	* config/i386/i386.md (*strmovsi_1): Simplify asm alternatives.
-@@ -509,8 +815,8 @@
+@@ -509,8 +829,8 @@
  	PR tree-optimization/37102
  	* tree-outof-ssa.c (remove_gimple_phi_args): Remove all the PHI args  
  	from a node. Check to see if another PHI is dead.
@@ -508,7 +522,7 @@ diff -Naur gcc-4.3.3.orig/gcc/ChangeLog gcc-4.3.3/gcc/ChangeLog
  	(rewrite_out_of_ssa): Call eliminate_useless_phis.
  
  2008-10-08  Simon Martin  <simartin@users.sourceforge.net>
-@@ -986,8 +1292,10 @@
+@@ -986,8 +1306,10 @@
  
  	(MFC_MIN_DMA_LIST_ELEMENTS): New define.
  	(MFC_MAX_DMA_LIST_ELEMENTS): Likewise.
@@ -779,6 +793,29 @@ diff -Naur gcc-4.3.3.orig/gcc/config/alpha/elf.h gcc-4.3.3/gcc/config/alpha/elf.
 +#define ASM_OUTPUT_EXTERNAL(FILE, DECL, NAME) \
 +  default_elf_asm_output_external (FILE, DECL, NAME)
 +#endif
+diff -Naur gcc-4.3.3.orig/gcc/config/avr/avr.md gcc-4.3.3/gcc/config/avr/avr.md
+--- gcc-4.3.3.orig/gcc/config/avr/avr.md	2008-09-12 10:29:38.000000000 -0700
++++ gcc-4.3.3/gcc/config/avr/avr.md	2009-03-09 13:49:28.992696000 -0700
+@@ -1,8 +1,8 @@
+ ;; -*- Mode: Scheme -*-
+ ;;   Machine description for GNU compiler,
+ ;;   for ATMEL AVR micro controllers.
+-;;   Copyright (C) 1998, 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2007, 2008
+-;;   Free Software Foundation, Inc.
++;;   Copyright (C) 1998, 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2007, 2008,
++;;   2009 Free Software Foundation, Inc.
+ ;;   Contributed by Denis Chertykov (denisc@overta.ru)
+ 
+ ;; This file is part of GCC.
+@@ -1180,7 +1180,7 @@
+   return \"bug\";
+ }"
+   [(set_attr "length" "4,4")
+-   (set_attr "cc" "set_n,set_n")])
++   (set_attr "cc" "set_n,clobber")])
+ 
+ ;;|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ ;; ior
 diff -Naur gcc-4.3.3.orig/gcc/config/i386/i386.c gcc-4.3.3/gcc/config/i386/i386.c
 --- gcc-4.3.3.orig/gcc/config/i386/i386.c	2008-08-28 06:31:33.000000000 -0700
 +++ gcc-4.3.3/gcc/config/i386/i386.c	2009-02-11 03:53:47.721500000 -0800
@@ -1096,6 +1133,18 @@ diff -Naur gcc-4.3.3.orig/gcc/config/ia64/ia64.c gcc-4.3.3/gcc/config/ia64/ia64.
  }
  
  
+diff -Naur gcc-4.3.3.orig/gcc/config/mips/mips.c gcc-4.3.3/gcc/config/mips/mips.c
+--- gcc-4.3.3.orig/gcc/config/mips/mips.c	2008-07-12 01:00:46.000000000 -0700
++++ gcc-4.3.3/gcc/config/mips/mips.c	2009-03-02 12:42:24.177070000 -0800
+@@ -7080,7 +7080,7 @@
+     case ABI_N32:
+       return "abiN32";
+     case ABI_64:
+-      return "abiN64";
++      return "abi64";
+     case ABI_EABI:
+       return TARGET_64BIT ? "eabi64" : "eabi32";
+     default:
 diff -Naur gcc-4.3.3.orig/gcc/config/mips/sde.h gcc-4.3.3/gcc/config/mips/sde.h
 --- gcc-4.3.3.orig/gcc/config/mips/sde.h	2007-09-19 10:13:33.000000000 -0700
 +++ gcc-4.3.3/gcc/config/mips/sde.h	2009-02-02 12:31:19.548659000 -0800
@@ -1260,6 +1309,41 @@ diff -Naur gcc-4.3.3.orig/gcc/config/sparc/sysv4.h gcc-4.3.3/gcc/config/sparc/sy
  /* A set of symbol definitions for assembly pseudo-ops which will
     get us switched to various sections of interest.  These are used
     in all places where we simply want to switch to a section, and
+diff -Naur gcc-4.3.3.orig/gcc/config/spu/spu.c gcc-4.3.3/gcc/config/spu/spu.c
+--- gcc-4.3.3.orig/gcc/config/spu/spu.c	2008-09-12 06:29:31.000000000 -0700
++++ gcc-4.3.3/gcc/config/spu/spu.c	2009-03-02 11:38:26.367169000 -0800
+@@ -142,6 +142,7 @@
+ static bool spu_vector_alignment_reachable (const_tree, bool);
+ static int spu_sms_res_mii (struct ddg *g);
+ static void asm_file_start (void);
++static unsigned int spu_section_type_flags (tree, const char *, int);
+ 
+ extern const char *reg_names[];
+ rtx spu_compare_op0, spu_compare_op1;
+@@ -325,6 +326,9 @@
+ #undef TARGET_ASM_FILE_START
+ #define TARGET_ASM_FILE_START asm_file_start
+ 
++#undef TARGET_SECTION_TYPE_FLAGS
++#define TARGET_SECTION_TYPE_FLAGS spu_section_type_flags
++
+ struct gcc_target targetm = TARGET_INITIALIZER;
+ 
+ void
+@@ -6220,3 +6224,13 @@
+   default_file_start ();
+ }
+ 
++/* Implement targetm.section_type_flags.  */
++static unsigned int
++spu_section_type_flags (tree decl, const char *name, int reloc)
++{
++  /* .toe needs to have type @nobits.  */
++  if (strcmp (name, ".toe") == 0)
++    return SECTION_BSS;
++  return default_section_type_flags (decl, name, reloc);
++}
++
 diff -Naur gcc-4.3.3.orig/gcc/convert.c gcc-4.3.3/gcc/convert.c
 --- gcc-4.3.3.orig/gcc/convert.c	2007-09-06 18:24:09.000000000 -0700
 +++ gcc-4.3.3/gcc/convert.c	2009-02-25 14:08:55.493777000 -0800
@@ -1326,8 +1410,20 @@ diff -Naur gcc-4.3.3.orig/gcc/convert.c gcc-4.3.3/gcc/convert.c
  				     fold (convert_to_real (newtype, arg0)),
 diff -Naur gcc-4.3.3.orig/gcc/cp/ChangeLog gcc-4.3.3/gcc/cp/ChangeLog
 --- gcc-4.3.3.orig/gcc/cp/ChangeLog	2009-01-24 02:15:39.000000000 -0800
-+++ gcc-4.3.3/gcc/cp/ChangeLog	2009-02-20 07:21:51.443104000 -0800
-@@ -1,3 +1,44 @@
++++ gcc-4.3.3/gcc/cp/ChangeLog	2009-03-04 11:37:43.898064000 -0800
+@@ -1,3 +1,56 @@
++2009-03-04  Jason Merrill  <jason@redhat.com>
++
++	PR c++/9634
++	PR c++/29469
++	PR c++/29607
++	* decl.c (make_typename_type): Do look inside currently open classes.
++	* parser.c (cp_parser_lookup_name): Likewise.
++	(cp_parser_template_name): Likewise.
++	* pt.c (dependent_scope_p): New function.
++	* cp-tree.h: Declare it.
++	* class.c (currently_open_class): Return fast if T isn't a class.
++
 +2009-02-20  Jason Merrill  <jason@redhat.com>
 +
 +	PR c++/39225
@@ -1372,10 +1468,31 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/ChangeLog gcc-4.3.3/gcc/cp/ChangeLog
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
+diff -Naur gcc-4.3.3.orig/gcc/cp/class.c gcc-4.3.3/gcc/cp/class.c
+--- gcc-4.3.3.orig/gcc/cp/class.c	2008-06-15 04:57:33.000000000 -0700
++++ gcc-4.3.3/gcc/cp/class.c	2009-03-04 11:37:43.898064000 -0800
+@@ -5688,6 +5688,9 @@
+ {
+   int i;
+ 
++  if (!CLASS_TYPE_P (t))
++    return false;
++
+   /* We start looking from 1 because entry 0 is from global scope,
+      and has no type.  */
+   for (i = current_class_depth; i > 0; --i)
 diff -Naur gcc-4.3.3.orig/gcc/cp/cp-tree.h gcc-4.3.3/gcc/cp/cp-tree.h
 --- gcc-4.3.3.orig/gcc/cp/cp-tree.h	2009-01-15 14:34:20.000000000 -0800
-+++ gcc-4.3.3/gcc/cp/cp-tree.h	2009-02-13 13:53:38.261573000 -0800
-@@ -4623,7 +4623,7 @@
++++ gcc-4.3.3/gcc/cp/cp-tree.h	2009-03-04 11:37:43.898064000 -0800
+@@ -4460,6 +4460,7 @@
+ extern tree maybe_get_template_decl_from_type_decl (tree);
+ extern int processing_template_parmlist;
+ extern bool dependent_type_p			(tree);
++extern bool dependent_scope_p			(tree);
+ extern bool any_dependent_template_arguments_p  (const_tree);
+ extern bool dependent_template_p		(tree);
+ extern bool dependent_template_id_p		(tree, tree);
+@@ -4623,7 +4624,7 @@
  extern tree finish_stmt_expr			(tree, bool);
  extern tree stmt_expr_value_expr		(tree);
  extern tree perform_koenig_lookup		(tree, tree);
@@ -1386,8 +1503,48 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/cp-tree.h gcc-4.3.3/gcc/cp/cp-tree.h
  extern tree finish_pseudo_destructor_expr       (tree, tree, tree);
 diff -Naur gcc-4.3.3.orig/gcc/cp/decl.c gcc-4.3.3/gcc/cp/decl.c
 --- gcc-4.3.3.orig/gcc/cp/decl.c	2008-09-30 12:56:13.000000000 -0700
-+++ gcc-4.3.3/gcc/cp/decl.c	2009-02-20 07:21:51.443104000 -0800
-@@ -7512,7 +7512,9 @@
++++ gcc-4.3.3/gcc/cp/decl.c	2009-03-04 11:37:43.898064000 -0800
+@@ -2978,12 +2978,6 @@
+   gcc_assert (TREE_CODE (name) == IDENTIFIER_NODE);
+   gcc_assert (TYPE_P (context));
+ 
+-  /* When the CONTEXT is a dependent type,  NAME could refer to a
+-     dependent base class of CONTEXT.  So we cannot peek inside it,
+-     even if CONTEXT is a currently open scope.  */
+-  if (dependent_type_p (context))
+-    return build_typename_type (context, name, fullname, tag_type);
+-
+   if (!IS_AGGR_TYPE (context))
+     {
+       if (complain & tf_error)
+@@ -2991,11 +2985,23 @@
+       return error_mark_node;
+     }
+   
++  /* When the CONTEXT is a dependent type,  NAME could refer to a
++     dependent base class of CONTEXT.  But look inside it anyway
++     if CONTEXT is a currently open scope, in case it refers to a
++     member of the current instantiation or a non-dependent base;
++     lookup will stop when we hit a dependent base.  */
++  if (!dependent_scope_p (context))
++    /* We should only set WANT_TYPE when we're a nested typename type.
++       Then we can give better diagnostics if we find a non-type.  */
++    t = lookup_field (context, name, 0, /*want_type=*/true);
++  else
++    t = NULL_TREE;
++
++  if (!t && dependent_type_p (context)) 
++    return build_typename_type (context, name, fullname, tag_type);
++
+   want_template = TREE_CODE (fullname) == TEMPLATE_ID_EXPR;
+   
+-  /* We should only set WANT_TYPE when we're a nested typename type.
+-     Then we can give better diagnostics if we find a non-type.  */
+-  t = lookup_field (context, name, 0, /*want_type=*/true);
+   if (!t)
+     {
+       if (complain & tf_error)
+@@ -7512,7 +7518,9 @@
  		    }
  
  		  type = TREE_OPERAND (decl, 0);
@@ -1398,7 +1555,7 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/decl.c gcc-4.3.3/gcc/cp/decl.c
  		  dname = decl;
  		}
  		break;
-@@ -8009,8 +8011,9 @@
+@@ -8009,8 +8017,9 @@
        switch (TREE_CODE (unqualified_id))
  	{
  	case BIT_NOT_EXPR:
@@ -1410,7 +1567,7 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/decl.c gcc-4.3.3/gcc/cp/decl.c
  	  break;
  
  	case IDENTIFIER_NODE:
-@@ -8856,21 +8859,20 @@
+@@ -8856,21 +8865,20 @@
  	    /* Check that the name used for a destructor makes sense.  */
  	    if (sfk == sfk_destructor)
  	      {
@@ -1439,7 +1596,7 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/decl.c gcc-4.3.3/gcc/cp/decl.c
  	      }
 diff -Naur gcc-4.3.3.orig/gcc/cp/parser.c gcc-4.3.3/gcc/cp/parser.c
 --- gcc-4.3.3.orig/gcc/cp/parser.c	2008-11-19 13:00:23.000000000 -0800
-+++ gcc-4.3.3/gcc/cp/parser.c	2009-02-02 11:57:29.682708000 -0800
++++ gcc-4.3.3/gcc/cp/parser.c	2009-03-04 11:37:43.898064000 -0800
 @@ -3791,6 +3791,8 @@
  	    parser->scope = NULL_TREE;
  	    parser->object_scope = NULL_TREE;
@@ -1466,9 +1623,103 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/parser.c gcc-4.3.3/gcc/cp/parser.c
  	  }
  	/* If an error occurred, assume that the name of the
  	   destructor is the same as the name of the qualifying
+@@ -9941,7 +9953,7 @@
+ 	  && !template_keyword_p
+ 	  && parser->scope && TYPE_P (parser->scope)
+ 	  && check_dependency_p
+-	  && dependent_type_p (parser->scope)
++	  && dependent_scope_p (parser->scope)
+ 	  /* Do not do this for dtors (or ctors), since they never
+ 	     need the template keyword before their name.  */
+ 	  && !constructor_name_p (identifier, parser->scope))
+@@ -16214,35 +16226,11 @@
+ 	 cannot look up the name if the scope is not a class type; it
+ 	 might, for example, be a template type parameter.  */
+       dependent_p = (TYPE_P (parser->scope)
+-		     && !(parser->in_declarator_p
+-			  && currently_open_class (parser->scope))
+-		     && dependent_type_p (parser->scope));
++		     && dependent_scope_p (parser->scope));
+       if ((check_dependency || !CLASS_TYPE_P (parser->scope))
+-	   && dependent_p)
+-	{
+-	  if (tag_type)
+-	    {
+-	      tree type;
+-
+-	      /* The resolution to Core Issue 180 says that `struct
+-		 A::B' should be considered a type-name, even if `A'
+-		 is dependent.  */
+-	      type = make_typename_type (parser->scope, name, tag_type,
+-					 /*complain=*/tf_error);
+-	      decl = TYPE_NAME (type);
+-	    }
+-	  else if (is_template
+-		   && (cp_parser_next_token_ends_template_argument_p (parser)
+-		       || cp_lexer_next_token_is (parser->lexer,
+-						  CPP_CLOSE_PAREN)))
+-	    decl = make_unbound_class_template (parser->scope,
+-						name, NULL_TREE,
+-						/*complain=*/tf_error);
+-	  else
+-	    decl = build_qualified_name (/*type=*/NULL_TREE,
+-					 parser->scope, name,
+-					 is_template);
+-	}
++	  && dependent_p)
++	/* Defer lookup.  */
++	decl = error_mark_node;
+       else
+ 	{
+ 	  tree pushed_scope = NULL_TREE;
+@@ -16263,14 +16251,42 @@
+ 					/*complain=*/true);
+ 
+ 	  /* If we have a single function from a using decl, pull it out.  */
+-	  if (decl
+-	      && TREE_CODE (decl) == OVERLOAD
++	  if (TREE_CODE (decl) == OVERLOAD
+ 	      && !really_overloaded_fn (decl))
+ 	    decl = OVL_FUNCTION (decl);
+ 
+ 	  if (pushed_scope)
+ 	    pop_scope (pushed_scope);
+ 	}
++
++      /* If the scope is a dependent type and either we deferred lookup or
++	 we did lookup but didn't find the name, rememeber the name.  */
++      if (decl == error_mark_node && TYPE_P (parser->scope)
++	  && dependent_type_p (parser->scope))
++	{
++	  if (tag_type)
++	    {
++	      tree type;
++
++	      /* The resolution to Core Issue 180 says that `struct
++		 A::B' should be considered a type-name, even if `A'
++		 is dependent.  */
++	      type = make_typename_type (parser->scope, name, tag_type,
++					 /*complain=*/tf_error);
++	      decl = TYPE_NAME (type);
++	    }
++	  else if (is_template
++		   && (cp_parser_next_token_ends_template_argument_p (parser)
++		       || cp_lexer_next_token_is (parser->lexer,
++						  CPP_CLOSE_PAREN)))
++	    decl = make_unbound_class_template (parser->scope,
++						name, NULL_TREE,
++						/*complain=*/tf_error);
++	  else
++	    decl = build_qualified_name (/*type=*/NULL_TREE,
++					 parser->scope, name,
++					 is_template);
++	}
+       parser->qualifying_scope = parser->scope;
+       parser->object_scope = NULL_TREE;
+     }
 diff -Naur gcc-4.3.3.orig/gcc/cp/pt.c gcc-4.3.3/gcc/cp/pt.c
 --- gcc-4.3.3.orig/gcc/cp/pt.c	2009-01-16 14:35:24.000000000 -0800
-+++ gcc-4.3.3/gcc/cp/pt.c	2009-02-17 10:27:32.576290000 -0800
++++ gcc-4.3.3/gcc/cp/pt.c	2009-03-04 11:37:43.898064000 -0800
 @@ -4555,6 +4555,13 @@
        expr = convert_nontype_argument_function (type, expr);
        if (!expr || expr == error_mark_node)
@@ -1507,6 +1758,32 @@ diff -Naur gcc-4.3.3.orig/gcc/cp/pt.c gcc-4.3.3/gcc/cp/pt.c
        else if (uses_template_parms (tparm))
  	/* We haven't deduced the type of this parameter yet.  Try again
  	   later.  */
+@@ -15637,6 +15644,16 @@
+   return TYPE_DEPENDENT_P (type);
+ }
+ 
++/* Returns TRUE if SCOPE is a dependent scope, in which we can't do any
++   lookup.  In other words, a dependent type that is not the current
++   instantiation.  */
++
++bool
++dependent_scope_p (tree scope)
++{
++  return dependent_type_p (scope) && !currently_open_class (scope);
++}
++
+ /* Returns TRUE if EXPRESSION is dependent, according to CRITERION.  */
+ 
+ static bool
+@@ -15658,7 +15675,7 @@
+      An id-expression is type-dependent if it contains a
+      nested-name-specifier that contains a class-name that names a
+      dependent type.  */
+-  /* The suggested resolution to Core Issue 2 implies that if the
++  /* The suggested resolution to Core Issue 224 implies that if the
+      qualifying type is the current class, then we must peek
+      inside it.  */
+   if (DECL_P (name)
 diff -Naur gcc-4.3.3.orig/gcc/cp/semantics.c gcc-4.3.3/gcc/cp/semantics.c
 --- gcc-4.3.3.orig/gcc/cp/semantics.c	2008-11-14 14:01:12.000000000 -0800
 +++ gcc-4.3.3/gcc/cp/semantics.c	2009-02-13 13:53:38.261573000 -0800
@@ -1665,10 +1942,10 @@ diff -Naur gcc-4.3.3.orig/gcc/c-typeck.c gcc-4.3.3/gcc/c-typeck.c
        }
 diff -Naur gcc-4.3.3.orig/gcc/DATESTAMP gcc-4.3.3/gcc/DATESTAMP
 --- gcc-4.3.3.orig/gcc/DATESTAMP	2009-01-23 16:16:35.000000000 -0800
-+++ gcc-4.3.3/gcc/DATESTAMP	2009-02-28 16:16:39.911584000 -0800
++++ gcc-4.3.3/gcc/DATESTAMP	2009-03-11 17:16:41.615225000 -0700
 @@ -1 +1 @@
 -20090124
-+20090301
++20090312
 diff -Naur gcc-4.3.3.orig/gcc/doc/invoke.texi gcc-4.3.3/gcc/doc/invoke.texi
 --- gcc-4.3.3.orig/gcc/doc/invoke.texi	2008-11-21 08:21:50.000000000 -0800
 +++ gcc-4.3.3/gcc/doc/invoke.texi	2009-01-27 10:45:49.519017000 -0800
@@ -1724,8 +2001,22 @@ diff -Naur gcc-4.3.3.orig/gcc/fold-const.c gcc-4.3.3/gcc/fold-const.c
  
 diff -Naur gcc-4.3.3.orig/gcc/fortran/ChangeLog gcc-4.3.3/gcc/fortran/ChangeLog
 --- gcc-4.3.3.orig/gcc/fortran/ChangeLog	2009-01-24 02:15:54.000000000 -0800
-+++ gcc-4.3.3/gcc/fortran/ChangeLog	2009-02-18 22:43:15.919035000 -0800
-@@ -1,3 +1,43 @@
++++ gcc-4.3.3/gcc/fortran/ChangeLog	2009-03-07 07:58:49.569600000 -0800
+@@ -1,3 +1,57 @@
++2009-03-07  Paul Thomas  <pault@gcc.gnu.org>
++
++	PR fortran/39295
++	* interface.c (compare_type_rank_if): Return 1 if the symbols
++	are the same and deal with external procedures where one is
++	identified to be a function or subroutine by usage but the
++	other is not.
++
++2009-03-07  Paul Thomas  <pault@gcc.gnu.org>
++
++	PR fortran/39292
++	* trans-array.c (gfc_conv_array_initializer): Convert all
++	expressions rather than ICEing.
++
 +2009-02-19  Paul Thomas  <pault@gcc.gnu.org>
 +
 +	PR fortran/38852
@@ -1769,6 +2060,40 @@ diff -Naur gcc-4.3.3.orig/gcc/fortran/ChangeLog gcc-4.3.3/gcc/fortran/ChangeLog
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
+diff -Naur gcc-4.3.3.orig/gcc/fortran/interface.c gcc-4.3.3/gcc/fortran/interface.c
+--- gcc-4.3.3.orig/gcc/fortran/interface.c	2009-01-10 13:01:14.000000000 -0800
++++ gcc-4.3.3/gcc/fortran/interface.c	2009-03-07 07:58:49.569600000 -0800
+@@ -492,17 +492,26 @@
+   if (s1 == NULL || s2 == NULL)
+     return s1 == s2 ? 1 : 0;
+ 
++  if (s1 == s2)
++    return 1;
++
+   if (s1->attr.flavor != FL_PROCEDURE && s2->attr.flavor != FL_PROCEDURE)
+     return compare_type_rank (s1, s2);
+ 
+   if (s1->attr.flavor != FL_PROCEDURE || s2->attr.flavor != FL_PROCEDURE)
+     return 0;
+ 
+-  /* At this point, both symbols are procedures.  */
+-  if ((s1->attr.function == 0 && s1->attr.subroutine == 0)
+-      || (s2->attr.function == 0 && s2->attr.subroutine == 0))
+-    return 0;
++  /* At this point, both symbols are procedures.  It can happen that
++     a external procedures are compared where one is identified by usage
++     to be a function or subroutine but the other is not.  Check TKR
++     nonetheless for these cases.  */
++  if (s1->attr.function == 0 && s1->attr.subroutine == 0)
++    return s1->attr.external == 1 ? compare_type_rank (s1, s2) : 0;
++
++  if (s2->attr.function == 0 && s2->attr.subroutine == 0)
++    return s2->attr.external == 1 ? compare_type_rank (s1, s2) : 0;
+ 
++  /* Now the type of procedure has been identified.  */
+   if (s1->attr.function != s2->attr.function
+       || s1->attr.subroutine != s2->attr.subroutine)
+     return 0;
 diff -Naur gcc-4.3.3.orig/gcc/fortran/module.c gcc-4.3.3/gcc/fortran/module.c
 --- gcc-4.3.3.orig/gcc/fortran/module.c	2009-01-17 01:28:50.000000000 -0800
 +++ gcc-4.3.3/gcc/fortran/module.c	2009-01-25 21:12:03.141287000 -0800
@@ -1977,6 +2302,32 @@ diff -Naur gcc-4.3.3.orig/gcc/fortran/simplify.c gcc-4.3.3/gcc/fortran/simplify.
  
  	    case AR_SECTION:
  	    case AR_UNKNOWN:
+diff -Naur gcc-4.3.3.orig/gcc/fortran/trans-array.c gcc-4.3.3/gcc/fortran/trans-array.c
+--- gcc-4.3.3.orig/gcc/fortran/trans-array.c	2008-11-29 12:42:22.000000000 -0800
++++ gcc-4.3.3/gcc/fortran/trans-array.c	2009-03-07 07:56:37.773017000 -0800
+@@ -3867,8 +3867,21 @@
+ 	      CONSTRUCTOR_APPEND_ELT (v, index, se.expr);
+ 	      break;
+ 
++
+ 	    default:
+-	      gcc_unreachable ();
++	      /* Catch those occasional beasts that do not simplify
++		 for one reason or another, assuming that if they are
++		 standard defying the frontend will catch them.  */
++	      gfc_conv_expr (&se, c->expr);
++	      if (range == NULL_TREE)
++		CONSTRUCTOR_APPEND_ELT (v, index, se.expr);
++	      else
++		{
++		  if (index != NULL_TREE)
++		  CONSTRUCTOR_APPEND_ELT (v, index, se.expr);
++		  CONSTRUCTOR_APPEND_ELT (v, range, se.expr);
++		}
++	      break;
+ 	    }
+         }
+       break;
 diff -Naur gcc-4.3.3.orig/gcc/fortran/trans-intrinsic.c gcc-4.3.3/gcc/fortran/trans-intrinsic.c
 --- gcc-4.3.3.orig/gcc/fortran/trans-intrinsic.c	2008-07-27 04:41:35.000000000 -0700
 +++ gcc-4.3.3/gcc/fortran/trans-intrinsic.c	2009-02-18 22:43:15.919035000 -0800
@@ -2212,8 +2563,31 @@ diff -Naur gcc-4.3.3.orig/gcc/stmt.c gcc-4.3.3/gcc/stmt.c
  	    op = force_reg (TYPE_MODE (type), op);
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/ChangeLog gcc-4.3.3/gcc/testsuite/ChangeLog
 --- gcc-4.3.3.orig/gcc/testsuite/ChangeLog	2009-01-24 02:15:24.000000000 -0800
-+++ gcc-4.3.3/gcc/testsuite/ChangeLog	2009-02-25 23:06:48.803473000 -0800
-@@ -1,3 +1,327 @@
++++ gcc-4.3.3/gcc/testsuite/ChangeLog	2009-03-11 10:53:13.287573000 -0700
+@@ -1,3 +1,350 @@
++2009-03-11  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
++
++	* g++.old-deja/g++.jason/thunk2.C: Skip on SPU.
++
++2009-03-07  Paul Thomas  <pault@gcc.gnu.org>
++
++	PR fortran/39295
++	* gfortran.dg/interface_25.f90: New test.
++	* gfortran.dg/interface_26.f90: New test.
++
++2009-03-07  Paul Thomas  <pault@gcc.gnu.org>
++
++	PR fortran/39292
++	* gfortran.dg/initialization_22.f90: New test.
++
++2009-03-04  Jason Merrill  <jason@redhat.com>
++	    Giovanni Bajo  <giovannibajo@gcc.gnu.org>
++
++	PR c++/9634
++	PR c++/29469
++	PR c++/29607
++	* g++.dg/template/dependent-name5.C: New test.
++
 +2009-02-26  Uros Bizjak  <ubizjak@gmail.com>
 +
 +	Backport from mainline:
@@ -2541,7 +2915,7 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/ChangeLog gcc-4.3.3/gcc/testsuite/Change
  2009-01-24  Release Manager
  
  	* GCC 4.3.3 released.
-@@ -89,7 +413,7 @@
+@@ -89,7 +436,7 @@
  
  	Backport from mainline:
  	2008-12-29  Dorit Nuzman  <dorit@il.ibm.com>
@@ -2550,7 +2924,7 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/ChangeLog gcc-4.3.3/gcc/testsuite/Change
  
  	PR tree-optimization/38529
  	* gcc.dg/vect/pr38529.c: New test.
-@@ -426,8 +750,8 @@
+@@ -426,8 +773,8 @@
  
  2008-11-14  Paul Thomas  <pault@gcc.gnu.org>
  
@@ -4168,6 +4542,55 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/array20.C gcc-4.3.3/gcc/
 +    f(x); // works
 +    f(y); // ICE
 +}
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/dependent-name5.C gcc-4.3.3/gcc/testsuite/g++.dg/template/dependent-name5.C
+--- gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/dependent-name5.C	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/g++.dg/template/dependent-name5.C	2009-03-04 11:37:43.898064000 -0800
+@@ -0,0 +1,45 @@
++// PR c++/9634, c++/29469, c++/29607
++// Contributed by: Giovanni Bajo <giovannibajo at gcc dot gnu dot org>
++// DR224: Make sure that a name is *truly* semantically dependent.
++
++struct D {
++  typedef int K;
++};
++
++template <typename T>
++struct A
++{
++  typedef int Bar;
++
++  template <typename>
++  struct N {};
++
++  typedef Bar          type1;
++  typedef A::Bar       type2;
++  typedef A<T>::Bar    type3;
++  typedef A<T*>::Bar    type4;  // { dg-error "" }
++  typedef typename A<T*>::Bar type5;
++
++  typedef N<int>       type6;
++  typedef A::N<int>    type7;
++  typedef A<T>::N<int> type8;
++  typedef A<T*>::template N<int> type9;  // { dg-error "" }
++  typedef typename A<T*>::template N<int> type10;
++
++  typedef D Bar2;
++  struct N2 { typedef int K; };
++
++  // Check that A::N2 is still considered dependent (because it
++  //  could be specialized), while A::Bar2 (being just ::D) is not.
++  typedef A::Bar2 type11;
++  typedef type11::K k3;
++
++  typedef A::N2 type12;
++  typedef typename type12::K k2;
++  typedef type12::K k1;  // { dg-error "" }
++
++  // Check that A::Bar2 is not considered dependent even if we use
++  // the typename keyword.
++  typedef typename A::Bar2 type13;
++  typedef type13::K k4;
++};
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/dtor5.C gcc-4.3.3/gcc/testsuite/g++.dg/template/dtor5.C
 --- gcc-4.3.3.orig/gcc/testsuite/g++.dg/template/dtor5.C	1969-12-31 16:00:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/g++.dg/template/dtor5.C	2009-01-26 10:24:45.754928000 -0800
@@ -4566,6 +4989,119 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/host_assoc_function_7.f90 gc
 +END
 +
 +! { dg-final { cleanup-modules "sa0054_stuff" } }
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/initialization_22.f90 gcc-4.3.3/gcc/testsuite/gfortran.dg/initialization_22.f90
+--- gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/initialization_22.f90	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gfortran.dg/initialization_22.f90	2009-03-07 07:56:37.773017000 -0800
+@@ -0,0 +1,10 @@
++! { dg-do run }
++! tests the fix for PR39292, where the intitialization expression
++! did not simplify and caused an ICE in gfc_conv_array_initializer.
++!
++! Contributed by Richard Guenther <rguenth@gcc.gnu.org>
++!
++  integer :: n
++  real, dimension(2) :: a = (/ ( (float(n))**(1.0), n=1,2) /)
++  if (any (a .ne. (/ ( (float(n))**(1.0), n=1,2) /))) call abort
++end
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/interface_25.f90 gcc-4.3.3/gcc/testsuite/gfortran.dg/interface_25.f90
+--- gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/interface_25.f90	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gfortran.dg/interface_25.f90	2009-03-07 07:58:49.569600000 -0800
+@@ -0,0 +1,45 @@
++! { dg-do compile }
++! Tests the fix for PR39295, in which the check of the interfaces
++! at lines 25 and 42 failed because opfunc1 is identified as a 
++! function by usage, whereas opfunc2 is not.
++!
++! Contributed by Jon Hurst <jhurst@ucar.edu>
++!
++MODULE  funcs
++CONTAINS
++  INTEGER FUNCTION test1(a,b,opfunc1) 
++    INTEGER :: a,b
++    INTEGER, EXTERNAL :: opfunc1
++    test1 = opfunc1( a, b ) 
++  END FUNCTION test1
++  INTEGER FUNCTION sumInts(a,b)
++    INTEGER :: a,b
++    sumInts = a + b
++  END FUNCTION sumInts
++END MODULE funcs
++
++PROGRAM test
++  USE funcs 
++  INTEGER :: rs
++  INTEGER, PARAMETER :: a = 2, b = 1
++  rs = recSum( a, b, test1, sumInts )
++  write(*,*) "Results", rs
++CONTAINS
++  RECURSIVE INTEGER FUNCTION recSum( a,b,UserFunction,UserOp ) RESULT( res )
++    IMPLICIT NONE
++    INTEGER :: a,b
++    INTERFACE 
++       INTEGER FUNCTION UserFunction(a,b,opfunc2) 
++         INTEGER :: a,b
++         INTEGER, EXTERNAL :: opfunc2
++       END FUNCTION UserFunction
++    END INTERFACE
++    INTEGER, EXTERNAL :: UserOp 
++
++    res = UserFunction( a,b, UserOp )
++
++    if( res .lt. 10 ) then
++       res = recSum( a, res, UserFunction, UserOp ) 
++    end if
++  END FUNCTION recSum
++END PROGRAM test
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/interface_26.f90 gcc-4.3.3/gcc/testsuite/gfortran.dg/interface_26.f90
+--- gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/interface_26.f90	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.3.3/gcc/testsuite/gfortran.dg/interface_26.f90	2009-03-07 07:58:49.569600000 -0800
+@@ -0,0 +1,46 @@
++! { dg-do compile }
++! Tests the fix for PR39295, in which the check of the interfaces
++! at lines 26 and 43 failed because opfunc1 is identified as a 
++! function by usage, whereas opfunc2 is not. This testcase checks
++! that TKR is stll OK in these cases.
++!
++! Contributed by Jon Hurst <jhurst@ucar.edu>
++!
++MODULE  funcs
++CONTAINS
++  INTEGER FUNCTION test1(a,b,opfunc1) 
++    INTEGER :: a,b
++    INTEGER, EXTERNAL :: opfunc1
++    test1 = opfunc1( a, b ) 
++  END FUNCTION test1
++  INTEGER FUNCTION sumInts(a,b)
++    INTEGER :: a,b
++    sumInts = a + b
++  END FUNCTION sumInts
++END MODULE funcs
++
++PROGRAM test
++  USE funcs 
++  INTEGER :: rs
++  INTEGER, PARAMETER :: a = 2, b = 1
++  rs = recSum( a, b, test1, sumInts ) ! { dg-error "Type/rank mismatch in argument" }
++  write(*,*) "Results", rs
++CONTAINS
++  RECURSIVE INTEGER FUNCTION recSum( a,b,UserFunction,UserOp ) RESULT( res )
++    IMPLICIT NONE
++    INTEGER :: a,b
++    INTERFACE 
++       INTEGER FUNCTION UserFunction(a,b,opfunc2) 
++         INTEGER :: a,b
++         REAL, EXTERNAL :: opfunc2
++       END FUNCTION UserFunction
++    END INTERFACE
++    INTEGER, EXTERNAL :: UserOp 
++
++    res = UserFunction( a,b, UserOp )
++
++    if( res .lt. 10 ) then
++       res = recSum( a, res, UserFunction, UserOp ) 
++    end if
++  END FUNCTION recSum
++END PROGRAM test
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/module_commons_3.f90 gcc-4.3.3/gcc/testsuite/gfortran.dg/module_commons_3.f90
 --- gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/module_commons_3.f90	1969-12-31 16:00:00.000000000 -0800
 +++ gcc-4.3.3/gcc/testsuite/gfortran.dg/module_commons_3.f90	2009-01-25 21:12:03.141287000 -0800
@@ -4780,6 +5316,17 @@ diff -Naur gcc-4.3.3.orig/gcc/testsuite/gfortran.dg/pr38868.f gcc-4.3.3/gcc/test
 +
 +! { dg-final { scan-rtl-dump-times "line\\\+80" 0 "expand" } }
 +! { dg-final { cleanup-rtl-dump "expand" } } */
+diff -Naur gcc-4.3.3.orig/gcc/testsuite/g++.old-deja/g++.jason/thunk2.C gcc-4.3.3/gcc/testsuite/g++.old-deja/g++.jason/thunk2.C
+--- gcc-4.3.3.orig/gcc/testsuite/g++.old-deja/g++.jason/thunk2.C	2005-10-22 13:57:01.000000000 -0700
++++ gcc-4.3.3/gcc/testsuite/g++.old-deja/g++.jason/thunk2.C	2009-03-11 10:53:13.287573000 -0700
+@@ -1,6 +1,7 @@
+ // { dg-do run { target fpic } }
+ // { dg-options "-fPIC" }
+ // { dg-bogus "\[Uu\]nresolved symbol .(_GLOBAL_OFFSET_TABLE_|\[_.A-Za-z\]\[_.0-9A-Za-z\]*@(PLT|GOT|GOTOFF))|\[Bb\]ad fixup at .DATA.:" "PIC unsupported" { xfail *-*-netware* } 0 }
++// { dg-skip-if "requires unsupported run-time relocation" { spu-*-* } { "*" } { "" } }
+ // Test that non-variadic function calls using thunks and PIC work right.
+ 
+ struct A {
 diff -Naur gcc-4.3.3.orig/gcc/testsuite/objc.dg/gnu-encoding/gnu-encoding.exp gcc-4.3.3/gcc/testsuite/objc.dg/gnu-encoding/gnu-encoding.exp
 --- gcc-4.3.3.orig/gcc/testsuite/objc.dg/gnu-encoding/gnu-encoding.exp	2007-08-01 09:25:11.000000000 -0700
 +++ gcc-4.3.3/gcc/testsuite/objc.dg/gnu-encoding/gnu-encoding.exp	2009-01-26 10:13:58.227740000 -0800
@@ -4936,13 +5483,13 @@ diff -Naur gcc-4.3.3.orig/gcc/tree-ssa-structalias.c gcc-4.3.3/gcc/tree-ssa-stru
  	}
 diff -Naur gcc-4.3.3.orig/gcc/version.c gcc-4.3.3/gcc/version.c
 --- gcc-4.3.3.orig/gcc/version.c	2007-08-21 08:35:30.000000000 -0700
-+++ gcc-4.3.3/gcc/version.c	2009-03-01 11:24:23.858345020 -0800
++++ gcc-4.3.3/gcc/version.c	2009-03-12 10:34:15.068288868 -0700
 @@ -14,4 +14,4 @@
     Makefile.  */
  
  const char version_string[] = BASEVER DATESTAMP DEVPHASE REVISION;
 -const char pkgversion_string[] = PKGVERSION;
-+const char pkgversion_string[] = "(GCC for Cross-LFS 4.3.3.20090301) ";
++const char pkgversion_string[] = "(GCC for Cross-LFS 4.3.3.20090312) ";
 diff -Naur gcc-4.3.3.orig/libjava/classpath/doc/cp-tools.info gcc-4.3.3/libjava/classpath/doc/cp-tools.info
 --- gcc-4.3.3.orig/libjava/classpath/doc/cp-tools.info	2009-01-24 04:05:54.000000000 -0800
 +++ gcc-4.3.3/libjava/classpath/doc/cp-tools.info	1969-12-31 16:00:00.000000000 -0800
