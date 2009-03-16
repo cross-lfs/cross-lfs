@@ -24,19 +24,18 @@ make install-service-dhcpcd</userinput></screen>
     configuration file using the following commands. Adjust appropriately for
     additional interfaces:</para>
 
-<screen><userinput><literal>install -v -d /etc/sysconfig/network-devices/ifconfig.eth0 
-cat > /etc/sysconfig/network-devices/ifconfig.eth0/dhcpcd &lt;&lt; "EOF"
-ONBOOT="yes"
+<screen><userinput>cd /etc/sysconfig/network-devices &amp;&amp;
+mkdir -v ifconfig.eth0 &amp;&amp;
+cat &gt; ifconfig.eth0/dhcpcd &lt;&lt; "EOF"
+<literal>ONBOOT="yes"
 SERVICE="dhcpcd"
 
 # Start Command for DHCPCD
-#
 DHCP_START="-q"
 
 # Stop Command for DHCPCD
-#
-DHCP_STOP="-k"
-EOF</literal>
+DHCP_STOP="-k"</literal>
+EOF
 </userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
