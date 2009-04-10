@@ -1,13 +1,13 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 03-09-2009
+Date: 04-09-2009
 Initial Package Version: 4.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 4.0-010
+Description: Contains all upstream patches up to 4.0-017
 
 diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
 --- bash-4.0.orig/arrayfunc.c	2009-01-04 11:32:21.000000000 -0800
-+++ bash-4.0/arrayfunc.c	2009-03-09 15:07:05.270012850 -0700
++++ bash-4.0/arrayfunc.c	2009-04-09 22:09:24.500045537 -0700
 @@ -604,64 +604,7 @@
      }
  }
@@ -76,7 +76,7 @@ diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
     `[' of an array subscript and removes the array element to which SUB
 diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
 --- bash-4.0.orig/builtins/declare.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/declare.def	2009-03-09 15:07:02.561839362 -0700
++++ bash-4.0/builtins/declare.def	2009-04-09 22:09:21.747868696 -0700
 @@ -295,6 +295,13 @@
        subscript_start = (char *)NULL;
        if (t = strchr (name, '['))	/* ] */
@@ -102,7 +102,7 @@ diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
  
 diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
 --- bash-4.0.orig/builtins/exit.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/exit.def	2009-03-09 15:07:01.245754993 -0700
++++ bash-4.0/builtins/exit.def	2009-04-09 22:09:20.423784047 -0700
 @@ -113,7 +113,7 @@
        for (i = stopmsg = 0; i < js.j_jobslots; i++)
  	if (jobs[i] && STOPPED (i))
@@ -112,9 +112,75 @@ diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
  	  stopmsg = JRUNNING;
  
        if (stopmsg == JSTOPPED)
+diff -Naur bash-4.0.orig/builtins/fc.def bash-4.0/builtins/fc.def
+--- bash-4.0.orig/builtins/fc.def	2009-01-04 11:32:22.000000000 -0800
++++ bash-4.0/builtins/fc.def	2009-04-09 22:09:34.484684732 -0700
+@@ -88,6 +88,7 @@
+ extern int current_command_line_count;
+ extern int literal_history;
+ extern int posixly_correct;
++extern int subshell_environment, interactive_shell;
+ 
+ extern int unlink __P((const char *));
+ 
+@@ -172,7 +173,7 @@
+   register int i;
+   register char *sep;
+   int numbering, reverse, listing, execute;
+-  int histbeg, histend, last_hist, retval, opt;
++  int histbeg, histend, last_hist, retval, opt, rh;
+   FILE *stream;
+   REPL *rlist, *rl;
+   char *ename, *command, *newcom, *fcedit;
+@@ -275,6 +276,8 @@
+ 
+       fprintf (stderr, "%s\n", command);
+       fc_replhist (command);	/* replace `fc -s' with command */
++      /* Posix says that the re-executed commands should be entered into the
++	 history. */
+       return (parse_and_execute (command, "fc", SEVAL_NOHIST));
+     }
+ 
+@@ -293,7 +296,12 @@
+      line was actually added (HISTIGNORE may have caused it to not be),
+      so we check hist_last_line_added. */
+ 
+-  last_hist = i - remember_on_history - hist_last_line_added;
++  /* Even though command substitution through parse_and_execute turns off
++     remember_on_history, command substitution in a shell when set -o history
++     has been enabled (interactive or not) should use it in the last_hist
++     calculation as if it were on. */
++  rh = remember_on_history || ((subshell_environment & SUBSHELL_COMSUB) && enable_history_list);
++  last_hist = i - rh - hist_last_line_added;
+ 
+   if (list)
+     {
+@@ -456,7 +464,7 @@
+      char *command;
+      HIST_ENTRY **hlist;
+ {
+-  int sign, n, clen;
++  int sign, n, clen, rh;
+   register int i, j;
+   register char *s;
+ 
+@@ -472,7 +480,12 @@
+      line was actually added (HISTIGNORE may have caused it to not be),
+      so we check hist_last_line_added.  This needs to agree with the
+      calculation of last_hist in fc_builtin above. */
+-  i -= remember_on_history + hist_last_line_added;
++  /* Even though command substitution through parse_and_execute turns off
++     remember_on_history, command substitution in a shell when set -o history
++     has been enabled (interactive or not) should use it in the last_hist
++     calculation as if it were on. */
++  rh = remember_on_history || ((subshell_environment & SUBSHELL_COMSUB) && enable_history_list);
++  i -= rh + hist_last_line_added;
+ 
+   /* No specification defaults to most recent command. */
+   if (command == NULL)
 diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
 --- bash-4.0.orig/builtins/read.def	2009-01-15 20:11:21.000000000 -0800
-+++ bash-4.0/builtins/read.def	2009-03-09 15:07:07.890180751 -0700
++++ bash-4.0/builtins/read.def	2009-04-09 22:09:27.380229641 -0700
 @@ -369,14 +369,14 @@
        code = setjmp (alrmbuf);
        if (code)
@@ -135,9 +201,84 @@ diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
  	}
        old_alrm = set_signal_handler (SIGALRM, sigalrm);
        add_unwind_protect (reset_alarm, (char *)NULL);
+diff -Naur bash-4.0.orig/execute_cmd.c bash-4.0/execute_cmd.c
+--- bash-4.0.orig/execute_cmd.c	2009-02-13 13:41:41.000000000 -0800
++++ bash-4.0/execute_cmd.c	2009-04-09 22:09:37.908905992 -0700
+@@ -568,6 +568,7 @@
+ 
+       /* Fork a subshell, turn off the subshell bit, turn off job
+ 	 control and call execute_command () on the command again. */
++      line_number_for_err_trap = line_number;
+       paren_pid = make_child (savestring (make_command_string (command)),
+ 			      asynchronous);
+       if (paren_pid == 0)
+@@ -610,7 +611,10 @@
+ 	      if (user_subshell && was_error_trap && ignore_return == 0 && invert == 0 && exec_result != EXECUTION_SUCCESS)
+ 		{
+ 		  last_command_exit_value = exec_result;
++		  save_line_number = line_number;
++		  line_number = line_number_for_err_trap;
+ 		  run_error_trap ();
++		  line_number = save_line_number;
+ 		}
+ 
+ 	      if (user_subshell && ignore_return == 0 && invert == 0 && exit_immediately_on_error && exec_result != EXECUTION_SUCCESS)
+@@ -766,7 +770,9 @@
+       if (was_error_trap && ignore_return == 0 && invert == 0 && pipe_in == NO_PIPE && pipe_out == NO_PIPE && exec_result != EXECUTION_SUCCESS)
+ 	{
+ 	  last_command_exit_value = exec_result;
++	  line_number = line_number_for_err_trap;
+ 	  run_error_trap ();
++	  line_number = save_line_number;
+ 	}
+ 
+       if (ignore_return == 0 && invert == 0 &&
+@@ -2105,6 +2111,7 @@
+   REDIRECT *rp;
+   COMMAND *tc, *second;
+   int ignore_return, exec_result, was_error_trap, invert;
++  volatile int save_line_number;
+ 
+   ignore_return = (command->flags & CMD_IGNORE_RETURN) != 0;
+ 
+@@ -2174,12 +2181,16 @@
+       invert = (command->flags & CMD_INVERT_RETURN) != 0;
+       ignore_return = (command->flags & CMD_IGNORE_RETURN) != 0;
+ 
++      line_number_for_err_trap = line_number;
+       exec_result = execute_pipeline (command, asynchronous, pipe_in, pipe_out, fds_to_close);
+ 
+       if (was_error_trap && ignore_return == 0 && invert == 0 && exec_result != EXECUTION_SUCCESS)
+ 	{
+ 	  last_command_exit_value = exec_result;
++	  save_line_number = line_number;
++	  line_number = line_number_for_err_trap;
+ 	  run_error_trap ();
++	  line_number = save_line_number;
+ 	}
+ 
+       if (ignore_return == 0 && invert == 0 && exit_immediately_on_error && exec_result != EXECUTION_SUCCESS)
+@@ -2930,7 +2941,7 @@
+ 		  retval = execute_command (clauses->action);
+ 		}
+ 	      while ((clauses->flags & CASEPAT_FALLTHROUGH) && (clauses = clauses->next));
+-	      if ((clauses->flags & CASEPAT_TESTNEXT) == 0)
++	      if (clauses == 0 || (clauses->flags & CASEPAT_TESTNEXT) == 0)
+ 		EXIT_CASE ();
+ 	      else
+ 		break;
 diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
 --- bash-4.0.orig/parse.y	2009-01-08 05:29:12.000000000 -0800
-+++ bash-4.0/parse.y	2009-03-09 15:07:09.194264282 -0700
++++ bash-4.0/parse.y	2009-04-09 22:09:39.212989803 -0700
+@@ -1122,7 +1122,7 @@
+ 			  REDIRECTEE rd;
+ 			  REDIRECT *r;
+ 
+-			  tc = $1;
++			  tc = $1->type == cm_simple ? (COMMAND *)$1->value.Simple : $1;
+ 			  rd.dest = 1;
+ 			  r = make_redirection (2, r_duplicating_output, rd);
+ 			  if (tc->redirects)
 @@ -1615,10 +1615,11 @@
  {
    int *ret;
@@ -159,6 +300,15 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
  }
  
  /*
+@@ -1877,7 +1879,7 @@
+     prompt_again ();
+   ret = read_a_line (remove_quoted_newline);
+ #if defined (HISTORY)
+-  if (remember_on_history && (parser_state & PST_HEREDOC))
++  if (ret && remember_on_history && (parser_state & PST_HEREDOC))
+     {
+       /* To make adding the the here-document body right, we need to rely
+ 	 on history_delimiting_chars() returning \n for the first line of
 @@ -2668,6 +2670,7 @@
    FREE (word_desc_to_read);
    word_desc_to_read = (WORD_DESC *)NULL;
@@ -356,18 +506,18 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
      case ELIF:
 diff -Naur bash-4.0.orig/patchlevel.h bash-4.0/patchlevel.h
 --- bash-4.0.orig/patchlevel.h	2009-01-04 11:32:40.000000000 -0800
-+++ bash-4.0/patchlevel.h	2009-03-09 15:07:09.194264282 -0700
++++ bash-4.0/patchlevel.h	2009-04-09 22:09:39.212989803 -0700
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 10
++#define PATCHLEVEL 17
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
 --- bash-4.0.orig/pcomplete.c	2009-02-01 14:12:31.000000000 -0800
-+++ bash-4.0/pcomplete.c	2009-03-09 15:06:58.589584858 -0700
++++ bash-4.0/pcomplete.c	2009-04-09 22:09:17.783614750 -0700
 @@ -1032,6 +1032,7 @@
    cmdlist = build_arg_list (funcname, text, lwords, cw);
  
@@ -376,10 +526,70 @@ diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
    begin_unwind_frame ("gen-shell-function-matches");
    add_unwind_protect (restore_parser_state, (char *)pps);
    add_unwind_protect (dispose_words, (char *)cmdlist);
+diff -Naur bash-4.0.orig/sig.c bash-4.0/sig.c
+--- bash-4.0.orig/sig.c	2009-01-04 11:32:41.000000000 -0800
++++ bash-4.0/sig.c	2009-04-09 22:09:36.612821343 -0700
+@@ -448,6 +448,48 @@
+ termsig_sighandler (sig)
+      int sig;
+ {
++  /* If we get called twice with the same signal before handling it,
++     terminate right away. */
++  if (
++#ifdef SIGHUP
++    sig != SIGHUP &&
++#endif
++#ifdef SIGINT
++    sig != SIGINT &&
++#endif
++#ifdef SIGDANGER
++    sig != SIGDANGER &&
++#endif
++#ifdef SIGPIPE
++    sig != SIGPIPE &&
++#endif
++#ifdef SIGALRM
++    sig != SIGALRM &&
++#endif
++#ifdef SIGTERM
++    sig != SIGTERM &&
++#endif
++#ifdef SIGXCPU
++    sig != SIGXCPU &&
++#endif
++#ifdef SIGXFSZ
++    sig != SIGXFSZ &&
++#endif
++#ifdef SIGVTALRM
++    sig != SIGVTALRM &&
++#endif
++#ifdef SIGLOST
++    sig != SIGLOST &&
++#endif
++#ifdef SIGUSR1
++    sig != SIGUSR1 &&
++#endif
++#ifdef SIGUSR2
++   sig != SIGUSR2 &&
++#endif
++   sig == terminating_signal)
++    terminate_immediately = 1;
++
+   terminating_signal = sig;
+ 
+   /* XXX - should this also trigger when interrupt_immediately is set? */
 diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
 --- bash-4.0.orig/subst.c	2009-01-28 11:34:12.000000000 -0800
-+++ bash-4.0/subst.c	2009-03-09 15:07:05.274015365 -0700
-@@ -222,6 +222,7 @@
++++ bash-4.0/subst.c	2009-04-09 22:09:33.024593378 -0700
+@@ -85,6 +85,7 @@
+ 
+ /* Flags for the `pflags' argument to param_expand() */
+ #define PF_NOCOMSUB	0x01	/* Do not perform command substitution */
++#define PF_IGNUNBOUND	0x02	/* ignore unbound vars even if -u set */
+ 
+ /* These defs make it easier to use the editor. */
+ #define LBRACE		'{'
+@@ -222,6 +223,7 @@
  static int skip_double_quoted __P((char *, size_t, int));
  static char *extract_delimited_string __P((char *, int *, char *, char *, char *, int));
  static char *extract_dollar_brace_string __P((char *, int *, int, int));
@@ -387,7 +597,16 @@ diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
  
  static char *pos_params __P((char *, int, int, int));
  
-@@ -1374,6 +1375,107 @@
+@@ -262,7 +264,7 @@
+ static int chk_atstar __P((char *, int, int *, int *));
+ static int chk_arithsub __P((const char *, int));
+ 
+-static WORD_DESC *parameter_brace_expand_word __P((char *, int, int));
++static WORD_DESC *parameter_brace_expand_word __P((char *, int, int, int));
+ static WORD_DESC *parameter_brace_expand_indir __P((char *, int, int, int *, int *));
+ static WORD_DESC *parameter_brace_expand_rhs __P((char *, char *, int, int, int *, int *));
+ static void parameter_brace_expand_error __P((char *, char *));
+@@ -1374,6 +1376,107 @@
  
  #define CQ_RETURN(x) do { no_longjmp_on_fatal_error = 0; return (x); } while (0)
  
@@ -495,3 +714,81 @@ diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
  /* Skip characters in STRING until we find a character in DELIMS, and return
     the index of that character.  START is the index into string at which we
     begin.  This is similar in spirit to strpbrk, but it returns an index into
+@@ -5093,9 +5196,9 @@
+    the shell, e.g., "@", "$", "*", etc.  QUOTED, if non-zero, means that
+    NAME was found inside of a double-quoted expression. */
+ static WORD_DESC *
+-parameter_brace_expand_word (name, var_is_special, quoted)
++parameter_brace_expand_word (name, var_is_special, quoted, pflags)
+      char *name;
+-     int var_is_special, quoted;
++     int var_is_special, quoted, pflags;
+ {
+   WORD_DESC *ret;
+   char *temp, *tt;
+@@ -5127,7 +5230,7 @@
+       strcpy (tt + 1, name);
+ 
+       ret = param_expand (tt, &sindex, quoted, (int *)NULL, (int *)NULL,
+-			  (int *)NULL, (int *)NULL, 0);
++			  (int *)NULL, (int *)NULL, pflags);
+       free (tt);
+     }
+ #if defined (ARRAY_VARS)
+@@ -5188,7 +5291,7 @@
+   char *temp, *t;
+   WORD_DESC *w;
+ 
+-  w = parameter_brace_expand_word (name, var_is_special, quoted);
++  w = parameter_brace_expand_word (name, var_is_special, quoted, PF_IGNUNBOUND);
+   t = w->word;
+   /* Have to dequote here if necessary */
+   if (t)
+@@ -5205,7 +5308,7 @@
+   if (t == 0)
+     return (WORD_DESC *)NULL;
+ 
+-  w = parameter_brace_expand_word (t, SPECIAL_VAR(t, 0), quoted);
++  w = parameter_brace_expand_word (t, SPECIAL_VAR(t, 0), quoted, 0);
+   free (t);
+ 
+   return w;
+@@ -6556,7 +6659,7 @@
+   if (want_indir)
+     tdesc = parameter_brace_expand_indir (name + 1, var_is_special, quoted, quoted_dollar_atp, contains_dollar_at);
+   else
+-    tdesc = parameter_brace_expand_word (name, var_is_special, quoted);
++    tdesc = parameter_brace_expand_word (name, var_is_special, quoted, PF_IGNUNBOUND);
+ 
+   if (tdesc)
+     {
+@@ -6887,7 +6990,7 @@
+     case '*':		/* `$*' */
+       list = list_rest_of_args ();
+ 
+-      if (list == 0 && unbound_vars_is_error)
++      if (list == 0 && unbound_vars_is_error && (pflags & PF_IGNUNBOUND) == 0)
+ 	{
+ 	  uerror[0] = '$';
+ 	  uerror[1] = '*';
+@@ -6949,7 +7052,7 @@
+     case '@':		/* `$@' */
+       list = list_rest_of_args ();
+ 
+-      if (list == 0 && unbound_vars_is_error)
++      if (list == 0 && unbound_vars_is_error && (pflags & PF_IGNUNBOUND) == 0)
+ 	{
+ 	  uerror[0] = '$';
+ 	  uerror[1] = '@';
+diff -Naur bash-4.0.orig/trap.c bash-4.0/trap.c
+--- bash-4.0.orig/trap.c	2009-01-16 14:07:53.000000000 -0800
++++ bash-4.0/trap.c	2009-04-09 22:09:37.908905992 -0700
+@@ -755,7 +755,7 @@
+ 	}
+ 
+       flags = SEVAL_NONINT|SEVAL_NOHIST;
+-      if (sig != DEBUG_TRAP && sig != RETURN_TRAP)
++      if (sig != DEBUG_TRAP && sig != RETURN_TRAP && sig != ERROR_TRAP)
+ 	flags |= SEVAL_RESETLINE;
+       if (function_code == 0)
+ 	parse_and_execute (trap_command, tag, flags);
