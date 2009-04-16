@@ -34,6 +34,37 @@ make headers_check
 make INSTALL_HDR_PATH=dest headers_install
 cp -rv dest/include/* /usr/include</userinput></screen>
 
+    <variablelist os="d">
+      <title>The meaning of the make commands:</title>
+
+      <varlistentry os="d1">
+        <term><parameter>make mrproper</parameter></term>
+        <listitem>
+          <para>Ensures that the kernel source dir is clean.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="d2">
+        <term><parameter>make headers_check</parameter></term>
+        <listitem>
+          <para>Sanitizes the raw kernel headers so that they can be used
+          by userspace programs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="d3">
+        <term><parameter>make INSTALL_HDR_PATH=dest headers_install</parameter></term>
+        <listitem>
+          <para>Normally the headers_install target removes the entire
+          destination directory (default
+          <filename class="directory">/usr/include</filename>) before
+          installing the headers. To prevent this, we tell the kernel to
+          install the headers to a directory inside the source dir.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
   </sect2>
 
   <sect2 id="contents-linux-headers" role="content">
