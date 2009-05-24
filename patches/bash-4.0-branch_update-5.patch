@@ -1,13 +1,13 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 04-09-2009
+Date: 05-24-2009
 Initial Package Version: 4.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 4.0-017
+Description: Contains all upstream patches up to 4.0-024
 
 diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
 --- bash-4.0.orig/arrayfunc.c	2009-01-04 11:32:21.000000000 -0800
-+++ bash-4.0/arrayfunc.c	2009-04-09 22:09:24.500045537 -0700
++++ bash-4.0/arrayfunc.c	2009-05-24 09:14:10.000000000 -0700
 @@ -604,64 +604,7 @@
      }
  }
@@ -76,7 +76,7 @@ diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
     `[' of an array subscript and removes the array element to which SUB
 diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
 --- bash-4.0.orig/builtins/declare.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/declare.def	2009-04-09 22:09:21.747868696 -0700
++++ bash-4.0/builtins/declare.def	2009-05-24 09:14:07.000000000 -0700
 @@ -295,6 +295,13 @@
        subscript_start = (char *)NULL;
        if (t = strchr (name, '['))	/* ] */
@@ -102,7 +102,7 @@ diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
  
 diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
 --- bash-4.0.orig/builtins/exit.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/exit.def	2009-04-09 22:09:20.423784047 -0700
++++ bash-4.0/builtins/exit.def	2009-05-24 09:14:06.000000000 -0700
 @@ -113,7 +113,7 @@
        for (i = stopmsg = 0; i < js.j_jobslots; i++)
  	if (jobs[i] && STOPPED (i))
@@ -114,7 +114,7 @@ diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
        if (stopmsg == JSTOPPED)
 diff -Naur bash-4.0.orig/builtins/fc.def bash-4.0/builtins/fc.def
 --- bash-4.0.orig/builtins/fc.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/fc.def	2009-04-09 22:09:34.484684732 -0700
++++ bash-4.0/builtins/fc.def	2009-05-24 09:14:20.000000000 -0700
 @@ -88,6 +88,7 @@
  extern int current_command_line_count;
  extern int literal_history;
@@ -180,7 +180,7 @@ diff -Naur bash-4.0.orig/builtins/fc.def bash-4.0/builtins/fc.def
    if (command == NULL)
 diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
 --- bash-4.0.orig/builtins/read.def	2009-01-15 20:11:21.000000000 -0800
-+++ bash-4.0/builtins/read.def	2009-04-09 22:09:27.380229641 -0700
++++ bash-4.0/builtins/read.def	2009-05-24 09:14:13.000000000 -0700
 @@ -369,14 +369,14 @@
        code = setjmp (alrmbuf);
        if (code)
@@ -203,7 +203,7 @@ diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
        add_unwind_protect (reset_alarm, (char *)NULL);
 diff -Naur bash-4.0.orig/execute_cmd.c bash-4.0/execute_cmd.c
 --- bash-4.0.orig/execute_cmd.c	2009-02-13 13:41:41.000000000 -0800
-+++ bash-4.0/execute_cmd.c	2009-04-09 22:09:37.908905992 -0700
++++ bash-4.0/execute_cmd.c	2009-05-24 09:14:23.000000000 -0700
 @@ -568,6 +568,7 @@
  
        /* Fork a subshell, turn off the subshell bit, turn off job
@@ -267,9 +267,236 @@ diff -Naur bash-4.0.orig/execute_cmd.c bash-4.0/execute_cmd.c
  		EXIT_CASE ();
  	      else
  		break;
+diff -Naur bash-4.0.orig/jobs.c bash-4.0/jobs.c
+--- bash-4.0.orig/jobs.c	2009-01-29 14:09:49.000000000 -0800
++++ bash-4.0/jobs.c	2009-05-24 09:14:28.000000000 -0700
+@@ -442,7 +442,7 @@
+   old_pipeline = the_pipeline;
+   the_pipeline = saved_pipeline;
+   already_making_children = saved_already_making_children;
+-  if (discard)
++  if (discard && old_pipeline)
+     discard_pipeline (old_pipeline);
+ }
+ 
+@@ -4202,4 +4202,23 @@
+   sh_closepipe (pgrp_pipe);
+ }
+ 
++void
++save_pgrp_pipe (p, clear)
++     int *p;
++     int clear;
++{
++  p[0] = pgrp_pipe[0];
++  p[1] = pgrp_pipe[1];
++  if (clear)
++    pgrp_pipe[0] = pgrp_pipe[1] = -1;
++}
++
++void
++restore_pgrp_pipe (p)
++     int *p;
++{
++  pgrp_pipe[0] = p[0];
++  pgrp_pipe[1] = p[1];
++}
++
+ #endif /* PGRP_PIPE */
+diff -Naur bash-4.0.orig/jobs.h bash-4.0/jobs.h
+--- bash-4.0.orig/jobs.h	2009-01-04 11:32:29.000000000 -0800
++++ bash-4.0/jobs.h	2009-05-24 09:14:28.000000000 -0700
+@@ -235,6 +235,8 @@
+ extern void init_job_stats __P((void));
+ 
+ extern void close_pgrp_pipe __P((void));
++extern void save_pgrp_pipe __P((int *, int));
++extern void restore_pgrp_pipe __P((int *));
+ 
+ #if defined (JOB_CONTROL)
+ extern int job_control;
+diff -Naur bash-4.0.orig/lib/glob/glob.c bash-4.0/lib/glob/glob.c
+--- bash-4.0.orig/lib/glob/glob.c	2009-01-04 11:32:30.000000000 -0800
++++ bash-4.0/lib/glob/glob.c	2009-05-24 09:14:36.000000000 -0700
+@@ -356,7 +356,7 @@
+ 	*np = 0;
+       if (ep)
+         *ep = 0;
+-      if (r)
++      if (r && r != &glob_error_return)
+ 	free (r);
+       return (struct globval *)0;
+     }
+@@ -665,8 +665,9 @@
+       (void) closedir (d);
+     }
+ 
+-  /* compat: if GX_ALLDIRS, add the passed directory also */
+-  if (add_current)
++  /* compat: if GX_ALLDIRS, add the passed directory also, but don't add an
++     empty directory name. */
++  if (add_current && (flags & GX_NULLDIR) == 0)
+     {
+       sdlen = strlen (dir);
+       nextname = (char *)malloc (sdlen + 1);
+@@ -678,10 +679,7 @@
+ 	  nextlink->name = nextname;
+ 	  nextlink->next = lastlink;
+ 	  lastlink = nextlink;
+-	  if (flags & GX_NULLDIR)
+-	    nextname[0] = '\0';
+-	  else
+-	    bcopy (dir, nextname, sdlen + 1);
++	  bcopy (dir, nextname, sdlen + 1);
+ 	  ++count;
+ 	}
+     }
+@@ -942,7 +940,12 @@
+ 	      char **array;
+ 	      register unsigned int l;
+ 
+-	      array = glob_dir_to_array (directories[i], temp_results, flags);
++	      /* If we're expanding **, we don't need to glue the directory
++		 name to the results; we've already done it in glob_vector */
++	      if ((dflags & GX_ALLDIRS) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
++		array = temp_results;
++	      else
++		array = glob_dir_to_array (directories[i], temp_results, flags);
+ 	      l = 0;
+ 	      while (array[l] != NULL)
+ 		++l;
+@@ -959,7 +962,8 @@
+ 	      result[result_size - 1] = NULL;
+ 
+ 	      /* Note that the elements of ARRAY are not freed.  */
+-	      free ((char *) array);
++	      if (array != temp_results)
++		free ((char *) array);
+ 	    }
+ 	}
+       /* Free the directories.  */
+diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
+--- bash-4.0.orig/lib/readline/display.c	2009-01-04 11:32:32.000000000 -0800
++++ bash-4.0/lib/readline/display.c	2009-05-24 09:14:34.000000000 -0700
+@@ -512,6 +512,7 @@
+   /* Block keyboard interrupts because this function manipulates global
+      data structures. */
+   _rl_block_sigint ();  
++  RL_SETSTATE (RL_STATE_REDISPLAYING);
+ 
+   if (!rl_display_prompt)
+     rl_display_prompt = "";
+@@ -1236,6 +1237,7 @@
+       visible_wrap_offset = wrap_offset;
+   }
+ 
++  RL_UNSETSTATE (RL_STATE_REDISPLAYING);
+   _rl_release_sigint ();
+ }
+ 
+@@ -1772,7 +1774,7 @@
+ 	     space_to_eol will insert too many spaces.  XXX - maybe we should
+ 	     adjust col_lendiff based on the difference between _rl_last_c_pos
+ 	     and _rl_screenwidth */
+-	  if (col_lendiff && (_rl_last_c_pos < _rl_screenwidth))
++	  if (col_lendiff && ((MB_CUR_MAX == 1 || rl_byte_oriented) || (_rl_last_c_pos < _rl_screenwidth)))
+ #endif
+ 	    {	  
+ 	      if (_rl_term_autowrap && current_line < inv_botlin)
+@@ -1892,6 +1894,10 @@
+ 
+   woff = WRAP_OFFSET (_rl_last_v_pos, wrap_offset);
+   cpos = _rl_last_c_pos;
++
++  if (cpos == 0 && cpos == new)
++    return;
++
+ #if defined (HANDLE_MULTIBYTE)
+   /* If we have multibyte characters, NEW is indexed by the buffer point in
+      a multibyte string, but _rl_last_c_pos is the display position.  In
+@@ -1905,9 +1911,9 @@
+ 	 prompt string, since they're both buffer indices and DPOS is a
+ 	 desired display position. */
+       if ((new > prompt_last_invisible) ||		/* XXX - don't use woff here */
+-	  (prompt_physical_chars > _rl_screenwidth &&
++	  (prompt_physical_chars >= _rl_screenwidth &&
+ 	   _rl_last_v_pos == prompt_last_screen_line &&
+-	   wrap_offset >= woff &&
++	   wrap_offset >= woff && dpos >= woff &&
+ 	   new > (prompt_last_invisible-(_rl_screenwidth*_rl_last_v_pos)-wrap_offset)))
+ 	   /* XXX last comparison might need to be >= */
+ 	{
+diff -Naur bash-4.0.orig/lib/readline/readline.h bash-4.0/lib/readline/readline.h
+--- bash-4.0.orig/lib/readline/readline.h	2009-01-04 11:32:33.000000000 -0800
++++ bash-4.0/lib/readline/readline.h	2009-05-24 09:14:30.000000000 -0700
+@@ -814,8 +814,9 @@
+ #define RL_STATE_VIMOTION	0x100000	/* reading vi motion arg */
+ #define RL_STATE_MULTIKEY	0x200000	/* reading multiple-key command */
+ #define RL_STATE_VICMDONCE	0x400000	/* entered vi command mode at least once */
++#define RL_STATE_REDISPLAYING	0x800000	/* updating terminal display */
+ 
+-#define RL_STATE_DONE		0x800000	/* done; accepted line */
++#define RL_STATE_DONE		0x1000000	/* done; accepted line */
+ 
+ #define RL_SETSTATE(x)		(rl_readline_state |= (x))
+ #define RL_UNSETSTATE(x)	(rl_readline_state &= ~(x))
+diff -Naur bash-4.0.orig/lib/readline/terminal.c bash-4.0/lib/readline/terminal.c
+--- bash-4.0.orig/lib/readline/terminal.c	2009-01-04 11:32:34.000000000 -0800
++++ bash-4.0/lib/readline/terminal.c	2009-05-24 09:14:30.000000000 -0700
+@@ -355,7 +355,7 @@
+       _rl_get_screen_size (fileno (rl_instream), 1);
+       if (CUSTOM_REDISPLAY_FUNC ())
+ 	rl_forced_update_display ();
+-      else
++      else if (RL_ISSTATE(RL_STATE_REDISPLAYING) == 0)
+ 	_rl_redisplay_after_sigwinch ();
+     }
+ }
+diff -Naur bash-4.0.orig/lib/sh/winsize.c bash-4.0/lib/sh/winsize.c
+--- bash-4.0.orig/lib/sh/winsize.c	2008-08-12 10:53:51.000000000 -0700
++++ bash-4.0/lib/sh/winsize.c	2009-05-24 09:14:27.000000000 -0700
+@@ -30,16 +30,29 @@
+ 
+ #include <sys/ioctl.h>
+ 
+-#if !defined (STRUCT_WINSIZE_IN_SYS_IOCTL)
+-/* For struct winsize on SCO */
+-/*   sys/ptem.h has winsize but needs mblk_t from sys/stream.h */
+-#  if defined (HAVE_SYS_PTEM_H) && defined (TIOCGWINSZ) && defined (SIGWINCH)
+-#    if defined (HAVE_SYS_STREAM_H)
+-#      include <sys/stream.h>
+-#    endif
++/* Try to find the definitions of `struct winsize' and TIOGCWINSZ */
++
++#if defined (GWINSZ_IN_SYS_IOCTL) && !defined (TIOCGWINSZ)
++#  include <sys/ioctl.h>
++#endif /* GWINSZ_IN_SYS_IOCTL && !TIOCGWINSZ */
++
++#if defined (STRUCT_WINSIZE_IN_TERMIOS) && !defined (STRUCT_WINSIZE_IN_SYS_IOCTL)
++#  include <termios.h>
++#endif /* STRUCT_WINSIZE_IN_TERMIOS && !STRUCT_WINSIZE_IN_SYS_IOCTL */
++
++/* Not in either of the standard places, look around. */
++#if !defined (STRUCT_WINSIZE_IN_TERMIOS) && !defined (STRUCT_WINSIZE_IN_SYS_IOCTL)
++#  if defined (HAVE_SYS_STREAM_H)
++#    include <sys/stream.h>
++#  endif /* HAVE_SYS_STREAM_H */
++#  if defined (HAVE_SYS_PTEM_H) /* SVR4.2, at least, has it here */
+ #    include <sys/ptem.h>
+-#  endif /* HAVE_SYS_PTEM_H && TIOCGWINSZ && SIGWINCH */
+-#endif /* !STRUCT_WINSIZE_IN_SYS_IOCTL */
++#    define _IO_PTEM_H          /* work around SVR4.2 1.1.4 bug */
++#  endif /* HAVE_SYS_PTEM_H */
++#  if defined (HAVE_SYS_PTE_H)  /* ??? */
++#    include <sys/pte.h>
++#  endif /* HAVE_SYS_PTE_H */
++#endif /* !STRUCT_WINSIZE_IN_TERMIOS && !STRUCT_WINSIZE_IN_SYS_IOCTL */
+ 
+ #include <stdio.h>
+ 
 diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
 --- bash-4.0.orig/parse.y	2009-01-08 05:29:12.000000000 -0800
-+++ bash-4.0/parse.y	2009-04-09 22:09:39.212989803 -0700
++++ bash-4.0/parse.y	2009-05-24 09:14:32.000000000 -0700
 @@ -1122,7 +1122,7 @@
  			  REDIRECTEE rd;
  			  REDIRECT *r;
@@ -415,6 +642,15 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
        /* Skip whitespace */
        if MBTEST(shellblank (ch) && lex_rwlen == 0)
          {
+@@ -3306,7 +3354,7 @@
+ 	}
+ 
+       /* Meta-characters that can introduce a reserved word.  Not perfect yet. */
+-      if MBTEST((tflags & LEX_RESWDOK) == 0 && (tflags & LEX_CKCASE) && (tflags & LEX_INCOMMENT) == 0 && shellmeta(ch))
++      if MBTEST((tflags & LEX_RESWDOK) == 0 && (tflags & LEX_CKCASE) && (tflags & LEX_INCOMMENT) == 0 && (shellmeta(ch) || ch == '\n'))
+ 	{
+ 	  /* Add this character. */
+ 	  RESIZE_MALLOCED_BUFFER (ret, retind, 1, retsize, 64);
 @@ -3364,9 +3412,21 @@
  }	        
  	      tflags &= ~LEX_RESWDOK;
@@ -506,18 +742,18 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
      case ELIF:
 diff -Naur bash-4.0.orig/patchlevel.h bash-4.0/patchlevel.h
 --- bash-4.0.orig/patchlevel.h	2009-01-04 11:32:40.000000000 -0800
-+++ bash-4.0/patchlevel.h	2009-04-09 22:09:39.212989803 -0700
++++ bash-4.0/patchlevel.h	2009-05-24 09:14:36.000000000 -0700
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 17
++#define PATCHLEVEL 24
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
 --- bash-4.0.orig/pcomplete.c	2009-02-01 14:12:31.000000000 -0800
-+++ bash-4.0/pcomplete.c	2009-04-09 22:09:17.783614750 -0700
++++ bash-4.0/pcomplete.c	2009-05-24 09:14:02.000000000 -0700
 @@ -1032,6 +1032,7 @@
    cmdlist = build_arg_list (funcname, text, lwords, cw);
  
@@ -528,7 +764,7 @@ diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
    add_unwind_protect (dispose_words, (char *)cmdlist);
 diff -Naur bash-4.0.orig/sig.c bash-4.0/sig.c
 --- bash-4.0.orig/sig.c	2009-01-04 11:32:41.000000000 -0800
-+++ bash-4.0/sig.c	2009-04-09 22:09:36.612821343 -0700
++++ bash-4.0/sig.c	2009-05-24 09:14:22.000000000 -0700
 @@ -448,6 +448,48 @@
  termsig_sighandler (sig)
       int sig;
@@ -580,7 +816,7 @@ diff -Naur bash-4.0.orig/sig.c bash-4.0/sig.c
    /* XXX - should this also trigger when interrupt_immediately is set? */
 diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
 --- bash-4.0.orig/subst.c	2009-01-28 11:34:12.000000000 -0800
-+++ bash-4.0/subst.c	2009-04-09 22:09:33.024593378 -0700
++++ bash-4.0/subst.c	2009-05-24 09:14:19.000000000 -0700
 @@ -85,6 +85,7 @@
  
  /* Flags for the `pflags' argument to param_expand() */
@@ -782,7 +1018,7 @@ diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
  	  uerror[1] = '@';
 diff -Naur bash-4.0.orig/trap.c bash-4.0/trap.c
 --- bash-4.0.orig/trap.c	2009-01-16 14:07:53.000000000 -0800
-+++ bash-4.0/trap.c	2009-04-09 22:09:37.908905992 -0700
++++ bash-4.0/trap.c	2009-05-24 09:14:28.000000000 -0700
 @@ -755,7 +755,7 @@
  	}
  
@@ -792,3 +1028,40 @@ diff -Naur bash-4.0.orig/trap.c bash-4.0/trap.c
  	flags |= SEVAL_RESETLINE;
        if (function_code == 0)
  	parse_and_execute (trap_command, tag, flags);
+@@ -798,12 +798,36 @@
+ run_debug_trap ()
+ {
+   int trap_exit_value;
++  pid_t save_pgrp;
++  int save_pipe[2];
+ 
+   /* XXX - question:  should the DEBUG trap inherit the RETURN trap? */
+   trap_exit_value = 0;
+   if ((sigmodes[DEBUG_TRAP] & SIG_TRAPPED) && ((sigmodes[DEBUG_TRAP] & SIG_IGNORED) == 0) && ((sigmodes[DEBUG_TRAP] & SIG_INPROGRESS) == 0))
+     {
++#if defined (JOB_CONTROL)
++      save_pgrp = pipeline_pgrp;
++      pipeline_pgrp = 0;
++      save_pipeline (1);
++#  if defined (PGRP_PIPE)
++      save_pgrp_pipe (save_pipe, 1);
++#  endif
++      stop_making_children ();
++#endif
++
+       trap_exit_value = _run_trap_internal (DEBUG_TRAP, "debug trap");
++
++#if defined (JOB_CONTROL)
++      pipeline_pgrp = save_pgrp;
++      restore_pipeline (1);
++#  if defined (PGRP_PIPE)
++      close_pgrp_pipe ();
++      restore_pgrp_pipe (save_pipe);
++#  endif
++      if (pipeline_pgrp > 0)
++	give_terminal_to (pipeline_pgrp, 1);
++      notify_and_cleanup ();
++#endif
+       
+ #if defined (DEBUGGER)
+       /* If we're in the debugger and the DEBUG trap returns 2 while we're in
