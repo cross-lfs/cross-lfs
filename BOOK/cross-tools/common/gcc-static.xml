@@ -31,8 +31,9 @@
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
-    <para os="aa">Make a couple of essential adjustments to the specs file
-    to ensure GCC uses our build environment:</para>
+    <para os="aa">Make a couple of essential adjustments to the
+    <filename>specs</filename> file to ensure GCC uses our build
+    environment:</para>
 
 <screen os="ab"><userinput>patch -Np1 -i ../&gcc-specs-patch;</userinput></screen>
 
@@ -55,8 +56,8 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
 sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
     gcc/Makefile.in.orig &gt; gcc/Makefile.in</userinput></screen>
 
-    <para os="t1">We will create a dummy limits.h so the build will not use the one
-    provided by the host distro:</para>
+    <para os="t1">We will create a dummy <filename>limits.h</filename> so
+    the build will not use the one provided by the host distro:</para>
 
 <screen os="t2"><userinput>touch /tools/include/limits.h</userinput></screen>
 
