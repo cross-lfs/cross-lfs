@@ -16,58 +16,57 @@
   </indexterm>
 
     <para os="a">Your shiny new CLFS system is almost complete. One of the
-      last things to do is to ensure that the system can be properly
-      booted. The instructions below apply only to computers using Lilo,
-      which in the context of this book means x86_64 Pure64 systems.
-      Information on <quote>boot loading</quote> for other architectures
-      should be available in the usual resource-specific locations for
-      those architectures.</para>
+    last things to do is to ensure that the system can be properly booted. The
+    instructions below apply only to computers using Lilo, which in the
+    context of this book means x86_64 Pure64 systems. Information on
+    <quote>boot loading</quote> for other architectures should be available in
+    the usual resource-specific locations for those architectures.</para>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
   href="../x86/grub.xml"
   xpointer="xpointer(//*[@os='b'])"/>
 
-    <para os="c">If you have multiple systems on your machine using a
-      different bootloader such as GRUB, you may prefer to use that
-      instead - consult the appropriate documentation.  The rest of
-      this section assumes you are going to use Lilo.</para> 
+    <para os="c">If you have multiple systems on your machine using a different
+    bootloader such as GRUB, you may prefer to use that instead - consult the
+    appropriate documentation. The rest of this section assumes you are going
+    to use Lilo.</para> 
 
     <para os="d">Earlier, we compiled and installed the Lilo boot loader
-      software in preparation for this step. The procedure involves
-      writing a boot image to a specific location on the hard drive.
-      We highly recommend using mkrescue to create a Lilo boot CD
-      (using e.g. dvdrecord from dvdrtools) as a backup (this requires
-      loopback block device support in the kernel).</para>
+    software in preparation for this step. The procedure involves writing a
+    boot image to a specific location on the hard drive. We highly recommend
+    using <command>mkrescue</command> to create a Lilo boot CD (using e.g.
+    <command>dvdrecord</command> from dvdrtools) as a backup (this requires
+    loopback block device support in the kernel).</para>
 
-    <para os="e">Normally, you interact with Lilo by using the cursor
-      and <literal>enter</literal> keys to select from the available
-      option(s), but sometimes it is necessary to add other boot
-      options, such as e.g. 'init=/bin/bash' to debug boot failures.
-      The more your keyboard layout differs from the US qwerty layout,
-      the harder it becomes to type boot options unless Lilo knows
-      about your keyboard layout. So, we will create a key table for
-      Lilo (.ktl) file - at one point in the documentation these are
-      referred to as .klt files, which may be a typo, but has been
-      followed by some distros.  The name, and location, are not
-      important but it is conventional to put these in /boot with
-      the name representing the key layout.  For a British keyboard
-      layout, the following command will achieve this:</para> 
+    <para os="e">Normally, you interact with Lilo by using the cursor and
+    <literal>enter</literal> keys to select from the available option(s), but
+    sometimes it is necessary to add other boot options, such as e.g.
+    'init=/bin/bash' to debug boot failures. The more your keyboard layout
+    differs from the US qwerty layout, the harder it becomes to type boot
+    options unless Lilo knows about your keyboard layout. So, we will create a
+    key table for Lilo (.ktl) file - at one point in the documentation these
+    are referred to as .klt files, which may be a typo, but has been followed
+    by some distros. The name, and location, are not important but it is
+    conventional to put these in <filename class="directory">/boot</filename>
+    with the name representing the key layout. For a British keyboard layout,
+    the following command will achieve this:</para> 
 
 <screen os="f" role="nodump"><userinput>keytab-lilo.pl uk >/boot/uk.ktl</userinput></screen>
 
-    <para os="g">The argument to the command is the name of the keymap,
-      or if necessary you can specify the full path to the keymap.  Use
-      whatever is appropriate for your keyboard.</para>
+    <para os="g">The argument to the command is the name of the keymap, or if
+    necessary you can specify the full path to the keymap. Use whatever is
+    appropriate for your keyboard.</para>
 
-    <para os="h">When the x86 CLFS book used to include Lilo, it
-    advised against running it from chroot in case the MBR became
-    corrupted. Provided you have /proc mounted and have device special
-    files for the disks, it seems to be safe to run recent versions of
-    Lilo in chroot, although it is always possible that an updated
-    bootloader, or defective configuration file, may render the system
-    unbootable.</para>  
+    <para os="h">When the x86 CLFS book used to include Lilo, it advised
+    against running it from chroot in case the MBR became corrupted.
+    Provided you have <filename class="directory">/proc</filename> mounted
+    and have device special files for the disks, it seems to be safe to run
+    recent versions of Lilo in chroot, although it is always possible that
+    an updated bootloader, or defective configuration file, may render the
+    system unbootable.</para>  
 
-    <para os="i">The next step is to create /etc/lilo.conf:</para>
+    <para os="i">The next step is to create
+    <filename>/etc/lilo.conf</filename>:</para>
 
 <screen os="j" role="nodump"><userinput>cat &gt; /etc/lilo.conf &lt;&lt; "EOF"
 <literal># Begin /etc/lilo.conf
@@ -99,10 +98,10 @@ EOF</literal></userinput></screen>
 
 
     <para os="k">Replace &lt;bootdisk&gt; with the name of the disk (or
-      partition) on which the boot sector is to be written, e.g. sda.
-      Replace &lt;keytable&gt; with the name of the keytable file you
-      created, and &lt;partition&gt; with the name of the root partition
-      for the new system.
+    partition) on which the boot sector is to be written, e.g. sda.
+    Replace &lt;keytable&gt; with the name of the keytable file you
+    created, and &lt;partition&gt; with the name of the root partition
+    for the new system.
     </para>
 
   <warning os="l">
@@ -115,22 +114,23 @@ EOF</literal></userinput></screen>
 <screen os="n" role="nodump"><userinput>/sbin/lilo -v</userinput></screen>
 
   <note os='o'>
-    <para>People who have been used to GRUB need to be aware that
-      Lilo works differently - in particular, you cannot edit the
-      available choices as you can in the <command>grub</command> shell,
-      and Lilo records the block addresses of the kernels into the boot
-      blocks each time /sbin/lilo is run. This means that when you
-      compile a new kernel, you have to add it to /etc/lilo.conf and
-      rerun /sbin/lilo.  It also means that if you recompile an existing
-      kernel and save it to the same name you still have to rerun /sbin/lilo
-      in case it now occupies different blocks on the filesystem.</para>
+    <para>People who have been used to GRUB need to be aware that Lilo works
+    differently - in particular, you cannot edit the available choices as you
+    can in the <command>grub</command> shell, and Lilo records the block
+    addresses of the kernels into the boot blocks each time
+    <command>/sbin/lilo</command> is run. This means that when you compile a
+    new kernel, you have to add it to <filename>/etc/lilo.conf</filename> and
+    rerun <command>/sbin/lilo</command>. It also means that if you recompile
+    an existing kernel and save it to the same name you still have to rerun
+    <command>/sbin/lilo</command> in case it now occupies different blocks on
+    the filesystem.</para>
   </note>
 
-    <para os="p">If you are running multiple systems on this box and
-    using Lilo, it is a good idea to ensure that each system is running
-    the same version of Lilo, otherwise an old version may not be able
-    to overwrite the bootloader from a newer version.  You will also
-    need to ensure that the copies of /etc/lilo.conf on each system are
-    kept synchronised.</para>
+    <para os="p">If you are running multiple systems on this box and using
+    Lilo, it is a good idea to ensure that each system is running the same
+    version of Lilo, otherwise an old version may not be able to overwrite
+    the bootloader from a newer version. You will also need to ensure that the
+    copies of <filename>/etc/lilo.conf</filename> on each system are kept
+    synchronised.</para>
 
 </sect1>
