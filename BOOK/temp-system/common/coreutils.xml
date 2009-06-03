@@ -22,15 +22,6 @@
   <sect2 role="installation">
     <title>Installation of Coreutils</title>
 
-    <para os="bs1">Coreutils attempts to use the <command>install</command>
-    program it just built to perform the install. This will not work if the
-    target architecture is incompatible with the host architecture. The
-    following command causes the Makefile to use the host's
-    <command>install</command> to perform the install:</para>
-
-<screen os="bs2"><userinput>cp -v src/Makefile.in{,.orig}
-sed -e "/binPROGRAMS_INSTALL=/s:./ginstall:install:" src/Makefile.in.orig &gt; src/Makefile.in</userinput></screen>
-
     <para os="ba">Configure can not properly determine how to get free space
     when cross-compiling - as a result, the <command>df</command> program will
     not be built. Add the following entry to <filename>config.cache</filename>
