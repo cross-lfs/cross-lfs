@@ -30,18 +30,18 @@ rm -f index.html
 
 # Cleanup Directory
 #
-rm -rf gcc-${VERSION} gcc-${VERSION}.orig
-tar xvf gcc-${VERSION}.tar.bz2
-mv gcc-${VERSION} gcc-${VERSION}.orig
+#rm -rf gcc-${VERSION} gcc-${VERSION}.orig
+#tar xvf gcc-${VERSION}.tar.bz2
+#mv gcc-${VERSION} gcc-${VERSION}.orig
 CURRENTDIR=$(pwd -P)
 
 # Get Current Updates from SVN
 #
-cd /usr/src
-NUM1=$(echo ${VERSION} | cut -f1 -d.)
-NUM2=$(echo ${VERSION} | cut -f2 -d.)
-FIXEDVERSION=$(echo -n "$NUM1" ; echo -n "_" ; echo -e "$NUM2")
-svn export svn://gcc.gnu.org/svn/gcc/branches/gcc-${FIXEDVERSION}-branch gcc-${VERSION}
+#cd /usr/src
+#NUM1=$(echo ${VERSION} | cut -f1 -d.)
+#NUM2=$(echo ${VERSION} | cut -f2 -d.)
+#FIXEDVERSION=$(echo -n "$NUM1" ; echo -n "_" ; echo -e "$NUM2")
+#svn export svn://gcc.gnu.org/svn/gcc/branches/gcc-${FIXEDVERSION}-branch gcc-${VERSION}
 
 # Add a custom version string
 #
@@ -53,17 +53,23 @@ sed -i "s:PKGVERSION:\"(GCC for Cross-LFS ${VERSION}.${DATE_STAMP}) \":" gcc-${V
 DIRS="gcc-${VERSION} gcc-${VERSION}.orig"
 for DIRECTORY in ${DIRS}; do
   cd ${DIRECTORY}
-  REMOVE="ABOUT-NLS COPYING COPYING.LIB ChangeLog ChangeLog.tree-ssa MAINTAINERS Makefile.def
-    Makefile.in Makefile.tpl README README.SCO boehm-gc/ChangeLog BUGS FAQ LAST_UPDATED
-    MD5SUMS NEWS bugs.html faq.html gcc/BASE-VER gcc/DEV-PHASE gcc/c-parse.c
-    gcc/gengtype-lex.c gcc/c-parse.y gcc/gengtype-yacc.c gcc/gengtype-yacc.h gcc/f/BUGS gcc/f/NEWS
-    gcc/java/parse-scan.c gcc/java/parse.c gcc/objc/objc-parse.c gcc/objc/objc-parse.y"
+  REMOVE="ABOUT-NLS COPYING COPYING.LIB MAINTAINERS Makefile.def
+    Makefile.in Makefile.tpl README README.SCO BUGS FAQ LAST_UPDATED
+    MD5SUMS NEWS bugs.html faq.html gcc/BASE-VER gcc/DEV-PHASE
+    gcc/f/BUGS gcc/f/NEWS gcc/c-parse.c gcc/gengtype-lex.c gcc/c-parse.y
+    gcc/gengtype-yacc.c gcc/gengtype-yacc.h gcc/java/parse-scan.c
+    gcc/java/parse.c gcc/objc/objc-parse.c gcc/objc/objc-parse.y
+    libjava/classpath/doc/cp-tools.info"
   for file in ${REMOVE}; do
     rm -f $file
+  done
+  for file in $(find . -name "ChangeLog*" | sed -e 's@./@@'); do
+    rm -f ${file}
   done
   rm -rf INSTALL
   rm -f fastjar/*.{1,info} gcc/doc/*.{1,info,7} gcc/fortran/*.{1,info,7}
   rm -f gcc/po/*.{gmo,po}  libcpp/po/*.{gmo,po} libgomp/*.{1,info,7}
+  rm -f libjava/classpath/doc/*.{1,info}
   cd .. 
 done
 
