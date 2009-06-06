@@ -62,13 +62,11 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='aj'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='s1'])"/>
+    <para os="gcf1">Now we will prevent gcc from running the fixincludes script, so 
+    it doesn't modify any of the headers we have installed:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='s2'])"/>
+<screen os="gcf2"><userinput>cp -v gcc/Makefile.in{,.orig}
+sed -e 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="gcc-static.xml"
