@@ -24,16 +24,20 @@ rm -rf ~/tmp
 install -d ~/tmp
 cd ~/tmp
 FIXEDVERSION=$(echo ${VERSION} | sed -e 's/\./_/g')
-echo "Retreiving from SVN eglibc-${SOURCEVERSION}..."
-svn export svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION} eglibc-${SOURCEVERSION}
+DL_REVISION=$(svn info svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION} | grep -i "Last Changed Rev" | cut -f2 -d: | sed -e 's/ //g')
+echo "Retreiving Revision #${DL_REVISION} from SVN eglibc-${SOURCEVERSION}..."
+svn export -r ${DL_REVISION} svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION} eglibc-${SOURCEVERSION}
 
 # Customize the version string, so we know it's patched
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
-DATE_STAMP=$(date +%Y%m%d)
-echo "#define DL_DATE \"${DATE_STAMP}\"" >> libc/version.h
+DL_DATE=$(date +%Y%m%d)
+echo "#define DL_DATE \"${DL_DATE}\"" >> libc/version.h
+echo "#define DL_REVISION \"${DL_REVISION}\"" >> libc/version.h
 sed -i "s@Compiled by GNU CC version@Built for Cross-LFS.\\\\n\\\\\nRetrieved on \"DL_DATE\".\\\\n\\\\\\nCompiled by GNU CC version@" libc/csu/version.c
+sed -i "s@Compiled by GNU CC version@Revision # \"DL_REVISION\".\\\\n\\\\\\nCompiled by GNU CC version@" libc/csu/version.c
 sed -i "s@static const char __libc_release@static const char __libc_dl_date[] = DL_DATE;\nstatic const char __libc_release@" libc/csu/version.c
+sed -i "s@static const char __libc_release@static const char __libc_dl_revision[] = DL_REVISION;\nstatic const char __libc_release@" libc/csu/version.c
 
 # Remove Files not needed
 #
@@ -56,17 +60,17 @@ find . -name configure -exec touch {} \;
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
 echo "Creating Tarball for Eglibc Ports ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-ports-${SOURCEVERSION}.tar.bz2 ports
+tar cjf ~/public_html/eglibc-ports-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 ports
 rm -rf ports
 echo "Creating Tarball for Eglibc Linuxthreads ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-linuxthreads-${SOURCEVERSION}.tar.bz2 linuxthreads
+tar cjf ~/public_html/eglibc-linuxthreads-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 linuxthreads
 rm -rf linuxthreads
 echo "Creating Tarball for Eglibc LocaleDef ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-localedef-${SOURCEVERSION}.tar.bz2 localedef
+tar cjf ~/public_html/eglibc-localedef-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 localedef
 rm -rf localedef
 mv libc eglibc-${SOURCEVERSION}
 echo "Creating Tarball for Eglibc ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-${SOURCEVERSION}.tar.bz2 eglibc-${SOURCEVERSION}
+tar cjf ~/public_html/eglibc-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 eglibc-${SOURCEVERSION}
 
 # Clean up Directores
 #
