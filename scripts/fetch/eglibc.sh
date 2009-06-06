@@ -52,14 +52,6 @@ cd ~/tmp/eglibc-${SOURCEVERSION}
 echo "Updating Glibc configure files..."
 find . -name configure -exec touch {} \;
 
-# Change gcc to BUILD_CC in the following files
-#
-cd ~/tmp/eglibc-${SOURCEVERSION}/libc
-FIX_FILES="sunrpc/Makefile timezone/Makefile"
-for fix_file in ${FIX_FILES}; do
-  sed -i "s/gcc/\'$\(BUILD_CC\)'/g" ${fix_file}
-done
-
 # Compress
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
