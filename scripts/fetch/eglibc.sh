@@ -15,6 +15,10 @@ if [ "${VERSION}" = "" -o "${SOURCEVERSION}" = "" ]; then
   exit 255
 fi
 
+# Clear out old Directory
+#
+rm -rf ~/tmp
+
 # Get Current Eglibc from SVN
 #
 install -d ~/tmp
@@ -33,6 +37,7 @@ sed -i "s@static const char __libc_release@static const char __libc_dl_date[] = 
 
 # Remove Files not needed
 #
+cd ~/tmp/eglibc-${SOURCEVERSION}
 FILE_LIST=".cvsignore"
 for files in ${FILE_LIST}; do
   REMOVE=$(find * -name ${files})
@@ -43,11 +48,21 @@ done
 
 # Fix configuration files
 #
+cd ~/tmp/eglibc-${SOURCEVERSION}
 echo "Updating Glibc configure files..."
 find . -name configure -exec touch {} \;
 
+# Change gcc to BUILD_CC in the following files
+#
+cd ~/tmp/eglibc-${SOURCEVERSION}/libc
+FIX_FILES="sunrpc/Makefile timezone/Makefile"
+for fix_file in ${FIX_FILES}; do
+  sed -i "s/gcc/\'$\(BUILD_CC\)'/g" ${fix_file}
+done
+
 # Compress
 #
+cd ~/tmp/eglibc-${SOURCEVERSION}
 echo "Creating Tarball for Eglibc Ports ${SOURCEVERSION}...."
 tar cjf ~/public_html/eglibc-ports-${SOURCEVERSION}.tar.bz2 ports
 rm -rf ports
