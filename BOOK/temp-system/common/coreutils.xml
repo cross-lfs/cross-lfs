@@ -27,7 +27,10 @@
     not be built. Add the following entry to <filename>config.cache</filename>
     to correct this:</para>
 
-<screen os="bb"><userinput>echo "fu_cv_sys_stat_statfs2_bsize=yes" &gt; config.cache</userinput></screen>
+<screen os="bb"><userinput>cat &gt; config.cache &lt;&lt; EOF
+fu_cv_sys_stat_statfs2_bsize=yes
+gl_cv_func_rename_trailing_slash_bug=no
+EOF</userinput></screen>
 
     <para os="bd">Prepare Coreutils for compilation:</para>
 
