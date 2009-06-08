@@ -49,10 +49,12 @@
     href="../common/binutils.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
-    <para os="q1">Libiberty uses <command>gcc -print-multi-os-directory</command>
-    to determine where to install libiberty.a.  Because our temporary gcc is
-    still multilib-aware, the command returns <literal>../lib64</literal> which
-    causes the archive to be installed into /usr/lib64.  The following sed will
+    <para os="q1">Libiberty uses
+    <command>gcc -print-multi-os-directory</command> to determine where to
+    install <filename class="libraryfile">libiberty.a</filename>. Because our
+    temporary GCC is still multilib-aware, the command returns
+    <literal>../lib64</literal> which causes the archive to be installed into
+    <filename class="directory">/usr/lib64</filename>.  The following sed will
     prevent this:</para>
 
 <screen os="q2"><userinput>sed -i 's%\(^MULTIOSDIR = \).*%\1 ../lib%' libiberty/Makefile.in</userinput></screen>
@@ -108,8 +110,8 @@
     xpointer="xpointer(//*[@os='q'])"/>
 
     <para os="w1">Now that the tests have completed, remove the symlinks in
-    /usr/lib64 - they should be the only things in that directory, so we
-    can remove it without force :</para>
+    <filename class="directory">/usr/lib64</filename> - they should be the
+    only things in that directory, so we can remove it without force:</para>
 
 <screen os="w2"><userinput>rm -v /usr/lib64/libstd*so*
 rmdir -v /usr/lib64</userinput></screen>
