@@ -38,6 +38,18 @@
       Unicode, therefore libiconv is not required on a CLFS system.</para>
     </note>
 
+    <para os="p1">EGLIBC has various issues addressed by the following patch:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&eglibc-fixes-patch;</userinput></screen>
+
+    <para os="l1">The following sed makes sure that newly built EGLIBC is tested,
+    during make install, instead of the one we previously build:</para>
+
+<screen os="l2"><userinput>LINKER=$(readelf -l $(file /tools/lib/libc-* | cut -f1 -d:) | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
+sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
+  scripts/test-installation.pl
+unset LINKER</userinput></screen>
+
     <para os="b">The EGLIBC build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
     pointing at <filename class="directory">/tools</filename>. The specs
@@ -80,11 +92,13 @@ cd ../eglibc-build</userinput></screen>
       Do not skip it under any circumstance.</para>
     </important>
 
-    <para os="m">Test the results:</para>
+    <para os="m">Before running the tests, copy a file from the source tree into our
+    build tree to prevent a couple of test failures, then run the tests:</para>
 
 <!-- items n,o,p no longer the master, use x86_64 which has no failures -->
 
-<screen os="n"><userinput>make -k check &gt;eglibc-check-log 2&gt;&amp;1 ; grep Error eglibc-check-log</userinput></screen>
+<screen os="n"><userinput>cp -v ../glibc-&eglibc-version;/iconvdata/gconv-modules iconvdata
+make -k check &gt;eglibc-check-log 2&gt;&amp;1 ; grep Error eglibc-check-log</userinput></screen>
 
     <para os="o">The EGLIBC test suite is highly dependent on certain functions of
     the host system, in particular the kernel. The posix/annexc test normally fails
