@@ -42,10 +42,10 @@
 
 <screen os="p2"><userinput>patch -Np1 -i ../&eglibc-fixes-patch;</userinput></screen>
 
-    <para os="l1">The following sed makes sure that newly built EGLIBC is tested,
+    <para os="l3">The following sed makes sure that newly built EGLIBC is tested,
     during make install, instead of the one we previously build:</para>
 
-<screen os="l2"><userinput>LINKER=$(readelf -l $(file /tools/lib/libc-* | cut -f1 -d:) | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
+<screen os="l4"><userinput>LINKER=$(readelf -l $(file /tools/lib/libc-* | cut -f1 -d:) | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
 sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
