@@ -34,9 +34,9 @@
     href="../../final-system/common/vim.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 
-    <para os="c1">The configure script is full of logic that aborts at the
-    first sign of cross compiling. Set the cached values of those tests with 
-    the following command:</para>
+    <para os="c1">The <command>configure</command> script is full of logic
+    that aborts at the first sign of cross compiling. Set the cached values
+    of those tests with the following command:</para>
 
 <screen os="c2"><userinput>cat &gt; src/auto/config.cache &lt;&lt; "EOF"
 vim_cv_getcwd_broken=no
@@ -49,9 +49,9 @@ vim_cv_tty_group=world
 ac_cv_sizeof_int=4
 EOF</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/vim.xml"
-    xpointer="xpointer(//*[@os='b'])"/>
+    <para os="b">Change the default location of
+    the <filename>vimrc</filename> configuration file to <filename
+    class="directory">/tools/etc</filename>:</para>
 
 <screen os="c"><userinput>echo '#define SYS_VIMRC_FILE "/tools/etc/vimrc"' &gt;&gt; src/feature.h</userinput></screen>
 
