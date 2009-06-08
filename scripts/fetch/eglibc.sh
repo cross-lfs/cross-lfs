@@ -116,7 +116,6 @@ tar cjf ~/public_html/eglibc-linuxthreads-${SOURCEVERSION}-${DL_DATE}-r${DL_REVI
 rm -rf linuxthreads
 echo "Creating Tarball for Eglibc LocaleDef ${SOURCEVERSION}...."
 tar cjf ~/public_html/eglibc-localedef-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 localedef
-tar cjf ~/public_html/eglibc-localedef-${SOURCEVERSION}.tar.bz2 localedef
 rm -rf localedef
 mv libc eglibc-${SOURCEVERSION}
 echo "Creating Tarball for Eglibc ${SOURCEVERSION}...."
