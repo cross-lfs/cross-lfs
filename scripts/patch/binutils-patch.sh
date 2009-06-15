@@ -80,11 +80,7 @@ cd /usr/src/binutils-${SOURCEVERSION}
 DATE_STAMP=$(date +%Y%m%d)
 cd /usr/src/binutils-${SOURCEVERSION}
 sed -i "s:@PKGVERSION@:(GNU Binutils for Cross-LFS) :" bfd/Makefile.in
-sed -i "s:^[[:space:]]VERSION=\(.*\)$:VERSION=\1.${DATE_STAMP}:g" bfd/configure
-
-# Cleanliness is the name of my game!
-#
-unset DATE_STAMP
+sed -i "s:^[[:space:]]VERSION=\(.*\)$: VERSION=\1.${DATE_STAMP}:g" bfd/configure
 
 # Create Patch
 #
@@ -97,5 +93,11 @@ echo "Upstream Status: Applied" >> binutils-${SOURCEVERSION}-branch_update-${PAT
 echo "Description: This is a branch update for binutils-${SOURCEVERSION}, and should be" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
 echo "             rechecked periodically." >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
 echo "" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "This patch was created on ${DATE_STAMP}" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
+echo "" >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
 diff -Naur binutils-${SOURCEVERSION}.orig binutils-${SOURCEVERSION} >> binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch
 echo "Created /usr/src/binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.patch."
+
+# Cleanliness is the name of my game!
+#
+unset DATE_STAMP
