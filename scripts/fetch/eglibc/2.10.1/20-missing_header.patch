@@ -1,0 +1,17 @@
+many ports hit this warning:
+../sysdeps/unix/sysv/linux/check_native.c:46: warning: implicit declaration of function 'memset'
+../sysdeps/unix/sysv/linux/check_native.c:46: warning: implicit declaration of function 'memset'
+
+snipped from suse
+
+--- sysdeps/unix/sysv/linux/check_native.c
++++ sysdeps/unix/sysv/linux/check_native.c
+@@ -23,6 +23,7 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include <net/if.h>
+
