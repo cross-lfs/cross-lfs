@@ -5,38 +5,44 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-temp-system-gmp" role="wrap">
-  <?dbhtml filename="gmp.html"?>
+<sect1 id="ch-temp-system-ppl" role="wrap">
+  <?dbhtml filename="ppl.html"?>
 
-  <title>GMP-&gmp-version;</title>
+  <title>PPL-&ppl-version;</title>
 
-  <indexterm zone="ch-temp-system-gmp">
-    <primary sortas="a-GMP">GMP</primary>
+  <indexterm zone="ch-temp-system-ppl">
+    <primary sortas="a-PPL">PPL</primary>
     <secondary>temporary system</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-  href="../../final-system/common/gmp.xml"
+  href="../../final-system/common/ppl.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
-    <title>Installation of GMP</title>
+    <title>Installation of PPL</title>
 
 <!--
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/gmp.xml"
+    href="../../final-system/common/ppl.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
-    href="../../final-system/common/gmp.xml"
+    href="../../final-system/common/ppl.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
 -->
 
-    <para os="a">Prepare GMP for compilation:</para>
+    <para os="a">Prepare PPL for compilation:</para>
 
-<screen os="b"><userinput>CPPFLAGS=-fexceptions ./configure --prefix=/tools \
+<screen os="b"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --enable-cxx</userinput></screen>
+	--with-libgmp-prefix=/tools --with-libgmpxx-prefix=/tools</userinput></screen>
+
+    <para os="bp1">PPL doesn't check to see if GMP was compiled with support for
+    exceptions when it is being cross-compiled; it simply assumes that it was
+	not.  This assumption is incorrect, so fix that:</para>
+
+<screen os="bp2">echo '#define PPL_GMP_SUPPORTS_EXCEPTIONS 1' >> confdefs.h</screen>
 
     <para os="c">Compile the package:</para>
 
@@ -52,7 +58,7 @@
     <title/>
 
     <para>Details on this package are located in <xref
-    linkend="contents-gmp" role="."/></para>
+    linkend="contents-ppl" role="."/></para>
 
   </sect2>
 
