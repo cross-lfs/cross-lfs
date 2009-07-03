@@ -15,7 +15,7 @@ fi
 
 # Get the # of Patches
 #
-cd /usr/src
+cd ~/tmp
 wget ftp://ftp.vim.org/pub/vim/patches/${VERSION}/ --no-remove-listing
 FILES=$(cat index.html | grep "${VERSION}" | cut -f6 -d. | cut -f1 -d'"' | sed '/^$/d' | tail -n 1)
 rm -f .listing
@@ -32,7 +32,7 @@ fi
 
 # Set Patch Number
 #
-cd /usr/src
+cd ~/tmp
 wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
 PATCH_NUM=$(cat index.html | grep vim | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
 PATCH_NUM=$(expr ${PATCH_NUM} + 1)
@@ -43,16 +43,16 @@ rm -f index.html
 rm -rf vim${SERIES} vim${SERIES}.orig
 tar xvf vim-${VERSION}.tar.bz2
 cp -ar vim${SERIES} vim${SERIES}.orig
-cd vim${SERIES}
-CURRENTDIR=$(pwd -P)
 
 # Download and Apply Patches
 #
+install -d ~/tmp/vim-${VERSION}-patches
+cd ~/tmp/vim${SERIES}
+CURRENTDIR=$(pwd -P)
 PATCHURL=ftp://ftp.vim.org/pub/vim/patches/${VERSION}
-mkdir /tmp/vim-${VERSION}
 COUNT=1
 while [ ${COUNT} -le ${FILES} ]; do
-  cd /tmp/vim-${VERSION}            
+  cd ~/tmp/vim${SERIES}
   DLCOUNT="${COUNT}"
   SKIPME=no
   if [ "${COUNT}" -lt "100" ]; then
@@ -70,16 +70,16 @@ while [ ${COUNT} -le ${FILES} ]; do
   done
   if [ "${SKIPME}" != "yes" ]; then
     if ! [ -e ${VERSION}.${DLCOUNT} ]; then
+      cd ~/tmp/vim-${VERSION}-patches
       wget --quiet $PATCHURL/${VERSION}.${DLCOUNT}
     fi
     cd $CURRENTDIR
-    patch --dry-run -s -f -Np0 -i /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
+    patch --dry-run -s -f -Np0 -i ~/tmp/vim-${VERSION}-patches/${VERSION}.${DLCOUNT}
     if [ "$?" = "0" ]; then
       echo "Patch ${VERSION}.${DLCOUNT} applied"
-      patch -s -Np0 -i /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
+      patch -s -Np0 -i ~/tmp/vim-${VERSION}-patches/${VERSION}.${DLCOUNT}
     else
       echo "Patch ${VERSION}.${DLCOUNT} not applied"
-      rm -f /tmp/vim-${VERSION}/${VERSION}.${DLCOUNT}
       SKIPPED="${SKIPPED} ${DLCOUNT}"
     fi
    fi
@@ -89,7 +89,7 @@ done
 # Cleanup Directory
 #
 for dir in $(find * -type d); do
-  cd /usr/src/vim${SERIES}
+  cd ~/tmp/vim${SERIES}
   for file in $(find . -name '*~'); do
     rm -f ${file}
   done
@@ -97,22 +97,26 @@ for dir in $(find * -type d); do
     rm -f ${file}
   done
 done
-cd /usr/src/vim${SERIES}
+cd ~/tmp/vim${SERIES}
 rm -f *~ *.orig
 
 # Create Patch
 #
-cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Date: `date +%m-%d-%Y`" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Initial Package Version: ${VERSION}" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Origin: Upstream" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+cd ~/tmp
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
 if [ -n "${SKIPPED}" ]; then
-  echo "             The following patches were skipped" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-  echo "            ${SKIPPED}" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+  echo "             The following patches were skipped" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+  echo "            ${SKIPPED}" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
 fi
-echo "" >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Created /usr/src/vim-${VERSION}-branch_update-${PATCH_NUM}.patch."
+echo "" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur vim${SERIES}.orig vim${SERIES} >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch."
+
+# Cleanup Directory
+#
+rm -rf vim${SERIES} vim${SERIES}.orig

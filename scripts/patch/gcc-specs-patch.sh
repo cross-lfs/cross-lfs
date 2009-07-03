@@ -15,21 +15,21 @@ fi
 
 # Download GCC Source
 #
-cd /usr/src
+cd ~/tmp
 if ! [ -e gcc-${VERSION}.tar.bz2  ]; then
   wget ftp://gcc.gnu.org/pub/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.bz2
 fi
 
 # Cleanup Directory
 #
+cd ~/tmp
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
 tar xvf gcc-${VERSION}.tar.bz2
 cp -ar gcc-${VERSION} gcc-${VERSION}.orig
-CURRENTDIR=$(pwd -P)
 
 # Modify the Data
 #
-cd /usr/src/gcc-${VERSION}
+cd ~/tmp/gcc-${VERSION}
 for file in $(find gcc/config -name "*.h"); do
   if [ "$(echo ${file} | grep -c bsd)" = "0" ]; then
     if [ "$(cat ${file} | grep -c DYNAMIC_LINKER)" != "0" ]; then
@@ -52,27 +52,28 @@ done
 
 # Create Patch
 #
-cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > gcc-${VERSION}-specs-x.patch
-echo "Date: `date +%m-%d-%Y`" >> gcc-${VERSION}-specs-x.patch
-echo "Initial Package Version: ${VERSION}" >> gcc-${VERSION}-specs-x.patch
-echo "Origin: Idea originally developed by Ryan Oliver and Greg Schafer for" >> gcc-${VERSION}-specs-x.patch
-echo "        the Pure LFS project." >> gcc-${VERSION}-specs-x.patch
-echo "Upstream Status: Not Applied" >> gcc-${VERSION}-specs-x.patch
-echo "Description: This patch modifies the location of the dynamic linker for gcc-${VERSION}." >> gcc-${VERSION}-specs-x.patch
-echo "" >> gcc-${VERSION}-specs-x.patch
-diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> gcc-${VERSION}-specs-x.patch
+cd ~/tmp
+install -d ~/patches
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/gcc-${VERSION}-specs-x.patch
+echo "Date: `date +%m-%d-%Y`" >> ~/patches/gcc-${VERSION}-specs-x.patch
+echo "Initial Package Version: ${VERSION}" >> ~/patches/gcc-${VERSION}-specs-x.patch
+echo "Origin: Idea originally developed by Ryan Oliver and Greg Schafer for" >> ~/patches/gcc-${VERSION}-specs-x.patch
+echo "        the Pure LFS project." >> ~/patches/gcc-${VERSION}-specs-x.patch
+echo "Upstream Status: Not Applied" >> ~/patches/gcc-${VERSION}-specs-x.patch
+echo "Description: This patch modifies the location of the dynamic linker for gcc-${VERSION}." >> ~/patches/gcc-${VERSION}-specs-x.patch
+echo "" >> ~/patches/gcc-${VERSION}-specs-x.patch
+diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> ~/patches/gcc-${VERSION}-specs-x.patch
 
 # Cleanup Directory
 #
+cd ~/tmp
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
 tar xvf gcc-${VERSION}.tar.bz2
 cp -ar gcc-${VERSION} gcc-${VERSION}.orig
-CURRENTDIR=$(pwd -P)
 
 # Modify the Data
 #
-cd /usr/src/gcc-${VERSION}
+cd ~/tmp/gcc-${VERSION}
 for file in $(find gcc/config -name "*.h"); do
   if [ "$(echo ${file} | grep -c bsd)" = "0" ]; then
     if [ "$(cat ${file} | grep -c DYNAMIC_LINKER)" != "0" ]; then
@@ -97,19 +98,21 @@ done
 
 # Create Patch
 #
-cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > gcc-${VERSION}-pure64_specs-x.patch
-echo "Date: `date +%m-%d-%Y`" >> gcc-${VERSION}-pure64_specs-x.patch
-echo "Initial Package Version: ${VERSION}" >> gcc-${VERSION}-pure64_specs-x.patch
-echo "Origin: Idea originally developed by Ryan Oliver and Greg Schafer for" >> gcc-${VERSION}-pure64_specs-x.patch
-echo "        the Pure LFS project." >> gcc-${VERSION}-pure64_specs-x.patch
-echo "Upstream Status: Not Applied" >> gcc-${VERSION}-pure64_specs-x.patch
-echo "Description: This patch modifies the location of the dynamic linker for gcc-${VERSION}." >> gcc-${VERSION}-pure64_specs-x.patch
-echo "" >> gcc-${VERSION}-pure64_specs-x.patch
-diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> gcc-${VERSION}-pure64_specs-x.patch
+cd ~/tmp
+install -d ~/patches
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "Date: `date +%m-%d-%Y`" >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "Initial Package Version: ${VERSION}" >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "Origin: Idea originally developed by Ryan Oliver and Greg Schafer for" >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "        the Pure LFS project." >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "Upstream Status: Not Applied" >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "Description: This patch modifies the location of the dynamic linker for gcc-${VERSION}." >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+echo "" >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
+diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> ~/patches/gcc-${VERSION}-pure64_specs-x.patch
 
 # Cleanup Directory
 #
+cd ~/tmp
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
 tar xvf gcc-${VERSION}.tar.bz2
 cp -ar gcc-${VERSION} gcc-${VERSION}.orig
@@ -117,7 +120,7 @@ CURRENTDIR=$(pwd -P)
 
 # Modify the Data
 #
-cd /usr/src/gcc-${VERSION}
+cd ~/tmp/gcc-${VERSION}
 for file in $(find gcc/config -name "*.h"); do
   if [ "$(echo ${file} | grep -c bsd)" = "0" ]; then
     if [ "$(cat ${file} | grep -c DYNAMIC_LINKER)" != "0" ]; then
@@ -150,17 +153,23 @@ done
 
 # Create Patch
 #
-cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > gcc-${VERSION}-pure64-x.patch
-echo "Date: `date +%m-%d-%Y`" >> gcc-${VERSION}-pure64-x.patch
-echo "Initial Package Version: ${VERSION}" >> gcc-${VERSION}-pure64-x.patch
-echo "Origin: Idea originally developed by Ryan Oliver and Greg Schafer for" >> gcc-${VERSION}-pure64-x.patch
-echo "        the Pure LFS project." >> gcc-${VERSION}-pure64-x.patch
-echo "Upstream Status: Not Applied" >> gcc-${VERSION}-pure64-x.patch
-echo "Description: This patch modifies the location of the dynamic linker for gcc-${VERSION}." >> gcc-${VERSION}-pure64-x.patch
-echo "" >> gcc-${VERSION}-pure64-x.patch
-diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> gcc-${VERSION}-pure64-x.patch
+cd ~/tmp
+install -d ~/patches
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "Date: `date +%m-%d-%Y`" >> ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "Initial Package Version: ${VERSION}" >> ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "Origin: Idea originally developed by Ryan Oliver and Greg Schafer for" >> ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "        the Pure LFS project." >> ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "Upstream Status: Not Applied" >> ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "Description: This patch modifies the location of the dynamic linker for gcc-${VERSION}." >> ~/patches/gcc-${VERSION}-pure64-x.patch
+echo "" >> ~/patches/gcc-${VERSION}-pure64-x.patch
+diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> ~/patches/gcc-${VERSION}-pure64-x.patch
 
-echo "Created /usr/src/gcc-${VERSION}-specs-x.patch."
-echo "Created /usr/src/gcc-${VERSION}-pure64_specs-x.patch."
-echo "Created /usr/src/gcc-${VERSION}-pure64-x.patch."
+echo "Created ~/patches/gcc-${VERSION}-specs-x.patch."
+echo "Created ~/patches/gcc-${VERSION}-pure64_specs-x.patch."
+echo "Created ~/patches/gcc-${VERSION}-pure64-x.patch."
+
+# Cleanup Directory
+#
+cd ~/tmp
+rm -rf gcc-${VERSION} gcc-${VERSION}.orig
