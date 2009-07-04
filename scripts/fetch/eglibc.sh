@@ -19,12 +19,16 @@ fi
 #
 rm -rf ~/tmp
 
+# Set Patch Directory
+#
+PATCH_DIR=$(pwd -P)/eglibc
+
 # Get Current Eglibc from SVN
 #
 install -d ~/tmp
 cd ~/tmp
 FIXEDVERSION=$(echo ${VERSION} | sed -e 's/\./_/g')
-DL_REVISION=$(svn info svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION} | grep -i "Last Changed Rev" | cut -f2 -d: | sed -e 's/ //g')
+DL_REVISION=$(svn info svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION} | grep "Last Changed Rev" | cut -f2 -d: | sed -e 's/ //g')
 echo "Retreiving Revision #${DL_REVISION} from SVN eglibc-${SOURCEVERSION}..."
 svn export -r ${DL_REVISION} svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION} eglibc-${SOURCEVERSION}
 
@@ -38,6 +42,7 @@ rm -f index.html
 
 # Customize the version string, so we know it's patched
 #
+install -d ~/tmp/eglibc-${SOURCEVERSION}
 cd ~/tmp/eglibc-${SOURCEVERSION}
 DL_DATE=$(date +%Y%m%d)
 echo "#define DL_DATE \"${DL_DATE}\"" >> libc/version.h
@@ -85,19 +90,62 @@ sed -i s/utf8/UTF-8/ libio/tst-fgetwc.c
 sed -i '/tst-fgetws-ENV/ a\
 tst-fgetwc-ENV = LOCPATH=$(common-objpfx)localedata' libio/Makefile
 
+# Apply Patches from directories
+#
+cd ~/tmp/eglibc-${SOURCEVERSION}/libc
+if [ -e ${PATCH_DIR}/${VERSION} ]; then
+  PATCH_FILES=$(ls ${PATCH_DIR}/${VERSION}/*.patch)
+  if [ "${PATCH_FILES}" != "" ]; then
+    for pfile in ${PATCH_FILES}; do
+      echo "Applying - ${pfile}..."
+      for pvalue in $(seq 0 5); do
+        patch --dry-run -Np${pvalue} -i ${pfile} > /dev/null 2>&1
+        if [ "${?}" = "0" ]; then
+          PVALUE=${pvalue}
+          break
+        fi
+      done
+      if [ "${PVALUE}" != "" ]; then
+        patch -Np${PVALUE} -i ${pfile}
+      else
+        echo "Patch: ${pfile} Failed to Apply..."
+        exit 255
+      fi
+    done
+  fi
+fi
+
+# Cleanup Directory
+#
+for dir in $(find * -type d); do
+  cd ~/tmp/eglibc-${SOURCEVERSION}/libc
+  for file in $(find . -name '*~'); do
+    rm -f ${file}
+  done
+  for file in $(find . -name '*.orig'); do
+    rm -f ${file}
+  done
+  for file in $(find . -name '*.rej'); do
+    rm -f ${file}
+  done
+done
+cd ~/tmp/eglibc-${SOURCEVERSION}/libc
+rm -rf *.orig *~ *.rej
+
 # Create Patch
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" >  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Date: `date +%m-%d-%Y`" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Initial Package Version: ${SOURCEVERSION}" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Origin: Upstream" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Upstream Status: Applied" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Description: These are fixes eglibc-${SOURCEVERSION}, and should be" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "             rechecked periodically." >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-diff -Naur libc.orig libc >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Created  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch."
+install -d ~/patches/
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" >  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "Initial Package Version: ${SOURCEVERSION}" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "Origin: Upstream" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "Description: These are fixes eglibc-${SOURCEVERSION}, and should be" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "             rechecked periodically." >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+diff -Naur libc.orig libc >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+echo "Created  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch."
 
 # Remove Patched Copy
 #
@@ -108,21 +156,21 @@ mv libc.orig libc
 # Compress
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
+install -d ~/packages
 echo "Creating Tarball for Eglibc Ports ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-ports-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 ports
+tar cjf ~/packages/eglibc-ports-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 ports
 rm -rf ports
 echo "Creating Tarball for Eglibc Linuxthreads ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-linuxthreads-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 linuxthreads
+tar cjf ~/packages/eglibc-linuxthreads-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 linuxthreads
 rm -rf linuxthreads
 echo "Creating Tarball for Eglibc LocaleDef ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-localedef-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 localedef
+tar cjf ~/packages/eglibc-localedef-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 localedef
 rm -rf localedef
 mv libc eglibc-${SOURCEVERSION}
 echo "Creating Tarball for Eglibc ${SOURCEVERSION}...."
-tar cjf ~/public_html/eglibc-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 eglibc-${SOURCEVERSION}
+tar cjf ~/packages/eglibc-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 eglibc-${SOURCEVERSION}
 
 # Clean up Directores
 #
 cd ~/tmp
 rm -rf eglibc-${SOURCEVERSION}
-

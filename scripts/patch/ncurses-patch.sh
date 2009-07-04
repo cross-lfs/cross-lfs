@@ -15,7 +15,7 @@ fi
 
 # Get Patch Names
 #
-cd /usr/src
+cd ~/tmp
 wget ftp://invisible-island.net/ncurses/${VERSION}/ --no-remove-listing
 ROLLUP=$(cat index.html | grep bz2 | cut -f2 -d'>' | cut -f1 -d'<' | tail -n 1)
 ROLLPATCH=$(echo ${ROLLUP} | cut -f3 -d-)
@@ -25,13 +25,14 @@ rm -f index.html
 
 # Download Ncurses Source
 #
+cd ~/tmp
 if ! [ -e ncurses-${VERSION}.tar.gz ]; then
   wget ftp://invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz
 fi
 
 # Set Patch Number
 #
-cd /usr/src
+cd ~/tmp
 wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
 PATCH_NUM=$(cat index.html | grep ncurses | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
 PATCH_NUM=$(expr ${PATCH_NUM} + 1)
@@ -39,22 +40,24 @@ rm -f index.html
 
 # Cleanup Directory
 #
+cd ~/tmp
 rm -rf ncurses-${VERSION} ncurses-${VERSION}.orig
 tar xvf ncurses-${VERSION}.tar.gz
 cp -ar ncurses-${VERSION} ncurses-${VERSION}.orig
-cd ncurses-${VERSION}
 
 # Download and Apply Rollup Patch
 #
+cd ~/tmp/ncurses-${VERSION}
 CURRENTDIR=$(pwd -P)
-mkdir /tmp/ncurses-${VERSION}
-cd /tmp/ncurses-${VERSION}
+mkdir ~/tmp/ncurses-${VERSION}-patches
+cd ~/tmp/ncurses-${VERSION}
 if [ "${ROLLUP}" != "" ]; then
   echo "Getting Rollup ${ROLLUP} Patch..."
+  cd ~/tmp/ncurses-${VERSION}-patches
   wget --quiet ftp://invisible-island.net/ncurses/${VERSION}/${ROLLUP}
   cd ${CURRENTDIR}
   echo "Applying Rollup ${ROLLUP} Patch..."
-  cp /tmp/ncurses-${VERSION}/${ROLLUP} ${CURRENTDIR}/${ROLLUP}
+  cp ~/tmp/ncurses-${VERSION}-patches/${ROLLUP} ${CURRENTDIR}/${ROLLUP}
   bunzip2 ${ROLLUP}
   ROLLUP2=$(echo ${ROLLUP} | sed -e 's/.bz2//g')
   sh ${ROLLUP2}
@@ -62,6 +65,9 @@ fi
 
 # Download and Apply Patches
 #
+install -d ~/tmp/ncurses-${VERSION}-patches
+cd ~/tmp/ncurses-${VERSION}
+CURRENTDIR=$(pwd -P)
 for file in ${FILES}; do
   if [ "${ROLLPATCH}" != "" ]; then
     TEST=$(echo ${file} | grep -c ${ROLLPATCH})
@@ -69,14 +75,14 @@ for file in ${FILES}; do
     TEST=0
   fi
   if [ "${TEST}" = "0" ]; then
-    cd /tmp/ncurses-${VERSION}
+    cd ~/tmp/ncurses-${VERSION}-patches
     echo "Getting Patch ${file}..."
     wget --quiet ftp://invisible-island.net/ncurses/${VERSION}/${file}
     cd ${CURRENTDIR}
-    gunzip -c /tmp/ncurses-${VERSION}/${file} | patch --dry-run -s -f -Np1
+    gunzip -c ~/tmp/ncurses-${VERSION}-patches/${file} | patch --dry-run -s -f -Np1
     if [ "$?" = "0" ]; then
       echo "Apply Patch ${file}..."
-      gunzip -c /tmp/ncurses-${VERSION}/${file} | patch -Np1
+      gunzip -c ~/tmp/ncurses-${VERSION}-patches/${file} | patch -Np1
       LASTFILE=$(echo ${file} | cut -f2 -d. | cut -f2 -d-)
     fi
   fi
@@ -84,10 +90,10 @@ done
 
 # Cleanup Directory
 #
-# Cleanup Directory
-#
+cd ~/tmp
+cd ncurses-${VERSION}
 for dir in $(find * -type d); do
-  cd /usr/src/ncurses-${VERSION}/${dir}
+  cd ~/tmp/ncurses-${VERSION}/${dir}
   for file in $(find . -name '*~'); do
     rm -f ${file}
   done
@@ -95,19 +101,24 @@ for dir in $(find * -type d); do
     rm -f ${file}
   done
 done
-cd /usr/src/ncurses-${VERSION}
+cd ~/tmp/ncurses-${VERSION}
 rm -f *~ *.orig
 
 # Create Patch
 #
-cd /usr/src
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Date: `date +%m-%d-%Y`" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Initial Package Version: ${VERSION}" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Origin: Upstream" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Upstream Status: Applied" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Description: This is a branch update for NCurses-${VERSION}, and should be" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "             rechecked periodically. This patch covers up to ${VERSION}-${LASTFILE}." >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "" >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-diff -Naur ncurses-${VERSION}.orig ncurses-${VERSION} >> ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Created /usr/src/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch."
+cd ~/tmp
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Date: `date +%m-%d-%Y`" >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Initial Package Version: ${VERSION}" >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Origin: Upstream" >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Upstream Status: Applied" >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Description: This is a branch update for NCurses-${VERSION}, and should be" >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "             rechecked periodically. This patch covers up to ${VERSION}-${LASTFILE}." >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "" >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+diff -Naur ncurses-${VERSION}.orig ncurses-${VERSION} >> ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch
+echo "Created ~/patches/ncurses-${VERSION}-branch_update-${PATCH_NUM}.patch."
+
+# Cleanup Directory
+#
+cd ~/tmp
+rm -rf ncurses-${VERSION} ncurses-${VERSION}.orig
