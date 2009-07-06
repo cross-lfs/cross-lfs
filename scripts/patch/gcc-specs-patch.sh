@@ -96,6 +96,19 @@ for file in $(find gcc/config -name "*.h"); do
   fi
 done
 
+for file in $(find gcc/config -name "t-linux*"); do
+  if [ "$(cat ${file} | grep -c MULTILIB_OSDIRNAMES)" != "0" ]; then
+    echo "Modifying ${file}..."
+    if [ "$(echo ${file} | grep -c mips)" != "0" ]; then
+      sed -i -e 's@MULTILIB_OSDIRNAMES = ../lib32 ../lib ../lib64@MULTILIB_OSDIRNAMES = ../lib64 ../lib32 ../lib@' \
+        -e 's@MULTILIB_OSDIRNAMES = ../lib32 ../lib ../lib64@MULTILIB_OSDIRNAMES = ../lib64 ../lib32 ../lib@' ${file}
+    else
+      sed -i -e 's@MULTILIB_OSDIRNAMES = ../lib64 ../lib@MULTILIB_OSDIRNAMES = ../lib ../lib32@' \
+        -e 's@MULTILIB_OSDIRNAMES.= ../lib64 .@MULTILIB_OSDIRNAMES\t= ../lib $@' ${file}
+    fi
+  fi
+done
+
 # Create Patch
 #
 cd ~/tmp
