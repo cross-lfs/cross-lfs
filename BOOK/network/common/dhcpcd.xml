@@ -5,12 +5,12 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-final-system-dhcpcd" role="wrap">
+<sect1 id="ch-network-dhcpcd" role="wrap">
   <?dbhtml filename="dhcpcd.html"?>
 
   <title>DHCPCD-&dhcpcd-version;</title>
 
-  <indexterm zone="ch-final-system-dhcpcd">
+  <indexterm zone="ch-network-dhcpcd">
     <primary sortas="a-DHCPCD">DHCPCD</primary>
   </indexterm>
 
@@ -24,11 +24,9 @@
   <sect2 role="installation">
     <title>Installation of DHCPCD</title>
 
-    <note os="a">
-      <para>This build is optional. You only need to build this if you intend
-      on using a DHCP Server to automatically configure at least one network
-      interface on your system.</para>
-    </note>
+    <para os="a">If you wish to configure your network to connect to a DHCP
+      server, you will first need to install a DHCP client. CLFS uses the
+      DHCPCD package for this.</para>
 
     <para os="b">Prepare DHCPCD for compilation:</para>
 
@@ -66,7 +64,7 @@
           <para>dhcpcd is an implementation of the DHCP client specified in
           RFC 2131. It gets the host information from a DHCP server and
           configures the network interface automatically.</para>
-          <indexterm zone="ch-final-system-dhcpcd">
+          <indexterm zone="ch-network-dhcpcd">
             <primary sortas="e-dhcpcd">dhcpcd</primary>
           </indexterm>
         </listitem>
