@@ -69,6 +69,30 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
+    <para os="j">Create the 64bit header file:</para>
+
+<screen os="k"><userinput>mv -v /usr/include/ppl{,-64}.hh</userinput></screen>
+
+    <para os="l">Finally, create a stub header in the place of the originals:</para>
+
+<screen os="m"><userinput>cat &gt; /usr/include/ppl.hh &lt;&lt; "EOF"
+/* ppl.hh - Stub Header  */
+#ifndef __STUB__PPL_HH__
+#define __STUB__PPL_HH__
+
+#if defined(__x86_64__) || \
+    defined(__sparc64__) || \
+    defined(__arch64__) || \
+    defined(__powerpc64__) || \
+    defined (__s390x__)
+# include "ppl-64.h"
+#else
+# include "ppl-32.h"
+#endif
+
+#endif /* __STUB__PPL_HH__ */
+EOF</userinput></screen>
+
   </sect2>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"

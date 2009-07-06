@@ -5,14 +5,13 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-system-ppl-n32" role="wrap">
-  <?dbhtml filename="ppl-n32.html"?>
+<sect1 id="ch-system-ppl" role="wrap">
+  <?dbhtml filename="ppl-64bit.html"?>
 
-  <title>PPL-&ppl-version; N32 Libraries</title>
+  <title>PPL-&ppl-version; 64 Bit</title>
 
-  <indexterm zone="ch-system-ppl-n32">
+  <indexterm zone="ch-system-ppl">
     <primary sortas="a-PPL">PPL</primary>
-    <secondary>N32</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -36,11 +35,9 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILDN32}" \
-    CXX="g++ -isystem /usr/include ${BUILDN32}" \
-    LDFLAGS="-Wl,-rpath-link,/lib32 ${BUILDN32}" \
-    ./configure --prefix=/usr \
-    --libdir=/usr/lib32 --enable-shared</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ppl.xml"
@@ -70,18 +67,38 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-    <para os="j">Create the N32 header file:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='j'])"/>
 
-<screen os="k"><userinput>mv -v /usr/include/ppl{,-n32}.hh</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+    <para os="l">Finally, create a stub header in the place of the originals:</para>
+
+<screen os="m"><userinput>cat &gt; /usr/include/ppl.h &lt;&lt; "EOF"
+/* ppl.hh - Stub Header  */
+#ifndef __STUB__PPL_HH__
+#define __STUB__PPL_HH__
+
+#include &lt;sgidefs.h&gt;
+
+#if (_MIPS_SIM == _ABIO32)
+# include "ppl-32.hh"
+#elif (_MIPS_SIM == _ABIN32)
+# include "ppl-n32.hh"
+#elif (_MIPS_SIM == _ABI64)
+# include "ppl-64.hh"
+#endif
+
+#endif /* __STUB__PPL_HH__ */
+EOF</userinput></screen>
 
   </sect2>
 
-  <sect2 role="content">
-    <title/>
-
-    <para>Details on this package are located in <xref
-    linkend="contents-ppl" role="."/></para>
-
-  </sect2>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+  href="../common/ppl.xml"
+  xpointer="xpointer(id('contents-ppl'))"/>
 
 </sect1>
