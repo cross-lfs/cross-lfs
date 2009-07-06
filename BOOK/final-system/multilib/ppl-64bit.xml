@@ -69,6 +69,12 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
+    <para os="m1">Prepare <filename>ppl-config</filename> to be wrapped by
+    the multiarch wrapper and then wrap it:</para>
+
+<screen os="m2"><userinput>mv -v /usr/bin/ppl-config{,-64}
+ln -svf multiarch_wrapper /usr/bin/ppl-config</userinput></screen>
+
     <para os="j">Create the 64bit header file:</para>
 
 <screen os="k"><userinput>mv -v /usr/include/ppl{,-64}.hh</userinput></screen>
