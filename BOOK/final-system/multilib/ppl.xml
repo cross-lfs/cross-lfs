@@ -36,8 +36,9 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc -isystem /usr/include ${BUILD32}" \
-LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
+<screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILD32}" \
+    CXX="g++ -isystem /usr/include ${BUILD32}" \
+    LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
     ./configure --prefix=/usr --host=${CLFS_TARGET32} --enable-shared \
     --with-libgmp-prefix=/usr --with-libgmpxx-prefix=/usr</userinput></screen>
 

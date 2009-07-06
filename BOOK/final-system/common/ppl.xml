@@ -29,8 +29,10 @@
 
     <para os="a">Prepare PPL for compilation:</para>
 
-<screen os="b"><userinput>CC="gcc -isystem /usr/include" LDFLAGS="-Wl,-rpath-link,/lib" \
-./configure --prefix=/usr --enable-shared --with-libgmp-prefix=/usr \
+<screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include" \
+    CXX="g++ -isystem /usr/include" \
+    LDFLAGS="-Wl,-rpath-link,/lib" \
+    ./configure --prefix=/usr --enable-shared --with-libgmp-prefix=/usr \
     --with-libgmpxx-prefix=/usr</userinput></screen>
 
     <para os="c">Compile the package:</para>
