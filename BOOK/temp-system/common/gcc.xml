@@ -97,11 +97,8 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
 
     </variablelist>
 
-    <para os="ts1">When gcc was configured it was told to find MPFR, GMP, PPL,
-    and CLooG-PPL in /tools. However, when compiling gcc uses these same values
-    for building native helper programs that run on the host. The following sed
-    will change those values to look in cross-tools for the native programs
-    only:</para>
+    <para os="ts1">The following will prevent GCC from looking in the wrong
+    directories for headers and libraries:</para>
 
 <screen os="ts2"><userinput>cp Makefile{,.orig}
 sed "/^HOST_\(GMP\|PPL\|CLOOG\)\(LIBS\|INC\)/s:-[IL]/\(lib\|include\)::" \
