@@ -79,7 +79,6 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
 <screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
   --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
   --with-local-prefix=/tools --enable-long-long --enable-c99 \
-  --with-mpfr=/tools --with-gmp=/tools --with-ppl=/tools --with-cloog=/tools \
   --enable-shared --enable-threads=posix --enable-__cxa_atexit \
   --disable-nls --enable-languages=c,c++ --disable-libstdcxx-pch \
   --disable-multilib</userinput></screen>
@@ -105,7 +104,7 @@ sed -e 's@\(^NATIVE_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g' \
     only:</para>
 
 <screen os="ts2"><userinput>cp Makefile{,.orig}
-sed "/^HOST_\(GMP\|PPL\|CLOOG\)\(LIBS\|INC\)/s:/tools:/cross-tools:g" \
+sed "/^HOST_\(GMP\|PPL\|CLOOG\)\(LIBS\|INC\)/s:-[IL]/\(lib\|include\)::" \
     Makefile.orig &gt; Makefile</userinput></screen>
 
     <para os="cm">Compile the package:</para>
