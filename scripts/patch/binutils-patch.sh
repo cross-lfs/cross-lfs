@@ -84,8 +84,7 @@ sed -i 's/# RELEASE=y/RELEASE=y/g' bfd/Makefile.in
 cd ~/tmp/binutils-${SOURCEVERSION}
 DATE_STAMP=$(date +%Y%m%d)
 cd ~/tmp/binutils-${SOURCEVERSION}
-sed -i "s:@PKGVERSION@:(GNU Binutils for Cross-LFS) :" bfd/Makefile.in
-sed -i "s:^[[:space:]]VERSION=\(.*\)$: VERSION=\1.${DATE_STAMP}:g" bfd/configure
+sed -i "s:@PKGVERSION@:(GNU Binutils for Cross-LFS - Retrieved on ${DATE_STAMP}) :" bfd/Makefile.in
 
 # Create Patch
 #
