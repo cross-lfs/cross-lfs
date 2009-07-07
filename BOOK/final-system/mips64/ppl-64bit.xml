@@ -35,11 +35,9 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILD64}" \
-    CXX="g++ -isystem /usr/include ${BUILD64}" \
-    LDFLAGS="-Wl,-rpath-link,/lib64 ${BUILD64}" \
-    ./configure --prefix=/usr \
-    --libdir=/usr/lib64 --enable-shared</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ppl.xml"
@@ -69,31 +67,37 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-    <para os="m1">Prepare <filename>ppl-config</filename> to be wrapped by
-    the multiarch wrapper and then wrap it:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='m1'])"/>
 
-<screen os="m2"><userinput>mv -v /usr/bin/ppl-config{,-64}
-ln -svf multiarch_wrapper /usr/bin/ppl-config</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='m2'])"/>
 
-    <para os="j">Create the 64bit header file:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='j'])"/>
 
-<screen os="k"><userinput>mv -v /usr/include/ppl{,-64}.hh</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
+    href="../multilib/ppl-64bit.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
 
     <para os="l">Finally, create a stub header in the place of the originals:</para>
 
-<screen os="m"><userinput>cat &gt; /usr/include/ppl.hh &lt;&lt; "EOF"
+<screen os="m"><userinput>cat &gt; /usr/include/ppl.h &lt;&lt; "EOF"
 /* ppl.hh - Stub Header  */
 #ifndef __STUB__PPL_HH__
 #define __STUB__PPL_HH__
 
-#if defined(__x86_64__) || \
-    defined(__sparc64__) || \
-    defined(__arch64__) || \
-    defined(__powerpc64__) || \
-    defined (__s390x__)
-# include "ppl-64.h"
-#else
-# include "ppl-32.h"
+#include &lt;sgidefs.h&gt;
+
+#if (_MIPS_SIM == _ABIO32)
+# include "ppl-32.hh"
+#elif (_MIPS_SIM == _ABIN32)
+# include "ppl-n32.hh"
+#elif (_MIPS_SIM == _ABI64)
+# include "ppl-64.hh"
 #endif
 
 #endif /* __STUB__PPL_HH__ */

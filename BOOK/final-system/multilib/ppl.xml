@@ -36,10 +36,11 @@
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc -isystem /usr/include ${BUILD32}" \
+<screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILD32}" \
+    CXX="g++ -isystem /usr/include ${BUILD32}" \
     LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
-	./configure --prefix=/usr --host=${CLFS_TARGET32} --enable-shared \
-	--with-libgmp-prefix=/usr --with-libgmpxx-prefix=/usr</userinput></screen>
+    ./configure --prefix=/usr --host=${CLFS_TARGET32} \
+    --enable-shared</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ppl.xml"
@@ -68,6 +69,16 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ppl.xml"
     xpointer="xpointer(//*[@os='i'])"/>
+
+    <para os="m1">Prepare <filename>ppl-config</filename> to be wrapped by
+    the multiarch wrapper:</para>
+
+<screen os="m2"><userinput>mv -v /usr/bin/ppl-config{,-32}</userinput></screen>
+
+    <para os="j">One of the headers installed by PPL is architecture specific. Programs compiled as 32bit will require the header provided by the 32bit installation of PPL. The same applies for 64bit programs. Move the header so a wrapper can be put in its place later:</para>
+
+<screen os="k"><userinput>mv -v /usr/include/ppl{,-32}.hh</userinput></screen>
+
 
   </sect2>
 
