@@ -21,7 +21,6 @@
     Among them are utilities for handling file systems, consoles, partitions,
     and messages.</para>
 
-
   </sect2>
 
   <sect2 id="fhs-util-linux-ng" role="installation">
@@ -107,6 +106,7 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed programs</segtitle>
+      <segtitle>Installed libraries</segtitle>
 
       <seglistitem>
         <seg>addpart, agetty, arch, blockdev, cal, cfdisk, chkdupexe, chrt,
@@ -118,6 +118,7 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         renice, rev, rtcwake, script, scriptreplay, setarch, setsid, setterm,
         sfdisk, swapoff (link to swapon), swapon, tailf, taskset, tunelp, ul,
         umount, whereis, and write</seg>
+        <seg>libblkid.[a,so] and libuuid.[a,so]</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -828,6 +829,28 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           user has not disabled receipt of such messages</para>
           <indexterm zone="ch-system-util-linux-ng write">
             <primary sortas="b-write">write</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libblkid">
+        <term><filename class="libraryfile">libblkid</filename></term>
+        <listitem>
+          <para>Contains routines for device identification and token
+          extraction</para>
+          <indexterm zone="ch-system-util-linux-ng libblkid">
+            <primary sortas="c-libblkid">libblkid</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libuuid">
+        <term><filename class="libraryfile">libuuid</filename></term>
+        <listitem>
+          <para>Contains routines for generating unique identifiers for objects
+          that may be accessible beyond the local system</para>
+          <indexterm zone="ch-system-util-linux-ng libuuid">
+            <primary sortas="c-libuuid">libuuid</primary>
           </indexterm>
         </listitem>
       </varlistentry>

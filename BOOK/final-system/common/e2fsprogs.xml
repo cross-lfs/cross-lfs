@@ -36,8 +36,9 @@ cd build</userinput></screen>
 
     <para os="c">Prepare E2fsprogs for compilation:</para>
 
-<screen os="d"><userinput>../configure --prefix=/usr --with-root-prefix="" \
-    --enable-elf-shlibs --with-cc=gcc</userinput></screen>
+<screen os="d"><userinput>PKG_CONFIG=true ../configure --prefix=/usr --with-root-prefix="" \
+    --enable-elf-shlibs --with-cc=gcc \
+    --disable-libuuid --disable-libblkid</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
@@ -68,7 +69,8 @@ cd build</userinput></screen>
 
     <para os="f">Compile the package:</para>
 
-<screen os="g"><userinput>make</userinput></screen>
+<screen os="g"><userinput>make LIBUUID="-luuid" STATIC_LIBUUID="-luuid" \
+    LIBBLKID="-lblkid" STATIC_LIBBLKID="-lblkid"</userinput></screen>
 
     <para os="h">To test the results, issue:
     <userinput>make check</userinput>.</para>
@@ -96,8 +98,8 @@ cd build</userinput></screen>
         fsck.ext3, fsck.ext4, fsck.ext4dev logsave, lsattr, mk_cmds, mke2fs,
         mkfs.ext2, mkfs.ext3, mkfs.ext4, mkfs.ext4dev mklost+found, resize2fs,
         tune2fs, uuidd, and uuidgen.</seg>
-        <seg>libblkid.[a,so], libcom_err.[a,so], libe2p.[a,so],
-        libext2fs.[a,so], libss.[a,so], and libuuid.[a,so]</seg>
+        <seg>libcom_err.[a,so], libe2p.[a,so], libext2fs.[a,so], and
+        libss.[a,so]</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -447,17 +449,6 @@ cd build</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libblkid">
-        <term><filename class="libraryfile">libblkid</filename></term>
-        <listitem>
-          <para>Contains routines for device identification and token
-          extraction</para>
-          <indexterm zone="ch-system-e2fsprogs libblkid">
-            <primary sortas="c-libblkid">libblkid</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="libcom_err">
         <term><filename class="libraryfile">libcom_err</filename></term>
         <listitem>
@@ -496,17 +487,6 @@ cd build</userinput></screen>
           <para>Used by <command>debugfs</command></para>
           <indexterm zone="ch-system-e2fsprogs libss">
             <primary sortas="c-libss">libss</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libuuid">
-        <term><filename class="libraryfile">libuuid</filename></term>
-        <listitem>
-          <para>Contains routines for generating unique identifiers for objects
-          that may be accessible beyond the local system</para>
-          <indexterm zone="ch-system-e2fsprogs libuuid">
-            <primary sortas="c-libuuid">libuuid</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -34,9 +34,10 @@
     href="../../final-system/common/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="aa"><userinput>../configure --prefix=/tools \
+<screen os="aa"><userinput>PKG_CONFIG=true ../configure --prefix=/tools \
     --enable-elf-shlibs --with-cc=${CC} --with-linker=${LD} \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --disable-libuuid --disable-libblkid</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
