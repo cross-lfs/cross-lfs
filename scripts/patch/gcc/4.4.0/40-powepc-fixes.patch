@@ -1,0 +1,25 @@
+A Temporary Work around for
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37739
+
+diff -Naur gcc-4.4.0.orig/gcc/config.host gcc-4.4.0/gcc/config.host
+--- gcc-4.4.0.orig/gcc/config.host	2009-03-24 03:33:57.000000000 -0700
++++ gcc-4.4.0/gcc/config.host	2009-07-19 14:09:55.000000000 -0700
+@@ -135,17 +135,7 @@
+ 	  # On powerpc*-*-linux* use -Wl,--relax to link cc1,
+ 	  # if ld is new enough, otherwise force -O1 in CFLAGS.
+ 	  host_ppc_relax_xmake_file=
+-	  host_ld_ver=`${CC} -Wl,--version 2>/dev/null | sed 1q`
+-	  if echo "$host_ld_ver" | grep GNU > /dev/null; then
+-	    host_ld_date=`echo $host_ld_ver \
+-			  | sed -n 's,^.*\([2-9][0-9][0-9][0-9]\)[-]*\([01][0-9]\)[-]*\([0-3][0-9]\).*$,\1\2\3,p'`
+-	    if test 0"$host_ld_date" -gt 20080806; then
+-	      host_ppc_relax_xmake_file=rs6000/x-linux-relax
+-	    fi
+-	  fi
+-	  if test -z "${host_ppc_relax_xmake_file}"; then
+-	    host_ppc_relax_xmake_file=x-cflags-O1
+-	  fi
++	  host_ppc_relax_xmake_file=x-cflags-O1
+ 	  host_xmake_file="${host_xmake_file} ${host_ppc_relax_xmake_file}"
+ 	fi
+ 	;;
