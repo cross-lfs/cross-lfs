@@ -39,8 +39,9 @@
 <screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILDN32}" \
     CXX="g++ -isystem /usr/include ${BUILDN32}" \
     LDFLAGS="-Wl,-rpath-link,/lib32 ${BUILDN32}" \
-    ./configure --prefix=/usr \
-    --libdir=/usr/lib32 --enable-shared</userinput></screen>
+    ./configure --prefix=/usr --libdir=/usr/lib32 \
+      --enable-shared --disable-optimization \
+      --enable-check=quick</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ppl.xml"

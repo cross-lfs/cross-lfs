@@ -40,7 +40,8 @@
     CXX="g++ -isystem /usr/include ${BUILD32}" \
     LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
     ./configure --prefix=/usr --host=${CLFS_TARGET32} \
-    --enable-shared</userinput></screen>
+      --enable-shared --disable-optimization \
+      --enable-check=quick</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../common/ppl.xml"
