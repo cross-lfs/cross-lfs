@@ -2,8 +2,8 @@ Java can only be built as 1 ABI at the moment. So this switch will all
 the disabling of only the java multilib build
 
 diff -Naur gcc-4.4.0.orig/libjava/configure gcc-4.4.0/libjava/configure
---- gcc-4.4.0.orig/libjava/configure	2009-04-26 07:24:38.000000000 -0700
-+++ gcc-4.4.0/libjava/configure	2009-06-15 13:55:33.000000000 -0700
+--- gcc-4.4.0.orig/libjava/configure	2009-07-14 09:25:46.000000000 -0700
++++ gcc-4.4.0/libjava/configure	2009-07-14 09:33:34.000000000 -0700
 @@ -1021,6 +1021,8 @@
                            default=yes
    --enable-java-maintainer-mode
@@ -31,8 +31,8 @@ diff -Naur gcc-4.4.0.orig/libjava/configure gcc-4.4.0/libjava/configure
  
  
 diff -Naur gcc-4.4.0.orig/libjava/configure.ac gcc-4.4.0/libjava/configure.ac
---- gcc-4.4.0.orig/libjava/configure.ac	2009-04-26 07:24:38.000000000 -0700
-+++ gcc-4.4.0/libjava/configure.ac	2009-06-15 13:55:33.000000000 -0700
+--- gcc-4.4.0.orig/libjava/configure.ac	2009-07-14 09:25:46.000000000 -0700
++++ gcc-4.4.0/libjava/configure.ac	2009-07-14 09:33:34.000000000 -0700
 @@ -139,6 +139,13 @@
  	[allow rebuilding of .class and .h files]))
  AM_CONDITIONAL(JAVA_MAINTAINER_MODE, test "$enable_java_maintainer_mode" = yes)

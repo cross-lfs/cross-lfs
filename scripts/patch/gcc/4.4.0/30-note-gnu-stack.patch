@@ -1,0 +1,217 @@
+# DP: Add .note.GNU-stack sections for gcc's crt files, libffi and boehm-gc
+# DP: Taken from FC.
+
+gcc/
+
+2004-09-20  Jakub Jelinek  <jakub@redhat.com>
+
+	* config/rs6000/ppc-asm.h: Add .note.GNU-stack section also
+	on ppc64-linux.
+
+	* config/ia64/lib1funcs.asm: Add .note.GNU-stack section on
+	ia64-linux.
+	* config/ia64/crtbegin.asm: Likewise.
+	* config/ia64/crtend.asm: Likewise.
+	* config/ia64/crti.asm: Likewise.
+	* config/ia64/crtn.asm: Likewise.
+
+2004-05-14  Jakub Jelinek  <jakub@redhat.com>
+
+	* config/ia64/linux.h (TARGET_ASM_FILE_END): Define.
+
+boehm-gc/
+
+2005-02-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* ia64_save_regs_in_stack.s: Moved to...
+	* ia64_save_regs_in_stack.S: ... this.  Add .note.GNU-stack
+	on Linux.
+
+libffi/
+
+2007-05-11  Daniel Jacobowitz  <dan@debian.org>
+
+	* src/arm/sysv.S: Fix ARM comment marker.
+
+2005-02-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* src/alpha/osf.S: Add .note.GNU-stack on Linux.
+	* src/s390/sysv.S: Likewise.
+	* src/powerpc/linux64.S: Likewise.
+	* src/powerpc/linux64_closure.S: Likewise.
+	* src/powerpc/ppc_closure.S: Likewise.
+	* src/powerpc/sysv.S: Likewise.
+	* src/x86/unix64.S: Likewise.
+	* src/x86/sysv.S: Likewise.
+	* src/sparc/v8.S: Likewise.
+	* src/sparc/v9.S: Likewise.
+	* src/m68k/sysv.S: Likewise.
+	* src/ia64/unix.S: Likewise.
+	* src/arm/sysv.S: Likewise.
+
+diff -Naur gcc-4.4.0.orig/boehm-gc/ia64_save_regs_in_stack.s gcc-4.4.0/boehm-gc/ia64_save_regs_in_stack.s
+--- gcc-4.4.0.orig/boehm-gc/ia64_save_regs_in_stack.s	2001-10-14 21:57:59.000000000 -0700
++++ gcc-4.4.0/boehm-gc/ia64_save_regs_in_stack.s	2009-07-14 10:45:25.000000000 -0700
+@@ -1,12 +0,0 @@
+-        .text
+-        .align 16
+-        .global GC_save_regs_in_stack
+-        .proc GC_save_regs_in_stack
+-GC_save_regs_in_stack:
+-        .body
+-        flushrs
+-        ;;
+-        mov r8=ar.bsp
+-        br.ret.sptk.few rp
+-        .endp GC_save_regs_in_stack
+-
+diff -Naur gcc-4.4.0.orig/boehm-gc/ia64_save_regs_in_stack.S gcc-4.4.0/boehm-gc/ia64_save_regs_in_stack.S
+--- gcc-4.4.0.orig/boehm-gc/ia64_save_regs_in_stack.S	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.4.0/boehm-gc/ia64_save_regs_in_stack.S	2009-07-14 10:45:25.000000000 -0700
+@@ -0,0 +1,15 @@
++        .text
++        .align 16
++        .global GC_save_regs_in_stack
++        .proc GC_save_regs_in_stack
++GC_save_regs_in_stack:
++        .body
++        flushrs
++        ;;
++        mov r8=ar.bsp
++        br.ret.sptk.few rp
++        .endp GC_save_regs_in_stack
++
++#ifdef __linux__
++	.section .note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.0.orig/gcc/config/ia64/crtbegin.asm gcc-4.4.0/gcc/config/ia64/crtbegin.asm
+--- gcc-4.4.0.orig/gcc/config/ia64/crtbegin.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.0/gcc/config/ia64/crtbegin.asm	2009-07-14 10:45:25.000000000 -0700
+@@ -252,3 +252,7 @@
+ .weak __cxa_finalize
+ #endif
+ .weak _Jv_RegisterClasses
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.0.orig/gcc/config/ia64/crtend.asm gcc-4.4.0/gcc/config/ia64/crtend.asm
+--- gcc-4.4.0.orig/gcc/config/ia64/crtend.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.0/gcc/config/ia64/crtend.asm	2009-07-14 10:45:25.000000000 -0700
+@@ -119,3 +119,7 @@
+ 
+ 	br.ret.sptk.many rp
+ 	.endp __do_global_ctors_aux
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.0.orig/gcc/config/ia64/crti.asm gcc-4.4.0/gcc/config/ia64/crti.asm
+--- gcc-4.4.0.orig/gcc/config/ia64/crti.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.0/gcc/config/ia64/crti.asm	2009-07-14 10:45:25.000000000 -0700
+@@ -51,3 +51,7 @@
+ 	.body
+ 
+ # end of crti.asm
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.0.orig/gcc/config/ia64/crtn.asm gcc-4.4.0/gcc/config/ia64/crtn.asm
+--- gcc-4.4.0.orig/gcc/config/ia64/crtn.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.0/gcc/config/ia64/crtn.asm	2009-07-14 10:45:25.000000000 -0700
+@@ -41,3 +41,7 @@
+ 	br.ret.sptk.many b0
+ 
+ # end of crtn.asm
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.0.orig/gcc/config/ia64/lib1funcs.asm gcc-4.4.0/gcc/config/ia64/lib1funcs.asm
+--- gcc-4.4.0.orig/gcc/config/ia64/lib1funcs.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.0/gcc/config/ia64/lib1funcs.asm	2009-07-14 10:45:25.000000000 -0700
+@@ -793,3 +793,7 @@
+ 	.endp __floattitf
+ #endif
+ #endif
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.0.orig/gcc/config/ia64/linux.h gcc-4.4.0/gcc/config/ia64/linux.h
+--- gcc-4.4.0.orig/gcc/config/ia64/linux.h	2009-02-12 08:30:53.000000000 -0800
++++ gcc-4.4.0/gcc/config/ia64/linux.h	2009-07-14 10:45:25.000000000 -0700
+@@ -5,6 +5,8 @@
+ 
+ #define TARGET_VERSION fprintf (stderr, " (IA-64) Linux");
+ 
++#define TARGET_ASM_FILE_END file_end_indicate_exec_stack
++
+ /* This is for -profile to use -lc_p instead of -lc.  */
+ #undef CC1_SPEC
+ #define CC1_SPEC "%{profile:-p} %{G*}"
+diff -Naur gcc-4.4.0.orig/gcc/config/rs6000/ppc-asm.h gcc-4.4.0/gcc/config/rs6000/ppc-asm.h
+--- gcc-4.4.0.orig/gcc/config/rs6000/ppc-asm.h	2008-10-13 08:44:26.000000000 -0700
++++ gcc-4.4.0/gcc/config/rs6000/ppc-asm.h	2009-07-14 10:45:25.000000000 -0700
+@@ -172,7 +172,7 @@
+ 	.size FUNC_NAME(name),GLUE(.L,name)-FUNC_NAME(name)
+ #endif
+ 
+-#if defined __linux__ && !defined __powerpc64__
++#if defined __linux__
+ 	.section .note.GNU-stack
+ 	.previous
+ #endif
+diff -Naur gcc-4.4.0.orig/libffi/src/ia64/unix.S gcc-4.4.0/libffi/src/ia64/unix.S
+--- gcc-4.4.0.orig/libffi/src/ia64/unix.S	2005-03-30 13:49:19.000000000 -0800
++++ gcc-4.4.0/libffi/src/ia64/unix.S	2009-07-14 10:45:25.000000000 -0700
+@@ -553,3 +553,7 @@
+ 	data8	@pcrel(.Lld_hfa_float)		// FFI_IA64_TYPE_HFA_FLOAT
+ 	data8	@pcrel(.Lld_hfa_double)		// FFI_IA64_TYPE_HFA_DOUBLE
+ 	data8	@pcrel(.Lld_hfa_ldouble)	// FFI_IA64_TYPE_HFA_LDOUBLE
++
++#if defined __ELF__ && defined __linux__
++	.section	.note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.0.orig/libffi/src/powerpc/linux64_closure.S gcc-4.4.0/libffi/src/powerpc/linux64_closure.S
+--- gcc-4.4.0.orig/libffi/src/powerpc/linux64_closure.S	2005-08-11 14:18:24.000000000 -0700
++++ gcc-4.4.0/libffi/src/powerpc/linux64_closure.S	2009-07-14 10:45:25.000000000 -0700
+@@ -204,3 +204,7 @@
+ 	.align 3
+ .LEFDE1:
+ #endif
++
++#if defined __ELF__ && defined __linux__
++	.section	.note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.0.orig/libffi/src/powerpc/linux64.S gcc-4.4.0/libffi/src/powerpc/linux64.S
+--- gcc-4.4.0.orig/libffi/src/powerpc/linux64.S	2007-11-16 15:24:53.000000000 -0800
++++ gcc-4.4.0/libffi/src/powerpc/linux64.S	2009-07-14 10:45:25.000000000 -0700
+@@ -179,3 +179,7 @@
+ 	.align 3
+ .LEFDE1:
+ #endif
++
++#if defined __ELF__ && defined __linux__
++	.section	.note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.0.orig/src/boehm-gc/ia64_save_regs_in_stack.S gcc-4.4.0/src/boehm-gc/ia64_save_regs_in_stack.S
+--- gcc-4.4.0.orig/src/boehm-gc/ia64_save_regs_in_stack.S	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.4.0/src/boehm-gc/ia64_save_regs_in_stack.S	2009-07-14 10:45:19.000000000 -0700
+@@ -0,0 +1,15 @@
++        .text
++        .align 16
++        .global GC_save_regs_in_stack
++        .proc GC_save_regs_in_stack
++GC_save_regs_in_stack:
++        .body
++        flushrs
++        ;;
++        mov r8=ar.bsp
++        br.ret.sptk.few rp
++        .endp GC_save_regs_in_stack
++
++#ifdef __linux__
++	.section .note.GNU-stack,"",@progbits
++#endif
