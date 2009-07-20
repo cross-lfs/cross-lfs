@@ -1,0 +1,99 @@
+http://sourceware.org/bugzilla/show_bug.cgi?id=9945
+
+2009-03-13  H.J. Lu  <hongjiu.lu@intel.com>
+
+	PR binutils/9945
+	* elf.c (assign_section_numbers): Generate symbol table if there
+	is any relocation in output.
+	(_bfd_elf_compute_section_file_positions): Likewise.
+
+2009-03-13  H.J. Lu  <hongjiu.lu@intel.com>
+
+	PR binutils/9945
+	* objcopy.c (copy_object): Clear HAS_RELOC when stripping all.
+
+===================================================================
+RCS file: /cvs/src/src/bfd/elf.c,v
+retrieving revision 1.477
+retrieving revision 1.478
+diff -u -r1.477 -r1.478
+--- src/bfd/elf.c	2009/02/25 14:39:35	1.477
++++ src/bfd/elf.c	2009/03/13 13:39:56	1.478
+@@ -2774,6 +2774,7 @@
+   unsigned int section_number, secn;
+   Elf_Internal_Shdr **i_shdrp;
+   struct bfd_elf_section_data *d;
++  bfd_boolean need_symtab;
+ 
+   section_number = 1;
+ 
+@@ -2829,7 +2830,11 @@
+   _bfd_elf_strtab_addref (elf_shstrtab (abfd), t->shstrtab_hdr.sh_name);
+   elf_elfheader (abfd)->e_shstrndx = t->shstrtab_section;
+ 
+-  if (bfd_get_symcount (abfd) > 0)
++  need_symtab = (bfd_get_symcount (abfd) > 0
++		|| (link_info == NULL
++		    && ((abfd->flags & (EXEC_P | DYNAMIC | HAS_RELOC))
++			== HAS_RELOC)));
++  if (need_symtab)
+     {
+       t->symtab_section = section_number++;
+       _bfd_elf_strtab_addref (elf_shstrtab (abfd), t->symtab_hdr.sh_name);
+@@ -2868,7 +2873,7 @@
+   elf_elfsections (abfd) = i_shdrp;
+ 
+   i_shdrp[t->shstrtab_section] = &t->shstrtab_hdr;
+-  if (bfd_get_symcount (abfd) > 0)
++  if (need_symtab)
+     {
+       i_shdrp[t->symtab_section] = &t->symtab_hdr;
+       if (elf_numsections (abfd) > (SHN_LORESERVE & 0xFFFF))
+@@ -3261,6 +3266,7 @@
+   bfd_boolean failed;
+   struct bfd_strtab_hash *strtab = NULL;
+   Elf_Internal_Shdr *shstrtab_hdr;
++  bfd_boolean need_symtab;
+ 
+   if (abfd->output_has_begun)
+     return TRUE;
+@@ -3285,7 +3291,11 @@
+     return FALSE;
+ 
+   /* The backend linker builds symbol table information itself.  */
+-  if (link_info == NULL && bfd_get_symcount (abfd) > 0)
++  need_symtab = (link_info == NULL
++		 && (bfd_get_symcount (abfd) > 0
++		     || ((abfd->flags & (EXEC_P | DYNAMIC | HAS_RELOC))
++			 == HAS_RELOC)));
++  if (need_symtab)
+     {
+       /* Non-zero if doing a relocatable link.  */
+       int relocatable_p = ! (abfd->flags & (EXEC_P | DYNAMIC));
+@@ -3316,7 +3326,7 @@
+   if (!assign_file_positions_except_relocs (abfd, link_info))
+     return FALSE;
+ 
+-  if (link_info == NULL && bfd_get_symcount (abfd) > 0)
++  if (need_symtab)
+     {
+       file_ptr off;
+       Elf_Internal_Shdr *hdr;
+===================================================================
+RCS file: /cvs/src/src/binutils/objcopy.c,v
+retrieving revision 1.126
+retrieving revision 1.127
+diff -u -r1.126 -r1.127
+--- src/binutils/objcopy.c	2009/03/10 00:48:09	1.126
++++ src/binutils/objcopy.c	2009/03/13 13:39:57	1.127
+@@ -1396,6 +1396,9 @@
+       flags &= ~bfd_flags_to_clear;
+       flags &= bfd_applicable_file_flags (obfd);
+ 
++      if (strip_symbols == STRIP_ALL)
++	flags &= ~HAS_RELOC;
++
+       if (!bfd_set_start_address (obfd, start)
+ 	  || !bfd_set_file_flags (obfd, flags))
+ 	{
+

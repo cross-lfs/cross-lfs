@@ -15,7 +15,10 @@ if [ "${VERSION}" = "" -o "${SOURCEVERSION}" = "" ]; then
   exit 255
 fi
 
-# 
+# Set Patch Directory
+#
+PATCH_DIR=$(pwd -P)/binutils
+ 
 # Download Binutils Source
 #
 install -d ~/tmp
@@ -110,14 +113,14 @@ unset DATE_STAMP
 # Create Another Copy to create fixes patch
 #
 cd ~/tmp
-if [ -e ${PATCH_DIR}/${VERSION} ]; then
+if [ -e ${PATCH_DIR}/${SOURCEVERSION} ]; then
   rm -rf binutils-${SOURCEVERSION}.orig
   cp -ar binutils-${SOURCEVERSION} binutils-${SOURCEVERSION}.orig
 
   # Apply Patches from directories
   #
   cd ~/tmp/binutils-${SOURCEVERSION}
-  PATCH_FILES=$(ls ${PATCH_DIR}/${VERSION}/*.patch)
+  PATCH_FILES=$(ls ${PATCH_DIR}/${SOURCEVERSION}/*.patch)
   if [ "${PATCH_FILES}" != "" ]; then
     for pfile in ${PATCH_FILES}; do
       echo "Applying - ${pfile}..."
