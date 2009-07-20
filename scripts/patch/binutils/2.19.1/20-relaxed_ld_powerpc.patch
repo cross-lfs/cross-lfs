@@ -1,0 +1,50 @@
+This aims to make life a little easier for people building large
+PowerPC binaries where the PLT is out of reach for 24-bit branches.
+
+	* emultempl/ppc32elf.em (ppc_before_allocation): Turn on
+	linker relaxation if it might be necessary.
+
+diff -Naur binutils-2.19.1.orig/ld/emultempl/ppc32elf.em binutils-2.19.1/ld/emultempl/ppc32elf.em
+--- binutils-2.19.1.orig/ld/emultempl/ppc32elf.em	2008-02-15 01:03:02.000000000 -0800
++++ binutils-2.19.1/ld/emultempl/ppc32elf.em	2009-07-19 20:22:20.000000000 -0700
+@@ -112,7 +112,40 @@
+ 	    }
+ 	}
+     }
++
+   gld${EMULATION_NAME}_before_allocation ();
++
++  /* Turn on relaxation if executable sections have addresses that
++     might make branches overflow.  */
++  if (!command_line.relax)
++    {
++      bfd_vma low = (bfd_vma) -1;
++      bfd_vma high = 0;
++      asection *o;
++
++      /* Run lang_size_sections (if not already done).  */
++      if (expld.phase != lang_mark_phase_enum)
++	{
++	  expld.phase = lang_mark_phase_enum;
++	  expld.dataseg.phase = exp_dataseg_none;
++	  one_lang_size_sections_pass (NULL, FALSE);
++	  lang_reset_memory_regions ();
++	}
++
++      for (o = link_info.output_bfd->sections; o != NULL; o = o->next)
++	{
++	  if ((o->flags & (SEC_ALLOC | SEC_CODE)) != (SEC_ALLOC | SEC_CODE))
++	    continue;
++	  if (o->size == 0)
++	    continue;
++	  if (low > o->vma)
++	    low = o->vma;
++	  if (high < o->vma + o->size - 1)
++	    high = o->vma + o->size - 1;
++	}
++      if (high > low && high - low > (1 << 25) - 1)
++	command_line.relax = TRUE;
++    }
+ }
+ 
+ EOF
