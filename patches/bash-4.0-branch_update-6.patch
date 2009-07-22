@@ -1,13 +1,13 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 05-24-2009
+Date: 07-22-2009
 Initial Package Version: 4.0
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 4.0-024
+Description: Contains all upstream patches up to 4.0-028
 
 diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
 --- bash-4.0.orig/arrayfunc.c	2009-01-04 11:32:21.000000000 -0800
-+++ bash-4.0/arrayfunc.c	2009-05-24 09:14:10.000000000 -0700
++++ bash-4.0/arrayfunc.c	2009-07-22 15:31:16.000000000 -0700
 @@ -604,64 +604,7 @@
      }
  }
@@ -76,7 +76,7 @@ diff -Naur bash-4.0.orig/arrayfunc.c bash-4.0/arrayfunc.c
     `[' of an array subscript and removes the array element to which SUB
 diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
 --- bash-4.0.orig/builtins/declare.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/declare.def	2009-05-24 09:14:07.000000000 -0700
++++ bash-4.0/builtins/declare.def	2009-07-22 15:31:12.000000000 -0700
 @@ -295,6 +295,13 @@
        subscript_start = (char *)NULL;
        if (t = strchr (name, '['))	/* ] */
@@ -102,7 +102,7 @@ diff -Naur bash-4.0.orig/builtins/declare.def bash-4.0/builtins/declare.def
  
 diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
 --- bash-4.0.orig/builtins/exit.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/exit.def	2009-05-24 09:14:06.000000000 -0700
++++ bash-4.0/builtins/exit.def	2009-07-22 15:31:11.000000000 -0700
 @@ -113,7 +113,7 @@
        for (i = stopmsg = 0; i < js.j_jobslots; i++)
  	if (jobs[i] && STOPPED (i))
@@ -114,7 +114,7 @@ diff -Naur bash-4.0.orig/builtins/exit.def bash-4.0/builtins/exit.def
        if (stopmsg == JSTOPPED)
 diff -Naur bash-4.0.orig/builtins/fc.def bash-4.0/builtins/fc.def
 --- bash-4.0.orig/builtins/fc.def	2009-01-04 11:32:22.000000000 -0800
-+++ bash-4.0/builtins/fc.def	2009-05-24 09:14:20.000000000 -0700
++++ bash-4.0/builtins/fc.def	2009-07-22 15:31:26.000000000 -0700
 @@ -88,6 +88,7 @@
  extern int current_command_line_count;
  extern int literal_history;
@@ -180,7 +180,7 @@ diff -Naur bash-4.0.orig/builtins/fc.def bash-4.0/builtins/fc.def
    if (command == NULL)
 diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
 --- bash-4.0.orig/builtins/read.def	2009-01-15 20:11:21.000000000 -0800
-+++ bash-4.0/builtins/read.def	2009-05-24 09:14:13.000000000 -0700
++++ bash-4.0/builtins/read.def	2009-07-22 15:31:19.000000000 -0700
 @@ -369,14 +369,14 @@
        code = setjmp (alrmbuf);
        if (code)
@@ -201,9 +201,38 @@ diff -Naur bash-4.0.orig/builtins/read.def bash-4.0/builtins/read.def
  	}
        old_alrm = set_signal_handler (SIGALRM, sigalrm);
        add_unwind_protect (reset_alarm, (char *)NULL);
+diff -Naur bash-4.0.orig/doc/bash.1 bash-4.0/doc/bash.1
+--- bash-4.0.orig/doc/bash.1	2009-02-18 12:13:56.000000000 -0800
++++ bash-4.0/doc/bash.1	2009-07-22 15:31:48.000000000 -0700
+@@ -8257,9 +8257,10 @@
+ Exit after reading and executing one command.
+ .TP 8
+ .B \-u
+-Treat unset variables as an error when performing
++Treat unset variables and parameters other than the special
++parameters "@" and "*" as an error when performing
+ parameter expansion.  If expansion is attempted on an
+-unset variable, the shell prints an error message, and,
++unset variable or parameter, the shell prints an error message, and,
+ if not interactive, exits with a non-zero status.
+ .TP 8
+ .B \-v
+diff -Naur bash-4.0.orig/doc/bashref.texi bash-4.0/doc/bashref.texi
+--- bash-4.0.orig/doc/bashref.texi	2009-02-18 12:14:43.000000000 -0800
++++ bash-4.0/doc/bashref.texi	2009-07-22 15:31:48.000000000 -0700
+@@ -4138,7 +4138,8 @@
+ Exit after reading and executing one command.
+ 
+ @item -u
+-Treat unset variables as an error when performing parameter expansion.
++Treat unset variables and parameters other than the special parameters
++@samp{@@} or @samp{*} as an error when performing parameter expansion.
+ An error message will be written to the standard error, and a non-interactive
+ shell will exit.
+ 
 diff -Naur bash-4.0.orig/execute_cmd.c bash-4.0/execute_cmd.c
 --- bash-4.0.orig/execute_cmd.c	2009-02-13 13:41:41.000000000 -0800
-+++ bash-4.0/execute_cmd.c	2009-05-24 09:14:23.000000000 -0700
++++ bash-4.0/execute_cmd.c	2009-07-22 15:31:29.000000000 -0700
 @@ -568,6 +568,7 @@
  
        /* Fork a subshell, turn off the subshell bit, turn off job
@@ -267,9 +296,30 @@ diff -Naur bash-4.0.orig/execute_cmd.c bash-4.0/execute_cmd.c
  		EXIT_CASE ();
  	      else
  		break;
+diff -Naur bash-4.0.orig/externs.h bash-4.0/externs.h
+--- bash-4.0.orig/externs.h	2009-01-18 15:29:29.000000000 -0800
++++ bash-4.0/externs.h	2009-07-22 15:31:45.000000000 -0700
+@@ -192,6 +192,8 @@
+ extern char *fmtumax __P((uintmax_t, int, char *, size_t, int));
+ 
+ /* Declarations for functions defined in lib/sh/fpurge.c */
++
++#if defined NEED_FPURGE_DECL
+ #if !HAVE_DECL_FPURGE
+ 
+ #if HAVE_FPURGE
+@@ -200,7 +202,7 @@
+ extern int fpurge __P((FILE *stream));
+ 
+ #endif /* HAVE_DECL_FPURGE */
+-
++#endif /* NEED_FPURGE_DECL */
+ 
+ /* Declarations for functions defined in lib/sh/getcwd.c */
+ #if !defined (HAVE_GETCWD)
 diff -Naur bash-4.0.orig/jobs.c bash-4.0/jobs.c
 --- bash-4.0.orig/jobs.c	2009-01-29 14:09:49.000000000 -0800
-+++ bash-4.0/jobs.c	2009-05-24 09:14:28.000000000 -0700
++++ bash-4.0/jobs.c	2009-07-22 15:31:34.000000000 -0700
 @@ -442,7 +442,7 @@
    old_pipeline = the_pipeline;
    the_pipeline = saved_pipeline;
@@ -305,7 +355,7 @@ diff -Naur bash-4.0.orig/jobs.c bash-4.0/jobs.c
  #endif /* PGRP_PIPE */
 diff -Naur bash-4.0.orig/jobs.h bash-4.0/jobs.h
 --- bash-4.0.orig/jobs.h	2009-01-04 11:32:29.000000000 -0800
-+++ bash-4.0/jobs.h	2009-05-24 09:14:28.000000000 -0700
++++ bash-4.0/jobs.h	2009-07-22 15:31:34.000000000 -0700
 @@ -235,6 +235,8 @@
  extern void init_job_stats __P((void));
  
@@ -317,7 +367,7 @@ diff -Naur bash-4.0.orig/jobs.h bash-4.0/jobs.h
  extern int job_control;
 diff -Naur bash-4.0.orig/lib/glob/glob.c bash-4.0/lib/glob/glob.c
 --- bash-4.0.orig/lib/glob/glob.c	2009-01-04 11:32:30.000000000 -0800
-+++ bash-4.0/lib/glob/glob.c	2009-05-24 09:14:36.000000000 -0700
++++ bash-4.0/lib/glob/glob.c	2009-07-22 15:31:43.000000000 -0700
 @@ -356,7 +356,7 @@
  	*np = 0;
        if (ep)
@@ -327,31 +377,18 @@ diff -Naur bash-4.0.orig/lib/glob/glob.c bash-4.0/lib/glob/glob.c
  	free (r);
        return (struct globval *)0;
      }
-@@ -665,8 +665,9 @@
+@@ -665,7 +665,9 @@
        (void) closedir (d);
      }
  
 -  /* compat: if GX_ALLDIRS, add the passed directory also */
--  if (add_current)
-+  /* compat: if GX_ALLDIRS, add the passed directory also, but don't add an
-+     empty directory name. */
-+  if (add_current && (flags & GX_NULLDIR) == 0)
++  /* compat: if GX_ADDCURDIR, add the passed directory also.  Add an empty
++     directory name as a placeholder if GX_NULLDIR (in which case the passed
++     directory name is "."). */
+   if (add_current)
      {
        sdlen = strlen (dir);
-       nextname = (char *)malloc (sdlen + 1);
-@@ -678,10 +679,7 @@
- 	  nextlink->name = nextname;
- 	  nextlink->next = lastlink;
- 	  lastlink = nextlink;
--	  if (flags & GX_NULLDIR)
--	    nextname[0] = '\0';
--	  else
--	    bcopy (dir, nextname, sdlen + 1);
-+	  bcopy (dir, nextname, sdlen + 1);
- 	  ++count;
- 	}
-     }
-@@ -942,7 +940,12 @@
+@@ -942,7 +944,12 @@
  	      char **array;
  	      register unsigned int l;
  
@@ -365,7 +402,7 @@ diff -Naur bash-4.0.orig/lib/glob/glob.c bash-4.0/lib/glob/glob.c
  	      l = 0;
  	      while (array[l] != NULL)
  		++l;
-@@ -959,7 +962,8 @@
+@@ -959,7 +966,8 @@
  	      result[result_size - 1] = NULL;
  
  	      /* Note that the elements of ARRAY are not freed.  */
@@ -375,9 +412,35 @@ diff -Naur bash-4.0.orig/lib/glob/glob.c bash-4.0/lib/glob/glob.c
  	    }
  	}
        /* Free the directories.  */
+@@ -1003,11 +1011,24 @@
+ 
+       /* Just return what glob_vector () returns appended to the
+ 	 directory name. */
++      /* If flags & GX_ALLDIRS, we're called recursively */
+       dflags = flags & ~GX_MARKDIRS;
+       if (directory_len == 0)
+ 	dflags |= GX_NULLDIR;
+       if ((flags & GX_GLOBSTAR) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
+-	dflags |= GX_ALLDIRS|GX_ADDCURDIR;
++	{
++	  dflags |= GX_ALLDIRS|GX_ADDCURDIR;
++#if 0
++	  /* If we want all directories (dflags & GX_ALLDIRS) and we're not
++	     being called recursively as something like `echo **/*.o'
++	     ((flags & GX_ALLDIRS) == 0), we want to prevent glob_vector from
++	     adding a null directory name to the front of the temp_results
++	     array.  We turn off ADDCURDIR if not called recursively and
++	     dlen == 0 */
++#endif
++	  if (directory_len == 0 && (flags & GX_ALLDIRS) == 0)
++	    dflags &= ~GX_ADDCURDIR;
++	}
+       temp_results = glob_vector (filename,
+ 				  (directory_len == 0 ? "." : directory_name),
+ 				  dflags);
 diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
 --- bash-4.0.orig/lib/readline/display.c	2009-01-04 11:32:32.000000000 -0800
-+++ bash-4.0/lib/readline/display.c	2009-05-24 09:14:34.000000000 -0700
++++ bash-4.0/lib/readline/display.c	2009-07-22 15:31:46.000000000 -0700
 @@ -512,6 +512,7 @@
    /* Block keyboard interrupts because this function manipulates global
       data structures. */
@@ -386,7 +449,34 @@ diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
  
    if (!rl_display_prompt)
      rl_display_prompt = "";
-@@ -1236,6 +1237,7 @@
+@@ -1188,9 +1189,11 @@
+       if (t < out)
+ 	line[t - 1] = '>';
+ 
+-      if (!rl_display_fixed || forced_display || lmargin != last_lmargin)
++      if (rl_display_fixed == 0 || forced_display || lmargin != last_lmargin)
+ 	{
+ 	  forced_display = 0;
++	  o_cpos = _rl_last_c_pos;
++	  cpos_adjusted = 0;
+ 	  update_line (&visible_line[last_lmargin],
+ 		       &invisible_line[lmargin],
+ 		       0,
+@@ -1198,6 +1201,13 @@
+ 		       _rl_screenwidth + (lmargin ? 0 : wrap_offset),
+ 		       0);
+ 
++	  if ((MB_CUR_MAX > 1 && rl_byte_oriented == 0) &&
++	      cpos_adjusted == 0 &&
++	      _rl_last_c_pos != o_cpos &&
++	      _rl_last_c_pos > wrap_offset &&
++	      o_cpos < prompt_last_invisible)
++		_rl_last_c_pos -= prompt_invis_chars_first_line;	/* XXX - was wrap_offset */
++
+ 	  /* If the visible new line is shorter than the old, but the number
+ 	     of invisible characters is greater, and we are at the end of
+ 	     the new line, we need to clear to eol. */
+@@ -1236,6 +1246,7 @@
        visible_wrap_offset = wrap_offset;
    }
  
@@ -394,7 +484,7 @@ diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
    _rl_release_sigint ();
  }
  
-@@ -1772,7 +1774,7 @@
+@@ -1772,7 +1783,7 @@
  	     space_to_eol will insert too many spaces.  XXX - maybe we should
  	     adjust col_lendiff based on the difference between _rl_last_c_pos
  	     and _rl_screenwidth */
@@ -403,7 +493,7 @@ diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
  #endif
  	    {	  
  	      if (_rl_term_autowrap && current_line < inv_botlin)
-@@ -1892,6 +1894,10 @@
+@@ -1892,6 +1903,10 @@
  
    woff = WRAP_OFFSET (_rl_last_v_pos, wrap_offset);
    cpos = _rl_last_c_pos;
@@ -414,7 +504,7 @@ diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
  #if defined (HANDLE_MULTIBYTE)
    /* If we have multibyte characters, NEW is indexed by the buffer point in
       a multibyte string, but _rl_last_c_pos is the display position.  In
-@@ -1905,9 +1911,9 @@
+@@ -1905,9 +1920,9 @@
  	 prompt string, since they're both buffer indices and DPOS is a
  	 desired display position. */
        if ((new > prompt_last_invisible) ||		/* XXX - don't use woff here */
@@ -428,7 +518,7 @@ diff -Naur bash-4.0.orig/lib/readline/display.c bash-4.0/lib/readline/display.c
  	{
 diff -Naur bash-4.0.orig/lib/readline/readline.h bash-4.0/lib/readline/readline.h
 --- bash-4.0.orig/lib/readline/readline.h	2009-01-04 11:32:33.000000000 -0800
-+++ bash-4.0/lib/readline/readline.h	2009-05-24 09:14:30.000000000 -0700
++++ bash-4.0/lib/readline/readline.h	2009-07-22 15:31:36.000000000 -0700
 @@ -814,8 +814,9 @@
  #define RL_STATE_VIMOTION	0x100000	/* reading vi motion arg */
  #define RL_STATE_MULTIKEY	0x200000	/* reading multiple-key command */
@@ -442,7 +532,7 @@ diff -Naur bash-4.0.orig/lib/readline/readline.h bash-4.0/lib/readline/readline.
  #define RL_UNSETSTATE(x)	(rl_readline_state &= ~(x))
 diff -Naur bash-4.0.orig/lib/readline/terminal.c bash-4.0/lib/readline/terminal.c
 --- bash-4.0.orig/lib/readline/terminal.c	2009-01-04 11:32:34.000000000 -0800
-+++ bash-4.0/lib/readline/terminal.c	2009-05-24 09:14:30.000000000 -0700
++++ bash-4.0/lib/readline/terminal.c	2009-07-22 15:31:36.000000000 -0700
 @@ -355,7 +355,7 @@
        _rl_get_screen_size (fileno (rl_instream), 1);
        if (CUSTOM_REDISPLAY_FUNC ())
@@ -454,7 +544,7 @@ diff -Naur bash-4.0.orig/lib/readline/terminal.c bash-4.0/lib/readline/terminal.
  }
 diff -Naur bash-4.0.orig/lib/sh/winsize.c bash-4.0/lib/sh/winsize.c
 --- bash-4.0.orig/lib/sh/winsize.c	2008-08-12 10:53:51.000000000 -0700
-+++ bash-4.0/lib/sh/winsize.c	2009-05-24 09:14:27.000000000 -0700
++++ bash-4.0/lib/sh/winsize.c	2009-07-22 15:31:33.000000000 -0700
 @@ -30,16 +30,29 @@
  
  #include <sys/ioctl.h>
@@ -496,7 +586,7 @@ diff -Naur bash-4.0.orig/lib/sh/winsize.c bash-4.0/lib/sh/winsize.c
  
 diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
 --- bash-4.0.orig/parse.y	2009-01-08 05:29:12.000000000 -0800
-+++ bash-4.0/parse.y	2009-05-24 09:14:32.000000000 -0700
++++ bash-4.0/parse.y	2009-07-22 15:31:39.000000000 -0700
 @@ -1122,7 +1122,7 @@
  			  REDIRECTEE rd;
  			  REDIRECT *r;
@@ -742,18 +832,18 @@ diff -Naur bash-4.0.orig/parse.y bash-4.0/parse.y
      case ELIF:
 diff -Naur bash-4.0.orig/patchlevel.h bash-4.0/patchlevel.h
 --- bash-4.0.orig/patchlevel.h	2009-01-04 11:32:40.000000000 -0800
-+++ bash-4.0/patchlevel.h	2009-05-24 09:14:36.000000000 -0700
++++ bash-4.0/patchlevel.h	2009-07-22 15:31:48.000000000 -0700
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 24
++#define PATCHLEVEL 28
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
 --- bash-4.0.orig/pcomplete.c	2009-02-01 14:12:31.000000000 -0800
-+++ bash-4.0/pcomplete.c	2009-05-24 09:14:02.000000000 -0700
++++ bash-4.0/pcomplete.c	2009-07-22 15:31:08.000000000 -0700
 @@ -1032,6 +1032,7 @@
    cmdlist = build_arg_list (funcname, text, lwords, cw);
  
@@ -764,7 +854,7 @@ diff -Naur bash-4.0.orig/pcomplete.c bash-4.0/pcomplete.c
    add_unwind_protect (dispose_words, (char *)cmdlist);
 diff -Naur bash-4.0.orig/sig.c bash-4.0/sig.c
 --- bash-4.0.orig/sig.c	2009-01-04 11:32:41.000000000 -0800
-+++ bash-4.0/sig.c	2009-05-24 09:14:22.000000000 -0700
++++ bash-4.0/sig.c	2009-07-22 15:31:28.000000000 -0700
 @@ -448,6 +448,48 @@
  termsig_sighandler (sig)
       int sig;
@@ -816,7 +906,7 @@ diff -Naur bash-4.0.orig/sig.c bash-4.0/sig.c
    /* XXX - should this also trigger when interrupt_immediately is set? */
 diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
 --- bash-4.0.orig/subst.c	2009-01-28 11:34:12.000000000 -0800
-+++ bash-4.0/subst.c	2009-05-24 09:14:19.000000000 -0700
++++ bash-4.0/subst.c	2009-07-22 15:31:48.000000000 -0700
 @@ -85,6 +85,7 @@
  
  /* Flags for the `pflags' argument to param_expand() */
@@ -998,27 +1088,81 @@ diff -Naur bash-4.0.orig/subst.c bash-4.0/subst.c
  
    if (tdesc)
      {
-@@ -6887,7 +6990,7 @@
+@@ -6664,13 +6767,13 @@
+       return &expand_wdesc_error;
+ 
+     case RBRACE:
+-      if (var_is_set == 0 && unbound_vars_is_error)
++      if (var_is_set == 0 && unbound_vars_is_error && ((name[0] != '@' && name[0] != '*') || name[1]))
+ 	{
++	  last_command_exit_value = EXECUTION_FAILURE;
+ 	  err_unboundvar (name);
+ 	  FREE (value);
+ 	  FREE (temp);
+ 	  free (name);
+-	  last_command_exit_value = EXECUTION_FAILURE;
+ 	  return (interactive_shell ? &expand_wdesc_error : &expand_wdesc_fatal);
+ 	}
+       break;
+@@ -6887,15 +6990,25 @@
      case '*':		/* `$*' */
        list = list_rest_of_args ();
  
 -      if (list == 0 && unbound_vars_is_error)
++#if 0
++      /* According to austin-group posix proposal by Geoff Clare in
++	 <20090505091501.GA10097@squonk.masqnet> of 5 May 2009:
++
++ 	"The shell shall write a message to standard error and
++ 	 immediately exit when it tries to expand an unset parameter
++ 	 other than the '@' and '*' special parameters."
++      */
++
 +      if (list == 0 && unbound_vars_is_error && (pflags & PF_IGNUNBOUND) == 0)
  	{
  	  uerror[0] = '$';
  	  uerror[1] = '*';
-@@ -6949,7 +7052,7 @@
+ 	  uerror[2] = '\0';
+-	  err_unboundvar (uerror);
+ 	  last_command_exit_value = EXECUTION_FAILURE;
++	  err_unboundvar (uerror);
+ 	  return (interactive_shell ? &expand_wdesc_error : &expand_wdesc_fatal);
+ 	}
++#endif
+ 
+       /* If there are no command-line arguments, this should just
+ 	 disappear if there are other characters in the expansion,
+@@ -6949,15 +7062,25 @@
      case '@':		/* `$@' */
        list = list_rest_of_args ();
  
 -      if (list == 0 && unbound_vars_is_error)
++#if 0
++      /* According to austin-group posix proposal by Geoff Clare in
++	 <20090505091501.GA10097@squonk.masqnet> of 5 May 2009:
++
++ 	"The shell shall write a message to standard error and
++ 	 immediately exit when it tries to expand an unset parameter
++ 	 other than the '@' and '*' special parameters."
++      */
++
 +      if (list == 0 && unbound_vars_is_error && (pflags & PF_IGNUNBOUND) == 0)
  	{
  	  uerror[0] = '$';
  	  uerror[1] = '@';
+ 	  uerror[2] = '\0';
+-	  err_unboundvar (uerror);
+ 	  last_command_exit_value = EXECUTION_FAILURE;
++	  err_unboundvar (uerror);
+ 	  return (interactive_shell ? &expand_wdesc_error : &expand_wdesc_fatal);
+ 	}
++#endif
+ 
+       /* We want to flag the fact that we saw this.  We can't turn
+ 	 off quoting entirely, because other characters in the
 diff -Naur bash-4.0.orig/trap.c bash-4.0/trap.c
 --- bash-4.0.orig/trap.c	2009-01-16 14:07:53.000000000 -0800
-+++ bash-4.0/trap.c	2009-05-24 09:14:28.000000000 -0700
++++ bash-4.0/trap.c	2009-07-22 15:31:34.000000000 -0700
 @@ -755,7 +755,7 @@
  	}
  
