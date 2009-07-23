@@ -67,7 +67,11 @@ for DIRECTORY in ${DIRS}; do
   REMOVE="ABOUT-NLS COPYING COPYING.LIB MAINTAINERS Makefile.def
     Makefile.in Makefile.tpl README README.SCO BUGS FAQ LAST_UPDATED
     MD5SUMS NEWS bugs.html faq.html gcc/BASE-VER gcc/DEV-PHASE
-    gcc/f/BUGS gcc/f/NEWS gcc/gengtype-lex.c"
+    gcc/f/BUGS gcc/f/NEWS gcc/gengtype-lex.c INSTALL/binaries.html
+    INSTALL/build.html INSTALL/configure.html INSTALL/download.html
+    INSTALL/finalinstall.html INSTALL/gfdl.html INSTALL/index.html
+    INSTALL/old.html INSTALL/prerequisites.html INSTALL/specific.html
+    INSTALL/test.html"
   for file in ${REMOVE}; do
     rm -f $file
   done

@@ -1,0 +1,173 @@
+2009-01-27  Jakub Jelinek  <jakub@redhat.com>
+
+	* Makefile.in (BACKENDLIBS): Link against -ldl instead of -lcloog -lppl.
+	(graphite.o): Force -O, remove -fkeep-inline-functions.
+	* graphite.c: Include <dlfcn.h>.  Reference libcloog and libppl symbols
+	through pointers in cloog_pointers variable.
+	(init_cloog_pointers): New function.
+	(gcc_type_for_iv_of_clast_loop): Rename stmt_for argument to stmt_fora.
+	(graphite_transform_loops): Call init_cloog_pointers.
+
+diff -Naur gcc-4.4.0.orig/gcc/graphite.c gcc-4.4.0/gcc/graphite.c
+--- gcc-4.4.0.orig/gcc/graphite.c	2009-03-18 09:59:55.000000000 -0700
++++ gcc-4.4.0/gcc/graphite.c	2009-07-14 09:26:53.000000000 -0700
+@@ -59,6 +59,110 @@
+ #include "cloog/cloog.h"
+ #include "graphite.h"
+ 
++#include <dlfcn.h>
++#define DYNSYMS \
++  DYNSYM (cloog_block_alloc); \
++  DYNSYM (cloog_block_list_free); \
++  DYNSYM (cloog_block_list_malloc); \
++  DYNSYM (cloog_clast_create); \
++  DYNSYM (cloog_clast_free); \
++  DYNSYM (cloog_domain_free); \
++  DYNSYM (cloog_domain_matrix2domain); \
++  DYNSYM (cloog_initialize); \
++  DYNSYM (cloog_loop_malloc); \
++  DYNSYM (cloog_matrix_alloc); \
++  DYNSYM (cloog_matrix_copy); \
++  DYNSYM (cloog_matrix_free); \
++  DYNSYM (cloog_matrix_print); \
++  DYNSYM (cloog_names_malloc); \
++  DYNSYM (cloog_names_scalarize); \
++  DYNSYM (cloog_options_free); \
++  DYNSYM (cloog_options_malloc); \
++  DYNSYM (cloog_program_dump_cloog); \
++  DYNSYM (cloog_program_extract_scalars); \
++  DYNSYM (cloog_program_free); \
++  DYNSYM (cloog_program_generate); \
++  DYNSYM (cloog_program_malloc); \
++  DYNSYM (cloog_program_print); \
++  DYNSYM (cloog_program_scatter); \
++  DYNSYM (cloog_statement_alloc); \
++  DYNSYM (ppl_finalize); \
++  DYNSYM (pprint); \
++  DYNSYM (stmt_block); \
++  DYNSYM (stmt_for); \
++  DYNSYM (stmt_guard); \
++  DYNSYM (stmt_root); \
++  DYNSYM (stmt_user);
++static struct
++{
++  bool inited;
++  void *h;
++#define DYNSYM(x) __typeof (x) *p_##x
++  DYNSYMS
++#undef DYNSYM
++} cloog_pointers;
++
++#define cloog_block_alloc (*cloog_pointers.p_cloog_block_alloc)
++#define cloog_block_list_free (*cloog_pointers.p_cloog_block_list_free)
++#define cloog_block_list_malloc (*cloog_pointers.p_cloog_block_list_malloc)
++#define cloog_clast_create (*cloog_pointers.p_cloog_clast_create)
++#define cloog_clast_free (*cloog_pointers.p_cloog_clast_free)
++#define cloog_domain_free (*cloog_pointers.p_cloog_domain_free)
++#define cloog_domain_matrix2domain (*cloog_pointers.p_cloog_domain_matrix2domain)
++#define cloog_initialize (*cloog_pointers.p_cloog_initialize)
++#define cloog_loop_malloc (*cloog_pointers.p_cloog_loop_malloc)
++#define cloog_matrix_alloc (*cloog_pointers.p_cloog_matrix_alloc)
++#define cloog_matrix_copy (*cloog_pointers.p_cloog_matrix_copy)
++#define cloog_matrix_free (*cloog_pointers.p_cloog_matrix_free)
++#define cloog_matrix_print (*cloog_pointers.p_cloog_matrix_print)
++#define cloog_names_malloc (*cloog_pointers.p_cloog_names_malloc)
++#define cloog_names_scalarize (*cloog_pointers.p_cloog_names_scalarize)
++#define cloog_options_free (*cloog_pointers.p_cloog_options_free)
++#define cloog_options_malloc (*cloog_pointers.p_cloog_options_malloc)
++#define cloog_program_dump_cloog (*cloog_pointers.p_cloog_program_dump_cloog)
++#define cloog_program_extract_scalars (*cloog_pointers.p_cloog_program_extract_scalars)
++#define cloog_program_free (*cloog_pointers.p_cloog_program_free)
++#define cloog_program_generate (*cloog_pointers.p_cloog_program_generate)
++#define cloog_program_malloc (*cloog_pointers.p_cloog_program_malloc)
++#define cloog_program_print (*cloog_pointers.p_cloog_program_print)
++#define cloog_program_scatter (*cloog_pointers.p_cloog_program_scatter)
++#define cloog_statement_alloc (*cloog_pointers.p_cloog_statement_alloc)
++#define ppl_finalize (*cloog_pointers.p_ppl_finalize)
++#define pprint (*cloog_pointers.p_pprint)
++#define stmt_block (*cloog_pointers.p_stmt_block)
++#define stmt_for (*cloog_pointers.p_stmt_for)
++#define stmt_guard (*cloog_pointers.p_stmt_guard)
++#define stmt_root (*cloog_pointers.p_stmt_root)
++#define stmt_user (*cloog_pointers.p_stmt_user)
++
++#define cloog_finalize (*cloog_pointers.p_ppl_finalize)
++
++static bool
++init_cloog_pointers (void)
++{
++  void *h;
++
++  if (cloog_pointers.inited)
++    return cloog_pointers.h != NULL;
++  h = dlopen ("libcloog.so.0", RTLD_LAZY);
++  cloog_pointers.h = h;
++  if (h == NULL)
++    return false;
++#define DYNSYM(x) \
++  do \
++    { \
++      union { __typeof (cloog_pointers.p_##x) p; void *q; } u; \
++      u.q = dlsym (h, #x); \
++      if (u.q == NULL) \
++	return false; \
++      cloog_pointers.p_##x = u.p; \
++    } \
++  while (0)
++  DYNSYMS
++#undef DYNSYM
++  return true;
++}
++
+ static VEC (scop_p, heap) *current_scops;
+ 
+ /* Converts a GMP constant V to a tree and returns it.  */
+@@ -4075,10 +4179,10 @@
+    STMT.  */
+ 
+ static tree
+-gcc_type_for_iv_of_clast_loop (struct clast_for *stmt_for)
++gcc_type_for_iv_of_clast_loop (struct clast_for *stmt_fora)
+ {
+-  struct clast_user_stmt *stmt = clast_get_body_of_loop ((struct clast_stmt *) stmt_for);
+-  const char *cloog_iv = stmt_for->iterator;
++  struct clast_user_stmt *stmt = clast_get_body_of_loop ((struct clast_stmt *) stmt_fora);
++  const char *cloog_iv = stmt_fora->iterator;
+   CloogStatement *cs = stmt->statement;
+   graphite_bb_p gbb = (graphite_bb_p) cloog_statement_usr (cs);
+ 
+@@ -6109,6 +6213,12 @@
+   if (number_of_loops () <= 1)
+     return;
+ 
++  if (!init_cloog_pointers ())
++    {
++      sorry ("Graphite loop optimizations cannot be used");
++      return;
++    }
++
+   current_scops = VEC_alloc (scop_p, heap, 3);
+   recompute_all_dominators ();
+ 
+diff -Naur gcc-4.4.0.orig/gcc/Makefile.in gcc-4.4.0/gcc/Makefile.in
+--- gcc-4.4.0.orig/gcc/Makefile.in	2009-07-14 09:25:46.000000000 -0700
++++ gcc-4.4.0/gcc/Makefile.in	2009-07-14 09:26:53.000000000 -0700
+@@ -914,7 +914,7 @@
+ # How to link with both our special library facilities
+ # and the system's installed libraries.
+ LIBS = @LIBS@ $(CPPLIB) $(LIBINTL) $(LIBICONV) $(LIBIBERTY) $(LIBDECNUMBER)
+-BACKENDLIBS = $(CLOOGLIBS) $(PPLLIBS) $(GMPLIBS)
++BACKENDLIBS = $(GMPLIBS) $(if $(CLOOGLIBS),-ldl)
+ # Any system libraries needed just for GNAT.
+ SYSLIBS = @GNAT_LIBEXC@
+ 
+@@ -3061,6 +3061,9 @@
+ 	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) \
+ 		$(out_file) $(OUTPUT_OPTION)
+ 
++graphite.o : \
++  ALL_CFLAGS := -O $(filter-out -fkeep-inline-functions, $(ALL_CFLAGS))
++
+ # Build auxiliary files that support ecoff format.
+ mips-tfile: mips-tfile.o version.o $(LIBDEPS)
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ mips-tfile.o version.o $(LIBS)

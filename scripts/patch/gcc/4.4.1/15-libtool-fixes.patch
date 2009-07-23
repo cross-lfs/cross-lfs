@@ -1,0 +1,29 @@
+This patch works around rpath in GCC
+
+diff -Naur gcc-4.4.0.orig/ltmain.sh gcc-4.4.0/ltmain.sh
+--- gcc-4.4.0.orig/ltmain.sh	2008-09-26 09:21:02.000000000 -0700
++++ gcc-4.4.0/ltmain.sh	2009-07-14 10:03:39.000000000 -0700
+@@ -6886,6 +6886,7 @@
+ 	  rpath="$finalize_rpath"
+ 	  test "$mode" != relink && rpath="$compile_rpath$rpath"
+ 	  for libdir in $rpath; do
++	    case "$libdir" in /usr/lib|/usr/lib64|/usr/lib/../lib|/usr/lib/../lib64) continue;; esac
+ 	    if test -n "$hardcode_libdir_flag_spec"; then
+ 	      if test -n "$hardcode_libdir_separator"; then
+ 		if test -z "$hardcode_libdirs"; then
+@@ -7575,6 +7576,7 @@
+       rpath=
+       hardcode_libdirs=
+       for libdir in $compile_rpath $finalize_rpath; do
++	case "$libdir" in /usr/lib|/usr/lib64|/usr/lib/../lib|/usr/lib/../lib64) continue;; esac
+ 	if test -n "$hardcode_libdir_flag_spec"; then
+ 	  if test -n "$hardcode_libdir_separator"; then
+ 	    if test -z "$hardcode_libdirs"; then
+@@ -7626,6 +7628,7 @@
+       rpath=
+       hardcode_libdirs=
+       for libdir in $finalize_rpath; do
++	case "$libdir" in /usr/lib|/usr/lib64|/usr/lib/../lib|/usr/lib/../lib64) continue;; esac
+ 	if test -n "$hardcode_libdir_flag_spec"; then
+ 	  if test -n "$hardcode_libdir_separator"; then
+ 	    if test -z "$hardcode_libdirs"; then
