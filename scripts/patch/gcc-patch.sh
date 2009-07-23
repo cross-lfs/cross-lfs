@@ -152,7 +152,8 @@ if [ -e ${PATCH_DIR}/${VERSION} ]; then
   echo "Origin: Upstream" >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
   echo "Upstream Status: Applied" >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
   echo "Description: This Patch contains fixes for gcc-${VERSION}, and should be" >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
-  echo "             rechecked periodically." >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
+  echo "             rechecked periodically. These patches are not for inclusion in the book" >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
+  echo "             but for testing purposes only. " >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
   echo "" >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
   diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch
   echo "Created ~/patches/gcc-${VERSION}-fixes-${PATCH_NUM2}.patch."
