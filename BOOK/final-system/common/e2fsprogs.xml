@@ -38,7 +38,7 @@ cd build</userinput></screen>
 
 <screen os="d"><userinput>PKG_CONFIG=true ../configure --prefix=/usr --with-root-prefix="" \
     --enable-elf-shlibs --with-cc=gcc \
-    --disable-libuuid --disable-libblkid</userinput></screen>
+    --disable-libblkid --disable-libuuid --disable-fsck</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
@@ -94,7 +94,7 @@ cd build</userinput></screen>
 
       <seglistitem>
         <seg>badblocks, blkid, chattr, compile_et, debugfs, dumpe2fs,
-        e2fsck, e2image, e2label, e2undo, filefrag, findfs, fsck, fsck.ext2,
+        e2fsck, e2image, e2label, e2undo, filefrag, findfs, fsck.ext2,
         fsck.ext3, fsck.ext4, fsck.ext4dev logsave, lsattr, mk_cmds, mke2fs,
         mkfs.ext2, mkfs.ext3, mkfs.ext4, mkfs.ext4dev mklost+found, resize2fs,
         tune2fs, uuidd, and uuidgen.</seg>
@@ -241,16 +241,6 @@ cd build</userinput></screen>
           (UUID)</para>
           <indexterm zone="ch-system-e2fsprogs findfs">
             <primary sortas="b-findfs">findfs</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="fsck">
-        <term><command>fsck</command></term>
-        <listitem>
-          <para>Is used to check, and optionally repair, file systems</para>
-          <indexterm zone="ch-system-e2fsprogs fsck">
-            <primary sortas="b-fsck">fsck</primary>
           </indexterm>
         </listitem>
       </varlistentry>
