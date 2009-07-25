@@ -22,6 +22,20 @@
   <sect2 role="installation">
     <title>Installation of M4</title>
 
+    <para os="cc1">Configure can not properly determine the results of the
+    following tests:</para>
+
+<screen os="cc2"><userinput>cat &gt; config.cache &lt;&lt; EOF
+gl_cv_func_btowc_eof=yes
+gl_cv_func_mbrtowc_incomplete_state=yes
+gl_cv_func_mbrtowc_sanitycheck=yes
+gl_cv_func_mbrtowc_null_arg=yes
+gl_cv_func_mbrtowc_retval=yes
+gl_cv_func_mbrtowc_nul_retval=yes
+gl_cv_func_wcrtomb_retval=yes
+gl_cv_func_wctob_works=yes
+EOF</userinput></screen>
+
     <para os="a">Prepare M4 for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/tools \
