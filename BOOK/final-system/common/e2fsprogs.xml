@@ -38,7 +38,8 @@ cd build</userinput></screen>
 
 <screen os="d"><userinput>PKG_CONFIG=true ../configure --prefix=/usr --with-root-prefix="" \
     --enable-elf-shlibs --with-cc=gcc \
-    --disable-libblkid --disable-libuuid --disable-fsck</userinput></screen>
+    --disable-libblkid --disable-libuuid --disable-fsck \
+    --disable-uuidd</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
@@ -97,7 +98,7 @@ cd build</userinput></screen>
         e2fsck, e2image, e2label, e2undo, filefrag, findfs, fsck.ext2,
         fsck.ext3, fsck.ext4, fsck.ext4dev logsave, lsattr, mk_cmds, mke2fs,
         mkfs.ext2, mkfs.ext3, mkfs.ext4, mkfs.ext4dev mklost+found, resize2fs,
-        tune2fs, uuidd, and uuidgen.</seg>
+        and tune2fs.</seg>
         <seg>libcom_err.[a,so], libe2p.[a,so], libext2fs.[a,so], and
         libss.[a,so]</seg>
       </seglistitem>
@@ -409,32 +410,6 @@ cd build</userinput></screen>
           class="filesystem">ext2</systemitem> file system</para>
           <indexterm zone="ch-system-e2fsprogs tune2fs">
             <primary sortas="b-tune2fs">tune2fs</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="uuidd">
-        <term><command>uuidd</command></term>
-        <listitem>
-          <para>The uuidd daemon is used by the UUID library to generate
-          universally unique identifiers (UUIDs), especially time-based UUID's
-          in a secure and guaranteed-unique fashion, even in the face of large
-          numbers of threads trying to grab UUID's running on different CPU's.
-          </para>
-          <indexterm zone="ch-system-e2fsprogs uuidd">
-            <primary sortas="b-uuidd">uuidd</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="uuidgen">
-        <term><command>uuidgen</command></term>
-        <listitem>
-          <para>Creates new UUIDs. Each new UUID can reasonably be considered
-          unique among all UUIDs created, on the local system and on other
-          systems, in the past and in the future</para>
-          <indexterm zone="ch-system-e2fsprogs uuidgen">
-            <primary sortas="b-uuidgen">uuidgen</primary>
           </indexterm>
         </listitem>
       </varlistentry>
