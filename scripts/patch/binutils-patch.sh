@@ -110,12 +110,20 @@ echo "Created ~/patches/binutils-${SOURCEVERSION}-branch_update-${PATCH_NUM}.pat
 #
 unset DATE_STAMP
 
-# Create Another Copy to create fixes patch
+# Create a copy of the Original Directory So We can do some Updates
 #
 cd ~/tmp
+rm -rf binutils-${SOURCEVERSION}.orig
+cp -ar binutils-${SOURCEVERSION} binutils-${SOURCEVERSION}.orig
+
+# Make testsuite fixes
+#
+cd ~/tmp/binutils-${SOURCEVERSION}
+sed -i -e 's/getline/_getline/' libiberty/testsuite/test-demangle.c
+
+# Create fixes patch
+#
 if [ -e ${PATCH_DIR}/${SOURCEVERSION} ]; then
-  rm -rf binutils-${SOURCEVERSION}.orig
-  cp -ar binutils-${SOURCEVERSION} binutils-${SOURCEVERSION}.orig
 
   # Apply Patches from directories
   #
@@ -139,30 +147,30 @@ if [ -e ${PATCH_DIR}/${SOURCEVERSION} ]; then
       fi
     done
   fi
-
-  # Cleanup Directory
-  #
-  cd ~/tmp/binutils-${SOURCEVERSION}
-  rm -f $(find * -name "*~")
-  rm -f $(find * -name "*.orig")
-  rm -f $(find * -name "*.rej")
-  rm -f *.orig *~ *.rej
-
-  # Create Patch
-  #
-  cd ~/tmp
-  install -d ~/patches
-  echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "Date: `date +%m-%d-%Y`" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "Initial Package Version: ${VERSION}" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "Origin: Upstream" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "Upstream Status: Applied" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "Description: This Patch contains fixes for binutils-${SOURCEVERSION}, and should be" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "             rechecked periodically." >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  diff -Naur binutils-${SOURCEVERSION}.orig binutils-${SOURCEVERSION} >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
-  echo "Created ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch."
 fi
+
+# Cleanup Directory
+#
+cd ~/tmp/binutils-${SOURCEVERSION}
+rm -f $(find * -name "*~")
+rm -f $(find * -name "*.orig")
+rm -f $(find * -name "*.rej")
+rm -f *.orig *~ *.rej
+
+# Create Patch
+#
+cd ~/tmp
+install -d ~/patches
+echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "Date: `date +%m-%d-%Y`" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "Initial Package Version: ${VERSION}" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "Origin: Upstream" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "Upstream Status: Applied" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "Description: This Patch contains fixes for binutils-${SOURCEVERSION}, and should be" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "             rechecked periodically." >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "" >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+diff -Naur binutils-${SOURCEVERSION}.orig binutils-${SOURCEVERSION} >> ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch
+echo "Created ~/patches/binutils-${SOURCEVERSION}-fixes-${PATCH_NUM2}.patch."
 
 # Cleanup Directory
 #

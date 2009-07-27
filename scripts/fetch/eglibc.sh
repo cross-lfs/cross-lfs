@@ -69,7 +69,7 @@ cd ~/tmp/eglibc-${SOURCEVERSION}
 echo "Updating Glibc configure files..."
 find . -name configure -exec touch {} \;
 
-# Create A copy of the Original Directory So We can do some Updates
+# Create a copy of the Original Directory So We can do some Updates
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
 cp -ar libc libc.orig
