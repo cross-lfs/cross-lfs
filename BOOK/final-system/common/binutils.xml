@@ -93,14 +93,14 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
       Do not skip it under any circumstance.</para>
     </important>
 
+    <para os="ts1">In order to run the testsuite correctly, due to a change in
+    Glibc we need to run the following command to prevent an error:</para>
+
+<screen os="ts2"><userinput>sed -i 's/getline/_getline/' ../binutils-&binutils-version;/libiberty/testsuite/test-demangle.c</userinput></screen>
+
     <para os="p">Test the results:</para>
 
 <screen os="q"><userinput>make check</userinput></screen>
-
-    <para os="ts1">In order to run the testsuite correctly, due to a change in glibc
-      we need to run the following command to prevent an error:</para>
-
-<screen os="ts2"><userinput>sed -i 's/getline/_getline/' libiberty/testsuite/test-demangle.c</userinput></screen>
 
     <para os="r">Install the package:</para>
 
