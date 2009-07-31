@@ -107,8 +107,8 @@ cd ../gcc-build</userinput></screen>
       <seglistitem>
         <seg>c++, cc (link to gcc), cpp, g++, gcc, gccbug, and gcov</seg>
         <seg>libgcc.a, libgcc_eh.a, libgcc_s.so, libgcov.a, libgomp.[a,so],
-        libmudflap.[a,so], libmudflapth.[a,so], libssp.[a,so], libstdc++.[a,so],
-        and libsupc++.a</seg>
+        libmudflap.[a,so], libmudflapth.[a,so], libssp.[a,so],
+        libssp_nonshared.a, libstdc++.[a,so], and libsupc++.a</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -210,6 +210,17 @@ cd ../gcc-build</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libgomp">
+        <term><filename class="libraryfile">libgomp</filename></term>
+        <listitem>
+          <para>GNU implementation of the OpenMP API for multi-platform
+          shared-memory parallel programming in C/C++ and Fortran</para>
+          <indexterm zone="ch-system-gcc libgomp">
+            <primary sortas="c-libgomp">libgomp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libmudflap">
         <term><filename class="libraryfile">libmudflap</filename></term>
         <listitem>
@@ -217,6 +228,17 @@ cd ../gcc-build</userinput></screen>
           pointer and array dereferencing operations.</para>
           <indexterm zone="ch-system-gcc libmudflap">
             <primary sortas="c-libmudflap*">libmudflap*</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libssp">
+        <term><filename class="libraryfile">libssp</filename></term>
+        <listitem>
+          <para>Contains routines supporting GCC's stack-smashing protection
+          functionality</para>
+          <indexterm zone="ch-system-gcc libssp">
+            <primary sortas="c-libssp*">libssp*</primary>
           </indexterm>
         </listitem>
       </varlistentry>
