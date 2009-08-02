@@ -33,7 +33,7 @@ fi
 # Set Patch Number
 #
 cd ~/tmp
-wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
+wget http://patches.cross-lfs.org/dev/ --no-remove-listing
 PATCH_NUM=$(cat index.html | grep vim | grep "${VERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
 PATCH_NUM=$(expr ${PATCH_NUM} + 1)
 rm -f index.html
