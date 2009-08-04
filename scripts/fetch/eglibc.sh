@@ -36,7 +36,7 @@ svn export -r ${DL_REVISION} svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION
 #
 cd ~/tmp
 wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
-PATCH_NUM=$(cat index.html | grep eglibc | grep "${SOURCEVERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+PATCH_NUM=$(cat index.html | grep eglibc | grep "${SOURCEVERSION}" | grep fixes | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
 PATCH_NUM=$(expr ${PATCH_NUM} + 1)
 rm -f index.html
 
@@ -135,17 +135,22 @@ rm -rf *.orig *~ *.rej
 # Create Patch
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
-install -d ~/patches/
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" >  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Date: `date +%m-%d-%Y`" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Initial Package Version: ${SOURCEVERSION}" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Origin: Upstream" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Upstream Status: Applied" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Description: These are fixes eglibc-${SOURCEVERSION}, and should be" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "             rechecked periodically." >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-diff -Naur libc.orig libc >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-echo "Created  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch."
+install -d ~/public_html/
+diff -Naur libc.orig libc >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+if [ "$(cat ~/public_html/eglibc-${VERSION}-fixes-${PATCH_NUM}.patch)" != "" ]; then
+  echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Date: `date +%m-%d-%Y`" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Initial Package Version: ${SOURCEVERSION}" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Origin: Upstream" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Upstream Status: Applied" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Description: These are fixes eglibc-${SOURCEVERSION}, and should be" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "             rechecked periodically." >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  diff -Naur libc.orig libc >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Created  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch."
+else
+  rm -f ~/public_html/eglibc-${VERSION}-fixes-${PATCH_NUM}.patch
+fi
 
 # Remove Patched Copy
 #
