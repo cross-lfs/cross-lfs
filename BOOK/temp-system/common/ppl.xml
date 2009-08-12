@@ -39,9 +39,9 @@
     --enable-interfaces="c,cxx" --enable-shared --disable-optimization \
     --with-libgmp-prefix=/tools --with-libgmpxx-prefix=/tools</userinput></screen>
 
-    <para os="bp1">PPL doesn't check to see if GMP was compiled with support for
-    exceptions when it is being cross-compiled; it simply assumes that it was
-	not.  This assumption is incorrect, so fix that:</para>
+    <para os="bp1">When PPL is cross-compiled, it does not check whether
+    GMP was compiled with support for exceptions, and simply assumes it was not.
+    This assumption is incorrect, so we will fix that:</para>
 
 <screen os="bp2">echo '#define PPL_GMP_SUPPORTS_EXCEPTIONS 1' >> confdefs.h</screen>
 
