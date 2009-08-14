@@ -100,7 +100,7 @@ find man -name Makefile -exec sed -i 's/groups.1 //' '{}' \;</userinput></screen
     </indexterm>
 
 <screen os="s"><userinput>sed -i /etc/login.defs \
-    -e 's@#MD5_CRYPT_ENAB.no@MD5_CRYPT_ENAB yes@' \
+    -e 's@#\(ENCRYPT_METHOD \).*@\1MD5@' \
     -e 's@/var/spool/mail@/var/mail@'</userinput></screen>
 
     <note os="t">
