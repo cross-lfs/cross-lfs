@@ -35,8 +35,7 @@
 
     <para os="b">Prepare Shadow for compilation:</para>
 
-<screen os="c"><userinput>./configure --sysconfdir=/etc --without-libpam \
-    --without-audit --without-selinux</userinput></screen>
+<screen os="c"><userinput>./configure --sysconfdir=/etc</userinput></screen>
 
 <para os="d">The meaning of the configure options:</para>
 
@@ -45,26 +44,6 @@
       <term><parameter>--sysconfdir=/etc</parameter></term>
       <listitem><para>Tells Shadow to install its configuration files into
       /etc, rather than /usr/etc.</para></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter>--without-libpam</parameter></term>
-      <listitem><para>Support for Linux-PAM is enabled by default in Shadow,
-      however PAM is not installed on a base CLFS system, so this switch
-      disables PAM support in Shadow. For instructions to install PAM and
-      link Shadow to it, you can look at
-      <ulink url="&cblfs-root;index.php/Linux-PAM"/>.</para></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter>--without-audit</parameter></term>
-      <listitem><para>Support for auditing is enabled by default, but a
-      library that it needs is not installed in a base CLFS system. This
-      switch disables auditing support.</para></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter>--without-selinux</parameter></term>
-      <listitem><para>Support for selinux is enabled by default, but selinux
-      is not built in a base CLFS system and configure will fail without this
-      switch.</para></listitem>
     </varlistentry>
   </variablelist>
 
