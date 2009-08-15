@@ -30,11 +30,29 @@ fi
 # Set Patch Number
 #
 cd ~/tmp
-wget http://patches.cross-lfs.org/dev/ --no-remove-listing
-PATCH_NUM=$(cat index.html | grep binutils | grep "${SOURCEVERSION}" | grep branch_update | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
-PATCH_NUM=$(expr ${PATCH_NUM} + 1)
-PATCH_NUM2=$(cat index.html | grep binutils | grep "${SOURCEVERSION}" | grep fixes | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
-PATCH_NUM2=$(expr ${PATCH_NUM2} + 1)
+wget http://svn.cross-lfs.org/svn/repos/patches/binutils/ --no-remove-listing
+for num in $(seq 1 99); do
+  PATCH_NUM=$(cat index.html | grep "${VERSION}" | grep branch_update-${num} | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+  if [ "${PATCH_NUM}" = "0" -a "${num}" = "1" ]; then
+    PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+    break
+  fi
+  if [ "${PATCH_NUM}" != "${num}" ]; then
+    PATCH_NUM=$(expr ${num})
+    break
+  fi
+done
+for num in $(seq 1 99); do
+  PATCH_NUM2=$(cat index.html | grep "${SOURCEVERSION}" | grep fixes-${num} | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+  if [ "${PATCH_NUM2}" = "0" -a "${num}" = "1" ]; then
+    PATCH_NUM2=$(expr ${PATCH_NUM2} + 1)
+    break
+  fi
+  if [ "${PATCH_NUM2}" != "${num}" ]; then
+    PATCH_NUM2=$(expr ${num})
+    break
+  fi
+done
 rm -f index.html
 
 # Cleanup Directory

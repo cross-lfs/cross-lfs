@@ -35,9 +35,18 @@ svn export -r ${DL_REVISION} svn://svn.eglibc.org/branches/eglibc-${FIXEDVERSION
 # Set Patch Number
 #
 cd ~/tmp
-wget http://svn.cross-lfs.org/svn/repos/cross-lfs/trunk/patches/ --no-remove-listing
-PATCH_NUM=$(cat index.html | grep eglibc | grep "${SOURCEVERSION}" | grep fixes | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
-PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+wget http://svn.cross-lfs.org/svn/repos/patches/eglibc/ --no-remove-listing
+for num in $(seq 1 99); do
+  PATCH_NUM=$(cat index.html | grep "${VERSION}" | grep fixes-${num} | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+  if [ "${PATCH_NUM}" = "0" -a "${num}" = "1" ]; then
+    PATCH_NUM=$(expr ${PATCH_NUM} + 1)
+    break
+  fi
+  if [ "${PATCH_NUM}" != "${num}" ]; then
+    PATCH_NUM=$(expr ${num})
+    break
+  fi
+done
 rm -f index.html
 
 # Customize the version string, so we know it's patched
