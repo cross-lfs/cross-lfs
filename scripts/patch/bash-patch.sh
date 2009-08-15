@@ -36,7 +36,7 @@ fi
 cd ~/tmp
 wget http://svn.cross-lfs.org/svn/repos/patches/bash/ --no-remove-listing
 for num in $(seq 1 99); do
-  PATCH_NUM=$(cat index.html | grep "${VERSION}" | grep branch_update-${num} | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
+  PATCH_NUM=$(cat index.html | grep "${VERSION}" | grep branch_update-${num}.patch | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
   if [ "${PATCH_NUM}" = "0" -a "${num}" = "1" ]; then
     PATCH_NUM=$(expr ${PATCH_NUM} + 1)
     break
