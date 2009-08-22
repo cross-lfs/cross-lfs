@@ -22,6 +22,12 @@
   <sect2 role="installation">
     <title>Installation of Coreutils</title>
 
+    <para os="aa">The following command updates the timestamps on the uname
+    and hostname man pages so that the Makefile does not attempt to regenerate
+    them:</para>
+
+<screen os="ab"><userinput>touch man/uname.1 man/hostname.1</userinput></screen>
+
     <para os="ba">Configure can not properly determine how to get free space
     when cross-compiling - as a result, the <command>df</command> program will
     not be built. Add the following entries to <filename>config.cache</filename>
