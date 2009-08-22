@@ -144,21 +144,21 @@ rm -rf *.orig *~ *.rej
 # Create Patch
 #
 cd ~/tmp/eglibc-${SOURCEVERSION}
-install -d ~/public_html/
-diff -Naur libc.orig libc >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-if [ "$(cat ~/public_html/eglibc-${VERSION}-fixes-${PATCH_NUM}.patch)" != "" ]; then
-  echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "Date: `date +%m-%d-%Y`" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "Initial Package Version: ${SOURCEVERSION}" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "Origin: Upstream" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "Upstream Status: Applied" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "Description: These are fixes eglibc-${SOURCEVERSION}, and should be" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "             rechecked periodically." >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "" >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  diff -Naur libc.orig libc >>  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
-  echo "Created  ~/public_html/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch."
+install -d ~/patches/
+diff -Naur libc.orig libc >> ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+if [ -e ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch ]; then
+  echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Date: `date +%m-%d-%Y`" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Initial Package Version: ${SOURCEVERSION}" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Origin: Upstream" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Upstream Status: Applied" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Description: These are fixes eglibc-${SOURCEVERSION}, and should be" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "             rechecked periodically." >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "" >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  diff -Naur libc.orig libc >>  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
+  echo "Created  ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch."
 else
-  rm -f ~/public_html/eglibc-${VERSION}-fixes-${PATCH_NUM}.patch
+  rm -f ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch
 fi
 
 # Remove Patched Copy
@@ -188,3 +188,16 @@ tar cjf ~/packages/eglibc-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2 eg
 #
 cd ~/tmp
 rm -rf eglibc-${SOURCEVERSION}
+
+# Display Created Files
+#
+echo "Tarballs:"
+echo "~/packages/eglibc-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2"
+echo "~/packages/eglibc-ports-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2"
+echo "~/packages/eglibc-linuxthreads-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2"
+echo "~/packages/eglibc-localedef-${SOURCEVERSION}-${DL_DATE}-r${DL_REVISION}.tar.bz2"
+if [ -e ~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch ]; then
+  echo "Patches:"
+  echo "~/patches/eglibc-${SOURCEVERSION}-fixes-${PATCH_NUM}.patch"
+  echo
+fi
