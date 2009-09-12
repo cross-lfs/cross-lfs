@@ -153,12 +153,12 @@ make -k check &gt;eglibc-check-log 2&gt;&amp;1 ; grep Error eglibc-check-log</us
 
     <para>To save time, an alternative to running the previous command (which
     generates and installs every locale listed in the
-    eglibc-&eglibc-version;/localedata/SUPPORTED file) is to install only
-    those locales that are wanted and needed. This can be achieved by using
-    the <command>localedef</command> command. Information on this command is
-    located in the <filename>INSTALL</filename> file in the EGLIBC source.
-    However, there are a number of locales that are essential in order for the
-    tests of future packages to pass, in particular, the
+    <filename>eglibc-&eglibc-version;/localedata/SUPPORTED</filename> file) is
+    to install only those locales that are wanted and needed. This can be
+    achieved by using the <command>localedef</command> command. Information on
+    this command is located in the <filename>INSTALL</filename> file in the
+    EGLIBC source. However, there are a number of locales that are essential in
+    order for the tests of future packages to pass, in particular, the
     <emphasis>libstdc++</emphasis> tests from GCC. The following instructions,
     instead of the <parameter>install-locales</parameter> target used above,
     will install the minimum set of locales necessary for the tests to run
