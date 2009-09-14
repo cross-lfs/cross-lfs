@@ -1,0 +1,639 @@
+Submitted By: Jim Gifford (jim at cross-lfs dot org)
+Date: 09-12-2009
+Initial Package Version: 4.4.1
+Origin: Upstream
+Upstream Status: Applied
+Description: This Patch contains fixes for gcc-4.4.1, and should be
+             rechecked periodically. These patches are not for inclusion in the book
+             but for testing purposes only. 
+
+diff -Naur gcc-4.4.1.orig/boehm-gc/ia64_save_regs_in_stack.s gcc-4.4.1/boehm-gc/ia64_save_regs_in_stack.s
+--- gcc-4.4.1.orig/boehm-gc/ia64_save_regs_in_stack.s	2001-10-14 21:57:59.000000000 -0700
++++ gcc-4.4.1/boehm-gc/ia64_save_regs_in_stack.s	2009-09-12 09:19:14.000000000 -0700
+@@ -1,12 +0,0 @@
+-        .text
+-        .align 16
+-        .global GC_save_regs_in_stack
+-        .proc GC_save_regs_in_stack
+-GC_save_regs_in_stack:
+-        .body
+-        flushrs
+-        ;;
+-        mov r8=ar.bsp
+-        br.ret.sptk.few rp
+-        .endp GC_save_regs_in_stack
+-
+diff -Naur gcc-4.4.1.orig/boehm-gc/ia64_save_regs_in_stack.S gcc-4.4.1/boehm-gc/ia64_save_regs_in_stack.S
+--- gcc-4.4.1.orig/boehm-gc/ia64_save_regs_in_stack.S	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.4.1/boehm-gc/ia64_save_regs_in_stack.S	2009-09-12 09:19:14.000000000 -0700
+@@ -0,0 +1,15 @@
++        .text
++        .align 16
++        .global GC_save_regs_in_stack
++        .proc GC_save_regs_in_stack
++GC_save_regs_in_stack:
++        .body
++        flushrs
++        ;;
++        mov r8=ar.bsp
++        br.ret.sptk.few rp
++        .endp GC_save_regs_in_stack
++
++#ifdef __linux__
++	.section .note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.1.orig/boehm-gc/include/private/gc_locks.h gcc-4.4.1/boehm-gc/include/private/gc_locks.h
+--- gcc-4.4.1.orig/boehm-gc/include/private/gc_locks.h	2006-02-03 16:15:08.000000000 -0800
++++ gcc-4.4.1/boehm-gc/include/private/gc_locks.h	2009-09-12 09:19:14.000000000 -0700
+@@ -139,49 +139,35 @@
+ #      define GC_TEST_AND_SET_DEFINED
+ #    endif
+ #    if defined(POWERPC)
+-#     if 0 /* CPP_WORDSZ == 64  totally broken to use int locks with ldarx */
+-        inline static int GC_test_and_set(volatile unsigned int *addr) {
+-          unsigned long oldval;
+-          unsigned long temp = 1; /* locked value */
+-
+-          __asm__ __volatile__(
+-               "1:\tldarx %0,0,%3\n"   /* load and reserve               */
+-               "\tcmpdi %0, 0\n"       /* if load is                     */
+-               "\tbne 2f\n"            /*   non-zero, return already set */
+-               "\tstdcx. %2,0,%1\n"    /* else store conditional         */
+-               "\tbne- 1b\n"           /* retry if lost reservation      */
+-               "\tsync\n"              /* import barrier                 */
+-               "2:\t\n"                /* oldval is zero if we set       */
+-              : "=&r"(oldval), "=p"(addr)
+-              : "r"(temp), "1"(addr)
+-              : "cr0","memory");
+-          return (int)oldval;
+-        }
++#     define GC_TEST_AND_SET_DEFINED
++#     define GC_CLEAR_DEFINED
++#     if (__GNUC__>4)||((__GNUC__==4)&&(__GNUC_MINOR__>=4))
++#       define GC_test_and_set(addr) __sync_lock_test_and_set (addr, 1)
++#       define GC_clear(addr) __sync_lock_release (addr)
+ #     else
+         inline static int GC_test_and_set(volatile unsigned int *addr) {
+           int oldval;
+           int temp = 1; /* locked value */
+ 
+           __asm__ __volatile__(
+-               "1:\tlwarx %0,0,%3\n"   /* load and reserve               */
++               "\n1:\n"
++	       "\tlwarx %0,%y3\n"      /* load and reserve, 32-bits      */
+                "\tcmpwi %0, 0\n"       /* if load is                     */
+                "\tbne 2f\n"            /*   non-zero, return already set */
+-               "\tstwcx. %2,0,%1\n"    /* else store conditional         */
++               "\tstwcx. %2,%y3\n"     /* else store conditional         */
+                "\tbne- 1b\n"           /* retry if lost reservation      */
+                "\tsync\n"              /* import barrier                 */
+                "2:\t\n"                /* oldval is zero if we set       */
+-              : "=&r"(oldval), "=p"(addr)
+-              : "r"(temp), "1"(addr)
++              : "=&r"(oldval), "=m"(addr)
++              : "r"(temp), "Z"(addr)
+               : "cr0","memory");
+           return oldval;
+         }
+-#     endif
+-#     define GC_TEST_AND_SET_DEFINED
+       inline static void GC_clear(volatile unsigned int *addr) {
+ 	__asm__ __volatile__("lwsync" : : : "memory");
+         *(addr) = 0;
+       }
+-#     define GC_CLEAR_DEFINED
++#    endif
+ #    endif
+ #    if defined(ALPHA) 
+         inline static int GC_test_and_set(volatile unsigned int * addr)
+diff -Naur gcc-4.4.1.orig/gcc/config/alpha/linux-elf.h gcc-4.4.1/gcc/config/alpha/linux-elf.h
+--- gcc-4.4.1.orig/gcc/config/alpha/linux-elf.h	2007-08-02 03:49:31.000000000 -0700
++++ gcc-4.4.1/gcc/config/alpha/linux-elf.h	2009-09-12 09:19:14.000000000 -0700
+@@ -39,7 +39,7 @@
+ 
+ #define ELF_DYNAMIC_LINKER	LINUX_DYNAMIC_LINKER
+ 
+-#define LINK_SPEC "-m elf64alpha %{G*} %{relax:-relax}		\
++#define LINK_SPEC "-m elf64alpha --hash-style=both %{G*} %{relax:-relax}	\
+   %{O*:-O3} %{!O*:-O1}						\
+   %{shared:-shared}						\
+   %{!shared:							\
+diff -Naur gcc-4.4.1.orig/gcc/config/i386/linux64.h gcc-4.4.1/gcc/config/i386/linux64.h
+--- gcc-4.4.1.orig/gcc/config/i386/linux64.h	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/i386/linux64.h	2009-09-12 09:19:14.000000000 -0700
+@@ -75,7 +75,7 @@
+ #endif
+ 
+ #undef	LINK_SPEC
+-#define LINK_SPEC "%{" SPEC_64 ":-m elf_x86_64} %{" SPEC_32 ":-m elf_i386} \
++#define LINK_SPEC "%{" SPEC_64 ":-m elf_x86_64} %{" SPEC_32 ":-m elf_i386} --hash-style=both \
+   %{shared:-shared} \
+   %{!shared: \
+     %{!static: \
+diff -Naur gcc-4.4.1.orig/gcc/config/i386/linux.h gcc-4.4.1/gcc/config/i386/linux.h
+--- gcc-4.4.1.orig/gcc/config/i386/linux.h	2009-05-21 06:21:30.000000000 -0700
++++ gcc-4.4.1/gcc/config/i386/linux.h	2009-09-12 09:19:14.000000000 -0700
+@@ -113,7 +113,7 @@
+   { "dynamic_linker", LINUX_DYNAMIC_LINKER }
+ 
+ #undef	LINK_SPEC
+-#define LINK_SPEC "-m %(link_emulation) %{shared:-shared} \
++#define LINK_SPEC "-m %(link_emulation) --hash-style=both %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+diff -Naur gcc-4.4.1.orig/gcc/config/ia64/crtbegin.asm gcc-4.4.1/gcc/config/ia64/crtbegin.asm
+--- gcc-4.4.1.orig/gcc/config/ia64/crtbegin.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/ia64/crtbegin.asm	2009-09-12 09:19:14.000000000 -0700
+@@ -252,3 +252,7 @@
+ .weak __cxa_finalize
+ #endif
+ .weak _Jv_RegisterClasses
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.1.orig/gcc/config/ia64/crtend.asm gcc-4.4.1/gcc/config/ia64/crtend.asm
+--- gcc-4.4.1.orig/gcc/config/ia64/crtend.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/ia64/crtend.asm	2009-09-12 09:19:14.000000000 -0700
+@@ -119,3 +119,7 @@
+ 
+ 	br.ret.sptk.many rp
+ 	.endp __do_global_ctors_aux
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.1.orig/gcc/config/ia64/crti.asm gcc-4.4.1/gcc/config/ia64/crti.asm
+--- gcc-4.4.1.orig/gcc/config/ia64/crti.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/ia64/crti.asm	2009-09-12 09:19:14.000000000 -0700
+@@ -51,3 +51,7 @@
+ 	.body
+ 
+ # end of crti.asm
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.1.orig/gcc/config/ia64/crtn.asm gcc-4.4.1/gcc/config/ia64/crtn.asm
+--- gcc-4.4.1.orig/gcc/config/ia64/crtn.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/ia64/crtn.asm	2009-09-12 09:19:14.000000000 -0700
+@@ -41,3 +41,7 @@
+ 	br.ret.sptk.many b0
+ 
+ # end of crtn.asm
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.1.orig/gcc/config/ia64/lib1funcs.asm gcc-4.4.1/gcc/config/ia64/lib1funcs.asm
+--- gcc-4.4.1.orig/gcc/config/ia64/lib1funcs.asm	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/ia64/lib1funcs.asm	2009-09-12 09:19:14.000000000 -0700
+@@ -793,3 +793,7 @@
+ 	.endp __floattitf
+ #endif
+ #endif
++
++#ifdef __linux__
++.section .note.GNU-stack; .previous
++#endif
+diff -Naur gcc-4.4.1.orig/gcc/config/ia64/linux.h gcc-4.4.1/gcc/config/ia64/linux.h
+--- gcc-4.4.1.orig/gcc/config/ia64/linux.h	2009-02-12 08:30:53.000000000 -0800
++++ gcc-4.4.1/gcc/config/ia64/linux.h	2009-09-12 09:19:14.000000000 -0700
+@@ -5,6 +5,8 @@
+ 
+ #define TARGET_VERSION fprintf (stderr, " (IA-64) Linux");
+ 
++#define TARGET_ASM_FILE_END file_end_indicate_exec_stack
++
+ /* This is for -profile to use -lc_p instead of -lc.  */
+ #undef CC1_SPEC
+ #define CC1_SPEC "%{profile:-p} %{G*}"
+@@ -40,7 +42,7 @@
+ #define GLIBC_DYNAMIC_LINKER "/lib/ld-linux-ia64.so.2"
+ 
+ #undef LINK_SPEC
+-#define LINK_SPEC "\
++#define LINK_SPEC "--hash-style=both \
+   %{shared:-shared} \
+   %{!shared: \
+     %{!static: \
+diff -Naur gcc-4.4.1.orig/gcc/config/rs6000/linux64.h gcc-4.4.1/gcc/config/rs6000/linux64.h
+--- gcc-4.4.1.orig/gcc/config/rs6000/linux64.h	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/rs6000/linux64.h	2009-09-12 09:19:14.000000000 -0700
+@@ -357,11 +357,11 @@
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKER64, UCLIBC_DYNAMIC_LINKER64)
+ 
+ 
+-#define LINK_OS_LINUX_SPEC32 "-m elf32ppclinux %{!shared: %{!static: \
++#define LINK_OS_LINUX_SPEC32 "-m elf32ppclinux --hash-style=both %{!shared: %{!static: \
+   %{rdynamic:-export-dynamic} \
+   %{!dynamic-linker:-dynamic-linker " LINUX_DYNAMIC_LINKER32 "}}}"
+ 
+-#define LINK_OS_LINUX_SPEC64 "-m elf64ppc %{!shared: %{!static: \
++#define LINK_OS_LINUX_SPEC64 "-m elf64ppc --hash-style=both %{!shared: %{!static: \
+   %{rdynamic:-export-dynamic} \
+   %{!dynamic-linker:-dynamic-linker " LINUX_DYNAMIC_LINKER64 "}}}"
+ 
+diff -Naur gcc-4.4.1.orig/gcc/config/rs6000/ppc-asm.h gcc-4.4.1/gcc/config/rs6000/ppc-asm.h
+--- gcc-4.4.1.orig/gcc/config/rs6000/ppc-asm.h	2008-10-13 08:44:26.000000000 -0700
++++ gcc-4.4.1/gcc/config/rs6000/ppc-asm.h	2009-09-12 09:19:14.000000000 -0700
+@@ -172,7 +172,7 @@
+ 	.size FUNC_NAME(name),GLUE(.L,name)-FUNC_NAME(name)
+ #endif
+ 
+-#if defined __linux__ && !defined __powerpc64__
++#if defined __linux__
+ 	.section .note.GNU-stack
+ 	.previous
+ #endif
+diff -Naur gcc-4.4.1.orig/gcc/config/rs6000/sysv4.h gcc-4.4.1/gcc/config/rs6000/sysv4.h
+--- gcc-4.4.1.orig/gcc/config/rs6000/sysv4.h	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/gcc/config/rs6000/sysv4.h	2009-09-12 09:19:14.000000000 -0700
+@@ -911,7 +911,7 @@
+ #define LINUX_DYNAMIC_LINKER \
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKER, UCLIBC_DYNAMIC_LINKER)
+ 
+-#define LINK_OS_LINUX_SPEC "-m elf32ppclinux %{!shared: %{!static: \
++#define LINK_OS_LINUX_SPEC "-m elf32ppclinux --hash-style=both %{!shared: %{!static: \
+   %{rdynamic:-export-dynamic} \
+   %{!dynamic-linker:-dynamic-linker " LINUX_DYNAMIC_LINKER "}}}"
+ 
+diff -Naur gcc-4.4.1.orig/gcc/config/rs6000/t-linux64 gcc-4.4.1/gcc/config/rs6000/t-linux64
+--- gcc-4.4.1.orig/gcc/config/rs6000/t-linux64	2007-09-27 12:56:06.000000000 -0700
++++ gcc-4.4.1/gcc/config/rs6000/t-linux64	2009-09-12 09:19:13.000000000 -0700
+@@ -14,13 +14,13 @@
+ # it doesn't tell anything about the 32bit libraries on those systems.  Set
+ # MULTILIB_OSDIRNAMES according to what is found on the target.
+ 
+-MULTILIB_OPTIONS        = m64/m32 msoft-float
++MULTILIB_OPTIONS        = m64/m32
+ MULTILIB_DIRNAMES       = 64 32 nof
+ MULTILIB_EXTRA_OPTS     = fPIC mstrict-align
+-MULTILIB_EXCEPTIONS     = m64/msoft-float
+-MULTILIB_EXCLUSIONS     = m64/!m32/msoft-float
+-MULTILIB_OSDIRNAMES	= ../lib64 $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib) nof
+-MULTILIB_MATCHES        = $(MULTILIB_MATCHES_FLOAT)
++MULTILIB_EXCEPTIONS     =
++MULTILIB_EXCLUSIONS     =
++MULTILIB_OSDIRNAMES	= ../lib64 $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
++MULTILIB_MATCHES        = 
+ 
+ softfp_wrap_start := '\#ifndef __powerpc64__'
+ softfp_wrap_end := '\#endif'
+diff -Naur gcc-4.4.1.orig/gcc/config/s390/linux.h gcc-4.4.1/gcc/config/s390/linux.h
+--- gcc-4.4.1.orig/gcc/config/s390/linux.h	2007-08-02 03:49:31.000000000 -0700
++++ gcc-4.4.1/gcc/config/s390/linux.h	2009-09-12 09:19:14.000000000 -0700
+@@ -77,7 +77,7 @@
+ 
+ #undef  LINK_SPEC
+ #define LINK_SPEC \
+-  "%{m31:-m elf_s390}%{m64:-m elf64_s390} \
++  "%{m31:-m elf_s390}%{m64:-m elf64_s390} --hash-style=both \
+    %{shared:-shared} \
+    %{!shared: \
+       %{static:-static} \
+diff -Naur gcc-4.4.1.orig/gcc/config/sparc/linux64.h gcc-4.4.1/gcc/config/sparc/linux64.h
+--- gcc-4.4.1.orig/gcc/config/sparc/linux64.h	2009-02-20 07:20:38.000000000 -0800
++++ gcc-4.4.1/gcc/config/sparc/linux64.h	2009-09-12 09:19:14.000000000 -0700
+@@ -121,7 +121,7 @@
+   { "link_arch_default", LINK_ARCH_DEFAULT_SPEC },	  \
+   { "link_arch",	 LINK_ARCH_SPEC },
+ 
+-#define LINK_ARCH32_SPEC "-m elf32_sparc -Y P,%R/usr/lib %{shared:-shared} \
++#define LINK_ARCH32_SPEC "-m elf32_sparc --hash-style=both -Y P,%R/usr/lib %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+@@ -130,7 +130,7 @@
+         %{static:-static}}} \
+ "
+ 
+-#define LINK_ARCH64_SPEC "-m elf64_sparc -Y P,%R/usr/lib64 %{shared:-shared} \
++#define LINK_ARCH64_SPEC "-m elf64_sparc --hash-style=both -Y P,%R/usr/lib64 %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+@@ -211,7 +211,7 @@
+ #else /* !SPARC_BI_ARCH */
+ 
+ #undef LINK_SPEC
+-#define LINK_SPEC "-m elf64_sparc -Y P,%R/usr/lib64 %{shared:-shared} \
++#define LINK_SPEC "-m elf64_sparc --hash-style=both -Y P,%R/usr/lib64 %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+diff -Naur gcc-4.4.1.orig/gcc/config/sparc/linux.h gcc-4.4.1/gcc/config/sparc/linux.h
+--- gcc-4.4.1.orig/gcc/config/sparc/linux.h	2009-02-20 07:20:38.000000000 -0800
++++ gcc-4.4.1/gcc/config/sparc/linux.h	2009-09-12 09:19:14.000000000 -0700
+@@ -86,7 +86,7 @@
+ #define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
+ 
+ #undef  LINK_SPEC
+-#define LINK_SPEC "-m elf32_sparc -Y P,/usr/lib %{shared:-shared} \
++#define LINK_SPEC "-m elf32_sparc --hash-style=both -Y P,/usr/lib %{shared:-shared} \
+   %{!mno-relax:%{!r:-relax}} \
+   %{!shared: \
+     %{!ibcs: \
+diff -Naur gcc-4.4.1.orig/gcc/graphite.c gcc-4.4.1/gcc/graphite.c
+--- gcc-4.4.1.orig/gcc/graphite.c	2009-03-18 09:59:55.000000000 -0700
++++ gcc-4.4.1/gcc/graphite.c	2009-09-12 09:19:13.000000000 -0700
+@@ -59,6 +59,110 @@
+ #include "cloog/cloog.h"
+ #include "graphite.h"
+ 
++#include <dlfcn.h>
++#define DYNSYMS \
++  DYNSYM (cloog_block_alloc); \
++  DYNSYM (cloog_block_list_free); \
++  DYNSYM (cloog_block_list_malloc); \
++  DYNSYM (cloog_clast_create); \
++  DYNSYM (cloog_clast_free); \
++  DYNSYM (cloog_domain_free); \
++  DYNSYM (cloog_domain_matrix2domain); \
++  DYNSYM (cloog_initialize); \
++  DYNSYM (cloog_loop_malloc); \
++  DYNSYM (cloog_matrix_alloc); \
++  DYNSYM (cloog_matrix_copy); \
++  DYNSYM (cloog_matrix_free); \
++  DYNSYM (cloog_matrix_print); \
++  DYNSYM (cloog_names_malloc); \
++  DYNSYM (cloog_names_scalarize); \
++  DYNSYM (cloog_options_free); \
++  DYNSYM (cloog_options_malloc); \
++  DYNSYM (cloog_program_dump_cloog); \
++  DYNSYM (cloog_program_extract_scalars); \
++  DYNSYM (cloog_program_free); \
++  DYNSYM (cloog_program_generate); \
++  DYNSYM (cloog_program_malloc); \
++  DYNSYM (cloog_program_print); \
++  DYNSYM (cloog_program_scatter); \
++  DYNSYM (cloog_statement_alloc); \
++  DYNSYM (ppl_finalize); \
++  DYNSYM (pprint); \
++  DYNSYM (stmt_block); \
++  DYNSYM (stmt_for); \
++  DYNSYM (stmt_guard); \
++  DYNSYM (stmt_root); \
++  DYNSYM (stmt_user);
++static struct
++{
++  bool inited;
++  void *h;
++#define DYNSYM(x) __typeof (x) *p_##x
++  DYNSYMS
++#undef DYNSYM
++} cloog_pointers;
++
++#define cloog_block_alloc (*cloog_pointers.p_cloog_block_alloc)
++#define cloog_block_list_free (*cloog_pointers.p_cloog_block_list_free)
++#define cloog_block_list_malloc (*cloog_pointers.p_cloog_block_list_malloc)
++#define cloog_clast_create (*cloog_pointers.p_cloog_clast_create)
++#define cloog_clast_free (*cloog_pointers.p_cloog_clast_free)
++#define cloog_domain_free (*cloog_pointers.p_cloog_domain_free)
++#define cloog_domain_matrix2domain (*cloog_pointers.p_cloog_domain_matrix2domain)
++#define cloog_initialize (*cloog_pointers.p_cloog_initialize)
++#define cloog_loop_malloc (*cloog_pointers.p_cloog_loop_malloc)
++#define cloog_matrix_alloc (*cloog_pointers.p_cloog_matrix_alloc)
++#define cloog_matrix_copy (*cloog_pointers.p_cloog_matrix_copy)
++#define cloog_matrix_free (*cloog_pointers.p_cloog_matrix_free)
++#define cloog_matrix_print (*cloog_pointers.p_cloog_matrix_print)
++#define cloog_names_malloc (*cloog_pointers.p_cloog_names_malloc)
++#define cloog_names_scalarize (*cloog_pointers.p_cloog_names_scalarize)
++#define cloog_options_free (*cloog_pointers.p_cloog_options_free)
++#define cloog_options_malloc (*cloog_pointers.p_cloog_options_malloc)
++#define cloog_program_dump_cloog (*cloog_pointers.p_cloog_program_dump_cloog)
++#define cloog_program_extract_scalars (*cloog_pointers.p_cloog_program_extract_scalars)
++#define cloog_program_free (*cloog_pointers.p_cloog_program_free)
++#define cloog_program_generate (*cloog_pointers.p_cloog_program_generate)
++#define cloog_program_malloc (*cloog_pointers.p_cloog_program_malloc)
++#define cloog_program_print (*cloog_pointers.p_cloog_program_print)
++#define cloog_program_scatter (*cloog_pointers.p_cloog_program_scatter)
++#define cloog_statement_alloc (*cloog_pointers.p_cloog_statement_alloc)
++#define ppl_finalize (*cloog_pointers.p_ppl_finalize)
++#define pprint (*cloog_pointers.p_pprint)
++#define stmt_block (*cloog_pointers.p_stmt_block)
++#define stmt_for (*cloog_pointers.p_stmt_for)
++#define stmt_guard (*cloog_pointers.p_stmt_guard)
++#define stmt_root (*cloog_pointers.p_stmt_root)
++#define stmt_user (*cloog_pointers.p_stmt_user)
++
++#define cloog_finalize (*cloog_pointers.p_ppl_finalize)
++
++static bool
++init_cloog_pointers (void)
++{
++  void *h;
++
++  if (cloog_pointers.inited)
++    return cloog_pointers.h != NULL;
++  h = dlopen ("libcloog.so.0", RTLD_LAZY);
++  cloog_pointers.h = h;
++  if (h == NULL)
++    return false;
++#define DYNSYM(x) \
++  do \
++    { \
++      union { __typeof (cloog_pointers.p_##x) p; void *q; } u; \
++      u.q = dlsym (h, #x); \
++      if (u.q == NULL) \
++	return false; \
++      cloog_pointers.p_##x = u.p; \
++    } \
++  while (0)
++  DYNSYMS
++#undef DYNSYM
++  return true;
++}
++
+ static VEC (scop_p, heap) *current_scops;
+ 
+ /* Converts a GMP constant V to a tree and returns it.  */
+@@ -4075,10 +4179,10 @@
+    STMT.  */
+ 
+ static tree
+-gcc_type_for_iv_of_clast_loop (struct clast_for *stmt_for)
++gcc_type_for_iv_of_clast_loop (struct clast_for *stmt_fora)
+ {
+-  struct clast_user_stmt *stmt = clast_get_body_of_loop ((struct clast_stmt *) stmt_for);
+-  const char *cloog_iv = stmt_for->iterator;
++  struct clast_user_stmt *stmt = clast_get_body_of_loop ((struct clast_stmt *) stmt_fora);
++  const char *cloog_iv = stmt_fora->iterator;
+   CloogStatement *cs = stmt->statement;
+   graphite_bb_p gbb = (graphite_bb_p) cloog_statement_usr (cs);
+ 
+@@ -6109,6 +6213,12 @@
+   if (number_of_loops () <= 1)
+     return;
+ 
++  if (!init_cloog_pointers ())
++    {
++      sorry ("Graphite loop optimizations cannot be used");
++      return;
++    }
++
+   current_scops = VEC_alloc (scop_p, heap, 3);
+   recompute_all_dominators ();
+ 
+diff -Naur gcc-4.4.1.orig/gcc/Makefile.in gcc-4.4.1/gcc/Makefile.in
+--- gcc-4.4.1.orig/gcc/Makefile.in	2009-07-25 10:53:35.000000000 -0700
++++ gcc-4.4.1/gcc/Makefile.in	2009-09-12 09:19:13.000000000 -0700
+@@ -914,7 +914,7 @@
+ # How to link with both our special library facilities
+ # and the system's installed libraries.
+ LIBS = @LIBS@ $(CPPLIB) $(LIBINTL) $(LIBICONV) $(LIBIBERTY) $(LIBDECNUMBER)
+-BACKENDLIBS = $(CLOOGLIBS) $(PPLLIBS) $(GMPLIBS)
++BACKENDLIBS = $(GMPLIBS) $(if $(CLOOGLIBS),-ldl)
+ # Any system libraries needed just for GNAT.
+ SYSLIBS = @GNAT_LIBEXC@
+ 
+@@ -3061,6 +3061,9 @@
+ 	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) \
+ 		$(out_file) $(OUTPUT_OPTION)
+ 
++graphite.o : \
++  ALL_CFLAGS := -O $(filter-out -fkeep-inline-functions, $(ALL_CFLAGS))
++
+ # Build auxiliary files that support ecoff format.
+ mips-tfile: mips-tfile.o version.o $(LIBDEPS)
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ mips-tfile.o version.o $(LIBS)
+diff -Naur gcc-4.4.1.orig/libffi/src/ia64/unix.S gcc-4.4.1/libffi/src/ia64/unix.S
+--- gcc-4.4.1.orig/libffi/src/ia64/unix.S	2005-03-30 13:49:19.000000000 -0800
++++ gcc-4.4.1/libffi/src/ia64/unix.S	2009-09-12 09:19:14.000000000 -0700
+@@ -553,3 +553,7 @@
+ 	data8	@pcrel(.Lld_hfa_float)		// FFI_IA64_TYPE_HFA_FLOAT
+ 	data8	@pcrel(.Lld_hfa_double)		// FFI_IA64_TYPE_HFA_DOUBLE
+ 	data8	@pcrel(.Lld_hfa_ldouble)	// FFI_IA64_TYPE_HFA_LDOUBLE
++
++#if defined __ELF__ && defined __linux__
++	.section	.note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.1.orig/libffi/src/powerpc/linux64_closure.S gcc-4.4.1/libffi/src/powerpc/linux64_closure.S
+--- gcc-4.4.1.orig/libffi/src/powerpc/linux64_closure.S	2005-08-11 14:18:24.000000000 -0700
++++ gcc-4.4.1/libffi/src/powerpc/linux64_closure.S	2009-09-12 09:19:14.000000000 -0700
+@@ -204,3 +204,7 @@
+ 	.align 3
+ .LEFDE1:
+ #endif
++
++#if defined __ELF__ && defined __linux__
++	.section	.note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.1.orig/libffi/src/powerpc/linux64.S gcc-4.4.1/libffi/src/powerpc/linux64.S
+--- gcc-4.4.1.orig/libffi/src/powerpc/linux64.S	2007-11-16 15:24:53.000000000 -0800
++++ gcc-4.4.1/libffi/src/powerpc/linux64.S	2009-09-12 09:19:14.000000000 -0700
+@@ -179,3 +179,7 @@
+ 	.align 3
+ .LEFDE1:
+ #endif
++
++#if defined __ELF__ && defined __linux__
++	.section	.note.GNU-stack,"",@progbits
++#endif
+diff -Naur gcc-4.4.1.orig/libgomp/omp.h.in gcc-4.4.1/libgomp/omp.h.in
+--- gcc-4.4.1.orig/libgomp/omp.h.in	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.1/libgomp/omp.h.in	2009-09-12 09:19:13.000000000 -0700
+@@ -39,8 +39,8 @@
+ 
+ typedef struct
+ {
+-  unsigned char _x[@OMP_NEST_LOCK_SIZE@] 
+-    __attribute__((__aligned__(@OMP_NEST_LOCK_ALIGN@)));
++  unsigned char _x[8 + sizeof (void *)] 
++    __attribute__((__aligned__(sizeof (void *))));
+ } omp_nest_lock_t;
+ #endif
+ 
+diff -Naur gcc-4.4.1.orig/libjava/configure gcc-4.4.1/libjava/configure
+--- gcc-4.4.1.orig/libjava/configure	2009-04-26 07:24:38.000000000 -0700
++++ gcc-4.4.1/libjava/configure	2009-09-12 09:19:13.000000000 -0700
+@@ -1021,6 +1021,8 @@
+                           default=yes
+   --enable-java-maintainer-mode
+                           allow rebuilding of .class and .h files
++  --enable-libjava-multilib
++                          build libjava as multilib
+   --disable-dependency-tracking  speeds up one-time build
+   --enable-dependency-tracking   do not reject slow dependency extractors
+   --enable-maintainer-mode  enable make rules and dependencies not useful
+@@ -1973,6 +1975,16 @@
+ fi
+ 
+ 
++# Check whether --enable-libjava-multilib was given.
++if test "${enable_libjava_multilib+set}" = set; then
++  enableval=$enable_libjava_multilib;
++fi
++
++if test "$enable_libjava_multilib" = no; then
++  multilib=no
++  ac_configure_args="$ac_configure_args --disable-multilib"
++fi
++
+ # It may not be safe to run linking tests in AC_PROG_CC/AC_PROG_CXX.
+ 
+ 
+diff -Naur gcc-4.4.1.orig/libjava/configure.ac gcc-4.4.1/libjava/configure.ac
+--- gcc-4.4.1.orig/libjava/configure.ac	2009-04-26 07:24:38.000000000 -0700
++++ gcc-4.4.1/libjava/configure.ac	2009-09-12 09:19:13.000000000 -0700
+@@ -139,6 +139,13 @@
+ 	[allow rebuilding of .class and .h files]))
+ AM_CONDITIONAL(JAVA_MAINTAINER_MODE, test "$enable_java_maintainer_mode" = yes)
+ 
++AC_ARG_ENABLE(libjava-multilib,
++	AS_HELP_STRING([--enable-libjava-multilib], [build libjava as multilib]))
++if test "$enable_libjava_multilib" = no; then
++  multilib=no
++  ac_configure_args="$ac_configure_args --disable-multilib"
++fi
++
+ # It may not be safe to run linking tests in AC_PROG_CC/AC_PROG_CXX.
+ GCC_NO_EXECUTABLES
+ 
+diff -Naur gcc-4.4.1.orig/ltmain.sh gcc-4.4.1/ltmain.sh
+--- gcc-4.4.1.orig/ltmain.sh	2008-09-26 09:21:02.000000000 -0700
++++ gcc-4.4.1/ltmain.sh	2009-09-12 09:19:13.000000000 -0700
+@@ -6886,6 +6886,7 @@
+ 	  rpath="$finalize_rpath"
+ 	  test "$mode" != relink && rpath="$compile_rpath$rpath"
+ 	  for libdir in $rpath; do
++	    case "$libdir" in /usr/lib|/usr/lib64|/usr/lib/../lib|/usr/lib/../lib64) continue;; esac
+ 	    if test -n "$hardcode_libdir_flag_spec"; then
+ 	      if test -n "$hardcode_libdir_separator"; then
+ 		if test -z "$hardcode_libdirs"; then
+@@ -7575,6 +7576,7 @@
+       rpath=
+       hardcode_libdirs=
+       for libdir in $compile_rpath $finalize_rpath; do
++	case "$libdir" in /usr/lib|/usr/lib64|/usr/lib/../lib|/usr/lib/../lib64) continue;; esac
+ 	if test -n "$hardcode_libdir_flag_spec"; then
+ 	  if test -n "$hardcode_libdir_separator"; then
+ 	    if test -z "$hardcode_libdirs"; then
+@@ -7626,6 +7628,7 @@
+       rpath=
+       hardcode_libdirs=
+       for libdir in $finalize_rpath; do
++	case "$libdir" in /usr/lib|/usr/lib64|/usr/lib/../lib|/usr/lib/../lib64) continue;; esac
+ 	if test -n "$hardcode_libdir_flag_spec"; then
+ 	  if test -n "$hardcode_libdir_separator"; then
+ 	    if test -z "$hardcode_libdirs"; then
+diff -Naur gcc-4.4.1.orig/src/boehm-gc/ia64_save_regs_in_stack.S gcc-4.4.1/src/boehm-gc/ia64_save_regs_in_stack.S
+--- gcc-4.4.1.orig/src/boehm-gc/ia64_save_regs_in_stack.S	1969-12-31 16:00:00.000000000 -0800
++++ gcc-4.4.1/src/boehm-gc/ia64_save_regs_in_stack.S	2009-09-12 09:19:14.000000000 -0700
+@@ -0,0 +1,15 @@
++        .text
++        .align 16
++        .global GC_save_regs_in_stack
++        .proc GC_save_regs_in_stack
++GC_save_regs_in_stack:
++        .body
++        flushrs
++        ;;
++        mov r8=ar.bsp
++        br.ret.sptk.few rp
++        .endp GC_save_regs_in_stack
++
++#ifdef __linux__
++	.section .note.GNU-stack,"",@progbits
++#endif
