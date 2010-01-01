@@ -1,7 +1,11 @@
-BASEDIR		:= ~/cross-lfs-book
-DUMPDIR		:= ~/cross-lfs-commands
-DLLISTDIR	:= ~/cross-lfs-dllist
-RENDERTMP       := $(HOME)/tmp
+TOP		:= $(PWD)
+
+WORKDIR		:= $(TOP)/render-output
+
+BASEDIR		:= $(WORKDIR)/cross-lfs-book
+DUMPDIR		:= $(WORKDIR)/cross-lfs-commands
+DLLISTDIR	:= $(WORKDIR)/cross-lfs-dllist
+RENDERTMP       := $(WORKDIR)/tmp
 CHUNK_QUIET	:= 1
 ROOT_ID         :=
 
@@ -169,6 +173,8 @@ $(ARCHS_DLLIST):
 	  $(PWD)/stylesheets/wget.xsl $(PWD)/$(dllist_arch)-index.xml
 
 help:
+	@echo "Output: $(WORKDIR)"
+	@echo
 	@echo "HTML Targets"
 	@echo -e "  \e[0;32mlfs tidy render titlepage \e[0;34m$(ARCHS_HTML)\e[0;0m"
 	@echo
