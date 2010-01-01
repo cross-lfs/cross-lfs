@@ -1,0 +1,384 @@
+Submitted By: Jim Gifford (jim at cross-lfs dot org)
+Date: 01-01-2010
+Initial Package Version: 4.4.2
+Origin: Idea originally developed by Ryan Oliver and Greg Schafer for
+        the Pure LFS project.
+Upstream Status: Not Applied
+Description: This patch modifies the location of the dynamic linker for gcc-4.4.2.
+
+diff -Naur gcc-4.4.2.orig/gcc/config/alpha/gnu.h gcc-4.4.2/gcc/config/alpha/gnu.h
+--- gcc-4.4.2.orig/gcc/config/alpha/gnu.h	2004-09-07 20:17:19.000000000 -0400
++++ gcc-4.4.2/gcc/config/alpha/gnu.h	2010-01-01 16:40:52.146543867 -0500
+@@ -11,7 +11,7 @@
+     } while (0)
+ 
+ #undef ELF_DYNAMIC_LINKER
+-#define ELF_DYNAMIC_LINKER	"/lib/ld.so"
++#define ELF_DYNAMIC_LINKER	"/tools/lib/ld.so"
+ 
+ #undef	STARTFILE_SPEC
+ #define STARTFILE_SPEC \
+diff -Naur gcc-4.4.2.orig/gcc/config/alpha/linux-elf.h gcc-4.4.2/gcc/config/alpha/linux-elf.h
+--- gcc-4.4.2.orig/gcc/config/alpha/linux-elf.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/alpha/linux-elf.h	2010-01-01 16:40:51.955435781 -0500
+@@ -27,8 +27,8 @@
+ #define EXTRA_SPECS \
+ { "elf_dynamic_linker", ELF_DYNAMIC_LINKER },
+ 
+-#define GLIBC_DYNAMIC_LINKER	"/lib/ld-linux.so.2"
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER	"/tools/lib/ld-linux.so.2"
++#define UCLIBC_DYNAMIC_LINKER "/tools/lib/ld-uClibc.so.0"
+ #if UCLIBC_DEFAULT
+ #define CHOOSE_DYNAMIC_LINKER(G, U) "%{mglibc:%{muclibc:%e-mglibc and -muclibc used together}" G ";:" U "}"
+ #else
+diff -Naur gcc-4.4.2.orig/gcc/config/arm/linux-eabi.h gcc-4.4.2/gcc/config/arm/linux-eabi.h
+--- gcc-4.4.2.orig/gcc/config/arm/linux-eabi.h	2007-11-08 08:44:09.000000000 -0500
++++ gcc-4.4.2/gcc/config/arm/linux-eabi.h	2010-01-01 16:40:56.208561949 -0500
+@@ -61,7 +61,7 @@
+ /* Use ld-linux.so.3 so that it will be possible to run "classic"
+    GNU/Linux binaries on an EABI system.  */
+ #undef  GLIBC_DYNAMIC_LINKER
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.3"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux.so.3"
+ 
+ /* At this point, bpabi.h will have clobbered LINK_SPEC.  We want to
+    use the GNU/Linux version, not the generic BPABI version.  */
+diff -Naur gcc-4.4.2.orig/gcc/config/arm/linux-elf.h gcc-4.4.2/gcc/config/arm/linux-elf.h
+--- gcc-4.4.2.orig/gcc/config/arm/linux-elf.h	2009-02-20 10:20:38.000000000 -0500
++++ gcc-4.4.2/gcc/config/arm/linux-elf.h	2010-01-01 16:40:55.488437008 -0500
+@@ -62,7 +62,7 @@
+ 
+ #define LIBGCC_SPEC "%{msoft-float:-lfloat} %{mfloat-abi=soft*:-lfloat} -lgcc"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux.so.2"
+ 
+ #define LINUX_TARGET_LINK_SPEC  "%{h*} %{version:-v} \
+    %{b} \
+diff -Naur gcc-4.4.2.orig/gcc/config/bfin/linux.h gcc-4.4.2/gcc/config/bfin/linux.h
+--- gcc-4.4.2.orig/gcc/config/bfin/linux.h	2008-11-27 04:11:50.000000000 -0500
++++ gcc-4.4.2/gcc/config/bfin/linux.h	2010-01-01 16:41:02.705537802 -0500
+@@ -22,7 +22,7 @@
+   %{shared:-G -Bdynamic} \
+   %{!shared: %{!static: \
+    %{rdynamic:-export-dynamic} \
+-   %{!dynamic-linker:-dynamic-linker /lib/ld-uClibc.so.0}} \
++   %{!dynamic-linker:-dynamic-linker /tools/lib/ld-uClibc.so.0}} \
+    %{static}} -init __init -fini __fini"
+ 
+ #define MD_UNWIND_SUPPORT "config/bfin/linux-unwind.h"
+diff -Naur gcc-4.4.2.orig/gcc/config/cris/linux.h gcc-4.4.2/gcc/config/cris/linux.h
+--- gcc-4.4.2.orig/gcc/config/cris/linux.h	2009-03-22 11:15:04.000000000 -0400
++++ gcc-4.4.2/gcc/config/cris/linux.h	2010-01-01 16:40:56.296500400 -0500
+@@ -103,7 +103,7 @@
+ #undef CRIS_DEFAULT_CPU_VERSION
+ #define CRIS_DEFAULT_CPU_VERSION CRIS_CPU_NG
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ /* We need an -rpath-link to ld.so.1, and presumably to each directory
+    specified with -B.  */
+diff -Naur gcc-4.4.2.orig/gcc/config/frv/linux.h gcc-4.4.2/gcc/config/frv/linux.h
+--- gcc-4.4.2.orig/gcc/config/frv/linux.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/frv/linux.h	2010-01-01 16:40:53.607624240 -0500
+@@ -35,7 +35,7 @@
+ #define ENDFILE_SPEC \
+   "%{shared|pie:crtendS.o%s;:crtend.o%s} crtn.o%s"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "\
+diff -Naur gcc-4.4.2.orig/gcc/config/i386/gnu.h gcc-4.4.2/gcc/config/i386/gnu.h
+--- gcc-4.4.2.orig/gcc/config/i386/gnu.h	2008-11-13 18:28:46.000000000 -0500
++++ gcc-4.4.2/gcc/config/i386/gnu.h	2010-01-01 16:40:54.520443077 -0500
+@@ -21,7 +21,7 @@
+ */
+ 
+ #undef GLIBC_DYNAMIC_LINKER
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so"
+ 
+ #undef TARGET_VERSION
+ #define TARGET_VERSION fprintf (stderr, " (i386 GNU)");
+diff -Naur gcc-4.4.2.orig/gcc/config/i386/linux64.h gcc-4.4.2/gcc/config/i386/linux64.h
+--- gcc-4.4.2.orig/gcc/config/i386/linux64.h	2009-04-09 19:23:07.000000000 -0400
++++ gcc-4.4.2/gcc/config/i386/linux64.h	2010-01-01 16:40:54.928439175 -0500
+@@ -58,8 +58,8 @@
+    When the -shared link option is used a final link is not being
+    done.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux-x86-64.so.2"
++#define GLIBC_DYNAMIC_LINKER32 "/tools/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld-linux-x86-64.so.2"
+ 
+ #undef ASM_SPEC
+ #define ASM_SPEC "%{v:-V} %{Qy:} %{!Qn:-Qy} %{n} %{T} %{Ym,*} %{Yd,*} \
+diff -Naur gcc-4.4.2.orig/gcc/config/i386/linux.h gcc-4.4.2/gcc/config/i386/linux.h
+--- gcc-4.4.2.orig/gcc/config/i386/linux.h	2009-05-21 09:21:30.000000000 -0400
++++ gcc-4.4.2/gcc/config/i386/linux.h	2010-01-01 16:40:54.430524270 -0500
+@@ -100,7 +100,7 @@
+ 
+ /* These macros may be overridden in k*bsd-gnu.h and i386/k*bsd-gnu.h. */
+ #define LINK_EMULATION "elf_i386"
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux.so.2"
+ 
+ #undef  ASM_SPEC
+ #define ASM_SPEC \
+diff -Naur gcc-4.4.2.orig/gcc/config/ia64/linux.h gcc-4.4.2/gcc/config/ia64/linux.h
+--- gcc-4.4.2.orig/gcc/config/ia64/linux.h	2009-02-12 11:30:53.000000000 -0500
++++ gcc-4.4.2/gcc/config/ia64/linux.h	2010-01-01 16:40:52.554505710 -0500
+@@ -37,7 +37,7 @@
+ /* Define this for shared library support because it isn't in the main
+    linux.h file.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux-ia64.so.2"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux-ia64.so.2"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "\
+diff -Naur gcc-4.4.2.orig/gcc/config/kopensolaris-gnu.h gcc-4.4.2/gcc/config/kopensolaris-gnu.h
+--- gcc-4.4.2.orig/gcc/config/kopensolaris-gnu.h	2009-01-29 13:48:41.000000000 -0500
++++ gcc-4.4.2/gcc/config/kopensolaris-gnu.h	2010-01-01 16:40:57.398436744 -0500
+@@ -33,5 +33,5 @@
+ 
+ #ifdef GLIBC_DYNAMIC_LINKER
+ #undef GLIBC_DYNAMIC_LINKER
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ #endif
+diff -Naur gcc-4.4.2.orig/gcc/config/linux.h gcc-4.4.2/gcc/config/linux.h
+--- gcc-4.4.2.orig/gcc/config/linux.h	2009-04-09 19:23:07.000000000 -0400
++++ gcc-4.4.2/gcc/config/linux.h	2010-01-01 16:40:57.198535231 -0500
+@@ -117,9 +117,9 @@
+    GLIBC_DYNAMIC_LINKER must be defined for each target using them, or
+    GLIBC_DYNAMIC_LINKER32 and GLIBC_DYNAMIC_LINKER64 for targets
+    supporting both 32-bit and 64-bit compilation.  */
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER "/tools/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER32 "/tools/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER64 "/tools/lib/ld64-uClibc.so.0"
+ #define LINUX_DYNAMIC_LINKER \
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKER, UCLIBC_DYNAMIC_LINKER)
+ #define LINUX_DYNAMIC_LINKER32 \
+diff -Naur gcc-4.4.2.orig/gcc/config/m32r/linux.h gcc-4.4.2/gcc/config/m32r/linux.h
+--- gcc-4.4.2.orig/gcc/config/m32r/linux.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/m32r/linux.h	2010-01-01 16:40:59.174470383 -0500
+@@ -58,7 +58,7 @@
+ 
+ /* If ELF is the default format, we should not use /lib/elf.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux.so.2"
+ 
+ #undef	LINK_SPEC
+ #if TARGET_LITTLE_ENDIAN
+diff -Naur gcc-4.4.2.orig/gcc/config/m68k/linux.h gcc-4.4.2/gcc/config/m68k/linux.h
+--- gcc-4.4.2.orig/gcc/config/m68k/linux.h	2007-09-24 17:07:08.000000000 -0400
++++ gcc-4.4.2/gcc/config/m68k/linux.h	2010-01-01 16:40:59.643532888 -0500
+@@ -84,7 +84,7 @@
+ 
+ /* If ELF is the default format, we should not use /lib/elf.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "-m m68kelf %{shared} \
+diff -Naur gcc-4.4.2.orig/gcc/config/mips/linux64.h gcc-4.4.2/gcc/config/mips/linux64.h
+--- gcc-4.4.2.orig/gcc/config/mips/linux64.h	2009-02-20 10:20:38.000000000 -0500
++++ gcc-4.4.2/gcc/config/mips/linux64.h	2010-01-01 16:41:02.435499259 -0500
+@@ -35,10 +35,10 @@
+ %{!shared: \
+   %{profile:-lc_p} %{!profile:-lc}}"
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld.so.1"
+-#define GLIBC_DYNAMIC_LINKERN32 "/lib32/ld.so.1"
+-#define UCLIBC_DYNAMIC_LINKERN32 "/lib32/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER32 "/tools/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld.so.1"
++#define GLIBC_DYNAMIC_LINKERN32 "/tools/lib32/ld.so.1"
++#define UCLIBC_DYNAMIC_LINKERN32 "/tools/lib32/ld-uClibc.so.0"
+ #define LINUX_DYNAMIC_LINKERN32 \
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKERN32, UCLIBC_DYNAMIC_LINKERN32)
+ 
+diff -Naur gcc-4.4.2.orig/gcc/config/mips/linux.h gcc-4.4.2/gcc/config/mips/linux.h
+--- gcc-4.4.2.orig/gcc/config/mips/linux.h	2009-02-20 10:20:38.000000000 -0500
++++ gcc-4.4.2/gcc/config/mips/linux.h	2010-01-01 16:41:02.139500904 -0500
+@@ -64,7 +64,7 @@
+ #undef MIPS_DEFAULT_GVALUE
+ #define MIPS_DEFAULT_GVALUE 0
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ /* Borrowed from sparc/linux.h */
+ #undef LINK_SPEC
+diff -Naur gcc-4.4.2.orig/gcc/config/mn10300/linux.h gcc-4.4.2/gcc/config/mn10300/linux.h
+--- gcc-4.4.2.orig/gcc/config/mn10300/linux.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/mn10300/linux.h	2010-01-01 16:40:58.791443632 -0500
+@@ -32,7 +32,7 @@
+ #undef  ASM_SPEC
+ #define ASM_SPEC "%{Wa,*:%*}"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ #undef  LINK_SPEC
+ #define LINK_SPEC "%{mrelax:--relax} %{shared:-shared} \
+diff -Naur gcc-4.4.2.orig/gcc/config/pa/pa-linux.h gcc-4.4.2/gcc/config/pa/pa-linux.h
+--- gcc-4.4.2.orig/gcc/config/pa/pa-linux.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/pa/pa-linux.h	2010-01-01 16:40:53.204592866 -0500
+@@ -44,7 +44,7 @@
+ /* Define this for shared library support because it isn't in the main
+    linux.h file.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "\
+diff -Naur gcc-4.4.2.orig/gcc/config/rs6000/linux64.h gcc-4.4.2/gcc/config/rs6000/linux64.h
+--- gcc-4.4.2.orig/gcc/config/rs6000/linux64.h	2009-04-09 19:23:07.000000000 -0400
++++ gcc-4.4.2/gcc/config/rs6000/linux64.h	2010-01-01 16:40:56.871467976 -0500
+@@ -342,10 +342,10 @@
+ #undef	LINK_OS_DEFAULT_SPEC
+ #define LINK_OS_DEFAULT_SPEC "%(link_os_linux)"
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld64.so.1"
+-#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER32 "/tools/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld64.so.1"
++#define UCLIBC_DYNAMIC_LINKER32 "/tools/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER64 "/tools/lib/ld64-uClibc.so.0"
+ #if UCLIBC_DEFAULT
+ #define CHOOSE_DYNAMIC_LINKER(G, U) "%{mglibc:%{muclibc:%e-mglibc and -muclibc used together}" G ";:" U "}"
+ #else
+diff -Naur gcc-4.4.2.orig/gcc/config/rs6000/sysv4.h gcc-4.4.2/gcc/config/rs6000/sysv4.h
+--- gcc-4.4.2.orig/gcc/config/rs6000/sysv4.h	2009-04-09 19:23:07.000000000 -0400
++++ gcc-4.4.2/gcc/config/rs6000/sysv4.h	2010-01-01 16:40:56.770656893 -0500
+@@ -901,8 +901,8 @@
+ 
+ #define LINK_START_LINUX_SPEC ""
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
++#define UCLIBC_DYNAMIC_LINKER "/tools/lib/ld-uClibc.so.0"
+ #if UCLIBC_DEFAULT
+ #define CHOOSE_DYNAMIC_LINKER(G, U) "%{mglibc:%{muclibc:%e-mglibc and -muclibc used together}" G ";:" U "}"
+ #else
+@@ -944,7 +944,7 @@
+ 
+ #define LINK_OS_GNU_SPEC "-m elf32ppclinux %{!shared: %{!static: \
+   %{rdynamic:-export-dynamic} \
+-  %{!dynamic-linker:-dynamic-linker /lib/ld.so.1}}}"
++  %{!dynamic-linker:-dynamic-linker /tools/lib/ld.so.1}}}"
+ 
+ #define CPP_OS_GNU_SPEC "-D__unix__ -D__gnu_hurd__ -D__GNU__	\
+ %{!undef:					                \
+diff -Naur gcc-4.4.2.orig/gcc/config/s390/linux.h gcc-4.4.2/gcc/config/s390/linux.h
+--- gcc-4.4.2.orig/gcc/config/s390/linux.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/s390/linux.h	2010-01-01 16:40:58.140508091 -0500
+@@ -72,8 +72,8 @@
+ #define MULTILIB_DEFAULTS { "m31" }
+ #endif
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib/ld64.so.1"
++#define GLIBC_DYNAMIC_LINKER32 "/tools/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib/ld64.so.1"
+ 
+ #undef  LINK_SPEC
+ #define LINK_SPEC \
+diff -Naur gcc-4.4.2.orig/gcc/config/sh/linux.h gcc-4.4.2/gcc/config/sh/linux.h
+--- gcc-4.4.2.orig/gcc/config/sh/linux.h	2007-08-02 06:49:31.000000000 -0400
++++ gcc-4.4.2/gcc/config/sh/linux.h	2010-01-01 16:41:01.480474690 -0500
+@@ -47,7 +47,7 @@
+ 
+ #define TARGET_ASM_FILE_END file_end_indicate_exec_stack
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux.so.2"
+ 
+ #undef SUBTARGET_LINK_EMUL_SUFFIX
+ #define SUBTARGET_LINK_EMUL_SUFFIX "_linux"
+diff -Naur gcc-4.4.2.orig/gcc/config/sparc/linux64.h gcc-4.4.2/gcc/config/sparc/linux64.h
+--- gcc-4.4.2.orig/gcc/config/sparc/linux64.h	2009-02-20 10:20:38.000000000 -0500
++++ gcc-4.4.2/gcc/config/sparc/linux64.h	2010-01-01 16:41:01.077439001 -0500
+@@ -109,8 +109,8 @@
+ 
+ /* If ELF is the default format, we should not use /lib/elf.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER32 "/tools/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld-linux.so.2"
+ 
+ #ifdef SPARC_BI_ARCH
+ 
+@@ -121,7 +121,7 @@
+   { "link_arch_default", LINK_ARCH_DEFAULT_SPEC },	  \
+   { "link_arch",	 LINK_ARCH_SPEC },
+ 
+-#define LINK_ARCH32_SPEC "-m elf32_sparc -Y P,%R/usr/lib %{shared:-shared} \
++#define LINK_ARCH32_SPEC "-m elf32_sparc -Y P,%R/tools/lib %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+@@ -130,7 +130,7 @@
+         %{static:-static}}} \
+ "
+ 
+-#define LINK_ARCH64_SPEC "-m elf64_sparc -Y P,%R/usr/lib64 %{shared:-shared} \
++#define LINK_ARCH64_SPEC "-m elf64_sparc -Y P,%R/tools/lib64 %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+@@ -211,7 +211,7 @@
+ #else /* !SPARC_BI_ARCH */
+ 
+ #undef LINK_SPEC
+-#define LINK_SPEC "-m elf64_sparc -Y P,%R/usr/lib64 %{shared:-shared} \
++#define LINK_SPEC "-m elf64_sparc -Y P,%R/tools/lib64 %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+diff -Naur gcc-4.4.2.orig/gcc/config/sparc/linux.h gcc-4.4.2/gcc/config/sparc/linux.h
+--- gcc-4.4.2.orig/gcc/config/sparc/linux.h	2009-02-20 10:20:38.000000000 -0500
++++ gcc-4.4.2/gcc/config/sparc/linux.h	2010-01-01 16:41:00.694595256 -0500
+@@ -83,10 +83,10 @@
+ 
+ /* If ELF is the default format, we should not use /lib/elf.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld-linux.so.2"
+ 
+ #undef  LINK_SPEC
+-#define LINK_SPEC "-m elf32_sparc -Y P,/usr/lib %{shared:-shared} \
++#define LINK_SPEC "-m elf32_sparc -Y P,/tools/lib %{shared:-shared} \
+   %{!mno-relax:%{!r:-relax}} \
+   %{!shared: \
+     %{!ibcs: \
+diff -Naur gcc-4.4.2.orig/gcc/config/xtensa/linux.h gcc-4.4.2/gcc/config/xtensa/linux.h
+--- gcc-4.4.2.orig/gcc/config/xtensa/linux.h	2008-01-17 20:37:53.000000000 -0500
++++ gcc-4.4.2/gcc/config/xtensa/linux.h	2010-01-01 16:40:52.823530902 -0500
+@@ -43,7 +43,7 @@
+   %{mlongcalls:--longcalls} \
+   %{mno-longcalls:--no-longcalls}"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "/tools/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC \
