@@ -81,7 +81,6 @@ $(ARCHS_HTML):
 	$(Q)mkdir -p $(BASEDIR)/$(html_arch)/images
 	$(Q)cp $(PWD)/images/*.png $(BASEDIR)/$(html_arch)/images
 	$(Q)sed -i -e "s@../images@images@g" $(BASEDIR)/$(html_arch)/*.html
-	$(Q)$(MAKE) ARCHS=$(html_arch) DLLISTDIR=$(BASEDIR) download-list
 
 nochunks: tmpdir $(ARCHS_NOCHUNKS) tidy
 
