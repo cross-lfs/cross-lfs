@@ -1,0 +1,3341 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 01-01-2010
+Initial Package Version: 2.20
+Origin: Upstream
+Upstream Status: From Upstream
+Description: Diff against current 2.20 branch.
+
+This patch was created on 20100101
+
+diff -Naur binutils-2.20.orig/bfd/ChangeLog binutils-2.20/bfd/ChangeLog
+--- binutils-2.20.orig/bfd/ChangeLog	2009-10-16 07:47:49.000000000 -0400
++++ binutils-2.20/bfd/ChangeLog	2009-12-21 05:26:20.000000000 -0500
+@@ -1,3 +1,69 @@
++2009-12-21  Alan Modra  <amodra@gmail.com>
++
++	* elf64-ppc.c: Delete my email address.
++
++2009-12-17  Alan Modra  <amodra@bigpond.net.au>
++
++	PR ld/11088
++	* elf32-ppc.c (update_plt_info): Clear sec here when addend is
++	less than 32768..
++	(ppc_elf_check_relocs): ..rather than doing so here.  Ignore new
++	relax relocs.
++	(ppc_elf_gc_sweep_hook): Don't segfault when symbol hiding has
++	removed plt_entry records.
++	(ppc_elf_tls_setup): Handle PIE calls to __tls_get_addr correctly.
++	(ppc_elf_tls_optimize): Likewise.  Also dec __tls_get_addr refcount
++	when optimizing code using new tlsgd and tlsld marker relocs.
++	(ppc_elf_relax_section): Differentiate relaxed PLTREL24 relocs
++	from ADDR24 relocs using plt or glink.  Don't clear the addend
++	for R_PPC_RELAX_PLTREL24.
++	(ppc_elf_relocate_section): Correctly handle addends on relaxed
++	PLTREL24 relocs.
++
++2009-12-17  Alan Modra  <amodra@bigpond.net.au>
++
++	PR ld/11088
++	* elf64-ppc.c (ppc64_elf_gc_sweep_hook): Don't abort if symbol
++	hiding has nulled out plt.plist.
++
++2009-12-03  Alan Modra  <amodra@bigpond.net.au>
++
++	PR ld/11047
++	* elf32-ppc.c (ppc_elf_relocate_section): Delete __tls_get_addr
++	symbol reference from relocs belonging to calls that are
++	optimized away.
++	* elf64-ppc.c (ppc64_elf_relocate_section): Likewise.
++
++2009-11-17  Ulrich Weigand  <uweigand@de.ibm.com>
++
++	* elf32-spu.c (struct spu_link_hash_table): Remove overlay_fixed,
++	reserved, and extra_stack_space members.
++	(spu_elf_auto_overlay): Use auto_overlay_fixed, auto_overlay_reserved,
++	and extra_stack_space members of htab->params instead.
++
++2009-11-03  Alan Modra  <amodra@bigpond.net.au>
++	    Ulrich Weigand  <uweigand@de.ibm.com>
++
++	* elf32-spu.c (mark_functions_via_relocs): Handle non-branch relocs
++	(jump tables or other references to code labels) as well.
++
++2009-10-20  Alan Modra  <amodra@bigpond.net.au>
++
++	PR binutils/10802
++	* opncls.c (_maybe_make_executable): Make DYNAMIC files executable.
++
++2009-10-19  Hans-Peter Nilsson  <hp@axis.com>
++
++	* elf32-cris.c (cris_elf_relocate_section) <case R_CRIS_32_DTPREL>:
++	Don't subtract the size of the TLS block for non-shared objects
++	from the relocation.
++
++2009-10-16  Tristan Gingold  <gingold@adacore.com>
++
++	* configure.in: Bump version to 2.20.0
++	* Makefile.am (RELEASE): Unset.
++	* configure, Makefile.in: Regenerate.
++
+ 2009-10-16  Tristan Gingold  <gingold@adacore.com>
+ 
+ 	* configure.in: Bump version to 2.20
+diff -Naur binutils-2.20.orig/bfd/configure binutils-2.20/bfd/configure
+--- binutils-2.20.orig/bfd/configure	2009-10-16 07:47:47.000000000 -0400
++++ binutils-2.20/bfd/configure	2009-10-19 03:31:26.000000000 -0400
+@@ -4116,7 +4116,7 @@
+ 
+ # Define the identity of the package.
+  PACKAGE=bfd
+- VERSION=2.20
++ VERSION=2.20.0
+ 
+ 
+ cat >>confdefs.h <<_ACEOF
+diff -Naur binutils-2.20.orig/bfd/configure.in binutils-2.20/bfd/configure.in
+--- binutils-2.20.orig/bfd/configure.in	2009-10-16 07:47:44.000000000 -0400
++++ binutils-2.20/bfd/configure.in	2009-10-16 09:09:03.000000000 -0400
+@@ -8,7 +8,7 @@
+ AC_CANONICAL_TARGET
+ AC_ISC_POSIX
+ 
+-AM_INIT_AUTOMAKE(bfd, 2.20)
++AM_INIT_AUTOMAKE(bfd, 2.20.0)
+ 
+ dnl These must be called before LT_INIT, because it may want
+ dnl to call AC_CHECK_PROG.
+diff -Naur binutils-2.20.orig/bfd/elf32-cris.c binutils-2.20/bfd/elf32-cris.c
+--- binutils-2.20.orig/bfd/elf32-cris.c	2009-03-24 23:03:40.000000000 -0400
++++ binutils-2.20/bfd/elf32-cris.c	2009-10-19 12:35:19.000000000 -0400
+@@ -1690,15 +1690,10 @@
+ 		= -elf_cris_hash_table (info)->dtpmod_refcount;
+ 	    }
+ 
+-	  /* The thread-based offset to the local symbol is the
+-	     relocation.
+-	     For the executable, TLS data begins at the thread pointer plus
+-	     the negative size of the TLS data.  For a DSO, that's part of
+-	     the module TLS offset.  */
++	  /* The relocation is the offset from the start of the module
++	     TLS block to the (local) symbol.  */
+ 	  relocation -= elf_hash_table (info)->tls_sec == NULL
+-	    ? 0 : (elf_hash_table (info)->tls_sec->vma
+-		   + (info->shared
+-		      ? 0 : elf_hash_table (info)->tls_size));
++	    ? 0 : elf_hash_table (info)->tls_sec->vma;
+ 	  break;
+ 
+ 	case R_CRIS_32_GD:
+diff -Naur binutils-2.20.orig/bfd/elf32-ppc.c binutils-2.20/bfd/elf32-ppc.c
+--- binutils-2.20.orig/bfd/elf32-ppc.c	2009-09-22 11:40:59.000000000 -0400
++++ binutils-2.20/bfd/elf32-ppc.c	2009-12-17 00:46:06.000000000 -0500
+@@ -3323,6 +3323,8 @@
+ {
+   struct plt_entry *ent;
+ 
++  if (addend < 32768)
++    sec = NULL;
+   for (ent = *plist; ent != NULL; ent = ent->next)
+     if (ent->sec == sec && ent->addend == addend)
+       break;
+@@ -3508,8 +3510,7 @@
+ 		      if (info->shared)
+ 			addend = rel->r_addend;
+ 		    }
+-		  if (!update_plt_info (abfd, ifunc,
+-					addend < 32768 ? NULL : got2, addend))
++		  if (!update_plt_info (abfd, ifunc, got2, addend))
+ 		    return FALSE;
+ 		}
+ 	    }
+@@ -3748,8 +3749,7 @@
+ 		    addend = rel->r_addend;
+ 		}
+ 	      h->needs_plt = 1;
+-	      if (!update_plt_info (abfd, &h->plt.plist,
+-				    addend < 32768 ? NULL : got2, addend))
++	      if (!update_plt_info (abfd, &h->plt.plist, got2, addend))
+ 		return FALSE;
+ 	    }
+ 	  break;
+@@ -3780,10 +3780,9 @@
+ 	case R_PPC_EMB_MRKREF:
+ 	case R_PPC_NONE:
+ 	case R_PPC_max:
+-	case R_PPC_RELAX32:
+-	case R_PPC_RELAX32PC:
+-	case R_PPC_RELAX32_PLT:
+-	case R_PPC_RELAX32PC_PLT:
++	case R_PPC_RELAX:
++	case R_PPC_RELAX_PLT:
++	case R_PPC_RELAX_PLTREL24:
+ 	  break;
+ 
+ 	  /* These should only appear in dynamic objects.  */
+@@ -4486,7 +4485,7 @@
+ 		  struct plt_entry *ent;
+ 
+ 		  ent = find_plt_ent (&h->plt.plist, NULL, 0);
+-		  if (ent->plt.refcount > 0)
++		  if (ent != NULL && ent->plt.refcount > 0)
+ 		    ent->plt.refcount -= 1;
+ 		}
+ 	    }
+@@ -4534,7 +4533,7 @@
+ 	      if (r_type == R_PPC_PLTREL24 && info->shared)
+ 		addend = rel->r_addend;
+ 	      ent = find_plt_ent (&h->plt.plist, got2, addend);
+-	      if (ent->plt.refcount > 0)
++	      if (ent != NULL && ent->plt.refcount > 0)
+ 		ent->plt.refcount -= 1;
+ 	    }
+ 	  break;
+@@ -4582,9 +4581,10 @@
+ 		       && tga->root.type == bfd_link_hash_undefweak)))
+ 	    {
+ 	      struct plt_entry *ent;
+-	      ent = find_plt_ent (&tga->plt.plist, NULL, 0);
+-	      if (ent != NULL
+-		  && ent->plt.refcount > 0)
++	      for (ent = tga->plt.plist; ent != NULL; ent = ent->next)
++		if (ent->plt.refcount > 0)
++		  break;
++	      if (ent != NULL)
+ 		{
+ 		  tga->root.type = bfd_link_hash_indirect;
+ 		  tga->root.u.i.link = &opt->root;
+@@ -4669,6 +4669,7 @@
+       {
+ 	Elf_Internal_Sym *locsyms = NULL;
+ 	Elf_Internal_Shdr *symtab_hdr = &elf_symtab_hdr (ibfd);
++	asection *got2 = bfd_get_section_by_name (ibfd, ".got2");
+ 
+ 	for (sec = ibfd->sections; sec != NULL; sec = sec->next)
+ 	  if (sec->has_tls_reloc && !bfd_is_abs_section (sec->output_section))
+@@ -4762,6 +4763,13 @@
+ 		      else
+ 			continue;
+ 
++		    case R_PPC_TLSGD:
++		    case R_PPC_TLSLD:
++		      expecting_tls_get_addr = 2;
++		      tls_set = 0;
++		      tls_clear = 0;
++		      break;
++
+ 		    default:
+ 		      continue;
+ 		    }
+@@ -4769,7 +4777,8 @@
+ 		  if (pass == 0)
+ 		    {
+ 		      if (!expecting_tls_get_addr
+-			  || !sec->has_tls_get_addr_call)
++			  || (expecting_tls_get_addr == 1
++			      && !sec->has_tls_get_addr_call))
+ 			continue;
+ 
+ 		      if (rel + 1 < relend
+@@ -4785,6 +4794,23 @@
+ 		      break;
+ 		    }
+ 
++		  if (expecting_tls_get_addr)
++		    {
++		      struct plt_entry *ent;
++		      bfd_vma addend = 0;
++
++		      if (info->shared
++			  && ELF32_R_TYPE (rel[1].r_info) == R_PPC_PLTREL24)
++			addend = rel[1].r_addend;
++		      ent = find_plt_ent (&htab->tls_get_addr->plt.plist,
++					  got2, addend);
++		      if (ent != NULL && ent->plt.refcount > 0)
++			ent->plt.refcount -= 1;
++
++		      if (expecting_tls_get_addr == 2)
++			continue;
++		    }
++
+ 		  if (h != NULL)
+ 		    {
+ 		      tls_mask = &ppc_elf_hash_entry (h)->tls_mask;
+@@ -4829,16 +4855,6 @@
+ 			*got_count -= 1;
+ 		    }
+ 
+-		  if (expecting_tls_get_addr)
+-		    {
+-		      struct plt_entry *ent;
+-
+-		      ent = find_plt_ent (&htab->tls_get_addr->plt.plist,
+-					  NULL, 0);
+-		      if (ent != NULL && ent->plt.refcount > 0)
+-			ent->plt.refcount -= 1;
+-		    }
+-
+ 		  *tls_mask |= tls_set;
+ 		  *tls_mask &= ~tls_clear;
+ 		}
+@@ -6239,28 +6255,28 @@
+ 	    {
+ 	      size = 4 * ARRAY_SIZE (shared_stub_entry);
+ 	      insn_offset = 12;
+-	      stub_rtype = R_PPC_RELAX32PC;
+ 	    }
+ 	  else
+ 	    {
+ 	      size = 4 * ARRAY_SIZE (stub_entry);
+ 	      insn_offset = 0;
+-	      stub_rtype = R_PPC_RELAX32;
+ 	    }
+-
+-	  if (R_PPC_RELAX32_PLT - R_PPC_RELAX32
+-	      != R_PPC_RELAX32PC_PLT - R_PPC_RELAX32PC)
+-	    abort ();
++	  stub_rtype = R_PPC_RELAX;
+ 	  if (tsec == htab->plt
+ 	      || tsec == htab->glink)
+-	    stub_rtype += R_PPC_RELAX32_PLT - R_PPC_RELAX32;
++	    {
++	      stub_rtype = R_PPC_RELAX_PLT;
++	      if (r_type == R_PPC_PLTREL24)
++		stub_rtype = R_PPC_RELAX_PLTREL24;
++	    }
+ 
+ 	  /* Hijack the old relocation.  Since we need two
+ 	     relocations for this use a "composite" reloc.  */
+ 	  irel->r_info = ELF32_R_INFO (ELF32_R_SYM (irel->r_info),
+ 				       stub_rtype);
+ 	  irel->r_offset = trampoff + insn_offset;
+-	  if (r_type == R_PPC_PLTREL24)
++	  if (r_type == R_PPC_PLTREL24
++	      && stub_rtype != R_PPC_RELAX_PLTREL24)
+ 	    irel->r_addend = 0;
+ 
+ 	  /* Record the fixup so we don't do it again this section.  */
+@@ -6430,7 +6446,7 @@
+     {
+       /* Convert the internal relax relocs to external form.  */
+       for (irel = internal_relocs; irel < irelend; irel++)
+-	if (ELF32_R_TYPE (irel->r_info) == R_PPC_RELAX32)
++	if (ELF32_R_TYPE (irel->r_info) == R_PPC_RELAX)
+ 	  {
+ 	    unsigned long r_symndx = ELF32_R_SYM (irel->r_info);
+ 
+@@ -6914,9 +6930,7 @@
+ 		  insn1 |= 32 << 26;	/* lwz */
+ 		  if (offset != (bfd_vma) -1)
+ 		    {
+-		      rel[1].r_info
+-			= ELF32_R_INFO (ELF32_R_SYM (rel[1].r_info),
+-					R_PPC_NONE);
++		      rel[1].r_info = ELF32_R_INFO (STN_UNDEF, R_PPC_NONE);
+ 		      insn2 = 0x7c631214;	/* add 3,3,2 */
+ 		      bfd_put_32 (output_bfd, insn2, contents + offset);
+ 		    }
+@@ -6990,8 +7004,7 @@
+ 	      bfd_put_32 (output_bfd, insn2, contents + offset);
+ 	      /* Zap the reloc on the _tls_get_addr call too.  */
+ 	      BFD_ASSERT (offset == rel[1].r_offset);
+-	      rel[1].r_info = ELF32_R_INFO (ELF32_R_SYM (rel[1].r_info),
+-					    R_PPC_NONE);
++	      rel[1].r_info = ELF32_R_INFO (STN_UNDEF, R_PPC_NONE);
+ 	    }
+ 	  break;
+ 
+@@ -7020,8 +7033,7 @@
+ 			  contents + rel->r_offset - d_offset);
+ 	      /* Zap the reloc on the _tls_get_addr call too.  */
+ 	      BFD_ASSERT (rel->r_offset - d_offset == rel[1].r_offset);
+-	      rel[1].r_info = ELF32_R_INFO (ELF32_R_SYM (rel[1].r_info),
+-					    R_PPC_NONE);
++	      rel[1].r_info = ELF32_R_INFO (STN_UNDEF, R_PPC_NONE);
+ 	      rel--;
+ 	      continue;
+ 	    }
+@@ -7653,12 +7665,20 @@
+ 	    }
+ 	  break;
+ 
+-	case R_PPC_RELAX32PC_PLT:
+-	case R_PPC_RELAX32_PLT:
++	case R_PPC_RELAX_PLT:
++	case R_PPC_RELAX_PLTREL24:
+ 	  if (h != NULL)
+ 	    {
+-	      struct plt_entry *ent = find_plt_ent (&h->plt.plist, got2,
+-						    info->shared ? addend : 0);
++	      struct plt_entry *ent;
++	      bfd_vma got2_addend = 0;
++
++	      if (r_type == R_PPC_RELAX_PLTREL24)
++		{
++		  if (info->shared)
++		    got2_addend = addend;
++		  addend = 0;
++		}
++	      ent = find_plt_ent (&h->plt.plist, got2, got2_addend);
+ 	      if (htab->plt_type == PLT_NEW)
+ 		relocation = (htab->glink->output_section->vma
+ 			      + htab->glink->output_offset
+@@ -7668,18 +7688,14 @@
+ 			      + htab->plt->output_offset
+ 			      + ent->plt.offset);
+ 	    }
+-	  if (r_type == R_PPC_RELAX32_PLT)
+-	    goto relax32;
+ 	  /* Fall thru */
+ 
+-	case R_PPC_RELAX32PC:
+-	  relocation -= (input_section->output_section->vma
+-			 + input_section->output_offset
+-			 + rel->r_offset - 4);
+-	  /* Fall thru */
++	case R_PPC_RELAX:
++	  if (info->shared)
++	    relocation -= (input_section->output_section->vma
++			   + input_section->output_offset
++			   + rel->r_offset - 4);
+ 
+-	case R_PPC_RELAX32:
+-	relax32:
+ 	  {
+ 	    unsigned long t0;
+ 	    unsigned long t1;
+diff -Naur binutils-2.20.orig/bfd/elf32-spu.c binutils-2.20/bfd/elf32-spu.c
+--- binutils-2.20.orig/bfd/elf32-spu.c	2009-10-02 06:51:12.000000000 -0400
++++ binutils-2.20/bfd/elf32-spu.c	2009-11-17 08:47:05.000000000 -0500
+@@ -331,16 +331,7 @@
+ 
+   /* How much memory we have.  */
+   unsigned int local_store;
+-  /* Local store --auto-overlay should reserve for non-overlay
+-     functions and data.  */
+-  unsigned int overlay_fixed;
+-  /* Local store --auto-overlay should reserve for stack and heap.  */
+-  unsigned int reserved;
+-  /* If reserved is not specified, stack analysis will calculate a value
+-     for the stack.  This parameter adjusts that value to allow for
+-     negative sp access (the ABI says 2000 bytes below sp are valid,
+-     and the overlay manager uses some of this area).  */
+-  int extra_stack_space;
++
+   /* Count of overlay stubs needed in non-overlay area.  */
+   unsigned int non_ovly_stub;
+ 
+@@ -2692,19 +2683,12 @@
+       Elf_Internal_Sym *sym;
+       struct elf_link_hash_entry *h;
+       bfd_vma val;
+-      bfd_boolean reject, is_call;
++      bfd_boolean nonbranch, is_call;
+       struct function_info *caller;
+       struct call_info *callee;
+ 
+-      reject = FALSE;
+       r_type = ELF32_R_TYPE (irela->r_info);
+-      if (r_type != R_SPU_REL16
+-	  && r_type != R_SPU_ADDR16)
+-	{
+-	  reject = TRUE;
+-	  if (!(call_tree && spu_hash_table (info)->params->auto_overlay))
+-	    continue;
+-	}
++      nonbranch = r_type != R_SPU_REL16 && r_type != R_SPU_ADDR16;
+ 
+       r_indx = ELF32_R_SYM (irela->r_info);
+       if (!get_sym_h (&h, &sym, &sym_sec, psyms, r_indx, sec->owner))
+@@ -2715,7 +2699,7 @@
+ 	continue;
+ 
+       is_call = FALSE;
+-      if (!reject)
++      if (!nonbranch)
+ 	{
+ 	  unsigned char insn[4];
+ 
+@@ -2746,14 +2730,13 @@
+ 	    }
+ 	  else
+ 	    {
+-	      reject = TRUE;
+-	      if (!(call_tree && spu_hash_table (info)->params->auto_overlay)
+-		  || is_hint (insn))
++	      nonbranch = TRUE;
++	      if (is_hint (insn))
+ 		continue;
+ 	    }
+ 	}
+ 
+-      if (reject)
++      if (nonbranch)
+ 	{
+ 	  /* For --auto-overlay, count possible stubs we need for
+ 	     function pointer references.  */
+@@ -2763,8 +2746,20 @@
+ 	  else
+ 	    sym_type = ELF_ST_TYPE (sym->st_info);
+ 	  if (sym_type == STT_FUNC)
+-	    spu_hash_table (info)->non_ovly_stub += 1;
+-	  continue;
++	    {
++	      if (call_tree && spu_hash_table (info)->params->auto_overlay)
++		spu_hash_table (info)->non_ovly_stub += 1;
++	      /* If the symbol type is STT_FUNC then this must be a
++		 function pointer initialisation.  */
++	      continue;
++	    }
++	  /* Ignore data references.  */
++	  if ((sym_sec->flags & (SEC_ALLOC | SEC_LOAD | SEC_CODE))
++	      != (SEC_ALLOC | SEC_LOAD | SEC_CODE))
++	    continue;
++	  /* Otherwise we probably have a jump table reloc for
++	     a switch statement or some other reference to a
++	     code label.  */
+ 	}
+ 
+       if (h)
+@@ -2813,7 +2808,7 @@
+       callee->is_pasted = FALSE;
+       callee->broken_cycle = FALSE;
+       callee->priority = priority;
+-      callee->count = 1;
++      callee->count = nonbranch? 0 : 1;
+       if (callee->fun->last_caller != sec)
+ 	{
+ 	  callee->fun->last_caller = sec;
+@@ -4159,6 +4154,7 @@
+   bfd **bfd_arr;
+   struct elf_segment_map *m;
+   unsigned int fixed_size, lo, hi;
++  unsigned int reserved;
+   struct spu_link_hash_table *htab;
+   unsigned int base, i, count, bfd_count;
+   unsigned int region, ovlynum;
+@@ -4194,7 +4190,8 @@
+     goto err_exit;
+ 
+   htab = spu_hash_table (info);
+-  if (htab->reserved == 0)
++  reserved = htab->params->auto_overlay_reserved;
++  if (reserved == 0)
+     {
+       struct _sum_stack_param sum_stack_param;
+ 
+@@ -4202,11 +4199,12 @@
+       sum_stack_param.overall_stack = 0;
+       if (!for_each_node (sum_stack, info, &sum_stack_param, TRUE))
+ 	goto err_exit;
+-      htab->reserved = sum_stack_param.overall_stack + htab->extra_stack_space;
++      reserved = (sum_stack_param.overall_stack
++		  + htab->params->extra_stack_space);
+     }
+ 
+   /* No need for overlays if everything already fits.  */
+-  if (fixed_size + htab->reserved <= htab->local_store
++  if (fixed_size + reserved <= htab->local_store
+       && htab->params->ovly_flavour != ovly_soft_icache)
+     {
+       htab->params->auto_overlay = 0;
+@@ -4319,7 +4317,7 @@
+     }
+   free (bfd_arr);
+ 
+-  fixed_size += htab->reserved;
++  fixed_size += reserved;
+   fixed_size += htab->non_ovly_stub * ovl_stub_size (htab->params);
+   if (fixed_size + mos_param.max_overlay_size <= htab->local_store)
+     {
+@@ -4358,13 +4356,13 @@
+ 			    (bfd_vma) mos_param.max_overlay_size);
+ 
+   /* Now see if we should put some functions in the non-overlay area.  */
+-  else if (fixed_size < htab->overlay_fixed)
++  else if (fixed_size < htab->params->auto_overlay_fixed)
+     {
+       unsigned int max_fixed, lib_size;
+ 
+       max_fixed = htab->local_store - mos_param.max_overlay_size;
+-      if (max_fixed > htab->overlay_fixed)
+-	max_fixed = htab->overlay_fixed;
++      if (max_fixed > htab->params->auto_overlay_fixed)
++	max_fixed = htab->params->auto_overlay_fixed;
+       lib_size = max_fixed - fixed_size;
+       lib_size = auto_ovl_lib_functions (info, lib_size);
+       if (lib_size == (unsigned int) -1)
+diff -Naur binutils-2.20.orig/bfd/elf64-ppc.c binutils-2.20/bfd/elf64-ppc.c
+--- binutils-2.20.orig/bfd/elf64-ppc.c	2009-09-22 11:40:59.000000000 -0400
++++ binutils-2.20/bfd/elf64-ppc.c	2009-12-21 05:26:20.000000000 -0500
+@@ -3,7 +3,7 @@
+    2009 Free Software Foundation, Inc.
+    Written by Linus Nordberg, Swox AB <info@swox.com>,
+    based on elf32-ppc.c by Ian Lance Taylor.
+-   Largely rewritten by Alan Modra <amodra@bigpond.net.au>
++   Largely rewritten by Alan Modra.
+ 
+    This file is part of BFD, the Binary File Descriptor library.
+ 
+@@ -5866,9 +5866,7 @@
+ 	      for (ent = h->plt.plist; ent != NULL; ent = ent->next)
+ 		if (ent->addend == rel->r_addend)
+ 		  break;
+-	      if (ent == NULL)
+-		abort ();
+-	      if (ent->plt.refcount > 0)
++	      if (ent != NULL && ent->plt.refcount > 0)
+ 		ent->plt.refcount -= 1;
+ 	    }
+ 	  break;
+@@ -11129,8 +11127,7 @@
+ 		  insn1 |= 58 << 26;	/* ld */
+ 		  insn2 = 0x7c636a14;	/* add 3,3,13 */
+ 		  if (offset != (bfd_vma) -1)
+-		    rel[1].r_info = ELF64_R_INFO (ELF64_R_SYM (rel[1].r_info),
+-						  R_PPC64_NONE);
++		    rel[1].r_info = ELF64_R_INFO (STN_UNDEF, R_PPC64_NONE);
+ 		  if ((tls_mask & TLS_EXPLICIT) == 0)
+ 		    r_type = (((r_type - (R_PPC64_GOT_TLSGD16 & 3)) & 3)
+ 			      + R_PPC64_GOT_TPREL16_DS);
+@@ -11229,8 +11226,7 @@
+ 	      rel->r_info = ELF64_R_INFO (r_symndx, r_type);
+ 	      /* Zap the reloc on the _tls_get_addr call too.  */
+ 	      BFD_ASSERT (offset == rel[1].r_offset);
+-	      rel[1].r_info = ELF64_R_INFO (ELF64_R_SYM (rel[1].r_info),
+-					    R_PPC64_NONE);
++	      rel[1].r_info = ELF64_R_INFO (STN_UNDEF, R_PPC64_NONE);
+ 	      insn3 = bfd_get_32 (output_bfd,
+ 				  contents + offset + 4);
+ 	      if (insn3 == NOP
+@@ -11275,8 +11271,7 @@
+ 	      rel->r_offset = offset + d_offset;
+ 	      /* Zap the reloc on the _tls_get_addr call too.  */
+ 	      BFD_ASSERT (offset == rel[1].r_offset);
+-	      rel[1].r_info = ELF64_R_INFO (ELF64_R_SYM (rel[1].r_info),
+-					    R_PPC64_NONE);
++	      rel[1].r_info = ELF64_R_INFO (STN_UNDEF, R_PPC64_NONE);
+ 	      insn2 = 0x38630000;	/* addi 3,3,0 */
+ 	      insn3 = bfd_get_32 (output_bfd,
+ 				  contents + offset + 4);
+diff -Naur binutils-2.20.orig/bfd/Makefile.in binutils-2.20/bfd/Makefile.in
+--- binutils-2.20.orig/bfd/Makefile.in	2009-10-16 07:47:48.000000000 -0400
++++ binutils-2.20/bfd/Makefile.in	2010-01-01 12:57:39.960451140 -0500
+@@ -224,7 +224,7 @@
+ PACKAGE_URL = @PACKAGE_URL@
+ PACKAGE_VERSION = @PACKAGE_VERSION@
+ PATH_SEPARATOR = @PATH_SEPARATOR@
+-PKGVERSION = @PKGVERSION@
++PKGVERSION = (GNU Binutils for Cross-LFS - Retrieved on 20100101) 
+ POSUB = @POSUB@
+ RANLIB = @RANLIB@
+ REPORT_BUGS_TEXI = @REPORT_BUGS_TEXI@
+@@ -317,7 +317,7 @@
+ ACLOCAL_AMFLAGS = -I . -I .. -I ../config
+ 
+ # Uncomment the following line when doing a release.
+-RELEASE = y
++RELEASE=y
+ INCDIR = $(srcdir)/../include
+ CSEARCH = -I. -I$(srcdir) -I$(INCDIR)
+ SUBDIRS = doc po
+diff -Naur binutils-2.20.orig/bfd/opncls.c binutils-2.20/bfd/opncls.c
+--- binutils-2.20.orig/bfd/opncls.c	2009-10-16 04:53:41.000000000 -0400
++++ binutils-2.20/bfd/opncls.c	2009-10-20 04:40:36.000000000 -0400
+@@ -635,7 +635,7 @@
+   /* If the file was open for writing and is now executable,
+      make it so.  */
+   if (abfd->direction == write_direction
+-      && abfd->flags & EXEC_P)
++      && (abfd->flags & (EXEC_P | DYNAMIC)) != 0)
+     {
+       struct stat buf;
+ 
+diff -Naur binutils-2.20.orig/bfd/version.h binutils-2.20/bfd/version.h
+--- binutils-2.20.orig/bfd/version.h	2009-10-16 03:42:17.000000000 -0400
++++ binutils-2.20/bfd/version.h	2009-12-31 18:00:36.000000000 -0500
+@@ -1,4 +1,4 @@
+-#define BFD_VERSION_DATE 20091016
++#define BFD_VERSION_DATE 20100101
+ #define BFD_VERSION @bfd_version@
+ #define BFD_VERSION_STRING  @bfd_version_package@ @bfd_version_string@
+ #define REPORT_BUGS_TO @report_bugs_to@
+diff -Naur binutils-2.20.orig/binutils/ChangeLog binutils-2.20/binutils/ChangeLog
+--- binutils-2.20.orig/binutils/ChangeLog	2009-10-02 06:51:12.000000000 -0400
++++ binutils-2.20/binutils/ChangeLog	2009-12-31 09:43:49.000000000 -0500
+@@ -1,3 +1,23 @@
++2009-12-31  Eirik Byrkjeflot Anonsen  <eirik@opera.com>
++	    Nick Clifton  <nickc@redhat.com>
++
++	* objcopy.c (add_redefine_syms_file): Avoid symbol buffer
++	overrun.
++
++2009-10-23  Thomas Cougnard  <thomas.cougnard@gmail.com>
++
++	* readelf.c (dynamic_info): Correct size of array.
++
++2009-10-19  Jerker Bäck  <jerker.back@gmail.com>
++
++	PR binutils/10793
++	* prdbg.c (tg_end_struct_type): Warning fix.
++
++	PR binutils/10792
++	* dlltool.c (dll_name_list_append): Declare variable at start
++	of block.
++	(dll_name_list_count, dll_name-list_print): Likewise.
++
+ 2009-10-01  Alan Modra  <amodra@bigpond.net.au>
+ 
+ 	* addr2line.c (slurp_symtab): Don't use bfd_read_minisymbols.
+diff -Naur binutils-2.20.orig/binutils/dlltool.c binutils-2.20/binutils/dlltool.c
+--- binutils-2.20.orig/binutils/dlltool.c	2009-09-03 21:22:18.000000000 -0400
++++ binutils-2.20/binutils/dlltool.c	2009-10-18 19:12:50.000000000 -0400
+@@ -3162,13 +3162,15 @@
+ static void
+ dll_name_list_append (dll_name_list_type * list, bfd_byte * data)
+ {
++  dll_name_list_node_type * entry;
++
+   /* Error checking.  */
+   if (! list || ! list->tail)
+     return;
+ 
+   /* Allocate new node.  */
+-  dll_name_list_node_type * entry =
+-    (dll_name_list_node_type *) xmalloc (sizeof (dll_name_list_node_type));
++  entry = ((dll_name_list_node_type *)
++	   xmalloc (sizeof (dll_name_list_node_type)));
+ 
+   /* Initialize its values.  */
+   entry->dllname = xstrdup ((char *) data);
+@@ -3184,12 +3186,14 @@
+ static int 
+ dll_name_list_count (dll_name_list_type * list)
+ {
++  dll_name_list_node_type * p;
++  int count = 0;
++
+   /* Error checking.  */
+   if (! list || ! list->head)
+     return 0;
+ 
+-  int count = 0;
+-  dll_name_list_node_type * p = list->head;
++  p = list->head;
+ 
+   while (p && p->next)
+     {
+@@ -3204,11 +3208,13 @@
+ static void 
+ dll_name_list_print (dll_name_list_type * list)
+ {
++  dll_name_list_node_type * p;
++
+   /* Error checking.  */
+   if (! list || ! list->head)
+     return;
+ 
+-  dll_name_list_node_type * p = list->head;
++  p = list->head;
+ 
+   while (p && p->next && p->next->dllname && *(p->next->dllname))
+     {
+diff -Naur binutils-2.20.orig/binutils/MAINTAINERS binutils-2.20/binutils/MAINTAINERS
+--- binutils-2.20.orig/binutils/MAINTAINERS	2009-08-06 13:38:00.000000000 -0400
++++ binutils-2.20/binutils/MAINTAINERS	2009-12-21 05:26:43.000000000 -0500
+@@ -38,7 +38,7 @@
+   Jeff Law <law@redhat.com>
+   Jim Wilson <wilson@tuliptree.org>
+   DJ Delorie <dj@redhat.com>
+-  Alan Modra <amodra@bigpond.net.au>
++  Alan Modra <amodra@gmail.com>
+   Michael Meissner <gnu@the-meissners.org>
+   Daniel Jacobowitz <dan@debian.org>
+   Richard Sandiford <rdsandiford@googlemail.com>
+@@ -77,7 +77,7 @@
+   FRV		   Alexandre Oliva <aoliva@redhat.com>
+   H8300		   Prafulla Thakare <prafulla.thakare@kpitcummins.com>
+   HPPA		   Dave Anglin <dave.anglin@nrc.ca>
+-  HPPA elf32	   Alan Modra <amodra@bigpond.net.au>
++  HPPA elf32	   Alan Modra <amodra@gmail.com>
+   HPPA elf64	   Jeff Law <law@redhat.com> [Basic maintainance only]
+   IA-64		   Jim Wilson <wilson@tuliptree.org>
+   IQ2000	   Stan Cox <scox@redhat.com>
+@@ -102,14 +102,14 @@
+   MSP430	   Dmitry Diky <diwil@spec.ru>
+   NetBSD support   Matt Thomas <matt@netbsd.org>
+   PPC		   Geoff Keating <geoffk@geoffk.org>
+-  PPC		   Alan Modra <amodra@bigpond.net.au>
++  PPC		   Alan Modra <amodra@gmail.com>
+   PPC vector ext   Aldy Hernandez <aldyh@redhat.com>
+   s390, s390x	   Martin Schwidefsky <schwidefsky@de.ibm.com>
+   SCORE		   Mei Ligang <ligang@sunnorth.com.cn>
+   SH		   Alexandre Oliva <aoliva@redhat.com>
+   SH		   Kaz Kojima <kkojima@rr.iij4u.or.jp>
+   SPARC		   Jakub Jelinek <jakub@redhat.com>
+-  SPU		   Alan Modra <amodra@bigpond.net.au>
++  SPU		   Alan Modra <amodra@gmail.com>
+   TESTSUITES	   Ben Elliston <bje@gnu.org>
+   TIC4X            Svein Seldal <svein@dev.seldal.com>
+   TIC54X           Timothy Wall <twall@alum.mit.edu>
+diff -Naur binutils-2.20.orig/binutils/objcopy.c binutils-2.20/binutils/objcopy.c
+--- binutils-2.20.orig/binutils/objcopy.c	2009-09-14 07:43:26.000000000 -0400
++++ binutils-2.20/binutils/objcopy.c	2009-12-31 09:43:49.000000000 -0500
+@@ -1237,7 +1237,7 @@
+ 	   filename, strerror (errno));
+ 
+   bufsize = 100;
+-  buf = (char *) xmalloc (bufsize);
++  buf = (char *) xmalloc (bufsize + 1 /* For the terminating NUL.  */);
+ 
+   lineno = 1;
+   c = getc (file);
+@@ -1254,7 +1254,7 @@
+ 	  if (len >= bufsize)
+ 	    {
+ 	      bufsize *= 2;
+-	      buf = (char *) xrealloc (buf, bufsize);
++	      buf = (char *) xrealloc (buf, bufsize + 1);
+ 	    }
+ 	  c = getc (file);
+ 	}
+@@ -1280,7 +1280,7 @@
+ 	  if (len >= bufsize)
+ 	    {
+ 	      bufsize *= 2;
+-	      buf = (char *) xrealloc (buf, bufsize);
++	      buf = (char *) xrealloc (buf, bufsize + 1);
+ 	    }
+ 	  c = getc (file);
+ 	}
+diff -Naur binutils-2.20.orig/binutils/prdbg.c binutils-2.20/binutils/prdbg.c
+--- binutils-2.20.orig/binutils/prdbg.c	2009-09-14 07:43:26.000000000 -0400
++++ binutils-2.20/binutils/prdbg.c	2009-10-18 19:14:52.000000000 -0400
+@@ -2088,8 +2088,7 @@
+ static bfd_boolean
+ tg_end_struct_type (void *p ATTRIBUTE_UNUSED)
+ {
+-  struct pr_handle *info = (struct pr_handle *) p;
+-  assert (info->stack != NULL);
++  assert (((struct pr_handle *) p)->stack != NULL);
+ 
+   return TRUE;
+ }
+diff -Naur binutils-2.20.orig/binutils/readelf.c binutils-2.20/binutils/readelf.c
+--- binutils-2.20.orig/binutils/readelf.c	2009-09-22 11:40:59.000000000 -0400
++++ binutils-2.20/binutils/readelf.c	2009-10-22 20:15:41.000000000 -0400
+@@ -165,7 +165,7 @@
+ static unsigned long dynamic_syminfo_offset;
+ static unsigned int dynamic_syminfo_nent;
+ static char program_interpreter[PATH_MAX];
+-static bfd_vma dynamic_info[DT_JMPREL + 1];
++static bfd_vma dynamic_info[DT_ENCODING];
+ static bfd_vma dynamic_info_DT_GNU_HASH;
+ static bfd_vma version_info[16];
+ static Elf_Internal_Ehdr elf_header;
+diff -Naur binutils-2.20.orig/configure.ac binutils-2.20/configure.ac
+--- binutils-2.20.orig/configure.ac	2009-10-16 07:52:23.000000000 -0400
++++ binutils-2.20/configure.ac	2009-09-02 03:05:02.000000000 -0400
+@@ -169,7 +169,7 @@
+ # binutils, gas and ld appear in that order because it makes sense to run
+ # "make check" in that particular order.
+ # If --enable-gold is used, "gold" will replace "ld".
+-host_tools="byacc flex bison binutils gas ld fixincludes gcc cgen sid sim gdb make patch prms send-pr gprof etc expect dejagnu ash bash bzip2 m4 autoconf automake libtool diff rcs fileutils shellutils time textutils wdiff find uudecode hello tar gzip indent recode release sed utils guile perl gawk findutils gettext zip fastjar gnattools"
++host_tools="texinfo byacc flex bison binutils gas ld fixincludes gcc cgen sid sim gdb make patch prms send-pr gprof etc expect dejagnu ash bash bzip2 m4 autoconf automake libtool diff rcs fileutils shellutils time textutils wdiff find uudecode hello tar gzip indent recode release sed utils guile perl gawk findutils gettext zip fastjar gnattools"
+ 
+ # libgcj represents the runtime libraries only used by gcj.
+ libgcj="target-libffi \
+diff -Naur binutils-2.20.orig/gas/as.h binutils-2.20/gas/as.h
+--- binutils-2.20.orig/gas/as.h	2009-09-03 08:54:21.000000000 -0400
++++ binutils-2.20/gas/as.h	2009-12-03 05:40:25.000000000 -0500
+@@ -238,7 +238,7 @@
+ #define know(p) gas_assert(p)	/* Verify our assumptions!  */
+ #endif /* not yet defined */
+ #else
+-#define know(p)			/* know() checks are no-op.ed  */
++#define know(p)	do {} while (0)	/* know() checks are no-op.ed  */
+ #endif
+ 
+ /* input_scrub.c */
+diff -Naur binutils-2.20.orig/gas/ChangeLog binutils-2.20/gas/ChangeLog
+--- binutils-2.20.orig/gas/ChangeLog	2009-10-13 07:52:15.000000000 -0400
++++ binutils-2.20/gas/ChangeLog	2009-12-24 06:57:09.000000000 -0500
+@@ -1,3 +1,47 @@
++2009-12-24  Ramana Radhakrishnan  <ramana.radhakrishnan@arm.com>
++
++        Backport from trunk:
++	2009-12-21  Ramana Radhakrishnan  <ramana.radhakrishnan@arm.com>
++	            Richard Earnshaw  <richard.earnshaw@arm.com>
++
++        * config/tc-arm.c (encode_thumb2_b_bl_offset): New. Refactored
++        from md_apply_fix.
++        (md_apply_fix): Fixup range checks for Thumb2 version
++        of unconditional calls. Call encode_thumb2_b_bl_offset for
++        unconditional branches / function calls.
++
++2009-12-15  H.J. Lu  <hongjiu.lu@intel.com>
++
++	Backport from trunk:
++	2009-12-07  H.J. Lu  <hongjiu.lu@intel.com>
++
++	PR gas/11037
++	* expr.c (resolve_expression): Call symbol_same_p to check
++	if 2 symbols are the same.
++
++	* symbols.c (symbol_same_p): New.
++	* symbols.h (symbol_same_p): Likewise.
++
++2009-12-03  Nick Clifton  <nickc@redhat.com>
++
++	PR gas/11011
++	Import this patch from the mainline:
++	2009-10-18  Alan Modra  <amodra@bigpond.net.au>
++
++	* as.h (know): Don't define as empty.
++
++2009-10-28  Alan Modra  <amodra@bigpond.net.au>
++
++	PR gas/10856
++	* expr.c (resolve_expression): Only add "left" value to O_symbol
++	expression when the symbol is undefined and different from the
++	original symbol.  Simplify negative logic.
++
++2009-10-18  Matthias Klose  <doko@ubuntu.com>
++
++	* config/tc-arm.c (make_mapping_symbol): Add braces to avoid empty body
++	in release builds.
++
+ 2009-10-13  Alan Modra  <amodra@bigpond.net.au>
+ 	    H.J. Lu  <hongjiu.lu@intel.com>
+ 
+diff -Naur binutils-2.20.orig/gas/config/tc-arm.c binutils-2.20/gas/config/tc-arm.c
+--- binutils-2.20.orig/gas/config/tc-arm.c	2009-08-29 18:10:59.000000000 -0400
++++ binutils-2.20/gas/config/tc-arm.c	2009-12-24 06:57:10.000000000 -0500
+@@ -2486,7 +2486,9 @@
+       frag->tc_frag_data.first_map = symbolP;
+     }
+   if (frag->tc_frag_data.last_map != NULL)
+-    know (S_GET_VALUE (frag->tc_frag_data.last_map) < S_GET_VALUE (symbolP));
++    {
++      know (S_GET_VALUE (frag->tc_frag_data.last_map) < S_GET_VALUE (symbolP));
++    }
+   frag->tc_frag_data.last_map = symbolP;
+ }
+ 
+@@ -19381,6 +19383,31 @@
+   return FALSE;
+ }
+ 
++/* Encode Thumb2 unconditional branches and calls. The encoding
++   for the 2 are identical for the immediate values.  */
++
++static void
++encode_thumb2_b_bl_offset (char * buf, offsetT value)
++{
++#define T2I1I2MASK  ((1 << 13) | (1 << 11))
++  offsetT newval;
++  offsetT newval2;
++  addressT S, I1, I2, lo, hi;
++
++  S = (value >> 24) & 0x01;
++  I1 = (value >> 23) & 0x01;
++  I2 = (value >> 22) & 0x01;
++  hi = (value >> 12) & 0x3ff;
++  lo = (value >> 1) & 0x7ff; 
++  newval   = md_chars_to_number (buf, THUMB_SIZE);
++  newval2  = md_chars_to_number (buf + THUMB_SIZE, THUMB_SIZE);
++  newval  |= (S << 10) | hi;
++  newval2 &=  ~T2I1I2MASK;
++  newval2 |= (((I1 ^ S) << 13) | ((I2 ^ S) << 11) | lo) ^ T2I1I2MASK;
++  md_number_to_chars (buf, newval, THUMB_SIZE);
++  md_number_to_chars (buf + THUMB_SIZE, newval2, THUMB_SIZE);
++}
++
+ void
+ md_apply_fix (fixS *	fixP,
+ 	       valueT * valP,
+@@ -20073,10 +20100,6 @@
+ 	 fixP->fx_r_type = BFD_RELOC_THUMB_PCREL_BRANCH23;
+ #endif
+ 
+-      if ((value & ~0x3fffff) && ((value & ~0x3fffff) != ~0x3fffff))
+-	as_bad_where (fixP->fx_file, fixP->fx_line,
+-		      _("branch out of range"));
+-
+       if (fixP->fx_r_type == BFD_RELOC_THUMB_PCREL_BLX)
+ 	/* For a BLX instruction, make sure that the relocation is rounded up
+ 	   to a word boundary.  This follows the semantics of the instruction
+@@ -20084,6 +20107,24 @@
+ 	   1 of the base address.  */
+ 	value = (value + 1) & ~ 1;
+ 
++       if ((value & ~0x3fffff) && ((value & ~0x3fffff) != ~0x3fffff))
++	 {
++	   if (!(ARM_CPU_HAS_FEATURE (cpu_variant, arm_arch_t2)))
++	     {
++	       as_bad_where (fixP->fx_file, fixP->fx_line,
++			     _("branch out of range"));
++	     }
++	   else  if ((value & ~0x1ffffff)
++		     && ((value & ~0x1ffffff) != ~0x1ffffff))
++	       {
++		 as_bad_where (fixP->fx_file, fixP->fx_line,
++			     _("Thumb2 branch out of range"));
++	       }
++	 }
++
++       if (fixP->fx_done || !seg->use_rela_p)
++	 encode_thumb2_b_bl_offset (buf, value);
++
+       if (fixP->fx_done || !seg->use_rela_p)
+ 	{
+ 	  offsetT newval2;
+@@ -20104,24 +20145,7 @@
+ 
+       if (fixP->fx_done || !seg->use_rela_p)
+ 	{
+-	  offsetT newval2;
+-	  addressT S, I1, I2, lo, hi;
+-
+-	  S  = (value & 0x01000000) >> 24;
+-	  I1 = (value & 0x00800000) >> 23;
+-	  I2 = (value & 0x00400000) >> 22;
+-	  hi = (value & 0x003ff000) >> 12;
+-	  lo = (value & 0x00000ffe) >> 1;
+-
+-	  I1 = !(I1 ^ S);
+-	  I2 = !(I2 ^ S);
+-
+-	  newval   = md_chars_to_number (buf, THUMB_SIZE);
+-	  newval2  = md_chars_to_number (buf + THUMB_SIZE, THUMB_SIZE);
+-	  newval  |= (S << 10) | hi;
+-	  newval2 |= (I1 << 13) | (I2 << 11) | lo;
+-	  md_number_to_chars (buf, newval, THUMB_SIZE);
+-	  md_number_to_chars (buf + THUMB_SIZE, newval2, THUMB_SIZE);
++	  encode_thumb2_b_bl_offset (buf, value);
+ 	}
+       break;
+ 
+diff -Naur binutils-2.20.orig/gas/expr.c binutils-2.20/gas/expr.c
+--- binutils-2.20.orig/gas/expr.c	2009-09-14 07:43:26.000000000 -0400
++++ binutils-2.20/gas/expr.c	2009-12-15 20:52:13.000000000 -0500
+@@ -1997,6 +1997,7 @@
+   /* Help out with CSE.  */
+   valueT final_val = expressionP->X_add_number;
+   symbolS *add_symbol = expressionP->X_add_symbol;
++  symbolS *orig_add_symbol = add_symbol;
+   symbolS *op_symbol = expressionP->X_op_symbol;
+   operatorT op = expressionP->X_op;
+   valueT left, right;
+@@ -2078,6 +2079,7 @@
+ 	      left = right;
+ 	      seg_left = seg_right;
+ 	      add_symbol = op_symbol;
++	      orig_add_symbol = expressionP->X_op_symbol;
+ 	      op = O_symbol;
+ 	      break;
+ 	    }
+@@ -2122,18 +2124,19 @@
+ 	    {
+ 	      if (op == O_bit_exclusive_or || op == O_bit_inclusive_or)
+ 		{
+-		  if (seg_right != absolute_section || right != 0)
++		  if (!(seg_right == absolute_section && right == 0))
+ 		    {
+ 		      seg_left = seg_right;
+ 		      left = right;
+ 		      add_symbol = op_symbol;
++		      orig_add_symbol = expressionP->X_op_symbol;
+ 		    }
+ 		  op = O_symbol;
+ 		  break;
+ 		}
+ 	      else if (op == O_left_shift || op == O_right_shift)
+ 		{
+-		  if (seg_left != absolute_section || left != 0)
++		  if (!(seg_left == absolute_section && left == 0))
+ 		    {
+ 		      op = O_symbol;
+ 		      break;
+@@ -2149,6 +2152,7 @@
+ 	      seg_left = seg_right;
+ 	      left = right;
+ 	      add_symbol = op_symbol;
++	      orig_add_symbol = expressionP->X_op_symbol;
+ 	      op = O_symbol;
+ 	      break;
+ 	    }
+@@ -2158,11 +2162,11 @@
+ 	      op = O_symbol;
+ 	      break;
+ 	    }
+-	  else if (left != right
+-		   || ((seg_left != reg_section || seg_right != reg_section)
+-		       && (seg_left != undefined_section
+-			   || seg_right != undefined_section
+-			   || add_symbol != op_symbol)))
++	  else if (!(left == right
++		     && ((seg_left == reg_section && seg_right == reg_section)
++			 || (seg_left == undefined_section
++			     && seg_right == undefined_section
++			     && add_symbol == op_symbol))))
+ 	    return 0;
+ 	  else if (op == O_bit_and || op == O_bit_inclusive_or)
+ 	    {
+@@ -2233,7 +2237,7 @@
+ 	op = O_constant;
+       else if (seg_left == reg_section && final_val == 0)
+ 	op = O_register;
+-      else if (add_symbol != expressionP->X_add_symbol)
++      else if (!symbol_same_p (add_symbol, orig_add_symbol))
+ 	final_val += left;
+       expressionP->X_add_symbol = add_symbol;
+     }
+diff -Naur binutils-2.20.orig/gas/symbols.c binutils-2.20/gas/symbols.c
+--- binutils-2.20.orig/gas/symbols.c	2009-10-09 09:12:32.000000000 -0400
++++ binutils-2.20/gas/symbols.c	2009-12-15 20:52:13.000000000 -0500
+@@ -2385,6 +2385,20 @@
+   S_CLEAR_WEAKREFR (s);
+ }
+ 
++/* Return whether 2 symbols are the same.  */
++
++int
++symbol_same_p (symbolS *s1, symbolS *s2)
++{
++  if (s1->bsym == NULL
++      && local_symbol_converted_p ((struct local_symbol *) s1))
++    s1 = local_symbol_get_real_symbol ((struct local_symbol *) s1);
++  if (s2->bsym == NULL
++      && local_symbol_converted_p ((struct local_symbol *) s2))
++    s2 = local_symbol_get_real_symbol ((struct local_symbol *) s2);
++  return s1 == s2;
++}
++
+ /* Return a pointer to the X_add_number component of a symbol.  */
+ 
+ offsetT *
+diff -Naur binutils-2.20.orig/gas/symbols.h binutils-2.20/gas/symbols.h
+--- binutils-2.20.orig/gas/symbols.h	2009-09-02 03:24:19.000000000 -0400
++++ binutils-2.20/gas/symbols.h	2009-12-15 20:52:13.000000000 -0500
+@@ -198,6 +198,7 @@
+ extern int symbol_shadow_p (symbolS *);
+ extern asymbol *symbol_get_bfdsym (symbolS *);
+ extern void symbol_set_bfdsym (symbolS *, asymbol *);
++extern int symbol_same_p (symbolS *, symbolS *);
+ 
+ #ifdef OBJ_SYMFIELD_TYPE
+ OBJ_SYMFIELD_TYPE *symbol_get_obj (symbolS *);
+diff -Naur binutils-2.20.orig/gas/testsuite/ChangeLog binutils-2.20/gas/testsuite/ChangeLog
+--- binutils-2.20.orig/gas/testsuite/ChangeLog	2009-10-06 06:57:55.000000000 -0400
++++ binutils-2.20/gas/testsuite/ChangeLog	2009-12-15 20:52:14.000000000 -0500
+@@ -1,3 +1,22 @@
++2009-12-15  H.J. Lu  <hongjiu.lu@intel.com>
++
++	Backport from trunk:
++	2009-12-07  H.J. Lu  <hongjiu.lu@intel.com>
++
++	PR gas/11037
++	* gas/i386/intelpic.s: Add testcases.
++	* gas/i386/intelpic.d: Updated.
++
++	2009-10-28  Alan Modra  <amodra@bigpond.net.au>
++
++	* gas/i386/intelpic.d: Correct.
++
++	2009-10-08  H.J. Lu  <hongjiu.lu@intel.com>
++
++	PR gas/10704
++	* gas/i386/intelpic.s: Add 2 new tests.
++	* gas/i386/intelpic.d: Updated.
++
+ 2009-10-02  Peter Bergner  <bergner@vnet.ibm.com>
+ 
+ 	* gas/ppc/476.s: New test.
+diff -Naur binutils-2.20.orig/gas/testsuite/gas/i386/intelpic.d binutils-2.20/gas/testsuite/gas/i386/intelpic.d
+--- binutils-2.20.orig/gas/testsuite/gas/i386/intelpic.d	2008-12-18 17:47:28.000000000 -0500
++++ binutils-2.20/gas/testsuite/gas/i386/intelpic.d	2009-12-15 20:52:14.000000000 -0500
+@@ -6,11 +6,22 @@
+ 
+ Disassembly of section .text:
+ 
+-0+000 <gs_foo>:
+-   0:	c3 [ 	]*ret    
++0+ <gs_foo>:
++[ 	]*[a-f0-9]+:	c3                   	ret    
+ 
+-0+001 <bar>:
+-   1:	8d 83 00 00 00 00 [ 	]*lea    0x0\(%ebx\),%eax
+-   7:	8b 83 00 00 00 00 [ 	]*mov    0x0\(%ebx\),%eax
+-   d:	90 [ 	]*nop
+-[ 	]*...
++0+1 <bar>:
++[ 	]*[a-f0-9]+:	8d 83 14 00 00 00    	lea    0x14\(%ebx\),%eax
++[ 	]*[a-f0-9]+:	8b 83 00 00 00 00    	mov    0x0\(%ebx\),%eax
++[ 	]*[a-f0-9]+:	ff 24 85 0d 00 00 00 	jmp    \*0xd\(,%eax,4\)
++[ 	]*[a-f0-9]+:	8d 83 14 00 00 00    	lea    0x14\(%ebx\),%eax
++[ 	]*[a-f0-9]+:	ff 24 85 0d 10 00 00 	jmp    \*0x100d\(,%eax,4\)
++[ 	]*[a-f0-9]+:	ff 24 85 28 10 00 00 	jmp    \*0x1028\(,%eax,4\)
++[ 	]*[a-f0-9]+:	90                   	nop
++
++0+29 <L11>:
++[ 	]*[a-f0-9]+:	ff 24 85 29 10 00 00 	jmp    \*0x1029\(,%eax,4\)
++[ 	]*[a-f0-9]+:	ff 24 85 37 10 00 00 	jmp    \*0x1037\(,%eax,4\)
++
++0+37 <L12>:
++[ 	]*[a-f0-9]+:	90                   	nop
++#pass
+diff -Naur binutils-2.20.orig/gas/testsuite/gas/i386/intelpic.s binutils-2.20/gas/testsuite/gas/i386/intelpic.s
+--- binutils-2.20.orig/gas/testsuite/gas/i386/intelpic.s	2001-03-18 16:28:56.000000000 -0500
++++ binutils-2.20/gas/testsuite/gas/i386/intelpic.s	2009-12-15 20:52:14.000000000 -0500
+@@ -7,5 +7,17 @@
+ bar:
+  lea	eax, .LC0@GOTOFF[ebx]
+  mov	eax, DWORD PTR gs_foo@GOT[ebx]
+- nop
+-.p2align 4,0
++
++.L11:
++        jmp     DWORD PTR[ .L11  + eax * 4 ]
++.LC0:
++        lea     eax, DWORD PTR[ .LC0@GOTOFF + ebx ]
++        jmp     DWORD PTR[ .L11  + eax * 4 + 0x1000 ]
++        jmp     DWORD PTR[ .L12  + eax * 4 + 0x1000 ]
++.L12:
++	nop
++L11:
++        jmp     DWORD PTR[ L11  + eax * 4 + 0x1000 ]
++        jmp     DWORD PTR[ L12  + eax * 4 + 0x1000 ]
++L12:
++	nop
+diff -Naur binutils-2.20.orig/gold/arm.cc binutils-2.20/gold/arm.cc
+--- binutils-2.20.orig/gold/arm.cc	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/arm.cc	2009-11-04 11:36:08.000000000 -0500
+@@ -1075,7 +1075,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_);
++					   this->got_, false);
+       os->set_is_relro();
+ 
+       // The old GNU linker creates a .got.plt section.  We just
+@@ -1086,7 +1086,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_plt_);
++					   this->got_plt_, false);
+       os->set_is_relro();
+ 
+       // The first three entries are reserved.
+@@ -1114,7 +1114,7 @@
+       gold_assert(layout != NULL);
+       this->rel_dyn_ = new Reloc_section(parameters->options().combreloc());
+       layout->add_output_section_data(".rel.dyn", elfcpp::SHT_REL,
+-				      elfcpp::SHF_ALLOC, this->rel_dyn_);
++				      elfcpp::SHF_ALLOC, this->rel_dyn_, true);
+     }
+   return this->rel_dyn_;
+ }
+@@ -1186,7 +1186,7 @@
+ {
+   this->rel_ = new Reloc_section(false);
+   layout->add_output_section_data(".rel.plt", elfcpp::SHT_REL,
+-				  elfcpp::SHF_ALLOC, this->rel_);
++				  elfcpp::SHF_ALLOC, this->rel_, true);
+ }
+ 
+ template<bool big_endian>
+@@ -1348,7 +1348,7 @@
+       layout->add_output_section_data(".plt", elfcpp::SHT_PROGBITS,
+ 				      (elfcpp::SHF_ALLOC
+ 				       | elfcpp::SHF_EXECINSTR),
+-				      this->plt_);
++				      this->plt_, false);
+     }
+   this->plt_->add_entry(gsym);
+ }
+@@ -1831,10 +1831,12 @@
+   Output_data_dynamic* const odyn = layout->dynamic_data();
+   if (odyn != NULL)
+     {
+-      if (this->got_plt_ != NULL)
++      if (this->got_plt_ != NULL
++	  && this->got_plt_->output_section() != NULL)
+ 	odyn->add_section_address(elfcpp::DT_PLTGOT, this->got_plt_);
+ 
+-      if (this->plt_ != NULL)
++      if (this->plt_ != NULL
++	  && this->plt_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->plt_->rel_plt();
+ 	  odyn->add_section_size(elfcpp::DT_PLTRELSZ, od);
+@@ -1842,7 +1844,8 @@
+ 	  odyn->add_constant(elfcpp::DT_PLTREL, elfcpp::DT_REL);
+ 	}
+ 
+-      if (this->rel_dyn_ != NULL)
++      if (this->rel_dyn_ != NULL
++	  && this->rel_dyn_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->rel_dyn_;
+ 	  odyn->add_section_address(elfcpp::DT_REL, od);
+@@ -1879,7 +1882,8 @@
+ 		      == NULL);
+ 	  Output_segment*  exidx_segment =
+ 	    layout->make_output_segment(elfcpp::PT_ARM_EXIDX, elfcpp::PF_R);
+-	  exidx_segment->add_output_section(exidx_section, elfcpp::PF_R);
++	  exidx_segment->add_output_section(exidx_section, elfcpp::PF_R,
++					    false);
+ 	}
+     }
+ }
+diff -Naur binutils-2.20.orig/gold/ChangeLog binutils-2.20/gold/ChangeLog
+--- binutils-2.20.orig/gold/ChangeLog	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/ChangeLog	2009-11-06 21:17:46.000000000 -0500
+@@ -1,3 +1,98 @@
++2009-11-06  Ian Lance Taylor  <iant@google.com>
++
++	Bring over from mainline:
++	2009-10-16  Doug Kwan  <dougkwan@google.com>
++
++	* dynobj.cc (Versions::Versions): Initialize version_script_.
++	Only insert base version symbol definition for a shared object
++	if version script defines any version versions.
++	(Versions::define_base_version): New method definition.
++	(Versions::add_def): Check that base version is not needed.
++	(Versions::add_need): Define base version lazily.
++	* dynobj.h (Versions::define_base_version): New method declaration.
++	(Versions::needs_base_version_): New data member declaration.
++
++2009-11-06  Ian Lance Taylor  <iant@google.com>
++
++	PR 10876
++	* defstd.cc (in_segment): Set only_if_ref true for "end".
++
++2009-11-05  Ian Lance Taylor  <iant@google.com>
++
++	PR 10910
++	* output.cc (Output_segment::add_output_section): Add missing
++	return statement.
++
++2009-11-04  Ian Lance Taylor  <iant@google.com>
++
++	PR 10880
++	* object.h (class Object): Add is_needed and set_is_needed
++	methods.  Add is_needed_ field.  Make bool fields into bitfields.
++	* symtab.cc (Symbol_table::set_dynsym_indexes): If a symbol is
++	defined in a dynamic object and referenced by a regular object,
++	set is_needed for the dynamic object.
++	* layout.cc (Layout::finish_dynamic_section): Don't add DT_NEEDED
++	if the file is marked with as_needed and it is not needed.
++
++2009-11-04  Ian Lance Taylor  <iant@google.com>
++
++	PR 10887
++	* arm.cc (Target_arm::do_finalize_sections): Don't add dynamic
++	tags if data is discarded by linker script.
++	* i386.cc (Target_i386::do_finalize_sections): Likewise.
++	* powerpc.cc (Target_powerpc::do_finalize_sections): Likewise.
++	* sparc.cc (Target_sparc::do_finalize_sections): Likewise.
++	* x86_64.cc (Target_x86_64::do_finalize_sections): Likewise.
++
++2009-11-04  Ian Lance Taylor  <iant@google.com>
++
++	* layout.cc (Layout::get_output_section): Add is_interp and
++	is_dynamic_linker_section parameters.  Change all callers.
++	(Layout::choose_output_section): Likewise.
++	(Layout::make_output_section): Likewise.
++	(Layout::add_output_section_data): Add is_dynamic_linker_section
++	parameter.  Change all callers.
++	* layout.h (class Layout): Update declarations.
++	* output.h (class Output_section): Add is_interp, set_is_interp,
++	is_dynamic_linker_section, set_is_dynamic_linker_section methods.
++	Add is_interp_, is_dynamic_linker_section_ fields.  Change
++	generate_code_fills_at_write_ to a bitfield.
++	* output.cc (Output_section::Output_sections): Initialize new
++	fields.
++	(Output_segment::add_output_section): Add do_sort parameter.
++	Change all callers.
++
++2009-11-03  Ian Lance Taylor  <iant@google.com>
++
++	PR 10860
++	* options.h (class General_options): Add --warn-common.
++	* resolve.cc (Symbol_table::resolve): Handle --warn-common when
++	merging two common symbols.
++	(Symbol_table::should_override): Handle --warn-common when merging
++	a common symbol with a defined symbol.  Use report_resolve_problem
++	for multiple definitions.
++	(Symbol_table::report_resolve_problem): New function.
++	* symtab.h (class Symbol_table): Declare report_resolve_problem.
++
++2009-11-03  Ian Lance Taylor  <iant@google.com>
++
++	PR 10893
++	* defstd.cc (in_section): Add entries for __rel_iplt_start,
++	__rel_iplt_end, __rela_iplt_start, __rela_iplt_end, and __stack.
++
++2009-11-03  Ian Lance Taylor  <iant@google.com>
++
++	PR 10895
++	* po/Make-in ($(srcdir)/$(PACKAGE).pot): Pass -C and
++	--msgid-bugs-address.
++	(install-pdf): New target.
++	(install-data_yes): Look up one directory to find mkinstalldirs.
++
++2009-10-16  Doug Kwan  <dougkwan@google.com>
++
++	* output.cc (Output_segment::set_section_list_address): Cast
++	expressions to unsigned long long type to avoid format warnings.
++
+ 2009-10-15  Ian Lance Taylor  <iant@google.com>
+ 
+ 	* script.cc (Script_options::add_symbol_assignment): Always add a
+diff -Naur binutils-2.20.orig/gold/common.cc binutils-2.20/gold/common.cc
+--- binutils-2.20.orig/gold/common.cc	2009-06-22 02:51:53.000000000 -0400
++++ binutils-2.20/gold/common.cc	2009-11-04 10:56:34.000000000 -0500
+@@ -239,7 +239,7 @@
+   Output_data_space *poc = new Output_data_space(addralign, ds_name);
+   Output_section *os = layout->add_output_section_data(name,
+ 						       elfcpp::SHT_NOBITS,
+-						       flags, poc);
++						       flags, poc, false);
+   if (os != NULL)
+     {
+       if (commons_section_type == COMMONS_SMALL)
+diff -Naur binutils-2.20.orig/gold/copy-relocs.cc binutils-2.20/gold/copy-relocs.cc
+--- binutils-2.20.orig/gold/copy-relocs.cc	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/copy-relocs.cc	2009-11-04 10:56:34.000000000 -0500
+@@ -138,7 +138,7 @@
+       layout->add_output_section_data(".bss",
+ 				      elfcpp::SHT_NOBITS,
+ 				      elfcpp::SHF_ALLOC | elfcpp::SHF_WRITE,
+-				      this->dynbss_);
++				      this->dynbss_, false);
+     }
+ 
+   Output_data_space* dynbss = this->dynbss_;
+diff -Naur binutils-2.20.orig/gold/defstd.cc binutils-2.20/gold/defstd.cc
+--- binutils-2.20.orig/gold/defstd.cc	2008-02-04 00:41:39.000000000 -0500
++++ binutils-2.20/gold/defstd.cc	2009-11-06 21:02:56.000000000 -0500
+@@ -107,7 +107,67 @@
+     0,				// nonvis
+     true,			// offset_is_from_end
+     true			// only_if_ref
+-  }
++  },
++  {
++    "__rel_iplt_start",		// name
++    ".rel.iplt",		// output_section
++    0,				// value
++    0,				// size
++    elfcpp::STT_NOTYPE,		// type
++    elfcpp::STB_GLOBAL,		// binding
++    elfcpp::STV_HIDDEN,		// visibility
++    0,				// nonvis
++    false,			// offset_is_from_end
++    true			// only_if_ref
++  },
++  {
++    "__rel_iplt_end",		// name
++    ".rel.iplt",		// output_section
++    0,				// value
++    0,				// size
++    elfcpp::STT_NOTYPE,		// type
++    elfcpp::STB_GLOBAL,		// binding
++    elfcpp::STV_HIDDEN,		// visibility
++    0,				// nonvis
++    true,			// offset_is_from_end
++    true			// only_if_ref
++  },
++  {
++    "__rela_iplt_start",	// name
++    ".rela.iplt",		// output_section
++    0,				// value
++    0,				// size
++    elfcpp::STT_NOTYPE,		// type
++    elfcpp::STB_GLOBAL,		// binding
++    elfcpp::STV_HIDDEN,		// visibility
++    0,				// nonvis
++    false,			// offset_is_from_end
++    true			// only_if_ref
++  },
++  {
++    "__rela_iplt_end",		// name
++    ".rela.iplt",		// output_section
++    0,				// value
++    0,				// size
++    elfcpp::STT_NOTYPE,		// type
++    elfcpp::STB_GLOBAL,		// binding
++    elfcpp::STV_HIDDEN,		// visibility
++    0,				// nonvis
++    true,			// offset_is_from_end
++    true			// only_if_ref
++  },
++  {
++    "__stack",			// name
++    ".stack",			// output_section
++    0,				// value
++    0,				// size
++    elfcpp::STT_NOTYPE,		// type
++    elfcpp::STB_GLOBAL,		// binding
++    elfcpp::STV_DEFAULT,	// visibility
++    0,				// nonvis
++    false,			// offset_is_from_end
++    true			// only_if_ref
++  },
+ };
+ 
+ const int in_section_count = sizeof in_section / sizeof in_section[0];
+@@ -238,7 +298,7 @@
+     elfcpp::STV_DEFAULT,	// visibility
+     0,				// nonvis
+     Symbol::SEGMENT_END,	// offset_from_base
+-    false			// only_if_ref
++    true			// only_if_ref
+   }
+ };
+ 
+diff -Naur binutils-2.20.orig/gold/dynobj.cc binutils-2.20/gold/dynobj.cc
+--- binutils-2.20.orig/gold/dynobj.cc	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/dynobj.cc	2009-11-06 21:17:46.000000000 -0500
+@@ -1300,27 +1300,18 @@
+ Versions::Versions(const Version_script_info& version_script,
+                    Stringpool* dynpool)
+   : defs_(), needs_(), version_table_(),
+-    is_finalized_(false), version_script_(version_script)
++    is_finalized_(false), version_script_(version_script),
++    needs_base_version_(parameters->options().shared())
+ {
+-  // We always need a base version, so define that first.  Nothing
+-  // explicitly declares itself as part of base, so it doesn't need to
+-  // be in version_table_.
+-  if (parameters->options().shared())
+-    {
+-      const char* name = parameters->options().soname();
+-      if (name == NULL)
+-	name = parameters->options().output_file_name();
+-      name = dynpool->add(name, false, NULL);
+-      Verdef* vdbase = new Verdef(name, std::vector<std::string>(),
+-                                  true, false, true);
+-      this->defs_.push_back(vdbase);
+-    }
+-
+   if (!this->version_script_.empty())
+     {
+       // Parse the version script, and insert each declared version into
+       // defs_ and version_table_.
+       std::vector<std::string> versions = this->version_script_.get_versions();
++
++      if (this->needs_base_version_ && !versions.empty())
++	this->define_base_version(dynpool);
++
+       for (size_t k = 0; k < versions.size(); ++k)
+         {
+           Stringpool::Key version_key;
+@@ -1350,6 +1341,28 @@
+     delete *p;
+ }
+ 
++// Define the base version of a shared library.  The base version definition
++// must be the first entry in defs_.  We insert it lazily so that defs_ is
++// empty if no symbol versioning is used.  Then layout can just drop the
++// version sections.
++
++void
++Versions::define_base_version(Stringpool* dynpool)
++{
++  // If we do any versioning at all,  we always need a base version, so
++  // define that first.  Nothing explicitly declares itself as part of base,
++  // so it doesn't need to be in version_table_.
++  gold_assert(this->defs_.empty());
++  const char* name = parameters->options().soname();
++  if (name == NULL)
++    name = parameters->options().output_file_name();
++  name = dynpool->add(name, false, NULL);
++  Verdef* vdbase = new Verdef(name, std::vector<std::string>(),
++                              true, false, true);
++  this->defs_.push_back(vdbase);
++  this->needs_base_version_ = false;
++}
++
+ // Return the dynamic object which a symbol refers to.
+ 
+ Dynobj*
+@@ -1421,7 +1434,10 @@
+       if (parameters->options().shared())
+ 	gold_error(_("symbol %s has undefined version %s"),
+ 		   sym->demangled_name().c_str(), version);
+-
++      else
++	// We only insert a base version for shared library.
++	gold_assert(!this->needs_base_version_);
++	
+       // When creating a regular executable, automatically define
+       // a new version.
+       Verdef* vd = new Verdef(version, std::vector<std::string>(),
+@@ -1468,6 +1484,10 @@
+ 
+   if (vn == NULL)
+     {
++      // Create base version definition lazily for shared library.
++      if (this->needs_base_version_)
++	this->define_base_version(dynpool);
++
+       // We have a new filename.
+       vn = new Verneed(filename);
+       this->needs_.push_back(vn);
+diff -Naur binutils-2.20.orig/gold/dynobj.h binutils-2.20/gold/dynobj.h
+--- binutils-2.20.orig/gold/dynobj.h	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/dynobj.h	2009-11-06 21:17:46.000000000 -0500
+@@ -584,6 +584,10 @@
+   version_index(const Symbol_table*, const Stringpool*,
+ 		const Symbol* sym) const;
+ 
++  // Define the base version of a shared library.
++  void
++  define_base_version(Stringpool* dynpool);
++
+   // We keep a hash table mapping canonicalized name/version pairs to
+   // a version base.
+   typedef std::pair<Stringpool::Key, Stringpool::Key> Key;
+@@ -616,6 +620,9 @@
+   bool is_finalized_;
+   // Contents of --version-script, if passed, or NULL.
+   const Version_script_info& version_script_;
++  // Whether we need to insert a base version.  This is only used for
++  // shared libaries and is cleared when the base version is defined.
++  bool needs_base_version_;
+ };
+ 
+ } // End namespace gold.
+diff -Naur binutils-2.20.orig/gold/i386.cc binutils-2.20/gold/i386.cc
+--- binutils-2.20.orig/gold/i386.cc	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/i386.cc	2009-11-04 11:36:08.000000000 -0500
+@@ -464,7 +464,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_);
++					   this->got_, false);
+       os->set_is_relro();
+ 
+       // The old GNU linker creates a .got.plt section.  We just
+@@ -475,7 +475,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_plt_);
++					   this->got_plt_, false);
+       os->set_is_relro();
+ 
+       // The first three entries are reserved.
+@@ -503,7 +503,7 @@
+       gold_assert(layout != NULL);
+       this->rel_dyn_ = new Reloc_section(parameters->options().combreloc());
+       layout->add_output_section_data(".rel.dyn", elfcpp::SHT_REL,
+-				      elfcpp::SHF_ALLOC, this->rel_dyn_);
++				      elfcpp::SHF_ALLOC, this->rel_dyn_, true);
+     }
+   return this->rel_dyn_;
+ }
+@@ -578,7 +578,7 @@
+ {
+   this->rel_ = new Reloc_section(false);
+   layout->add_output_section_data(".rel.plt", elfcpp::SHT_REL,
+-				  elfcpp::SHF_ALLOC, this->rel_);
++				  elfcpp::SHF_ALLOC, this->rel_, true);
+ }
+ 
+ void
+@@ -763,7 +763,7 @@
+       layout->add_output_section_data(".plt", elfcpp::SHT_PROGBITS,
+ 				      (elfcpp::SHF_ALLOC
+ 				       | elfcpp::SHF_EXECINSTR),
+-				      this->plt_);
++				      this->plt_, false);
+     }
+ 
+   this->plt_->add_entry(gsym);
+@@ -1569,10 +1569,12 @@
+   Output_data_dynamic* const odyn = layout->dynamic_data();
+   if (odyn != NULL)
+     {
+-      if (this->got_plt_ != NULL)
++      if (this->got_plt_ != NULL
++	  && this->got_plt_->output_section() != NULL)
+ 	odyn->add_section_address(elfcpp::DT_PLTGOT, this->got_plt_);
+ 
+-      if (this->plt_ != NULL)
++      if (this->plt_ != NULL
++	  && this->plt_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->plt_->rel_plt();
+ 	  odyn->add_section_size(elfcpp::DT_PLTRELSZ, od);
+@@ -1580,7 +1582,8 @@
+ 	  odyn->add_constant(elfcpp::DT_PLTREL, elfcpp::DT_REL);
+ 	}
+ 
+-      if (this->rel_dyn_ != NULL)
++      if (this->rel_dyn_ != NULL
++	  && this->rel_dyn_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->rel_dyn_;
+ 	  odyn->add_section_address(elfcpp::DT_REL, od);
+diff -Naur binutils-2.20.orig/gold/layout.cc binutils-2.20/gold/layout.cc
+--- binutils-2.20.orig/gold/layout.cc	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/layout.cc	2009-11-05 01:25:01.000000000 -0500
+@@ -388,11 +388,14 @@
+ 
+ // Return the output section to use for section NAME with type TYPE
+ // and section flags FLAGS.  NAME must be canonicalized in the string
+-// pool, and NAME_KEY is the key.
++// pool, and NAME_KEY is the key.  IS_INTERP is true if this is the
++// .interp section.  IS_DYNAMIC_LINKER_SECTION is true if this section
++// is used by the dynamic linker.
+ 
+ Output_section*
+ Layout::get_output_section(const char* name, Stringpool::Key name_key,
+-			   elfcpp::Elf_Word type, elfcpp::Elf_Xword flags)
++			   elfcpp::Elf_Word type, elfcpp::Elf_Xword flags,
++			   bool is_interp, bool is_dynamic_linker_section)
+ {
+   elfcpp::Elf_Xword lookup_flags = flags;
+ 
+@@ -441,7 +444,8 @@
+ 	}
+ 
+       if (os == NULL)
+-	os = this->make_output_section(name, type, flags);
++	os = this->make_output_section(name, type, flags, is_interp,
++				       is_dynamic_linker_section);
+       ins.first->second = os;
+       return os;
+     }
+@@ -451,13 +455,16 @@
+ // RELOBJ, with type TYPE and flags FLAGS.  RELOBJ may be NULL for a
+ // linker created section.  IS_INPUT_SECTION is true if we are
+ // choosing an output section for an input section found in a input
+-// file.  This will return NULL if the input section should be
+-// discarded.
++// file.  IS_INTERP is true if this is the .interp section.
++// IS_DYNAMIC_LINKER_SECTION is true if this section is used by the
++// dynamic linker.  This will return NULL if the input section should
++// be discarded.
+ 
+ Output_section*
+ Layout::choose_output_section(const Relobj* relobj, const char* name,
+ 			      elfcpp::Elf_Word type, elfcpp::Elf_Xword flags,
+-			      bool is_input_section)
++			      bool is_input_section, bool is_interp,
++			      bool is_dynamic_linker_section)
+ {
+   // We should not see any input sections after we have attached
+   // sections to segments.
+@@ -505,7 +512,9 @@
+ 
+ 	  name = this->namepool_.add(name, false, NULL);
+ 
+-	  Output_section* os = this->make_output_section(name, type, flags);
++	  Output_section* os =
++	    this->make_output_section(name, type, flags, is_interp,
++				      is_dynamic_linker_section);
+ 	  os->set_found_in_sections_clause();
+ 	  *output_section_slot = os;
+ 	  return os;
+@@ -528,7 +537,8 @@
+ 
+   // Find or make the output section.  The output section is selected
+   // based on the section name, type, and flags.
+-  return this->get_output_section(name, name_key, type, flags);
++  return this->get_output_section(name, name_key, type, flags, is_interp,
++				  is_dynamic_linker_section);
+ }
+ 
+ // Return the output section to use for input section SHNDX, with name
+@@ -561,12 +571,13 @@
+     {
+       name = this->namepool_.add(name, true, NULL);
+       os = this->make_output_section(name, shdr.get_sh_type(),
+-				     shdr.get_sh_flags());
++				     shdr.get_sh_flags(), false, false);
+     }
+   else
+     {
+       os = this->choose_output_section(object, name, shdr.get_sh_type(),
+-				       shdr.get_sh_flags(), true);
++				       shdr.get_sh_flags(), true, false,
++				       false);
+       if (os == NULL)
+ 	return NULL;
+     }
+@@ -617,7 +628,7 @@
+   Output_section* os = this->choose_output_section(object, name.c_str(),
+ 						   sh_type,
+ 						   shdr.get_sh_flags(),
+-						   false);
++						   false, false, false);
+ 
+   os->set_should_link_to_symtab();
+   os->set_info_section(data_section);
+@@ -664,7 +675,8 @@
+   group_section_name = this->namepool_.add(group_section_name, true, NULL);
+   Output_section* os = this->make_output_section(group_section_name,
+ 						 elfcpp::SHT_GROUP,
+-						 shdr.get_sh_flags());
++						 shdr.get_sh_flags(),
++						 false, false);
+ 
+   // We need to find a symbol with the signature in the symbol table.
+   // If we don't find one now, we need to look again later.
+@@ -718,7 +730,7 @@
+ 						   name,
+ 						   elfcpp::SHT_PROGBITS,
+ 						   elfcpp::SHF_ALLOC,
+-						   false);
++						   false, false, false);
+   if (os == NULL)
+     return NULL;
+ 
+@@ -734,7 +746,7 @@
+ 					".eh_frame_hdr",
+ 					elfcpp::SHT_PROGBITS,
+ 					elfcpp::SHF_ALLOC,
+-					false);
++					false, false, false);
+ 
+ 	  if (hdr_os != NULL)
+ 	    {
+@@ -749,7 +761,7 @@
+ 		  Output_segment* hdr_oseg;
+ 		  hdr_oseg = this->make_output_segment(elfcpp::PT_GNU_EH_FRAME,
+ 						       elfcpp::PF_R);
+-		  hdr_oseg->add_output_section(hdr_os, elfcpp::PF_R);
++		  hdr_oseg->add_output_section(hdr_os, elfcpp::PF_R, false);
+ 		}
+ 
+ 	      this->eh_frame_data_->set_eh_frame_hdr(hdr_posd);
+@@ -800,10 +812,12 @@
+ Output_section*
+ Layout::add_output_section_data(const char* name, elfcpp::Elf_Word type,
+ 				elfcpp::Elf_Xword flags,
+-				Output_section_data* posd)
++				Output_section_data* posd,
++				bool is_dynamic_linker_section)
+ {
+   Output_section* os = this->choose_output_section(NULL, name, type, flags,
+-						   false);
++						   false, false,
++						   is_dynamic_linker_section);
+   if (os != NULL)
+     os->add_output_section_data(posd);
+   return os;
+@@ -838,11 +852,14 @@
+ }
+ 
+ // Make a new Output_section, and attach it to segments as
+-// appropriate.
++// appropriate.  IS_INTERP is true if this is the .interp section.
++// IS_DYNAMIC_LINKER_SECTION is true if this section is used by the
++// dynamic linker.
+ 
+ Output_section*
+ Layout::make_output_section(const char* name, elfcpp::Elf_Word type,
+-			    elfcpp::Elf_Xword flags)
++			    elfcpp::Elf_Xword flags, bool is_interp,
++			    bool is_dynamic_linker_section)
+ {
+   Output_section* os;
+   if ((flags & elfcpp::SHF_ALLOC) == 0
+@@ -850,7 +867,6 @@
+       && is_compressible_debug_section(name))
+     os = new Output_compressed_section(&parameters->options(), name, type,
+ 				       flags);
+-
+   else if ((flags & elfcpp::SHF_ALLOC) == 0
+            && parameters->options().strip_debug_non_line()
+            && strcmp(".debug_abbrev", name) == 0)
+@@ -876,6 +892,11 @@
+       os = target->make_output_section(name, type, flags);
+     }
+ 
++  if (is_interp)
++    os->set_is_interp();
++  if (is_dynamic_linker_section)
++    os->set_is_dynamic_linker_section();
++
+   parameters->target().new_output_section(os);
+ 
+   this->section_list_.push_back(os);
+@@ -971,6 +992,8 @@
+ 
+   elfcpp::Elf_Word seg_flags = Layout::section_flags_to_segment(flags);
+ 
++  bool sort_sections = !this->script_options_->saw_sections_clause();
++
+   // In general the only thing we really care about for PT_LOAD
+   // segments is whether or not they are writable, so that is how we
+   // search for them.  Large data sections also go into their own
+@@ -998,7 +1021,7 @@
+       if (os->is_large_data_section() && !(*p)->is_large_data_segment())
+ 	continue;
+ 
+-      (*p)->add_output_section(os, seg_flags);
++      (*p)->add_output_section(os, seg_flags, sort_sections);
+       break;
+     }
+ 
+@@ -1008,7 +1031,7 @@
+                                                        seg_flags);
+       if (os->is_large_data_section())
+ 	oseg->set_is_large_data_segment();
+-      oseg->add_output_section(os, seg_flags);
++      oseg->add_output_section(os, seg_flags, sort_sections);
+     }
+ 
+   // If we see a loadable SHT_NOTE section, we create a PT_NOTE
+@@ -1024,7 +1047,7 @@
+               && (((*p)->flags() & elfcpp::PF_W)
+                   == (seg_flags & elfcpp::PF_W)))
+             {
+-              (*p)->add_output_section(os, seg_flags);
++              (*p)->add_output_section(os, seg_flags, false);
+               break;
+             }
+         }
+@@ -1033,7 +1056,7 @@
+         {
+           Output_segment* oseg = this->make_output_segment(elfcpp::PT_NOTE,
+                                                            seg_flags);
+-          oseg->add_output_section(os, seg_flags);
++          oseg->add_output_section(os, seg_flags, false);
+         }
+     }
+ 
+@@ -1043,7 +1066,7 @@
+     {
+       if (this->tls_segment_ == NULL)
+ 	this->make_output_segment(elfcpp::PT_TLS, seg_flags);
+-      this->tls_segment_->add_output_section(os, seg_flags);
++      this->tls_segment_->add_output_section(os, seg_flags, false);
+     }
+ 
+   // If -z relro is in effect, and we see a relro section, we create a
+@@ -1053,7 +1076,7 @@
+       gold_assert(seg_flags == (elfcpp::PF_R | elfcpp::PF_W));
+       if (this->relro_segment_ == NULL)
+ 	this->make_output_segment(elfcpp::PT_GNU_RELRO, seg_flags);
+-      this->relro_segment_->add_output_section(os, seg_flags);
++      this->relro_segment_->add_output_section(os, seg_flags, false);
+     }
+ }
+ 
+@@ -1064,7 +1087,8 @@
+ {
+   name = this->namepool_.add(name, false, NULL);
+   Output_section* os = this->make_output_section(name, elfcpp::SHT_PROGBITS,
+-						 elfcpp::SHF_ALLOC);
++						 elfcpp::SHF_ALLOC, false,
++						 false);
+   os->set_found_in_sections_clause();
+   return os;
+ }
+@@ -1134,7 +1158,7 @@
+ 						       elfcpp::SHT_DYNAMIC,
+ 						       (elfcpp::SHF_ALLOC
+ 							| elfcpp::SHF_WRITE),
+-						       false);
++						       false, false, true);
+   this->dynamic_section_->set_is_relro();
+ 
+   symtab->define_in_output_data("_DYNAMIC", NULL, this->dynamic_section_, 0, 0,
+@@ -1732,7 +1756,8 @@
+     flags = elfcpp::SHF_ALLOC;
+   Output_section* os = this->choose_output_section(NULL, section_name,
+ 						   elfcpp::SHT_NOTE,
+-						   flags, false);
++						   flags, false, false,
++						   false);
+   if (os == NULL)
+     return NULL;
+ 
+@@ -1811,7 +1836,8 @@
+       elfcpp::Elf_Xword flags = 0;
+       if (is_stack_executable)
+ 	flags |= elfcpp::SHF_EXECINSTR;
+-      this->make_output_section(name, elfcpp::SHT_PROGBITS, flags);
++      this->make_output_section(name, elfcpp::SHT_PROGBITS, flags, false,
++				false);
+     }
+   else
+     {
+@@ -1971,7 +1997,8 @@
+     this->namepool_.add(".gnu_incremental_inputs", false, NULL);
+   Output_section* inputs_os =
+     this->make_output_section(incremental_inputs_name,
+-			      elfcpp::SHT_GNU_INCREMENTAL_INPUTS, 0);
++			      elfcpp::SHT_GNU_INCREMENTAL_INPUTS, 0,
++			      false, false);
+   Output_section_data* posd =
+       this->incremental_inputs_->create_incremental_inputs_section_data();
+   inputs_os->add_output_section_data(posd);
+@@ -1981,7 +2008,7 @@
+     this->namepool_.add(".gnu_incremental_strtab", false, NULL);
+   Output_section* strtab_os = this->make_output_section(incremental_strtab_name,
+                                                         elfcpp::SHT_STRTAB,
+-                                                        0);
++                                                        0, false, false);
+   Output_data_strtab* strtab_data =
+     new Output_data_strtab(this->incremental_inputs_->get_stringpool());
+   strtab_os->add_output_section_data(strtab_data);
+@@ -2593,7 +2620,7 @@
+       const char* symtab_name = this->namepool_.add(".symtab", false, NULL);
+       Output_section* osymtab = this->make_output_section(symtab_name,
+ 							  elfcpp::SHT_SYMTAB,
+-							  0);
++							  0, false, false);
+       this->symtab_section_ = osymtab;
+ 
+       Output_section_data* pos = new Output_data_fixed_space(off - startoff,
+@@ -2614,7 +2641,8 @@
+ 							       false, NULL);
+ 	  Output_section* osymtab_xindex =
+ 	    this->make_output_section(symtab_xindex_name,
+-				      elfcpp::SHT_SYMTAB_SHNDX, 0);
++				      elfcpp::SHT_SYMTAB_SHNDX, 0, false,
++				      false);
+ 
+ 	  size_t symcount = (off - startoff) / symsize;
+ 	  this->symtab_xindex_ = new Output_symtab_xindex(symcount);
+@@ -2636,7 +2664,7 @@
+       const char* strtab_name = this->namepool_.add(".strtab", false, NULL);
+       Output_section* ostrtab = this->make_output_section(strtab_name,
+ 							  elfcpp::SHT_STRTAB,
+-							  0);
++							  0, false, false);
+ 
+       Output_section_data* pstr = new Output_data_strtab(&this->sympool_);
+       ostrtab->add_output_section_data(pstr);
+@@ -2663,7 +2691,8 @@
+ 
+   const char* name = this->namepool_.add(".shstrtab", false, NULL);
+ 
+-  Output_section* os = this->make_output_section(name, elfcpp::SHT_STRTAB, 0);
++  Output_section* os = this->make_output_section(name, elfcpp::SHT_STRTAB, 0,
++						 false, false);
+ 
+   // We can't write out this section until we've set all the section
+   // names, and we don't set the names of compressed output sections
+@@ -2776,7 +2805,7 @@
+   Output_section* dynsym = this->choose_output_section(NULL, ".dynsym",
+ 						       elfcpp::SHT_DYNSYM,
+ 						       elfcpp::SHF_ALLOC,
+-						       false);
++						       false, false, true);
+ 
+   Output_section_data* odata = new Output_data_fixed_space(index * symsize,
+ 							   align,
+@@ -2806,7 +2835,7 @@
+ 	this->choose_output_section(NULL, ".dynsym_shndx",
+ 				    elfcpp::SHT_SYMTAB_SHNDX,
+ 				    elfcpp::SHF_ALLOC,
+-				    false);
++				    false, false, true);
+ 
+       this->dynsym_xindex_ = new Output_symtab_xindex(index);
+ 
+@@ -2829,7 +2858,7 @@
+   Output_section* dynstr = this->choose_output_section(NULL, ".dynstr",
+ 						       elfcpp::SHT_STRTAB,
+ 						       elfcpp::SHF_ALLOC,
+-						       false);
++						       false, false, true);
+ 
+   Output_section_data* strdata = new Output_data_strtab(&this->dynpool_);
+   dynstr->add_output_section_data(strdata);
+@@ -2855,7 +2884,7 @@
+       Output_section* hashsec = this->choose_output_section(NULL, ".hash",
+ 							    elfcpp::SHT_HASH,
+ 							    elfcpp::SHF_ALLOC,
+-							    false);
++							    false, false, true);
+ 
+       Output_section_data* hashdata = new Output_data_const_buffer(phash,
+ 								   hashlen,
+@@ -2880,7 +2909,7 @@
+       Output_section* hashsec = this->choose_output_section(NULL, ".gnu.hash",
+ 							    elfcpp::SHT_GNU_HASH,
+ 							    elfcpp::SHF_ALLOC,
+-							    false);
++							    false, false, true);
+ 
+       Output_section_data* hashdata = new Output_data_const_buffer(phash,
+ 								   hashlen,
+@@ -2978,7 +3007,7 @@
+   Output_section* vsec = this->choose_output_section(NULL, ".gnu.version",
+ 						     elfcpp::SHT_GNU_versym,
+ 						     elfcpp::SHF_ALLOC,
+-						     false);
++						     false, false, true);
+ 
+   unsigned char* vbuf;
+   unsigned int vsize;
+@@ -3003,7 +3032,7 @@
+       vdsec= this->choose_output_section(NULL, ".gnu.version_d",
+ 					 elfcpp::SHT_GNU_verdef,
+ 					 elfcpp::SHF_ALLOC,
+-					 false);
++					 false, false, true);
+ 
+       unsigned char* vdbuf;
+       unsigned int vdsize;
+@@ -3028,7 +3057,7 @@
+       vnsec = this->choose_output_section(NULL, ".gnu.version_r",
+ 					  elfcpp::SHT_GNU_verneed,
+ 					  elfcpp::SHF_ALLOC,
+-					  false);
++					  false, false, true);
+ 
+       unsigned char* vnbuf;
+       unsigned int vnsize;
+@@ -3068,14 +3097,14 @@
+   Output_section* osec = this->choose_output_section(NULL, ".interp",
+ 						     elfcpp::SHT_PROGBITS,
+ 						     elfcpp::SHF_ALLOC,
+-						     false);
++						     false, true, true);
+   osec->add_output_section_data(odata);
+ 
+   if (!this->script_options_->saw_phdrs_clause())
+     {
+       Output_segment* oseg = this->make_output_segment(elfcpp::PT_INTERP,
+ 						       elfcpp::PF_R);
+-      oseg->add_output_section(osec, elfcpp::PF_R);
++      oseg->add_output_section(osec, elfcpp::PF_R, false);
+     }
+ }
+ 
+@@ -3091,7 +3120,8 @@
+ 						       (elfcpp::PF_R
+ 							| elfcpp::PF_W));
+       oseg->add_output_section(this->dynamic_section_,
+-			       elfcpp::PF_R | elfcpp::PF_W);
++			       elfcpp::PF_R | elfcpp::PF_W,
++			       false);
+     }
+ 
+   Output_data_dynamic* const odyn = this->dynamic_data_;
+@@ -3100,7 +3130,14 @@
+        p != input_objects->dynobj_end();
+        ++p)
+     {
+-      // FIXME: Handle --as-needed.
++      if (!(*p)->is_needed()
++	  && (*p)->input_file()->options().as_needed())
++	{
++	  // This dynamic object was linked with --as-needed, but it
++	  // is not needed.
++	  continue;
++	}
++
+       odyn->add_string(elfcpp::DT_NEEDED, (*p)->soname());
+     }
+ 
+diff -Naur binutils-2.20.orig/gold/layout.h binutils-2.20/gold/layout.h
+--- binutils-2.20.orig/gold/layout.h	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/layout.h	2009-11-04 10:56:34.000000000 -0500
+@@ -360,11 +360,13 @@
+   layout_gnu_stack(bool seen_gnu_stack, uint64_t gnu_stack_flags);
+ 
+   // Add an Output_section_data to the layout.  This is used for
+-  // special sections like the GOT section.
++  // special sections like the GOT section.  IS_DYNAMIC_LINKER_SECTION
++  // is true for sections which are used by the dynamic linker, such
++  // as dynamic reloc sections.
+   Output_section*
+   add_output_section_data(const char* name, elfcpp::Elf_Word type,
+ 			  elfcpp::Elf_Xword flags,
+-			  Output_section_data*);
++			  Output_section_data*, bool is_dynamic_linker_section);
+ 
+   // Create dynamic sections if necessary.
+   void
+@@ -745,18 +747,21 @@
+   // Return the output section for NAME, TYPE and FLAGS.
+   Output_section*
+   get_output_section(const char* name, Stringpool::Key name_key,
+-		     elfcpp::Elf_Word type, elfcpp::Elf_Xword flags);
++		     elfcpp::Elf_Word type, elfcpp::Elf_Xword flags,
++		     bool is_interp, bool is_dynamic_linker_section);
+ 
+   // Choose the output section for NAME in RELOBJ.
+   Output_section*
+   choose_output_section(const Relobj* relobj, const char* name,
+ 			elfcpp::Elf_Word type, elfcpp::Elf_Xword flags,
+-			bool is_input_section);
++			bool is_input_section, bool is_interp,
++			bool is_dynamic_linker_section);
+ 
+   // Create a new Output_section.
+   Output_section*
+   make_output_section(const char* name, elfcpp::Elf_Word type,
+-		      elfcpp::Elf_Xword flags);
++		      elfcpp::Elf_Xword flags, bool is_interp,
++		      bool is_dynamic_linker_section);
+ 
+   // Attach a section to a segment.
+   void
+diff -Naur binutils-2.20.orig/gold/object.h binutils-2.20/gold/object.h
+--- binutils-2.20.orig/gold/object.h	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/object.h	2009-11-05 01:25:01.000000000 -0500
+@@ -195,8 +195,8 @@
+   Object(const std::string& name, Input_file* input_file, bool is_dynamic,
+ 	 off_t offset = 0)
+     : name_(name), input_file_(input_file), offset_(offset), shnum_(-1U),
+-      is_dynamic_(is_dynamic), uses_split_stack_(false),
+-      has_no_split_stack_(false), xindex_(NULL), no_export_(false)
++      is_dynamic_(is_dynamic), is_needed_(false), uses_split_stack_(false),
++      has_no_split_stack_(false), no_export_(false), xindex_(NULL)
+   { input_file->file().add_object(); }
+ 
+   virtual ~Object()
+@@ -217,6 +217,19 @@
+   is_dynamic() const
+   { return this->is_dynamic_; }
+ 
++  // Return whether this object is needed--true if it is a dynamic
++  // object which defines some symbol referenced by a regular object.
++  // We keep the flag here rather than in Dynobj for convenience when
++  // setting it.
++  bool
++  is_needed() const
++  { return this->is_needed_; }
++
++  // Record that this object is needed.
++  void
++  set_is_needed()
++  { this->is_needed_ = true; }
++
+   // Return whether this object was compiled with -fsplit-stack.
+   bool
+   uses_split_stack() const
+@@ -589,17 +602,21 @@
+   // Number of input sections.
+   unsigned int shnum_;
+   // Whether this is a dynamic object.
+-  bool is_dynamic_;
++  bool is_dynamic_ : 1;
++  // Whether this object is needed.  This is only set for dynamic
++  // objects, and means that the object defined a symbol which was
++  // used by a reference from a regular object.
++  bool is_needed_ : 1;
+   // Whether this object was compiled with -fsplit-stack.
+-  bool uses_split_stack_;
++  bool uses_split_stack_ : 1;
+   // Whether this object contains any functions compiled with the
+   // no_split_stack attribute.
+-  bool has_no_split_stack_;
+-  // Many sections for objects with more than SHN_LORESERVE sections.
+-  Xindex* xindex_;
++  bool has_no_split_stack_ : 1;
+   // True if exclude this object from automatic symbol export.
+   // This is used only for archive objects.
+-  bool no_export_;
++  bool no_export_ : 1;
++  // Many sections for objects with more than SHN_LORESERVE sections.
++  Xindex* xindex_;
+ };
+ 
+ // A regular object (ET_REL).  This is an abstract base class itself.
+diff -Naur binutils-2.20.orig/gold/options.h binutils-2.20/gold/options.h
+--- binutils-2.20.orig/gold/options.h	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/options.h	2009-11-03 20:28:30.000000000 -0500
+@@ -912,6 +912,10 @@
+   DEFINE_special(version_script, options::TWO_DASHES, '\0',
+                  N_("Read version script"), N_("FILE"));
+ 
++  DEFINE_bool(warn_common, options::TWO_DASHES, '\0', false,
++	      N_("Warn about duplicate common symbols"),
++	      N_("Do not warn about duplicate common symbols (default)"));
++
+   DEFINE_bool(warn_search_mismatch, options::TWO_DASHES, '\0', true,
+ 	      N_("Warn when skipping an incompatible library"),
+ 	      N_("Don't warn when skipping an incompatible library"));
+diff -Naur binutils-2.20.orig/gold/output.cc binutils-2.20/gold/output.cc
+--- binutils-2.20.orig/gold/output.cc	2009-10-16 03:42:50.000000000 -0400
++++ binutils-2.20/gold/output.cc	2009-11-05 14:58:28.000000000 -0500
+@@ -1800,13 +1800,15 @@
+     is_relro_local_(false),
+     is_small_section_(false),
+     is_large_section_(false),
++    is_interp_(false),
++    is_dynamic_linker_section_(false),
++    generate_code_fills_at_write_(false),
+     tls_offset_(0),
+     checkpoint_(NULL),
+     merge_section_map_(),
+     merge_section_by_properties_map_(),
+     relaxed_input_section_map_(),
+-    is_relaxed_input_section_map_valid_(true),
+-    generate_code_fills_at_write_(false)
++    is_relaxed_input_section_map_valid_(true)
+ {
+   // An unallocated section has no address.  Forcing this means that
+   // we don't need special treatment for symbols defined in debug
+@@ -3045,11 +3047,13 @@
+ 
+ void
+ Output_segment::add_output_section(Output_section* os,
+-				   elfcpp::Elf_Word seg_flags)
++				   elfcpp::Elf_Word seg_flags,
++				   bool do_sort)
+ {
+   gold_assert((os->flags() & elfcpp::SHF_ALLOC) != 0);
+   gold_assert(!this->is_max_align_known_);
+   gold_assert(os->is_large_data_section() == this->is_large_data_segment());
++  gold_assert(this->type() == elfcpp::PT_LOAD || !do_sort);
+ 
+   // Update the segment flags.
+   this->flags_ |= seg_flags;
+@@ -3060,19 +3064,12 @@
+   else
+     pdl = &this->output_data_;
+ 
+-  // So that PT_NOTE segments will work correctly, we need to ensure
+-  // that all SHT_NOTE sections are adjacent.  This will normally
+-  // happen automatically, because all the SHT_NOTE input sections
+-  // will wind up in the same output section.  However, it is possible
+-  // for multiple SHT_NOTE input sections to have different section
+-  // flags, and thus be in different output sections, but for the
+-  // different section flags to map into the same segment flags and
+-  // thus the same output segment.
+-
+   // Note that while there may be many input sections in an output
+   // section, there are normally only a few output sections in an
+-  // output segment.  This loop is expected to be fast.
++  // output segment.  The loops below are expected to be fast.
+ 
++  // So that PT_NOTE segments will work correctly, we need to ensure
++  // that all SHT_NOTE sections are adjacent.
+   if (os->type() == elfcpp::SHT_NOTE && !pdl->empty())
+     {
+       Output_segment::Output_data_list::iterator p = pdl->end();
+@@ -3094,8 +3091,8 @@
+   // case: we group the SHF_TLS/SHT_NOBITS sections right after the
+   // SHF_TLS/SHT_PROGBITS sections.  This lets us set up PT_TLS
+   // correctly.  SHF_TLS sections get added to both a PT_LOAD segment
+-  // and the PT_TLS segment -- we do this grouping only for the
+-  // PT_LOAD segment.
++  // and the PT_TLS segment; we do this grouping only for the PT_LOAD
++  // segment.
+   if (this->type_ != elfcpp::PT_TLS
+       && (os->flags() & elfcpp::SHF_TLS) != 0)
+     {
+@@ -3225,6 +3222,68 @@
+       gold_unreachable();
+     }
+ 
++  // We do some further output section sorting in order to make the
++  // generated program run more efficiently.  We should only do this
++  // when not using a linker script, so it is controled by the DO_SORT
++  // parameter.
++  if (do_sort)
++    {
++      // FreeBSD requires the .interp section to be in the first page
++      // of the executable.  That is a more efficient location anyhow
++      // for any OS, since it means that the kernel will have the data
++      // handy after it reads the program headers.
++      if (os->is_interp() && !pdl->empty())
++	{
++	  pdl->insert(pdl->begin(), os);
++	  return;
++	}
++
++      // Put loadable non-writable notes immediately after the .interp
++      // sections, so that the PT_NOTE segment is on the first page of
++      // the executable.
++      if (os->type() == elfcpp::SHT_NOTE
++	  && (os->flags() & elfcpp::SHF_WRITE) == 0
++	  && !pdl->empty())
++	{
++	  Output_segment::Output_data_list::iterator p = pdl->begin();
++	  if ((*p)->is_section() && (*p)->output_section()->is_interp())
++	    ++p;
++	  pdl->insert(p, os);
++	  return;
++	}
++
++      // If this section is used by the dynamic linker, and it is not
++      // writable, then put it first, after the .interp section and
++      // any loadable notes.  This makes it more likely that the
++      // dynamic linker will have to read less data from the disk.
++      if (os->is_dynamic_linker_section()
++	  && !pdl->empty()
++	  && (os->flags() & elfcpp::SHF_WRITE) == 0)
++	{
++	  bool is_reloc = (os->type() == elfcpp::SHT_REL
++			   || os->type() == elfcpp::SHT_RELA);
++	  Output_segment::Output_data_list::iterator p = pdl->begin();
++	  while (p != pdl->end()
++		 && (*p)->is_section()
++		 && ((*p)->output_section()->is_dynamic_linker_section()
++		     || (*p)->output_section()->type() == elfcpp::SHT_NOTE))
++	    {
++	      // Put reloc sections after the other ones.  Putting the
++	      // dynamic reloc sections first confuses BFD, notably
++	      // objcopy and strip.
++	      if (!is_reloc
++		  && ((*p)->output_section()->type() == elfcpp::SHT_REL
++		      || (*p)->output_section()->type() == elfcpp::SHT_RELA))
++		break;
++	      ++p;
++	    }
++	  pdl->insert(p, os);
++	  return;
++	}
++    }
++
++  // If there were no constraints on the output section, just add it
++  // to the end of the list.
+   pdl->push_back(os);
+ }
+ 
+@@ -3503,15 +3562,20 @@
+ 	      else
+ 		{
+ 		  Output_section* os = (*p)->output_section();
++
++		  // Cast to unsigned long long to avoid format warnings.
++		  unsigned long long previous_dot =
++		    static_cast<unsigned long long>(addr + (off - startoff));
++		  unsigned long long dot =
++		    static_cast<unsigned long long>((*p)->address());
++
+ 		  if (os == NULL)
+ 		    gold_error(_("dot moves backward in linker script "
+-				 "from 0x%llx to 0x%llx"),
+-			       addr + (off - startoff), (*p)->address());
++				 "from 0x%llx to 0x%llx"), previous_dot, dot);
+ 		  else
+ 		    gold_error(_("address of section '%s' moves backward "
+ 				 "from 0x%llx to 0x%llx"),
+-			       os->name(), addr + (off - startoff),
+-			       (*p)->address());
++			       os->name(), previous_dot, dot);
+ 		}
+ 	    }
+ 	  (*p)->set_file_offset(off);
+diff -Naur binutils-2.20.orig/gold/output.h binutils-2.20/gold/output.h
+--- binutils-2.20.orig/gold/output.h	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/output.h	2009-11-04 10:56:34.000000000 -0500
+@@ -2387,6 +2387,27 @@
+   is_large_data_section()
+   { return this->is_large_section_ && this->type_ != elfcpp::SHT_NOBITS; }
+ 
++  // True if this is the .interp section which goes into the PT_INTERP
++  // segment.
++  bool
++  is_interp() const
++  { return this->is_interp_; }
++
++  // Record that this is the interp section.
++  void
++  set_is_interp()
++  { this->is_interp_ = true; }
++
++  // True if this is a section used by the dynamic linker.
++  bool
++  is_dynamic_linker_section() const
++  { return this->is_dynamic_linker_section_; }
++
++  // Record that this is a section used by the dynamic linker.
++  void
++  set_is_dynamic_linker_section()
++  { this->is_dynamic_linker_section_ = true; }
++
+   // Return whether this section should be written after all the input
+   // sections are complete.
+   bool
+@@ -3327,6 +3348,13 @@
+   bool is_small_section_ : 1;
+   // True if this is a large section.
+   bool is_large_section_ : 1;
++  // True if this is the .interp section going into the PT_INTERP
++  // segment.
++  bool is_interp_ : 1;
++  // True if this is section is read by the dynamic linker.
++  bool is_dynamic_linker_section_ : 1;
++  // Whether code-fills are generated at write.
++  bool generate_code_fills_at_write_ : 1;
+   // For SHT_TLS sections, the offset of this section relative to the base
+   // of the TLS segment.
+   uint64_t tls_offset_;
+@@ -3337,13 +3365,11 @@
+   // Map from merge section properties to merge_sections;
+   Merge_section_by_properties_map merge_section_by_properties_map_;
+   // Map from input sections to relaxed input sections.  This is mutable
+-  // beacause it is udpated lazily.  We may need to update it in a
++  // because it is updated lazily.  We may need to update it in a
+   // const qualified method.
+   mutable Output_section_data_by_input_section_map relaxed_input_section_map_;
+   // Whether relaxed_input_section_map_ is valid.
+   mutable bool is_relaxed_input_section_map_valid_;
+-  // Whether code-fills are generated at write.
+-  bool generate_code_fills_at_write_;
+ };
+ 
+ // An output segment.  PT_LOAD segments are built from collections of
+@@ -3412,9 +3438,12 @@
+   uint64_t
+   maximum_alignment();
+ 
+-  // Add an Output_section to this segment.
++  // Add the Output_section OS to this segment.  SEG_FLAGS is the
++  // segment flags to use.  DO_SORT is true if we should sort the
++  // placement of the input section for more efficient generated code.
+   void
+-  add_output_section(Output_section* os, elfcpp::Elf_Word seg_flags);
++  add_output_section(Output_section* os, elfcpp::Elf_Word seg_flags,
++		     bool do_sort);
+ 
+   // Remove an Output_section from this segment.  It is an error if it
+   // is not present.
+diff -Naur binutils-2.20.orig/gold/po/Make-in binutils-2.20/gold/po/Make-in
+--- binutils-2.20.orig/gold/po/Make-in	2006-08-04 19:10:59.000000000 -0400
++++ binutils-2.20/gold/po/Make-in	2009-11-03 10:26:23.000000000 -0500
+@@ -1,6 +1,6 @@
+ # Makefile for program source directory in GNU NLS utilities package.
+ # Copyright (C) 1995, 1996, 1997 by Ulrich Drepper <drepper@gnu.ai.mit.edu>
+-# Copyright 2003, 2006 Free Software Foundation, Inc.
++# Copyright 2003, 2006, 2007, 2009 Free Software Foundation, Inc.
+ #
+ # This file may be copied and used freely without restrictions.  It can
+ # be used in projects which are not available under the GNU Public License
+@@ -88,7 +88,8 @@
+ 
+ $(srcdir)/$(PACKAGE).pot: $(POTFILES)
+ 	$(XGETTEXT) --default-domain=$(PACKAGE) --directory=$(top_srcdir) \
+-	  --add-comments --keyword=_ --keyword=N_ \
++	  --add-comments -C --keyword=_ --keyword=N_ \
++	  --msgid-bugs-address=bug-binutils@gnu.org \
+ 	  --files-from=$(srcdir)/POTFILES.in
+ 	rm -f $(srcdir)/$(PACKAGE).pot
+ 	mv $(PACKAGE).po $(srcdir)/$(PACKAGE).pot
+@@ -112,13 +113,14 @@
+ install-exec:
+ install-info:
+ install-html:
++install-pdf:
+ install-data: install-data-@USE_NLS@
+ install-data-no: all
+ install-data-yes: all
+ 	if test -r $(MKINSTALLDIRS); then \
+ 	  $(MKINSTALLDIRS) $(DESTDIR)$(datadir); \
+ 	else \
+-	  $(top_srcdir)/mkinstalldirs $(DESTDIR)$(datadir); \
++	  $(top_srcdir)/../mkinstalldirs $(DESTDIR)$(datadir); \
+ 	fi
+ 	@catalogs='$(CATALOGS)'; \
+ 	for cat in $$catalogs; do \
+diff -Naur binutils-2.20.orig/gold/powerpc.cc binutils-2.20/gold/powerpc.cc
+--- binutils-2.20.orig/gold/powerpc.cc	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/powerpc.cc	2009-11-04 11:36:08.000000000 -0500
+@@ -713,7 +713,7 @@
+ 
+       layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 				      elfcpp::SHF_ALLOC | elfcpp::SHF_WRITE,
+-				      this->got_);
++				      this->got_, false);
+ 
+       // Create the GOT2 or TOC in the .got section.
+       if (size == 32)
+@@ -722,7 +722,7 @@
+ 	  layout->add_output_section_data(".got2", elfcpp::SHT_PROGBITS,
+ 					  elfcpp::SHF_ALLOC
+ 					  | elfcpp::SHF_WRITE,
+-					  this->got2_);
++					  this->got2_, false);
+ 	}
+       else
+ 	{
+@@ -730,7 +730,7 @@
+ 	  layout->add_output_section_data(".toc", elfcpp::SHT_PROGBITS,
+ 					  elfcpp::SHF_ALLOC
+ 					  | elfcpp::SHF_WRITE,
+-					  this->toc_);
++					  this->toc_, false);
+ 	}
+ 
+       // Define _GLOBAL_OFFSET_TABLE_ at the start of the .got section.
+@@ -756,7 +756,7 @@
+       gold_assert(layout != NULL);
+       this->rela_dyn_ = new Reloc_section(parameters->options().combreloc());
+       layout->add_output_section_data(".rela.dyn", elfcpp::SHT_RELA,
+-				      elfcpp::SHF_ALLOC, this->rela_dyn_);
++				      elfcpp::SHF_ALLOC, this->rela_dyn_, true);
+     }
+   return this->rela_dyn_;
+ }
+@@ -816,7 +816,7 @@
+ {
+   this->rel_ = new Reloc_section(false);
+   layout->add_output_section_data(".rela.plt", elfcpp::SHT_RELA,
+-				  elfcpp::SHF_ALLOC, this->rel_);
++				  elfcpp::SHF_ALLOC, this->rel_, true);
+ }
+ 
+ template<int size, bool big_endian>
+@@ -945,7 +945,7 @@
+ 				      (elfcpp::SHF_ALLOC
+ 				       | elfcpp::SHF_EXECINSTR
+ 				       | elfcpp::SHF_WRITE),
+-				      this->plt_);
++				      this->plt_, false);
+ 
+       // Define _PROCEDURE_LINKAGE_TABLE_ at the start of the .plt section.
+       symtab->define_in_output_data("_PROCEDURE_LINKAGE_TABLE_", NULL,
+@@ -1512,7 +1512,7 @@
+     Output_section* os = layout->add_output_section_data(".sdata", 0,
+ 							 elfcpp::SHF_ALLOC
+ 							 | elfcpp::SHF_WRITE,
+-							 sdata);
++							 sdata, false);
+     symtab->define_in_output_data("_SDA_BASE_", NULL,
+ 				  os,
+ 				  32768, 0,
+@@ -1547,7 +1547,8 @@
+   Output_data_dynamic* const odyn = layout->dynamic_data();
+   if (odyn != NULL)
+     {
+-      if (this->plt_ != NULL)
++      if (this->plt_ != NULL
++	  && this->plt_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->plt_->rel_plt();
+ 	  odyn->add_section_size(elfcpp::DT_PLTRELSZ, od);
+@@ -1557,7 +1558,8 @@
+ 	  odyn->add_section_address(elfcpp::DT_PLTGOT, this->plt_);
+ 	}
+ 
+-      if (this->rela_dyn_ != NULL)
++      if (this->rela_dyn_ != NULL
++	  && this->rela_dyn_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->rela_dyn_;
+ 	  odyn->add_section_address(elfcpp::DT_RELA, od);
+diff -Naur binutils-2.20.orig/gold/resolve.cc binutils-2.20/gold/resolve.cc
+--- binutils-2.20.orig/gold/resolve.cc	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/resolve.cc	2009-11-03 20:28:30.000000000 -0500
+@@ -302,25 +302,41 @@
+                                          sym.get_st_type());
+ 
+   bool adjust_common_sizes;
++  typename Sized_symbol<size>::Size_type tosize = to->symsize();
+   if (Symbol_table::should_override(to, frombits, object,
+ 				    &adjust_common_sizes))
+     {
+-      typename Sized_symbol<size>::Size_type tosize = to->symsize();
+-
+       this->override(to, sym, st_shndx, is_ordinary, object, version);
+-
+       if (adjust_common_sizes && tosize > to->symsize())
+         to->set_symsize(tosize);
+     }
+   else
+     {
+-      if (adjust_common_sizes && sym.get_st_size() > to->symsize())
++      if (adjust_common_sizes && sym.get_st_size() > tosize)
+         to->set_symsize(sym.get_st_size());
+       // The ELF ABI says that even for a reference to a symbol we
+       // merge the visibility.
+       to->override_visibility(sym.get_st_visibility());
+     }
+ 
++  if (adjust_common_sizes && parameters->options().warn_common())
++    {
++      if (tosize > sym.get_st_size())
++	Symbol_table::report_resolve_problem(false,
++					     _("common of '%s' overriding "
++					       "smaller common"),
++					     to, object);
++      else if (tosize < sym.get_st_size())
++	Symbol_table::report_resolve_problem(false,
++					     _("common of '%s' overidden by "
++					       "larger common"),
++					     to, object);
++      else
++	Symbol_table::report_resolve_problem(false,
++					     _("multiple common of '%s'"),
++					     to, object);
++    }
++
+   // A new weak undefined reference, merging with an old weak
+   // reference, could be a One Definition Rule (ODR) violation --
+   // especially if the types or sizes of the references differ.  We'll
+@@ -422,14 +438,9 @@
+           || object->just_symbols())
+         return false;
+ 
+-      // FIXME: Do a better job of reporting locations.
+-      gold_error(_("%s: multiple definition of %s"),
+-		 object != NULL ? object->name().c_str() : _("command line"),
+-		 to->demangled_name().c_str());
+-      gold_error(_("%s: previous definition here"),
+-		 (to->source() == Symbol::FROM_OBJECT
+-		  ? to->object()->name().c_str()
+-		  : _("command line")));
++      Symbol_table::report_resolve_problem(true,
++					   _("multiple definition of '%s'"),
++					   to, object);
+       return false;
+ 
+     case WEAK_DEF * 16 + DEF:
+@@ -464,8 +475,12 @@
+     case DYN_COMMON * 16 + DEF:
+     case DYN_WEAK_COMMON * 16 + DEF:
+       // We've seen a common symbol and now we see a definition.  The
+-      // definition overrides.  FIXME: We should optionally issue, version a
+-      // warning.
++      // definition overrides.
++      if (parameters->options().warn_common())
++	Symbol_table::report_resolve_problem(false,
++					     _("definition of '%s' overriding "
++					       "common"),
++					     to, object);
+       return true;
+ 
+     case DEF * 16 + WEAK_DEF:
+@@ -495,7 +510,12 @@
+     case DYN_COMMON * 16 + WEAK_DEF:
+     case DYN_WEAK_COMMON * 16 + WEAK_DEF:
+       // A weak definition does override a definition in a dynamic
+-      // object.  FIXME: We should optionally issue a warning.
++      // object.
++      if (parameters->options().warn_common())
++	Symbol_table::report_resolve_problem(false,
++					     _("definition of '%s' overriding "
++					       "dynamic common definition"),
++					     to, object);
+       return true;
+ 
+     case DEF * 16 + DYN_DEF:
+@@ -611,6 +631,11 @@
+ 
+     case DEF * 16 + COMMON:
+       // A common symbol does not override a definition.
++      if (parameters->options().warn_common())
++	Symbol_table::report_resolve_problem(false,
++					     _("common '%s' overridden by "
++					       "previous definition"),
++					     to, object);
+       return false;
+ 
+     case WEAK_DEF * 16 + COMMON:
+@@ -716,6 +741,44 @@
+     }
+ }
+ 
++// Issue an error or warning due to symbol resolution.  IS_ERROR
++// indicates an error rather than a warning.  MSG is the error
++// message; it is expected to have a %s for the symbol name.  TO is
++// the existing symbol.  OBJECT is where the new symbol was found.
++
++// FIXME: We should have better location information here.  When the
++// symbol is defined, we should be able to pull the location from the
++// debug info if there is any.
++
++void
++Symbol_table::report_resolve_problem(bool is_error, const char* msg,
++				     const Symbol* to, Object* object)
++{
++  std::string demangled(to->demangled_name());
++  size_t len = strlen(msg) + demangled.length() + 10;
++  char* buf = new char[len];
++  snprintf(buf, len, msg, demangled.c_str());
++
++  const char* objname;
++  if (object != NULL)
++    objname = object->name().c_str();
++  else
++    objname = _("command line");
++
++  if (is_error)
++    gold_error("%s: %s", objname, buf);
++  else
++    gold_warning("%s: %s", objname, buf);
++
++  delete[] buf;
++
++  if (to->source() == Symbol::FROM_OBJECT)
++    objname = to->object()->name().c_str();
++  else
++    objname = _("command line");
++  gold_info("%s: %s: previous definition here", program_name, objname);
++}
++
+ // A special case of should_override which is only called for a strong
+ // defined symbol from a regular object file.  This is used when
+ // defining special symbols.
+diff -Naur binutils-2.20.orig/gold/script-sections.cc binutils-2.20/gold/script-sections.cc
+--- binutils-2.20.orig/gold/script-sections.cc	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/script-sections.cc	2009-11-04 10:56:34.000000000 -0500
+@@ -3051,7 +3051,7 @@
+ 	  is_current_seg_readonly = true;
+ 	}
+ 
+-      current_seg->add_output_section(*p, seg_flags);
++      current_seg->add_output_section(*p, seg_flags, false);
+ 
+       if (((*p)->flags() & elfcpp::SHF_WRITE) != 0)
+ 	is_current_seg_readonly = false;
+@@ -3130,7 +3130,7 @@
+ 	    Layout::section_flags_to_segment((*p)->flags());
+ 	  Output_segment* oseg = layout->make_output_segment(elfcpp::PT_NOTE,
+ 							     seg_flags);
+-	  oseg->add_output_section(*p, seg_flags);
++	  oseg->add_output_section(*p, seg_flags, false);
+ 
+ 	  // Incorporate any subsequent SHT_NOTE sections, in the
+ 	  // hopes that the script is sensible.
+@@ -3139,7 +3139,7 @@
+ 		 && (*pnext)->type() == elfcpp::SHT_NOTE)
+ 	    {
+ 	      seg_flags = Layout::section_flags_to_segment((*pnext)->flags());
+-	      oseg->add_output_section(*pnext, seg_flags);
++	      oseg->add_output_section(*pnext, seg_flags, false);
+ 	      p = pnext;
+ 	      ++pnext;
+ 	    }
+@@ -3154,14 +3154,14 @@
+ 	    Layout::section_flags_to_segment((*p)->flags());
+ 	  Output_segment* oseg = layout->make_output_segment(elfcpp::PT_TLS,
+ 							     seg_flags);
+-	  oseg->add_output_section(*p, seg_flags);
++	  oseg->add_output_section(*p, seg_flags, false);
+ 
+ 	  Layout::Section_list::const_iterator pnext = p + 1;
+ 	  while (pnext != sections->end()
+ 		 && ((*pnext)->flags() & elfcpp::SHF_TLS) != 0)
+ 	    {
+ 	      seg_flags = Layout::section_flags_to_segment((*pnext)->flags());
+-	      oseg->add_output_section(*pnext, seg_flags);
++	      oseg->add_output_section(*pnext, seg_flags, false);
+ 	      p = pnext;
+ 	      ++pnext;
+ 	    }
+@@ -3315,7 +3315,7 @@
+ 
+ 	      elfcpp::Elf_Word seg_flags =
+ 		Layout::section_flags_to_segment(os->flags());
+-	      r->second->add_output_section(os, seg_flags);
++	      r->second->add_output_section(os, seg_flags, false);
+ 
+ 	      if (r->second->type() == elfcpp::PT_LOAD)
+ 		{
+diff -Naur binutils-2.20.orig/gold/sparc.cc binutils-2.20/gold/sparc.cc
+--- binutils-2.20.orig/gold/sparc.cc	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/sparc.cc	2009-11-04 11:36:08.000000000 -0500
+@@ -1027,7 +1027,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_);
++					   this->got_, false);
+       os->set_is_relro();
+ 
+       // Define _GLOBAL_OFFSET_TABLE_ at the start of the .got section.
+@@ -1053,7 +1053,7 @@
+       gold_assert(layout != NULL);
+       this->rela_dyn_ = new Reloc_section(parameters->options().combreloc());
+       layout->add_output_section_data(".rela.dyn", elfcpp::SHT_RELA,
+-				      elfcpp::SHF_ALLOC, this->rela_dyn_);
++				      elfcpp::SHF_ALLOC, this->rela_dyn_, true);
+     }
+   return this->rela_dyn_;
+ }
+@@ -1155,7 +1155,7 @@
+ {
+   this->rel_ = new Reloc_section(false);
+   layout->add_output_section_data(".rela.plt", elfcpp::SHT_RELA,
+-				  elfcpp::SHF_ALLOC, this->rel_);
++				  elfcpp::SHF_ALLOC, this->rel_, true);
+ }
+ 
+ template<int size, bool big_endian>
+@@ -1372,7 +1372,7 @@
+ 				      (elfcpp::SHF_ALLOC
+ 				       | elfcpp::SHF_EXECINSTR
+ 				       | elfcpp::SHF_WRITE),
+-				      this->plt_);
++				      this->plt_, false);
+ 
+       // Define _PROCEDURE_LINKAGE_TABLE_ at the start of the .plt section.
+       symtab->define_in_output_data("_PROCEDURE_LINKAGE_TABLE_", NULL,
+@@ -2334,7 +2334,8 @@
+   Output_data_dynamic* const odyn = layout->dynamic_data();
+   if (odyn != NULL)
+     {
+-      if (this->plt_ != NULL)
++      if (this->plt_ != NULL
++	  && this->plt_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->plt_->rel_plt();
+ 	  odyn->add_section_size(elfcpp::DT_PLTRELSZ, od);
+@@ -2344,7 +2345,8 @@
+ 	  odyn->add_section_address(elfcpp::DT_PLTGOT, this->plt_);
+ 	}
+ 
+-      if (this->rela_dyn_ != NULL)
++      if (this->rela_dyn_ != NULL
++	  && this->rela_dyn_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->rela_dyn_;
+ 	  odyn->add_section_address(elfcpp::DT_RELA, od);
+diff -Naur binutils-2.20.orig/gold/symtab.cc binutils-2.20/gold/symtab.cc
+--- binutils-2.20.orig/gold/symtab.cc	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/symtab.cc	2009-11-05 01:25:01.000000000 -0500
+@@ -2242,6 +2242,12 @@
+ 	  // Record any version information.
+           if (sym->version() != NULL)
+             versions->record_version(this, dynpool, sym);
++
++	  // If the symbol is defined in a dynamic object and is
++	  // referenced in a regular object, then mark the dynamic
++	  // object as needed.  This is used to implement --as-needed.
++	  if (sym->is_from_dynobj() && sym->in_reg())
++	    sym->object()->set_is_needed();
+ 	}
+     }
+ 
+diff -Naur binutils-2.20.orig/gold/symtab.h binutils-2.20/gold/symtab.h
+--- binutils-2.20.orig/gold/symtab.h	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/symtab.h	2009-11-03 20:28:30.000000000 -0500
+@@ -1488,6 +1488,11 @@
+   static bool
+   should_override(const Symbol*, unsigned int, Object*, bool*);
+ 
++  // Report a problem in symbol resolution.
++  static void
++  report_resolve_problem(bool is_error, const char* msg, const Symbol* to,
++			 Object* object);
++
+   // Override a symbol.
+   template<int size, bool big_endian>
+   void
+diff -Naur binutils-2.20.orig/gold/x86_64.cc binutils-2.20/gold/x86_64.cc
+--- binutils-2.20.orig/gold/x86_64.cc	2009-10-16 03:42:51.000000000 -0400
++++ binutils-2.20/gold/x86_64.cc	2009-11-04 11:36:08.000000000 -0500
+@@ -472,7 +472,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_);
++					   this->got_, false);
+       os->set_is_relro();
+ 
+       // The old GNU linker creates a .got.plt section.  We just
+@@ -483,7 +483,7 @@
+       os = layout->add_output_section_data(".got", elfcpp::SHT_PROGBITS,
+ 					   (elfcpp::SHF_ALLOC
+ 					    | elfcpp::SHF_WRITE),
+-					   this->got_plt_);
++					   this->got_plt_, false);
+       os->set_is_relro();
+ 
+       // The first three entries are reserved.
+@@ -511,7 +511,7 @@
+       gold_assert(layout != NULL);
+       this->rela_dyn_ = new Reloc_section(parameters->options().combreloc());
+       layout->add_output_section_data(".rela.dyn", elfcpp::SHT_RELA,
+-				      elfcpp::SHF_ALLOC, this->rela_dyn_);
++				      elfcpp::SHF_ALLOC, this->rela_dyn_, true);
+     }
+   return this->rela_dyn_;
+ }
+@@ -611,7 +611,7 @@
+ {
+   this->rel_ = new Reloc_section(false);
+   layout->add_output_section_data(".rela.plt", elfcpp::SHT_RELA,
+-				  elfcpp::SHF_ALLOC, this->rel_);
++				  elfcpp::SHF_ALLOC, this->rel_, true);
+ }
+ 
+ void
+@@ -807,7 +807,7 @@
+       layout->add_output_section_data(".plt", elfcpp::SHT_PROGBITS,
+ 				      (elfcpp::SHF_ALLOC
+ 				       | elfcpp::SHF_EXECINSTR),
+-				      this->plt_);
++				      this->plt_, false);
+     }
+ }
+ 
+@@ -1659,10 +1659,12 @@
+   Output_data_dynamic* const odyn = layout->dynamic_data();
+   if (odyn != NULL)
+     {
+-      if (this->got_plt_ != NULL)
++      if (this->got_plt_ != NULL
++	  && this->got_plt_->output_section() != NULL)
+ 	odyn->add_section_address(elfcpp::DT_PLTGOT, this->got_plt_);
+ 
+-      if (this->plt_ != NULL)
++      if (this->plt_ != NULL
++	  && this->plt_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->plt_->rel_plt();
+ 	  odyn->add_section_size(elfcpp::DT_PLTRELSZ, od);
+@@ -1680,7 +1682,8 @@
+ 	    }
+ 	}
+ 
+-      if (this->rela_dyn_ != NULL)
++      if (this->rela_dyn_ != NULL
++	  && this->rela_dyn_->output_section() != NULL)
+ 	{
+ 	  const Output_data* od = this->rela_dyn_;
+ 	  odyn->add_section_address(elfcpp::DT_RELA, od);
+diff -Naur binutils-2.20.orig/include/ChangeLog binutils-2.20/include/ChangeLog
+--- binutils-2.20.orig/include/ChangeLog	2009-09-10 07:47:30.000000000 -0400
++++ binutils-2.20/include/ChangeLog	2009-10-16 10:08:45.000000000 -0400
+@@ -1,3 +1,13 @@
++2009-10-09  Rafael Espindola  <espindola@google.com>
++
++	* plugin-api.h (ld_plugin_add_input_library): Change argument name to
++	libname.
++
++2008-10-03  Rafael Espindola  <espindola@google.com>
++
++	* plugin-api.h: New.
++	* lto-symtab.h: New.
++
+ 2009-09-09  Martin Thuresson  <martin@mtme.org>
+ 
+ 	* bfdlink.h (struct bfd_link_hash_common_entry): Move to top
+diff -Naur binutils-2.20.orig/include/elf/ChangeLog binutils-2.20/include/elf/ChangeLog
+--- binutils-2.20.orig/include/elf/ChangeLog	2009-09-22 11:41:03.000000000 -0400
++++ binutils-2.20/include/elf/ChangeLog	2009-12-17 00:46:06.000000000 -0500
+@@ -1,3 +1,9 @@
++2009-12-17  Alan Modra  <amodra@bigpond.net.au>
++
++	* ppc.h (R_PPC_RELAX32, R_PPC_RELAX32PC, R_PPC_RELAX32_PLT,
++	R_PPC_RELAX32PC_PLT): Delete.
++	(R_PPC_RELAX, R_PPC_RELAX_PLT, R_PPC_RELAX_PLTREL24): Define.
++
+ 2009-09-21  Alan Modra  <amodra@bigpond.net.au>
+ 
+ 	* ppc.h (DT_PPC_TLSOPT): Define.
+diff -Naur binutils-2.20.orig/include/elf/ppc.h binutils-2.20/include/elf/ppc.h
+--- binutils-2.20.orig/include/elf/ppc.h	2009-09-22 11:41:03.000000000 -0400
++++ binutils-2.20/include/elf/ppc.h	2009-12-17 00:46:06.000000000 -0500
+@@ -73,10 +73,9 @@
+ 
+ #ifndef RELOC_MACROS_GEN_FUNC
+ /* Fake relocations for branch stubs, only used internally by ld.  */
+-  RELOC_NUMBER (R_PPC_RELAX32,		 48)
+-  RELOC_NUMBER (R_PPC_RELAX32PC,	 49)
+-  RELOC_NUMBER (R_PPC_RELAX32_PLT,	 50)
+-  RELOC_NUMBER (R_PPC_RELAX32PC_PLT,	 51)
++  RELOC_NUMBER (R_PPC_RELAX,		 48)
++  RELOC_NUMBER (R_PPC_RELAX_PLT,	 49)
++  RELOC_NUMBER (R_PPC_RELAX_PLTREL24,	 50)
+ #endif
+ 
+   /* Relocs added to support TLS.  */
+diff -Naur binutils-2.20.orig/include/plugin-api.h binutils-2.20/include/plugin-api.h
+--- binutils-2.20.orig/include/plugin-api.h	2009-01-14 20:28:14.000000000 -0500
++++ binutils-2.20/include/plugin-api.h	2009-10-16 10:08:45.000000000 -0400
+@@ -1,6 +1,6 @@
+ /* plugin-api.h -- External linker plugin API.  */
+ 
+-/* Copyright 2008 Free Software Foundation, Inc.
++/* Copyright 2009 Free Software Foundation, Inc.
+    Written by Cary Coutant <ccoutant@google.com>.
+ 
+    This file is part of binutils.
+@@ -111,13 +111,34 @@
+ enum ld_plugin_symbol_resolution
+ {
+   LDPR_UNKNOWN = 0,
++
++  /* Symbol is still undefined at this point.  */
+   LDPR_UNDEF,
++
++  /* This is the prevailing definition of the symbol, with references from
++     regular object code.  */
+   LDPR_PREVAILING_DEF,
++
++  /* This is the prevailing definition of the symbol, with no
++     references from regular objects.  It is only referenced from IR
++     code.  */
+   LDPR_PREVAILING_DEF_IRONLY,
++
++  /* This definition was pre-empted by a definition in a regular
++     object file.  */
+   LDPR_PREEMPTED_REG,
++
++  /* This definition was pre-empted by a definition in another IR file.  */
+   LDPR_PREEMPTED_IR,
++
++  /* This symbol was resolved by a definition in another IR file.  */
+   LDPR_RESOLVED_IR,
++
++  /* This symbol was resolved by a definition in a regular object
++     linked into the main executable.  */
+   LDPR_RESOLVED_EXEC,
++
++  /* This symbol was resolved by a definition in a shared object.  */
+   LDPR_RESOLVED_DYN
+ };
+ 
+@@ -193,6 +214,12 @@
+ enum ld_plugin_status
+ (*ld_plugin_add_input_file) (char *pathname);
+ 
++/* The linker's interface for adding a library that should be searched.  */
++
++typedef
++enum ld_plugin_status
++(*ld_plugin_add_input_library) (char *libname);
++
+ /* The linker's interface for issuing a warning or error message.  */
+ 
+ typedef
+@@ -224,7 +251,8 @@
+   LDPT_ADD_INPUT_FILE,
+   LDPT_MESSAGE,
+   LDPT_GET_INPUT_FILE,
+-  LDPT_RELEASE_INPUT_FILE
++  LDPT_RELEASE_INPUT_FILE,
++  LDPT_ADD_INPUT_LIBRARY
+ };
+ 
+ /* The plugin transfer vector.  */
+@@ -245,6 +273,7 @@
+     ld_plugin_message tv_message;
+     ld_plugin_get_input_file tv_get_input_file;
+     ld_plugin_release_input_file tv_release_input_file;
++    ld_plugin_add_input_library tv_add_input_library;
+   } tv_u;
+ };
+ 
+diff -Naur binutils-2.20.orig/ld/ChangeLog binutils-2.20/ld/ChangeLog
+--- binutils-2.20.orig/ld/ChangeLog	2009-10-14 10:51:32.000000000 -0400
++++ binutils-2.20/ld/ChangeLog	2009-12-17 16:46:44.000000000 -0500
+@@ -1,3 +1,16 @@
++2009-12-17  Dave Korn  <dave.korn.cygwin@gmail.com>
++
++	* pe-dll.c (generate_reloc): Take account of wrapper options when
++	testing if a weak symbol is defined or not, and when it is not,
++	consider whether the default value requires a base reloc anyway.
++
++2009-12-09  Alan Modra  <amodra@bigpond.net.au>
++
++	PR ld/11012
++	* emulparams/elf64ppc.sh (OTHER_GOT_RELOC_SECTIONS): Move .rela.opd ..
++	(INITIAL_RELOC_SECTIONS): .. to here.  New define.
++	* scripttempl/elf.sc: Expand INITIAL_RELOC_SECTIONS.
++
+ 2009-10-14  Andreas Schwab  <schwab@linux-m68k.org>
+ 
+ 	* ldlex.l (yy_input): Remove second argument and return the value
+diff -Naur binutils-2.20.orig/ld/emulparams/elf64ppc.sh binutils-2.20/ld/emulparams/elf64ppc.sh
+--- binutils-2.20.orig/ld/emulparams/elf64ppc.sh	2008-10-22 01:20:44.000000000 -0400
++++ binutils-2.20/ld/emulparams/elf64ppc.sh	2009-12-08 20:26:20.000000000 -0500
+@@ -28,9 +28,11 @@
+   .got		0 : { *(.got) }
+   .toc		0 : { *(.toc) }"
+ fi
++# Put .opd relocs first so ld.so will process them before any ifunc relocs.
++INITIAL_RELOC_SECTIONS="
++  .rela.opd	${RELOCATING-0} : { *(.rela.opd) }"
+ OTHER_GOT_RELOC_SECTIONS="
+   .rela.toc	${RELOCATING-0} : { *(.rela.toc) }
+-  .rela.opd	${RELOCATING-0} : { *(.rela.opd) }
+   .rela.branch_lt	${RELOCATING-0} : { *(.rela.branch_lt) }"
+ OTHER_READWRITE_SECTIONS="
+   .toc1		${RELOCATING-0} :${RELOCATING+ ALIGN(8)} { *(.toc1) }
+diff -Naur binutils-2.20.orig/ld/pe-dll.c binutils-2.20/ld/pe-dll.c
+--- binutils-2.20.orig/ld/pe-dll.c	2009-05-19 12:08:07.000000000 -0400
++++ binutils-2.20/ld/pe-dll.c	2009-12-17 16:46:44.000000000 -0500
+@@ -1348,10 +1348,29 @@
+ 		  if (sym->flags == BSF_WEAK)
+ 		    {
+ 		      struct bfd_link_hash_entry *blhe
+-			= bfd_link_hash_lookup (info->hash, sym->name,
++			= bfd_wrapped_link_hash_lookup (abfd, info, sym->name,
+ 						FALSE, FALSE, FALSE);
+-		      if (!blhe || blhe->type != bfd_link_hash_defined)
+-			continue;		      
++		      if (blhe && blhe->type == bfd_link_hash_undefweak)
++			{
++			  /* Check aux sym and see if it is defined or not. */
++			  struct coff_link_hash_entry *h, *h2;
++			  h = (struct coff_link_hash_entry *)blhe;
++			  if (h->symbol_class != C_NT_WEAK || h->numaux != 1)
++			    continue;
++			  h2 = h->auxbfd->tdata.coff_obj_data->sym_hashes
++						[h->aux->x_sym.x_tagndx.l];
++			  /* We don't want a base reloc if the aux sym is not
++			     found, undefined, or if it is the constant ABS
++			     zero default value.  (We broaden that slightly by
++			     not testing the value, just the section; there's
++			     no reason we'd want a reference to any absolute
++			     address to get relocated during rebasing).  */
++			  if (!h2 || h2->root.type == bfd_link_hash_undefined
++				|| h2->root.u.def.section == &bfd_abs_section)
++			    continue;
++			}
++		      else if (!blhe || blhe->type != bfd_link_hash_defined)
++			continue;
+ 		    }
+ 
+ 		  sym_vma = (relocs[i]->addend
+diff -Naur binutils-2.20.orig/ld/scripttempl/elf.sc binutils-2.20/ld/scripttempl/elf.sc
+--- binutils-2.20.orig/ld/scripttempl/elf.sc	2009-10-09 09:12:35.000000000 -0400
++++ binutils-2.20/ld/scripttempl/elf.sc	2009-12-08 20:26:21.000000000 -0500
+@@ -311,6 +311,7 @@
+   COMBRELOCCAT="cat > $COMBRELOC"
+ fi
+ eval $COMBRELOCCAT <<EOF
++  ${INITIAL_RELOC_SECTIONS}
+   .rel.init     ${RELOCATING-0} : { *(.rel.init) }
+   .rela.init    ${RELOCATING-0} : { *(.rela.init) }
+   .rel.text     ${RELOCATING-0} : { *(.rel.text${RELOCATING+ .rel.text.* .rel.gnu.linkonce.t.*}) }
+diff -Naur binutils-2.20.orig/ld/testsuite/ChangeLog binutils-2.20/ld/testsuite/ChangeLog
+--- binutils-2.20.orig/ld/testsuite/ChangeLog	2009-10-06 06:57:55.000000000 -0400
++++ binutils-2.20/ld/testsuite/ChangeLog	2009-10-19 12:36:00.000000000 -0400
+@@ -1,3 +1,12 @@
++2009-10-19  Hans-Peter Nilsson  <hp@axis.com>
++
++	* ld-cris/tls-e-20.d, ld-cris/tls-e-20a.d, ld-cris/tls-e-22.d,
++	ld-cris/tls-e-80.d, ld-cris/tls-e-dtpoffd1.d,
++	ld-cris/tls-e-dtpoffd3.d, ld-cris/tls-ldgde-14.d,
++	ld-cris/tls-ldgde-15.d, ld-cris/tls-ldgdex-14.d,
++	ld-cris/tls-ldgdex-15.d: Adjust for change in non-shared
++	R_CRIS_32_DTPREL and R_CRIS_16_DTPREL relocations.
++
+ 2009-10-03  Alan Modra  <amodra@bigpond.net.au>
+ 
+ 	* ld-powerpc/tlsexe.d: Update.
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-20a.d binutils-2.20/ld/testsuite/ld-cris/tls-e-20a.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-20a.d	2009-03-23 23:34:05.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-e-20a.d	2009-10-19 12:36:01.000000000 -0400
+@@ -102,7 +102,7 @@
+ #...
+ 
+ 000800cc <tlsdsofn>:
+-   800cc:	6fae f4ff ffff      	move\.d 0xfffffff4,\$r10
++   800cc:	6fae 8000 0000      	move\.d 80 <x>,\$r10
+ #...
+ 
+ 000800d4 <tlsdsofn10>:
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-20.d binutils-2.20/ld/testsuite/ld-cris/tls-e-20.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-20.d	2009-03-23 23:34:05.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-e-20.d	2009-10-19 12:36:01.000000000 -0400
+@@ -64,7 +64,7 @@
+    80098:	6fae 1800 0000      	move\.d 18 <x2\+0x10>,\$r10
+ #...
+ 000800a0 <tlsdsofn>:
+-   800a0:	6fae f4ff ffff      	move\.d 0xfffffff4,\$r10
++   800a0:	6fae 0000 0000      	move\.d 0 <x>,\$r10
+ #...
+ 000800a8 <tlsdsofn10>:
+    800a8:	6fae 1400 0000      	move\.d 14 <x2\+0xc>,\$r10
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-22.d binutils-2.20/ld/testsuite/ld-cris/tls-e-22.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-22.d	2009-01-27 02:05:47.000000000 -0500
++++ binutils-2.20/ld/testsuite/ld-cris/tls-e-22.d	2009-10-19 12:36:01.000000000 -0400
+@@ -35,5 +35,5 @@
+    80094:	41b2                	moveq 1,\$r11
+ #...
+ 00080098 <tlsdsofn>:
+-   80098:	6fae fcff ffff      	move\.d 0xfffffffc,\$r10
++   80098:	6fae 8000 0000      	move\.d 80 <x>,\$r10
+ #...
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-80.d binutils-2.20/ld/testsuite/ld-cris/tls-e-80.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-80.d	2009-03-23 23:34:05.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-e-80.d	2009-10-19 12:36:01.000000000 -0400
+@@ -81,7 +81,7 @@
+    800a8:	6fae b4ff ffff      	move.d 0xffffffb4,\$r10
+ #...
+ 000800b0 <tlsdsofn>:
+-   800b0:	6fae b0ff ffff      	move\.d 0xffffffb0,\$r10
++   800b0:	6fae 0000 0000      	move\.d 0 <x>,\$r10
+ #...
+ 000800b8 <tlsdsofn10>:
+    800b8:	6fae 1400 0000      	move\.d 14 <gx\+0x4>,\$r10
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-dtpoffd1.d binutils-2.20/ld/testsuite/ld-cris/tls-e-dtpoffd1.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-dtpoffd1.d	2009-03-24 03:58:23.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-e-dtpoffd1.d	2009-10-19 12:36:01.000000000 -0400
+@@ -27,6 +27,6 @@
+  82120 00000000 00000000 00000000 01000000  .*
+  82130 80000000                             .*
+ Contents of section .debug_info:
+- 0000 fcffffff                             .*
++ 0000 80000000                             .*
+ Contents of section .debug_line:
+ #pass
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-dtpoffd3.d binutils-2.20/ld/testsuite/ld-cris/tls-e-dtpoffd3.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-e-dtpoffd3.d	2009-03-24 23:04:21.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-e-dtpoffd3.d	2009-10-19 12:36:01.000000000 -0400
+@@ -27,6 +27,6 @@
+  8211c 00000000 00000000 00000000 01000000  .*
+  8212c 80000000                             .*
+ Contents of section .debug_info:
+- 0000 fcffffff                             .*
++ 0000 80000000                             .*
+ Contents of section .debug_line:
+ #pass
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgde-14.d binutils-2.20/ld/testsuite/ld-cris/tls-ldgde-14.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgde-14.d	2009-03-23 23:34:05.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-ldgde-14.d	2009-10-19 12:36:01.000000000 -0400
+@@ -51,8 +51,8 @@
+    80094:	41b2                	moveq 1,\$r11
+ #...
+ 00080098 <tlsdsofn>:
+-   80098:	5fae f8ff           	move\.w 0xfff8,\$r10
+-   8009c:	5fbe fcff           	move\.w 0xfffc,\$r11
++   80098:	5fae 8800           	move\.w 0x88,\$r10
++   8009c:	5fbe 8c00           	move\.w 0x8c,\$r11
+ 
+ 000800a0 <tlsdsofn0>:
+    800a0:	5fae 1400           	move\.w 0x14,\$r10
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgde-15.d binutils-2.20/ld/testsuite/ld-cris/tls-ldgde-15.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgde-15.d	2009-03-23 23:34:05.000000000 -0400
++++ binutils-2.20/ld/testsuite/ld-cris/tls-ldgde-15.d	2009-10-19 12:36:01.000000000 -0400
+@@ -51,8 +51,8 @@
+    80094:	41b2                	moveq 1,\$r11
+ #...
+ 00080098 <tlsdsofn>:
+-   80098:	6fae f8ff ffff      	move.d 0xfffffff8,\$r10
+-   8009e:	6fbe fcff ffff      	move.d 0xfffffffc,\$r11
++   80098:	6fae 8800 0000      	move.d 88 <x1>,\$r10
++   8009e:	6fbe 8c00 0000      	move.d 8c <x2>,\$r11
+ 000800a4 <tlsdsofn2>:
+    800a4:	6fae 1400 0000      	move.d 14 <tls128\+0x14>,\$r10
+ #...
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgdex-14.d binutils-2.20/ld/testsuite/ld-cris/tls-ldgdex-14.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgdex-14.d	2009-01-27 02:05:47.000000000 -0500
++++ binutils-2.20/ld/testsuite/ld-cris/tls-ldgdex-14.d	2009-10-19 12:36:01.000000000 -0400
+@@ -44,7 +44,7 @@
+ Contents of section .interp:
+ #...
+ Contents of section \.text:
+- 801dc 41b20000 5faef8ff 5fbefcff 5fae1400  .*
++ 801dc 41b20000 5fae8000 5fbe8400 5fae1400  .*
+  801ec 5fae1c00                             .*
+ Contents of section \.tdata:
+ #...
+diff -Naur binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgdex-15.d binutils-2.20/ld/testsuite/ld-cris/tls-ldgdex-15.d
+--- binutils-2.20.orig/ld/testsuite/ld-cris/tls-ldgdex-15.d	2009-01-27 02:05:47.000000000 -0500
++++ binutils-2.20/ld/testsuite/ld-cris/tls-ldgdex-15.d	2009-10-19 12:36:01.000000000 -0400
+@@ -44,7 +44,7 @@
+ Contents of section \.interp:
+ #...
+ Contents of section \.text:
+- 801dc 41b20000 6faef8ff ffff6fbe fcffffff  .*
++ 801dc 41b20000 6fae8000 00006fbe 84000000  .*
+  801ec 6fae1400 00000000 6fae1c00 00000000  .*
+ Contents of section \.tdata:
+ #...
