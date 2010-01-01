@@ -71,7 +71,7 @@ $(ARCHS_VD_XML):
 
 $(ARCHS_P_XML): override profiled_xml_arch = $(@:%-profiled-xml=%)
 $(ARCHS_P_XML):
-	@$(MAKE) $(profiled_xml_arch)-validate_dump-xml
+	@$(MAKE) --no-print-directory $(profiled_xml_arch)-validate_dump-xml
 
 	@echo "Generating profiled $(profiled_xml_arch) book for XHTML..."
 	$(Q)xsltproc --nonet --stringparam profile.condition html \
@@ -80,7 +80,7 @@ $(ARCHS_P_XML):
 
 $(ARCHS_HTML): override html_arch = $(@:%$(S)html=%)
 $(ARCHS_HTML):
-	@$(MAKE) $(html_arch)-profiled-xml
+	@$(MAKE) --no-print-directory $(html_arch)-profiled-xml
 
 	@echo "Rendering chunked XHTML of $(html_arch)..."
 	$(Q)mkdir -p $(BASEDIR)/$(html_arch)
@@ -101,7 +101,7 @@ nochunks: tmpdir $(ARCHS_NOCHUNKS) tidy
 
 $(ARCHS_NOCHUNKS): override nochunk_arch = $(@:%$(S)nochunks=%)
 $(ARCHS_NOCHUNKS):
-	@$(MAKE) $(nochunk_arch)-profiled-xml
+	@$(MAKE) --no-print-directory $(nochunk_arch)-profiled-xml
 
 	@echo "Rendering Single File HTML of $(nochunk_arch)..."
 	$(Q)mkdir -p $(BASEDIR)
@@ -120,7 +120,7 @@ pdf: tmpdir $(ARCHS_PDF)
 
 $(ARCHS_PDF): override pdf_arch =  $(@:%$(S)pdf=%)
 $(ARCHS_PDF):
-	@$(MAKE) $(pdf_arch)-profiled-xml
+	@$(MAKE) --no-print-directory $(pdf_arch)-profiled-xml
 
 	@echo "Generating FO file of $(pdf_arch)..."
 	$(Q)xsltproc --nonet -stringparam rootid "$(ROOT_ID)" \
