@@ -14,6 +14,7 @@ S		:= -
 ARCHS		:= x86 x86_64 x86_64-64 sparc sparc64 sparc64-64 mips mips64 mips64-64 \
 		   ppc ppc64 alpha
 
+ARCHS_VD_XML	:= $(ARCHS:%=%-validate_dump-xml)
 ARCHS_P_XML	:= $(ARCHS:%=%-profiled-xml)
 
 ARCHS_HTML	:= $(ARCHS:%=%$(S)html)
@@ -62,11 +63,15 @@ titlepage:
 	$(Q)xsltproc --nonet --output $(BASEDIR)/index.html \
 	  $(PWD)/stylesheets/top-index.xsl $(PWD)/index.xml
 
+$(ARCHS_VD_XML): override validate_dump_xml_arch = $(@:%-validate_dump-xml=%)
+$(ARCHS_VD_XML):
+	@echo "Validating $(validate_dump_xml_arch) book..."
+	$(Q)xmllint --nonet --noent --xinclude --postvalid \
+	  -o $(RENDERTMP)/$(validate_dump_xml_arch)-full.xml $(PWD)/$(validate_dump_xml_arch)-index.xml
+
 $(ARCHS_P_XML): override profiled_xml_arch = $(@:%-profiled-xml=%)
 $(ARCHS_P_XML):
-	@echo "Validating $(profiled_xml_arch) book..."
-	$(Q)xmllint --nonet --noent --xinclude --postvalid \
-	  -o $(RENDERTMP)/$(profiled_xml_arch)-full.xml $(PWD)/$(profiled_xml_arch)-index.xml
+	@$(MAKE) $(profiled_xml_arch)-validate_dump-xml
 
 	@echo "Generating profiled $(profiled_xml_arch) book for XHTML..."
 	$(Q)xsltproc --nonet --stringparam profile.condition html \
