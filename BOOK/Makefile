@@ -7,12 +7,14 @@ DUMPDIR		:= $(WORKDIR)/cross-lfs-commands
 DLLISTDIR	:= $(WORKDIR)/cross-lfs-dllist
 RENDERTMP       := $(WORKDIR)/tmp
 CHUNK_QUIET	:= 1
-ROOT_ID         :=
+ROOT_ID	 :=
 
 S		:= -
 
 ARCHS		:= x86 x86_64 x86_64-64 sparc sparc64 sparc64-64 mips mips64 mips64-64 \
 		   ppc ppc64 alpha
+
+ARCHS_P_XML	:= $(ARCHS:%=%-profiled-xml)
 
 ARCHS_HTML	:= $(ARCHS:%=%$(S)html)
 ARCHS_NOCHUNKS	:= $(ARCHS:%=%$(S)nochunks)
@@ -60,16 +62,20 @@ titlepage:
 	$(Q)xsltproc --nonet --output $(BASEDIR)/index.html \
 	  $(PWD)/stylesheets/top-index.xsl $(PWD)/index.xml
 
+$(ARCHS_P_XML): override profiled_xml_arch = $(@:%-profiled-xml=%)
+$(ARCHS_P_XML):
+	@echo "Validating $(profiled_xml_arch) book..."
+	$(Q)xmllint --nonet --noent --xinclude --postvalid \
+	  -o $(RENDERTMP)/$(profiled_xml_arch)-full.xml $(PWD)/$(profiled_xml_arch)-index.xml
+
+	@echo "Generating profiled $(profiled_xml_arch) book for XHTML..."
+	$(Q)xsltproc --nonet --stringparam profile.condition html \
+	  --output $(RENDERTMP)/$(profiled_xml_arch)-html.xml \
+	  $(PWD)/stylesheets/lfs-xsl/profile.xsl $(RENDERTMP)/$(profiled_xml_arch)-full.xml
+
 $(ARCHS_HTML): override html_arch = $(@:%$(S)html=%)
 $(ARCHS_HTML):
-	@echo "Validating $(html_arch) book..."
-	$(Q)xmllint --nonet --noent --xinclude --postvalid \
-	  -o $(RENDERTMP)/$(html_arch)-full.xml $(PWD)/$(html_arch)-index.xml
-
-	@echo "Generating profiled $(html_arch) book for XHTML..."
-	$(Q)xsltproc --nonet --stringparam profile.condition html \
-	  --output $(RENDERTMP)/$(html_arch)-html.xml \
-	  $(PWD)/stylesheets/lfs-xsl/profile.xsl $(RENDERTMP)/$(html_arch)-full.xml
+	@$(MAKE) $(html_arch)-profiled-xml
 
 	@echo "Rendering chunked XHTML of $(html_arch)..."
 	$(Q)mkdir -p $(BASEDIR)/$(html_arch)
@@ -90,15 +96,7 @@ nochunks: tmpdir $(ARCHS_NOCHUNKS) tidy
 
 $(ARCHS_NOCHUNKS): override nochunk_arch = $(@:%$(S)nochunks=%)
 $(ARCHS_NOCHUNKS):
-	@echo "Validating $(nochunk_arch) book..."
-	$(Q)xmllint --nonet --noent --xinclude --postvalid \
-	  -o $(RENDERTMP)/$(nochunk_arch)-full.xml $(PWD)/$(nochunk_arch)-index.xml
-
-	@echo "Generating profiled $(nochunk_arch) book for XHTML..."
-	$(Q)xsltproc --nonet --stringparam profile.condition html \
-	  --output $(RENDERTMP)/$(nochunk_arch)-html.xml \
-	  $(PWD)/stylesheets/lfs-xsl/profile.xsl \
-	  $(RENDERTMP)/$(nochunk_arch)-full.xml
+	@$(MAKE) $(nochunk_arch)-profiled-xml
 
 	@echo "Rendering Single File HTML of $(nochunk_arch)..."
 	$(Q)mkdir -p $(BASEDIR)
@@ -117,15 +115,7 @@ pdf: tmpdir $(ARCHS_PDF)
 
 $(ARCHS_PDF): override pdf_arch =  $(@:%$(S)pdf=%)
 $(ARCHS_PDF):
-	@echo "Validating $(pdf_arch) book..."
-	$(Q)xmllint --nonet --noent --xinclude --postvalid \
-	  -o $(RENDERTMP)/$(pdf_arch)-full.xml $(PWD)/$(pdf_arch)-index.xml
-
-	@echo "Generating profiled $(pdf_arch) book for PDF..."
-	$(Q)xsltproc --nonet --stringparam profile.condition pdf \
-	  --output $(RENDERTMP)/$(pdf_arch)-pdf.xml \
-	  $(PWD)/stylesheets/lfs-xsl/profile.xsl \
-	  $(RENDERTMP)/$(pdf_arch)-full.xml
+	@$(MAKE) $(pdf_arch)-profiled-xml
 
 	@echo "Generating FO file of $(pdf_arch)..."
 	$(Q)xsltproc --nonet -stringparam rootid "$(ROOT_ID)" \
