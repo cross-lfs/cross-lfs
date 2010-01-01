@@ -25,6 +25,9 @@ fi
 cd ~/tmp
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
 tar xvf gcc-${VERSION}.tar.bz2
+pushd gcc-4.4.2
+patch -Np1 -i /home/jciccone/projects/lfs/repos/patches/gcc/gcc-4.4.2-branch_update-1.patch
+popd
 cp -ar gcc-${VERSION} gcc-${VERSION}.orig
 
 # Modify the Data
@@ -69,6 +72,9 @@ diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> ~/patches/gcc-${VERSION}-specs-
 cd ~/tmp
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
 tar xvf gcc-${VERSION}.tar.bz2
+pushd gcc-4.4.2
+patch -Np1 -i /home/jciccone/projects/lfs/repos/patches/gcc/gcc-4.4.2-branch_update-1.patch
+popd
 cp -ar gcc-${VERSION} gcc-${VERSION}.orig
 
 # Modify the Data
@@ -128,6 +134,9 @@ diff -Naur gcc-${VERSION}.orig gcc-${VERSION} >> ~/patches/gcc-${VERSION}-pure64
 cd ~/tmp
 rm -rf gcc-${VERSION} gcc-${VERSION}.orig
 tar xvf gcc-${VERSION}.tar.bz2
+pushd gcc-4.4.2
+patch -Np1 -i /home/jciccone/projects/lfs/repos/patches/gcc/gcc-4.4.2-branch_update-1.patch
+popd
 cp -ar gcc-${VERSION} gcc-${VERSION}.orig
 CURRENTDIR=$(pwd -P)
 
