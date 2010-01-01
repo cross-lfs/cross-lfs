@@ -30,15 +30,18 @@
 
     <para os="b">Prepare DHCPCD for compilation:</para>
 
-<screen os="c"><userinput>make PREFIX=/usr BINDIR=/sbin SYSCONFDIR=/etc \
-    DBDIR=/var/lib/dhcpcd LIBEXECDIR=/usr/lib/dhcpcd</userinput></screen>
+<screen os="c"><userinput>./configure --prefix=/usr --sbindir=/sbin \
+    --sysconfdir=/etc --dbdir=/var/lib/dhcpcd --libexecdir=/usr/lib/dhcpcd</userinput></screen>
 
-    <para os="d">This package does not come with a test suite.</para>
+    <para os="d">Compile the package:</para>
 
-    <para os="e">Install the package:</para>
+<screen os="e"><userinput>make</userinput></screen>
 
-<screen os="f"><userinput>make PREFIX=/usr BINDIR=/sbin SYSCONFDIR=/etc \
-    DBDIR=/var/lib/dhcpcd LIBEXECDIR=/usr/lib/dhcpcd install</userinput></screen>
+    <para os="f">This package does not come with a test suite.</para>
+
+    <para os="g">Install the package:</para>
+
+<screen os="h"><userinput>make install</userinput></screen>
 
   </sect2>
 
