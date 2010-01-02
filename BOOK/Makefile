@@ -31,46 +31,52 @@ else
   Q = @
 endif
 
-.PHONY: lfs tidy render titlepage $(ARCHS_HTML) nochunks $(ARCHS_NOCHUNKS) pdf \
-	$(ARCHS_PDF) validate $(ARCHS_VALIDATE) trouble $(ARCHS_TROUBLE) \
-	dump-commands $(ARCHS_DUMP) download-list $(ARCHS_DLLIST) tmpdir
+.PHONY: clfs lfs tidy render titlepage nochunks pdf validate trouble dump-commands \
+	download-list tmpdir $(ARCHS_HTML) $(ARCHS_NOCHUNKS) $(ARCHS_PDF) \
+	$(ARCHS_VALIDATE) $(ARCHS_TROUBLE) $(ARCHS_DUMP) $(ARCHS_DLLIST) tmpdir
 
-lfs: tmpdir render tidy
+clfs lfs: tmpdir render
+render: $(ARCHS_HTML) titlepage
+nochunks: tmpdir $(ARCHS_NOCHUNKS)
+pdf: tmpdir $(ARCHS_PDF)
+validate: $(ARCHS_VALIDATE)
+trouble: tmpdir $(ARCHS_TROUBLE)
+dump-commands: $(ARCHS_DUMP)
+download-list: $(ARCHS_DLLIST)
 
 tmpdir:
-	@echo "Creating and cleaning $(RENDERTMP)"
 	$(Q)[ -d $(RENDERTMP) ] || mkdir -p $(RENDERTMP)
-	$(Q)rm -f $(RENDERTMP)/*-{full,html,pdf}.xml
-	$(Q)rm -f $(RENDERTMP)/*.fo
 
 ifeq ($(shell which tidy >/dev/null 2>&1 && echo yes),yes)
 tidy:
-	@echo "Running tidy on the created HTML"
-	$(Q)for filename in `find $(BASEDIR) -name "*.html"`; do \
-	  tidy -config $(PWD)/tidy.conf $$filename; \
-	  true; \
-	  bash $(PWD)/obfuscate.sh $$filename; \
-	  sed -i -e "s@text/html@application/xhtml+xml@g" $$filename; \
-	done;
+	@$(MAKE) --no-print-directory tidy-d TIDY_DIR=$(BASEDIR)
+
+tidy-f:
+	@echo "Running tidy on F:$(shell basename $(TIDY_FILE))"
+	@$(TOP)/tidy.sh "$(TIDY_FILE)"
+
+tidy-d:
+	@echo "Running tidy on D:$(shell basename $(TIDY_DIR))"
+	@$(TOP)/tidy.sh "$(TIDY_DIR)"
 else
-tidy:
+tidy tidy-f tidy-d:
 	@echo "Tidy is not installed on this system"
 endif
 
-render: $(ARCHS_HTML) titlepage
-
 titlepage:
+	@echo "Rendering the top-level index..."
 	$(Q)xsltproc --nonet --output $(BASEDIR)/index.html \
 	  $(PWD)/stylesheets/top-index.xsl $(PWD)/index.xml
+	@$(MAKE) --no-print-directory tidy-f TIDY_FILE=$(BASEDIR)/index.html
 
 $(ARCHS_VD_XML): override validate_dump_xml_arch = $(@:%-validate_dump-xml=%)
-$(ARCHS_VD_XML):
+$(ARCHS_VD_XML): tmpdir
 	@echo "Validating $(validate_dump_xml_arch) book..."
 	$(Q)xmllint --nonet --noent --xinclude --postvalid \
 	  -o $(RENDERTMP)/$(validate_dump_xml_arch)-full.xml $(PWD)/$(validate_dump_xml_arch)-index.xml
 
 $(ARCHS_P_XML): override profiled_xml_arch = $(@:%-profiled-xml=%)
-$(ARCHS_P_XML):
+$(ARCHS_P_XML): tmpdir
 	@$(MAKE) --no-print-directory $(profiled_xml_arch)-validate_dump-xml
 
 	@echo "Generating profiled $(profiled_xml_arch) book for XHTML..."
@@ -79,7 +85,7 @@ $(ARCHS_P_XML):
 	  $(PWD)/stylesheets/lfs-xsl/profile.xsl $(RENDERTMP)/$(profiled_xml_arch)-full.xml
 
 $(ARCHS_HTML): override html_arch = $(@:%$(S)html=%)
-$(ARCHS_HTML):
+$(ARCHS_HTML): tmpdir
 	@$(MAKE) --no-print-directory $(html_arch)-profiled-xml
 
 	@echo "Rendering chunked XHTML of $(html_arch)..."
@@ -89,7 +95,7 @@ $(ARCHS_HTML):
 	  -stringparam base.dir $(BASEDIR)/$(html_arch)/ \
 	  $(PWD)/stylesheets/clfs-chunked.xsl $(RENDERTMP)/$(html_arch)-html.xml
 
-	@echo "Copying CSS code and images..."
+	@echo "Copying CSS code and images for $(html_arch)..."
 	$(Q)mkdir -p $(BASEDIR)/$(html_arch)/stylesheets
 	$(Q)cp $(PWD)/stylesheets/lfs-xsl/*.css $(BASEDIR)/$(html_arch)/stylesheets
 	$(Q)sed -i -e "s@../stylesheets@stylesheets@g" $(BASEDIR)/$(html_arch)/*.html
@@ -97,10 +103,10 @@ $(ARCHS_HTML):
 	$(Q)cp $(PWD)/images/*.png $(BASEDIR)/$(html_arch)/images
 	$(Q)sed -i -e "s@../images@images@g" $(BASEDIR)/$(html_arch)/*.html
 
-nochunks: tmpdir $(ARCHS_NOCHUNKS) tidy
+	@$(MAKE) --no-print-directory tidy-d TIDY_DIR=$(BASEDIR)/$(html_arch)
 
 $(ARCHS_NOCHUNKS): override nochunk_arch = $(@:%$(S)nochunks=%)
-$(ARCHS_NOCHUNKS):
+$(ARCHS_NOCHUNKS): tmpdir
 	@$(MAKE) --no-print-directory $(nochunk_arch)-profiled-xml
 
 	@echo "Rendering Single File HTML of $(nochunk_arch)..."
@@ -109,17 +115,10 @@ $(ARCHS_NOCHUNKS):
 	  --output $(BASEDIR)/CLFS-$(nochunk_arch).html \
 	  $(PWD)/stylesheets/clfs-nochunks.xsl $(RENDERTMP)/$(nochunk_arch)-html.xml
 
-	@echo "Running Tidy..."
-	$(Q)tidy -config $(PWD)/tidy.conf $(BASEDIR)/CLFS-$(nochunk_arch).html || true
-	@echo "Running obfuscate.sh..."
-	$(Q)bash $(PWD)/obfuscate.sh $(BASEDIR)/CLFS-$(nochunk_arch).html
-	$(Q)sed -i -e "s@text/html@application/xhtml+xml@g"  \
-	  $(BASEDIR)/CLFS-$(nochunk_arch).html
-
-pdf: tmpdir $(ARCHS_PDF)
+	@$(MAKE) --no-print-directory tidy-f TIDY_FILE=$(BASEDIR)/CLFS-$(nochunk_arch).html
 
 $(ARCHS_PDF): override pdf_arch =  $(@:%$(S)pdf=%)
-$(ARCHS_PDF):
+$(ARCHS_PDF): tmpdir
 	@$(MAKE) --no-print-directory $(pdf_arch)-profiled-xml
 
 	@echo "Generating FO file of $(pdf_arch)..."
@@ -132,24 +131,18 @@ $(ARCHS_PDF):
 	$(Q)mkdir -p $(BASEDIR)
 	$(Q)fop $(RENDERTMP)/$(pdf_arch).fo $(BASEDIR)/CLFS-$(pdf_arch).pdf
 
-validate: $(ARCHS_VALIDATE)
-
 $(ARCHS_VALIDATE): override validate_arch =  $(@:%$(S)validate=%)
 $(ARCHS_VALIDATE):
 	@echo "Validating $(validate_arch)..."
 	$(Q)xmllint --xinclude --noout --nonet --postvalid $(PWD)/$(validate_arch)-index.xml
 
-trouble: tmpdir $(ARCHS_TROUBLE)
-
 $(ARCHS_TROUBLE): override trouble_arch =  $(@:%$(S)trouble=%)
-$(ARCHS_TROUBLE):
+$(ARCHS_TROUBLE): tmpdir
 	@echo "Troubleshooting $(trouble_arch)..."
 	$(Q)xmllint --xinclude --nonet --postvalid \
 	  -o $(RENDERTMP)/dump-$(trouble_arch) $(PWD)/$(trouble_arch)-index.xml
 	$(Q)xmllint --xinclude --noout --nonet --valid $(RENDERTMP)/dump-$(trouble_arch)
 	@echo "You can now look at $(RENDERTMP)/dump-$(trouble_arch) to see the errors"
-
-dump-commands: $(ARCHS_DUMP)
 
 $(ARCHS_DUMP): override dump_arch =  $(@:%$(S)dump=%)
 $(ARCHS_DUMP):
@@ -157,8 +150,6 @@ $(ARCHS_DUMP):
 	$(Q)mkdir -p $(DUMPDIR)/$(dump_arch)
 	$(Q)xsltproc --xinclude --nonet --output $(DUMPDIR)/$(dump_arch)/ \
 	  $(PWD)/stylesheets/dump-commands.xsl $(PWD)/$(dump_arch)-index.xml
-
-download-list: $(ARCHS_DLLIST)
 
 $(ARCHS_DLLIST): override dllist_arch = $(@:%$(S)dllist=%)
 $(ARCHS_DLLIST):
@@ -171,7 +162,7 @@ help:
 	@echo "Output: $(WORKDIR)"
 	@echo
 	@echo "HTML Targets"
-	@echo -e "  \e[0;32mlfs tidy render titlepage \e[0;34m$(ARCHS_HTML)\e[0;0m"
+	@echo -e "  \e[0;32mclfs lfs tidy render titlepage \e[0;34m$(ARCHS_HTML)\e[0;0m"
 	@echo
 	@echo "NoChunks Targets"
 	@echo -e "  \e[0;32mnochunks tidy \e[0;34m$(ARCHS_NOCHUNKS)\e[0;0m"
