@@ -124,7 +124,7 @@ $(ARCHS_PDF): tmpdir
 	@echo "Generating FO file of $(pdf_arch)..."
 	$(Q)xsltproc --nonet -stringparam rootid "$(ROOT_ID)" \
 	  --output $(RENDERTMP)/$(pdf_arch).fo $(PWD)/stylesheets/clfs-pdf.xsl \
-	  $(RENDERTMP)/$(pdf_arch)-pdf.xml
+	  $(RENDERTMP)/$(pdf_arch)-html.xml
 	$(Q)sed -i -e 's/span="inherit"/span="all"/' $(RENDERTMP)/$(pdf_arch).fo
 
 	@echo "Rendering PDF of $(pdf_arch)..."
