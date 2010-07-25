@@ -27,6 +27,11 @@
   <sect2 role="installation">
     <title>Installation of CLooG-PPL</title>
 
+    <para os="s1">The following causes the configure script to look for the
+    version of PPL that was compiled in the previous step.</para>
+
+<screen os="s2"><userinput>sed -i "s/^\(ppl_minor_version\)=.[0-9]/\1=11/" configure</userinput></screen>
+
     <para os="a">Prepare CLooG-PPL for compilation:</para>
 
 <screen os="b"><userinput>CC="gcc -isystem /usr/include" LDFLAGS="-Wl,-rpath-link,/lib" \
