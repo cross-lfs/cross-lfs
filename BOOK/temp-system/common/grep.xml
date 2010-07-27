@@ -22,13 +22,23 @@
   <sect2 role="installation">
     <title>Installation of Grep</title>
 
+    <para os="t1">When Cross Compiling the configure script
+    does not determine the correct values for the following,
+    Set the values manually:</para>
+
+<screen os="t2"><userinput>cat &gt; config.cache &lt;&lt; EOF
+ac_cv_func_malloc_0_nonnull=yes
+ac_cv_func_realloc_0_nonnull=yes
+EOF</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/grep.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="ca"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --disable-perl-regexp --without-included-regex</userinput></screen>
+    --disable-perl-regexp --without-included-regex \
+    --cache-file=config.cache</userinput></screen>
 
     <variablelist os="cb">
       <title>The meaning of the configure options:</title>
