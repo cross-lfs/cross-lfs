@@ -1,0 +1,469 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 2010-07-29
+Initial Package Version: 5.44.1.15
+Origin: Joe Ciccone
+Upstream Status: None - CLFS Specific
+Description: Disables building of expectk as well as removes the checks for tk.
+
+diff -Naur expect-5.44.1.15.orig/Makefile.in expect-5.44.1.15/Makefile.in
+--- expect-5.44.1.15.orig/Makefile.in	2010-03-11 19:06:30.000000000 +0000
++++ expect-5.44.1.15/Makefile.in	2010-07-29 23:22:25.997577048 +0000
+@@ -103,7 +103,7 @@
+ PKG_STUB_LIB_FILE = @PKG_STUB_LIB_FILE@
+ 
+ lib_BINARIES	= $(PKG_LIB_FILE)
+-bin_BINARIES	= expect expectk
++bin_BINARIES	= expect
+ BINARIES	= $(lib_BINARIES) $(bin_BINARIES)
+ 
+ SHELL		= @SHELL@
+@@ -175,7 +175,7 @@
+ TCLSH		= $(TCLSH_ENV) $(TCLSH_PROG)
+ SHARED_BUILD	= @SHARED_BUILD@
+ 
+-INCLUDES	= @PKG_INCLUDES@ @TCL_INCLUDES@ @TK_INCLUDES@
++INCLUDES	= @PKG_INCLUDES@ @TCL_INCLUDES@
+ 
+ PKG_CFLAGS	= @PKG_CFLAGS@
+ 
+@@ -255,8 +255,6 @@
+ 	@mkdir -p $(DESTDIR)$(mandir)/man1
+ 	@mkdir -p $(DESTDIR)$(mandir)/man3
+ 	@echo "Installing documentation in $(DESTDIR)$(mandir)"
+-# install Expectk man page if present
+-	$(INSTALL_DATA) $(srcdir)/expectk.man $(DESTDIR)$(mandir)/man1/expectk.1 ; \
+ # install Expect man page
+ 	$(INSTALL_DATA) $(srcdir)/expect.man $(DESTDIR)$(mandir)/man1/expect.1
+ # install man page for Expect and Expectk libraries
+@@ -416,21 +414,6 @@
+ 		@EXP_CC_SEARCH_FLAGS@
+ 	$(SETUID) expect
+ 
+-expectk: exp_main_tk.o $(PKG_LIB_FILE)
+-	$(CC) \
+-		@CFLAGS@ \
+-		@EXP_CFLAGS@ \
+-		@EXP_SHLIB_CFLAGS@ \
+-		@TCL_LD_FLAGS@ \
+-		-o expectk exp_main_tk.o \
+-		@EXP_BUILD_LIB_SPEC@ \
+-		@TK_LIB_SPEC@ \
+-		@TCL_LIB_SPEC@ \
+-		@TK_LIBS@ \
+-		@TCL_CC_SEARCH_FLAGS@ \
+-		@EXP_CC_SEARCH_FLAGS@
+-	$(SETUID) expectk
+-
+ #========================================================================
+ # Produce FAQ and homepage
+ #========================================================================
+diff -Naur expect-5.44.1.15.orig/configure expect-5.44.1.15/configure
+--- expect-5.44.1.15.orig/configure	2010-03-11 19:06:30.000000000 +0000
++++ expect-5.44.1.15/configure	2010-07-29 23:23:04.193826351 +0000
+@@ -310,7 +310,7 @@
+ #endif"
+ 
+ ac_subdirs_all="$ac_subdirs_all testsuite"
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CYGPATH EXEEXT PKG_LIB_FILE PKG_STUB_LIB_FILE PKG_STUB_SOURCES PKG_STUB_OBJECTS PKG_TCL_SOURCES PKG_HEADERS PKG_INCLUDES PKG_LIBS PKG_CFLAGS found TCL_VERSION TCL_BIN_DIR TCL_SRC_DIR TCL_LIB_FILE TCL_LIB_FLAG TCL_LIB_SPEC TCL_STUB_LIB_FILE TCL_STUB_LIB_FLAG TCL_STUB_LIB_SPEC TCL_LIBS TCL_DEFS TCL_EXTRA_CFLAGS TCL_LD_FLAGS TCL_SHLIB_LD_LIBS TK_VERSION TK_BIN_DIR TK_SRC_DIR TK_LIB_FILE TK_LIB_FLAG TK_LIB_SPEC TK_STUB_LIB_FILE TK_STUB_LIB_FLAG TK_STUB_LIB_SPEC TK_LIBS TK_XINCLUDES CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA SET_MAKE RANLIB ac_ct_RANLIB EGREP MATH_LIBS TCL_TOP_DIR_NATIVE TCL_GENERIC_DIR_NATIVE TCL_UNIX_DIR_NATIVE TCL_WIN_DIR_NATIVE TCL_BMAP_DIR_NATIVE TCL_TOOL_DIR_NATIVE TCL_PLATFORM_DIR_NATIVE TCL_INCLUDES TK_INCLUDES CLEANFILES TCL_THREADS SHARED_BUILD AR CELIB_DIR LIBOBJS DL_LIBS CFLAGS_DEBUG CFLAGS_OPTIMIZE CFLAGS_WARNING STLIB_LD SHLIB_LD SHLIB_LD_LIBS SHLIB_CFLAGS LD_LIBRARY_PATH_VAR TCL_DBGX CFLAGS_DEFAULT LDFLAGS_DEFAULT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os subdirs EXP_CONFIG_SHELL EXP_SHARED_LIB_FILE EXP_UNSHARED_LIB_FILE EXP_SHLIB_CFLAGS EXP_LIB_FILE EXP_LIB_FILES EXP_BUILD_LIB_SPEC EXP_LIB_SPEC EXP_CFLAGS EXP_LDFLAGS EXP_LD_SEARCH_FLAGS TCL_LD_SEARCH_FLAGS EXP_CC_SEARCH_FLAGS TCL_CC_SEARCH_FLAGS EXP_SHLIB_LD_LIBS SETUID SETPGRP_VOID DEFAULT_STTY_ARGS PKG_SOURCES PKG_OBJECTS MAKE_LIB MAKE_SHARED_LIB MAKE_STATIC_LIB MAKE_STUB_LIB RANLIB_STUB TCLSH_PROG LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CYGPATH EXEEXT PKG_LIB_FILE PKG_STUB_LIB_FILE PKG_STUB_SOURCES PKG_STUB_OBJECTS PKG_TCL_SOURCES PKG_HEADERS PKG_INCLUDES PKG_LIBS PKG_CFLAGS found TCL_VERSION TCL_BIN_DIR TCL_SRC_DIR TCL_LIB_FILE TCL_LIB_FLAG TCL_LIB_SPEC TCL_STUB_LIB_FILE TCL_STUB_LIB_FLAG TCL_STUB_LIB_SPEC TCL_LIBS TCL_DEFS TCL_EXTRA_CFLAGS TCL_LD_FLAGS TCL_SHLIB_LD_LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA SET_MAKE RANLIB ac_ct_RANLIB EGREP MATH_LIBS TCL_TOP_DIR_NATIVE TCL_GENERIC_DIR_NATIVE TCL_UNIX_DIR_NATIVE TCL_WIN_DIR_NATIVE TCL_BMAP_DIR_NATIVE TCL_TOOL_DIR_NATIVE TCL_PLATFORM_DIR_NATIVE TCL_INCLUDES CLEANFILES TCL_THREADS SHARED_BUILD AR CELIB_DIR LIBOBJS DL_LIBS CFLAGS_DEBUG CFLAGS_OPTIMIZE CFLAGS_WARNING STLIB_LD SHLIB_LD SHLIB_LD_LIBS SHLIB_CFLAGS LD_LIBRARY_PATH_VAR TCL_DBGX CFLAGS_DEFAULT LDFLAGS_DEFAULT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os subdirs EXP_CONFIG_SHELL EXP_SHARED_LIB_FILE EXP_UNSHARED_LIB_FILE EXP_SHLIB_CFLAGS EXP_LIB_FILE EXP_LIB_FILES EXP_BUILD_LIB_SPEC EXP_LIB_SPEC EXP_CFLAGS EXP_LDFLAGS EXP_LD_SEARCH_FLAGS TCL_LD_SEARCH_FLAGS EXP_CC_SEARCH_FLAGS TCL_CC_SEARCH_FLAGS EXP_SHLIB_LD_LIBS SETUID SETPGRP_VOID DEFAULT_STTY_ARGS PKG_SOURCES PKG_OBJECTS MAKE_LIB MAKE_SHARED_LIB MAKE_STATIC_LIB MAKE_STUB_LIB RANLIB_STUB TCLSH_PROG LTLIBOBJS'
+ ac_subst_files=''
+ 
+ # Initialize some variables set by options.
+@@ -862,8 +862,6 @@
+   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+   --with-tcl              directory containing tcl configuration
+                           (tclConfig.sh)
+-  --with-tk               directory containing tk configuration (tkConfig.sh)
+-  --with-tkinclude      directory containing the public Tk header files.
+   --with-celib=DIR        use Windows/CE support library from DIR
+ 
+ Some influential environment variables:
+@@ -1738,234 +1736,6 @@
+ 
+ 
+ 
+-
+-    #
+-    # Ok, lets find the tk configuration
+-    # First, look for one uninstalled.
+-    # the alternative search directory is invoked by --with-tk
+-    #
+-
+-    if test x"${no_tk}" = x ; then
+-	# we reset no_tk in case something fails here
+-	no_tk=true
+-
+-# Check whether --with-tk or --without-tk was given.
+-if test "${with_tk+set}" = set; then
+-  withval="$with_tk"
+-  with_tkconfig=${withval}
+-fi;
+-	echo "$as_me:$LINENO: checking for Tk configuration" >&5
+-echo $ECHO_N "checking for Tk configuration... $ECHO_C" >&6
+-	if test "${ac_cv_c_tkconfig+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-
+-
+-	    # First check to see if --with-tkconfig was specified.
+-	    if test x"${with_tkconfig}" != x ; then
+-		case ${with_tkconfig} in
+-		    */tkConfig.sh )
+-			if test -f ${with_tkconfig}; then
+-			    { echo "$as_me:$LINENO: WARNING: --with-tk argument should refer to directory containing tkConfig.sh, not to tkConfig.sh itself" >&5
+-echo "$as_me: WARNING: --with-tk argument should refer to directory containing tkConfig.sh, not to tkConfig.sh itself" >&2;}
+-			    with_tkconfig=`echo ${with_tkconfig} | sed 's!/tkConfig\.sh$!!'`
+-			fi ;;
+-		esac
+-		if test -f "${with_tkconfig}/tkConfig.sh" ; then
+-		    ac_cv_c_tkconfig=`(cd ${with_tkconfig}; pwd)`
+-		else
+-		    { { echo "$as_me:$LINENO: error: ${with_tkconfig} directory doesn't contain tkConfig.sh" >&5
+-echo "$as_me: error: ${with_tkconfig} directory doesn't contain tkConfig.sh" >&2;}
+-   { (exit 1); exit 1; }; }
+-		fi
+-	    fi
+-
+-	    # then check for a private Tk library
+-	    if test x"${ac_cv_c_tkconfig}" = x ; then
+-		for i in \
+-			../tk \
+-			`ls -dr ../tk[8-9].[0-9].[0-9]* 2>/dev/null` \
+-			`ls -dr ../tk[8-9].[0-9] 2>/dev/null` \
+-			`ls -dr ../tk[8-9].[0-9]* 2>/dev/null` \
+-			../../tk \
+-			`ls -dr ../../tk[8-9].[0-9].[0-9]* 2>/dev/null` \
+-			`ls -dr ../../tk[8-9].[0-9] 2>/dev/null` \
+-			`ls -dr ../../tk[8-9].[0-9]* 2>/dev/null` \
+-			../../../tk \
+-			`ls -dr ../../../tk[8-9].[0-9].[0-9]* 2>/dev/null` \
+-			`ls -dr ../../../tk[8-9].[0-9] 2>/dev/null` \
+-			`ls -dr ../../../tk[8-9].[0-9]* 2>/dev/null` ; do
+-		    if test -f "$i/unix/tkConfig.sh" ; then
+-			ac_cv_c_tkconfig=`(cd $i/unix; pwd)`
+-			break
+-		    fi
+-		done
+-	    fi
+-
+-	    # on Darwin, check in Framework installation locations
+-	    if test "`uname -s`" = "Darwin" -a x"${ac_cv_c_tkconfig}" = x ; then
+-		for i in `ls -d ~/Library/Frameworks 2>/dev/null` \
+-			`ls -d /Library/Frameworks 2>/dev/null` \
+-			`ls -d /Network/Library/Frameworks 2>/dev/null` \
+-			`ls -d /System/Library/Frameworks 2>/dev/null` \
+-			; do
+-		    if test -f "$i/Tk.framework/tkConfig.sh" ; then
+-			ac_cv_c_tkconfig=`(cd $i/Tk.framework; pwd)`
+-			break
+-		    fi
+-		done
+-	    fi
+-
+-	    # check in a few common install locations
+-	    if test x"${ac_cv_c_tkconfig}" = x ; then
+-		for i in `ls -d ${libdir} 2>/dev/null` \
+-			`ls -d ${exec_prefix}/lib 2>/dev/null` \
+-			`ls -d ${prefix}/lib 2>/dev/null` \
+-			`ls -d /usr/local/lib 2>/dev/null` \
+-			`ls -d /usr/contrib/lib 2>/dev/null` \
+-			`ls -d /usr/lib 2>/dev/null` \
+-			; do
+-		    if test -f "$i/tkConfig.sh" ; then
+-			ac_cv_c_tkconfig=`(cd $i; pwd)`
+-			break
+-		    fi
+-		done
+-	    fi
+-
+-	    # on Windows, check in common installation locations
+-	    if test "${TEA_PLATFORM}" = "windows" \
+-		-a x"${ac_cv_c_tclconfig}" = x ; then
+-		for i in `ls -d C:/Tcl/lib 2>/dev/null` \
+-			`ls -d C:/Progra~1/Tcl/lib 2>/dev/null` \
+-			; do
+-		    if test -f "$i/tclConfig.sh" ; then
+-			ac_cv_c_tclconfig=`(cd $i; pwd)`
+-			break
+-		    fi
+-		done
+-	    fi
+-
+-	    # check in a few other private locations
+-	    if test x"${ac_cv_c_tkconfig}" = x ; then
+-		for i in \
+-			${srcdir}/../tk \
+-			`ls -dr ${srcdir}/../tk[8-9].[0-9].[0-9]* 2>/dev/null` \
+-			`ls -dr ${srcdir}/../tk[8-9].[0-9] 2>/dev/null` \
+-			`ls -dr ${srcdir}/../tk[8-9].[0-9]* 2>/dev/null` ; do
+-		    if test -f "$i/unix/tkConfig.sh" ; then
+-			ac_cv_c_tkconfig=`(cd $i/unix; pwd)`
+-			break
+-		    fi
+-		done
+-	    fi
+-
+-fi
+-
+-
+-	if test x"${ac_cv_c_tkconfig}" = x ; then
+-	    TK_BIN_DIR="# no Tk configs found"
+-	    { echo "$as_me:$LINENO: WARNING: Can't find Tk configuration definitions" >&5
+-echo "$as_me: WARNING: Can't find Tk configuration definitions" >&2;}
+-	    exit 0
+-	else
+-	    no_tk=
+-	    TK_BIN_DIR=${ac_cv_c_tkconfig}
+-	    echo "$as_me:$LINENO: result: found ${TK_BIN_DIR}/tkConfig.sh" >&5
+-echo "${ECHO_T}found ${TK_BIN_DIR}/tkConfig.sh" >&6
+-	fi
+-    fi
+-
+-
+-    echo "$as_me:$LINENO: checking for existence of ${TK_BIN_DIR}/tkConfig.sh" >&5
+-echo $ECHO_N "checking for existence of ${TK_BIN_DIR}/tkConfig.sh... $ECHO_C" >&6
+-
+-    if test -f "${TK_BIN_DIR}/tkConfig.sh" ; then
+-        echo "$as_me:$LINENO: result: loading" >&5
+-echo "${ECHO_T}loading" >&6
+-	. ${TK_BIN_DIR}/tkConfig.sh
+-    else
+-        echo "$as_me:$LINENO: result: could not find ${TK_BIN_DIR}/tkConfig.sh" >&5
+-echo "${ECHO_T}could not find ${TK_BIN_DIR}/tkConfig.sh" >&6
+-    fi
+-
+-    # eval is required to do the TK_DBGX substitution
+-    eval "TK_LIB_FILE=\"${TK_LIB_FILE}\""
+-    eval "TK_STUB_LIB_FILE=\"${TK_STUB_LIB_FILE}\""
+-
+-    # If the TK_BIN_DIR is the build directory (not the install directory),
+-    # then set the common variable name to the value of the build variables.
+-    # For example, the variable TK_LIB_SPEC will be set to the value
+-    # of TK_BUILD_LIB_SPEC. An extension should make use of TK_LIB_SPEC
+-    # instead of TK_BUILD_LIB_SPEC since it will work with both an
+-    # installed and uninstalled version of Tcl.
+-    if test -f ${TK_BIN_DIR}/Makefile ; then
+-        TK_LIB_SPEC=${TK_BUILD_LIB_SPEC}
+-        TK_STUB_LIB_SPEC=${TK_BUILD_STUB_LIB_SPEC}
+-        TK_STUB_LIB_PATH=${TK_BUILD_STUB_LIB_PATH}
+-    elif test "`uname -s`" = "Darwin"; then
+-	# If Tk was built as a framework, attempt to use the libraries
+-	# from the framework at the given location so that linking works
+-	# against Tk.framework installed in an arbitary location.
+-	case ${TK_DEFS} in
+-	    *TK_FRAMEWORK*)
+-		if test -f ${TK_BIN_DIR}/${TK_LIB_FILE}; then
+-		    for i in "`cd ${TK_BIN_DIR}; pwd`" \
+-			     "`cd ${TK_BIN_DIR}/../..; pwd`"; do
+-			if test "`basename "$i"`" = "${TK_LIB_FILE}.framework"; then
+-			    TK_LIB_SPEC="-F`dirname "$i"` -framework ${TK_LIB_FILE}"
+-			    break
+-			fi
+-		    done
+-		fi
+-		if test -f ${TK_BIN_DIR}/${TK_STUB_LIB_FILE}; then
+-		    TK_STUB_LIB_SPEC="-L${TK_BIN_DIR} ${TK_STUB_LIB_FLAG}"
+-		    TK_STUB_LIB_PATH="${TK_BIN_DIR}/${TK_STUB_LIB_FILE}"
+-		fi
+-		;;
+-	esac
+-    fi
+-
+-    # eval is required to do the TK_DBGX substitution
+-    eval "TK_LIB_FLAG=\"${TK_LIB_FLAG}\""
+-    eval "TK_LIB_SPEC=\"${TK_LIB_SPEC}\""
+-    eval "TK_STUB_LIB_FLAG=\"${TK_STUB_LIB_FLAG}\""
+-    eval "TK_STUB_LIB_SPEC=\"${TK_STUB_LIB_SPEC}\""
+-
+-    # Ensure windowingsystem is defined
+-    if test "${TEA_PLATFORM}" = "unix" ; then
+-	case ${TK_DEFS} in
+-	    *MAC_OSX_TK*)
+-
+-cat >>confdefs.h <<\_ACEOF
+-#define MAC_OSX_TK 1
+-_ACEOF
+-
+-		TEA_WINDOWINGSYSTEM="aqua"
+-		;;
+-	    *)
+-		TEA_WINDOWINGSYSTEM="x11"
+-		;;
+-	esac
+-    elif test "${TEA_PLATFORM}" = "windows" ; then
+-	TEA_WINDOWINGSYSTEM="win32"
+-    fi
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+ #-----------------------------------------------------------------------
+ # Handle the --prefix=... option by defaulting to what Tcl gave.
+ # Must be called after TEA_LOAD_TCLCONFIG and before TEA_SETUP_COMPILER.
+@@ -6458,106 +6228,6 @@
+ echo "${ECHO_T}Using srcdir found in tclConfig.sh: ${TCL_SRC_DIR}" >&6
+ 
+ 
+-    echo "$as_me:$LINENO: checking for Tk public headers" >&5
+-echo $ECHO_N "checking for Tk public headers... $ECHO_C" >&6
+-
+-
+-# Check whether --with-tkinclude or --without-tkinclude was given.
+-if test "${with_tkinclude+set}" = set; then
+-  withval="$with_tkinclude"
+-  with_tkinclude=${withval}
+-fi;
+-
+-    if test "${ac_cv_c_tkh+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-
+-	# Use the value from --with-tkinclude, if it was given
+-
+-	if test x"${with_tkinclude}" != x ; then
+-	    if test -f "${with_tkinclude}/tk.h" ; then
+-		ac_cv_c_tkh=${with_tkinclude}
+-	    else
+-		{ { echo "$as_me:$LINENO: error: ${with_tkinclude} directory does not contain tk.h" >&5
+-echo "$as_me: error: ${with_tkinclude} directory does not contain tk.h" >&2;}
+-   { (exit 1); exit 1; }; }
+-	    fi
+-	else
+-	    if test "`uname -s`" = "Darwin"; then
+-		# If Tk was built as a framework, attempt to use
+-		# the framework's Headers directory.
+-		case ${TK_DEFS} in
+-		    *TK_FRAMEWORK*)
+-			list="`ls -d ${TK_BIN_DIR}/Headers 2>/dev/null`"
+-			;;
+-		esac
+-	    fi
+-
+-	    # Look in the source dir only if Tk is not installed,
+-	    # and in that situation, look there before installed locations.
+-	    if test -f "${TK_BIN_DIR}/Makefile" ; then
+-		list="$list `ls -d ${TK_SRC_DIR}/generic 2>/dev/null`"
+-	    fi
+-
+-	    # Check order: pkg --prefix location, Tk's --prefix location,
+-	    # relative to directory of tkConfig.sh, Tcl's --prefix location,
+-	    # relative to directory of tclConfig.sh.
+-
+-	    eval "temp_includedir=${includedir}"
+-	    list="$list \
+-		`ls -d ${temp_includedir}        2>/dev/null` \
+-		`ls -d ${TK_PREFIX}/include      2>/dev/null` \
+-		`ls -d ${TK_BIN_DIR}/../include  2>/dev/null` \
+-		`ls -d ${TCL_PREFIX}/include     2>/dev/null` \
+-		`ls -d ${TCL_BIN_DIR}/../include 2>/dev/null`"
+-	    if test "${TEA_PLATFORM}" != "windows" -o "$GCC" = "yes"; then
+-		list="$list /usr/local/include /usr/include"
+-	    fi
+-	    for i in $list ; do
+-		if test -f "$i/tk.h" ; then
+-		    ac_cv_c_tkh=$i
+-		    break
+-		fi
+-	    done
+-	fi
+-
+-fi
+-
+-
+-    # Print a message based on how we determined the include path
+-
+-    if test x"${ac_cv_c_tkh}" = x ; then
+-	{ { echo "$as_me:$LINENO: error: tk.h not found.  Please specify its location with --with-tkinclude" >&5
+-echo "$as_me: error: tk.h not found.  Please specify its location with --with-tkinclude" >&2;}
+-   { (exit 1); exit 1; }; }
+-    else
+-	echo "$as_me:$LINENO: result: ${ac_cv_c_tkh}" >&5
+-echo "${ECHO_T}${ac_cv_c_tkh}" >&6
+-    fi
+-
+-    # Convert to a native path and substitute into the output files.
+-
+-    INCLUDE_DIR_NATIVE=`${CYGPATH} ${ac_cv_c_tkh}`
+-
+-    TK_INCLUDES=-I\"${INCLUDE_DIR_NATIVE}\"
+-
+-
+-
+-    if test "${TEA_WINDOWINGSYSTEM}" = "win32" \
+-	-o "${TEA_WINDOWINGSYSTEM}" = "aqua"; then
+-	# On Windows and Aqua, we need the X compat headers
+-	echo "$as_me:$LINENO: checking for X11 header files" >&5
+-echo $ECHO_N "checking for X11 header files... $ECHO_C" >&6
+-	if test ! -r "${INCLUDE_DIR_NATIVE}/X11/Xlib.h"; then
+-	    INCLUDE_DIR_NATIVE="`${CYGPATH} ${TK_SRC_DIR}/xlib`"
+-	    TK_XINCLUDES=-I\"${INCLUDE_DIR_NATIVE}\"
+-
+-	fi
+-	echo "$as_me:$LINENO: result: ${INCLUDE_DIR_NATIVE}" >&5
+-echo "${ECHO_T}${INCLUDE_DIR_NATIVE}" >&6
+-    fi
+-
+-
+ #--------------------------------------------------------------------
+ # A few miscellaneous platform-specific items:
+ #
+@@ -17280,17 +16950,6 @@
+ s,@TCL_EXTRA_CFLAGS@,$TCL_EXTRA_CFLAGS,;t t
+ s,@TCL_LD_FLAGS@,$TCL_LD_FLAGS,;t t
+ s,@TCL_SHLIB_LD_LIBS@,$TCL_SHLIB_LD_LIBS,;t t
+-s,@TK_VERSION@,$TK_VERSION,;t t
+-s,@TK_BIN_DIR@,$TK_BIN_DIR,;t t
+-s,@TK_SRC_DIR@,$TK_SRC_DIR,;t t
+-s,@TK_LIB_FILE@,$TK_LIB_FILE,;t t
+-s,@TK_LIB_FLAG@,$TK_LIB_FLAG,;t t
+-s,@TK_LIB_SPEC@,$TK_LIB_SPEC,;t t
+-s,@TK_STUB_LIB_FILE@,$TK_STUB_LIB_FILE,;t t
+-s,@TK_STUB_LIB_FLAG@,$TK_STUB_LIB_FLAG,;t t
+-s,@TK_STUB_LIB_SPEC@,$TK_STUB_LIB_SPEC,;t t
+-s,@TK_LIBS@,$TK_LIBS,;t t
+-s,@TK_XINCLUDES@,$TK_XINCLUDES,;t t
+ s,@CC@,$CC,;t t
+ s,@CFLAGS@,$CFLAGS,;t t
+ s,@LDFLAGS@,$LDFLAGS,;t t
+@@ -17314,7 +16973,6 @@
+ s,@TCL_TOOL_DIR_NATIVE@,$TCL_TOOL_DIR_NATIVE,;t t
+ s,@TCL_PLATFORM_DIR_NATIVE@,$TCL_PLATFORM_DIR_NATIVE,;t t
+ s,@TCL_INCLUDES@,$TCL_INCLUDES,;t t
+-s,@TK_INCLUDES@,$TK_INCLUDES,;t t
+ s,@CLEANFILES@,$CLEANFILES,;t t
+ s,@TCL_THREADS@,$TCL_THREADS,;t t
+ s,@SHARED_BUILD@,$SHARED_BUILD,;t t
+diff -Naur expect-5.44.1.15.orig/configure.in expect-5.44.1.15/configure.in
+--- expect-5.44.1.15.orig/configure.in	2010-03-11 19:06:30.000000000 +0000
++++ expect-5.44.1.15/configure.in	2010-07-29 23:22:25.997577048 +0000
+@@ -49,9 +49,6 @@
+ TEA_PATH_TCLCONFIG
+ TEA_LOAD_TCLCONFIG
+ 
+-TEA_PATH_TKCONFIG
+-TEA_LOAD_TKCONFIG
+-
+ #-----------------------------------------------------------------------
+ # Handle the --prefix=... option by defaulting to what Tcl gave.
+ # Must be called after TEA_LOAD_TCLCONFIG and before TEA_SETUP_COMPILER.
+@@ -79,7 +76,6 @@
+ 
+ #TEA_PUBLIC_TCL_HEADERS
+ TEA_PRIVATE_TCL_HEADERS
+-TEA_PUBLIC_TK_HEADERS
+ 
+ #--------------------------------------------------------------------
+ # A few miscellaneous platform-specific items:
