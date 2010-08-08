@@ -38,6 +38,11 @@
       Unicode, therefore libiconv is not required on a CLFS system.</para>
     </note>
 
+    <para os="mp1">The following patch fixes a compatibility issue with Make
+    3.82 and newer.</para>
+
+<screen os="mp2"><userinput>patch -Np1 -i ../&eglibc-make382-patch;</userinput></screen>
+
     <para os="l3">The following sed makes sure that newly built EGLIBC is tested,
     during make install, instead of the one we previously build:</para>
 
