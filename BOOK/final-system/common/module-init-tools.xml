@@ -27,17 +27,8 @@
 
     <para os="c">Issue the following commands to perform the tests</para>
 
-    <note os="cc">
-      <para>The <command>make clean</command> command is required to clean up
-      the source tree, otherwise the code built for testing will be installed,
-      and the test version of <command>modprobe</command> does not function
-      outside the test environment.</para>
-    </note>
-
-<screen os="d"><userinput>./configure &amp;&amp;
-make check &amp;&amp;
-./tests/runtests &amp;&amp;
-make clean</userinput></screen>
+<screen os="d"><userinput>sed -i "s/\(make\)\( all\)/\1 DOCBOOKTOMAN=true\2/" tests/runtests &amp;&amp;
+./tests/runtests</userinput></screen>
 
     <para os="e">Prepare Module-Init-Tools for compilation:</para>
 
@@ -60,24 +51,11 @@ make clean</userinput></screen>
 
     <para os="h">Compile the package:</para>
 
-<screen os="i"><userinput>make DOCBOOKTOMAN=""</userinput></screen>
+<screen os="i"><userinput>make DOCBOOKTOMAN=true</userinput></screen>
 
     <para os="j">Install the package:</para>
 
-<screen os="k"><userinput>make INSTALL=install install</userinput></screen>
-
-    <variablelist os="l">
-      <title>The meaning of the make install parameter:</title>
-      <varlistentry>
-        <term><parameter>INSTALL=install</parameter></term>
-        <listitem>
-          <para>Normally, <command>make install</command> will not install the binaries if they
-          already exist. This option overrides that behavior by calling
-          <command>install</command> instead of using the default wrapper
-          script.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+<screen os="k"><userinput>make install</userinput></screen>
 
   </sect2>
 
