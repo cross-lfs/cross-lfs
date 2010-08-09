@@ -18,6 +18,13 @@
   <systemitem class="username">root</systemitem>. Change the ownership
   for ${CLFS} and its subdirectories by running this command:</para>
 
-<screen os="b"><userinput>chown -Rv root:root ${CLFS}</userinput></screen>
+<screen os="b"><userinput>chown -Rv &uid-root;:&gid-root; ${CLFS}</userinput></screen>
+
+  <para>The following files are to be owned by the group
+  <systemitem class="username">utmp</systemitem> not by
+  <systemitem class="username">root</systemitem>.</para>
+
+<screen><userinput>chgrp -v &gid-utmp; ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog</userinput></screen>
+
 
 </sect1>
