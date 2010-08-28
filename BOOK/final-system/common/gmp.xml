@@ -32,6 +32,19 @@
 <screen os="p2"><userinput>patch -Np1 -i ../&gmp-branch_update-patch;</userinput></screen>
 
 -->
+
+    <note os="n1">
+      <para>If you are compiling this package on a different CPU then you plan to
+      run the CLFS system on. You must replace GMP's <filename>config.guess</filename>
+      and <filename>config.sub</filename> wrappers with the originals. This will
+      prevent GMP from optimizing for the wrong CPU. You can make this change with
+      the following command:</para>
+
+<screen><userinput>mv config{fsf,}.guess
+mv config{fsf,}.sub</userinput></screen>
+
+    </note>
+
     <para os="a">Prepare GMP for compilation:</para>
 
 <screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include" \
