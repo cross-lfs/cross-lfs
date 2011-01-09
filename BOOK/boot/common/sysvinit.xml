@@ -22,15 +22,12 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-    <para os="aa">Make some modifications to allow you to boot into
-    the minimal temp-system:</para>
+    <para os="aa">The following modifications help locate files specific to this
+    perticular build:</para>
 
-<screen os="ab"><userinput>cp -v src/Makefile src/Makefile.orig
-sed -e 's@root@0@g' \
-    -e "s@/dev/initctl@${CLFS}&amp;@g" \
-    -e 's@\(mknod \)-m \([0-9]* \)\(.* \)p@\1\3p; chmod \2\3@g' \
-    -e "s@/usr/lib@/tools/lib@" \
-    src/Makefile.orig &gt; src/Makefile</userinput></screen>
+<screen os="ab"><userinput>cp -v src/Makefile{,.orig}
+sed -e 's,/usr/lib,/tools/lib,g' \
+    src/Makefile.orig > src/Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude"
     href="../../final-system/common/sysvinit.xml"
@@ -43,7 +40,7 @@ make -C src CC="${CC}"</userinput></screen>
     href="../../final-system/common/sysvinit.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
-<screen os="ad"><userinput>make -C src install INSTALL=install ROOT=${CLFS}</userinput></screen>
+<screen os="ad"><userinput>make -C src ROOT=${CLFS} install</userinput></screen>
 
   </sect2>
 
