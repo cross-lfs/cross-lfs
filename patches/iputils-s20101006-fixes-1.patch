@@ -1,6 +1,13 @@
-diff -Naur iputils-s20100418.orig/Makefile iputils-s20100418/Makefile
---- iputils-s20100418.orig/Makefile	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/Makefile	2010-08-04 19:52:08.438080809 -0400
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 2011-01-08
+Initial Package Version: s20100418
+Upstream Status: Unknown
+Origin: Unknown
+Description: Contains Fixes for Various Issues
+
+diff -Naur iputils-s20101006.orig/Makefile iputils-s20101006/Makefile
+--- iputils-s20101006.orig/Makefile	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/Makefile	2011-01-08 20:06:05.039019429 -0500
 @@ -16,7 +16,7 @@
  CCOPT=-D_GNU_SOURCE -O2 -Wstrict-prototypes -Wall -g
  CFLAGS=$(CCOPT) $(GLIBCFIX) $(DEFINES) 
@@ -10,9 +17,9 @@ diff -Naur iputils-s20100418.orig/Makefile iputils-s20100418/Makefile
  IPV6_TARGETS=tracepath6 traceroute6 ping6
  TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
  
-diff -Naur iputils-s20100418.orig/arping.c iputils-s20100418/arping.c
---- iputils-s20100418.orig/arping.c	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/arping.c	2010-08-04 19:52:08.441575956 -0400
+diff -Naur iputils-s20101006.orig/arping.c iputils-s20101006/arping.c
+--- iputils-s20101006.orig/arping.c	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/arping.c	2011-01-08 20:06:05.039019429 -0500
 @@ -182,12 +182,17 @@
  	if (start.tv_sec==0)
  		start = tv;
@@ -33,9 +40,9 @@ diff -Naur iputils-s20100418.orig/arping.c iputils-s20100418/arping.c
  		if (count == 0 && unsolicited)
  			finish();
  	}
-diff -Naur iputils-s20100418.orig/doc/Makefile iputils-s20100418/doc/Makefile
---- iputils-s20100418.orig/doc/Makefile	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/doc/Makefile	2010-08-04 19:52:08.441575956 -0400
+diff -Naur iputils-s20101006.orig/doc/Makefile iputils-s20101006/doc/Makefile
+--- iputils-s20101006.orig/doc/Makefile	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/doc/Makefile	2011-01-08 20:06:05.039019429 -0500
 @@ -6,7 +6,7 @@
  
  html: $(HTMLFILES) iputils.html
@@ -55,9 +62,9 @@ diff -Naur iputils-s20100418.orig/doc/Makefile iputils-s20100418/doc/Makefile
  clean:
  	@rm -rf $(MANFILES) $(HTMLFILES) iputils.html tmp.db2html tmp.db2man
  
-diff -Naur iputils-s20100418.orig/doc/docbook2man-spec.pl iputils-s20100418/doc/docbook2man-spec.pl
---- iputils-s20100418.orig/doc/docbook2man-spec.pl	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/doc/docbook2man-spec.pl	2010-08-04 19:52:08.438080809 -0400
+diff -Naur iputils-s20101006.orig/doc/docbook2man-spec.pl iputils-s20101006/doc/docbook2man-spec.pl
+--- iputils-s20101006.orig/doc/docbook2man-spec.pl	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/doc/docbook2man-spec.pl	2011-01-08 20:06:05.039019429 -0500
 @@ -428,7 +428,7 @@
  	output ' ';
  
@@ -76,9 +83,9 @@ diff -Naur iputils-s20100418.orig/doc/docbook2man-spec.pl iputils-s20100418/doc/
  	}
  }
  
-diff -Naur iputils-s20100418.orig/ping.c iputils-s20100418/ping.c
---- iputils-s20100418.orig/ping.c	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/ping.c	2010-08-04 19:52:08.441575956 -0400
+diff -Naur iputils-s20101006.orig/ping.c iputils-s20101006/ping.c
+--- iputils-s20101006.orig/ping.c	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/ping.c	2011-01-08 20:06:05.039019429 -0500
 @@ -250,7 +250,7 @@
  			if (argc == 1)
  				options |= F_NUMERIC;
@@ -125,27 +132,9 @@ diff -Naur iputils-s20100418.orig/ping.c iputils-s20100418/ping.c
  		default:
  			printf("Dest Unreachable, Bad Code: %d\n", code);
  			break;
-@@ -1032,7 +1059,7 @@
- 				i = j;
- 			i -= IPOPT_MINOFF;
- 			if (i <= 0)
--				continue;
-+				break;
- 			if (i == old_rrlen
- 			    && !strncmp((char *)cp, old_rr, i)
- 			    && !(options & F_FLOOD)) {
-@@ -1069,7 +1096,7 @@
- 				i = j;
- 			i -= 5;
- 			if (i <= 0)
--				continue;
-+				break;
- 			flags = *++cp;
- 			printf("\nTS: ");
- 			cp++;
-diff -Naur iputils-s20100418.orig/ping_common.c iputils-s20100418/ping_common.c
---- iputils-s20100418.orig/ping_common.c	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/ping_common.c	2010-08-04 19:52:08.433579291 -0400
+diff -Naur iputils-s20101006.orig/ping_common.c iputils-s20101006/ping_common.c
+--- iputils-s20101006.orig/ping_common.c	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/ping_common.c	2011-01-08 20:06:05.039019429 -0500
 @@ -872,7 +872,8 @@
  		printf("%spipe %d", comma, pipesize);
  		comma = ", ";
@@ -156,9 +145,9 @@ diff -Naur iputils-s20100418.orig/ping_common.c iputils-s20100418/ping_common.c
  		int ipg = (1000000*(long long)tv.tv_sec+tv.tv_usec)/(ntransmitted-1);
  		printf("%sipg/ewma %d.%03d/%d.%03d ms",
  		       comma, ipg/1000, ipg%1000, rtt/8000, (rtt/8)%1000);
-diff -Naur iputils-s20100418.orig/tracepath.c iputils-s20100418/tracepath.c
---- iputils-s20100418.orig/tracepath.c	2010-04-18 00:45:45.000000000 -0400
-+++ iputils-s20100418/tracepath.c	2010-08-04 19:52:08.438080809 -0400
+diff -Naur iputils-s20101006.orig/tracepath.c iputils-s20101006/tracepath.c
+--- iputils-s20101006.orig/tracepath.c	2010-10-06 07:59:20.000000000 -0400
++++ iputils-s20101006/tracepath.c	2011-01-08 20:06:05.039019429 -0500
 @@ -338,9 +338,9 @@
  		base_port = atoi(p+1);
  	} else
