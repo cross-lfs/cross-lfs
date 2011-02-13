@@ -37,8 +37,20 @@
 
   <para>The files <filename>/etc/profile</filename> and
   <filename>~/.bash_profile</filename> are read when the shell is
-  invoked as an interactive login shell. In the next section, a base
-  <filename>/etc/profile</filename> will be created to set up locale
-  information.</para>
+  invoked as an interactive login shell. Create a base
+  <filename>/etc/profile</filename> that will setup locale information and load
+  any bash auto completion files that may be on the system. This script also
+  sets the <envar>INPUTRC</envar> environment variable that makes Bash and
+  Readline use <filename>/etc/inputrc</filename>.</para>
+
+<screen><userinput>cat &gt; /etc/profile &lt;&lt; "EOF"
+<literal># Begin /etc/profile
+
+source /etc/locale.conf
+for f in /etc/bash_completion.d/*.sh; do source $f; done; unset f
+export INPUTRC=/etc/inputrc
+
+# End /etc/profile</literal>
+EOF</userinput></screen>
 
 </sect1>
