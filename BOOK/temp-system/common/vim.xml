@@ -94,6 +94,20 @@ EOF</userinput></screen>
 
 <screen os="m"><userinput>ln -sv vim /tools/bin/vi</userinput></screen>
 
+    <para os="tv1" >Create a temporary vimrc to make it function more the way you may
+    expect it to. This is explained more in the final system:</para>
+
+<screen os="tv2"><userinput>cat &gt; /tools/etc/vimrc &lt;&lt; "EOF"
+<literal>" Begin /etc/vimrc
+
+set nocompatible
+set backspace=2
+set ruler
+syntax on
+
+" End /etc/vimrc</literal>
+EOF</userinput></screen>
+
   </sect2>
 
   <sect2 role="content">
