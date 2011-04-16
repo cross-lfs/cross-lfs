@@ -1,0 +1,32 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 2011-04-16
+Initial Package Version: 6.2
+Origin: Upstream
+Upstream Status: From Upstream
+Description: Contains all upstream patches up to 6.2-001
+
+diff -Naur readline-6.2.orig/callback.c readline-6.2/callback.c
+--- readline-6.2.orig/callback.c	2010-06-06 12:18:58.000000000 -0400
++++ readline-6.2/callback.c	2011-04-16 18:22:51.887217112 -0400
+@@ -148,6 +148,9 @@
+ 	  eof = _rl_vi_domove_callback (_rl_vimvcxt);
+ 	  /* Should handle everything, including cleanup, numeric arguments,
+ 	     and turning off RL_STATE_VIMOTION */
++	  if (RL_ISSTATE (RL_STATE_NUMERICARG) == 0)
++	    _rl_internal_char_cleanup ();
++
+ 	  return;
+ 	}
+ #endif
+diff -Naur readline-6.2.orig/vi_mode.c readline-6.2/vi_mode.c
+--- readline-6.2.orig/vi_mode.c	2010-11-20 19:51:39.000000000 -0500
++++ readline-6.2/vi_mode.c	2011-04-16 18:22:51.887217112 -0400
+@@ -1114,7 +1114,7 @@
+       rl_beg_of_line (1, c);
+       _rl_vi_last_motion = c;
+       RL_UNSETSTATE (RL_STATE_VIMOTION);
+-      return (0);
++      return (vidomove_dispatch (m));
+     }
+ #if defined (READLINE_CALLBACKS)
+   /* XXX - these need to handle rl_universal_argument bindings */
