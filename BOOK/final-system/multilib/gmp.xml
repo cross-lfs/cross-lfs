@@ -41,9 +41,9 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILD32}" \
-    CXX="g++ -isystem /usr/include ${BUILD32}" \
-    LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" ABI=32 \
-    ./configure --prefix=/usr \
+CXX="g++ -isystem /usr/include ${BUILD32}" \
+LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib ${BUILD32}" \
+  ABI=32 ./configure --prefix=/usr \
     -enable-cxx --enable-mpbsd</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

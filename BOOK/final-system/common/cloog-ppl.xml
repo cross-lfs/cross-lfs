@@ -29,8 +29,9 @@
 
     <para os="a">Prepare CLooG-PPL for compilation:</para>
 
-<screen os="b"><userinput>CC="gcc -isystem /usr/include" LDFLAGS="-Wl,-rpath-link,/lib" \
-    ./configure --prefix=/usr --enable-shared --with-gmp \
+<screen os="b"><userinput>CC="gcc -isystem /usr/include" \
+LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
+  ./configure --prefix=/usr --enable-shared --with-gmp \
     --with-ppl</userinput></screen>
 
     <para os="c">Compile the package:</para>
