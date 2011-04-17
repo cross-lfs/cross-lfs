@@ -26,7 +26,8 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CC="gcc -isystem /usr/include ${BUILD64}" \
-    LDFLAGS="-Wl,-rpath-link,/lib64 ${BUILD64}" ./configure --prefix=/usr \
+LDFLAGS="-Wl,-rpath-link,/usr/lib64:/lib64 ${BUILD64}" \
+  ./configure --prefix=/usr \
     --libdir=/usr/lib64 --enable-shared --with-gmp \
     --with-ppl</userinput></screen>
 

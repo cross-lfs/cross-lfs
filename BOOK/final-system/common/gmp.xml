@@ -48,8 +48,9 @@ mv -v config{fsf,}.sub</userinput></screen>
     <para os="a">Prepare GMP for compilation:</para>
 
 <screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include" \
-    CXX="g++ -isystem /usr/include" LDFLAGS="-Wl,-rpath-link,/lib" \
-    ./configure --prefix=/usr --enable-cxx --enable-mpbsd</userinput></screen>
+CXX="g++ -isystem /usr/include" \
+LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
+  ./configure --prefix=/usr --enable-cxx --enable-mpbsd</userinput></screen>
 
     <para os="c">Compile the package:</para>
 

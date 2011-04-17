@@ -40,8 +40,9 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILD64}" \
-    CXX="g++ -isystem /usr/include ${BUILD64}" \
-    LDFLAGS="-Wl,-rpath-link,/lib64 ${BUILD64}" ./configure --prefix=/usr \
+CXX="g++ -isystem /usr/include ${BUILD64}" \
+LDFLAGS="-Wl,-rpath-link,/usr/lib64:/lib64 ${BUILD64}" \
+  ./configure --prefix=/usr \
     --libdir=/usr/lib64 --enable-cxx --enable-mpbsd</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

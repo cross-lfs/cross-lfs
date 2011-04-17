@@ -27,10 +27,10 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CPPFLAGS=-fexceptions CC="gcc -isystem /usr/include ${BUILD32}" \
-    CXX="g++ -isystem /usr/include ${BUILD32}" \
-    LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
-    ./configure --prefix=/usr --host=${CLFS_TARGET32} \
-      --enable-shared --disable-optimization</userinput></screen>
+CXX="g++ -isystem /usr/include ${BUILD32}" \
+LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib ${BUILD32}" \
+  ./configure --prefix=/usr --host=${CLFS_TARGET32} \
+    --enable-shared --disable-optimization</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/ppl.xml"

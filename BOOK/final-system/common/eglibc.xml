@@ -38,13 +38,30 @@
       Unicode, therefore libiconv is not required on a CLFS system.</para>
     </note>
 
-    <para os="l3">The following sed makes sure that newly built EGLIBC is tested,
-    during make install, instead of the one we previously build:</para>
+    <para os="l1">At the end of the installation, the build system will run
+    a sanity test to make sure everything installed properly. This script will
+    attempt to test for a library that is only used in the test suite and is
+    never installed. Prevent the script from testing for this library with the
+    following command:</para>
 
-<screen os="l4"><userinput>LINKER=$(readelf -l $(file /tools/lib/libc-* | cut -f1 -d:) | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
+<screen os="l2"><userinput>sed -i 's/\(&amp;&amp; $name ne\) "db1"/ &amp; \1 "nss_test1"/' scripts/test-installation.pl</userinput></screen>
+
+    <para os="l3">This same script performs its tests by attempting to compile
+    test programs against certain libraries. However it does not specify the
+    ld.so, and our toolchain is still configured to use the one in /tools. The
+    following set of commands will force the script to use the complete path
+    of the new ld.so that was just installed:</para>
+
+<screen os="l4"><userinput>LINKER=$(readelf -l /tools/bin/bash | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
 sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
+
+    <para os="p1">The following patch fixes an issue where EGLIBC will
+    improperly handle a condition where an elf binary has missing
+    dependencies:</para>
+
+<screen os="p2"><userinput>patch -Np1 -i ../&eglibc-dl_dep_fix-patch;</userinput></screen>
 
     <para os="b">The EGLIBC build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
@@ -94,7 +111,7 @@ cd ../eglibc-build</userinput></screen>
 <!-- items n,o,p no longer the master, use x86_64 which has no failures -->
 
 <screen os="n"><userinput>cp -v ../eglibc-&eglibc-version;/iconvdata/gconv-modules iconvdata
-make -k check &gt;eglibc-check-log 2&gt;&amp;1 ; grep Error eglibc-check-log</userinput></screen>
+make -k check 2&gt;&amp;1 | tee eglibc-check-log; grep Error eglibc-check-log</userinput></screen>
 
     <para os="o">The EGLIBC test suite is highly dependent on certain functions of
     the host system, in particular the kernel. The posix/annexc test normally fails

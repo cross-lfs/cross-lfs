@@ -27,9 +27,9 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CC="gcc -isystem /usr/include ${BUILD32}" \
-    CXX="g++ -isystem /usr/include ${BUILD32}" \
-    LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
-    ./configure --prefix=/usr</userinput></screen>
+CXX="g++ -isystem /usr/include ${BUILD32}" \
+LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib ${BUILD32}" \
+  ./configure --prefix=/usr</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/zlib.xml"
