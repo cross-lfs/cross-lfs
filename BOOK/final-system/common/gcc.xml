@@ -25,13 +25,10 @@
   <sect2 role="installation">
     <title>Installation of GCC</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../cross-tools/common/gcc-final.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>:
+    <para os="p1">The following patch contains a number of updates to the 
+    &gcc-version; branch by the GCC developers:</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../cross-tools/common/gcc-final.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
+    <screen os="p2"><userinput>patch -Np1 -i ../&gcc-branch_update-patch;</userinput></screen>
 
     <para os="d">Apply a <command>sed</command> substitution that will suppress the
     installation of <filename class="libraryfile">libiberty.a</filename>. The
