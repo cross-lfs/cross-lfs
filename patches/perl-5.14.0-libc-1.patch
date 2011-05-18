@@ -1,0 +1,39 @@
+Submitted By: Jonathan Norman <Jonathan at bluesquarelinux.co.uk>
+Date: 2011-05-17
+Initial Package Version: 5.8.8
+Origin: Ryan Oliver
+Upstream Status: Unknown
+Description: This patch adapts some hard-wired paths to the C library.
+             It uses the $prefix variable to locate the correct libc.
+
+Rediffed: Against 5.10.0 by Joe Ciccone on 2008-08-30
+          Against 5.10.1 By Jim Gifford on 2009-08-25
+          Against 5.12.1 By Joe Ciccone on 2010-08-01
+          Against 5.14.0 By Jonathan Norman on 2011-05-17
+
+diff -Naur perl-5.14.0.orig/hints/linux.sh perl-5.14.0/hints/linux.sh
+--- perl-5.14.0.orig/hints/linux.sh	2011-05-17 10:15:25.836817125 +0000
++++ perl-5.14.0/hints/linux.sh	2011-05-17 10:17:15.472650338 +0000
+@@ -63,9 +63,9 @@
+ # We don't use __GLIBC__ and  __GLIBC_MINOR__ because they
+ # are insufficiently precise to distinguish things like
+ # libc-2.0.6 and libc-2.0.7.
+-if test -L /lib/libc.so.6; then
+-    libc=`ls -l /lib/libc.so.6 | awk '{print $NF}'`
+-    libc=/lib/$libc
++if test -L ${prefix}/lib/libc.so.6; then
++    libc=`ls -l ${prefix}/lib/libc.so.6 | awk '{print $NF}'`
++    libc=${prefix}/lib/$libc
+ fi
+ 
+ # Configure may fail to find lstat() since it's a static/inline
+@@ -461,3 +461,9 @@
+     libswanted="$libswanted pthread"
+     ;;
+ esac
++
++locincpth=""
++loclibpth=""
++glibpth="${prefix}/lib"
++usrinc="${prefix}/include"
++

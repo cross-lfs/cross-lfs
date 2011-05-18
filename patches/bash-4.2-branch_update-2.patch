@@ -1,13 +1,51 @@
-Submitted By: Joe Ciccone <jciccone@gmail.com>
-Date: 04-16-2011
+Submitted By: Jonathan Norman (jonathan at bluesquarelinux.co.uk)
+Date: 2011-05-16
 Initial Package Version: 4.2
 Origin: Upstream
-Upstream Status: From Upstream
-Description: Contains all upstream patches up to 4.2-008
+Upstream Status: Applied
+Description: Contains all upstream patches up to 4.2-010
 
+diff -Naur bash-4.2.orig/builtins/fc.def bash-4.2/builtins/fc.def
+--- bash-4.2.orig/builtins/fc.def	2010-05-30 22:25:38.000000000 +0000
++++ bash-4.2/builtins/fc.def	2011-05-16 23:42:00.796961011 +0000
+@@ -304,7 +304,7 @@
+   last_hist = i - rh - hist_last_line_added;
+ 
+   /* XXX */
+-  if (saved_command_line_count > 0 && i == last_hist && hlist[last_hist] == 0)
++  if (i == last_hist && hlist[last_hist] == 0)
+     while (last_hist >= 0 && hlist[last_hist] == 0)
+       last_hist--;
+   if (last_hist < 0)
+@@ -475,7 +475,7 @@
+      HIST_ENTRY **hlist;
+ {
+   int sign, n, clen, rh;
+-  register int i, j;
++  register int i, j, last_hist;
+   register char *s;
+ 
+   sign = 1;
+@@ -495,7 +495,15 @@
+      has been enabled (interactive or not) should use it in the last_hist
+      calculation as if it were on. */
+   rh = remember_on_history || ((subshell_environment & SUBSHELL_COMSUB) && enable_history_list);
+-  i -= rh + hist_last_line_added;
++  last_hist = i - rh - hist_last_line_added;
++
++  if (i == last_hist && hlist[last_hist] == 0)
++    while (last_hist >= 0 && hlist[last_hist] == 0)
++      last_hist--;
++  if (last_hist < 0)
++    return (-1);
++
++  i = last_hist;
+ 
+   /* No specification defaults to most recent command. */
+   if (command == NULL)
 diff -Naur bash-4.2.orig/builtins/printf.def bash-4.2/builtins/printf.def
---- bash-4.2.orig/builtins/printf.def	2010-11-23 10:02:55.000000000 -0500
-+++ bash-4.2/builtins/printf.def	2011-04-16 16:50:36.379215007 -0400
+--- bash-4.2.orig/builtins/printf.def	2010-11-23 15:02:55.000000000 +0000
++++ bash-4.2/builtins/printf.def	2011-05-16 23:41:55.617535899 +0000
 @@ -465,6 +465,9 @@
  		  secs = shell_start_time;	/* roughly $SECONDS */
  		else
@@ -19,8 +57,8 @@ diff -Naur bash-4.2.orig/builtins/printf.def bash-4.2/builtins/printf.def
  		n = strftime (timebuf, sizeof (timebuf), timefmt, tm);
  		free (timefmt);
 diff -Naur bash-4.2.orig/lib/glob/gmisc.c bash-4.2/lib/glob/gmisc.c
---- bash-4.2.orig/lib/glob/gmisc.c	2011-02-05 16:11:17.000000000 -0500
-+++ bash-4.2/lib/glob/gmisc.c	2011-04-16 16:50:36.371215007 -0400
+--- bash-4.2.orig/lib/glob/gmisc.c	2011-02-05 21:11:17.000000000 +0000
++++ bash-4.2/lib/glob/gmisc.c	2011-05-16 23:41:53.037822234 +0000
 @@ -77,8 +77,8 @@
       wchar_t *wpat;
       size_t wmax;
@@ -222,8 +260,8 @@ diff -Naur bash-4.2.orig/lib/glob/gmisc.c bash-4.2/lib/glob/gmisc.c
  	}
      }
 diff -Naur bash-4.2.orig/lib/readline/callback.c bash-4.2/lib/readline/callback.c
---- bash-4.2.orig/lib/readline/callback.c	2010-06-06 12:18:58.000000000 -0400
-+++ bash-4.2/lib/readline/callback.c	2011-04-16 16:50:36.359215007 -0400
+--- bash-4.2.orig/lib/readline/callback.c	2010-06-06 16:18:58.000000000 +0000
++++ bash-4.2/lib/readline/callback.c	2011-05-16 23:41:51.689971838 +0000
 @@ -148,6 +148,9 @@
  	  eof = _rl_vi_domove_callback (_rl_vimvcxt);
  	  /* Should handle everything, including cleanup, numeric arguments,
@@ -235,8 +273,8 @@ diff -Naur bash-4.2.orig/lib/readline/callback.c bash-4.2/lib/readline/callback.
  	}
  #endif
 diff -Naur bash-4.2.orig/lib/readline/vi_mode.c bash-4.2/lib/readline/vi_mode.c
---- bash-4.2.orig/lib/readline/vi_mode.c	2010-11-20 19:51:39.000000000 -0500
-+++ bash-4.2/lib/readline/vi_mode.c	2011-04-16 16:50:36.359215007 -0400
+--- bash-4.2.orig/lib/readline/vi_mode.c	2010-11-21 00:51:39.000000000 +0000
++++ bash-4.2/lib/readline/vi_mode.c	2011-05-16 23:41:51.689971838 +0000
 @@ -1114,7 +1114,7 @@
        rl_beg_of_line (1, c);
        _rl_vi_last_motion = c;
@@ -247,8 +285,8 @@ diff -Naur bash-4.2.orig/lib/readline/vi_mode.c bash-4.2/lib/readline/vi_mode.c
  #if defined (READLINE_CALLBACKS)
    /* XXX - these need to handle rl_universal_argument bindings */
 diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
---- bash-4.2.orig/parse.y	2011-01-02 15:48:11.000000000 -0500
-+++ bash-4.2/parse.y	2011-04-16 16:50:36.379215007 -0400
+--- bash-4.2.orig/parse.y	2011-01-02 20:48:11.000000000 +0000
++++ bash-4.2/parse.y	2011-05-16 23:41:55.613536343 +0000
 @@ -5135,6 +5135,9 @@
  	    case 'A':
  	      /* Make the current time/date into a string. */
@@ -260,19 +298,46 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
  
  	      if (c == 'd')
 diff -Naur bash-4.2.orig/patchlevel.h bash-4.2/patchlevel.h
---- bash-4.2.orig/patchlevel.h	2010-06-12 20:14:48.000000000 -0400
-+++ bash-4.2/patchlevel.h	2011-04-16 16:50:36.387215007 -0400
+--- bash-4.2.orig/patchlevel.h	2010-06-13 00:14:48.000000000 +0000
++++ bash-4.2/patchlevel.h	2011-05-16 23:42:02.092817179 +0000
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 8
++#define PATCHLEVEL 10
  
  #endif /* _PATCHLEVEL_H_ */
+diff -Naur bash-4.2.orig/print_cmd.c bash-4.2/print_cmd.c
+--- bash-4.2.orig/print_cmd.c	2010-05-30 22:34:08.000000000 +0000
++++ bash-4.2/print_cmd.c	2011-05-16 23:42:02.092817179 +0000
+@@ -315,6 +315,7 @@
+ 	  cprintf ("( ");
+ 	  skip_this_indent++;
+ 	  make_command_string_internal (command->value.Subshell->command);
++	  PRINT_DEFERRED_HEREDOCS ("");
+ 	  cprintf (" )");
+ 	  break;
+ 
+@@ -592,6 +593,7 @@
+   newline ("do\n");
+   indentation += indentation_amount;
+   make_command_string_internal (arith_for_command->action);
++  PRINT_DEFERRED_HEREDOCS ("");
+   semicolon ();
+   indentation -= indentation_amount;
+   newline ("done");
+@@ -653,6 +655,7 @@
+     }
+ 
+   make_command_string_internal (group_command->command);
++  PRINT_DEFERRED_HEREDOCS ("");
+ 
+   if (inside_function_def)
+     {
 diff -Naur bash-4.2.orig/sig.c bash-4.2/sig.c
---- bash-4.2.orig/sig.c	2010-11-23 08:21:22.000000000 -0500
-+++ bash-4.2/sig.c	2011-04-16 16:50:36.387215007 -0400
+--- bash-4.2.orig/sig.c	2010-11-23 13:21:22.000000000 +0000
++++ bash-4.2/sig.c	2011-05-16 23:41:59.501104844 +0000
 @@ -46,6 +46,7 @@
  
  #if defined (READLINE)
@@ -302,8 +367,8 @@ diff -Naur bash-4.2.orig/sig.c bash-4.2/sig.c
        terminate_immediately = 0;
        termsig_handler (sig);
 diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
---- bash-4.2.orig/subst.c	2011-01-02 16:12:51.000000000 -0500
-+++ bash-4.2/subst.c	2011-04-16 16:50:36.383215007 -0400
+--- bash-4.2.orig/subst.c	2011-01-02 21:12:51.000000000 +0000
++++ bash-4.2/subst.c	2011-05-16 23:41:58.205248678 +0000
 @@ -1379,10 +1379,12 @@
    slen = strlen (string + *sindex) + *sindex;
  
@@ -348,8 +413,8 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
  	sindex++;
        else
 diff -Naur bash-4.2.orig/subst.h bash-4.2/subst.h
---- bash-4.2.orig/subst.h	2010-12-02 20:21:29.000000000 -0500
-+++ bash-4.2/subst.h	2011-04-16 16:50:36.359215007 -0400
+--- bash-4.2.orig/subst.h	2010-12-03 01:21:29.000000000 +0000
++++ bash-4.2/subst.h	2011-05-16 23:41:50.378117447 +0000
 @@ -56,6 +56,7 @@
  #define SX_NOLONGJMP	0x0040	/* don't longjmp on fatal error */
  #define SX_ARITHSUB	0x0080	/* extracting $(( ... )) (currently unused) */
@@ -359,8 +424,8 @@ diff -Naur bash-4.2.orig/subst.h bash-4.2/subst.h
  /* Remove backslashes which are quoting backquotes from STRING.  Modifies
     STRING, and returns a pointer to it. */
 diff -Naur bash-4.2.orig/variables.c bash-4.2/variables.c
---- bash-4.2.orig/variables.c	2011-01-24 20:07:48.000000000 -0500
-+++ bash-4.2/variables.c	2011-04-16 16:50:36.379215007 -0400
+--- bash-4.2.orig/variables.c	2011-01-25 01:07:48.000000000 +0000
++++ bash-4.2/variables.c	2011-05-16 23:41:56.917391622 +0000
 @@ -3653,6 +3653,22 @@
    return n;
  }
@@ -410,8 +475,8 @@ diff -Naur bash-4.2.orig/variables.c bash-4.2/variables.c
  #endif
  
 diff -Naur bash-4.2.orig/variables.h bash-4.2/variables.h
---- bash-4.2.orig/variables.h	2010-12-02 20:22:01.000000000 -0500
-+++ bash-4.2/variables.h	2011-04-16 16:50:36.375215007 -0400
+--- bash-4.2.orig/variables.h	2010-12-03 01:22:01.000000000 +0000
++++ bash-4.2/variables.h	2011-05-16 23:41:55.613536343 +0000
 @@ -313,6 +313,7 @@
  
  extern void sort_variables __P((SHELL_VAR **));
