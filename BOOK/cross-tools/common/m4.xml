@@ -5,31 +5,26 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-cross-tools-ppl" role="wrap">
-  <?dbhtml filename="ppl.html"?>
+<sect1 id="ch-cross-tools-m4" role="wrap">
+  <?dbhtml filename="m4.html"?>
 
-  <title>PPL-&ppl-version;</title>
+  <title>M4-&m4-version;</title>
 
-  <indexterm zone="ch-cross-tools-ppl">
-    <primary sortas="a-PPL">PPL</primary>
-    <secondary>cross-tools</secondary>
+  <indexterm zone="ch-cross-tools-m4">
+    <primary sortas="a-M4">M4</primary>
+    <secondary>temporary system</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-  href="../../final-system/common/ppl.xml"
+  href="../../final-system/common/m4.xml"
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
-    <title>Installation of PPL</title>
+    <title>Installation of M4</title>
 
-    <para os="a">Prepare PPL for compilation:</para>
+    <para os="a">Prepare M4 for compilation:</para>
 
-<screen os="b"><userinput>CPPFLAGS="-I/cross-tools/include" \
-    LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
-    ./configure --prefix=/cross-tools --enable-shared \
-    --enable-interfaces="c,cxx" --disable-optimization \
-    --with-libgmp-prefix=/cross-tools \
-    --with-libgmpxx-prefix=/cross-tools</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/cross-tools</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -45,7 +40,7 @@
     <title/>
 
     <para>Details on this package are located in <xref
-    linkend="contents-ppl" role="."/></para>
+    linkend="contents-m4" role="."/></para>
 
   </sect2>
 

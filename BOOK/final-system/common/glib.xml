@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-system-glib" role="wrap">
+  <?dbhtml filename="glib.html"?>
+
+  <title>Glib-&glib-version;</title>
+
+  <indexterm zone="ch-system-glib">
+    <primary sortas="a-Glib">Glib</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>Glib is a tool to help you insert the correct compiler options
+    on the command line when compiling applications and libraries.</para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Glib</title>
+
+    <para os="a">Prepare Glib for compilation:</para>
+
+<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
+
+    <para os="c">Compile the package:</para>
+
+<screen os="d"><userinput>make</userinput></screen>
+
+    <para os="e">To test the results, issue:
+    <userinput>make -k check</userinput>.</para>
+
+    <para os="f">Install the package:</para>
+
+<screen os="g"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 id="contents-glib" role="content">
+    <title>Contents of Glib</title>
+
+    <segmentedlist>
+      <segtitle>Installed programs</segtitle>
+      <segtitle>Installed libraries</segtitle>
+      <segtitle>Installed directory</segtitle>
+
+      <seglistitem>
+        <seg>gdbus, gio-querymodules, glib-compile-schemas, glib-genmarshal,
+        glib-gettextize, glib-mkenums, gobject-query, gsettings, gtester
+        and gtester-report</seg>
+        <seg>libglib-2.0.so, libgmodule-2.0.so, libgthread-2.0.so,
+        libgobject-2.0.so and libgio-2.0.so</seg>
+        <seg>/usr/share/glib-2.0, /usr/share/gtk-doc/html/glib, /usr/lib/glib-2.0
+       and /usr/include/glib-2.0</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="gdbus">
+        <term><command>gdbus</command></term>
+        <listitem>
+          <para>Introspect and call remote objects.</para>
+          <indexterm zone="ch-system-glib gdbus">
+            <primary sortas="b-gdbus">gdbus</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gio-querymodules">
+        <term><command>gio-querymodules</command></term>
+        <listitem>
+          <para><command>gio-querymodules</command> creates a giomodule.cache file
+       in the listed directories. This file lists the implemented extension points
+       for each module that has been found. It is used by GIO at runtime to avoid 
+       opening all modules just to find out which extension points they are
+       implementing.</para>
+          <indexterm zone="ch-system-glib gio-querymodules">
+            <primary sortas="b-gio-querymodules">gio-querymodules</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="glib-compile-schemas">
+        <term><command>glib-compile-schemas</command></term>
+        <listitem>
+          <para>GSettings schema compiler.</para>
+          <indexterm zone="ch-system-glib glib-compile-schemas">
+            <primary sortas="b-glib-compile-schemas">glib-compile-schemas</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="glib-genmarshal">
+        <term><command>glib-genmarshal</command></term>
+        <listitem>
+          <para>C code marshaller generation utility for GLib closures.</para>
+          <indexterm zone="ch-system-glib glib-genmarshal">
+            <primary sortas="b-glib-genmarshal">glib-genmarshal</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="glib-gettextize">
+        <term><command>glib-gettextize</command></term>
+        <listitem>
+          <para><command>glib-gettextize</command> helps to prepare a 
+       source package for being internationalized through gettext. It is a variant of 
+       the <command>gettextize</command> that ships with gettext.</para>
+          <indexterm zone="ch-system-glib glib-gettextize">
+            <primary sortas="b-glib-gettextize">glib-gettextize</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="glib-mkenums">
+        <term><command>glib-mkenums</command></term>
+        <listitem>
+          <para>C language enum description generation utility.</para>
+          <indexterm zone="ch-system-glib glib-mkenums">
+            <primary sortas="b-glib-mkenums">glib-mkenums</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gobject-query">
+        <term><command>gobject-query</command></term>
+        <listitem>
+          <para><command>gobject-query</command> takes a mandatory argument that specifies
+            whether it should iterate over the fundamental types or print a type tree.</para>
+          <indexterm zone="ch-system-glib gobject-query">
+            <primary sortas="b-gobject-query">gobject-query</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gsettings">
+        <term><command>gsettings</command></term>
+        <listitem>
+          <para><command>gsettings</command> offers a simple commandline interface to 
+           <command>GSettings</command>. It lets you get, set or monitor an individual key 
+           for changes.</para>
+          <indexterm zone="ch-system-glib gsettings">
+            <primary sortas="b-gsettings">gsettings</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gtester">
+        <term><command>gtester</command></term>
+        <listitem>
+          <para><command>gtester</command> is a utility to run unit tests that have been
+             written using the GLib test framework.</para>
+          <indexterm zone="ch-system-glib gtester">
+            <primary sortas="b-gtester">gtester</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gtester-report">
+        <term><command>gtester-report</command></term>
+        <listitem>
+          <para><command>gtester-report</command> is a script which converts the XML output
+             generated by gtester into HTML.</para>
+          <indexterm zone="ch-system-glib gtester-report">
+            <primary sortas="b-gtester-report">gtester-report</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
