@@ -1,0 +1,155 @@
+Submitted By: Jonathan Norman (jonathan at bluesquarelinux.co.uk)
+Date: 2011-07-12
+Initial Package Version: 4.6.0
+Origin: Upstream
+Upstream Status: Applied
+Description: Fixes a issue with Mips that causes GCC to setfault
+             when using optimation greater than -O0. Taken from
+             GCC Revision 174541 and applied to GCC 4.6.0
+
+diff -Naur gcc-4.6.0.orig/gcc/expmed.c gcc-4.6.0/gcc/expmed.c
+--- gcc-4.6.0.orig/gcc/expmed.c	2011-07-12 16:18:33.939215981 +0000
++++ gcc-4.6.0/gcc/expmed.c	2011-07-12 16:33:51.121616152 +0000
+@@ -1431,7 +1431,7 @@
+       unsigned int nwords = (bitsize + (BITS_PER_WORD - 1)) / BITS_PER_WORD;
+       unsigned int i;
+ 
+-      if (target == 0 || !REG_P (target))
++      if (target == 0 || !REG_P (target) || !valid_multiword_target_p (target))
+ 	target = gen_reg_rtx (mode);
+ 
+       /* Indicate for flow that the entire target reg is being set.  */
+diff -Naur gcc-4.6.0.orig/gcc/optabs.c gcc-4.6.0/gcc/optabs.c
+--- gcc-4.6.0.orig/gcc/optabs.c	2011-07-12 16:18:34.119217377 +0000
++++ gcc-4.6.0/gcc/optabs.c	2011-07-12 16:33:00.296108734 +0000
+@@ -1694,7 +1694,10 @@
+ 
+       /* If TARGET is the same as one of the operands, the REG_EQUAL note
+ 	 won't be accurate, so use a new target.  */
+-      if (target == 0 || target == op0 || target == op1)
++      if (target == 0
++	  || target == op0
++	  || target == op1
++	  || !valid_multiword_target_p (target))
+ 	target = gen_reg_rtx (mode);
+ 
+       start_sequence ();
+@@ -1762,7 +1765,10 @@
+ 
+ 	  /* If TARGET is the same as one of the operands, the REG_EQUAL note
+ 	     won't be accurate, so use a new target.  */
+-	  if (target == 0 || target == op0 || target == op1)
++	  if (target == 0
++	      || target == op0
++	      || target == op1
++	      || !valid_multiword_target_p (target))
+ 	    target = gen_reg_rtx (mode);
+ 
+ 	  start_sequence ();
+@@ -1816,7 +1822,11 @@
+ 	 opportunities, and second because if target and op0 happen to be MEMs
+ 	 designating the same location, we would risk clobbering it too early
+ 	 in the code sequence we generate below.  */
+-      if (target == 0 || target == op0 || target == op1 || ! REG_P (target))
++      if (target == 0
++	  || target == op0
++	  || target == op1
++	  || !REG_P (target)
++	  || !valid_multiword_target_p (target))
+ 	target = gen_reg_rtx (mode);
+ 
+       start_sequence ();
+@@ -1936,7 +1946,7 @@
+ 
+       xtarget = gen_reg_rtx (mode);
+ 
+-      if (target == 0 || !REG_P (target))
++      if (target == 0 || !REG_P (target) || !valid_multiword_target_p (target))
+ 	target = xtarget;
+ 
+       /* Indicate for flow that the entire target reg is being set.  */
+@@ -2689,7 +2699,7 @@
+   t0 = expand_unop (word_mode, bswap_optab,
+ 		    operand_subword_force (op, 1, mode), NULL_RTX, true);
+ 
+-  if (target == 0)
++  if (target == 0 || !valid_multiword_target_p (target))
+     target = gen_reg_rtx (mode);
+   if (REG_P (target))
+     emit_clobber (target);
+@@ -2932,7 +2942,9 @@
+   if (code == ABS)
+     mask = double_int_not (mask);
+ 
+-  if (target == 0 || target == op0)
++  if (target == 0
++      || target == op0
++      || (nwords > 1 && !valid_multiword_target_p (target)))
+     target = gen_reg_rtx (mode);
+ 
+   if (nwords > 1)
+@@ -3140,7 +3152,7 @@
+       int i;
+       rtx insns;
+ 
+-      if (target == 0 || target == op0)
++      if (target == 0 || target == op0 || !valid_multiword_target_p (target))
+ 	target = gen_reg_rtx (mode);
+ 
+       start_sequence ();
+@@ -3611,7 +3623,10 @@
+ 
+   mask = double_int_setbit (double_int_zero, bitpos);
+ 
+-  if (target == 0 || target == op0 || target == op1)
++  if (target == 0
++      || target == op0
++      || target == op1
++      || (nwords > 1 && !valid_multiword_target_p (target)))
+     target = gen_reg_rtx (mode);
+ 
+   if (nwords > 1)
+@@ -7330,4 +7345,21 @@
+   return NULL_RTX;
+ }
+ 
++/* TARGET is a target of a multiword operation that we are going to
++   implement as a series of word-mode operations.  Return true if
++   TARGET is suitable for this purpose.  */
++
++bool
++valid_multiword_target_p (rtx target)
++{
++  enum machine_mode mode;
++  int i;
++
++  mode = GET_MODE (target);
++  for (i = 0; i < GET_MODE_SIZE (mode); i += UNITS_PER_WORD)
++    if (!validate_subreg (word_mode, mode, target, i))
++      return false;
++  return true;
++}
++
+ #include "gt-optabs.h"
+diff -Naur gcc-4.6.0.orig/gcc/optabs.h gcc-4.6.0/gcc/optabs.h
+--- gcc-4.6.0.orig/gcc/optabs.h	2011-07-12 16:18:34.119217377 +0000
++++ gcc-4.6.0/gcc/optabs.h	2011-07-12 16:24:10.888292947 +0000
+@@ -923,4 +923,6 @@
+ extern rtx optab_libfunc (optab optab, enum machine_mode mode);
+ extern rtx convert_optab_libfunc (convert_optab optab, enum machine_mode mode1,
+ 			          enum machine_mode mode2);
++
++extern bool valid_multiword_target_p (rtx);
+ #endif /* GCC_OPTABS_H */
+diff -Naur gcc-4.6.0.orig/gcc/testsuite/gcc.target/mips/pr45074.c gcc-4.6.0/gcc/testsuite/gcc.target/mips/pr45074.c
+--- gcc-4.6.0.orig/gcc/testsuite/gcc.target/mips/pr45074.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.6.0/gcc/testsuite/gcc.target/mips/pr45074.c	2011-07-12 16:19:49.925768556 +0000
+@@ -0,0 +1,8 @@
++/* { dg-options "-mhard-float -mgp32 -O" } */
++register double g __asm__("$f20");
++
++NOMIPS16 void
++test (double a)
++{
++  g = -a;
++}
