@@ -78,6 +78,38 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
     <variablelist os="am">
       <title>The meaning of the configure options:</title>
 
+      <varlistentry>
+        <term><parameter>--prefix=/cross-tools</parameter></term>
+        <listitem>
+          <para>This tells the configure script to prepare to install the 
+          package in the <filename class="directory">/cross-tools</filename>
+          directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--host=${CLFS_HOST}</parameter></term>
+        <listitem>
+          <para>When used with --target, this creates a cross-architecture
+          executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST}.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--target=${CLFS_TARGET}</parameter></term>
+        <listitem>
+          <para>When used with --host, this creates a cross-architecture
+          executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST}.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-sysroot=${CLFS}</parameter></term>
+        <listitem>
+          <para>Tells GCC to concider ${CLFS} as the root file system.</para>
+        </listitem>
+      </varlistentry>
+
      <varlistentry>
         <term><parameter>--with-local-prefix=/tools</parameter></term>
         <listitem>
@@ -90,9 +122,59 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
       </varlistentry>
 
       <varlistentry>
+        <term><parameter>--disable-nls</parameter></term>
+        <listitem>
+          <para>This disables internationalization as i18n is not needed for the 
+          cross-compile tools.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term><parameter>--disable-shared</parameter></term>
         <listitem>
           <para>Disables the creation of the shared libraries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--without-headers</parameter></term>
+        <listitem>
+          <para>Disables GCC from using the target's Libc when cross compiling.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-newlib</parameter></term>
+        <listitem>
+          <para>Tells GCC that the target libc will use 'newlib'.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-decimal-float</parameter></term>
+        <listitem>
+          <para>Disables support for the C decimal floating point extension.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libgomp</parameter></term>
+        <listitem>
+          <para>Disables the creation of runtime libraries used by GOMP.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libmudflap</parameter></term>
+        <listitem>
+          <para>Disables the creation of runtime libaries used by libmudflap.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libssp</parameter></term>
+        <listitem>
+          <para>Disables the use of Stack Smashing Protection for runtime libraries.</para>
         </listitem>
       </varlistentry>
 
