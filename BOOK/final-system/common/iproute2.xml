@@ -33,7 +33,9 @@
     compiling Berkeley DB can be found in CBLFS at <ulink
     url="&cblfs-root;index.php/Berkeley_DB"/>.</para>
 
-<screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile</userinput></screen>
+<screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
+sed -i '/ARPD/d' Makefile
+rm man/man8/arpd.8</userinput></screen>
 
     <para os="a">Compile the package:</para>
 
