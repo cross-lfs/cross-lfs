@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<appendix id="appendixd-common" xreflabel="Appendix D">
+  <?dbhtml dir="appendixd"?>
+  <?dbhtml filename="rationale-common.html"?>
+
+  <title>Package Rationale</title>
+
+  <para>CLFS includes many packages, a number of which might not necessarily
+  be required for a "minimal" system, but still considered very useful. The
+  purpose of this page is to list the reasoning for each package's inclusion
+  in the book.</para>
+
+  <itemizedlist>
+
+    <listitem>
+      <para>Autoconf</para>
+      <para>The Autoconf package contains programs for producing shell scripts
+      that can automatically configure source code.</para>
+    </listitem>
+
+    <listitem>
+      <para>Automake</para>
+      <para>The Automake package contains programs for generating Makefiles for use with Autoconf.</para>
+    </listitem>
+
+    <listitem>
+      <para>Bash</para>
+      <para>This package contains the Bourne-Again SHell.</para>
+    </listitem>
+
+    <listitem>
+      <para>Binutils</para>
+      <para>This package contains programs for handling object files. The
+      programs in this package are needed for compiling most of the packages
+      in CLFS.</para>
+    </listitem>
+
+    <listitem>
+      <para>Bison</para>
+      <para>Required by several package in CLFS</para>
+    </listitem>
+
+    <listitem>
+      <para>Bzip2</para>
+      <para>The programs in this package are useful for compressing files to
+      reduce size. They are also needed to uncompress tarballs for many
+      CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>CLFS-Bootscripts</para>
+      <para>This package contains a number of scripts that run at boottime,
+      performing essential tasks such as mounting/checking filesystems and
+      starting the network interface.</para>
+    </listitem>
+
+    <listitem>
+      <para>CLooG-PPL</para>
+      <para>Used by GCC</para>
+    </listitem>
+
+    <listitem>
+      <para>Coreutils</para>
+      <para>This package contains many basic command-line file-management
+      tools, required for installation of every package in CLFS.</para>
+    </listitem>
+
+    <listitem>
+      <para>DejaGNU</para>
+      <para>This package is needed for the testsuites of several packages,
+      especially GCC and Binutils</para>
+    </listitem>
+
+    <listitem>
+      <para>DHCPCD</para>
+      <para>This package allows for automatic configuration of network
+      interfaces from a DHCP server</para>
+    </listitem>
+
+    <listitem>
+      <para>Diffutils</para>
+      <para>This package contains programs to compare files, and can also
+      be used to create patches. Required by the installation procedures of
+      many CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>EGLIBC</para>
+      <para>Any dynamically-linked C program (which is nearly everything
+      in CLFS) needs a C library to compile and run.</para>
+    </listitem>
+
+    <listitem>
+      <para>Expect</para>
+      <para>This package is needed for the testsuites for several packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>E2fsprogs</para>
+      <para>The programs in this package are used for the creation and
+      maintenance of ext2/3/4 filesystems.</para>
+    </listitem>
+
+    <listitem>
+      <para>File</para>
+      <para>This package contains a program that determines the type of
+      a given file. It is needed by some CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Findutils</para>
+      <para>This package contains programs for finding files based on certain
+      criteria, and optionally performing commands on them. Used by the
+      installation procedures of many CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Flex</para>
+      <para>This package contains a tool for generating text scanners. It is
+      used by multiple packages in CLFS</para>
+    </listitem>
+
+    <listitem>
+      <para>Gawk</para>
+      <para>This package contains programs for manipulating text files, using
+      the AWK language. It is used by the installation procedures of many
+      packages in CLFS.</para>
+    </listitem>
+
+    <listitem>
+      <para>Gcc</para>
+      <para>This package contains a C compiler, which is required to compile
+      most of the packages in CLFS.</para>
+    </listitem>
+
+    <listitem>
+      <para>Gettext</para>
+      <para>A tool that allows programmers to easily implement i18n in their
+      programs. It is a required dependency for a number of packages</para>
+    </listitem>
+
+    <listitem>
+      <para>Glib</para>
+      <para>Required for pkg-config</para>
+    </listitem>
+
+    <listitem>
+      <para>GMP</para>
+      <para>Required by GCC</para>
+    </listitem>
+
+    <listitem>
+      <para>Grep</para>
+      <para>Programs for searching for text in files. Required by
+      many packages in CLFS.</para>
+    </listitem>
+
+    <listitem>
+      <para>Groff</para>
+      <para>Required by Man</para>
+    </listitem>
+
+    <listitem>
+      <para>Gzip</para>
+      <para>Useful for compressing files to reduce size. Also needed to
+      uncompress tarballs for many CLFS packages</para>
+    </listitem>
+
+    <listitem>
+      <para>Iana-Etc</para>
+      <para>This package provides the <filename>/etc/services</filename> and
+      <filename>/etc/protocols</filename> files. These files map port names to
+      port numbers as well as protocol names to their corresponding numbers.
+      These files are essential for many network based programs to work properly.</para>
+    </listitem>
+
+    <listitem>
+      <para>IProute2</para>
+      <para>This package contains programs for administering network interfaces.</para>
+    </listitem>
+
+    <listitem>
+      <para>IPutils</para>
+      <para>This package contains several basic network-management tools.</para>
+    </listitem>
+
+    <listitem>
+      <para>Kbd</para>
+      <para>Contains keytable files and keyboard utilities compatible with the
+      Linux kernel.</para>
+    </listitem>
+
+    <listitem>
+      <para>Less</para>
+      <para>A program that lets you view text files one page at a time.
+      Used by Man for displaying manpages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Libee</para>
+      <para>This package contains an event expression library.</para>
+    </listitem>
+
+    <listitem>
+      <para>Libestr</para>
+      <para>This package contains a library for string essentials.</para>
+    </listitem>
+
+    <listitem>
+      <para>Libtool</para>
+      <para>The Libtool package contains the GNU generic library support
+      script. It is used by some CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Linux-Headers</para>
+      <para>This package consists of santized headers from the Linux Kernel.
+      These headers are required for Glibc to compile.</para>
+    </listitem>
+
+    <listitem>
+      <para>Linux Kernel</para>
+      <para>The Linux operating system.</para>
+    </listitem>
+
+    <listitem>
+      <para>M4</para>
+      <para>This package contains a macro processor. It is required by several
+      CLFS packages, including Bison.</para>
+    </listitem>
+
+    <listitem>
+      <para>Make</para>
+      <para>Required for installation of most CLFS packages</para>
+    </listitem>
+
+    <listitem>
+      <para>Man</para>
+      <para>Used for viewing manpages</para>
+    </listitem>
+
+    <listitem>
+      <para>Man-Pages</para>
+      <para>A number of useful manpages, not supplied by other packages</para>
+    </listitem>
+
+    <listitem>
+      <para>MPC</para>
+      <para>Required by GCC</para>
+    </listitem>
+
+    <listitem>
+      <para>MPFR</para>
+      <para>Required by GCC</para>
+    </listitem>
+
+    <listitem>
+      <para>Module-Init-Tools</para>
+      <para>This package contains programs that assist in</para>
+    </listitem>
+
+    <listitem>
+      <para>Ncurses</para>
+      <para>Needed by several packages in CLFS, such as Vim, Bash, and Less</para>
+    </listitem>
+
+    <listitem>
+      <para>Patch</para>
+      <para>Used for applying patches in several CLFS packages</para>
+    </listitem>
+
+    <listitem>
+      <para>Perl</para>
+      <para>The Perl package contains the Practical Extraction and Report
+      Language. It is required by several CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Pkg-config</para>
+      <para>Needed by E2fsprogs</para>
+    </listitem>
+
+    <listitem>
+      <para>PPL</para>
+      <para>Used by GCC</para>
+    </listitem>
+
+    <listitem>
+      <para>Procps</para>
+      <para>Provides a number of small, useful utilities that give information
+      about the <filename class="directory">/proc</filename> filesystem.</para>
+    </listitem>
+
+    <listitem>
+      <para>Psmisc</para>
+      <para>Provides more utilties that give information about the
+      <filename class="directory">/proc</filename> filesystem.</para>
+    </listitem>
+
+    <listitem>
+      <para>Readline</para>
+      <para>The Readline library provides a set of functions for use by
+      applications that allow users to edit command lines as they are typed
+      in. This is essential for input in programs like <command>bash</command>
+      to work properly.</para>
+    </listitem>
+
+    <listitem>
+      <para>Rsyslog</para>
+      <para>Rsyslog is an enhanced multi-threaded syslogd that supports
+      multiple backends with very little dependencies. It provides a program
+      that logs various system events into files in
+      <filename class="directory">/var/log</filename>.</para>
+    </listitem>
+
+    <listitem>
+      <para>Sed</para>
+      <para>This package contains a stream editor. It is used in the
+      installation procedures of most CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Shadow</para>
+      <para>This package contains programs that assist in the administration
+      of users and groups, and passwords.</para>
+    </listitem>
+
+    <listitem>
+      <para>Sysvinit</para>
+      <para>Sysvinit is the init daemon that the clfs-bootscripts were written
+      to work with.</para>
+    </listitem>
+
+    <listitem>
+      <para>Tar</para>
+      <para>Required to unpack the tar archives in which all CLFS packages
+      are distributed</para>
+    </listitem>
+
+    <listitem>
+      <para>Tcl</para>
+      <para>Needed for the testsuites of several packages</para>
+    </listitem>
+
+    <listitem>
+      <para>Texinfo</para>
+      <para>This package contains programs for viewing, installing and
+      converting info pages. It is used in the installation procedures
+      of many CLFS packages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Udev</para>
+      <para>The Udev package contains programs for dynamic creation of device
+      nodes.</para>
+    </listitem>
+
+    <listitem>
+      <para>Util-linux</para>
+      <para>The Util-linux package contains miscellaneous utility programs.
+      Among them are utilities for handling file systems, consoles,
+      partitions, and messages. It also includes libraries that are required
+      by E2fsprogs.</para>
+    </listitem>
+
+    <listitem>
+      <para>Vim</para>
+      <para>The Vim package contains a text editor. Users may substitute Nano,
+      Joe, Emacs, or whatever other editor they prefer.</para>
+    </listitem>
+
+    <listitem>
+      <para>XZ-Utils</para>
+      <para>Useful for compressing files to reduce size. Also needed to
+      uncompress tarballs for many CLFS packages</para>
+    </listitem>
+
+    <listitem>
+      <para>Zlib</para>
+      <para>The Zlib package contains compression and decompression routines
+      used by some programs.</para>
+    </listitem>
+
+  </itemizedlist>
+
+</appendix>
