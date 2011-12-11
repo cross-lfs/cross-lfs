@@ -112,17 +112,18 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
       <seglistitem>
         <seg>addpart, agetty, arch, blkid, blockdev, cal, cfdisk, chkdupexe,
         chrt, col, colcrt, colrm, column, ctrlaltdel, cytune, ddate, delpart,
-        dmesg, fdformat, fdisk, findfs, flock, fsck, fsck.cramfs, fsck.minix,
-        getopt, hexdump, hwclock, ionice, ipcmk, ipcrm, ipcs, isosize,
-        ldattach, line, logger, look, losetup, lscpu, mcookie, mkfs, mkfs.bfs,
-        mkfs.cramfs, mkfs.minix, mkswap, more, mount, namei, partx, pg,
-        pivot_root, readprofile, rename, renice, rev, rtcwake, script,
-        scriptreplay, setarch, setsid, setterm, sfdisk, swapoff (link to
-        swapon), swapon, switch_root, tailf, taskset, tunelp, ul, umount,
-        uuidd, uuidgen, whereis, and write</seg>
-        <seg>libblkid.[a,so] and libuuid.[a,so]</seg>
-        <seg>/usr/include/blkid, /usr/include/uuid, /usr/share/getopt,
-        /var/lib/hwclock</seg>
+        dmesg, fallocate, fdformat, fdisk, findfs, findmnt, flock, fsck,
+        fsck.cramfs, fsck.minix, fsfreeze, fstrim, getopt, hexdump, hwclock,
+        ionice, ipcmk, ipcrm, ipcs, isosize, ldattach, line, logger, look,
+        losetup, lsblk, lscpu, mcookie, mkfs, mkfs.bfs, mkfs.cramfs,
+        mkfs.minix, mkswap, more, mount, namei, partx, pg, pivot_root,
+        readprofile, rename, renice, rev, rtcwake, script, scriptreplay,
+        setarch, setsid, setterm, sfdisk, swaplabel, swapoff (link to swapon),
+        swapon, switch_root, tailf, taskset, tunelp, ul, umount, unshare,
+        uuidd, uuidgen, whereis, wipefs, and write</seg>
+        <seg>libblkid.[a,so], libmount.[a,so], and libuuid.[a,so]</seg>
+        <seg>/usr/include/blkid, /usr/include/libmount, /usr/include/uuid,
+        /usr/share/getopt, /var/lib/hwclock</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -318,6 +319,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="fallocate">
+        <term><command>fallocate</command></term>
+        <listitem>
+          <para>Preallocates space to a file</para>
+          <indexterm zone="ch-system-util-linux fallocate">
+            <primary sortas="b-fallocate">fallocate</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="fdformat">
         <term><command>fdformat</command></term>
         <listitem>
@@ -345,6 +356,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           (UUID)</para>
           <indexterm zone="ch-system-util-linux findfs">
             <primary sortas="b-findfs">findfs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="findmnt">
+        <term><command>findmnt</command></term>
+        <listitem>
+          <para>Lists mounted filesystems or searches for a filesystem</para>
+          <indexterm zone="ch-system-util-linux findmnt">
+            <primary sortas="b-findmnt">findmnt</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -388,6 +409,26 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           given device</para>
           <indexterm zone="ch-system-util-linux fsck.minix">
             <primary sortas="b-fsck.minix">fsck.minix</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fsfreeze">
+        <term><command>fsfreeze</command></term>
+        <listitem>
+          <para>Suspends and resumes access to a filesystem</para>
+          <indexterm zone="ch-system-util-linux fsfreeze">
+            <primary sortas="b-fsfreeze">fsfreeze</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fstrim">
+        <term><command>fstrim</command></term>
+        <listitem>
+          <para>Discards unused blocks on a mounted filesystem</para>
+          <indexterm zone="ch-system-util-linux fstrime">
+            <primary sortas="b-fstrim">fstrim</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -521,6 +562,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           <para>Sets up and controls loop devices</para>
           <indexterm zone="ch-system-util-linux losetup">
             <primary sortas="b-losetup">losetup</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lsblk">
+        <term><command>lsblk</command></term>
+        <listitem>
+          <para>Prints information about block devices</para>
+          <indexterm zone="ch-system-util-linux lsblk">
+            <primary sortas="b-lsblk">lsblk</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -773,6 +824,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="swaplabel">
+        <term><command>swaplabel</command></term>
+        <listitem>
+          <para>Prints or changes the label or UUID of a swap area</para>
+          <indexterm zone="ch-system-util-linux swaplabel">
+            <primary sortas="b-swaplabel">swaplabel</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="swapoff">
         <term><command>swapoff</command></term>
         <listitem>
@@ -857,6 +918,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="unshare">
+        <term><command>unshare</command></term>
+        <listitem>
+          <para>Runs a program with some namespaces unshared from parent</para>
+          <indexterm zone="ch-system-util-linux unshare">
+            <primary sortas="b-unshare">unshare</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="uuidd">
         <term><command>uuidd</command></term>
         <listitem>
@@ -891,6 +962,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="wipefs">
+        <term><command>wipefs</command></term>
+        <listitem>
+          <para>Wipes a filesystem signature from a device</para>
+          <indexterm zone="ch-system-util-linux wipefs">
+            <primary sortas="b-wipefs">wipefs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="write">
         <term><command>write</command></term>
         <listitem>
@@ -909,6 +990,20 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           extraction</para>
           <indexterm zone="ch-system-util-linux libblkid">
             <primary sortas="c-libblkid">libblkid</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libmount">
+        <term><filename class="libraryfile">libmount</filename></term>
+        <listitem>
+          <para>Contains routines for parsing the
+          <filename>/etc/fstab</filename>, <filename>/etc/mtab</filename>,
+          and <filename>/proc/self/mountinfo</filename> files, managing
+          <filename>/etc/mtab</filename>, and configuring various mount
+          options</para>
+          <indexterm zone="ch-system-util-linux libmount">
+            <primary sortas="c-libmount">libmount</primary>
           </indexterm>
         </listitem>
       </varlistentry>
