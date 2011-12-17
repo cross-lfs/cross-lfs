@@ -99,9 +99,6 @@ hr {
           <xsl:text>32 Bit Builds</xsl:text>
         </h3>
         <ul>
-	  <h3>
-	    <xsl:text>Working. Testers and comments welcomed.</xsl:text>
-          </h3>
           <li>
             <h4>
               <a href="x86">
@@ -135,20 +132,10 @@ hr {
           <xsl:text>64 Bit Builds</xsl:text>
         </h3>
 	<ul>
-          <h3>
-            <xsl:text>Working. Testers and comments welcomed.</xsl:text>
-          </h3>
           <li>
             <h4>
               <a href="x86_64-64">
                 <xsl:text>x86_64</xsl:text>
-              </a>
-            </h4>
-          </li>
-          <li>
-            <h4>
-              <a href="mips64-64">
-                <xsl:text>MIPS</xsl:text>
               </a>
             </h4>
           </li>
@@ -159,32 +146,15 @@ hr {
              </a>
             </h4>
           </li>
-          <li>
-            <h4>
-             <a href="alpha">
-                <xsl:text>Alpha</xsl:text>
-             </a>
-            </h4>
-          </li>
 	</ul>
         <h3>
           <xsl:text>Multilib Builds</xsl:text>
         </h3>
 	<ul>
-          <h3>
-             <xsl:text>Working. Testers and comments welcomed.</xsl:text>
-          </h3>
           <li>
             <h4>
               <a href="x86_64">
                 <xsl:text>x86_64</xsl:text>
-              </a>
-            </h4>
-          </li>
-          <li>
-            <h4>
-              <a href="mips64">
-                <xsl:text>MIPS</xsl:text>
               </a>
             </h4>
           </li>
