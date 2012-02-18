@@ -1,0 +1,35 @@
+Submitted By: Jonathan Norman (jonathan at bluesquarelinux dot co dot uk)
+Date: 2012-02-18
+Initial Package Version: 3.15
+Origin: Upstream
+Upstream Status: Applied
+Description: Patch to remove compiler warnings due to zlib 1.2.6
+
+diff -Naur module-init-tools-3.15.orig/testing.h module-init-tools-3.15/testing.h
+--- module-init-tools-3.15.orig/testing.h	2012-02-18 20:57:59.840327374 +0000
++++ module-init-tools-3.15/testing.h	2012-02-18 21:08:00.648317561 +0000
+@@ -227,10 +227,10 @@
+ 
+ #ifdef CONFIG_USE_ZLIB
+ #include <zlib.h>
+-static gzFile *modtest_gzopen(const char *path, const char *mode)
++static gzFile modtest_gzopen(const char *path, const char *mode)
+ __attribute__((unused));
+ 
+-static gzFile *modtest_gzopen(const char *path, const char *mode)
++static gzFile modtest_gzopen(const char *path, const char *mode)
+ {
+ 	char path_buf[PATH_MAX];
+ 
+diff -Naur module-init-tools-3.15.orig/zlibsupport.c module-init-tools-3.15/zlibsupport.c
+--- module-init-tools-3.15.orig/zlibsupport.c	2012-02-18 20:57:59.840327374 +0000
++++ module-init-tools-3.15/zlibsupport.c	2012-02-18 21:04:31.666754857 +0000
+@@ -20,7 +20,7 @@
+ #ifdef CONFIG_USE_ZLIB
+ #include <zlib.h>
+ 
+-void *grab_contents(gzFile *gzfd, unsigned long *size)
++void *grab_contents(gzFile gzfd, unsigned long *size)
+ {
+ 	unsigned int max = 16384;
+ 	void *buffer = NOFAIL(malloc(max));
