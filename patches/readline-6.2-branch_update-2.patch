@@ -1,0 +1,61 @@
+Submitted By: Jonathan Norman (jonathan at bluesquarelinux dot co dot uk)
+Date: 2012-02-18
+Initial Package Version: 6.2
+Origin: Upstream
+Upstream Status: Applied
+Description: Contains all upstream patches up to 6.2-002
+
+diff -Naur readline-6.2.orig/callback.c readline-6.2/callback.c
+--- readline-6.2.orig/callback.c	2010-06-06 16:18:58.000000000 +0000
++++ readline-6.2/callback.c	2012-02-18 17:48:12.328431655 +0000
+@@ -148,6 +148,9 @@
+ 	  eof = _rl_vi_domove_callback (_rl_vimvcxt);
+ 	  /* Should handle everything, including cleanup, numeric arguments,
+ 	     and turning off RL_STATE_VIMOTION */
++	  if (RL_ISSTATE (RL_STATE_NUMERICARG) == 0)
++	    _rl_internal_char_cleanup ();
++
+ 	  return;
+ 	}
+ #endif
+diff -Naur readline-6.2.orig/patchlevel readline-6.2/patchlevel
+--- readline-6.2.orig/patchlevel	2010-01-14 15:15:52.000000000 +0000
++++ readline-6.2/patchlevel	2012-02-18 17:48:13.720468594 +0000
+@@ -1,3 +1,3 @@
+ # Do not edit -- exists only for use by patch
+ 
+-1
++2
+diff -Naur readline-6.2.orig/support/shobj-conf readline-6.2/support/shobj-conf
+--- readline-6.2.orig/support/shobj-conf	2009-10-28 13:20:21.000000000 +0000
++++ readline-6.2/support/shobj-conf	2012-02-18 17:48:13.720468594 +0000
+@@ -157,7 +157,7 @@
+ 	;;
+ 
+ # Darwin/MacOS X
+-darwin[89]*|darwin10*)
++darwin[89]*|darwin1[012]*)
+ 	SHOBJ_STATUS=supported
+ 	SHLIB_STATUS=supported
+ 	
+@@ -186,7 +186,7 @@
+ 	SHLIB_LIBSUFF='dylib'
+ 
+ 	case "${host_os}" in
+-	darwin[789]*|darwin10*)	SHOBJ_LDFLAGS=''
++	darwin[789]*|darwin1[012]*)	SHOBJ_LDFLAGS=''
+ 			SHLIB_XLDFLAGS='-dynamiclib -arch_only `/usr/bin/arch` -install_name $(libdir)/$@ -current_version $(SHLIB_MAJOR)$(SHLIB_MINOR) -compatibility_version $(SHLIB_MAJOR) -v'
+ 			;;
+ 	*)		SHOBJ_LDFLAGS='-dynamic'
+diff -Naur readline-6.2.orig/vi_mode.c readline-6.2/vi_mode.c
+--- readline-6.2.orig/vi_mode.c	2010-11-21 00:51:39.000000000 +0000
++++ readline-6.2/vi_mode.c	2012-02-18 17:48:12.328431655 +0000
+@@ -1114,7 +1114,7 @@
+       rl_beg_of_line (1, c);
+       _rl_vi_last_motion = c;
+       RL_UNSETSTATE (RL_STATE_VIMOTION);
+-      return (0);
++      return (vidomove_dispatch (m));
+     }
+ #if defined (READLINE_CALLBACKS)
+   /* XXX - these need to handle rl_universal_argument bindings */
