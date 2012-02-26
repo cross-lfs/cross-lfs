@@ -1,131 +1,64 @@
-#!/bin/bash
-# Create a VIM Patch
+#!/bin/sh
+# Jonathan Norman
 
-# Get Version #
-#
+# Vim branch update patch generator
+
 VERSION=$1
 
 # Check Input
 #
 if [ "${VERSION}" = "" ]; then
-  echo "$0 - Vim_Version"
+  echo "$0 [Vim_version]"
   echo "This will Create a Patch for Vim Vim_Version"
   exit 255
 fi
 
-# Get the # of Patches
-#
-cd ~/tmp
-wget ftp://ftp.vim.org/pub/vim/patches/${VERSION}/ --no-remove-listing
-FILES=$(cat index.html | grep "${VERSION}" | cut -f6 -d. | cut -f1 -d'"' | sed '/^$/d' | tail -n 1)
-rm -f .listing
-rm -f index.html
+TMP=~/tmp/vim-${VERSION}
+PATCHDIR=${TMP}/patches
+PATCHURL=ftp://ftp.vim.org/pub/vim/patches
 SERIES=$(echo ${VERSION} | sed -e 's/\.//g')
-SKIPPATCH=""
-SKIPPED=""
+CLFS_PATCHS=http://patches.cross-lfs.org/dev/
 
-# Download VIM Source
-#
-if ! [ -e vim-${VERSION}.tar.bz2 ]; then
-  wget ftp://ftp.vim.org/pub/vim/unix/vim-${VERSION}.tar.bz2
-fi
+# Figure out patch number
+UPDATE_NUM=$(curl -ls http://patches.cross-lfs.org/dev/ | grep vim-${VERSION} | cut -d . -f 3 | cut -d - -f 3-)
+UPDATE_NUM=$(expr ${UPDATE_NUM} + 1)
 
-# Set Patch Number
-#
-cd ~/tmp
-wget http://svn.cross-lfs.org/svn/repos/patches/vim/ --no-remove-listing
-for num in $(seq 1 99); do
-  PATCH_NUM=$(cat index.html | grep "${VERSION}" | grep branch_update-${num}.patch | cut -f2 -d'"' | cut -f1 -d'"'| cut -f4 -d- | cut -f1 -d. | tail -n 1)
-  if [ "${PATCH_NUM}" = "0" -a "${num}" = "1" ]; then
-    PATCH_NUM=$(expr ${PATCH_NUM} + 1)
-    break
-  fi
-  if [ "${PATCH_NUM}" != "${num}" ]; then
-    PATCH_NUM=$(expr ${num})
-    break
-  fi
-done
-rm -f index.html
+# Download patches
+echo "Downloading patches for VIM ${VERSION}"
+PATCH_NUM=$(curl -s $PATCHURL/${VERSION}/ | grep " ${VERSION}." | cut -f 3- -d . | tail -n1)
+mkdir -p $PATCHDIR
+cd $PATCHDIR
+curl -O -# $PATCHURL/$VERSION/$VERSION.[001-$PATCH_NUM]
 
-# Cleanup Directory
-#
-rm -rf vim${SERIES} vim${SERIES}.orig
-tar xvf vim-${VERSION}.tar.bz2
-cp -ar vim${SERIES} vim${SERIES}.orig
+echo "Downloading source for VIM $VERSION"
+cd $TMP
+curl -sO ftp://ftp.vim.org/pub/vim/unix/vim-${VERSION}.tar.bz2
+tar -xvf vim-${VERSION}.tar.bz2
+cp -R vim${SERIES} vim${SERIES}.orig
 
-# Download and Apply Patches
-#
-install -d ~/tmp/vim-${VERSION}-patches
-cd ~/tmp/vim${SERIES}
-CURRENTDIR=$(pwd -P)
-PATCHURL=ftp://ftp.vim.org/pub/vim/patches/${VERSION}
-COUNT=1
-while [ ${COUNT} -le ${FILES} ]; do
-  cd ~/tmp/vim${SERIES}
-  DLCOUNT="${COUNT}"
-  SKIPME=no
-  if [ "${COUNT}" -lt "100" ]; then
-    DLCOUNT="0${COUNT}"
-  fi
-  if [ "${COUNT}" -lt "10" ]; then
-    DLCOUNT="00${COUNT}"
-  fi
-  for skip in ${SKIPPATCH} ; do
-    if [ "${DLCOUNT}" = "${skip}" ]; then
-      echo "Patch ${VERSION}.${DLCOUNT} skipped"
-      SKIPPED="${SKIPPED} ${DLCOUNT}"
-      SKIPME=yes
-    fi
-  done
-  if [ "${SKIPME}" != "yes" ]; then
-    if ! [ -e ${VERSION}.${DLCOUNT} ]; then
-      cd ~/tmp/vim-${VERSION}-patches
-      wget --quiet $PATCHURL/${VERSION}.${DLCOUNT}
-    fi
-    cd $CURRENTDIR
-    patch --dry-run -s -f -Np0 -i ~/tmp/vim-${VERSION}-patches/${VERSION}.${DLCOUNT}
-    if [ "$?" = "0" ]; then
-      echo "Patch ${VERSION}.${DLCOUNT} applied"
-      patch -s -Np0 -i ~/tmp/vim-${VERSION}-patches/${VERSION}.${DLCOUNT}
-    else
-      echo "Patch ${VERSION}.${DLCOUNT} not applied"
-      SKIPPED="${SKIPPED} ${DLCOUNT}"
-    fi
-   fi
-   COUNT=$(expr ${COUNT} + 1)
+echo -n "Generating Patch..."
+cd vim${SERIES}/src
+
+for PATCH in $(ls $PATCHDIR); do
+	patch -Np0 -i $PATCHDIR/$PATCH
+	# echo $PATCHDIR/$PATCH
 done
 
-# Cleanup Directory
-#
-for dir in $(find * -type d); do
-  cd ~/tmp/vim${SERIES}
-  for file in $(find . -name '*~'); do
-    rm -f ${file}
-  done
-  for file in $(find . -name '*.orig'); do
-    rm -f ${file}
-  done
-done
-cd ~/tmp/vim${SERIES}
-rm -f *~ *.orig
+cd $TMP
 
-# Create Patch
-#
-cd ~/tmp
-echo "Submitted By: Jim Gifford (jim at cross-lfs dot org)" > ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Date: `date +%m-%d-%Y`" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Initial Package Version: ${VERSION}" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Origin: Upstream" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Upstream Status: Applied" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Description: Contains all upstream patches up to ${VERSION}.${FILES}" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-if [ -n "${SKIPPED}" ]; then
-  echo "             The following patches were skipped" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-  echo "            ${SKIPPED}" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-fi
-echo "" >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-diff -Naur vim${SERIES}.orig vim${SERIES} >> ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch
-echo "Created ~/patches/vim-${VERSION}-branch_update-${PATCH_NUM}.patch."
+# Create patch
+echo "Submitted By: Jonathan Norman (jonathan at bluesquarelinux dot co dot uk)" > vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+echo "Date: `date +%Y-%m-%d`" >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+echo "Initial Package Version: ${VERSION}" >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+echo "Origin: Upstream" >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+echo "Upstream Status: Applied" >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+echo "Description: Contains all upstream patches up to ${VERSION}.${UPDATE_NUM}" >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+echo "" >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
 
-# Cleanup Directory
-#
-rm -rf vim${SERIES} vim${SERIES}.orig
+LC_ALL=C TZ=UTC0 diff -Naur vim${SERIES}.orig vim${SERIES} >> vim-${VERSION}-branch_update-$UPDATE_NUM.patch
+
+echo "Done"
+echo "Cleaning up"
+rm -rf vim${SERIES} vim${SERIES}.orig #vim-${VERSION}.tar.bz2
+
+echo "Created: vim-${VERSION}-branch_update-$UPDATE_NUM.patch"

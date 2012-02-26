@@ -39,7 +39,7 @@
 
     <para os="b">Prepare Shadow for compilation:</para>
 
-<screen os="c"><userinput>./configure --sysconfdir=/etc</userinput></screen>
+<screen os="c"><userinput>./configure --sysconfdir=/etc --without-nscd</userinput></screen>
 
 <para os="d">The meaning of the configure options:</para>
 
@@ -50,6 +50,12 @@
       <filename class="directory">/etc</filename>, rather than
       <filename class="directory">/usr/etc</filename>.</para></listitem>
     </varlistentry>
+    
+    <varlistentry>
+      <term><parameter>--without-nscd</parameter></term>
+      <listitem><para>Disabled support for NSCD prevents shadow from
+        working on CLFS</para></listitem>
+     </varlistentry> 
   </variablelist>
 
     <para os="f">Disable the installation of the <command>groups</command>

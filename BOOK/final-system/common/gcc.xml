@@ -26,10 +26,10 @@
     <title>Installation of GCC</title>
 
 
-    <para os="p1">The following patch contains a number of updates to the 
+<!--    <para os="p1">The following patch contains a number of updates to the 
     &gcc-version; branch by the GCC developers:</para>
 
-    <screen os="p2"><userinput>patch -Np1 -i ../&gcc-branch_update-patch;</userinput></screen>
+    <screen os="p2"><userinput>patch -Np1 -i ../&gcc-branch_update-patch;</userinput></screen> -->
 
     <para os="d">Apply a <command>sed</command> substitution that will suppress the
     installation of <filename class="libraryfile">libiberty.a</filename>. The
@@ -53,7 +53,8 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
     --libexecdir=/usr/lib --enable-shared --enable-threads=posix \
     --enable-__cxa_atexit --enable-c99 --enable-long-long \
     --enable-clocale=gnu --enable-languages=c,c++ \
-    --disable-multilib --disable-libstdcxx-pch</userinput></screen>
+    --disable-multilib --disable-libstdcxx-pch \
+    --enable-cloog-backend=isl</userinput></screen>
 
     <para os="j">Compile the package:</para>
 

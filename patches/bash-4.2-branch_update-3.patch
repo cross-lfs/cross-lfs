@@ -1,13 +1,43 @@
-Submitted By: Jonathan Norman (jonathan at bluesquarelinux.co.uk)
-Date: 2011-05-16
+Submitted By: Jonathan Norman (jonathan at bluesquarelinux dot co dot uk)
+Date: 15-02-2012
 Initial Package Version: 4.2
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 4.2-010
+Description: Contains all upstream patches up to 4.2-020
 
+diff -Naur bash-4.2.orig/assoc.c bash-4.2/assoc.c
+--- bash-4.2.orig/assoc.c	2009-08-06 00:19:40.000000000 +0000
++++ bash-4.2/assoc.c	2012-02-15 17:04:56.844640185 +0000
+@@ -77,6 +77,11 @@
+   b = hash_search (key, hash, HASH_CREATE);
+   if (b == 0)
+     return -1;
++  /* If we are overwriting an existing element's value, we're not going to
++     use the key.  Nothing in the array assignment code path frees the key
++     string, so we can free it here to avoid a memory leak. */
++  if (b->key != key)
++    free (key);
+   FREE (b->data);
+   b->data = value ? savestring (value) : (char *)0;
+   return (0);
+diff -Naur bash-4.2.orig/builtins/declare.def bash-4.2/builtins/declare.def
+--- bash-4.2.orig/builtins/declare.def	2010-05-30 22:25:21.000000000 +0000
++++ bash-4.2/builtins/declare.def	2012-02-15 17:05:08.352946800 +0000
+@@ -513,6 +513,11 @@
+ 	      *subscript_start = '[';	/* ] */
+ 	      var = assign_array_element (name, value, 0);	/* XXX - not aflags */
+ 	      *subscript_start = '\0';
++	      if (var == 0)	/* some kind of assignment error */
++		{
++		  assign_error++;
++		  NEXT_VARIABLE ();
++		}
+ 	    }
+ 	  else if (simple_array_assign)
+ 	    {
 diff -Naur bash-4.2.orig/builtins/fc.def bash-4.2/builtins/fc.def
 --- bash-4.2.orig/builtins/fc.def	2010-05-30 22:25:38.000000000 +0000
-+++ bash-4.2/builtins/fc.def	2011-05-16 23:42:00.796961011 +0000
++++ bash-4.2/builtins/fc.def	2012-02-15 17:04:54.028565156 +0000
 @@ -304,7 +304,7 @@
    last_hist = i - rh - hist_last_line_added;
  
@@ -45,7 +75,7 @@ diff -Naur bash-4.2.orig/builtins/fc.def bash-4.2/builtins/fc.def
    if (command == NULL)
 diff -Naur bash-4.2.orig/builtins/printf.def bash-4.2/builtins/printf.def
 --- bash-4.2.orig/builtins/printf.def	2010-11-23 15:02:55.000000000 +0000
-+++ bash-4.2/builtins/printf.def	2011-05-16 23:41:55.617535899 +0000
++++ bash-4.2/builtins/printf.def	2012-02-15 17:04:48.484417444 +0000
 @@ -465,6 +465,9 @@
  		  secs = shell_start_time;	/* roughly $SECONDS */
  		else
@@ -56,9 +86,102 @@ diff -Naur bash-4.2.orig/builtins/printf.def bash-4.2/builtins/printf.def
  		tm = localtime (&secs);
  		n = strftime (timebuf, sizeof (timebuf), timefmt, tm);
  		free (timefmt);
+diff -Naur bash-4.2.orig/builtins/read.def bash-4.2/builtins/read.def
+--- bash-4.2.orig/builtins/read.def	2011-01-04 16:43:36.000000000 +0000
++++ bash-4.2/builtins/read.def	2012-02-15 17:05:05.540871876 +0000
+@@ -642,6 +642,12 @@
+ 	  xfree (input_string);
+ 	  return EXECUTION_FAILURE;	/* readonly or noassign */
+ 	}
++      if (assoc_p (var))
++	{
++          builtin_error (_("%s: cannot convert associative to indexed array"), arrayname);
++	  xfree (input_string);
++	  return EXECUTION_FAILURE;	/* existing associative array */
++	}
+       array_flush (array_cell (var));
+ 
+       alist = list_string (input_string, ifs_chars, 0);
+diff -Naur bash-4.2.orig/execute_cmd.c bash-4.2/execute_cmd.c
+--- bash-4.2.orig/execute_cmd.c	2011-02-09 22:32:25.000000000 +0000
++++ bash-4.2/execute_cmd.c	2012-02-15 17:05:06.964909819 +0000
+@@ -2196,6 +2196,7 @@
+   if (ignore_return && cmd)
+     cmd->flags |= CMD_IGNORE_RETURN;
+ 
++#if defined (JOB_CONTROL)
+   lastpipe_flag = 0;
+   begin_unwind_frame ("lastpipe-exec");
+   lstdin = -1;
+@@ -2215,15 +2216,19 @@
+ 	  lastpipe_jid = stop_pipeline (0, (COMMAND *)NULL);	/* XXX */
+ 	  add_unwind_protect (lastpipe_cleanup, lastpipe_jid);
+ 	}
+-      cmd->flags |= CMD_LASTPIPE;
++      if (cmd)
++	cmd->flags |= CMD_LASTPIPE;
+     }	  
+   if (prev >= 0)
+     add_unwind_protect (close, prev);
++#endif
+ 
+   exec_result = execute_command_internal (cmd, asynchronous, prev, pipe_out, fds_to_close);
+ 
++#if defined (JOB_CONTROL)
+   if (lstdin > 0)
+     restore_stdin (lstdin);
++#endif
+ 
+   if (prev >= 0)
+     close (prev);
+diff -Naur bash-4.2.orig/expr.c bash-4.2/expr.c
+--- bash-4.2.orig/expr.c	2010-12-21 16:12:13.000000000 +0000
++++ bash-4.2/expr.c	2012-02-15 17:05:02.424788857 +0000
+@@ -476,19 +476,23 @@
+ 
+       if (special)
+ 	{
++	  if ((op == DIV || op == MOD) && value == 0)
++	    {
++	      if (noeval == 0)
++		evalerror (_("division by 0"));
++	      else
++	        value = 1;
++	    }
++
+ 	  switch (op)
+ 	    {
+ 	    case MUL:
+ 	      lvalue *= value;
+ 	      break;
+ 	    case DIV:
+-	      if (value == 0)
+-		evalerror (_("division by 0"));
+ 	      lvalue /= value;
+ 	      break;
+ 	    case MOD:
+-	      if (value == 0)
+-		evalerror (_("division by 0"));
+ 	      lvalue %= value;
+ 	      break;
+ 	    case PLUS:
+@@ -804,7 +808,12 @@
+       val2 = exppower ();
+ 
+       if (((op == DIV) || (op == MOD)) && (val2 == 0))
+-	evalerror (_("division by 0"));
++	{
++	  if (noeval == 0)
++	    evalerror (_("division by 0"));
++	  else
++	    val2 = 1;
++	}
+ 
+       if (op == MUL)
+ 	val1 *= val2;
 diff -Naur bash-4.2.orig/lib/glob/gmisc.c bash-4.2/lib/glob/gmisc.c
 --- bash-4.2.orig/lib/glob/gmisc.c	2011-02-05 21:11:17.000000000 +0000
-+++ bash-4.2/lib/glob/gmisc.c	2011-05-16 23:41:53.037822234 +0000
++++ bash-4.2/lib/glob/gmisc.c	2012-02-15 17:04:45.660342203 +0000
 @@ -77,8 +77,8 @@
       wchar_t *wpat;
       size_t wmax;
@@ -261,7 +384,7 @@ diff -Naur bash-4.2.orig/lib/glob/gmisc.c bash-4.2/lib/glob/gmisc.c
      }
 diff -Naur bash-4.2.orig/lib/readline/callback.c bash-4.2/lib/readline/callback.c
 --- bash-4.2.orig/lib/readline/callback.c	2010-06-06 16:18:58.000000000 +0000
-+++ bash-4.2/lib/readline/callback.c	2011-05-16 23:41:51.689971838 +0000
++++ bash-4.2/lib/readline/callback.c	2012-02-15 17:04:43.812292965 +0000
 @@ -148,6 +148,9 @@
  	  eof = _rl_vi_domove_callback (_rl_vimvcxt);
  	  /* Should handle everything, including cleanup, numeric arguments,
@@ -274,7 +397,7 @@ diff -Naur bash-4.2.orig/lib/readline/callback.c bash-4.2/lib/readline/callback.
  #endif
 diff -Naur bash-4.2.orig/lib/readline/vi_mode.c bash-4.2/lib/readline/vi_mode.c
 --- bash-4.2.orig/lib/readline/vi_mode.c	2010-11-21 00:51:39.000000000 +0000
-+++ bash-4.2/lib/readline/vi_mode.c	2011-05-16 23:41:51.689971838 +0000
++++ bash-4.2/lib/readline/vi_mode.c	2012-02-15 17:04:43.812292965 +0000
 @@ -1114,7 +1114,7 @@
        rl_beg_of_line (1, c);
        _rl_vi_last_motion = c;
@@ -286,8 +409,47 @@ diff -Naur bash-4.2.orig/lib/readline/vi_mode.c bash-4.2/lib/readline/vi_mode.c
    /* XXX - these need to handle rl_universal_argument bindings */
 diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
 --- bash-4.2.orig/parse.y	2011-01-02 20:48:11.000000000 +0000
-+++ bash-4.2/parse.y	2011-05-16 23:41:55.613536343 +0000
-@@ -5135,6 +5135,9 @@
++++ bash-4.2/parse.y	2012-02-15 17:05:04.008831060 +0000
+@@ -2499,7 +2499,7 @@
+ 	 We do this only if it is time to do so. Notice that only here
+ 	 is the mail alarm reset; nothing takes place in check_mail ()
+ 	 except the checking of mail.  Please don't change this. */
+-      if (prompt_is_ps1 && time_to_check_mail ())
++      if (prompt_is_ps1 && parse_and_execute_level == 0 && time_to_check_mail ())
+ 	{
+ 	  check_mail ();
+ 	  reset_mail_timer ();
+@@ -3842,6 +3842,7 @@
+      int flags;
+ {
+   sh_parser_state_t ps;
++  sh_input_line_state_t ls;
+   int orig_ind, nc, sflags;
+   char *ret, *s, *ep, *ostring;
+ 
+@@ -3849,10 +3850,12 @@
+   orig_ind = *indp;
+   ostring = string;
+ 
++/*itrace("xparse_dolparen: size = %d shell_input_line = `%s'", shell_input_line_size, shell_input_line);*/
+   sflags = SEVAL_NONINT|SEVAL_NOHIST|SEVAL_NOFREE;
+   if (flags & SX_NOLONGJMP)
+     sflags |= SEVAL_NOLONGJMP;
+   save_parser_state (&ps);
++  save_input_line_state (&ls);
+ 
+   /*(*/
+   parser_state |= PST_CMDSUBST|PST_EOFTOKEN;	/* allow instant ')' */ /*(*/
+@@ -3861,6 +3864,8 @@
+ 
+   restore_parser_state (&ps);
+   reset_parser ();
++  /* reset_parser clears shell_input_line and associated variables */
++  restore_input_line_state (&ls);
+   if (interactive)
+     token_to_read = 0;
+ 
+@@ -5135,6 +5140,9 @@
  	    case 'A':
  	      /* Make the current time/date into a string. */
  	      (void) time (&the_time);
@@ -297,20 +459,88 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
  	      tm = localtime (&the_time);
  
  	      if (c == 'd')
+@@ -5905,6 +5913,12 @@
+   ps->expand_aliases = expand_aliases;
+   ps->echo_input_at_read = echo_input_at_read;
+ 
++  ps->token = token;
++  ps->token_buffer_size = token_buffer_size;
++  /* Force reallocation on next call to read_token_word */
++  token = 0;
++  token_buffer_size = 0;
++
+   return (ps);
+ }
+ 
+@@ -5946,6 +5960,42 @@
+ 
+   expand_aliases = ps->expand_aliases;
+   echo_input_at_read = ps->echo_input_at_read;
++
++  FREE (token);
++  token = ps->token;
++  token_buffer_size = ps->token_buffer_size;
++}
++
++sh_input_line_state_t *
++save_input_line_state (ls)
++     sh_input_line_state_t *ls;
++{
++  if (ls == 0)
++    ls = (sh_input_line_state_t *)xmalloc (sizeof (sh_input_line_state_t));
++  if (ls == 0)
++    return ((sh_input_line_state_t *)NULL);
++
++  ls->input_line = shell_input_line;
++  ls->input_line_size = shell_input_line_size;
++  ls->input_line_len = shell_input_line_len;
++  ls->input_line_index = shell_input_line_index;
++
++  /* force reallocation */
++  shell_input_line = 0;
++  shell_input_line_size = shell_input_line_len = shell_input_line_index = 0;
++}
++
++void
++restore_input_line_state (ls)
++     sh_input_line_state_t *ls;
++{
++  FREE (shell_input_line);
++  shell_input_line = ls->input_line;
++  shell_input_line_size = ls->input_line_size;
++  shell_input_line_len = ls->input_line_len;
++  shell_input_line_index = ls->input_line_index;
++
++  set_line_mbstate ();
+ }
+ 
+ /************************************************
 diff -Naur bash-4.2.orig/patchlevel.h bash-4.2/patchlevel.h
 --- bash-4.2.orig/patchlevel.h	2010-06-13 00:14:48.000000000 +0000
-+++ bash-4.2/patchlevel.h	2011-05-16 23:42:02.092817179 +0000
++++ bash-4.2/patchlevel.h	2012-02-15 17:05:09.844986552 +0000
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 10
++#define PATCHLEVEL 20
  
  #endif /* _PATCHLEVEL_H_ */
+diff -Naur bash-4.2.orig/pathexp.c bash-4.2/pathexp.c
+--- bash-4.2.orig/pathexp.c	2010-08-14 03:21:57.000000000 +0000
++++ bash-4.2/pathexp.c	2012-02-15 17:05:01.036751874 +0000
+@@ -196,7 +196,7 @@
+ 	{
+ 	  if ((qflags & QGLOB_FILENAME) && pathname[i+1] == '/')
+ 	    continue;
+-	  if ((qflags & QGLOB_REGEXP) && ere_char (pathname[i+1]) == 0)
++	  if (pathname[i+1] != CTLESC && (qflags & QGLOB_REGEXP) && ere_char (pathname[i+1]) == 0)
+ 	    continue;
+ 	  temp[j++] = '\\';
+ 	  i++;
 diff -Naur bash-4.2.orig/print_cmd.c bash-4.2/print_cmd.c
 --- bash-4.2.orig/print_cmd.c	2010-05-30 22:34:08.000000000 +0000
-+++ bash-4.2/print_cmd.c	2011-05-16 23:42:02.092817179 +0000
++++ bash-4.2/print_cmd.c	2012-02-15 17:04:55.440602777 +0000
 @@ -315,6 +315,7 @@
  	  cprintf ("( ");
  	  skip_this_indent++;
@@ -335,9 +565,39 @@ diff -Naur bash-4.2.orig/print_cmd.c bash-4.2/print_cmd.c
  
    if (inside_function_def)
      {
+diff -Naur bash-4.2.orig/shell.h bash-4.2/shell.h
+--- bash-4.2.orig/shell.h	2011-01-07 03:16:55.000000000 +0000
++++ bash-4.2/shell.h	2012-02-15 17:04:58.268678125 +0000
+@@ -136,6 +136,9 @@
+   int parser_state;
+   int *token_state;
+ 
++  char *token;
++  int token_buffer_size;
++
+   /* input line state -- line number saved elsewhere */
+   int input_line_terminator;
+   int eof_encountered;
+@@ -166,6 +169,16 @@
+   
+ } sh_parser_state_t;
+ 
++typedef struct _sh_input_line_state_t {
++  char *input_line;
++  int input_line_index;
++  int input_line_size;
++  int input_line_len;
++} sh_input_line_state_t;
++
+ /* Let's try declaring these here. */
+ extern sh_parser_state_t *save_parser_state __P((sh_parser_state_t *));
+ extern void restore_parser_state __P((sh_parser_state_t *));
++
++extern sh_input_line_state_t *save_input_line_state __P((sh_input_line_state_t *));
++extern void restore_input_line_state __P((sh_input_line_state_t *));
 diff -Naur bash-4.2.orig/sig.c bash-4.2/sig.c
 --- bash-4.2.orig/sig.c	2010-11-23 13:21:22.000000000 +0000
-+++ bash-4.2/sig.c	2011-05-16 23:41:59.501104844 +0000
++++ bash-4.2/sig.c	2012-02-15 17:04:52.644528282 +0000
 @@ -46,6 +46,7 @@
  
  #if defined (READLINE)
@@ -368,7 +628,7 @@ diff -Naur bash-4.2.orig/sig.c bash-4.2/sig.c
        termsig_handler (sig);
 diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
 --- bash-4.2.orig/subst.c	2011-01-02 21:12:51.000000000 +0000
-+++ bash-4.2/subst.c	2011-05-16 23:41:58.205248678 +0000
++++ bash-4.2/subst.c	2012-02-15 17:04:59.656715107 +0000
 @@ -1379,10 +1379,12 @@
    slen = strlen (string + *sindex) + *sindex;
  
@@ -395,7 +655,19 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
    td.word = string;
    tresult = call_expand_word_internal (&td, quoted, 1, dollar_at_p, has_dollar_at);
    return (tresult);
-@@ -4607,6 +4609,7 @@
+@@ -3704,7 +3706,10 @@
+ 	    break;
+ 	}
+       else if (string[i] == CTLNUL)
+-	i++;
++	{
++	  i++;
++	  continue;
++	}
+ 
+       prev_i = i;
+       ADVANCE_CHAR (string, slen, i);
+@@ -4607,6 +4612,7 @@
    if (ifs_firstc == 0)
  #endif
      word->flags |= W_NOSPLIT;
@@ -403,7 +675,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
    result = call_expand_word_internal (word, quoted, 0, (int *)NULL, (int *)NULL);
    expand_no_split_dollar_star = 0;
  
-@@ -7176,7 +7179,7 @@
+@@ -7176,7 +7182,7 @@
      {
        /* Extract the contents of the ${ ... } expansion
  	 according to the Posix.2 rules. */
@@ -414,7 +686,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
        else
 diff -Naur bash-4.2.orig/subst.h bash-4.2/subst.h
 --- bash-4.2.orig/subst.h	2010-12-03 01:21:29.000000000 +0000
-+++ bash-4.2/subst.h	2011-05-16 23:41:50.378117447 +0000
++++ bash-4.2/subst.h	2012-02-15 17:04:42.280252148 +0000
 @@ -56,6 +56,7 @@
  #define SX_NOLONGJMP	0x0040	/* don't longjmp on fatal error */
  #define SX_ARITHSUB	0x0080	/* extracting $(( ... )) (currently unused) */
@@ -423,9 +695,30 @@ diff -Naur bash-4.2.orig/subst.h bash-4.2/subst.h
  
  /* Remove backslashes which are quoting backquotes from STRING.  Modifies
     STRING, and returns a pointer to it. */
+diff -Naur bash-4.2.orig/support/shobj-conf bash-4.2/support/shobj-conf
+--- bash-4.2.orig/support/shobj-conf	2009-10-28 13:20:21.000000000 +0000
++++ bash-4.2/support/shobj-conf	2012-02-15 17:05:09.844986552 +0000
+@@ -157,7 +157,7 @@
+ 	;;
+ 
+ # Darwin/MacOS X
+-darwin[89]*|darwin10*)
++darwin[89]*|darwin1[012]*)
+ 	SHOBJ_STATUS=supported
+ 	SHLIB_STATUS=supported
+ 	
+@@ -186,7 +186,7 @@
+ 	SHLIB_LIBSUFF='dylib'
+ 
+ 	case "${host_os}" in
+-	darwin[789]*|darwin10*)	SHOBJ_LDFLAGS=''
++	darwin[789]*|darwin1[012]*)	SHOBJ_LDFLAGS=''
+ 			SHLIB_XLDFLAGS='-dynamiclib -arch_only `/usr/bin/arch` -install_name $(libdir)/$@ -current_version $(SHLIB_MAJOR)$(SHLIB_MINOR) -compatibility_version $(SHLIB_MAJOR) -v'
+ 			;;
+ 	*)		SHOBJ_LDFLAGS='-dynamic'
 diff -Naur bash-4.2.orig/variables.c bash-4.2/variables.c
 --- bash-4.2.orig/variables.c	2011-01-25 01:07:48.000000000 +0000
-+++ bash-4.2/variables.c	2011-05-16 23:41:56.917391622 +0000
++++ bash-4.2/variables.c	2012-02-15 17:04:49.868454320 +0000
 @@ -3653,6 +3653,22 @@
    return n;
  }
@@ -476,7 +769,7 @@ diff -Naur bash-4.2.orig/variables.c bash-4.2/variables.c
  
 diff -Naur bash-4.2.orig/variables.h bash-4.2/variables.h
 --- bash-4.2.orig/variables.h	2010-12-03 01:22:01.000000000 +0000
-+++ bash-4.2/variables.h	2011-05-16 23:41:55.613536343 +0000
++++ bash-4.2/variables.h	2012-02-15 17:04:48.476417232 +0000
 @@ -313,6 +313,7 @@
  
  extern void sort_variables __P((SHELL_VAR **));
