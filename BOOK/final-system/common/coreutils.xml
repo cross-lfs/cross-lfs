@@ -34,9 +34,22 @@
 
     <para os="c">Now prepare Coreutils for compilation:</para>
 
-<screen os="d"><userinput>./configure --prefix=/usr \
+<screen os="d"><userinput>FORCE_UNSAFE_CONFIGURE=1 \
+  ./configure --prefix=/usr \
     --enable-no-install-program=kill,uptime \
     --enable-install-program=hostname</userinput></screen>
+    
+    <variablelist os="d1">
+      <title>The meaning of the configure options:</title>
+      
+        <varlistentry os="d2">
+          <term><parameter>FORCE_UNSAFE_CONFIGURE=1</parameter></term>
+          <listitem>
+            <para>Forces Coreutils to compile when using the root user.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
 
     <para os="e">Compile the package:</para>
 
