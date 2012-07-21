@@ -42,6 +42,10 @@
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='l4'])"/>
 
+    <para os="l5">RPC headers are not installed at /tools/include/rpc. Eglibc 32 bit build will get into a bad state due to the new rpc helpers that get cross-compiled. We do not want this, so the following command will use the internal rpc types header.</para>
+
+<screen os="l6"><userinput>sed -i 's/&lt;rpc\/types.h&gt;/"rpc\/types.h"/' sunrpc/rpc_clntout.c</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
