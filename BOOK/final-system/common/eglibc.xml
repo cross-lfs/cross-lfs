@@ -57,12 +57,6 @@ sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
 
-    <para os="p1">The following patch fixes an issue where EGLIBC will
-    improperly handle a condition where an elf binary has missing
-    dependencies:</para>
-
-<screen os="p2"><userinput>patch -Np1 -i ../&eglibc-dl_dep_fix-patch;</userinput></screen>
-
     <para os="p3">The following patch fixes an issue that can cause
       ALSA to crash:</para>
       
