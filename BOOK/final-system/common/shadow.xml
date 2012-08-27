@@ -33,13 +33,9 @@
       command below.</para>
     </note>
 
-    <para os="f1">Fix an issue with the Russian man pages:</para>
-
-    <screen os="f2"><userinput>sed -i 's/man_MANS = $(man_nopam) /man_MANS = /' man/ru/Makefile.in</userinput></screen>
-
     <para os="b">Prepare Shadow for compilation:</para>
 
-<screen os="c"><userinput>./configure --sysconfdir=/etc --without-nscd</userinput></screen>
+<screen os="c"><userinput>./configure --sysconfdir=/etc</userinput></screen>
 
 <para os="d">The meaning of the configure options:</para>
 
@@ -51,11 +47,6 @@
       <filename class="directory">/usr/etc</filename>.</para></listitem>
     </varlistentry>
     
-    <varlistentry>
-      <term><parameter>--without-nscd</parameter></term>
-      <listitem><para>Disabled support for NSCD prevents shadow from
-        working on CLFS</para></listitem>
-     </varlistentry> 
   </variablelist>
 
     <para os="f">Disable the installation of the <command>groups</command>
@@ -77,7 +68,7 @@ find man -name Makefile -exec sed -i 's/groups.1 //' '{}' \;</userinput></screen
 
     <para os="m" id="shadow-login_defs">Instead of using the default
     <emphasis>crypt</emphasis> method, use the more secure
-    <emphasis>MD5</emphasis> method of password encryption, which also allows
+    <emphasis>SHA512</emphasis> method of password encryption, which also allows
     passwords longer than 8 characters. It is also necessary to change the
     obsolete <filename class="directory">/var/spool/mail</filename> location
     for user mailboxes that Shadow uses by default to the <filename
@@ -90,7 +81,7 @@ find man -name Makefile -exec sed -i 's/groups.1 //' '{}' \;</userinput></screen
     </indexterm>
 
 <screen os="s"><userinput>sed -i /etc/login.defs \
-    -e 's@#\(ENCRYPT_METHOD \).*@\1MD5@' \
+    -e 's@#\(ENCRYPT_METHOD \).*@\1SHA512@' \
     -e 's@/var/spool/mail@/var/mail@'</userinput></screen>
 
     <note os="t">
