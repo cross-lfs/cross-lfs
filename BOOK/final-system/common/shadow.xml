@@ -33,13 +33,21 @@
       command below.</para>
     </note>
 
-    <para os="b">Prepare Shadow for compilation:</para>
 
-<screen os="c"><userinput>./configure --sysconfdir=/etc</userinput></screen>
+    <para os="b">Disable the installation of the <command>groups</command>
+    program and its man pages, as Coreutils provides a better version:</para>
 
-<para os="d">The meaning of the configure options:</para>
+<screen os="c"><userinput>sed -i 's/groups$(EXEEXT) //' src/Makefile.in
+find man -name Makefile.in -exec sed -i '/groups\.1\.xml/d' '{}' \;
+find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;</userinput></screen>
 
-  <variablelist os="e">
+    <para os="d">Prepare Shadow for compilation:</para>
+
+<screen os="e"><userinput>./configure --sysconfdir=/etc</userinput></screen>
+
+<para os="f">The meaning of the configure options:</para>
+
+  <variablelist os="g">
     <varlistentry>
       <term><parameter>--sysconfdir=/etc</parameter></term>
       <listitem><para>Tells Shadow to install its configuration files into
@@ -49,12 +57,6 @@
     
   </variablelist>
 
-    <para os="f">Disable the installation of the <command>groups</command>
-    program and its man pages, as Coreutils provides a better version:</para>
-
-<screen os="g"><userinput>sed -i 's/groups$(EXEEXT) //' src/Makefile
-find man -name Makefile -exec sed -i '/groups.1.xml/d' '{}' \;
-find man -name Makefile -exec sed -i 's/groups.1 //' '{}' \;</userinput></screen>
 
     <para os="h">Compile the package:</para>
 
