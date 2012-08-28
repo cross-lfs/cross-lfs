@@ -25,6 +25,10 @@
   <sect2 role="installation">
     <title>Installation of Iana-Etc</title>
 
+    <note os="n1">
+      <para>This package has the option of downloading updated data when internet access is available. If /etc/resolv.conf has a nameserver entry and internet access is available at this step, then use <userinput>make get</userinput> to update the data, and do not apply the following patch.</para>
+    </note>
+
     <para os="p1">The following patch updates the services and protocol files:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&iana-etc-numbers_update-patch;</userinput></screen>
