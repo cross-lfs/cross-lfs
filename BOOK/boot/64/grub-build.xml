@@ -30,9 +30,9 @@
     href="../../final-system/x86/grub.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="ab"><userinput>./configure --prefix=/tools \
+<screen os="ab"><userinput>CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --sysconfdir=/etc --disable-werror</userinput></screen>
+    --sysconfdir=/etc --libdir=/tools/lib64 --disable-werror</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/x86/grub.xml"
