@@ -57,11 +57,10 @@ sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
 
-    <para os="p1">The following patch fixes an issue where EGLIBC will
-    improperly handle a condition where an elf binary has missing
-    dependencies:</para>
-
-<screen os="p2"><userinput>patch -Np1 -i ../&eglibc-dl_dep_fix-patch;</userinput></screen>
+    <para os="p3">The following patch fixes an issue that can cause
+      ALSA to crash:</para>
+      
+<screen os="p4"><userinput>patch -Np1 -i ../&eglibc-fixes-patch;</userinput></screen>
 
     <para os="b">The EGLIBC build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
@@ -79,7 +78,7 @@ cd ../eglibc-build</userinput></screen>
     <para os="g">Prepare EGLIBC for compilation:</para>
 
 <screen os="h"><userinput>../eglibc-&eglibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
+    --disable-profile --enable-add-ons --enable-kernel=2.6.32 \
     --libexecdir=/usr/lib/eglibc</userinput></screen>
 
     <variablelist os="i">
@@ -152,6 +151,12 @@ make -k check 2&gt;&amp;1 | tee eglibc-check-log; grep Error eglibc-check-log</u
     <para os="s">Install the package:</para>
 
 <screen os="t"><userinput>make install</userinput></screen>
+
+    <para os="ra">Install NIS and RPC related headers that are not installed by default.</para>
+
+<screen os="rb"><userinput>cp -v ../eglibc-&eglibc-version;/sunrpc/rpc/*.h /usr/include/rpc
+cp -v ../eglibc-&eglibc-version;/sunrpc/rpcsvc/*.h /usr/include/rpcsvc
+cp -v ../eglibc-&eglibc-version;/nis/rpcsvc/*.h /usr/include/rpcsvc</userinput></screen>
 
   </sect2>
 

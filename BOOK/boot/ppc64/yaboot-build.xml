@@ -42,6 +42,7 @@ sed -e "s/\(-print-libgcc-file-name\)/${BUILD32} \1/" \
             -e "s/\(-Bstatic\)/-melf32ppclinux \1/" \
             -e "s/\(strip \)/${CLFS_TARGET}-\1/" \
             -e 's/-o root -g root//' \
+            -e 's/-Werror//' \
     Makefile.orig &gt; Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

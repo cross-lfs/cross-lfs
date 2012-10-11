@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-finish-downloadclient">
+  <?dbhtml filename="downloadclient.html"?>
+
+  <title>Download Client</title>
+
+  <para>The final system build does not install an FTP or HTTP client for downloading files.</para>
+
+  <itemizedlist>
+    <para>Some suggested clients include:</para>
+    <listitem>
+      <para>Curl <ulink url="&cblfs-root;index.php/Curl"/></para>
+    </listitem>
+    <listitem>
+      <para>Inetutils <ulink url="&cblfs-root;index.php/Inetutils"/></para>
+    </listitem>
+    <listitem>
+      <para>LFTP <ulink url="http://lftp.yar.ru/"/></para>
+    </listitem>
+    <listitem>
+      <para>Links <ulink url="&cblfs-root;index.php/Links"/></para>
+    </listitem>
+    <listitem>
+      <para>Lynx <ulink url="&cblfs-root;index.php/Lynx"/></para>
+    </listitem>
+    <listitem>
+      <para>NcFTP Client <ulink url="&cblfs-root;index.php/Ncftp"/></para>
+    </listitem>
+    <listitem>
+      <para>Wget <ulink url="&cblfs-root;index.php/Wget"/></para>
+    </listitem>
+    <listitem>
+      <para>BASH - A user can use net redirections (if not disabled when building bash in the final system) to download wget or another program.</para>
+<screen><userinput>cat &gt; download.sh &lt;&lt; "EOF"
+#!/bin/bash
+
+WGET_VERSION='1.14'
+WGET_HOSTNAME='ftp.gnu.org'
+exec {HTTP_FD}&lt;&gt;/dev/tcp/${WGET_HOSTNAME}/80
+echo -ne "GET /gnu/wget/wget-${WGET_VERSION}.tar.xz HTTP/1.1\r\nHost: "\
+    ${WGET_HOSTNAME}'\r\nUser-Agent: '\
+    'bash/'${BASH_VERSION}'\r\n\r\n'  &gt;&amp;${HTTP_FD}
+sed -e '1,/^.$/d' &lt;&amp;${HTTP_FD} &gt;wget-${WGET_VERSION}.tar.xz
+EOF</userinput></screen>
+    </listitem>
+    <listitem>
+      <para>GAWK</para>
+<screen><userinput>cat &gt; gawkdl.sh &lt;&lt; "EOF"
+#!/bin/bash
+
+gawk 'BEGIN {
+  NetService = "/inet/tcp/0/mirror.anl.gov/80"
+  print "GET /pub/gnu/wget/wget-1.14.tar.xz" |&amp; NetService
+  while ((NetService |&amp; getline) > 0)
+    print $0
+  close(NetService)
+}' > binary
+
+gawk '{q=p;p=$0}NR&gt;1{print q}END{ORS = ""; print p}' binary &gt; wget-1.14.tar.xz 
+
+rm binary
+EOF</userinput></screen>
+    </listitem>
+    <listitem>
+      <para>PERL with HTTP::Tiny (Included with final system PERL install).</para>
+<screen><userinput>cat &gt; download.pl &lt;&lt; "EOF"
+#!/usr/bin/perl
+
+use HTTP::Tiny;
+my $http = HTTP::Tiny->new;
+my $response;
+
+$response = $http->mirror('http://ftp.gnu.org/gnu/wget/wget-1.14.tar.xz', 'wget-1.14.tar.xz');
+die "Failed!\n" unless $response->{success};
+print "Unchanged!\n" if $response->{status} eq '304';      
+EOF</userinput></screen>
+      <para>Or use this:</para>
+<screen><userinput>perl -MHTTP::Tiny -E 'say HTTP::Tiny-&gt;new-&gt;get(shift)-&gt;{content}' "http://ftp.gnu.org/gnu/wget/wget-1.14.tar.xz" &gt; binary
+perl -e 'local $/; $_ = &lt;&gt;; s/\n$//; print' binary &gt; wget-1.14.tar.xz
+rm binary</userinput></screen>
+    </listitem>
+    <listitem>
+  <para>PERL with LWP: Run <command>cpan</command> and manually configure the client. Run <command>install LWP</command> while in the CPAN shell.</para>
+    <para>Refer to <ulink url="http://www.bioinfo-user.org.uk/dokuwiki/doku.php/projects/wgetpl"/> for wgetpl.</para>
+    </listitem>
+  </itemizedlist>
+
+</sect1>

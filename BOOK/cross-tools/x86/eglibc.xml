@@ -60,7 +60,7 @@
     ../eglibc-&eglibc-version;/configure --prefix=/tools \
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
-    --with-tls --enable-kernel=2.6.0 --with-__thread \
+    --with-tls --enable-kernel=2.6.32 --with-__thread \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
@@ -152,6 +152,14 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='dn'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/eglibc.xml"
+    xpointer="xpointer(//*[@os='ra'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='rb'])"/>
 
   </sect2>
 

@@ -29,6 +29,14 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/binutils.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/binutils.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/binutils.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -42,7 +50,7 @@
 <screen os="bc"><userinput>AR=ar AS=as ../binutils-&binutils-dir;/configure \
   --prefix=/cross-tools --host=${CLFS_HOST} --target=${CLFS_TARGET} \
   --with-sysroot=${CLFS} --with-lib-path=/tools/lib --disable-nls --enable-shared \
-  --enable-64-bit-bfd --disable-multilib</userinput></screen>
+  --disable-static --enable-64-bit-bfd --disable-multilib</userinput></screen>
 
     <variablelist os="bd">
       <title>The meaning of the configure options:</title>

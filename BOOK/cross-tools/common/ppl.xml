@@ -26,10 +26,9 @@
 
 <screen os="b"><userinput>CPPFLAGS="-I/cross-tools/include" \
     LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
-    ./configure --prefix=/cross-tools --enable-shared \
+    ./configure --prefix=/cross-tools --enable-shared --disable-static \
     --enable-interfaces="c,cxx" --disable-optimization \
-    --with-libgmp-prefix=/cross-tools \
-    --with-libgmpxx-prefix=/cross-tools</userinput></screen>
+    --with-gmp=/cross-tools</userinput></screen>
 
     <para os="c">Compile the package:</para>
 

@@ -24,16 +24,14 @@
   <sect2 role="installation">
     <title>Installation of Bison</title>
 
+    <para os="t3">The <command>configure </command>script does not determine
+    the correct value for the following. Set the value manually:</para>
+
+<screen os="t4"><userinput>echo "ac_cv_prog_lex_is_flex=yes" &gt; config.cache</userinput></screen>
+
     <para os="a">Prepare Bison for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
-
-    <para os="b1">The configure system causes Bison to be built without support
-    for internationalization of error messages if a <command>bison</command>
-    program is not already in $PATH.  The following addition will correct
-    this:</para>
-
-<screen os="b2"><userinput>echo '#define YYENABLE_NLS 1' &gt;&gt; config.h</userinput></screen>  
+<screen os="b"><userinput>./configure --prefix=/usr --cache-file=config.cache</userinput></screen>
 
     <para os="c">Compile the package:</para>
 

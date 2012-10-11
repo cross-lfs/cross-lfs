@@ -25,9 +25,12 @@
     href="../common/udev.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILD64}" ./configure --prefix=/usr \
-  --exec-prefix="" --sysconfdir=/etc --libexecdir=/lib/udev \
-  --libdir=/usr/lib64 --disable-extras --disable-introspection</userinput></screen>
+<screen os="b"><userinput>PKG_CONFIG_PATH=${PKG_CONFIG_PATH64} CC="gcc ${BUILD64}" \
+  ./configure --prefix=/usr --sysconfdir=/etc --with-rootprefix="" \
+  --libexecdir=/lib64 --libdir=/usr/lib64 --bindir=/sbin \
+  --with-usb-ids-path=no --with-pci-ids-path=no \
+  --enable-rule_generator --disable-introspection --disable-keymap \
+  --disable-gudev --with-firmware-path=/lib/firmware</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/udev.xml"

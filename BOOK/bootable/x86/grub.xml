@@ -28,13 +28,6 @@
   Make sure that an emergency boot disk is ready to <quote>rescue</quote>
   the computer if the computer becomes unusable (un-bootable).</para>
 
-  <para os="c">The first thing we need to do is generate a configuration for
-  GRUB. In previous versions of grub we could create the configuration manually
-  here, but with GRUB2 we can generate <filename>grub.cfg</filename>
-  automatically. You can do this with the following command:</para>
-
-<screen os="d"><userinput>grub-mkconfig -o /boot/grub/grub.cfg</userinput></screen>
-
   <warning os="w1">
     <para>The following command will overwrite the current boot loader.
     Do not run the command if this is not desired, for example, if using
@@ -49,5 +42,12 @@
   <filename class="partition">sda</filename>:</para>
 
 <screen os="f"><userinput>grub-install /dev/sda</userinput></screen>
+
+  <para os="c">Next, we need to generate a configuration for GRUB.
+  In previous versions of grub we could create the configuration manually
+  here, but with GRUB2 we can generate <filename>grub.cfg</filename>
+  automatically. You can do this with the following command:</para>
+
+<screen os="d"><userinput>grub-mkconfig -o /boot/grub/grub.cfg</userinput></screen>
 
 </sect1>

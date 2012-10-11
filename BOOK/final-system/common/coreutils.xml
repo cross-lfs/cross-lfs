@@ -34,9 +34,22 @@
 
     <para os="c">Now prepare Coreutils for compilation:</para>
 
-<screen os="d"><userinput>./configure --prefix=/usr \
+<screen os="d"><userinput>FORCE_UNSAFE_CONFIGURE=1 \
+  ./configure --prefix=/usr \
     --enable-no-install-program=kill,uptime \
     --enable-install-program=hostname</userinput></screen>
+    
+    <variablelist os="d1">
+      <title>The meaning of the configure options:</title>
+      
+        <varlistentry os="d2">
+          <term><parameter>FORCE_UNSAFE_CONFIGURE=1</parameter></term>
+          <listitem>
+            <para>Forces Coreutils to compile when using the root user.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
 
     <para os="e">Compile the package:</para>
 
@@ -65,7 +78,7 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
     <systemitem class="username">dummy</systemitem> user. Fix the permissions
     for a few files to allow this:</para>
 
-<screen os="m"><userinput>chown -Rv dummy config.log {gnulib-tests,lib,src}</userinput></screen>
+<screen os="m"><userinput>chown -Rv dummy config.log {gnulib-tests,lib,src,tests}</userinput></screen>
 
     <para os="n">Then run the remainder of the tests as the
     <systemitem class="username">dummy</systemitem> user:</para>

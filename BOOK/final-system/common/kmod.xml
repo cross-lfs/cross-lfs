@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-system-kmod" role="wrap">
+  <?dbhtml filename="kmod.html"?>
+
+  <title>Kmod-&kmod-version;</title>
+
+  <indexterm zone="ch-system-kmod">
+    <primary sortas="a-Kmod">Kmod</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>The Kmod package contains programs for loading, inserting
+      and removing kernel modules for Linux. Kmod replaces the 
+      Module-Init-tools package.</para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Kmod</title>
+
+    <para os="a">Prepare Kmod for compilation:</para>
+
+<screen os="b"><userinput>./configure --prefix=/usr \
+    --bindir=/bin --sysconfdir=/etc \
+    --with-rootlibdir=/lib \
+    --with-zlib --with-xz</userinput></screen>
+
+    <variablelist os="c">
+      <title>The meaning of the configure option:</title>
+
+      <varlistentry>
+        <term><parameter>--with-rootlibdir=/lib</parameter></term>
+        <listitem>
+          <para>Install location for shared libraries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-zlib --with-xz</parameter></term>
+        <listitem>
+          <para>This allows the Kmod package to handle zlib and XZ
+            compressed kernel modules.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="d">Compile the package:</para>
+
+<screen os="e"><userinput>make</userinput></screen>
+
+    <para os="f">To test the results, issue: <userinput>make check</userinput></para>
+
+    <para os="g">Install the package:</para>
+
+<screen os="h"><userinput>make install</userinput></screen>
+
+    <para os="i">Create symbolic links for programs that expect Module-Init-Tools.</para>
+
+<screen os="j"><userinput>ln -sv kmod /bin/lsmod
+ln -sv ../bin/kmod /sbin/depmod
+ln -sv ../bin/kmod /sbin/insmod
+ln -sv ../bin/kmod /sbin/modprobe
+ln -sv ../bin/kmod /sbin/modinfo
+ln -sv ../bin/kmod /sbin/rmmod</userinput></screen>
+  
+  </sect2>
+
+  <sect2 id="contents-kmod" role="content">
+    <title>Contents of Kmod</title>
+
+    <segmentedlist>
+      <segtitle>Installed programs</segtitle>
+
+      <seglistitem>
+        <seg>depmod, insmod, lsmod, modinfo, modprobe, and
+        rmmod</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="depmod">
+        <term><command>depmod</command></term>
+        <listitem>
+          <para>Creates a dependency file based on the symbols it finds in
+          the existing set of modules; this dependency file is used by
+          <command>modprobe</command> to automatically load the required
+          modules</para>
+          <indexterm zone="ch-system-kmod depmod">
+            <primary sortas="b-depmod">depmod</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="insmod">
+        <term><command>insmod</command></term>
+        <listitem>
+          <para>Installs a loadable module in the running kernel</para>
+          <indexterm zone="ch-system-kmod insmod">
+            <primary sortas="b-insmod">insmod</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lsmod">
+        <term><command>lsmod</command></term>
+        <listitem>
+          <para>Lists currently loaded modules</para>
+          <indexterm zone="ch-system-kmod lsmod">
+            <primary sortas="b-lsmod">lsmod</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="modinfo">
+        <term><command>modinfo</command></term>
+        <listitem>
+          <para>Examines an object file associated with a kernel module and
+          displays any information that it can glean</para>
+          <indexterm zone="ch-system-kmod modinfo">
+            <primary sortas="b-modinfo">modinfo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="modprobe">
+        <term><command>modprobe</command></term>
+        <listitem>
+          <para>Uses a dependency file, created by <command>depmod</command>,
+          to automatically load relevant modules</para>
+          <indexterm zone="ch-system-kmod modprobe">
+            <primary sortas="b-modprobe">modprobe</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rmmod">
+        <term><command>rmmod</command></term>
+        <listitem>
+          <para>Unloads modules from the running kernel</para>
+          <indexterm zone="ch-system-kmod rmmod">
+            <primary sortas="b-rmmod">rmmod</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

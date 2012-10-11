@@ -58,7 +58,7 @@ EOF</userinput></screen>
     ../eglibc-&eglibc-version;/configure --prefix=/tools \
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --enable-add-ons \
-    --with-tls --enable-kernel=2.6.0 --with-__thread \
+    --with-tls --enable-kernel=2.6.32 --with-__thread \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
     --cache-file=config.cache</userinput></screen>
 
@@ -121,10 +121,10 @@ EOF</userinput></screen>
       </varlistentry>
 
       <varlistentry os="dg8">
-        <term><parameter>--enable-kernel=2.6.0</parameter></term>
+        <term><parameter>--enable-kernel=2.6.32</parameter></term>
         <listitem>
           <para>This tells EGLIBC to compile the library with support
-          for 2.6.x Linux kernels.</para>
+          for 2.6.32 and later Linux kernels.</para>
         </listitem>
       </varlistentry>
 
@@ -181,7 +181,18 @@ EOF</userinput></screen>
 
     <para os="dm">Install the package:</para>
 
-<screen os="dn"><userinput>make install</userinput></screen>
+<screen os="dn"><userinput>make install inst_vardbdir=/tools/var/db</userinput></screen>
+
+<para  os="do"><parameter>inst_vardbdir=...</parameter> ensures that db-Makefile is not
+	installed on the host system</para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/eglibc.xml"
+    xpointer="xpointer(//*[@os='ra'])"/>
+
+<screen os="rb"><userinput>cp -v ../eglibc-&eglibc-version;/sunrpc/rpc/*.h /tools/include/rpc
+cp -v ../eglibc-&eglibc-version;/sunrpc/rpcsvc/*.h /tools/include/rpcsvc
+cp -v ../eglibc-&eglibc-version;/nis/rpcsvc/*.h /tools/include/rpcsvc</userinput></screen>
 
   </sect2>
 

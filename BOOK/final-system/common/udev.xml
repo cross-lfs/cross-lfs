@@ -28,9 +28,11 @@
     <para os="a">Prepare Udev for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr \
-  --exec-prefix="" --sysconfdir=/etc \
-  --libexecdir=/lib/udev --libdir=/usr/lib \
-  --disable-extras --disable-introspection</userinput></screen>
+  --sysconfdir=/etc --with-rootprefix="" \
+  --libexecdir=/lib --bindir=/sbin \
+  --with-usb-ids-path=no --with-pci-ids-path=no \
+  --enable-rule_generator --disable-introspection \
+  --disable-keymap --disable-gudev</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
