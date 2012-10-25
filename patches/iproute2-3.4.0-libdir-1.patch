@@ -11,9 +11,9 @@ Description: This patch gives the ability to change the libdir.
              Rediffed for Iproute2-3.4.0 by William Harrington
 
 diff -Naur iproute2-3.4.0.orig/Makefile iproute2-3.4.0/Makefile
---- iproute2-3.4.0.orig/Makefile        2012-05-21 21:12:19.000000000 +0000
-+++ iproute2-3.4.0/Makefile     2012-09-16 00:43:20.000000000 +0000
-@@ -13,7 +13,7 @@
+--- iproute2-3.4.0.orig/Makefile	2012-10-25 19:59:31.824412361 +0000
++++ iproute2-3.4.0/Makefile	2012-10-25 20:00:11.334366911 +0000
+@@ -12,7 +12,7 @@
  
  SHARED_LIBS = y
  
@@ -23,8 +23,8 @@ diff -Naur iproute2-3.4.0.orig/Makefile iproute2-3.4.0/Makefile
  DEFINES+= -DNO_SHARED_LIBS
  endif
 diff -Naur iproute2-3.4.0.orig/include/iptables.h iproute2-3.4.0/include/iptables.h
---- iproute2-3.4.0.orig/include/iptables.h      2012-05-21 21:12:19.000000000 +0000
-+++ iproute2-3.4.0/include/iptables.h   2012-09-16 00:43:20.000000000 +0000
+--- iproute2-3.4.0.orig/include/iptables.h	2012-05-21 21:12:19.000000000 +0000
++++ iproute2-3.4.0/include/iptables.h	2012-10-25 20:00:56.064367711 +0000
 @@ -4,8 +4,12 @@
  #include "iptables_common.h"
  #include "libiptc/libiptc.h"
@@ -40,14 +40,14 @@ diff -Naur iproute2-3.4.0.orig/include/iptables.h iproute2-3.4.0/include/iptable
  
  #ifndef IPPROTO_SCTP
 diff -Naur iproute2-3.4.0.orig/misc/arpd.c iproute2-3.4.0/misc/arpd.c
---- iproute2-3.4.0.orig/misc/arpd.c     2012-05-21 21:12:19.000000000 +0000
-+++ iproute2-3.4.0/misc/arpd.c  2012-09-16 00:43:20.000000000 +0000
+--- iproute2-3.4.0.orig/misc/arpd.c	2012-05-21 21:12:19.000000000 +0000
++++ iproute2-3.4.0/misc/arpd.c	2012-10-25 20:01:19.474370303 +0000
 @@ -40,7 +40,7 @@
  int resolve_hosts;
  
- DB     *dbase;
--char   *dbname = "/var/lib/arpd/arpd.db";
+ DB	*dbase;
+-char	*dbname = "/var/lib/arpd/arpd.db";
 +char   *dbname = ARPDDIR "/arpd.db";
  
- int    ifnum;
- int    *ifvec;
+ int	ifnum;
+ int	*ifvec;
