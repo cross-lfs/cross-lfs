@@ -48,10 +48,15 @@ EOF</userinput></screen>
     <para os="h1">Coreutils does not build make-prime-list properly and the host cannot execute it. We build it using the host compiler so it can be executed for the generation of data required for the build.</para>
 
 <screen os="h2"><userinput>sed '/src_make_prime_list/d' -i Makefile
-    depbase=`echo src/make-prime-list.o | sed 's|[^/]*$|.deps/&amp;|;s|\.o$||'`;
-    gcc -std=gnu99  -I. -I./lib  -Ilib -I./lib -Isrc -I./src  -fdiagnostics-show-option -funit-at-a-time -g -O2 -MT src/make-prime-list.o -MD -MP -MF $depbase.Tpo -c -o src/make-prime-list.o src/make-prime-list.c
-    mv -f $depbase.Tpo $depbase.Po
-    gcc -std=gnu99 -fdiagnostics-show-option -funit-at-a-time -g -O2 -Wl,--as-needed  -o src/make-prime-list src/make-prime-list.o</userinput></screen>
+depbase=`echo src/make-prime-list.o | sed 's|[^/]*$|.deps/&amp;|;s|\.o$||'`;\
+    gcc -std=gnu99  -I. -I./lib  -Ilib -I./lib -Isrc -I./src  \
+    -fdiagnostics-show-option -funit-at-a-time -g -O2 -MT \
+    src/make-prime-list.o -MD -MP -MF $depbase.Tpo -c -o src/make-prime-list.o \
+    src/make-prime-list.c &amp;&amp;
+mv -f $depbase.Tpo $depbase.Po
+gcc -std=gnu99 -fdiagnostics-show-option -funit-at-a-time -g -O2 \
+    -Wl,--as-needed  -o src/make-prime-list src/make-prime-list.o
+</userinput></screen>
 
     <para os="h3">Remove the building of the hostname man page as it is affected by the previous commands.</para>
 
