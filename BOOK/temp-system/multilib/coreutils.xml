@@ -54,12 +54,12 @@
 
 <screen os="h2"><userinput>sed '/src_make_prime_list/d' -i Makefile
 depbase=`echo src/make-prime-list.o | sed 's|[^/]*$|.deps/&amp;|;s|\.o$||'`;\
-    gcc ${BUILD64} -std=gnu99  -I. -I./lib  -Ilib -I./lib -Isrc -I./src \
+    gcc -m64 -std=gnu99  -I. -I./lib  -Ilib -I./lib -Isrc -I./src \
     -fdiagnostics-show-option -funit-at-a-time -g -O2 -MT \
     src/make-prime-list.o -MD -MP -MF $depbase.Tpo -c -o src/make-prime-list.o \
     src/make-prime-list.c &amp;&amp;
 mv -f $depbase.Tpo $depbase.Po
-gcc ${BUILD64} -std=gnu99 -fdiagnostics-show-option -funit-at-a-time -g -O2 \
+gcc -m64 -std=gnu99 -fdiagnostics-show-option -funit-at-a-time -g -O2 \
     -Wl,--as-needed  -o src/make-prime-list src/make-prime-list.o
 </userinput></screen>
 
