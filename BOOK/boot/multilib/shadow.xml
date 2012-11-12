@@ -23,11 +23,10 @@
     <title>Installation of Shadow</title>
 
     <para os="b">Disable the installation of the <command>groups</command>
-    program and its man pages, as Coreutils provides a better version:</para>
+    program, as Coreutils provides a better version:</para>
 
-<screen os="c"><userinput>sed -i 's/groups$(EXEEXT) //' src/Makefile.in
-find man -name Makefile.in -exec sed -i '/groups\.1\.xml/d' '{}' \;
-find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;</userinput></screen>
+<screen os="c"><userinput>cp -v src/Makefile.in{,.orig}
+sed -e 's/groups$(EXEEXT) //' src/Makefile.in.orig > src/Makefile.in</userinput></screen>
 
     <para os="t1">The following cache entries set the values for tests that do
     not run while cross-compiling:</para>

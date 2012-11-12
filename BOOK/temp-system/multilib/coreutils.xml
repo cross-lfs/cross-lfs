@@ -52,7 +52,8 @@
     href="../common/coreutils.xml"
     xpointer="xpointer(//*[@os='h1'])"/>
 
-<screen os="h2"><userinput>sed '/src_make_prime_list/d' -i Makefile
+<screen os="h2"><userinput>cp -v Makefile{,.orig}
+sed '/src_make_prime_list/d' Makefile.orig > Makefile
 depbase=`echo src/make-prime-list.o | sed 's|[^/]*$|.deps/&amp;|;s|\.o$||'`;\
     gcc -m64 -std=gnu99  -I. -I./lib  -Ilib -I./lib -Isrc -I./src \
     -fdiagnostics-show-option -funit-at-a-time -g -O2 -MT \
