@@ -39,8 +39,7 @@
     </listitem>
 
     <listitem>
-      <para><emphasis role="strong">Coreutils-5.0</emphasis> (or Sh-Utils-2.0,
-      Textutils-2.0, and Fileutils-4.1)</para>
+      <para><emphasis role="strong">Coreutils-5.0</emphasis></para>
     </listitem>
 
     <listitem>
@@ -109,7 +108,9 @@
 
   </itemizedlist>
 
-  <para>To see whether your host system has all the appropriate versions, run the following:</para>
+  <para>To see whether your host system has all the appropriate versions,
+  create and run the following script. Read the output carefully for any
+  errors, and make sure to install any packages that are reported as not found.</para>
 
 <screen role="nodump"><userinput>cat &gt; version-check.sh &lt;&lt; "EOF"
 <literal>#!/bin/bash
@@ -135,8 +136,14 @@ patch --version | head -n1
 sed --version | head -n1
 tar --version | head -n1
 makeinfo --version | head -n1
-xz --version | head -n1</literal>
-
+xz --version | head -n1
+echo 'main(){}' | gcc -v -o /dev/null -x c - > dummy.log 2>&amp;1
+if grep -q ' error' dummy.log; then
+  echo "Compilation successful" &amp;&amp; rm dummy.log
+else
+  echo "Compilation FAILED - more development packages may need to be \
+ installed. If you like, you can also view dummy.log for more details."
+fi</literal>
 EOF
 
 bash version-check.sh</userinput></screen>
