@@ -24,7 +24,13 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-    <para os="c">Compile the package:</para>
+<para os ="a">Apply a sed which removes sulogin from being built and installed as sulogin is installed by util-linux:</para>
+
+<screen os="b"><userinput>cp -v src/Makefile{,.orig}
+sed -e 's/\ sulogin//;s/\ sulogin.8//' \
+    -e '/sulogin.*:/d' src/Makefile.orig > src/Makefile</userinput></screen>
+
+<para os ="c">Compile the package:</para>
 
 <screen os="d"><userinput>make -C src clobber
 make -C src</userinput></screen>
@@ -119,7 +125,7 @@ EOF</userinput></screen>
       <seglistitem>
         <seg>bootlogd, halt, init, killall5, last, lastb (link to last), mesg,
         mountpoint, pidof (link to killall5), poweroff (link to halt),
-        reboot (link to halt), runlevel, shutdown, sulogin,
+        reboot (link to halt), runlevel, shutdown, 
         telinit (link to init), utmpdump, and wall</seg>
       </seglistitem>
     </segmentedlist>
@@ -271,18 +277,6 @@ EOF</userinput></screen>
           and notifying all logged-in users</para>
           <indexterm zone="ch-system-sysvinit shutdown">
             <primary sortas="b-shutdown">shutdown</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="sulogin">
-        <term><command>sulogin</command></term>
-        <listitem>
-          <para>Allows <emphasis>root</emphasis> to log in; it is normally
-          invoked by <command>init</command> when the system goes into single
-          user mode</para>
-          <indexterm zone="ch-system-sysvinit sulogin">
-            <primary sortas="b-sulogin">sulogin</primary>
           </indexterm>
         </listitem>
       </varlistentry>
