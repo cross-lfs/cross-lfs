@@ -35,6 +35,26 @@
 <screen os="b"><userinput>./configure --prefix=/cross-tools \
     --without-debug --without-shared</userinput></screen>
 
+    <variablelist os="b1">
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry os="b2">
+        <term><parameter>--without-debug</parameter></term>
+        <listitem>
+          <para>Tells Ncurses to build without debugging information.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="b2">
+        <term><parameter>--without-shared</parameter></term>
+        <listitem>
+          <para>This prevents Ncurses from building its shared libraries, which
+          are not needed at this time.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
     <para os="c">Only one binary is needed for the Cross-Tools. Build the
     headers and then build <command>tic</command>:</para>
 
