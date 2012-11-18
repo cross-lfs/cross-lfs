@@ -24,7 +24,7 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-<para os ="a">Apply a sed which removes sulogin, mountpoint, utmpdump, and wall from being built and installed as they are provided by util-linux:</para>
+<para os ="a">Apply a sed which removes sulogin, mountpoint, and wall from being built and installed as they are provided by util-linux:</para>
 
 <screen os="b"><userinput>cp -v src/Makefile{,.orig}
 sed -e 's/\ sulogin//;s/\ sulogin.8//' \
@@ -277,17 +277,6 @@ EOF</userinput></screen>
           <para>Tells <command>init</command> which run-level to change to</para>
           <indexterm zone="ch-system-sysvinit telinit">
             <primary sortas="b-telinit">telinit</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="utmpdump">
-        <term><command>utmpdump</command></term>
-        <listitem>
-          <para>Displays the content of the given login file in a more
-          user-friendly format</para>
-          <indexterm zone="ch-system-sysvinit utmpdump">
-            <primary sortas="b-utmpdump">utmpdump</primary>
           </indexterm>
         </listitem>
       </varlistentry>
