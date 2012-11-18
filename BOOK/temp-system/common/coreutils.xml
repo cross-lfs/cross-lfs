@@ -45,7 +45,7 @@ EOF</userinput></screen>
     --enable-install-program=hostname --cache-file=config.cache</userinput></screen>
 
 <!--- Hack for coreutils to build for target executables which can't be ran with the host. -->
-    <para os="h1">Coreutils does not build make-prime-list properly and the target host may not be able to execute it. Build it using the host compiler so it can be ran for the generation of data required for the build.</para>
+    <para os="h1">Coreutils does not build make-prime-list properly and the build host may not be able to execute the target binary. Build it using the host compiler so it can be ran for the generation of data required for the build.</para>
 
 <screen os="h2"><userinput>cp -v Makefile{,.orig}
 sed '/src_make_prime_list/d' Makefile.orig > Makefile
