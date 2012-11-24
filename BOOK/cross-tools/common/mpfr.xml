@@ -28,6 +28,26 @@
 ./configure --prefix=/cross-tools \
     --enable-shared --disable-static --with-gmp=/cross-tools</userinput></screen>
 
+    <variablelist os="b1">
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry>
+        <term><parameter>LDFLAGS="-Wl,-rpath,/cross-tools/lib"</parameter></term>
+        <listitem>
+          <para>This tells <command>configure</command> to search in
+          <filename class="directory">/cross-tools</filename> for libraries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-gmp=/cross-tools</parameter></term>
+        <listitem>
+          <para>This tells <command>configure</command> where to find GMP.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>

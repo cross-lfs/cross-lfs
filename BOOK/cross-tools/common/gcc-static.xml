@@ -76,37 +76,12 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
   --enable-languages=c --disable-multilib --enable-cloog-backend=isl</userinput></screen>
 
     <variablelist os="am">
-      <title>The meaning of the configure options:</title>
-
-      <varlistentry>
-        <term><parameter>--prefix=/cross-tools</parameter></term>
-        <listitem>
-          <para>This tells the configure script to prepare to install the 
-          package in the <filename class="directory">/cross-tools</filename>
-          directory.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--host=${CLFS_HOST}</parameter></term>
-        <listitem>
-          <para>When used with --target, this creates a cross-architecture
-          executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST}.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--target=${CLFS_TARGET}</parameter></term>
-        <listitem>
-          <para>When used with --host, this creates a cross-architecture
-          executable that creates files for ${CLFS_TARGET} but runs on ${CLFS_HOST}.</para>
-        </listitem>
-      </varlistentry>
+      <title>The meaning of the new configure options:</title>
 
       <varlistentry>
         <term><parameter>--with-sysroot=${CLFS}</parameter></term>
         <listitem>
-          <para>Tells GCC to concider ${CLFS} as the root file system.</para>
+          <para>Tells GCC to consider ${CLFS} as the root file system.</para>
         </listitem>
       </varlistentry>
 
@@ -126,13 +101,6 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
         <listitem>
           <para>This disables internationalization as i18n is not needed for the 
           cross-compile tools.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--disable-shared</parameter></term>
-        <listitem>
-          <para>Disables the creation of the shared libraries.</para>
         </listitem>
       </varlistentry>
 
@@ -201,9 +169,22 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
 
 <screen os="ao"><userinput>make all-gcc all-target-libgcc</userinput></screen>
 
-    <para os="ap">Install the package:</para>
+    <variablelist os="ap">
+      <title>The meaning of the new make options:</title>
 
-<screen os="aq"><userinput>make install-gcc install-target-libgcc</userinput></screen>
+      <varlistentry>
+        <term><parameter>all-gcc all-target-libgcc</parameter></term>
+        <listitem>
+          <para>Compiles only the parts of GCC that are needed at this time,
+          rather than the full package.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="aq">Install the package:</para>
+
+<screen os="ar"><userinput>make install-gcc install-target-libgcc</userinput></screen>
 
   </sect2>
 
