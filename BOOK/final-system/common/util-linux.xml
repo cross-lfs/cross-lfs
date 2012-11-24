@@ -44,8 +44,7 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
     <para os="a">Prepare Util-linux for compilation:</para>
 
 <screen os="b"><userinput>./configure --enable-arch \
-    --enable-write --disable-wall \
-    --disable-login --disable-su</userinput></screen>
+    --enable-write --disable-login --disable-su</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
@@ -67,10 +66,11 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-wall</parameter></term>
+        <term><parameter>--disable-login --disable-su</parameter></term>
         <listitem>
-          <para>Disables building the <command>wall</command> program,
-          as the Sysvinit package installs its own version.</para>
+          <para>Disables building the <command>login</command> and
+          <command>su</command> programs, as the Shadow package installs its
+          own versions.</para>
         </listitem>
       </varlistentry>
 
