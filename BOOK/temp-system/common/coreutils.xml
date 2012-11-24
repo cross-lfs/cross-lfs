@@ -44,6 +44,19 @@ EOF</userinput></screen>
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --enable-install-program=hostname --cache-file=config.cache</userinput></screen>
 
+    <variablelist os="be1">
+      <title>The meaning of the new configure option:</title>
+
+      <varlistentry>
+        <term><parameter>--enable-install-program=hostname</parameter></term>
+        <listitem>
+          <para>Tells Coreutils to install <command>hostname</command>,
+          which is needed for the Perl testsuite.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
 <!--- Hack for coreutils to build for target executables which can't be ran with the host. -->
     <para os="h1">Coreutils does not build make-prime-list properly and the build host may not be able to execute the target binary. Build it using the host compiler so it can be ran for the generation of data required for the build.</para>
 
