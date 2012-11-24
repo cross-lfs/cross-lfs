@@ -24,12 +24,11 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-<para os ="a">Apply a sed which removes sulogin, mountpoint, and wall from being built and installed as they are provided by util-linux:</para>
+<para os ="a">Apply a sed which disables sulogin, mountpoint, wall, and
+utmpdump from being built and installed as they are provided by Util-linux:</para>
 
-<screen os="b"><userinput>cp -v src/Makefile{,.orig}
-sed -e 's/\ sulogin//;s/\ sulogin.8//' \
-    -e '/sulogin.*:/d' '/utmpdump/d' \
-    -e '/mountpoint/d' src/Makefile.orig > src/Makefile</userinput></screen>
+<screen os="b"><userinput>sed -i -e 's/\ sulogin[^ ]*//' \
+    -e '/utmpdump/d' -e '/mountpoint/d' src/Makefile</userinput></screen>
 
 <para os ="c">Compile the package:</para>
 
