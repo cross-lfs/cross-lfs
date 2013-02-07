@@ -72,7 +72,7 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
     the tests that are meant to be run as user
     <systemitem class="username">root</systemitem>:</para>
 
-<screen os="k"><userinput>make NON_ROOT_USERNAME=dummy check-root</userinput></screen>
+<screen os="k"><userinput>make NON_ROOT_USERNAME=dummy SUBDIRS= check-root</userinput></screen>
 
     <para os="l">The testsuite will now be run as the
     <systemitem class="username">dummy</systemitem> user. Fix the permissions
