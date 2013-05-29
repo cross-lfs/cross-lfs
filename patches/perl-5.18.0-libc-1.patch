@@ -15,29 +15,29 @@ Rename for 5.16.2 by William Harrington on 2012-11-01
 
 Rediffed: Against 5.18.0 by William Harrington on 2013-05-27
 
-diff -Naur perl-5.18.0/hints/linux.sh perl-5.18.0.new/hints/linux.sh
---- perl-5.18.0/hints/linux.sh	2013-05-27 22:07:36.081174614 +0000
-+++ perl-5.18.0.new/hints/linux.sh	2013-05-01 02:52:55.000000000 +0000
+diff -Naur perl-5.18.0.orig/hints/linux.sh perl-5.18.0/hints/linux.sh
+--- perl-5.18.0.orig/hints/linux.sh	2013-05-01 02:52:55.000000000 +0000
++++ perl-5.18.0/hints/linux.sh	2013-05-29 13:55:42.871771313 +0000
 @@ -66,9 +66,9 @@
  # We don't use __GLIBC__ and  __GLIBC_MINOR__ because they
  # are insufficiently precise to distinguish things like
  # libc-2.0.6 and libc-2.0.7.
--if test -L ${prefix}/lib/libc.so.6; then
--    libc=`ls -l ${prefix}/lib/libc.so.6 | awk '{print $NF}'`
--    libc=${prefix}/lib/$libc
-+if test -L /lib/libc.so.6; then
-+    libc=`ls -l /lib/libc.so.6 | awk '{print $NF}'`
-+    libc=/lib/$libc
+-if test -L /lib/libc.so.6; then
+-    libc=`ls -l /lib/libc.so.6 | awk '{print $NF}'`
+-    libc=/lib/$libc
++if test -L ${prefix}/lib/libc.so.6; then
++    libc=`ls -l ${prefix}/lib/libc.so.6 | awk '{print $NF}'`
++    libc=${prefix}/lib/$libc
  fi
  
  # Configure may fail to find lstat() since it's a static/inline
-@@ -456,9 +456,3 @@
+@@ -456,3 +456,9 @@
      libswanted="$libswanted pthread"
      ;;
  esac
--
--locincpth=""
--loclibpth=""
--glibpth="${prefix}/lib"
--usrinc="${prefix}/include"
--
++
++locincpth=""
++loclibpth=""
++glibpth="${prefix}/lib"
++usrinc="${prefix}/include"
++
