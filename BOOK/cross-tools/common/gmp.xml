@@ -34,18 +34,11 @@
 
     <para os="a">Prepare GMP for compilation:</para>
 
-<screen os="b"><userinput>CPPFLAGS=-fexceptions ./configure \
-    --prefix=/cross-tools --enable-cxx --disable-static</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/cross-tools --enable-cxx \
+  --disable-static</userinput></screen>
 
     <variablelist os="b1">
       <title>The meaning of the new configure options:</title>
-
-      <varlistentry>
-        <term><parameter>CPPFLAGS=-fexceptions</parameter></term>
-        <listitem>
-          <para>Allows GMP to handle C++ exceptions thrown by PPL.</para>
-        </listitem>
-      </varlistentry>
 
       <varlistentry>
         <term><parameter>--enable-cxx</parameter></term>
