@@ -1,0 +1,22 @@
+Submitted By: William Harrington kb0iic at cross-lfs dot org.
+Date: 2013-01-13
+Initial Package Version: 2.15
+Upstream Status: Unknown
+Origin: http://sourceware.org/bugzilla/show_bug.cgi?id=15007
+Description: Fixes a mismatch of guards around qcvt and friends.
+
+Redone for eglibc-2.17 on 2013-06-05
+
+diff -Naur eglibc-2.17.orig/stdlib/bits/stdlib-ldbl.h eglibc-2.17/stdlib/bits/stdlib-ldbl.h
+--- eglibc-2.17.orig/stdlib/bits/stdlib-ldbl.h	2013-06-05 16:56:48.000000000 +0000
++++ eglibc-2.17/stdlib/bits/stdlib-ldbl.h	2013-06-05 18:46:39.012840463 +0000
+@@ -30,7 +30,8 @@
+ __LDBL_REDIR1_DECL (strtold_l, strtod_l)
+ #endif
+ 
+-#if defined __USE_SVID || defined __USE_XOPEN_EXTENDED
++#if (defined __USE_XOPEN_EXTENDED && !defined __USE_XOPEN2K8) \
++    || defined __USE_SVID 
+ # ifdef __USE_MISC
+ __LDBL_REDIR1_DECL (qecvt, ecvt)
+ __LDBL_REDIR1_DECL (qfcvt, fcvt)
