@@ -26,11 +26,6 @@
     the method suggested in this book puts the stability of the system at
     risk.</para>
 
-    <para os="db">Disable linking to <filename>libgcc_eh</filename>:</para>
-
-<screen os="dc"><userinput>cp -v Makeconfig{,.orig}
-sed -e 's/-lgcc_eh//g' Makeconfig.orig > Makeconfig</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/eglibc.xml"
     xpointer="xpointer(//*[@os='e'])"/>
@@ -59,7 +54,8 @@ EOF</userinput></screen>
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --with-tls --enable-kernel=2.6.32 \
     --with-__thread --with-binutils=/cross-tools/bin \
-    --with-headers=/tools/include --cache-file=config.cache</userinput></screen>
+    --with-headers=/tools/include --enable-obsolete-rpc \
+    --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
@@ -176,14 +172,6 @@ EOF</userinput></screen>
 
 <para  os="do"><parameter>inst_vardbdir=...</parameter> ensures that db-Makefile is not
 	installed on the host system</para>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../final-system/common/eglibc.xml"
-    xpointer="xpointer(//*[@os='ra'])"/>
-
-<screen os="rb"><userinput>cp -v ../eglibc-&eglibc-version;/sunrpc/rpc/*.h /tools/include/rpc
-cp -v ../eglibc-&eglibc-version;/sunrpc/rpcsvc/*.h /tools/include/rpcsvc
-cp -v ../eglibc-&eglibc-version;/nis/rpcsvc/*.h /tools/include/rpcsvc</userinput></screen>
 
   </sect2>
 

@@ -57,11 +57,6 @@ sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
 
-    <para os="p3">The following patch fixes an issue that can cause
-      ALSA to crash:</para>
-      
-<screen os="p4"><userinput>patch -Np1 -i ../&eglibc-fixes-patch;</userinput></screen>
-
     <para os="b">The EGLIBC build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
     pointing at <filename class="directory">/tools</filename>. The specs
@@ -78,7 +73,8 @@ cd ../eglibc-build</userinput></screen>
     <para os="g">Prepare EGLIBC for compilation:</para>
 
 <screen os="h"><userinput>../eglibc-&eglibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/lib/eglibc</userinput></screen>
+    --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/lib/eglibc \
+    --enable-obsolete-rpc</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the new configure option:</title>
@@ -150,12 +146,6 @@ make -k check 2&gt;&amp;1 | tee eglibc-check-log; grep Error eglibc-check-log</u
     <para os="s">Install the package:</para>
 
 <screen os="t"><userinput>make install</userinput></screen>
-
-    <para os="ra">Install NIS and RPC related headers that are not installed by default.</para>
-
-<screen os="rb"><userinput>cp -v ../eglibc-&eglibc-version;/sunrpc/rpc/*.h /usr/include/rpc
-cp -v ../eglibc-&eglibc-version;/sunrpc/rpcsvc/*.h /usr/include/rpcsvc
-cp -v ../eglibc-&eglibc-version;/nis/rpcsvc/*.h /usr/include/rpcsvc</userinput></screen>
 
   </sect2>
 
@@ -248,6 +238,63 @@ rpc: files
 
 # End /etc/nsswitch.conf</literal>
 EOF</userinput></screen>
+
+    <para>Install timezone data:</para>
+<screen><userinput>tar -xf ../tzdata&tzdata-version;.tar.gz
+
+ZONEINFO=/usr/share/zoneinfo
+mkdir -pv $ZONEINFO/{posix,right}
+
+for tz in etcetera southamerica northamerica europe africa antarctica  \
+          asia australasia backward pacificnew solar87 solar88 solar89 \
+          systemv; do
+    zic -L /dev/null   -d $ZONEINFO       -y "sh yearistype.sh" ${tz}
+    zic -L /dev/null   -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz}
+    zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
+done
+
+cp -v zone.tab iso3166.tab $ZONEINFO
+zic -d $ZONEINFO -p America/New_York
+unset ZONEINFO</userinput></screen>
+
+    <variablelist>
+      <title>The meaning of the zic commands:</title>
+
+      <varlistentry>
+        <term><parameter>zic -L /dev/null ...</parameter></term>
+        <listitem>
+          <para>This creates posix timezones, without any leap seconds.  It is
+          conventional to put these in both
+          <filename class="directory">zoneinfo</filename> and
+          <filename class="directory">zoneinfo/posix</filename>. It is
+          necessary to put the POSIX timezones in
+          <filename class="directory">zoneinfo</filename>, otherwise various
+          test-suites will report errors. On an embedded system, where space is
+          tight and you do not intend to ever update the timezones, you could save
+          1.9MB by not using the <filename class="directory">posix</filename>
+          directory, but some applications or test-suites might give less good
+          results</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>zic -L leapseconds ...</parameter></term>
+        <listitem>
+          <para>This creates right timezones, including leap seconds. On an
+          embedded system, where space is tight and you do not intend to
+          ever update the timezones, or care about the correct time, you could
+          save 1.9MB by omitting the <filename class="directory">right</filename>
+          directory.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>zic ... -p ...</parameter></term>
+        <listitem>
+          <para>This creates the <filename>posixrules</filename> file. We use
+          New York because POSIX requires the daylight savings time rules
+          to be in accordance with US rules.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
     <para>To determine the local time zone, run the following script:</para>
 

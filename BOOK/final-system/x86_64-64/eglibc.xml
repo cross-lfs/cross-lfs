@@ -40,14 +40,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='l4'])"/>
-    
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='p3'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='p4'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
@@ -73,7 +65,8 @@
 <screen os="h"><userinput>CFLAGS="-mtune=generic -g -O2" \
     ../eglibc-&eglibc-version;/configure --prefix=/usr \
     --disable-profile --enable-kernel=2.6.32 \
-    --libexecdir=/usr/lib/eglibc --libdir=/usr/lib</userinput></screen>
+    --libexecdir=/usr/lib/eglibc --libdir=/usr/lib \
+    --enable-obsolete-rpc</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the new configure option:</title>
@@ -154,14 +147,6 @@ sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userin
     the backup.</para>
 
     <screen><userinput>rm -v /usr/bin/ldd.bak</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='ra'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='rb'])"/>
 
   </sect2>
 
