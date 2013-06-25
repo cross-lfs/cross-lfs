@@ -31,7 +31,7 @@
 
 <screen os="b"><userinput>CC="gcc -isystem /usr/include" \
 LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
-  ./configure --prefix=/usr --enable-shared</userinput></screen>
+  ./configure --prefix=/usr --enable-shared --with-isl=system</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -62,8 +62,8 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
       <seglistitem>
         <seg>cloog</seg>
-        <seg>libcloog-isl.[a,so], libisl.[a,so]</seg>
-        <seg>/usr/include/cloog, /usr/include/isl</seg>
+        <seg>libcloog-isl.[a,so]</seg>
+        <seg>/usr/include/cloog</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -88,16 +88,6 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           <para>Isl backend for CLooG.</para>
           <indexterm zone="ch-system-cloog libcloog-isl">
             <primary sortas="c-libcloog-isl">libcloog-isl</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libisl">
-        <term><filename class="libraryfile">libisl</filename></term>
-        <listitem>
-          <para>The Integer Set Library.</para>
-          <indexterm zone="ch-system-cloog libisl">
-            <primary sortas="c-libisl">libisl</primary>
           </indexterm>
         </listitem>
       </varlistentry>
