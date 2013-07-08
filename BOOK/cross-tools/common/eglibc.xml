@@ -34,15 +34,10 @@
     href="../../final-system/common/eglibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para os="dd">The following lines need to be added to
-    <filename>config.cache</filename> for EGLIBC to support NPTL:</para>
+    <para os="dd">Add the following to <filename>config.cache</filename>
+    to disable ssp when building EGLIBC:</para>
 
-<screen os="de"><userinput>cat &gt; config.cache &lt;&lt; "EOF"
-libc_cv_forced_unwind=yes
-libc_cv_c_cleanup=yes
-libc_cv_gnu89_inline=yes
-libc_cv_ssp=no
-EOF</userinput></screen>
+<screen os="de"><userinput>echo "libc_cv_ssp=no" &gt; config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/eglibc.xml"
