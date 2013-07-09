@@ -22,16 +22,10 @@
   <sect2 role="installation">
     <title>Installation of Patch</title>
 
-    <para os="cc1">When cross-compiling configure cannot properly detect the
-    existance of certain features. Override this behaviour:</para>
-
-<screen os="cc2"><userinput>echo "ac_cv_func_strnlen_working=yes" > config.cache</userinput></screen>
-
     <para os="a">Prepare Patch for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --cache-file=config.cache</userinput></screen>
+    --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
