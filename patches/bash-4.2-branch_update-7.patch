@@ -1,13 +1,13 @@
 Submitted By: William Harrington (kb0iic at gmail dot com)
-Date: 11-04-2012
+Date: 05-08-2013
 Initial Package Version: 4.2
 Origin: Upstream
 Upstream Status: Applied
-Description: Contains all upstream patches up to 4.2-039
+Description: Contains all upstream patches up to 4.2-045
 
 diff -Naur bash-4.2.orig/assoc.c bash-4.2/assoc.c
 --- bash-4.2.orig/assoc.c	2009-08-06 00:19:40.000000000 +0000
-+++ bash-4.2/assoc.c	2012-11-04 22:45:00.778727333 +0000
++++ bash-4.2/assoc.c	2013-03-12 21:55:21.530771482 +0000
 @@ -77,6 +77,11 @@
    b = hash_search (key, hash, HASH_CREATE);
    if (b == 0)
@@ -22,7 +22,7 @@ diff -Naur bash-4.2.orig/assoc.c bash-4.2/assoc.c
    return (0);
 diff -Naur bash-4.2.orig/bashline.c bash-4.2/bashline.c
 --- bash-4.2.orig/bashline.c	2011-01-16 20:32:47.000000000 +0000
-+++ bash-4.2/bashline.c	2012-11-04 22:45:00.848727141 +0000
++++ bash-4.2/bashline.c	2013-03-12 21:55:21.646771944 +0000
 @@ -121,6 +121,9 @@
  static int filename_completion_ignore __P((char **));
  static int bash_push_line __P((void));
@@ -308,7 +308,7 @@ diff -Naur bash-4.2.orig/bashline.c bash-4.2/bashline.c
  
 diff -Naur bash-4.2.orig/bashline.h bash-4.2/bashline.h
 --- bash-4.2.orig/bashline.h	2009-01-04 19:32:22.000000000 +0000
-+++ bash-4.2/bashline.h	2012-11-04 22:45:00.848727141 +0000
++++ bash-4.2/bashline.h	2013-03-12 21:55:21.646771944 +0000
 @@ -33,10 +33,15 @@
  extern void bashline_reinitialize __P((void));
  extern int bash_re_edit __P((char *));
@@ -327,7 +327,7 @@ diff -Naur bash-4.2.orig/bashline.h bash-4.2/bashline.h
  extern char *bash_groupname_completion_function __P((const char *, int));
 diff -Naur bash-4.2.orig/builtins/declare.def bash-4.2/builtins/declare.def
 --- bash-4.2.orig/builtins/declare.def	2010-05-30 22:25:21.000000000 +0000
-+++ bash-4.2/builtins/declare.def	2012-11-04 22:45:00.808727251 +0000
++++ bash-4.2/builtins/declare.def	2013-03-12 21:55:21.587771709 +0000
 @@ -513,6 +513,11 @@
  	      *subscript_start = '[';	/* ] */
  	      var = assign_array_element (name, value, 0);	/* XXX - not aflags */
@@ -342,7 +342,7 @@ diff -Naur bash-4.2.orig/builtins/declare.def bash-4.2/builtins/declare.def
  	    {
 diff -Naur bash-4.2.orig/builtins/fc.def bash-4.2/builtins/fc.def
 --- bash-4.2.orig/builtins/fc.def	2010-05-30 22:25:38.000000000 +0000
-+++ bash-4.2/builtins/fc.def	2012-11-04 22:45:00.775394009 +0000
++++ bash-4.2/builtins/fc.def	2013-03-12 21:55:21.521771446 +0000
 @@ -304,7 +304,7 @@
    last_hist = i - rh - hist_last_line_added;
  
@@ -380,7 +380,7 @@ diff -Naur bash-4.2.orig/builtins/fc.def bash-4.2/builtins/fc.def
    if (command == NULL)
 diff -Naur bash-4.2.orig/builtins/mapfile.def bash-4.2/builtins/mapfile.def
 --- bash-4.2.orig/builtins/mapfile.def	2010-05-30 02:09:47.000000000 +0000
-+++ bash-4.2/builtins/mapfile.def	2012-11-04 22:45:01.008726689 +0000
++++ bash-4.2/builtins/mapfile.def	2013-03-12 21:55:21.675772060 +0000
 @@ -195,13 +195,9 @@
    /* Reset the buffer for bash own stream */
    interrupt_immediately++;
@@ -411,7 +411,7 @@ diff -Naur bash-4.2.orig/builtins/mapfile.def bash-4.2/builtins/mapfile.def
    xfree (line);
 diff -Naur bash-4.2.orig/builtins/printf.def bash-4.2/builtins/printf.def
 --- bash-4.2.orig/builtins/printf.def	2010-11-23 15:02:55.000000000 +0000
-+++ bash-4.2/builtins/printf.def	2012-11-04 22:45:00.822060547 +0000
++++ bash-4.2/builtins/printf.def	2013-03-12 21:55:21.615771821 +0000
 @@ -255,6 +255,8 @@
  #endif
  	    {
@@ -433,8 +433,32 @@ diff -Naur bash-4.2.orig/builtins/printf.def bash-4.2/builtins/printf.def
  		free (timefmt);
 diff -Naur bash-4.2.orig/builtins/read.def bash-4.2/builtins/read.def
 --- bash-4.2.orig/builtins/read.def	2011-01-04 16:43:36.000000000 +0000
-+++ bash-4.2/builtins/read.def	2012-11-04 22:45:01.032059959 +0000
-@@ -642,6 +642,12 @@
++++ bash-4.2/builtins/read.def	2013-03-12 21:55:21.734772295 +0000
+@@ -385,10 +385,20 @@
+ 	{
+ 	  /* Tricky.  The top of the unwind-protect stack is the free of
+ 	     input_string.  We want to run all the rest and use input_string,
+-	     so we have to remove it from the stack. */
+-	  remove_unwind_protect ();
+-	  run_unwind_frame ("read_builtin");
++	     so we have to save input_string temporarily, run the unwind-
++	     protects, then restore input_string so we can use it later. */
++
+ 	  input_string[i] = '\0';	/* make sure it's terminated */
++	  if (i == 0)
++	    {
++	      t = (char *)xmalloc (1);
++	      t[0] = 0;
++	    }
++	  else
++	    t = savestring (input_string);
++
++	  run_unwind_frame ("read_builtin");
++	  input_string = t;
+ 	  retval = 128+SIGALRM;
+ 	  goto assign_vars;
+ 	}
+@@ -642,6 +652,12 @@
  	  xfree (input_string);
  	  return EXECUTION_FAILURE;	/* readonly or noassign */
  	}
@@ -447,7 +471,7 @@ diff -Naur bash-4.2.orig/builtins/read.def bash-4.2/builtins/read.def
        array_flush (array_cell (var));
  
        alist = list_string (input_string, ifs_chars, 0);
-@@ -731,7 +737,7 @@
+@@ -731,7 +747,7 @@
  	      xfree (t1);
  	    }
  	  else
@@ -456,7 +480,7 @@ diff -Naur bash-4.2.orig/builtins/read.def bash-4.2/builtins/read.def
  	}
        else
  	{
-@@ -785,14 +791,14 @@
+@@ -785,14 +801,14 @@
      }
  #endif
  
@@ -475,7 +499,7 @@ diff -Naur bash-4.2.orig/builtins/read.def bash-4.2/builtins/read.def
      {
 diff -Naur bash-4.2.orig/builtins/shopt.def bash-4.2/builtins/shopt.def
 --- bash-4.2.orig/builtins/shopt.def	2010-07-03 02:42:44.000000000 +0000
-+++ bash-4.2/builtins/shopt.def	2012-11-04 22:45:00.848727141 +0000
++++ bash-4.2/builtins/shopt.def	2013-03-12 21:55:21.647771948 +0000
 @@ -61,6 +61,10 @@
  #include "common.h"
  #include "bashgetopt.h"
@@ -535,7 +559,7 @@ diff -Naur bash-4.2.orig/builtins/shopt.def bash-4.2/builtins/shopt.def
  
 diff -Naur bash-4.2.orig/command.h bash-4.2/command.h
 --- bash-4.2.orig/command.h	2010-08-02 23:36:51.000000000 +0000
-+++ bash-4.2/command.h	2012-11-04 22:45:00.825393871 +0000
++++ bash-4.2/command.h	2013-03-12 21:55:21.619771836 +0000
 @@ -97,6 +97,7 @@
  #define W_HASCTLESC	0x200000	/* word contains literal CTLESC characters */
  #define W_ASSIGNASSOC	0x400000	/* word looks like associative array assignment */
@@ -546,7 +570,7 @@ diff -Naur bash-4.2.orig/command.h bash-4.2/command.h
  #define SUBSHELL_ASYNC	0x01	/* subshell caused by `command &' */
 diff -Naur bash-4.2.orig/doc/bash.1 bash-4.2/doc/bash.1
 --- bash-4.2.orig/doc/bash.1	2011-01-16 20:31:39.000000000 +0000
-+++ bash-4.2/doc/bash.1	2012-11-04 22:45:00.855393789 +0000
++++ bash-4.2/doc/bash.1	2013-03-12 21:55:21.650771960 +0000
 @@ -8948,6 +8948,16 @@
  quoted.  This is the behavior of posix mode through version 4.1.
  The default bash behavior remains as in previous versions.
@@ -566,7 +590,7 @@ diff -Naur bash-4.2.orig/doc/bash.1 bash-4.2/doc/bash.1
  .B bash
 diff -Naur bash-4.2.orig/doc/bashref.texi bash-4.2/doc/bashref.texi
 --- bash-4.2.orig/doc/bashref.texi	2011-01-16 20:31:57.000000000 +0000
-+++ bash-4.2/doc/bashref.texi	2012-11-04 22:45:00.858727113 +0000
++++ bash-4.2/doc/bashref.texi	2013-03-12 21:55:21.653771972 +0000
 @@ -4535,6 +4535,13 @@
  quoted.  This is the behavior of @sc{posix} mode through version 4.1.
  The default Bash behavior remains as in previous versions.
@@ -583,7 +607,7 @@ diff -Naur bash-4.2.orig/doc/bashref.texi bash-4.2/doc/bashref.texi
  attempts spelling correction on directory names during word completion 
 diff -Naur bash-4.2.orig/error.c bash-4.2/error.c
 --- bash-4.2.orig/error.c	2009-08-22 02:31:31.000000000 +0000
-+++ bash-4.2/error.c	2012-11-04 22:45:00.822060547 +0000
++++ bash-4.2/error.c	2013-03-12 21:55:21.610771801 +0000
 @@ -200,7 +200,11 @@
  
    va_end (args);
@@ -599,7 +623,7 @@ diff -Naur bash-4.2.orig/error.c bash-4.2/error.c
  void
 diff -Naur bash-4.2.orig/execute_cmd.c bash-4.2/execute_cmd.c
 --- bash-4.2.orig/execute_cmd.c	2011-02-09 22:32:25.000000000 +0000
-+++ bash-4.2/execute_cmd.c	2012-11-04 22:45:00.835393844 +0000
++++ bash-4.2/execute_cmd.c	2013-03-12 21:55:21.627771868 +0000
 @@ -2196,6 +2196,7 @@
    if (ignore_return && cmd)
      cmd->flags |= CMD_IGNORE_RETURN;
@@ -699,7 +723,7 @@ diff -Naur bash-4.2.orig/execute_cmd.c bash-4.2/execute_cmd.c
  /* Return 1 if the file found by searching $PATH for PATHNAME, defaulting
 diff -Naur bash-4.2.orig/expr.c bash-4.2/expr.c
 --- bash-4.2.orig/expr.c	2010-12-21 16:12:13.000000000 +0000
-+++ bash-4.2/expr.c	2012-11-04 22:45:01.038726607 +0000
++++ bash-4.2/expr.c	2013-03-12 21:55:21.706772183 +0000
 @@ -476,19 +476,23 @@
  
        if (special)
@@ -768,7 +792,7 @@ diff -Naur bash-4.2.orig/expr.c bash-4.2/expr.c
        *cp = c;
 diff -Naur bash-4.2.orig/lib/glob/glob.c bash-4.2/lib/glob/glob.c
 --- bash-4.2.orig/lib/glob/glob.c	2009-11-14 23:39:30.000000000 +0000
-+++ bash-4.2/lib/glob/glob.c	2012-11-04 22:45:00.862060437 +0000
++++ bash-4.2/lib/glob/glob.c	2013-03-12 21:55:21.658771992 +0000
 @@ -200,8 +200,11 @@
    wchar_t *pat_wc, *dn_wc;
    size_t pat_n, dn_n;
@@ -807,7 +831,7 @@ diff -Naur bash-4.2.orig/lib/glob/glob.c bash-4.2/lib/glob/glob.c
    for (i = j = 0; wpathname && wpathname[i]; )
 diff -Naur bash-4.2.orig/lib/glob/gmisc.c bash-4.2/lib/glob/gmisc.c
 --- bash-4.2.orig/lib/glob/gmisc.c	2011-02-05 21:11:17.000000000 +0000
-+++ bash-4.2/lib/glob/gmisc.c	2012-11-04 22:45:00.748727415 +0000
++++ bash-4.2/lib/glob/gmisc.c	2013-03-12 21:55:21.465771223 +0000
 @@ -77,8 +77,8 @@
       wchar_t *wpat;
       size_t wmax;
@@ -1010,7 +1034,7 @@ diff -Naur bash-4.2.orig/lib/glob/gmisc.c bash-4.2/lib/glob/gmisc.c
      }
 diff -Naur bash-4.2.orig/lib/glob/xmbsrtowcs.c bash-4.2/lib/glob/xmbsrtowcs.c
 --- bash-4.2.orig/lib/glob/xmbsrtowcs.c	2010-05-30 22:36:27.000000000 +0000
-+++ bash-4.2/lib/glob/xmbsrtowcs.c	2012-11-04 22:45:00.862060437 +0000
++++ bash-4.2/lib/glob/xmbsrtowcs.c	2013-03-12 21:55:21.736772303 +0000
 @@ -35,6 +35,8 @@
  
  #if HANDLE_MULTIBYTE
@@ -1059,7 +1083,7 @@ diff -Naur bash-4.2.orig/lib/glob/xmbsrtowcs.c bash-4.2/lib/glob/xmbsrtowcs.c
  
  	  wstmp = (wchar_t *) realloc (wsbuf, wsbuf_size * sizeof (wchar_t));
  	  if (wstmp == NULL)
-@@ -199,10 +213,18 @@
+@@ -199,10 +213,30 @@
  	}
  
        /* Perform the conversion. This is assumed to return 'wcslength'.
@@ -1069,19 +1093,31 @@ diff -Naur bash-4.2.orig/lib/glob/xmbsrtowcs.c bash-4.2/lib/glob/xmbsrtowcs.c
 +      n = mbsnrtowcs(wsbuf+wcnum, &p, nms, wsbuf_size-wcnum, &state);
  
 -      wcnum += wcslength;
++      if (n == 0 && p == 0)
++	{
++	  wsbuf[wcnum] = L'\0';
++	  break;
++	}
++
 +      /* Compensate for taking single byte on wcs conversion failure above. */
 +      if (wcslength == 1 && (n == 0 || n == (size_t)-1))
 +	{
 +	  state = tmp_state;
 +	  p = tmp_p;
-+	  wsbuf[wcnum++] = *p++;
++	  wsbuf[wcnum] = *p;
++	  if (*p == 0)
++	    break;
++	  else
++	    {
++	      wcnum++; p++;
++	    }
 +	}
 +      else
 +        wcnum += wcslength;
  
        if (mbsinit (&state) && (p != NULL) && (*p == '\\'))
  	{
-@@ -230,8 +252,6 @@
+@@ -230,8 +264,6 @@
     If conversion is failed, the return value is (size_t)-1 and the values
     of DESTP and INDICESP are NULL. */
  
@@ -1092,7 +1128,7 @@ diff -Naur bash-4.2.orig/lib/glob/xmbsrtowcs.c bash-4.2/lib/glob/xmbsrtowcs.c
      wchar_t **destp;	/* Store the pointer to the wide character string */
 diff -Naur bash-4.2.orig/lib/readline/callback.c bash-4.2/lib/readline/callback.c
 --- bash-4.2.orig/lib/readline/callback.c	2010-06-06 16:18:58.000000000 +0000
-+++ bash-4.2/lib/readline/callback.c	2012-11-04 22:45:00.718727497 +0000
++++ bash-4.2/lib/readline/callback.c	2013-03-12 21:55:21.461771207 +0000
 @@ -148,6 +148,9 @@
  	  eof = _rl_vi_domove_callback (_rl_vimvcxt);
  	  /* Should handle everything, including cleanup, numeric arguments,
@@ -1105,7 +1141,7 @@ diff -Naur bash-4.2.orig/lib/readline/callback.c bash-4.2/lib/readline/callback.
  #endif
 diff -Naur bash-4.2.orig/lib/readline/input.c bash-4.2/lib/readline/input.c
 --- bash-4.2.orig/lib/readline/input.c	2010-05-30 22:33:01.000000000 +0000
-+++ bash-4.2/lib/readline/input.c	2012-11-04 22:45:00.982060097 +0000
++++ bash-4.2/lib/readline/input.c	2013-03-12 21:55:21.661772004 +0000
 @@ -409,7 +409,7 @@
  int
  rl_read_key ()
@@ -1139,7 +1175,7 @@ diff -Naur bash-4.2.orig/lib/readline/input.c bash-4.2/lib/readline/input.c
  	      (*rl_event_hook) ();
 diff -Naur bash-4.2.orig/lib/readline/vi_mode.c bash-4.2/lib/readline/vi_mode.c
 --- bash-4.2.orig/lib/readline/vi_mode.c	2010-11-21 00:51:39.000000000 +0000
-+++ bash-4.2/lib/readline/vi_mode.c	2012-11-04 22:45:01.025393311 +0000
++++ bash-4.2/lib/readline/vi_mode.c	2013-03-12 21:55:21.698772151 +0000
 @@ -1114,7 +1114,7 @@
        rl_beg_of_line (1, c);
        _rl_vi_last_motion = c;
@@ -1213,7 +1249,7 @@ diff -Naur bash-4.2.orig/lib/readline/vi_mode.c bash-4.2/lib/readline/vi_mode.c
      {
 diff -Naur bash-4.2.orig/lib/sh/eaccess.c bash-4.2/lib/sh/eaccess.c
 --- bash-4.2.orig/lib/sh/eaccess.c	2011-01-09 01:50:10.000000000 +0000
-+++ bash-4.2/lib/sh/eaccess.c	2012-11-04 22:45:00.995393393 +0000
++++ bash-4.2/lib/sh/eaccess.c	2013-03-12 21:55:21.668772032 +0000
 @@ -82,6 +82,8 @@
       const char *path;
       struct stat *finfo;
@@ -1234,7 +1270,7 @@ diff -Naur bash-4.2.orig/lib/sh/eaccess.c bash-4.2/lib/sh/eaccess.c
        return (stat (pbuf, finfo));
 diff -Naur bash-4.2.orig/lib/sh/zread.c bash-4.2/lib/sh/zread.c
 --- bash-4.2.orig/lib/sh/zread.c	2009-03-02 13:54:45.000000000 +0000
-+++ bash-4.2/lib/sh/zread.c	2012-11-04 22:45:00.815393899 +0000
++++ bash-4.2/lib/sh/zread.c	2013-03-12 21:55:21.601771765 +0000
 @@ -160,14 +160,13 @@
  zsyncfd (fd)
       int fd;
@@ -1254,8 +1290,26 @@ diff -Naur bash-4.2.orig/lib/sh/zread.c bash-4.2/lib/sh/zread.c
  }
 diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
 --- bash-4.2.orig/parse.y	2011-01-02 20:48:11.000000000 +0000
-+++ bash-4.2/parse.y	2012-11-04 22:45:01.005393365 +0000
-@@ -2499,7 +2499,7 @@
++++ bash-4.2/parse.y	2013-03-12 21:55:21.731772283 +0000
+@@ -2393,6 +2393,7 @@
+ 	   is the last character).  If it's not the last character, we need
+ 	   to consume the quoted newline and move to the next character in
+ 	   the expansion. */
++#if defined (ALIAS)
+ 	if (expanding_alias () && shell_input_line[shell_input_line_index+1] == '\0')
+ 	  {
+ 	    uc = 0;
+@@ -2403,7 +2404,8 @@
+ 	    shell_input_line_index++;	/* skip newline */
+ 	    goto next_alias_char;	/* and get next character */
+ 	  }
+-	else	    
++	else
++#endif 
+ 	  goto restart_read;
+     }
+ 
+@@ -2499,7 +2501,7 @@
  	 We do this only if it is time to do so. Notice that only here
  	 is the mail alarm reset; nothing takes place in check_mail ()
  	 except the checking of mail.  Please don't change this. */
@@ -1264,7 +1318,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
  	{
  	  check_mail ();
  	  reset_mail_timer ();
-@@ -3842,6 +3842,7 @@
+@@ -3842,6 +3844,7 @@
       int flags;
  {
    sh_parser_state_t ps;
@@ -1272,7 +1326,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
    int orig_ind, nc, sflags;
    char *ret, *s, *ep, *ostring;
  
-@@ -3849,10 +3850,12 @@
+@@ -3849,10 +3852,12 @@
    orig_ind = *indp;
    ostring = string;
  
@@ -1285,7 +1339,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
  
    /*(*/
    parser_state |= PST_CMDSUBST|PST_EOFTOKEN;	/* allow instant ')' */ /*(*/
-@@ -3861,6 +3864,8 @@
+@@ -3861,6 +3866,8 @@
  
    restore_parser_state (&ps);
    reset_parser ();
@@ -1294,7 +1348,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
    if (interactive)
      token_to_read = 0;
  
-@@ -4895,6 +4900,9 @@
+@@ -4895,6 +4902,9 @@
        return (current_command_line_count == 2 ? "\n" : "");
      }
  
@@ -1304,7 +1358,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
    /* First, handle some special cases. */
    /*(*/
    /* If we just read `()', assume it's a function definition, and don't
-@@ -5135,6 +5143,9 @@
+@@ -5135,6 +5145,9 @@
  	    case 'A':
  	      /* Make the current time/date into a string. */
  	      (void) time (&the_time);
@@ -1314,7 +1368,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
  	      tm = localtime (&the_time);
  
  	      if (c == 'd')
-@@ -5905,6 +5916,12 @@
+@@ -5905,6 +5918,12 @@
    ps->expand_aliases = expand_aliases;
    ps->echo_input_at_read = echo_input_at_read;
  
@@ -1327,7 +1381,7 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
    return (ps);
  }
  
-@@ -5946,6 +5963,42 @@
+@@ -5946,6 +5965,42 @@
  
    expand_aliases = ps->expand_aliases;
    echo_input_at_read = ps->echo_input_at_read;
@@ -1372,18 +1426,18 @@ diff -Naur bash-4.2.orig/parse.y bash-4.2/parse.y
  /************************************************
 diff -Naur bash-4.2.orig/patchlevel.h bash-4.2/patchlevel.h
 --- bash-4.2.orig/patchlevel.h	2010-06-13 00:14:48.000000000 +0000
-+++ bash-4.2/patchlevel.h	2012-11-04 22:45:01.038726607 +0000
++++ bash-4.2/patchlevel.h	2013-03-12 21:55:21.740772319 +0000
 @@ -25,6 +25,6 @@
     regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
     looks for to find the patch level (for the sccs version string). */
  
 -#define PATCHLEVEL 0
-+#define PATCHLEVEL 39
++#define PATCHLEVEL 45
  
  #endif /* _PATCHLEVEL_H_ */
 diff -Naur bash-4.2.orig/pathexp.c bash-4.2/pathexp.c
 --- bash-4.2.orig/pathexp.c	2010-08-14 03:21:57.000000000 +0000
-+++ bash-4.2/pathexp.c	2012-11-04 22:45:00.792060629 +0000
++++ bash-4.2/pathexp.c	2013-03-12 21:55:21.550771561 +0000
 @@ -196,7 +196,7 @@
  	{
  	  if ((qflags & QGLOB_FILENAME) && pathname[i+1] == '/')
@@ -1395,7 +1449,7 @@ diff -Naur bash-4.2.orig/pathexp.c bash-4.2/pathexp.c
  	  i++;
 diff -Naur bash-4.2.orig/print_cmd.c bash-4.2/print_cmd.c
 --- bash-4.2.orig/print_cmd.c	2010-05-30 22:34:08.000000000 +0000
-+++ bash-4.2/print_cmd.c	2012-11-04 22:45:00.778727333 +0000
++++ bash-4.2/print_cmd.c	2013-03-12 21:55:21.526771466 +0000
 @@ -315,6 +315,7 @@
  	  cprintf ("( ");
  	  skip_this_indent++;
@@ -1420,9 +1474,44 @@ diff -Naur bash-4.2.orig/print_cmd.c bash-4.2/print_cmd.c
  
    if (inside_function_def)
      {
+diff -Naur bash-4.2.orig/redir.c bash-4.2/redir.c
+--- bash-4.2.orig/redir.c	2011-01-02 21:00:31.000000000 +0000
++++ bash-4.2/redir.c	2013-03-12 21:55:21.740772319 +0000
+@@ -1007,6 +1007,16 @@
+ 		close (redirector);
+ 	      REDIRECTION_ERROR (r, errno, -1);
+ 	    }
++	  if ((flags & RX_UNDOABLE) && (ri == r_move_input || ri == r_move_output))
++	    {
++	      /* r_move_input and r_move_output add an additional close()
++		 that needs to be undone */
++	      if (fcntl (redirector, F_GETFD, 0) != -1)
++		{
++		  r = add_undo_redirect (redir_fd, r_close_this, -1);
++		  REDIRECTION_ERROR (r, errno, -1);
++		}
++	    }
+ #if defined (BUFFERED_INPUT)
+ 	  check_bash_input (redirector);
+ #endif
+@@ -1091,10 +1101,12 @@
+ 
+ #if defined (BUFFERED_INPUT)
+ 	  check_bash_input (redirector);
+-	  close_buffered_fd (redirector);
++	  r = close_buffered_fd (redirector);
+ #else /* !BUFFERED_INPUT */
+-	  close (redirector);
++	  r = close (redirector);
+ #endif /* !BUFFERED_INPUT */
++	  if (r < 0 && (flags & RX_INTERNAL) && (errno == EIO || errno == ENOSPC))
++	    REDIRECTION_ERROR (r, errno, -1);
+ 	}
+       break;
+ 
 diff -Naur bash-4.2.orig/shell.h bash-4.2/shell.h
 --- bash-4.2.orig/shell.h	2011-01-07 03:16:55.000000000 +0000
-+++ bash-4.2/shell.h	2012-11-04 22:45:00.785393981 +0000
++++ bash-4.2/shell.h	2013-03-12 21:55:21.537771510 +0000
 @@ -136,6 +136,9 @@
    int parser_state;
    int *token_state;
@@ -1452,7 +1541,7 @@ diff -Naur bash-4.2.orig/shell.h bash-4.2/shell.h
 +extern void restore_input_line_state __P((sh_input_line_state_t *));
 diff -Naur bash-4.2.orig/sig.c bash-4.2/sig.c
 --- bash-4.2.orig/sig.c	2010-11-23 13:21:22.000000000 +0000
-+++ bash-4.2/sig.c	2012-11-04 22:45:00.772060685 +0000
++++ bash-4.2/sig.c	2013-03-12 21:55:21.516771426 +0000
 @@ -46,6 +46,7 @@
  
  #if defined (READLINE)
@@ -1483,7 +1572,7 @@ diff -Naur bash-4.2.orig/sig.c bash-4.2/sig.c
        termsig_handler (sig);
 diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
 --- bash-4.2.orig/subst.c	2011-01-02 21:12:51.000000000 +0000
-+++ bash-4.2/subst.c	2012-11-04 22:45:01.018726663 +0000
++++ bash-4.2/subst.c	2013-03-12 21:55:21.726772263 +0000
 @@ -366,6 +366,11 @@
        f &= ~W_ASSNBLTIN;
        fprintf (stderr, "W_ASSNBLTIN%s", f ? "|" : "");
@@ -1560,7 +1649,18 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
    result = call_expand_word_internal (word, quoted, 0, (int *)NULL, (int *)NULL);
    expand_no_split_dollar_star = 0;
  
-@@ -5798,6 +5809,16 @@
+@@ -5113,6 +5124,10 @@
+   dev_fd_list[parent_pipe_fd] = 0;
+ #endif /* HAVE_DEV_FD */
+ 
++  /* subshells shouldn't have this flag, which controls using the temporary
++     environment for variable lookups. */
++  expanding_redir = 0;
++
+   result = parse_and_execute (string, "process substitution", (SEVAL_NONINT|SEVAL_NOHIST));
+ 
+ #if !defined (HAVE_DEV_FD)
+@@ -5798,6 +5813,16 @@
  	 is the only expansion that creates more than one word. */
        if (qdollaratp && ((hasdol && quoted) || l->next))
  	*qdollaratp = 1;
@@ -1577,7 +1677,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
        dispose_words (l);
      }
    else if ((quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES)) && hasdol)
-@@ -7176,7 +7197,7 @@
+@@ -7176,7 +7201,7 @@
      {
        /* Extract the contents of the ${ ... } expansion
  	 according to the Posix.2 rules. */
@@ -1586,7 +1686,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
        if (string[sindex] == RBRACE)
  	sindex++;
        else
-@@ -7268,6 +7289,7 @@
+@@ -7268,6 +7293,7 @@
      default:
      case '\0':
      bad_substitution:
@@ -1594,7 +1694,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
        report_error (_("%s: bad substitution"), string ? string : "??");
        FREE (value);
        FREE (temp);
-@@ -7900,7 +7922,7 @@
+@@ -7900,7 +7926,7 @@
  
    /* State flags */
    int had_quoted_null;
@@ -1603,7 +1703,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
    int tflag;
    int pflags;			/* flags passed to param_expand */
  
-@@ -8105,13 +8127,14 @@
+@@ -8105,13 +8131,14 @@
  	  if (expanded_something)
  	    *expanded_something = 1;
  
@@ -1620,7 +1720,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
  
  	  if (tword == &expand_wdesc_error || tword == &expand_wdesc_fatal)
  	    {
-@@ -8129,6 +8152,14 @@
+@@ -8129,6 +8156,14 @@
  	  temp = tword->word;
  	  dispose_word_desc (tword);
  
@@ -1635,7 +1735,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
  	  goto add_string;
  	  break;
  
-@@ -8244,9 +8275,10 @@
+@@ -8244,9 +8279,10 @@
  
  	      temp = (char *)NULL;
  
@@ -1648,7 +1748,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
  
  	      if (list == &expand_word_error || list == &expand_word_fatal)
  		{
-@@ -8533,7 +8565,7 @@
+@@ -8533,7 +8569,7 @@
  	tword->flags |= W_NOEXPAND;	/* XXX */
        if (quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES))
  	tword->flags |= W_QUOTED;
@@ -1657,7 +1757,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
  	tword->flags |= W_HASQUOTEDNULL;
        list = make_word_list (tword, (WORD_LIST *)NULL);
      }
-@@ -8564,7 +8596,7 @@
+@@ -8564,7 +8600,7 @@
  	    tword->flags |= W_NOGLOB;
  	  if (word->flags & W_NOEXPAND)
  	    tword->flags |= W_NOEXPAND;
@@ -1668,7 +1768,7 @@ diff -Naur bash-4.2.orig/subst.c bash-4.2/subst.c
  	}
 diff -Naur bash-4.2.orig/subst.h bash-4.2/subst.h
 --- bash-4.2.orig/subst.h	2010-12-03 01:21:29.000000000 +0000
-+++ bash-4.2/subst.h	2012-11-04 22:45:00.715394173 +0000
++++ bash-4.2/subst.h	2013-03-12 21:55:21.450771163 +0000
 @@ -56,6 +56,7 @@
  #define SX_NOLONGJMP	0x0040	/* don't longjmp on fatal error */
  #define SX_ARITHSUB	0x0080	/* extracting $(( ... )) (currently unused) */
@@ -1679,7 +1779,7 @@ diff -Naur bash-4.2.orig/subst.h bash-4.2/subst.h
     STRING, and returns a pointer to it. */
 diff -Naur bash-4.2.orig/support/shobj-conf bash-4.2/support/shobj-conf
 --- bash-4.2.orig/support/shobj-conf	2009-10-28 13:20:21.000000000 +0000
-+++ bash-4.2/support/shobj-conf	2012-11-04 22:45:00.808727251 +0000
++++ bash-4.2/support/shobj-conf	2013-03-12 21:55:21.592771729 +0000
 @@ -157,7 +157,7 @@
  	;;
  
@@ -1700,7 +1800,7 @@ diff -Naur bash-4.2.orig/support/shobj-conf bash-4.2/support/shobj-conf
  	*)		SHOBJ_LDFLAGS='-dynamic'
 diff -Naur bash-4.2.orig/tests/shopt.right bash-4.2/tests/shopt.right
 --- bash-4.2.orig/tests/shopt.right	2010-07-03 03:36:30.000000000 +0000
-+++ bash-4.2/tests/shopt.right	2012-11-04 22:45:00.858727113 +0000
++++ bash-4.2/tests/shopt.right	2013-03-12 21:55:21.653771972 +0000
 @@ -12,6 +12,7 @@
  shopt -u compat32
  shopt -u compat40
@@ -1727,7 +1827,7 @@ diff -Naur bash-4.2.orig/tests/shopt.right bash-4.2/tests/shopt.right
  execfail       	off
 diff -Naur bash-4.2.orig/variables.c bash-4.2/variables.c
 --- bash-4.2.orig/variables.c	2011-01-25 01:07:48.000000000 +0000
-+++ bash-4.2/variables.c	2012-11-04 22:45:00.765394035 +0000
++++ bash-4.2/variables.c	2013-03-12 21:55:21.499771358 +0000
 @@ -3653,6 +3653,22 @@
    return n;
  }
@@ -1778,7 +1878,7 @@ diff -Naur bash-4.2.orig/variables.c bash-4.2/variables.c
  
 diff -Naur bash-4.2.orig/variables.h bash-4.2/variables.h
 --- bash-4.2.orig/variables.h	2010-12-03 01:22:01.000000000 +0000
-+++ bash-4.2/variables.h	2012-11-04 22:45:00.755394063 +0000
++++ bash-4.2/variables.h	2013-03-12 21:55:21.486771306 +0000
 @@ -313,6 +313,7 @@
  
  extern void sort_variables __P((SHELL_VAR **));
