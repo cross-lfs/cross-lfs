@@ -30,7 +30,7 @@
 
 <screen os="b"><userinput>./configure --prefix=/usr \
     --bindir=/bin --sysconfdir=/etc \
-    --with-rootlibdir=/lib \
+    --with-rootlibdir=/lib --disable-manpages \
     --with-zlib --with-xz</userinput></screen>
 
     <variablelist os="c">
@@ -61,7 +61,8 @@
 
     <para os="g">Install the package:</para>
 
-<screen os="h"><userinput>make install</userinput></screen>
+<screen os="h"><userinput>make install
+make -C man install</userinput></screen>
 
     <para os="i">Create symbolic links for programs that expect Module-Init-Tools.</para>
 
