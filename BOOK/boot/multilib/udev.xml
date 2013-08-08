@@ -30,10 +30,10 @@
 KMOD_CFLAGS="-I/tools/include/" KMOD_LIBS="-L/tools/lib64 -lkmod" \
 CC="${CC} ${BUILD64}" ./configure --prefix=/usr --build=${CLFS_HOST} \
     --host=${CLFS_TARGET} --with-rootprefix='' --enable-split-usr \
-    --sysconfdir=/etc --libexecdir=/lib64 --libdir=/usr/lib64 \
-    --with-rootlibdir=/lib64 --disable-introspection --disable-gtk-doc-html \
-    --disable-gudev --disable-keymap --with-firmware-path=/lib/firmware \
-    --enable-libkmod</userinput></screen>
+    --sysconfdir=/etc --libexecdir=/lib64 --bindir=/sbin --sbindir=/sbin \
+    --libdir=/usr/lib64 --with-rootlibdir=/lib64 --disable-introspection \
+    --disable-gtk-doc-html --disable-gudev --disable-keymap \
+    --with-firmware-path=/lib/firmware --enable-libkmod</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/udev.xml"
