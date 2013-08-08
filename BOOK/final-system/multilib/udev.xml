@@ -8,10 +8,10 @@
 <sect1 id="ch-system-udev-32" role="wrap">
   <?dbhtml filename="udev.html"?>
 
-  <title>Udev-&udev-version; 32 Bit Libraries</title>
+  <title>Eudev-&udev-version; 32 Bit Libraries</title>
 
   <indexterm zone="ch-system-udev-32">
-    <primary sortas="a-Udev">Udev 32 Bit Libraries</primary>
+    <primary sortas="a-Eudev">Eudev 32 Bit Libraries</primary>
     <secondary>32 Bit</secondary>
   </indexterm>
 
@@ -20,18 +20,17 @@
   xpointer="xpointer(//*[@role='package'])"/>
 
   <sect2 role="installation">
-    <title>Installation of Udev</title>
+    <title>Installation of Eudev</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/udev.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>PKG_CONFIG_PATH=${PKG_CONFIG_PATH32} CC="gcc ${BUILD32}" \
-  ./configure --prefix=/usr --sysconfdir=/etc --with-rootprefix="" \
-  --libexecdir=/lib --bindir=/sbin \
-  --with-usb-ids-path=no --with-pci-ids-path=no \
-  --enable-rule_generator --disable-introspection --disable-keymap \
-  --disable-gudev</userinput></screen>
+<screen os="b"><userinput>PKG_CONFIG_PATH=${PKG_CONFIG_PATH32} \
+CC="gcc ${BUILD32}" ./configure --prefix=/usr --sysconfdir=/etc \
+    --with-rootprefix="" --libexecdir=/lib --enable-split-usr \
+    --libdir=/usr/lib --with-rootlibdir=/lib --enable-rule_generator \
+    --disable-introspection --disable-keymap --disable-gudev --enable-libkmod</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/udev.xml"

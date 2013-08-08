@@ -8,31 +8,29 @@
 <sect1 id="ch-system-udev" role="wrap">
   <?dbhtml filename="udev.html"?>
 
-  <title>Udev-&udev-version;</title>
+  <title>Eudev-&udev-version;</title>
 
   <indexterm zone="ch-system-udev">
-    <primary sortas="a-Udev">Udev</primary>
+    <primary sortas="a-Eudev">Eudev</primary>
   </indexterm>
 
   <sect2 role="package">
     <title/>
 
-    <para>The Udev package contains programs for dynamic creation of device
+    <para>The Eudev package contains programs for dynamic creation of device
     nodes.</para>
 
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of Udev</title>
+    <title>Installation of Eudev</title>
 
-    <para os="a">Prepare Udev for compilation:</para>
+    <para os="a">Prepare Eudev for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr \
-  --sysconfdir=/etc --with-rootprefix="" \
-  --libexecdir=/lib --bindir=/sbin \
-  --with-usb-ids-path=no --with-pci-ids-path=no \
-  --enable-rule_generator --disable-introspection \
-  --disable-keymap --disable-gudev</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --sysconfdir=/etc \
+    --with-rootprefix="" --libexecdir=/lib --enable-split-usr \
+    --libdir=/usr/lib --with-rootlibdir=/lib --enable-rule_generator \
+    --disable-introspection --disable-keymap --disable-gudev --enable-libkmod</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -52,7 +50,7 @@
   </sect2>
 
   <sect2 id="contents-udev" role="content">
-    <title>Contents of Udev</title>
+    <title>Contents of Eudev</title>
 
     <segmentedlist>
       <segtitle>Installed programs</segtitle>
@@ -76,7 +74,7 @@
       <varlistentry id="udevadm">
         <term><command>udevadm</command></term>
         <listitem>
-        <para>Controls the runtime behavior of Udev, requests kernel
+        <para>Controls the runtime behavior of Eudev, requests kernel
         events, manages the event queue, and provides simple debugging.</para>
           <indexterm zone="ch-system-udev udevadm">
             <primary sortas="b-udevadm">udevadm</primary>
@@ -100,7 +98,7 @@
       <varlistentry id="ata_id">
         <term><command>ata_id</command></term>
         <listitem>
-          <para>Provides Udev with a unique string and additional
+          <para>Provides Eudev with a unique string and additional
           information (uuid, label) for an ATA drive</para>
           <indexterm zone="ch-system-udev ata_id">
             <primary sortas="b-ata_id">ata_id</primary>
