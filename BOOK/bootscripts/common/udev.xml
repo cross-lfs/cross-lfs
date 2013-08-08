@@ -11,11 +11,11 @@
   <title>Device and Module Handling on a CLFS System</title>
 
   <indexterm zone="ch-scripts-udev">
-    <primary sortas="a-Udev">Udev</primary>
+    <primary sortas="a-Eudev">Eudev</primary>
     <secondary>usage</secondary>
   </indexterm>
 
-  <para>In <xref linkend="chapter-building-system"/>, we installed the Udev
+  <para>In <xref linkend="chapter-building-system"/>, we installed the Eudev
   package. Before we go into the details regarding how this works,
   a brief history of previous methods of handling devices is in
   order.</para>
@@ -29,7 +29,7 @@
   major and minor device numbers for every possible device that might exist in
   the world.</para>
 
-  <para>Using the Udev method, only those devices which are detected by the
+  <para>Using the Eudev method, only those devices which are detected by the
   kernel get device nodes created for them. Because these device nodes will be
   created each time the system boots, they will be stored on a <systemitem
   class="filesystem">tmpfs</systemitem> file system (a virtual file system that
@@ -70,7 +70,7 @@
   </sect2>
 
   <sect2>
-    <title>Udev Implementation</title>
+    <title>Eudev Implementation</title>
 
     <sect3>
       <title>Sysfs</title>
@@ -92,7 +92,7 @@
     </sect3>
 
     <sect3>
-      <title>Udev Bootscript</title>
+      <title>Eudev Bootscript</title>
 
       <para>The <command>S10udev</command> initscript takes care of creating
       device nodes when Linux is booted. The script unsets the uevent handler
@@ -108,7 +108,7 @@
       Creating static device nodes in <filename
       class="directory">/lib/udev/devices</filename> also provides an easy
       workaround for devices that are not supported by the dynamic device
-      handling infrastructure. The bootscript then starts the Udev daemon,
+      handling infrastructure. The bootscript then starts the Eudev daemon,
       <command>udevd</command>, which will act on any uevents it receives.
       Finally, the bootscript forces the kernel to replay uevents for any
       devices that have already been registered and then waits for
@@ -119,7 +119,7 @@
     <sect3>
       <title>Device Node Creation</title>
 
-      <para>To obtain the right major and minor number for a device, Udev relies
+      <para>To obtain the right major and minor number for a device, Eudev relies
       on the information provided by <systemitem
       class="filesystem">sysfs</systemitem> in <filename
       class="directory">/sys</filename>.  For example,
@@ -133,7 +133,7 @@
       numbered in a similar fashion to the CLFS-Bootscripts package. If
       <command>udevd</command> can't find a rule for the device it is creating,
       it will default permissions to <emphasis>660</emphasis> and ownership to
-      <emphasis>root:root</emphasis>. Documentation on the syntax of the Udev
+      <emphasis>root:root</emphasis>. Documentation on the syntax of the Eudev
       rules configuration files is available in
       <filename>/usr/share/doc/udev/writing_udev_rules/index.html</filename></para>
 
@@ -154,7 +154,7 @@
       <filename>/sys/bus/pci/devices/0000:00:0d.0/modalias</filename> file
       might contain the string
       <quote>pci:v00001319d00000801sv00001319sd00001319bc04sc01i00</quote>.
-      The default rules provided by Udev will cause <command>udevd</command>
+      The default rules provided by Eudev will cause <command>udevd</command>
       to call out to <command>/sbin/modprobe</command> with the contents of the
       <envar>MODALIAS</envar> uevent environment variable (that should be the
       same as the contents of the <filename>modalias</filename> file in sysfs),
@@ -193,15 +193,15 @@
     <sect3>
       <title>A kernel module is not loaded automatically</title>
 
-      <para>Udev will only load a module if it has a bus-specific alias and the
+      <para>Eudev will only load a module if it has a bus-specific alias and the
       bus driver properly exports the necessary aliases to <systemitem
       class="filesystem">sysfs</systemitem>. In other cases, one should
-      arrange module loading by other means. With Linux-&linux-version;, Udev is
+      arrange module loading by other means. With Linux-&linux-version;, Eudev is
       known to load properly-written drivers for INPUT, IDE, PCI, USB, SCSI,
       SERIO and FireWire devices.</para>
 
       <para>To determine if the device driver you require has the necessary
-      support for Udev, run <command>modinfo</command> with the module name as
+      support for Eudev, run <command>modinfo</command> with the module name as
       the argument.  Now try locating the device directory under
       <filename class="directory">/sys/bus</filename> and check whether there is
       a <filename>modalias</filename> file there.</para>
@@ -209,7 +209,7 @@
       <para>If the <filename>modalias</filename> file exists in <systemitem
       class="filesystem">sysfs</systemitem>, the driver supports the device and
       can talk to it directly, but doesn't have the alias, it is a bug in the
-      driver. Load the driver without the help from Udev and expect the issue
+      driver. Load the driver without the help from Eudev and expect the issue
       to be fixed later.</para>
 
       <para>If there is no <filename>modalias</filename> file in the relevant
@@ -218,21 +218,21 @@
       this bus type. With Linux-&linux-version;, this is the case with ISA
       busses. Expect this issue to be fixed in later kernel versions.</para>
 
-      <para>Udev is not intended to load <quote>wrapper</quote> drivers such as
+      <para>Eudev is not intended to load <quote>wrapper</quote> drivers such as
       <emphasis>snd-pcm-oss</emphasis> and non-hardware drivers such as
       <emphasis>loop</emphasis> at all.</para>
 
     </sect3>
 
     <sect3>
-      <title>A kernel module is not loaded automatically, and Udev is not
+      <title>A kernel module is not loaded automatically, and Eudev is not
       intended to load it</title>
 
       <para>If the <quote>wrapper</quote> module only enhances the functionality
       provided by some other module (e.g., <emphasis>snd-pcm-oss</emphasis>
       enhances the functionality of <emphasis>snd-pcm</emphasis> by making the
       sound cards available to OSS applications), configure
-      <command>modprobe</command> to load the wrapper after Udev loads the
+      <command>modprobe</command> to load the wrapper after Eudev loads the
       wrapped module. To do this, add an <quote>install</quote> line in
       <filename>/etc/modprobe.conf</filename>. For example:</para>
 
@@ -248,7 +248,7 @@
     </sect3>
 
     <sect3>
-      <title>Udev loads some unwanted module</title>
+      <title>Eudev loads some unwanted module</title>
 
       <para>Either don't build the module, or blacklist it in
       <filename>/etc/modprobe.conf</filename> file as done with the
@@ -262,7 +262,7 @@
     </sect3>
 
     <sect3>
-      <title>Udev creates a device incorrectly, or makes a wrong symlink</title>
+      <title>Eudev creates a device incorrectly, or makes a wrong symlink</title>
 
       <para>This usually happens if a rule unexpectedly matches a device. For
       example, a poorly-writen rule can match both a SCSI disk (as desired)
@@ -273,7 +273,7 @@
     </sect3>
 
     <sect3>
-      <title>Udev rule works unreliably</title>
+      <title>Eudev rule works unreliably</title>
 
       <para>This may be another manifestation of the previous problem. If not,
       and your rule uses <systemitem class="filesystem">sysfs</systemitem>
@@ -287,13 +287,13 @@
     </sect3>
 
     <sect3>
-      <title>Udev does not create a device</title>
+      <title>Eudev does not create a device</title>
 
       <para>Further text assumes that the driver is built statically into the
       kernel or already loaded as a module, and that you have already checked
-      that Udev doesn't create a misnamed device.</para>
+      that Eudev doesn't create a misnamed device.</para>
 
-      <para>Udev has no information needed to create a device node if a kernel
+      <para>Eudev has no information needed to create a device node if a kernel
       driver does not export its data to <systemitem
       class="filesystem">sysfs</systemitem>.
       This is most common with third party drivers from outside the kernel
@@ -310,12 +310,12 @@
     <sect3>
       <title>Device naming order changes randomly after rebooting</title>
 
-      <para>This is due to the fact that Udev, by design, handles uevents and
+      <para>This is due to the fact that Eudev, by design, handles uevents and
       loads modules in parallel, and thus in an unpredictable order. This will
       never be <quote>fixed</quote>. You should not rely upon the kernel device
       names being stable. Instead, create your own rules that make symlinks with
       stable names based on some stable attributes of the device, such as a
-      serial number or the output of various *_id utilities installed by Udev.
+      serial number or the output of various *_id utilities installed by Eudev.
       See <xref linkend="ch-scripts-symlinks"/> and
       <xref linkend="chapter-network"/> for examples.</para>
 
