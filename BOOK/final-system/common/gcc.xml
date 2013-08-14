@@ -25,6 +25,12 @@
   <sect2 role="installation">
     <title>Installation of GCC</title>
 
+    <para os="fix1">Apply a <command>sed</command> subsitution that will
+    suppress the execution of the <command>fixincludes</command> script:</para>
+
+<screen os="fix2"><userinput>cp -v gcc/Makefile.in{,.orig}
+sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.orig > gcc/Makefile.in</userinput></screen>
+
     <para os="d">Apply a <command>sed</command> substitution that will suppress the
     installation of <filename class="libraryfile">libiberty.a</filename>. The
     version of <filename class="libraryfile">libiberty.a</filename> provided by
