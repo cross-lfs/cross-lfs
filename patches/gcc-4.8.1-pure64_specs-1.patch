@@ -321,10 +321,10 @@ diff -Naur gcc-4.8.1.orig/gcc/config/rs6000/linux64.h gcc-4.8.1/gcc/config/rs600
 -#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld64.so.1"
 -#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"
 -#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"
-+#define GLIBC_DYNAMIC_LINKER32 "/tools/lib/ld.so.1"
-+#define GLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld64.so.1"
-+#define UCLIBC_DYNAMIC_LINKER32 "/tools/lib/ld-uClibc.so.0"
-+#define UCLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld64-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER32 "/tools/lib32/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib/ld64.so.1"
++#define UCLIBC_DYNAMIC_LINKER32 "/tools/lib32/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER64 "/tools/lib/ld64-uClibc.so.0"
  #if DEFAULT_LIBC == LIBC_UCLIBC
  #define CHOOSE_DYNAMIC_LINKER(G, U) "%{mglibc:" G ";:" U "}"
  #elif DEFAULT_LIBC == LIBC_GLIBC
