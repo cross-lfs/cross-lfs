@@ -126,6 +126,21 @@
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='t'])"/>
 
+    <para>Now we can remove this symlink. We also need to correct the <command>
+    /usr/bin/ldd</command> script - if you look at this, you will see it references
+    not only the 32-bit linker, but also /lib64 where it thinks the 64-bit linker
+    is. The following <command>sed</command> will correct this:</para>
+
+    <screen><userinput>rm -v /lib/ld64.so.1
+cp -v /usr/bin/ldd{,.bak}
+sed '/RTLDLIST/s%/ld64.so.1 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userinput></screen>
+
+    <para>Check the script to make sure the sed worked correctly, then delete
+    the backup.</para>
+
+    <screen><userinput>rm -v /usr/bin/ldd.bak</userinput></screen>
+
+
     <para os="u">The stubs.h header installed by EGLIBC looks for stubs-32.h
     and stubs-64.h. This configuration of EGLIBC only generates stubs-64.h. Fix
     this with the following:</para>
