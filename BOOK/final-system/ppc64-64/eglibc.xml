@@ -116,7 +116,7 @@
     from the 64-bit loader (unlike on other 64-bit architectures).  We fool it by
     creating a symlink to the real loader.</para>
 
-    <screen><userinput>ln -sv &eglibc-ld-name; /lib/ld64.so.1</userinput></screen>
+    <screen><userinput>ln -sv &eglibc-ld-name; /lib/ld.so.1</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
@@ -131,7 +131,7 @@
     not only the 32-bit linker, but also /lib64 where it thinks the 64-bit linker
     is. The following <command>sed</command> will correct this:</para>
 
-    <screen><userinput>rm -v /lib/ld64.so.1
+    <screen><userinput>rm -v /lib/ld.so.1
 cp -v /usr/bin/ldd{,.bak}
 sed '/RTLDLIST/s%/ld.so.1 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userinput></screen>
 
