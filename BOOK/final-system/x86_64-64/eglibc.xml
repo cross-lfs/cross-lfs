@@ -148,6 +148,12 @@ sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userin
 
     <screen><userinput>rm -v /usr/bin/ldd.bak</userinput></screen>
 
+ <para os="u">The stubs.h header installed by EGLIBC looks for stubs-32.h
+    and stubs-64.h. This configuration of EGLIBC only generates stubs-64.h. Fix
+    this with the following:</para>
+
+    <screen os="v"><userinput>mv -v /usr/include/gnu/stubs{-64,}.h</userinput></screen>
+
   </sect2>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
