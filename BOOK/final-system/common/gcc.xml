@@ -72,6 +72,10 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
       critical. Do not skip it under any circumstance.</para>
     </important>
 
+   <para os="s1">Increase the stack size prior to running the tests:</para>
+
+<screen os="s2"><userinput remap="test">ulimit -s 32768</userinput></screen>
+
     <para os="m">Test the results, but do not stop at errors:</para>
 
 <screen os="n"><userinput>make -k check</userinput></screen>
