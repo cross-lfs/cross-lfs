@@ -46,13 +46,9 @@
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <screen os="df"><userinput>BUILD_CC="gcc" CC="${CLFS_TARGET}-gcc ${BUILD64}" \
-      AR="${CLFS_TARGET}-ar" RANLIB="${CLFS_TARGET}-ranlib" \
-      ../eglibc-&eglibc-version;/configure --prefix=/tools \
-      --host=${CLFS_TARGET} --build=${CLFS_HOST} \
-      --disable-profile --with-tls --enable-kernel=2.6.32 --with-__thread \
-      --with-binutils=/cross-tools/bin --with-headers=/tools/include \
-      --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../64/eglibc.xml"
+    xpointer="xpointer(//*[@os='df'])"/>
 
     <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
