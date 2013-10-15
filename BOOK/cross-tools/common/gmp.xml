@@ -32,6 +32,13 @@
     xpointer="xpointer(//*[@os='p2'])"/>
 -->
 
+    <note os="n1">
+      <para>If you are building with a host which has 32-bit user-space with a
+      64-bit capable CPU, cross-tools GMP will attempt to link with 64-bit
+      libraries. Add the following variable during <command>configure</command>
+      to force GMP's ABI: <command>./configure ABI=32</command></para>
+    </note>
+
     <para os="a">Prepare GMP for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/cross-tools --enable-cxx \
