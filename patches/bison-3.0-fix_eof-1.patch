@@ -1,0 +1,32 @@
+Submitted By: Ken Moffat (zrniwhoop at ntlworld dot com)
+Date: 2013-10-16
+Initial Package Version: 3.0
+Origin: Upstream
+Upstream Status: Applied
+Description: Fixes EOF check.
+
+commit 4c4191cec2b30632a31993a6e46fb241ab9c3434
+
+Author: Andreas Schwab <schwab@linux-m68k.org>
+Date:   Sat Sep 28 00:00:34 2013 +0200
+                                      
+    location: fix EOF check           
+                           
+    * location.c (location_caret): Use int, not char, for values from
+    getc.                                                            
+
+ found at http://git.savannah.gnu.org/cgit/bison.git/diff/src/location.c?id=4c4191cec2b30632a31993a6e46fb241ab9c3434&ignorews=1
+ copied and pasted.
+
+--- bison-3.0/src/location.c.orig	2013-10-16 18:02:56.880658070 +0100
++++ bison-3.0/src/location.c	2013-10-16 18:04:12.676299868 +0100
+@@ -188,7 +188,7 @@
+   /* Read the actual line.  Don't update the offset, so that we keep a pointer
+      to the start of the line.  */
+   {
+-    char c = getc (caret_info.source);
++    int c = getc (caret_info.source);
+     if (c != EOF)
+       {
+         /* Quote the file, indent by a single column.  */
+
