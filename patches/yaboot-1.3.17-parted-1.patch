@@ -1,0 +1,36 @@
+Submitted By: William Harrington kb0iic at cross-lfs dot org 
+Date: 2013-10-20
+Initial Package Version: 1.3.10
+Upstream Status: Unknown
+Origin: https://bugzilla.redhat.com/show_bug.cgi?id=121361
+Description: Add parted support to yabootconfig.
+
+--- yaboot-1.3.10/ybin/yabootconfig~	2004-04-20 16:20:13.619375616 -0400
++++ yaboot-1.3.10/ybin/yabootconfig	2004-04-20 16:32:40.519829488 -0400
+@@ -160,6 +160,8 @@
+ 	FDISK=mac-fdisk
+     elif (command -v pdisk > /dev/null 2>&1) ; then
+ 	FDISK=pdisk
++    elif (command -v parted > /dev/null 2>&1) ; then
++	FDISK=parted
+     else
+ 	echo 1>&2 "$PRG: Unable to locate mac-fdisk"
+ 	return 1
+@@ -209,9 +211,16 @@
+ 		BOOT="${DISK}${BOOT}"
+ 	    fi
+ 	    debug "BOOT after fixup: $BOOT\n"
+-	else
++	elif [ "$FDISK" = mac-fdisk ] ; then
+ 	    BOOT="$(v=`$FDISK -l "$DISK" 2>/dev/null | grep '\<Apple_Bootstrap\>'` ; echo ${v%%[ ]*})"
+ 	    debug "BOOT=$BOOT\n"
++	else
++	    BOOT="$(v=`$FDISK "$DISK" print 2>/dev/null | grep 'bootstrap'` ; echo ${v%%[ ]*})"
++	    debug "BOOT before fixup: $BOOT\n"
++	    if [ -n "$BOOT" ] ; then
++		BOOT="${DISK}${BOOT}"
++	    fi
++	    debug "BOOT after fixup: $BOOT\n"
+ 	fi
+ 	if [ -z "$BOOT" ] ; then
+ 	    echo 1>&2 "$PRG: Unable to locate bootstrap partition on $DISK..."
