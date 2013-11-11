@@ -1,16 +1,35 @@
 Submitted By: Jim Gifford (jim at cross-lfs dot org)
-Date: 10-24-2013
+Date: 11-01-2013
 Initial Package Version: 4.8.2
 Origin: Upstream
 Upstream Status: Applied
 Description: This is a branch update for gcc-4.8.2, and should be
              rechecked periodically.
 
-This patch was made from Revision # 204009.
+Includes PR tree-optimization/54094
 
+This patch was made from Revision # 204292.
+
+diff -Naur gcc-4.8.2.orig/ChangeLog gcc-4.8.2/ChangeLog
+--- gcc-4.8.2.orig/ChangeLog	2013-10-16 07:18:46.000000000 +0000
++++ gcc-4.8.2/ChangeLog	2013-11-01 16:12:34.459877324 +0000
+@@ -7,6 +7,13 @@
+ 	* configure.ac: Also allow ISL 0.12.
+ 	* configure: Regenerated.
+ 
++	PR tree-optimization/54094
++	* graphite-clast-to-gimple.c (translate_clast_for_loop): Derive the
++	  scheduling dimension for the parallelism check from the polyhedral
++	  information in the AST.
++	* graphite-dependences.c (carries_deps): Do not assume the schedule is
++	  in 2D + 1 form.
++
+ 2013-05-31  Release Manager
+ 
+ 	* GCC 4.8.1 released.
 diff -Naur gcc-4.8.2.orig/contrib/gcc_update gcc-4.8.2/contrib/gcc_update
---- gcc-4.8.2.orig/contrib/gcc_update	2012-11-14 05:09:00.000000000 -0600
-+++ gcc-4.8.2/contrib/gcc_update	2013-10-21 05:38:03.471259000 -0500
+--- gcc-4.8.2.orig/contrib/gcc_update	2012-11-14 11:09:00.000000000 +0000
++++ gcc-4.8.2/contrib/gcc_update	2013-11-01 16:12:29.807076533 +0000
 @@ -382,7 +382,7 @@
  	fi
  
@@ -20,9 +39,15 @@ diff -Naur gcc-4.8.2.orig/contrib/gcc_update gcc-4.8.2/contrib/gcc_update
  	    s,.*/trunk,trunk,
  	    s,.*/branches/,,
  	    s,.*/tags/,,
+diff -Naur gcc-4.8.2.orig/gcc/DATESTAMP gcc-4.8.2/gcc/DATESTAMP
+--- gcc-4.8.2.orig/gcc/DATESTAMP	2013-10-16 00:16:34.000000000 +0000
++++ gcc-4.8.2/gcc/DATESTAMP	2013-11-01 16:12:33.423698996 +0000
+@@ -1 +1 @@
+-20131016
++20131101
 diff -Naur gcc-4.8.2.orig/gcc/ada/gcc-interface/utils.c gcc-4.8.2/gcc/ada/gcc-interface/utils.c
---- gcc-4.8.2.orig/gcc/ada/gcc-interface/utils.c	2013-06-13 02:51:32.000000000 -0500
-+++ gcc-4.8.2/gcc/ada/gcc-interface/utils.c	2013-10-19 06:11:47.006516000 -0500
+--- gcc-4.8.2.orig/gcc/ada/gcc-interface/utils.c	2013-06-13 07:51:32.000000000 +0000
++++ gcc-4.8.2/gcc/ada/gcc-interface/utils.c	2013-11-01 16:12:30.359171559 +0000
 @@ -232,6 +232,7 @@
  static tree split_plus (tree, tree *);
  static tree float_type_for_precision (int, enum machine_mode);
@@ -245,9 +270,208 @@ diff -Naur gcc-4.8.2.orig/gcc/ada/gcc-interface/utils.c gcc-4.8.2/gcc/ada/gcc-in
  /* Given two consecutive field decls PREV_FIELD and CURR_FIELD, return true
     unless we can prove these 2 fields are laid out in such a way that no gap
     exist between the end of PREV_FIELD and the beginning of CURR_FIELD.  OFFSET
+diff -Naur gcc-4.8.2.orig/gcc/alias.c gcc-4.8.2/gcc/alias.c
+--- gcc-4.8.2.orig/gcc/alias.c	2013-03-05 09:40:38.000000000 +0000
++++ gcc-4.8.2/gcc/alias.c	2013-11-01 16:12:30.359171559 +0000
+@@ -2871,16 +2871,13 @@
+       /* Wipe the reg_seen array clean.  */
+       bitmap_clear (reg_seen);
+ 
+-      /* Mark all hard registers which may contain an address.
+-	 The stack, frame and argument pointers may contain an address.
+-	 An argument register which can hold a Pmode value may contain
+-	 an address even if it is not in BASE_REGS.
+-
+-	 The address expression is VOIDmode for an argument and
+-	 Pmode for other registers.  */
+-
+-      memcpy (new_reg_base_value, static_reg_base_value,
+-	      FIRST_PSEUDO_REGISTER * sizeof (rtx));
++      /* Initialize the alias information for this pass.  */
++      for (i = 0; i < FIRST_PSEUDO_REGISTER; i++)
++	if (static_reg_base_value[i])
++	  {
++	    new_reg_base_value[i] = static_reg_base_value[i];
++	    bitmap_set_bit (reg_seen, i);
++	  }
+ 
+       /* Walk the insns adding values to the new_reg_base_value array.  */
+       for (i = 0; i < rpo_cnt; i++)
+diff -Naur gcc-4.8.2.orig/gcc/cfgexpand.c gcc-4.8.2/gcc/cfgexpand.c
+--- gcc-4.8.2.orig/gcc/cfgexpand.c	2013-03-05 22:31:50.000000000 +0000
++++ gcc-4.8.2/gcc/cfgexpand.c	2013-11-01 16:12:30.363172247 +0000
+@@ -4707,14 +4707,18 @@
+ 	  if (e->insns.r)
+ 	    {
+ 	      rebuild_jump_labels_chain (e->insns.r);
+-	      /* Avoid putting insns before parm_birth_insn.  */
++	      /* Put insns after parm birth, but before
++		 NOTE_INSNS_FUNCTION_BEG.  */
+ 	      if (e->src == ENTRY_BLOCK_PTR
+-		  && single_succ_p (ENTRY_BLOCK_PTR)
+-		  && parm_birth_insn)
++		  && single_succ_p (ENTRY_BLOCK_PTR))
+ 		{
+ 		  rtx insns = e->insns.r;
+ 		  e->insns.r = NULL_RTX;
+-		  emit_insn_after_noloc (insns, parm_birth_insn, e->dest);
++		  if (NOTE_P (parm_birth_insn)
++		      && NOTE_KIND (parm_birth_insn) == NOTE_INSN_FUNCTION_BEG)
++		    emit_insn_before_noloc (insns, parm_birth_insn, e->dest);
++		  else
++		    emit_insn_after_noloc (insns, parm_birth_insn, e->dest);
+ 		}
+ 	      else
+ 		commit_one_edge_insertion (e);
+diff -Naur gcc-4.8.2.orig/gcc/cgraph.c gcc-4.8.2/gcc/cgraph.c
+--- gcc-4.8.2.orig/gcc/cgraph.c	2013-05-22 07:50:40.000000000 +0000
++++ gcc-4.8.2/gcc/cgraph.c	2013-11-01 16:12:30.367172935 +0000
+@@ -2596,4 +2596,47 @@
+   FOR_EACH_FUNCTION (node)
+     verify_cgraph_node (node);
+ }
++
++/* Create external decl node for DECL.
++   The difference i nbetween cgraph_get_create_node and
++   cgraph_get_create_real_symbol_node is that cgraph_get_create_node
++   may return inline clone, while cgraph_get_create_real_symbol_node
++   will create a new node in this case.
++   FIXME: This function should be removed once clones are put out of decl
++   hash.  */
++
++struct cgraph_node *
++cgraph_get_create_real_symbol_node (tree decl)
++{
++  struct cgraph_node *first_clone = cgraph_get_node (decl);
++  struct cgraph_node *node;
++  /* create symbol table node.  even if inline clone exists, we can not take
++     it as a target of non-inlined call.  */
++  node = cgraph_get_node (decl);
++  if (node && !node->global.inlined_to)
++    return node;
++
++  node = cgraph_create_node (decl);
++
++  /* ok, we previously inlined the function, then removed the offline copy and
++     now we want it back for external call.  this can happen when devirtualizing
++     while inlining function called once that happens after extern inlined and
++     virtuals are already removed.  in this case introduce the external node
++     and make it available for call.  */
++  if (first_clone)
++    {
++      first_clone->clone_of = node;
++      node->clones = first_clone;
++      symtab_prevail_in_asm_name_hash ((symtab_node) node);
++      symtab_insert_node_to_hashtable ((symtab_node) node);
++      if (dump_file)
++	fprintf (dump_file, "Introduced new external node "
++		 "(%s/%i) and turned into root of the clone tree.\n",
++		 xstrdup (cgraph_node_name (node)), node->uid);
++    }
++  else if (dump_file)
++    fprintf (dump_file, "Introduced new external node "
++	     "(%s/%i).\n", xstrdup (cgraph_node_name (node)), node->uid);
++  return node;
++}
+ #include "gt-cgraph.h"
+diff -Naur gcc-4.8.2.orig/gcc/cgraph.h gcc-4.8.2/gcc/cgraph.h
+--- gcc-4.8.2.orig/gcc/cgraph.h	2013-01-17 11:43:14.000000000 +0000
++++ gcc-4.8.2/gcc/cgraph.h	2013-11-01 16:12:30.371173624 +0000
+@@ -575,6 +575,7 @@
+ struct cgraph_node * cgraph_create_node (tree);
+ struct cgraph_node * cgraph_create_empty_node (void);
+ struct cgraph_node * cgraph_get_create_node (tree);
++struct cgraph_node * cgraph_get_create_real_symbol_node (tree);
+ struct cgraph_node * cgraph_same_body_alias (struct cgraph_node *, tree, tree);
+ struct cgraph_node * cgraph_add_thunk (struct cgraph_node *, tree, tree, bool, HOST_WIDE_INT,
+ 				       HOST_WIDE_INT, tree, tree);
+diff -Naur gcc-4.8.2.orig/gcc/cgraphbuild.c gcc-4.8.2/gcc/cgraphbuild.c
+--- gcc-4.8.2.orig/gcc/cgraphbuild.c	2013-01-10 20:38:27.000000000 +0000
++++ gcc-4.8.2/gcc/cgraphbuild.c	2013-11-01 16:12:30.367172935 +0000
+@@ -73,7 +73,7 @@
+       decl = get_base_var (*tp);
+       if (TREE_CODE (decl) == FUNCTION_DECL)
+ 	{
+-	  struct cgraph_node *node = cgraph_get_create_node (decl);
++	  struct cgraph_node *node = cgraph_get_create_real_symbol_node (decl);
+ 	  if (!ctx->only_vars)
+ 	    cgraph_mark_address_taken_node (node);
+ 	  ipa_record_reference ((symtab_node)ctx->varpool_node,
+@@ -143,7 +143,7 @@
+     {
+       struct cgraph_node *per_node;
+ 
+-      per_node = cgraph_get_create_node (DECL_FUNCTION_PERSONALITY (node->symbol.decl));
++      per_node = cgraph_get_create_real_symbol_node (DECL_FUNCTION_PERSONALITY (node->symbol.decl));
+       ipa_record_reference ((symtab_node)node, (symtab_node)per_node, IPA_REF_ADDR, NULL);
+       cgraph_mark_address_taken_node (per_node);
+     }
+@@ -223,7 +223,7 @@
+   addr = get_base_address (addr);
+   if (TREE_CODE (addr) == FUNCTION_DECL)
+     {
+-      struct cgraph_node *node = cgraph_get_create_node (addr);
++      struct cgraph_node *node = cgraph_get_create_real_symbol_node (addr);
+       cgraph_mark_address_taken_node (node);
+       ipa_record_reference ((symtab_node)data,
+ 			    (symtab_node)node,
+@@ -252,7 +252,7 @@
+     {
+       /* ??? This can happen on platforms with descriptors when these are
+ 	 directly manipulated in the code.  Pretend that it's an address.  */
+-      struct cgraph_node *node = cgraph_get_create_node (t);
++      struct cgraph_node *node = cgraph_get_create_real_symbol_node (t);
+       cgraph_mark_address_taken_node (node);
+       ipa_record_reference ((symtab_node)data,
+ 			    (symtab_node)node,
+@@ -330,7 +330,7 @@
+ 	    {
+ 	      tree fn = gimple_omp_parallel_child_fn (stmt);
+ 	      ipa_record_reference ((symtab_node)node,
+-				    (symtab_node)cgraph_get_create_node (fn),
++				    (symtab_node)cgraph_get_create_real_symbol_node (fn),
+ 				    IPA_REF_ADDR, stmt);
+ 	    }
+ 	  if (gimple_code (stmt) == GIMPLE_OMP_TASK)
+@@ -338,12 +338,12 @@
+ 	      tree fn = gimple_omp_task_child_fn (stmt);
+ 	      if (fn)
+ 		ipa_record_reference ((symtab_node)node,
+-				      (symtab_node) cgraph_get_create_node (fn),
++				      (symtab_node) cgraph_get_create_real_symbol_node (fn),
+ 				      IPA_REF_ADDR, stmt);
+ 	      fn = gimple_omp_task_copy_fn (stmt);
+ 	      if (fn)
+ 		ipa_record_reference ((symtab_node)node,
+-				      (symtab_node)cgraph_get_create_node (fn),
++				      (symtab_node)cgraph_get_create_real_symbol_node (fn),
+ 				      IPA_REF_ADDR, stmt);
+ 	    }
+ 	}
+diff -Naur gcc-4.8.2.orig/gcc/combine.c gcc-4.8.2/gcc/combine.c
+--- gcc-4.8.2.orig/gcc/combine.c	2013-05-03 13:19:51.000000000 +0000
++++ gcc-4.8.2/gcc/combine.c	2013-11-01 16:12:30.379175001 +0000
+@@ -5798,8 +5798,15 @@
+ 		return x;
+ 	    }
+ 
+-	  /* If the code changed, return a whole new comparison.  */
+-	  if (new_code != code)
++	  /* If the code changed, return a whole new comparison.
++	     We also need to avoid using SUBST in cases where
++	     simplify_comparison has widened a comparison with a CONST_INT,
++	     since in that case the wider CONST_INT may fail the sanity
++	     checks in do_SUBST.  */
++	  if (new_code != code
++	      || (CONST_INT_P (op1)
++		  && GET_MODE (op0) != GET_MODE (XEXP (x, 0))
++		  && GET_MODE (op0) != GET_MODE (XEXP (x, 1))))
+ 	    return gen_rtx_fmt_ee (new_code, mode, op0, op1);
+ 
+ 	  /* Otherwise, keep this operation, but maybe change its operands.
 diff -Naur gcc-4.8.2.orig/gcc/config/i386/i386.c gcc-4.8.2/gcc/config/i386/i386.c
---- gcc-4.8.2.orig/gcc/config/i386/i386.c	2013-08-23 05:01:34.000000000 -0500
-+++ gcc-4.8.2/gcc/config/i386/i386.c	2013-10-16 05:47:13.444609000 -0500
+--- gcc-4.8.2.orig/gcc/config/i386/i386.c	2013-08-23 10:01:34.000000000 +0000
++++ gcc-4.8.2/gcc/config/i386/i386.c	2013-11-01 16:12:30.487193593 +0000
 @@ -2983,7 +2983,7 @@
        {"bdver3", PROCESSOR_BDVER3, CPU_BDVER3,
  	PTA_64BIT | PTA_MMX | PTA_SSE | PTA_SSE2 | PTA_SSE3
@@ -257,9 +481,175 @@ diff -Naur gcc-4.8.2.orig/gcc/config/i386/i386.c gcc-4.8.2/gcc/config/i386/i386.
  	| PTA_XOP | PTA_LWP | PTA_BMI | PTA_TBM | PTA_F16C
  	| PTA_FMA | PTA_PRFCHW | PTA_FXSR | PTA_XSAVE 
  	| PTA_XSAVEOPT},
+@@ -7235,9 +7235,15 @@
+   switch (regno)
+     {
+     case AX_REG:
++    case DX_REG:
+       return true;
+-
+-    case FIRST_FLOAT_REG:
++    case DI_REG:
++    case SI_REG:
++      return TARGET_64BIT && ix86_abi != MS_ABI;
++
++      /* Complex values are returned in %st(0)/%st(1) pair.  */
++    case ST0_REG:
++    case ST1_REG:
+       /* TODO: The function should depend on current function ABI but
+        builtins.c would need updating then. Therefore we use the
+        default ABI.  */
+@@ -7245,10 +7251,12 @@
+ 	return false;
+       return TARGET_FLOAT_RETURNS_IN_80387;
+ 
+-    case FIRST_SSE_REG:
++      /* Complex values are returned in %xmm0/%xmm1 pair.  */
++    case XMM0_REG:
++    case XMM1_REG:
+       return TARGET_SSE;
+ 
+-    case FIRST_MMX_REG:
++    case MM0_REG:
+       if (TARGET_MACHO || TARGET_64BIT)
+ 	return false;
+       return TARGET_MMX;
+@@ -13817,8 +13825,6 @@
+ 	 Those same assemblers have the same but opposite lossage on cmov.  */
+       if (mode == CCmode)
+ 	suffix = fp ? "nbe" : "a";
+-      else if (mode == CCCmode)
+-	suffix = "b";
+       else
+ 	gcc_unreachable ();
+       break;
+@@ -13840,8 +13846,12 @@
+ 	}
+       break;
+     case LTU:
+-      gcc_assert (mode == CCmode || mode == CCCmode);
+-      suffix = "b";
++      if (mode == CCmode)
++	suffix = "b";
++      else if (mode == CCCmode)
++	suffix = "c";
++      else
++	gcc_unreachable ();
+       break;
+     case GE:
+       switch (mode)
+@@ -13861,20 +13871,20 @@
+ 	}
+       break;
+     case GEU:
+-      /* ??? As above.  */
+-      gcc_assert (mode == CCmode || mode == CCCmode);
+-      suffix = fp ? "nb" : "ae";
++      if (mode == CCmode)
++	suffix = fp ? "nb" : "ae";
++      else if (mode == CCCmode)
++	suffix = "nc";
++      else
++	gcc_unreachable ();
+       break;
+     case LE:
+       gcc_assert (mode == CCmode || mode == CCGCmode || mode == CCNOmode);
+       suffix = "le";
+       break;
+     case LEU:
+-      /* ??? As above.  */
+       if (mode == CCmode)
+ 	suffix = "be";
+-      else if (mode == CCCmode)
+-	suffix = fp ? "nb" : "ae";
+       else
+ 	gcc_unreachable ();
+       break;
+@@ -18486,12 +18496,7 @@
+ 	return CCmode;
+     case GTU:			/* CF=0 & ZF=0 */
+     case LEU:			/* CF=1 | ZF=1 */
+-      /* Detect overflow checks.  They need just the carry flag.  */
+-      if (GET_CODE (op0) == MINUS
+-	  && rtx_equal_p (op1, XEXP (op0, 0)))
+-	return CCCmode;
+-      else
+-	return CCmode;
++      return CCmode;
+       /* Codes possibly doable only with sign flag when
+          comparing against zero.  */
+     case GE:			/* SF=OF   or   SF=0 */
+diff -Naur gcc-4.8.2.orig/gcc/config/i386/i386.md gcc-4.8.2/gcc/config/i386/i386.md
+--- gcc-4.8.2.orig/gcc/config/i386/i386.md	2013-08-13 12:45:06.000000000 +0000
++++ gcc-4.8.2/gcc/config/i386/i386.md	2013-11-01 16:12:31.467362295 +0000
+@@ -6589,7 +6589,7 @@
+    (set_attr "use_carry" "1")
+    (set_attr "mode" "<MODE>")])
+ 
+-;; Overflow setting add and subtract instructions
++;; Overflow setting add instructions
+ 
+ (define_insn "*add<mode>3_cconly_overflow"
+   [(set (reg:CCC FLAGS_REG)
+@@ -6604,43 +6604,31 @@
+   [(set_attr "type" "alu")
+    (set_attr "mode" "<MODE>")])
+ 
+-(define_insn "*sub<mode>3_cconly_overflow"
++(define_insn "*add<mode>3_cc_overflow"
+   [(set (reg:CCC FLAGS_REG)
+ 	(compare:CCC
+-	  (minus:SWI
+-	    (match_operand:SWI 0 "nonimmediate_operand" "<r>m,<r>")
+-	    (match_operand:SWI 1 "<general_operand>" "<r><i>,<r>m"))
+-	  (match_dup 0)))]
+-  ""
+-  "cmp{<imodesuffix>}\t{%1, %0|%0, %1}"
+-  [(set_attr "type" "icmp")
+-   (set_attr "mode" "<MODE>")])
+-
+-(define_insn "*<plusminus_insn><mode>3_cc_overflow"
+-  [(set (reg:CCC FLAGS_REG)
+-	(compare:CCC
+-	    (plusminus:SWI
+-		(match_operand:SWI 1 "nonimmediate_operand" "<comm>0,0")
++	    (plus:SWI
++		(match_operand:SWI 1 "nonimmediate_operand" "%0,0")
+ 		(match_operand:SWI 2 "<general_operand>" "<r><i>,<r>m"))
+ 	    (match_dup 1)))
+    (set (match_operand:SWI 0 "nonimmediate_operand" "=<r>m,<r>")
+-	(plusminus:SWI (match_dup 1) (match_dup 2)))]
+-  "ix86_binary_operator_ok (<CODE>, <MODE>mode, operands)"
+-  "<plusminus_mnemonic>{<imodesuffix>}\t{%2, %0|%0, %2}"
++	(plus:SWI (match_dup 1) (match_dup 2)))]
++  "ix86_binary_operator_ok (PLUS, <MODE>mode, operands)"
++  "add{<imodesuffix>}\t{%2, %0|%0, %2}"
+   [(set_attr "type" "alu")
+    (set_attr "mode" "<MODE>")])
+ 
+-(define_insn "*<plusminus_insn>si3_zext_cc_overflow"
++(define_insn "*addsi3_zext_cc_overflow"
+   [(set (reg:CCC FLAGS_REG)
+ 	(compare:CCC
+-	  (plusminus:SI
+-	    (match_operand:SI 1 "nonimmediate_operand" "<comm>0")
++	  (plus:SI
++	    (match_operand:SI 1 "nonimmediate_operand" "%0")
+ 	    (match_operand:SI 2 "x86_64_general_operand" "rme"))
+ 	  (match_dup 1)))
+    (set (match_operand:DI 0 "register_operand" "=r")
+-	(zero_extend:DI (plusminus:SI (match_dup 1) (match_dup 2))))]
+-  "TARGET_64BIT && ix86_binary_operator_ok (<CODE>, SImode, operands)"
+-  "<plusminus_mnemonic>{l}\t{%2, %k0|%k0, %2}"
++	(zero_extend:DI (plus:SI (match_dup 1) (match_dup 2))))]
++  "TARGET_64BIT && ix86_binary_operator_ok (PLUS, SImode, operands)"
++  "add{l}\t{%2, %k0|%k0, %2}"
+   [(set_attr "type" "alu")
+    (set_attr "mode" "SI")])
+ 
 diff -Naur gcc-4.8.2.orig/gcc/config/rs6000/rs6000.md gcc-4.8.2/gcc/config/rs6000/rs6000.md
---- gcc-4.8.2.orig/gcc/config/rs6000/rs6000.md	2013-09-23 09:27:06.000000000 -0500
-+++ gcc-4.8.2/gcc/config/rs6000/rs6000.md	2013-10-24 07:53:51.516366000 -0500
+--- gcc-4.8.2.orig/gcc/config/rs6000/rs6000.md	2013-09-23 14:27:06.000000000 +0000
++++ gcc-4.8.2/gcc/config/rs6000/rs6000.md	2013-11-01 16:12:31.479364360 +0000
 @@ -2412,7 +2412,7 @@
  			     (match_operand:SI 2 "gpc_reg_operand" "r,r"))
  		    (const_int 0)))
@@ -297,8 +687,8 @@ diff -Naur gcc-4.8.2.orig/gcc/config/rs6000/rs6000.md gcc-4.8.2/gcc/config/rs600
  	(mult:SI (match_dup 1) (match_dup 2)))
     (set (match_dup 3)
 diff -Naur gcc-4.8.2.orig/gcc/config/sh/sh.opt gcc-4.8.2/gcc/config/sh/sh.opt
---- gcc-4.8.2.orig/gcc/config/sh/sh.opt	2013-03-13 13:09:10.000000000 -0500
-+++ gcc-4.8.2/gcc/config/sh/sh.opt	2013-10-17 08:49:40.145734000 -0500
+--- gcc-4.8.2.orig/gcc/config/sh/sh.opt	2013-03-13 18:09:10.000000000 +0000
++++ gcc-4.8.2/gcc/config/sh/sh.opt	2013-11-01 16:12:32.375518598 +0000
 @@ -21,7 +21,7 @@
  ;; Used for various architecture options.
  Mask(SH_E)
@@ -309,8 +699,8 @@ diff -Naur gcc-4.8.2.orig/gcc/config/sh/sh.opt gcc-4.8.2/gcc/config/sh/sh.opt
  
  ;; Set if the a double-precision FPU is present but is restricted to
 diff -Naur gcc-4.8.2.orig/gcc/cp/decl2.c gcc-4.8.2/gcc/cp/decl2.c
---- gcc-4.8.2.orig/gcc/cp/decl2.c	2013-05-20 08:37:44.000000000 -0500
-+++ gcc-4.8.2/gcc/cp/decl2.c	2013-10-16 16:58:58.729529000 -0500
+--- gcc-4.8.2.orig/gcc/cp/decl2.c	2013-05-20 13:37:44.000000000 +0000
++++ gcc-4.8.2/gcc/cp/decl2.c	2013-11-01 16:12:32.379519286 +0000
 @@ -3960,6 +3960,22 @@
    expand_or_defer_fn (finish_function (0));
  }
@@ -360,9 +750,22 @@ diff -Naur gcc-4.8.2.orig/gcc/cp/decl2.c gcc-4.8.2/gcc/cp/decl2.c
  
    if (flag_detailed_statistics)
      {
+diff -Naur gcc-4.8.2.orig/gcc/cp/except.c gcc-4.8.2/gcc/cp/except.c
+--- gcc-4.8.2.orig/gcc/cp/except.c	2013-01-10 20:38:27.000000000 +0000
++++ gcc-4.8.2/gcc/cp/except.c	2013-11-01 16:12:32.995625323 +0000
+@@ -380,6 +380,9 @@
+ {
+   tree type = body ? TREE_TYPE (body) : void_type_node;
+ 
++  if (!flag_exceptions)
++    return body;
++
+   if (cond && !value_dependent_expression_p (cond))
+     {
+       cond = cxx_constant_value (cond);
 diff -Naur gcc-4.8.2.orig/gcc/cp/parser.c gcc-4.8.2/gcc/cp/parser.c
---- gcc-4.8.2.orig/gcc/cp/parser.c	2013-10-02 13:27:30.000000000 -0500
-+++ gcc-4.8.2/gcc/cp/parser.c	2013-10-16 17:19:18.772609000 -0500
+--- gcc-4.8.2.orig/gcc/cp/parser.c	2013-10-02 18:27:30.000000000 +0000
++++ gcc-4.8.2/gcc/cp/parser.c	2013-11-01 16:12:33.015628766 +0000
 @@ -6421,10 +6421,6 @@
    /* Look for the `~'.  */
    cp_parser_require (parser, CPP_COMPL, RT_COMPL);
@@ -375,8 +778,8 @@ diff -Naur gcc-4.8.2.orig/gcc/cp/parser.c gcc-4.8.2/gcc/cp/parser.c
       checking that it matches the first type-name.  */
    *type = cp_parser_nonclass_name (parser);
 diff -Naur gcc-4.8.2.orig/gcc/cp/semantics.c gcc-4.8.2/gcc/cp/semantics.c
---- gcc-4.8.2.orig/gcc/cp/semantics.c	2013-10-08 17:29:49.000000000 -0500
-+++ gcc-4.8.2/gcc/cp/semantics.c	2013-10-17 12:15:46.188630000 -0500
+--- gcc-4.8.2.orig/gcc/cp/semantics.c	2013-10-08 22:29:49.000000000 +0000
++++ gcc-4.8.2/gcc/cp/semantics.c	2013-11-01 16:12:33.423698996 +0000
 @@ -9481,7 +9481,14 @@
    /* In unevaluated context this isn't an odr-use, so just return the
       nearest 'this'.  */
@@ -393,15 +796,150 @@ diff -Naur gcc-4.8.2.orig/gcc/cp/semantics.c gcc-4.8.2/gcc/cp/semantics.c
  
    /* Try to default capture 'this' if we can.  */
    if (!this_capture
-diff -Naur gcc-4.8.2.orig/gcc/DATESTAMP gcc-4.8.2/gcc/DATESTAMP
---- gcc-4.8.2.orig/gcc/DATESTAMP	2013-10-15 19:16:34.000000000 -0500
-+++ gcc-4.8.2/gcc/DATESTAMP	2013-10-23 19:16:46.751448000 -0500
-@@ -1 +1 @@
--20131016
-+20131024
+diff -Naur gcc-4.8.2.orig/gcc/gimple-fold.c gcc-4.8.2/gcc/gimple-fold.c
+--- gcc-4.8.2.orig/gcc/gimple-fold.c	2013-01-13 12:33:43.000000000 +0000
++++ gcc-4.8.2/gcc/gimple-fold.c	2013-11-01 16:12:33.427699685 +0000
+@@ -178,7 +178,7 @@
+ 	  /* Make sure we create a cgraph node for functions we'll reference.
+ 	     They can be non-existent if the reference comes from an entry
+ 	     of an external vtable for example.  */
+-	  cgraph_get_create_node (base);
++	  cgraph_get_create_real_symbol_node (base);
+ 	}
+       /* Fixup types in global initializers.  */
+       if (TREE_TYPE (TREE_TYPE (cval)) != TREE_TYPE (TREE_OPERAND (cval, 0)))
+diff -Naur gcc-4.8.2.orig/gcc/go/go-gcc.cc gcc-4.8.2/gcc/go/go-gcc.cc
+--- gcc-4.8.2.orig/gcc/go/go-gcc.cc	2013-10-04 18:07:35.000000000 +0000
++++ gcc-4.8.2/gcc/go/go-gcc.cc	2013-11-01 16:12:34.067809850 +0000
+@@ -232,6 +232,9 @@
+   Bexpression*
+   convert_expression(Btype* type, Bexpression* expr, Location);
+ 
++  Bexpression*
++  function_code_expression(Bfunction*, Location);
++
+   // Statements.
+ 
+   Bstatement*
+@@ -334,6 +337,17 @@
+   Bexpression*
+   label_address(Blabel*, Location);
+ 
++  // Functions.
++
++  Bfunction*
++  error_function()
++  { return this->make_function(error_mark_node); }
++
++  Bfunction*
++  function(Btype* fntype, const std::string& name, const std::string& asm_name,
++           bool is_visible, bool is_declaration, bool is_inlinable,
++           bool disable_split_stack, bool in_unique_section, Location);
++
+  private:
+   // Make a Bexpression from a tree.
+   Bexpression*
+@@ -350,6 +364,10 @@
+   make_type(tree t)
+   { return new Btype(t); }
+ 
++  Bfunction*
++  make_function(tree t)
++  { return new Bfunction(t); }
++
+   Btype*
+   fill_in_struct(Btype*, const std::vector<Btyped_identifier>&);
+ 
+@@ -966,6 +984,19 @@
+   return tree_to_expr(ret);
+ }
+ 
++// Get the address of a function.
++
++Bexpression*
++Gcc_backend::function_code_expression(Bfunction* bfunc, Location location)
++{
++  tree func = bfunc->get_tree();
++  if (func == error_mark_node)
++    return this->error_expression();
++
++  tree ret = build_fold_addr_expr_loc(location.gcc_location(), func);
++  return this->make_expression(ret);
++}
++
+ // An expression as a statement.
+ 
+ Bstatement*
+@@ -1724,6 +1755,56 @@
+   return this->make_expression(ret);
+ }
+ 
++// Declare or define a new function.
++
++Bfunction*
++Gcc_backend::function(Btype* fntype, const std::string& name,
++                      const std::string& asm_name, bool is_visible,
++                      bool is_declaration, bool is_inlinable,
++                      bool disable_split_stack, bool in_unique_section,
++                      Location location)
++{
++  tree functype = fntype->get_tree();
++  if (functype != error_mark_node)
++    {
++      gcc_assert(FUNCTION_POINTER_TYPE_P(functype));
++      functype = TREE_TYPE(functype);
++    }
++  tree id = get_identifier_from_string(name);
++  if (functype == error_mark_node || id == error_mark_node)
++    return this->error_function();
++
++  tree decl = build_decl(location.gcc_location(), FUNCTION_DECL, id, functype);
++  if (!asm_name.empty())
++    SET_DECL_ASSEMBLER_NAME(decl, get_identifier_from_string(asm_name));
++  if (is_visible)
++    TREE_PUBLIC(decl) = 1;
++  if (is_declaration)
++    DECL_EXTERNAL(decl) = 1;
++  else
++    {
++      tree restype = TREE_TYPE(functype);
++      tree resdecl =
++          build_decl(location.gcc_location(), RESULT_DECL, NULL_TREE, restype);
++      DECL_ARTIFICIAL(resdecl) = 1;
++      DECL_IGNORED_P(resdecl) = 1;
++      DECL_CONTEXT(resdecl) = decl;
++      DECL_RESULT(decl) = resdecl;
++    }
++  if (!is_inlinable)
++    DECL_UNINLINABLE(decl) = 1;
++  if (disable_split_stack)
++    {
++      tree attr = get_identifier("__no_split_stack__");
++      DECL_ATTRIBUTES(decl) = tree_cons(attr, NULL_TREE, NULL_TREE);
++    }
++  if (in_unique_section)
++    resolve_unique_section(decl, 0, 1);
++
++  go_preserve_from_gc(decl);
++  return new Bfunction(decl);
++}
++
+ // The single backend.
+ 
+ static Gcc_backend gcc_backend;
+@@ -1799,3 +1880,9 @@
+ {
+   return bv->get_tree();
+ }
++
++tree
++function_to_tree(Bfunction* bf)
++{
++  return bf->get_tree();
++}
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/backend.h gcc-4.8.2/gcc/go/gofrontend/backend.h
---- gcc-4.8.2.orig/gcc/go/gofrontend/backend.h	2013-10-04 13:07:35.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/backend.h	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/backend.h	2013-10-04 18:07:35.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/backend.h	2013-11-01 16:12:33.427699685 +0000
 @@ -23,7 +23,7 @@
  // The backend representation of a statement.
  class Bstatement;
@@ -464,8 +1002,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/backend.h gcc-4.8.2/gcc/go/gofronten
  
  #endif // !defined(GO_BACKEND_H)
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/expressions.cc gcc-4.8.2/gcc/go/gofrontend/expressions.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/expressions.cc	2013-10-08 18:54:31.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/expressions.cc	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/expressions.cc	2013-10-08 23:54:31.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/expressions.cc	2013-11-01 16:12:33.435701062 +0000
 @@ -1219,7 +1219,7 @@
  
  // Get the tree for the code of a function expression.
@@ -736,8 +1274,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/expressions.cc gcc-4.8.2/gcc/go/gofr
  
    std::string sval;
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/expressions.h gcc-4.8.2/gcc/go/gofrontend/expressions.h
---- gcc-4.8.2.orig/gcc/go/gofrontend/expressions.h	2013-10-08 18:54:31.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/expressions.h	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/expressions.h	2013-10-08 23:54:31.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/expressions.h	2013-11-01 16:12:33.963791948 +0000
 @@ -1514,8 +1514,8 @@
    closure()
    { return this->closure_; }
@@ -749,281 +1287,9 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/expressions.h gcc-4.8.2/gcc/go/gofro
    get_code_pointer(Gogo*, Named_object* function, Location loc);
  
   protected:
-diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/gogo.cc gcc-4.8.2/gcc/go/gofrontend/gogo.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/gogo.cc	2013-09-28 15:23:56.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/gogo.cc	2013-10-16 12:27:53.564070000 -0500
-@@ -3320,7 +3320,8 @@
-     closure_var_(NULL), block_(block), location_(location), labels_(),
-     local_type_count_(0), descriptor_(NULL), fndecl_(NULL), defer_stack_(NULL),
-     is_sink_(false), results_are_named_(false), nointerface_(false),
--    calls_recover_(false), is_recover_thunk_(false), has_recover_thunk_(false),
-+    is_unnamed_type_stub_method_(false), calls_recover_(false),
-+    is_recover_thunk_(false), has_recover_thunk_(false),
-     in_unique_section_(false)
- {
- }
-@@ -3819,6 +3820,81 @@
-   *presults = results;
- }
- 
-+// Get the backend representation.
-+
-+Bfunction*
-+Function::get_or_make_decl(Gogo* gogo, Named_object* no)
-+{
-+  if (this->fndecl_ == NULL)
-+    {
-+      std::string asm_name;
-+      bool is_visible = false;
-+      if (no->package() != NULL)
-+        ;
-+      else if (this->enclosing_ != NULL || Gogo::is_thunk(no))
-+        ;
-+      else if (Gogo::unpack_hidden_name(no->name()) == "init"
-+               && !this->type_->is_method())
-+        ;
-+      else if (Gogo::unpack_hidden_name(no->name()) == "main"
-+               && gogo->is_main_package())
-+        is_visible = true;
-+      // Methods have to be public even if they are hidden because
-+      // they can be pulled into type descriptors when using
-+      // anonymous fields.
-+      else if (!Gogo::is_hidden_name(no->name())
-+               || this->type_->is_method())
-+        {
-+	  if (!this->is_unnamed_type_stub_method_)
-+	    is_visible = true;
-+          std::string pkgpath = gogo->pkgpath_symbol();
-+          if (this->type_->is_method()
-+              && Gogo::is_hidden_name(no->name())
-+              && Gogo::hidden_name_pkgpath(no->name()) != gogo->pkgpath())
-+            {
-+              // This is a method we created for an unexported
-+              // method of an imported embedded type.  We need to
-+              // use the pkgpath of the imported package to avoid
-+              // a possible name collision.  See bug478 for a test
-+              // case.
-+              pkgpath = Gogo::hidden_name_pkgpath(no->name());
-+              pkgpath = Gogo::pkgpath_for_symbol(pkgpath);
-+            }
-+
-+          asm_name = pkgpath;
-+          asm_name.append(1, '.');
-+          asm_name.append(Gogo::unpack_hidden_name(no->name()));
-+          if (this->type_->is_method())
-+            {
-+              asm_name.append(1, '.');
-+              Type* rtype = this->type_->receiver()->type();
-+              asm_name.append(rtype->mangled_name(gogo));
-+            }
-+        }
-+
-+      // If a function calls the predeclared recover function, we
-+      // can't inline it, because recover behaves differently in a
-+      // function passed directly to defer.  If this is a recover
-+      // thunk that we built to test whether a function can be
-+      // recovered, we can't inline it, because that will mess up
-+      // our return address comparison.
-+      bool is_inlinable = !(this->calls_recover_ || this->is_recover_thunk_);
-+
-+      // If this is a thunk created to call a function which calls
-+      // the predeclared recover function, we need to disable
-+      // stack splitting for the thunk.
-+      bool disable_split_stack = this->is_recover_thunk_;
-+
-+      Btype* functype = this->type_->get_backend_fntype(gogo);
-+      this->fndecl_ =
-+          gogo->backend()->function(functype, no->get_id(gogo), asm_name,
-+                                    is_visible, false, is_inlinable,
-+                                    disable_split_stack,
-+                                    this->in_unique_section_, this->location());
-+    }
-+  return this->fndecl_;
-+}
-+
- // Class Block.
- 
- Block::Block(Block* enclosing, Location location)
-@@ -5110,6 +5186,75 @@
-     go_unreachable();
- }
- 
-+
-+// Return the external identifier for this object.
-+
-+std::string
-+Named_object::get_id(Gogo* gogo)
-+{
-+  go_assert(!this->is_variable() && !this->is_result_variable());
-+  std::string decl_name;
-+  if (this->is_function_declaration()
-+      && !this->func_declaration_value()->asm_name().empty())
-+    decl_name = this->func_declaration_value()->asm_name();
-+  else if (this->is_type()
-+	   && Linemap::is_predeclared_location(this->type_value()->location()))
-+    {
-+      // We don't need the package name for builtin types.
-+      decl_name = Gogo::unpack_hidden_name(this->name_);
-+    }
-+  else
-+    {
-+      std::string package_name;
-+      if (this->package_ == NULL)
-+	package_name = gogo->package_name();
-+      else
-+	package_name = this->package_->package_name();
-+
-+      // Note that this will be misleading if this is an unexported
-+      // method generated for an embedded imported type.  In that case
-+      // the unexported method should have the package name of the
-+      // package from which it is imported, but we are going to give
-+      // it our package name.  Fixing this would require knowing the
-+      // package name, but we only know the package path.  It might be
-+      // better to use package paths here anyhow.  This doesn't affect
-+      // the assembler code, because we always set that name in
-+      // Function::get_or_make_decl anyhow.  FIXME.
-+
-+      decl_name = package_name + '.' + Gogo::unpack_hidden_name(this->name_);
-+
-+      Function_type* fntype;
-+      if (this->is_function())
-+	fntype = this->func_value()->type();
-+      else if (this->is_function_declaration())
-+	fntype = this->func_declaration_value()->type();
-+      else
-+	fntype = NULL;
-+      if (fntype != NULL && fntype->is_method())
-+	{
-+	  decl_name.push_back('.');
-+	  decl_name.append(fntype->receiver()->type()->mangled_name(gogo));
-+	}
-+    }
-+  if (this->is_type())
-+    {
-+      unsigned int index;
-+      const Named_object* in_function = this->type_value()->in_function(&index);
-+      if (in_function != NULL)
-+	{
-+	  decl_name += '$' + Gogo::unpack_hidden_name(in_function->name());
-+	  if (index > 0)
-+	    {
-+	      char buf[30];
-+	      snprintf(buf, sizeof buf, "%u", index);
-+	      decl_name += '$';
-+	      decl_name += buf;
-+	    }
-+	}
-+    }
-+  return decl_name;
-+}
-+
- // Class Bindings.
- 
- Bindings::Bindings(Bindings* enclosing)
-diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/gogo.h gcc-4.8.2/gcc/go/gofrontend/gogo.h
---- gcc-4.8.2.orig/gcc/go/gofrontend/gogo.h	2013-09-28 15:23:56.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/gogo.h	2013-10-16 12:27:53.564070000 -0500
-@@ -48,6 +48,7 @@
- class Bblock;
- class Bvariable;
- class Blabel;
-+class Bfunction;
- 
- // This file declares the basic classes used to hold the internal
- // representation of Go which is built by the parser.
-@@ -952,6 +953,15 @@
-     this->nointerface_ = true;
-   }
- 
-+  // Record that this function is a stub method created for an unnamed
-+  // type.
-+  void
-+  set_is_unnamed_type_stub_method()
-+  {
-+    go_assert(this->is_method());
-+    this->is_unnamed_type_stub_method_ = true;
-+  }
-+
-   // Add a new field to the closure variable.
-   void
-   add_closure_field(Named_object* var, Location loc)
-@@ -1089,17 +1099,13 @@
-     this->descriptor_ = descriptor;
-   }
- 
--  // Return the function's decl given an identifier.
--  tree
--  get_or_make_decl(Gogo*, Named_object*, tree id);
-+  // Return the backend representation.
-+  Bfunction*
-+  get_or_make_decl(Gogo*, Named_object*);
- 
-   // Return the function's decl after it has been built.
-   tree
--  get_decl() const
--  {
--    go_assert(this->fndecl_ != NULL);
--    return this->fndecl_;
--  }
-+  get_decl() const;
- 
-   // Set the function decl to hold a tree of the function code.
-   void
-@@ -1170,7 +1176,7 @@
-   // The function descriptor, if any.
-   Expression* descriptor_;
-   // The function decl.
--  tree fndecl_;
-+  Bfunction* fndecl_;
-   // The defer stack variable.  A pointer to this variable is used to
-   // distinguish the defer stack for one function from another.  This
-   // is NULL unless we actually need a defer stack.
-@@ -1181,6 +1187,9 @@
-   bool results_are_named_ : 1;
-   // True if this method should not be included in the type descriptor.
-   bool nointerface_ : 1;
-+  // True if this function is a stub method created for an unnamed
-+  // type.
-+  bool is_unnamed_type_stub_method_ : 1;
-   // True if this function calls the predeclared recover function.
-   bool calls_recover_ : 1;
-   // True if this a thunk built for a function which calls recover.
-@@ -1265,9 +1274,9 @@
-   has_descriptor() const
-   { return this->descriptor_ != NULL; }
- 
--  // Return a decl for the function given an identifier.
--  tree
--  get_or_make_decl(Gogo*, Named_object*, tree id);
-+  // Return a backend representation.
-+  Bfunction*
-+  get_or_make_decl(Gogo*, Named_object*);
- 
-   // If there is a descriptor, build it into the backend
-   // representation.
-@@ -1290,7 +1299,7 @@
-   // The function descriptor, if any.
-   Expression* descriptor_;
-   // The function decl if needed.
--  tree fndecl_;
-+  Bfunction* fndecl_;
- };
- 
- // A variable.
-@@ -2181,8 +2190,8 @@
-   Bvariable*
-   get_backend_variable(Gogo*, Named_object* function);
- 
--  // Return a tree for the external identifier for this object.
--  tree
-+  // Return the external identifier for this object.
-+  std::string
-   get_id(Gogo*);
- 
-   // Return a tree representing this object.
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/gogo-tree.cc gcc-4.8.2/gcc/go/gofrontend/gogo-tree.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/gogo-tree.cc	2013-09-28 15:23:56.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/gogo-tree.cc	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/gogo-tree.cc	2013-09-28 20:23:56.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/gogo-tree.cc	2013-11-01 16:12:33.975794014 +0000
 @@ -985,74 +985,6 @@
    delete[] vec;
  }
@@ -1428,9 +1694,281 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/gogo-tree.cc gcc-4.8.2/gcc/go/gofron
      TREE_PUBLIC(decl) = 1;
    else
      {
+diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/gogo.cc gcc-4.8.2/gcc/go/gofrontend/gogo.cc
+--- gcc-4.8.2.orig/gcc/go/gofrontend/gogo.cc	2013-09-28 20:23:56.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/gogo.cc	2013-11-01 16:12:33.967792637 +0000
+@@ -3320,7 +3320,8 @@
+     closure_var_(NULL), block_(block), location_(location), labels_(),
+     local_type_count_(0), descriptor_(NULL), fndecl_(NULL), defer_stack_(NULL),
+     is_sink_(false), results_are_named_(false), nointerface_(false),
+-    calls_recover_(false), is_recover_thunk_(false), has_recover_thunk_(false),
++    is_unnamed_type_stub_method_(false), calls_recover_(false),
++    is_recover_thunk_(false), has_recover_thunk_(false),
+     in_unique_section_(false)
+ {
+ }
+@@ -3819,6 +3820,81 @@
+   *presults = results;
+ }
+ 
++// Get the backend representation.
++
++Bfunction*
++Function::get_or_make_decl(Gogo* gogo, Named_object* no)
++{
++  if (this->fndecl_ == NULL)
++    {
++      std::string asm_name;
++      bool is_visible = false;
++      if (no->package() != NULL)
++        ;
++      else if (this->enclosing_ != NULL || Gogo::is_thunk(no))
++        ;
++      else if (Gogo::unpack_hidden_name(no->name()) == "init"
++               && !this->type_->is_method())
++        ;
++      else if (Gogo::unpack_hidden_name(no->name()) == "main"
++               && gogo->is_main_package())
++        is_visible = true;
++      // Methods have to be public even if they are hidden because
++      // they can be pulled into type descriptors when using
++      // anonymous fields.
++      else if (!Gogo::is_hidden_name(no->name())
++               || this->type_->is_method())
++        {
++	  if (!this->is_unnamed_type_stub_method_)
++	    is_visible = true;
++          std::string pkgpath = gogo->pkgpath_symbol();
++          if (this->type_->is_method()
++              && Gogo::is_hidden_name(no->name())
++              && Gogo::hidden_name_pkgpath(no->name()) != gogo->pkgpath())
++            {
++              // This is a method we created for an unexported
++              // method of an imported embedded type.  We need to
++              // use the pkgpath of the imported package to avoid
++              // a possible name collision.  See bug478 for a test
++              // case.
++              pkgpath = Gogo::hidden_name_pkgpath(no->name());
++              pkgpath = Gogo::pkgpath_for_symbol(pkgpath);
++            }
++
++          asm_name = pkgpath;
++          asm_name.append(1, '.');
++          asm_name.append(Gogo::unpack_hidden_name(no->name()));
++          if (this->type_->is_method())
++            {
++              asm_name.append(1, '.');
++              Type* rtype = this->type_->receiver()->type();
++              asm_name.append(rtype->mangled_name(gogo));
++            }
++        }
++
++      // If a function calls the predeclared recover function, we
++      // can't inline it, because recover behaves differently in a
++      // function passed directly to defer.  If this is a recover
++      // thunk that we built to test whether a function can be
++      // recovered, we can't inline it, because that will mess up
++      // our return address comparison.
++      bool is_inlinable = !(this->calls_recover_ || this->is_recover_thunk_);
++
++      // If this is a thunk created to call a function which calls
++      // the predeclared recover function, we need to disable
++      // stack splitting for the thunk.
++      bool disable_split_stack = this->is_recover_thunk_;
++
++      Btype* functype = this->type_->get_backend_fntype(gogo);
++      this->fndecl_ =
++          gogo->backend()->function(functype, no->get_id(gogo), asm_name,
++                                    is_visible, false, is_inlinable,
++                                    disable_split_stack,
++                                    this->in_unique_section_, this->location());
++    }
++  return this->fndecl_;
++}
++
+ // Class Block.
+ 
+ Block::Block(Block* enclosing, Location location)
+@@ -5110,6 +5186,75 @@
+     go_unreachable();
+ }
+ 
++
++// Return the external identifier for this object.
++
++std::string
++Named_object::get_id(Gogo* gogo)
++{
++  go_assert(!this->is_variable() && !this->is_result_variable());
++  std::string decl_name;
++  if (this->is_function_declaration()
++      && !this->func_declaration_value()->asm_name().empty())
++    decl_name = this->func_declaration_value()->asm_name();
++  else if (this->is_type()
++	   && Linemap::is_predeclared_location(this->type_value()->location()))
++    {
++      // We don't need the package name for builtin types.
++      decl_name = Gogo::unpack_hidden_name(this->name_);
++    }
++  else
++    {
++      std::string package_name;
++      if (this->package_ == NULL)
++	package_name = gogo->package_name();
++      else
++	package_name = this->package_->package_name();
++
++      // Note that this will be misleading if this is an unexported
++      // method generated for an embedded imported type.  In that case
++      // the unexported method should have the package name of the
++      // package from which it is imported, but we are going to give
++      // it our package name.  Fixing this would require knowing the
++      // package name, but we only know the package path.  It might be
++      // better to use package paths here anyhow.  This doesn't affect
++      // the assembler code, because we always set that name in
++      // Function::get_or_make_decl anyhow.  FIXME.
++
++      decl_name = package_name + '.' + Gogo::unpack_hidden_name(this->name_);
++
++      Function_type* fntype;
++      if (this->is_function())
++	fntype = this->func_value()->type();
++      else if (this->is_function_declaration())
++	fntype = this->func_declaration_value()->type();
++      else
++	fntype = NULL;
++      if (fntype != NULL && fntype->is_method())
++	{
++	  decl_name.push_back('.');
++	  decl_name.append(fntype->receiver()->type()->mangled_name(gogo));
++	}
++    }
++  if (this->is_type())
++    {
++      unsigned int index;
++      const Named_object* in_function = this->type_value()->in_function(&index);
++      if (in_function != NULL)
++	{
++	  decl_name += '$' + Gogo::unpack_hidden_name(in_function->name());
++	  if (index > 0)
++	    {
++	      char buf[30];
++	      snprintf(buf, sizeof buf, "%u", index);
++	      decl_name += '$';
++	      decl_name += buf;
++	    }
++	}
++    }
++  return decl_name;
++}
++
+ // Class Bindings.
+ 
+ Bindings::Bindings(Bindings* enclosing)
+diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/gogo.h gcc-4.8.2/gcc/go/gofrontend/gogo.h
+--- gcc-4.8.2.orig/gcc/go/gofrontend/gogo.h	2013-09-28 20:23:56.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/gogo.h	2013-11-01 16:12:33.971793325 +0000
+@@ -48,6 +48,7 @@
+ class Bblock;
+ class Bvariable;
+ class Blabel;
++class Bfunction;
+ 
+ // This file declares the basic classes used to hold the internal
+ // representation of Go which is built by the parser.
+@@ -952,6 +953,15 @@
+     this->nointerface_ = true;
+   }
+ 
++  // Record that this function is a stub method created for an unnamed
++  // type.
++  void
++  set_is_unnamed_type_stub_method()
++  {
++    go_assert(this->is_method());
++    this->is_unnamed_type_stub_method_ = true;
++  }
++
+   // Add a new field to the closure variable.
+   void
+   add_closure_field(Named_object* var, Location loc)
+@@ -1089,17 +1099,13 @@
+     this->descriptor_ = descriptor;
+   }
+ 
+-  // Return the function's decl given an identifier.
+-  tree
+-  get_or_make_decl(Gogo*, Named_object*, tree id);
++  // Return the backend representation.
++  Bfunction*
++  get_or_make_decl(Gogo*, Named_object*);
+ 
+   // Return the function's decl after it has been built.
+   tree
+-  get_decl() const
+-  {
+-    go_assert(this->fndecl_ != NULL);
+-    return this->fndecl_;
+-  }
++  get_decl() const;
+ 
+   // Set the function decl to hold a tree of the function code.
+   void
+@@ -1170,7 +1176,7 @@
+   // The function descriptor, if any.
+   Expression* descriptor_;
+   // The function decl.
+-  tree fndecl_;
++  Bfunction* fndecl_;
+   // The defer stack variable.  A pointer to this variable is used to
+   // distinguish the defer stack for one function from another.  This
+   // is NULL unless we actually need a defer stack.
+@@ -1181,6 +1187,9 @@
+   bool results_are_named_ : 1;
+   // True if this method should not be included in the type descriptor.
+   bool nointerface_ : 1;
++  // True if this function is a stub method created for an unnamed
++  // type.
++  bool is_unnamed_type_stub_method_ : 1;
+   // True if this function calls the predeclared recover function.
+   bool calls_recover_ : 1;
+   // True if this a thunk built for a function which calls recover.
+@@ -1265,9 +1274,9 @@
+   has_descriptor() const
+   { return this->descriptor_ != NULL; }
+ 
+-  // Return a decl for the function given an identifier.
+-  tree
+-  get_or_make_decl(Gogo*, Named_object*, tree id);
++  // Return a backend representation.
++  Bfunction*
++  get_or_make_decl(Gogo*, Named_object*);
+ 
+   // If there is a descriptor, build it into the backend
+   // representation.
+@@ -1290,7 +1299,7 @@
+   // The function descriptor, if any.
+   Expression* descriptor_;
+   // The function decl if needed.
+-  tree fndecl_;
++  Bfunction* fndecl_;
+ };
+ 
+ // A variable.
+@@ -2181,8 +2190,8 @@
+   Bvariable*
+   get_backend_variable(Gogo*, Named_object* function);
+ 
+-  // Return a tree for the external identifier for this object.
+-  tree
++  // Return the external identifier for this object.
++  std::string
+   get_id(Gogo*);
+ 
+   // Return a tree representing this object.
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/import.h gcc-4.8.2/gcc/go/gofrontend/import.h
---- gcc-4.8.2.orig/gcc/go/gofrontend/import.h	2012-10-30 19:38:49.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/import.h	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/import.h	2012-10-31 00:38:49.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/import.h	2013-11-01 16:12:33.975794014 +0000
 @@ -149,6 +149,11 @@
    location() const
    { return this->location_; }
@@ -1444,8 +1982,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/import.h gcc-4.8.2/gcc/go/gofrontend
    int
    peek_char()
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/lex.cc gcc-4.8.2/gcc/go/gofrontend/lex.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/lex.cc	2012-12-03 00:57:04.000000000 -0600
-+++ gcc-4.8.2/gcc/go/gofrontend/lex.cc	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/lex.cc	2012-12-03 06:57:04.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/lex.cc	2013-11-01 16:12:33.979794702 +0000
 @@ -873,7 +873,28 @@
  	      && (cc < 'a' || cc > 'z')
  	      && cc != '_'
@@ -1477,8 +2015,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/lex.cc gcc-4.8.2/gcc/go/gofrontend/l
  	  if (is_first)
  	    {
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/parse.cc gcc-4.8.2/gcc/go/gofrontend/parse.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/parse.cc	2013-10-08 18:54:31.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/parse.cc	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/parse.cc	2013-10-08 23:54:31.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/parse.cc	2013-11-01 16:12:33.979794702 +0000
 @@ -744,6 +744,8 @@
      return NULL;
  
@@ -1489,8 +2027,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/parse.cc gcc-4.8.2/gcc/go/gofrontend
      this->check_signature_names(params, &names);
    if (results != NULL)
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/runtime.cc gcc-4.8.2/gcc/go/gofrontend/runtime.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/runtime.cc	2012-12-21 09:59:27.000000000 -0600
-+++ gcc-4.8.2/gcc/go/gofrontend/runtime.cc	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/runtime.cc	2012-12-21 15:59:27.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/runtime.cc	2013-11-01 16:12:34.055807784 +0000
 @@ -42,6 +42,8 @@
    RFT_RUNE,
    // Go type float64, C type double.
@@ -1520,8 +2058,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/runtime.cc gcc-4.8.2/gcc/go/gofronte
      case RFT_STRING:
      case RFT_POINTER:
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/runtime.def gcc-4.8.2/gcc/go/gofrontend/runtime.def
---- gcc-4.8.2.orig/gcc/go/gofrontend/runtime.def	2013-06-18 18:50:42.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/runtime.def	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/runtime.def	2013-06-18 23:50:42.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/runtime.def	2013-11-01 16:12:34.055807784 +0000
 @@ -68,6 +68,12 @@
  	       P1(STRING), R1(SLICE))
  
@@ -1536,8 +2074,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/runtime.def gcc-4.8.2/gcc/go/gofront
  DEF_GO_RUNTIME(MAKESLICE1, "__go_make_slice1", P2(TYPE, UINTPTR), R1(SLICE))
  DEF_GO_RUNTIME(MAKESLICE2, "__go_make_slice2", P3(TYPE, UINTPTR, UINTPTR),
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/types.cc gcc-4.8.2/gcc/go/gofrontend/types.cc
---- gcc-4.8.2.orig/gcc/go/gofrontend/types.cc	2013-10-02 14:22:30.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/types.cc	2013-10-17 15:08:21.970831000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/types.cc	2013-10-02 19:22:30.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/types.cc	2013-11-01 16:12:34.063809161 +0000
 @@ -3383,6 +3383,68 @@
  // Get the backend representation for a function type.
  
@@ -1772,8 +2310,8 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/types.cc gcc-4.8.2/gcc/go/gofrontend
  	  else
  	    {
 diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/types.h gcc-4.8.2/gcc/go/gofrontend/types.h
---- gcc-4.8.2.orig/gcc/go/gofrontend/types.h	2013-09-18 16:54:08.000000000 -0500
-+++ gcc-4.8.2/gcc/go/gofrontend/types.h	2013-10-17 15:08:21.970831000 -0500
+--- gcc-4.8.2.orig/gcc/go/gofrontend/types.h	2013-09-18 21:54:08.000000000 +0000
++++ gcc-4.8.2/gcc/go/gofrontend/types.h	2013-11-01 16:12:34.063809161 +0000
 @@ -1717,7 +1717,8 @@
  		Typed_identifier_list* results, Location location)
      : Type(TYPE_FUNCTION),
@@ -1847,138 +2385,316 @@ diff -Naur gcc-4.8.2.orig/gcc/go/gofrontend/types.h gcc-4.8.2/gcc/go/gofrontend/
  };
  
  // A list of struct fields.
-diff -Naur gcc-4.8.2.orig/gcc/go/go-gcc.cc gcc-4.8.2/gcc/go/go-gcc.cc
---- gcc-4.8.2.orig/gcc/go/go-gcc.cc	2013-10-04 13:07:35.000000000 -0500
-+++ gcc-4.8.2/gcc/go/go-gcc.cc	2013-10-16 12:27:53.564070000 -0500
-@@ -232,6 +232,9 @@
-   Bexpression*
-   convert_expression(Btype* type, Bexpression* expr, Location);
+diff -Naur gcc-4.8.2.orig/gcc/graphite-clast-to-gimple.c gcc-4.8.2/gcc/graphite-clast-to-gimple.c
+--- gcc-4.8.2.orig/gcc/graphite-clast-to-gimple.c	2013-01-10 20:38:27.000000000 +0000
++++ gcc-4.8.2/gcc/graphite-clast-to-gimple.c	2013-11-01 16:12:34.503884898 +0000
+@@ -1170,8 +1170,11 @@
+   redirect_edge_succ_nodup (next_e, after);
+   set_immediate_dominator (CDI_DOMINATORS, next_e->dest, next_e->src);
  
-+  Bexpression*
-+  function_code_expression(Bfunction*, Location);
++  isl_set *domain = isl_set_from_cloog_domain (stmt->domain);
++  int scheduling_dim = isl_set_n_dim (domain);
 +
-   // Statements.
+   if (flag_loop_parallelize_all
+-      && loop_is_parallel_p (loop, bb_pbb_mapping, level))
++      && loop_is_parallel_p (loop, bb_pbb_mapping, scheduling_dim))
+     loop->can_be_parallel = true;
  
-   Bstatement*
-@@ -334,6 +337,17 @@
-   Bexpression*
-   label_address(Blabel*, Location);
- 
-+  // Functions.
-+
-+  Bfunction*
-+  error_function()
-+  { return this->make_function(error_mark_node); }
-+
-+  Bfunction*
-+  function(Btype* fntype, const std::string& name, const std::string& asm_name,
-+           bool is_visible, bool is_declaration, bool is_inlinable,
-+           bool disable_split_stack, bool in_unique_section, Location);
-+
-  private:
-   // Make a Bexpression from a tree.
-   Bexpression*
-@@ -350,6 +364,10 @@
-   make_type(tree t)
-   { return new Btype(t); }
- 
-+  Bfunction*
-+  make_function(tree t)
-+  { return new Bfunction(t); }
-+
-   Btype*
-   fill_in_struct(Btype*, const std::vector<Btyped_identifier>&);
- 
-@@ -966,6 +984,19 @@
-   return tree_to_expr(ret);
- }
- 
-+// Get the address of a function.
-+
-+Bexpression*
-+Gcc_backend::function_code_expression(Bfunction* bfunc, Location location)
-+{
-+  tree func = bfunc->get_tree();
-+  if (func == error_mark_node)
-+    return this->error_expression();
-+
-+  tree ret = build_fold_addr_expr_loc(location.gcc_location(), func);
-+  return this->make_expression(ret);
-+}
-+
- // An expression as a statement.
- 
- Bstatement*
-@@ -1724,6 +1755,56 @@
-   return this->make_expression(ret);
- }
- 
-+// Declare or define a new function.
-+
-+Bfunction*
-+Gcc_backend::function(Btype* fntype, const std::string& name,
-+                      const std::string& asm_name, bool is_visible,
-+                      bool is_declaration, bool is_inlinable,
-+                      bool disable_split_stack, bool in_unique_section,
-+                      Location location)
-+{
-+  tree functype = fntype->get_tree();
-+  if (functype != error_mark_node)
-+    {
-+      gcc_assert(FUNCTION_POINTER_TYPE_P(functype));
-+      functype = TREE_TYPE(functype);
-+    }
-+  tree id = get_identifier_from_string(name);
-+  if (functype == error_mark_node || id == error_mark_node)
-+    return this->error_function();
-+
-+  tree decl = build_decl(location.gcc_location(), FUNCTION_DECL, id, functype);
-+  if (!asm_name.empty())
-+    SET_DECL_ASSEMBLER_NAME(decl, get_identifier_from_string(asm_name));
-+  if (is_visible)
-+    TREE_PUBLIC(decl) = 1;
-+  if (is_declaration)
-+    DECL_EXTERNAL(decl) = 1;
-+  else
-+    {
-+      tree restype = TREE_TYPE(functype);
-+      tree resdecl =
-+          build_decl(location.gcc_location(), RESULT_DECL, NULL_TREE, restype);
-+      DECL_ARTIFICIAL(resdecl) = 1;
-+      DECL_IGNORED_P(resdecl) = 1;
-+      DECL_CONTEXT(resdecl) = decl;
-+      DECL_RESULT(decl) = resdecl;
-+    }
-+  if (!is_inlinable)
-+    DECL_UNINLINABLE(decl) = 1;
-+  if (disable_split_stack)
-+    {
-+      tree attr = get_identifier("__no_split_stack__");
-+      DECL_ATTRIBUTES(decl) = tree_cons(attr, NULL_TREE, NULL_TREE);
-+    }
-+  if (in_unique_section)
-+    resolve_unique_section(decl, 0, 1);
-+
-+  go_preserve_from_gc(decl);
-+  return new Bfunction(decl);
-+}
-+
- // The single backend.
- 
- static Gcc_backend gcc_backend;
-@@ -1799,3 +1880,9 @@
+   return last_e;
+diff -Naur gcc-4.8.2.orig/gcc/graphite-dependences.c gcc-4.8.2/gcc/graphite-dependences.c
+--- gcc-4.8.2.orig/gcc/graphite-dependences.c	2013-01-10 20:38:27.000000000 +0000
++++ gcc-4.8.2/gcc/graphite-dependences.c	2013-11-01 16:12:34.503884898 +0000
+@@ -297,7 +297,7 @@
+ 	      int depth)
  {
-   return bv->get_tree();
+   bool res;
+-  int idx, i;
++  int i;
+   isl_space *space;
+   isl_map *lex, *x;
+   isl_constraint *ineq;
+@@ -312,13 +312,12 @@
+   space = isl_map_get_space (x);
+   ineq = isl_inequality_alloc (isl_local_space_from_space (space));
+ 
+-  idx = 2 * depth + 1;
+-  for (i = 0; i < idx; i++)
++  for (i = 0; i < depth - 1; i++)
+     lex = isl_map_equate (lex, isl_dim_in, i, isl_dim_out, i);
+ 
+   /* in + 1 <= out  */
+-  ineq = isl_constraint_set_coefficient_si (ineq, isl_dim_out, idx, 1);
+-  ineq = isl_constraint_set_coefficient_si (ineq, isl_dim_in, idx, -1);
++  ineq = isl_constraint_set_coefficient_si (ineq, isl_dim_out, depth - 1, 1);
++  ineq = isl_constraint_set_coefficient_si (ineq, isl_dim_in, depth - 1, -1);
+   ineq = isl_constraint_set_constant_si (ineq, -1);
+   lex = isl_map_add_constraint (lex, ineq);
+   x = isl_map_intersect (x, lex);
+diff -Naur gcc-4.8.2.orig/gcc/ipa-prop.c gcc-4.8.2/gcc/ipa-prop.c
+--- gcc-4.8.2.orig/gcc/ipa-prop.c	2013-06-24 12:57:52.000000000 +0000
++++ gcc-4.8.2/gcc/ipa-prop.c	2013-11-01 16:12:34.071810538 +0000
+@@ -2126,7 +2126,6 @@
+      we may create the first reference to the object in the unit.  */
+   if (!callee || callee->global.inlined_to)
+     {
+-      struct cgraph_node *first_clone = callee;
+ 
+       /* We are better to ensure we can refer to it.
+ 	 In the case of static functions we are out of luck, since we already	
+@@ -2142,31 +2141,7 @@
+ 		     xstrdup (cgraph_node_name (ie->callee)), ie->callee->uid);
+ 	  return NULL;
+ 	}
+-
+-      /* Create symbol table node.  Even if inline clone exists, we can not take
+-	 it as a target of non-inlined call.  */
+-      callee = cgraph_create_node (target);
+-
+-      /* OK, we previously inlined the function, then removed the offline copy and
+-	 now we want it back for external call.  This can happen when devirtualizing
+-	 while inlining function called once that happens after extern inlined and
+-	 virtuals are already removed.  In this case introduce the external node
+-	 and make it available for call.  */
+-      if (first_clone)
+-	{
+-	  first_clone->clone_of = callee;
+-	  callee->clones = first_clone;
+-	  symtab_prevail_in_asm_name_hash ((symtab_node)callee);
+-	  symtab_insert_node_to_hashtable ((symtab_node)callee);
+-	  if (dump_file)
+-	    fprintf (dump_file, "ipa-prop: Introduced new external node "
+-		     "(%s/%i) and turned into root of the clone tree.\n",
+-		     xstrdup (cgraph_node_name (callee)), callee->uid);
+-	}
+-      else if (dump_file)
+-	fprintf (dump_file, "ipa-prop: Introduced new external node "
+-		 "(%s/%i).\n",
+-		 xstrdup (cgraph_node_name (callee)), callee->uid);
++      callee = cgraph_get_create_real_symbol_node (target);
+     }
+   ipa_check_create_node_params ();
+ 
+diff -Naur gcc-4.8.2.orig/gcc/optabs.c gcc-4.8.2/gcc/optabs.c
+--- gcc-4.8.2.orig/gcc/optabs.c	2013-03-09 07:54:02.000000000 +0000
++++ gcc-4.8.2/gcc/optabs.c	2013-11-01 16:12:34.075811227 +0000
+@@ -7035,8 +7035,7 @@
+ 
+       create_output_operand (&ops[0], target, mode);
+       create_fixed_operand (&ops[1], mem);
+-      /* VAL may have been promoted to a wider mode.  Shrink it if so.  */
+-      create_convert_operand_to (&ops[2], val, mode, true);
++      create_input_operand (&ops[2], val, mode);
+       create_integer_operand (&ops[3], model);
+       if (maybe_expand_insn (icode, 4, ops))
+ 	return ops[0].value;
+@@ -7075,8 +7074,7 @@
+       struct expand_operand ops[3];
+       create_output_operand (&ops[0], target, mode);
+       create_fixed_operand (&ops[1], mem);
+-      /* VAL may have been promoted to a wider mode.  Shrink it if so.  */
+-      create_convert_operand_to (&ops[2], val, mode, true);
++      create_input_operand (&ops[2], val, mode);
+       if (maybe_expand_insn (icode, 3, ops))
+ 	return ops[0].value;
+     }
+@@ -7118,8 +7116,6 @@
+     {
+       if (!target || !register_operand (target, mode))
+ 	target = gen_reg_rtx (mode);
+-      if (GET_MODE (val) != VOIDmode && GET_MODE (val) != mode)
+-	val = convert_modes (mode, GET_MODE (val), val, 1);
+       if (expand_compare_and_swap_loop (mem, target, val, NULL_RTX))
+ 	return target;
+     }
+@@ -7331,8 +7327,8 @@
+       create_output_operand (&ops[0], target_bool, bool_mode);
+       create_output_operand (&ops[1], target_oval, mode);
+       create_fixed_operand (&ops[2], mem);
+-      create_convert_operand_to (&ops[3], expected, mode, true);
+-      create_convert_operand_to (&ops[4], desired, mode, true);
++      create_input_operand (&ops[3], expected, mode);
++      create_input_operand (&ops[4], desired, mode);
+       create_integer_operand (&ops[5], is_weak);
+       create_integer_operand (&ops[6], succ_model);
+       create_integer_operand (&ops[7], fail_model);
+@@ -7353,8 +7349,8 @@
+ 
+       create_output_operand (&ops[0], target_oval, mode);
+       create_fixed_operand (&ops[1], mem);
+-      create_convert_operand_to (&ops[2], expected, mode, true);
+-      create_convert_operand_to (&ops[3], desired, mode, true);
++      create_input_operand (&ops[2], expected, mode);
++      create_input_operand (&ops[3], desired, mode);
+       if (!maybe_expand_insn (icode, 4, ops))
+ 	return false;
+ 
+diff -Naur gcc-4.8.2.orig/gcc/recog.c gcc-4.8.2/gcc/recog.c
+--- gcc-4.8.2.orig/gcc/recog.c	2013-08-05 20:24:39.000000000 +0000
++++ gcc-4.8.2/gcc/recog.c	2013-11-01 16:12:34.219836014 +0000
+@@ -3061,6 +3061,9 @@
+   return 1;
  }
+ 
++/* Regno offset to be used in the register search.  */
++static int search_ofs;
 +
-+tree
-+function_to_tree(Bfunction* bf)
+ /* Try to find a hard register of mode MODE, matching the register class in
+    CLASS_STR, which is available at the beginning of insn CURRENT_INSN and
+    remains available until the end of LAST_INSN.  LAST_INSN may be NULL_RTX,
+@@ -3076,7 +3079,6 @@
+ peep2_find_free_register (int from, int to, const char *class_str,
+ 			  enum machine_mode mode, HARD_REG_SET *reg_set)
+ {
+-  static int search_ofs;
+   enum reg_class cl;
+   HARD_REG_SET live;
+   df_ref *def_rec;
+@@ -3541,6 +3543,7 @@
+   /* Initialize the regsets we're going to use.  */
+   for (i = 0; i < MAX_INSNS_PER_PEEP2 + 1; ++i)
+     peep2_insn_data[i].live_before = BITMAP_ALLOC (&reg_obstack);
++  search_ofs = 0;
+   live = BITMAP_ALLOC (&reg_obstack);
+ 
+   FOR_EACH_BB_REVERSE (bb)
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/decltype57.C gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/decltype57.C
+--- gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/decltype57.C	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/decltype57.C	2013-11-01 16:12:34.223836702 +0000
+@@ -0,0 +1,8 @@
++// PR c++/58633
++// { dg-do compile { target c++11 } }
++
++void foo(int i)
 +{
-+  return bf->get_tree();
++  typedef int I;
++  decltype(i.I::~I())* p;
 +}
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/enum18.C gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/enum18.C
+--- gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/enum18.C	2011-05-28 22:01:28.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/enum18.C	2013-11-01 16:12:34.227837390 +0000
+@@ -4,5 +4,5 @@
+ int main(void) {
+   enum e {};
+   e ev;
+-  ev.e::~e_u();	// { dg-error "e_u. has not been declared" }
++  ev.e::~e_u();	// { dg-error "" }
+ }
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C
+--- gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C	2013-11-01 16:12:34.227837390 +0000
+@@ -0,0 +1,7 @@
++// PR c++/58596
++// { dg-do compile { target c++11 } }
++
++struct A
++{
++  int i = [] { return decltype(i)(); }();
++};
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/tm/noexcept-6.C gcc-4.8.2/gcc/testsuite/g++.dg/tm/noexcept-6.C
+--- gcc-4.8.2.orig/gcc/testsuite/g++.dg/tm/noexcept-6.C	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/g++.dg/tm/noexcept-6.C	2013-11-01 16:12:34.227837390 +0000
+@@ -0,0 +1,23 @@
++// { dg-do compile }
++// { dg-options "-fno-exceptions -fgnu-tm -O -std=c++0x -fdump-tree-tmlower" }
++
++struct TrueFalse
++{
++  static constexpr bool v() { return true; }
++};
++
++int global;
++
++template<typename T> int foo()
++{
++  return __transaction_atomic noexcept(T::v()) (global + 1);
++}
++
++int f1()
++{
++  return foo<TrueFalse>();
++}
++
++/* { dg-final { scan-tree-dump-times "eh_must_not_throw" 0 "tmlower" } } */
++/* { dg-final { scan-tree-dump-times "__transaction_atomic" 1 "tmlower" } } */
++/* { dg-final { cleanup-tree-dump "tmlower" } } */
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.c-torture/execute/pr58831.c gcc-4.8.2/gcc/testsuite/gcc.c-torture/execute/pr58831.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.c-torture/execute/pr58831.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.c-torture/execute/pr58831.c	2013-11-01 16:12:34.223836702 +0000
+@@ -0,0 +1,40 @@
++#include <assert.h>
++
++int a, *b, c, d, f, **i, p, q, *r;
++short o, j;
++
++static int __attribute__((noinline, noclone))
++fn1 (int *p1, int **p2)
++{
++  int **e = &b;
++  for (; p; p++)
++    *p1 = 1;
++  *e = *p2 = &d;
++
++  assert (r);
++
++  return c;
++}
++
++static int ** __attribute__((noinline, noclone))
++fn2 (void)
++{
++  for (f = 0; f != 42; f++)
++    {
++      int *g[3] = {0, 0, 0};
++      for (o = 0; o; o--)
++        for (; a > 1;)
++          {
++            int **h[1] = { &g[2] };
++          }
++    }
++  return &r;
++}
++
++int
++main (void)
++{
++  i = fn2 ();
++  fn1 (b, i);
++  return 0;
++}
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/atomic-store-6.c gcc-4.8.2/gcc/testsuite/gcc.dg/atomic-store-6.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/atomic-store-6.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/atomic-store-6.c	2013-11-01 16:12:34.223836702 +0000
+@@ -0,0 +1,13 @@
++/* { dg-do run } */
++/* { dg-require-effective-target sync_int_128_runtime } */
++/* { dg-options "-mcx16" { target { i?86-*-* x86_64-*-* } } } */
++
++__int128_t i;
++
++int main()
++{
++  __atomic_store_16(&i, -1, 0);
++  if (i != -1)
++    __builtin_abort();
++  return 0;
++}
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/graphite/pr54094.c gcc-4.8.2/gcc/testsuite/gcc.dg/graphite/pr54094.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/graphite/pr54094.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/graphite/pr54094.c	2013-11-01 16:12:34.503884898 +0000
+@@ -0,0 +1,10 @@
++/* { dg-options "-O2 -floop-parallelize-all -floop-nest-optimize" } */
++void dwt_deinterleave_h(int *a, int *b, int dn, int sn, int cas)
++{
++  int i;
++  for (i=0; i<sn; i++)
++    b[i]=a[2*i+cas];
++  for (i=0; i<dn; i++)
++    b[sn+i]=a[(2*i+1-cas)];
++}
++
 diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/pr58805.c gcc-4.8.2/gcc/testsuite/gcc.dg/pr58805.c
---- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/pr58805.c	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/gcc/testsuite/gcc.dg/pr58805.c	2013-10-23 14:16:55.651450000 -0500
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/pr58805.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/pr58805.c	2013-11-01 16:12:34.223836702 +0000
 @@ -0,0 +1,24 @@
 +/* { dg-do compile } */
 +/* { dg-options "-O2 -ftree-tail-merge -fdump-tree-pre" } */
@@ -2005,8 +2721,8 @@ diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/pr58805.c gcc-4.8.2/gcc/testsuite
 +/* { dg-final { scan-tree-dump-times "__asm__" 2 "pre"} } */
 +/* { dg-final { cleanup-tree-dump "pre" } } */
 diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr57488.c gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr57488.c
---- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr57488.c	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr57488.c	2013-10-23 06:59:05.236596000 -0500
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr57488.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr57488.c	2013-11-01 16:12:34.223836702 +0000
 @@ -0,0 +1,58 @@
 +/* { dg-do run } */
 +
@@ -2066,9 +2782,136 @@ diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr57488.c gcc-4.8.2/gcc/t
 +    abort ();
 +  return 0;
 +}
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58079.c gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58079.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58079.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58079.c	2013-11-01 16:12:34.223836702 +0000
+@@ -0,0 +1,107 @@
++/* { dg-options "-mlong-calls" { target mips*-*-* } } */
++
++typedef unsigned char u8;
++typedef unsigned short u16;
++typedef unsigned int __kernel_size_t;
++typedef __kernel_size_t size_t;
++struct list_head {
++ struct list_head *next;
++};
++
++struct dmx_ts_feed {
++ int is_filtering;
++};
++struct dmx_section_feed {
++ u16 secbufp;
++ u16 seclen;
++ u16 tsfeedp;
++};
++
++typedef int (*dmx_ts_cb) (
++	const u8 * buffer1,
++      size_t buffer1_length,
++      const u8 * buffer2,
++      size_t buffer2_length
++);
++
++struct dvb_demux_feed {
++ union {
++  struct dmx_ts_feed ts;
++  struct dmx_section_feed sec;
++ } feed;
++ union {
++  dmx_ts_cb ts;
++ } cb;
++ int type;
++ u16 pid;
++ int ts_type;
++ struct list_head list_head;
++};
++
++struct dvb_demux {
++ int (*stop_feed)(struct dvb_demux_feed *feed);
++ struct list_head feed_list;
++};
++
++
++static
++inline
++__attribute__((always_inline))
++u8
++payload(const u8 *tsp)
++{
++ if (tsp[3] & 0x20) {
++   return 184 - 1 - tsp[4];
++ }
++ return 184;
++}
++
++static
++inline
++__attribute__((always_inline))
++int
++dvb_dmx_swfilter_payload(struct dvb_demux_feed *feed, const u8 *buf)
++{
++ int count = payload(buf);
++ int p;
++ if (count == 0)
++  return -1;
++ return feed->cb.ts(&buf[p], count, ((void *)0), 0);
++}
++
++static
++inline
++__attribute__((always_inline))
++void
++dvb_dmx_swfilter_packet_type(struct dvb_demux_feed *feed, const u8 *buf)
++{
++ switch (feed->type) {
++ case 0:
++  if (feed->ts_type & 1) {
++    dvb_dmx_swfilter_payload(feed, buf);
++  }
++  if (dvb_dmx_swfilter_section_packet(feed, buf) < 0)
++   feed->feed.sec.seclen = feed->feed.sec.secbufp = 0;
++ }
++}
++
++static
++void
++dvb_dmx_swfilter_packet(struct dvb_demux *demux, const u8 *buf)
++{
++ struct dvb_demux_feed *feed;
++ int dvr_done = 0;
++
++ for (feed = ({ const typeof( ((typeof(*feed) *)0)->list_head ) *__mptr = ((&demux->feed_list)->next); (typeof(*feed) *)( (char *)__mptr - __builtin_offsetof(typeof(*feed),list_head) );}); __builtin_prefetch(feed->list_head.next), &feed->list_head != (&demux->feed_list); feed = ({ const typeof( ((typeof(*feed) *)0)->list_head ) *__mptr = (feed->list_head.next); (typeof(*feed) *)( (char *)__mptr - __builtin_offsetof(typeof(*feed),list_head) );})) {
++  if (((((feed)->type == 0) && ((feed)->feed.ts.is_filtering) && (((feed)->ts_type & (1 | 8)) == 1))) && (dvr_done++))
++   dvb_dmx_swfilter_packet_type(feed, buf);
++  else if (feed->pid == 0x2000)
++   feed->cb.ts(buf, 188, ((void *)0), 0);
++ }
++}
++void dvb_dmx_swfilter_packets(struct dvb_demux *demux, const u8 *buf, size_t count)
++{
++ while (count--) {
++   dvb_dmx_swfilter_packet(demux, buf);
++ }
++}
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58779.c gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58779.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58779.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58779.c	2013-11-01 16:12:34.223836702 +0000
+@@ -0,0 +1,12 @@
++/* { dg-do run } */
++
++int a, c;
++
++int main ()
++{
++  int e = -1;
++  short d = (c <= 0) ^ e;
++  if ((unsigned int) a - (a || d) <= (unsigned int) a)
++    __builtin_abort ();
++  return 0;
++}
 diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58830.c gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58830.c
---- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58830.c	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58830.c	2013-10-23 06:59:05.236596000 -0500
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58830.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.dg/torture/pr58830.c	2013-11-01 16:12:34.223836702 +0000
 @@ -0,0 +1,42 @@
 +/* { dg-do run } */
 +/* { dg-additional-options "-ftree-pre -ftree-partial-pre" } */
@@ -2112,9 +2955,109 @@ diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.dg/torture/pr58830.c gcc-4.8.2/gcc/t
 +    abort ();
 +  return 0;
 +}
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.target/arm/require-pic-register-loc.c gcc-4.8.2/gcc/testsuite/gcc.target/arm/require-pic-register-loc.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.target/arm/require-pic-register-loc.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.target/arm/require-pic-register-loc.c	2013-11-01 16:12:34.223836702 +0000
+@@ -0,0 +1,29 @@
++/* { dg-do compile } */
++/* { dg-options "-g -fPIC" } */
++
++void *v;
++void a (void *x) { }
++void b (void) { }
++                       /* line 7.  */
++int                    /* line 8.  */
++main (int argc)        /* line 9.  */
++{                      /* line 10.  */
++  if (argc == 12345)   /* line 11.  */
++    {
++      a (v);
++      return 1;
++    }
++  b ();
++
++  return 0;
++}
++
++/* { dg-final { scan-assembler-not "\.loc 1 7 0" } } */
++/* { dg-final { scan-assembler-not "\.loc 1 8 0" } } */
++/* { dg-final { scan-assembler-not "\.loc 1 9 0" } } */
++
++/* The loc at the start of the prologue.  */
++/* { dg-final { scan-assembler-times "\.loc 1 10 0" 1 } } */
++
++/* The loc at the end of the prologue, with the first user line.  */
++/* { dg-final { scan-assembler-times "\.loc 1 11 0" 1 } } */
+diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.target/i386/pr30315.c gcc-4.8.2/gcc/testsuite/gcc.target/i386/pr30315.c
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.target/i386/pr30315.c	2007-08-14 14:39:24.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.target/i386/pr30315.c	2013-11-01 16:12:34.223836702 +0000
+@@ -1,6 +1,6 @@
+ /* { dg-do compile } */
+ /* { dg-options "-O2" } */
+-/* { dg-final { scan-assembler-times "cmp" 4 } } */
++/* { dg-final { scan-assembler-not "cmp" } } */
+ 
+ extern void abort (void);
+ int c;
+@@ -34,39 +34,10 @@
+ }
+ #define PLUSCCONLY(T, t) PLUSCCONLY1(T, t, a) PLUSCCONLY1(T, t, b)
+ 
+-#define MINUSCC(T, t)	\
+-T minuscc##t (T a, T b)	\
+-{	\
+-  T difference = a - b;	\
+-  if (difference > a)	\
+-    abort ();		\
+-  return difference;	\
+-}
+-
+-#define DECCC(T, t)	\
+-T deccc##t (T a, T b)	\
+-{	\
+-  T difference = a - b;	\
+-  if (difference > a)	\
+-    c --;		\
+-  return difference;	\
+-}
+-
+-#define MINUSCCONLY(T, t)	\
+-void minuscconly##t (T a, T b)	\
+-{	\
+-  T difference = a - b;	\
+-  if (difference > a)	\
+-    abort ();		\
+-}
+-
+ #define TEST(T, t)	\
+   PLUSCC(T, t)		\
+   PLUSCCONLY(T, t)	\
+-  INCCC(T, t)		\
+-  MINUSCC(T, t)		\
+-  MINUSCCONLY(T, t)	\
+-  DECCC(T, t)
++  INCCC(T, t)
+ 
+ TEST (unsigned long,  l)
+ TEST (unsigned int,   i)
+@@ -84,14 +55,3 @@
+ 
+ PLUSCCZEXT(a)
+ PLUSCCZEXT(b)
+-
+-#define MINUSCCZEXT	\
+-unsigned long minuscczext (unsigned int a, unsigned int b)	\
+-{	\
+-  unsigned int difference = a - b;	\
+-  if (difference > a)		\
+-    abort ();			\
+-  return difference;		\
+-}
+-
+-MINUSCCZEXT
 diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.target/sh/pr54089-3.c gcc-4.8.2/gcc/testsuite/gcc.target/sh/pr54089-3.c
---- gcc-4.8.2.orig/gcc/testsuite/gcc.target/sh/pr54089-3.c	2012-09-10 15:35:25.000000000 -0500
-+++ gcc-4.8.2/gcc/testsuite/gcc.target/sh/pr54089-3.c	2013-10-19 08:27:49.531298000 -0500
+--- gcc-4.8.2.orig/gcc/testsuite/gcc.target/sh/pr54089-3.c	2012-09-10 20:35:25.000000000 +0000
++++ gcc-4.8.2/gcc/testsuite/gcc.target/sh/pr54089-3.c	2013-11-01 16:12:34.223836702 +0000
 @@ -5,7 +5,7 @@
  /* { dg-options "-O1" } */
  /* { dg-skip-if "" { "sh*-*-*" } { "*" } { "-m1*" "-m2" "-m2e*" } } */
@@ -2124,42 +3067,9 @@ diff -Naur gcc-4.8.2.orig/gcc/testsuite/gcc.target/sh/pr54089-3.c gcc-4.8.2/gcc/
  
  int
  test00 (unsigned int a, int* b, int c, int* d, unsigned int e)
-diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/decltype57.C gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/decltype57.C
---- gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/decltype57.C	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/decltype57.C	2013-10-16 17:19:18.772609000 -0500
-@@ -0,0 +1,8 @@
-+// PR c++/58633
-+// { dg-do compile { target c++11 } }
-+
-+void foo(int i)
-+{
-+  typedef int I;
-+  decltype(i.I::~I())* p;
-+}
-diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/enum18.C gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/enum18.C
---- gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/enum18.C	2011-05-28 17:01:28.000000000 -0500
-+++ gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/enum18.C	2013-10-16 17:19:18.772609000 -0500
-@@ -4,5 +4,5 @@
- int main(void) {
-   enum e {};
-   e ev;
--  ev.e::~e_u();	// { dg-error "e_u. has not been declared" }
-+  ev.e::~e_u();	// { dg-error "" }
- }
-diff -Naur gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C
---- gcc-4.8.2.orig/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/gcc/testsuite/g++.dg/cpp0x/lambda/lambda-nsdmi5.C	2013-10-17 12:15:46.188630000 -0500
-@@ -0,0 +1,7 @@
-+// PR c++/58596
-+// { dg-do compile { target c++11 } }
-+
-+struct A
-+{
-+  int i = [] { return decltype(i)(); }();
-+};
 diff -Naur gcc-4.8.2.orig/gcc/tree-ssa-pre.c gcc-4.8.2/gcc/tree-ssa-pre.c
---- gcc-4.8.2.orig/gcc/tree-ssa-pre.c	2013-02-19 00:43:34.000000000 -0600
-+++ gcc-4.8.2/gcc/tree-ssa-pre.c	2013-10-23 06:59:05.236596000 -0500
+--- gcc-4.8.2.orig/gcc/tree-ssa-pre.c	2013-02-19 06:43:34.000000000 +0000
++++ gcc-4.8.2/gcc/tree-ssa-pre.c	2013-11-01 16:12:34.227837390 +0000
 @@ -3664,6 +3664,12 @@
        if (dump_file && dump_flags & TDF_DETAILS)
  	fprintf (dump_file, "Starting insert iteration %d\n", num_iterations);
@@ -2174,8 +3084,8 @@ diff -Naur gcc-4.8.2.orig/gcc/tree-ssa-pre.c gcc-4.8.2/gcc/tree-ssa-pre.c
    statistics_histogram_event (cfun, "insert iterations", num_iterations);
  }
 diff -Naur gcc-4.8.2.orig/gcc/tree-ssa-tail-merge.c gcc-4.8.2/gcc/tree-ssa-tail-merge.c
---- gcc-4.8.2.orig/gcc/tree-ssa-tail-merge.c	2013-01-31 02:52:56.000000000 -0600
-+++ gcc-4.8.2/gcc/tree-ssa-tail-merge.c	2013-10-23 14:16:55.651450000 -0500
+--- gcc-4.8.2.orig/gcc/tree-ssa-tail-merge.c	2013-01-31 08:52:56.000000000 +0000
++++ gcc-4.8.2/gcc/tree-ssa-tail-merge.c	2013-11-01 16:12:34.231838079 +0000
 @@ -297,7 +297,8 @@
    tree val;
    def_operand_p def_p;
@@ -2187,17 +3097,17 @@ diff -Naur gcc-4.8.2.orig/gcc/tree-ssa-tail-merge.c gcc-4.8.2/gcc/tree-ssa-tail-
  
    def_p = SINGLE_SSA_DEF_OPERAND (stmt, SSA_OP_DEF);
 diff -Naur gcc-4.8.2.orig/gcc/version.c gcc-4.8.2/gcc/version.c
---- gcc-4.8.2.orig/gcc/version.c	2013-01-10 14:38:27.000000000 -0600
-+++ gcc-4.8.2/gcc/version.c	2013-10-24 10:18:17.893329498 -0500
+--- gcc-4.8.2.orig/gcc/version.c	2013-01-10 20:38:27.000000000 +0000
++++ gcc-4.8.2/gcc/version.c	2013-11-01 16:12:34.231838079 +0000
 @@ -32,4 +32,4 @@
     Makefile.  */
  
  const char version_string[] = BASEVER DATESTAMP DEVPHASE REVISION;
 -const char pkgversion_string[] = PKGVERSION;
-+const char pkgversion_string[] = "(GCC for Cross-LFS 4.8.2.20131024) ";
++const char pkgversion_string[] = "(GCC for Cross-LFS 4.8.2.20131101) ";
 diff -Naur gcc-4.8.2.orig/libffi/doc/libffi.info gcc-4.8.2/libffi/doc/libffi.info
---- gcc-4.8.2.orig/libffi/doc/libffi.info	2013-10-16 03:21:34.000000000 -0500
-+++ gcc-4.8.2/libffi/doc/libffi.info	1969-12-31 18:00:00.000000000 -0600
+--- gcc-4.8.2.orig/libffi/doc/libffi.info	2013-10-16 08:21:34.000000000 +0000
++++ gcc-4.8.2/libffi/doc/libffi.info	1970-01-01 00:00:00.000000000 +0000
 @@ -1,614 +0,0 @@
 -This is libffi.info, produced by makeinfo version 5.1 from libffi.texi.
 -
@@ -2813,9 +3723,62 @@ diff -Naur gcc-4.8.2.orig/libffi/doc/libffi.info gcc-4.8.2/libffi/doc/libffi.inf
 -Node: Index17732
 -
 -End Tag Table
+diff -Naur gcc-4.8.2.orig/libgo/Makefile.am gcc-4.8.2/libgo/Makefile.am
+--- gcc-4.8.2.orig/libgo/Makefile.am	2013-09-27 21:34:43.000000000 +0000
++++ gcc-4.8.2/libgo/Makefile.am	2013-11-01 16:12:34.291848407 +0000
+@@ -424,6 +424,7 @@
+ 	runtime/go-caller.c \
+ 	runtime/go-callers.c \
+ 	runtime/go-can-convert-interface.c \
++	runtime/go-cdiv.c \
+ 	runtime/go-cgo.c \
+ 	runtime/go-check-interface.c \
+ 	runtime/go-construct-map.c \
+diff -Naur gcc-4.8.2.orig/libgo/Makefile.in gcc-4.8.2/libgo/Makefile.in
+--- gcc-4.8.2.orig/libgo/Makefile.in	2013-09-27 21:34:43.000000000 +0000
++++ gcc-4.8.2/libgo/Makefile.in	2013-11-01 16:12:34.299849784 +0000
+@@ -195,7 +195,7 @@
+ @LIBGO_IS_LINUX_TRUE@am__objects_5 = getncpu-linux.lo
+ am__objects_6 = go-append.lo go-assert.lo go-assert-interface.lo \
+ 	go-byte-array-to-string.lo go-breakpoint.lo go-caller.lo \
+-	go-callers.lo go-can-convert-interface.lo go-cgo.lo \
++	go-callers.lo go-can-convert-interface.lo go-cdiv.lo go-cgo.lo \
+ 	go-check-interface.lo go-construct-map.lo \
+ 	go-convert-interface.lo go-copy.lo go-defer.lo \
+ 	go-deferred-recover.lo go-eface-compare.lo \
+@@ -757,6 +757,7 @@
+ 	runtime/go-caller.c \
+ 	runtime/go-callers.c \
+ 	runtime/go-can-convert-interface.c \
++	runtime/go-cdiv.c \
+ 	runtime/go-cgo.c \
+ 	runtime/go-check-interface.c \
+ 	runtime/go-construct-map.c \
+@@ -2368,6 +2369,7 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-caller.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-callers.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-can-convert-interface.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-cdiv.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-cgo.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-check-interface.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-construct-map.Plo@am__quote@
+@@ -2554,6 +2556,13 @@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o go-can-convert-interface.lo `test -f 'runtime/go-can-convert-interface.c' || echo '$(srcdir)/'`runtime/go-can-convert-interface.c
+ 
++go-cdiv.lo: runtime/go-cdiv.c
++@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT go-cdiv.lo -MD -MP -MF $(DEPDIR)/go-cdiv.Tpo -c -o go-cdiv.lo `test -f 'runtime/go-cdiv.c' || echo '$(srcdir)/'`runtime/go-cdiv.c
++@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/go-cdiv.Tpo $(DEPDIR)/go-cdiv.Plo
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='runtime/go-cdiv.c' object='go-cdiv.lo' libtool=yes @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o go-cdiv.lo `test -f 'runtime/go-cdiv.c' || echo '$(srcdir)/'`runtime/go-cdiv.c
++
+ go-cgo.lo: runtime/go-cgo.c
+ @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT go-cgo.lo -MD -MP -MF $(DEPDIR)/go-cgo.Tpo -c -o go-cgo.lo `test -f 'runtime/go-cgo.c' || echo '$(srcdir)/'`runtime/go-cgo.c
+ @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/go-cgo.Tpo $(DEPDIR)/go-cgo.Plo
 diff -Naur gcc-4.8.2.orig/libgo/config.h.in gcc-4.8.2/libgo/config.h.in
---- gcc-4.8.2.orig/libgo/config.h.in	2013-10-02 12:32:00.000000000 -0500
-+++ gcc-4.8.2/libgo/config.h.in	2013-10-17 13:41:40.134537000 -0500
+--- gcc-4.8.2.orig/libgo/config.h.in	2013-10-02 17:32:00.000000000 +0000
++++ gcc-4.8.2/libgo/config.h.in	2013-11-01 16:12:34.235838767 +0000
 @@ -39,6 +39,9 @@
  /* Define to 1 if you have the `dl_iterate_phdr' function. */
  #undef HAVE_DL_ITERATE_PHDR
@@ -2867,8 +3830,8 @@ diff -Naur gcc-4.8.2.orig/libgo/config.h.in gcc-4.8.2/libgo/config.h.in
  #undef HAVE_SINL
  
 diff -Naur gcc-4.8.2.orig/libgo/configure gcc-4.8.2/libgo/configure
---- gcc-4.8.2.orig/libgo/configure	2013-10-02 12:32:00.000000000 -0500
-+++ gcc-4.8.2/libgo/configure	2013-10-17 13:41:40.134537000 -0500
+--- gcc-4.8.2.orig/libgo/configure	2013-10-02 17:32:00.000000000 +0000
++++ gcc-4.8.2/libgo/configure	2013-11-01 16:12:34.243840144 +0000
 @@ -14700,7 +14700,7 @@
  fi
  
@@ -2879,8 +3842,8 @@ diff -Naur gcc-4.8.2.orig/libgo/configure gcc-4.8.2/libgo/configure
    as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 diff -Naur gcc-4.8.2.orig/libgo/configure.ac gcc-4.8.2/libgo/configure.ac
---- gcc-4.8.2.orig/libgo/configure.ac	2013-10-02 12:32:00.000000000 -0500
-+++ gcc-4.8.2/libgo/configure.ac	2013-10-17 13:41:40.134537000 -0500
+--- gcc-4.8.2.orig/libgo/configure.ac	2013-10-02 17:32:00.000000000 +0000
++++ gcc-4.8.2/libgo/configure.ac	2013-11-01 16:12:34.291848407 +0000
 @@ -503,7 +503,7 @@
  AM_CONDITIONAL(HAVE_STRERROR_R, test "$ac_cv_func_strerror_r" = yes)
  AM_CONDITIONAL(HAVE_WAIT4, test "$ac_cv_func_wait4" = yes)
@@ -2891,8 +3854,8 @@ diff -Naur gcc-4.8.2.orig/libgo/configure.ac gcc-4.8.2/libgo/configure.ac
  AC_CHECK_TYPES([loff_t])
  
 diff -Naur gcc-4.8.2.orig/libgo/go/syscall/libcall_linux.go gcc-4.8.2/libgo/go/syscall/libcall_linux.go
---- gcc-4.8.2.orig/libgo/go/syscall/libcall_linux.go	2013-02-08 13:24:26.000000000 -0600
-+++ gcc-4.8.2/libgo/go/syscall/libcall_linux.go	2013-10-17 13:41:40.134537000 -0500
+--- gcc-4.8.2.orig/libgo/go/syscall/libcall_linux.go	2013-02-08 19:24:26.000000000 +0000
++++ gcc-4.8.2/libgo/go/syscall/libcall_linux.go	2013-11-01 16:12:34.291848407 +0000
 @@ -190,6 +190,9 @@
  //sys	Adjtimex(buf *Timex) (state int, err error)
  //adjtimex(buf *Timex) _C_int
@@ -2944,8 +3907,8 @@ diff -Naur gcc-4.8.2.orig/libgo/go/syscall/libcall_linux.go gcc-4.8.2/libgo/go/s
  //splice(rfd _C_int, roff *_loff_t, wfd _C_int, woff *_loff_t, len Size_t, flags _C_uint) Ssize_t
  func Splice(rfd int, roff *int64, wfd int, woff *int64, len int, flags int) (n int64, err error) {
 diff -Naur gcc-4.8.2.orig/libgo/go/syscall/libcall_posix.go gcc-4.8.2/libgo/go/syscall/libcall_posix.go
---- gcc-4.8.2.orig/libgo/go/syscall/libcall_posix.go	2013-02-08 13:24:26.000000000 -0600
-+++ gcc-4.8.2/libgo/go/syscall/libcall_posix.go	2013-10-17 13:41:40.134537000 -0500
+--- gcc-4.8.2.orig/libgo/go/syscall/libcall_posix.go	2013-02-08 19:24:26.000000000 +0000
++++ gcc-4.8.2/libgo/go/syscall/libcall_posix.go	2013-11-01 16:12:34.291848407 +0000
 @@ -238,6 +238,9 @@
  //sysnb	Getppid() (ppid int)
  //getppid() Pid_t
@@ -2966,62 +3929,9 @@ diff -Naur gcc-4.8.2.orig/libgo/go/syscall/libcall_posix.go gcc-4.8.2/libgo/go/s
  //sysnb	Setreuid(ruid int, euid int) (err error)
  //setreuid(ruid Uid_t, euid Uid_t) _C_int
  
-diff -Naur gcc-4.8.2.orig/libgo/Makefile.am gcc-4.8.2/libgo/Makefile.am
---- gcc-4.8.2.orig/libgo/Makefile.am	2013-09-27 16:34:43.000000000 -0500
-+++ gcc-4.8.2/libgo/Makefile.am	2013-10-16 12:27:53.564070000 -0500
-@@ -424,6 +424,7 @@
- 	runtime/go-caller.c \
- 	runtime/go-callers.c \
- 	runtime/go-can-convert-interface.c \
-+	runtime/go-cdiv.c \
- 	runtime/go-cgo.c \
- 	runtime/go-check-interface.c \
- 	runtime/go-construct-map.c \
-diff -Naur gcc-4.8.2.orig/libgo/Makefile.in gcc-4.8.2/libgo/Makefile.in
---- gcc-4.8.2.orig/libgo/Makefile.in	2013-09-27 16:34:43.000000000 -0500
-+++ gcc-4.8.2/libgo/Makefile.in	2013-10-16 12:27:53.564070000 -0500
-@@ -195,7 +195,7 @@
- @LIBGO_IS_LINUX_TRUE@am__objects_5 = getncpu-linux.lo
- am__objects_6 = go-append.lo go-assert.lo go-assert-interface.lo \
- 	go-byte-array-to-string.lo go-breakpoint.lo go-caller.lo \
--	go-callers.lo go-can-convert-interface.lo go-cgo.lo \
-+	go-callers.lo go-can-convert-interface.lo go-cdiv.lo go-cgo.lo \
- 	go-check-interface.lo go-construct-map.lo \
- 	go-convert-interface.lo go-copy.lo go-defer.lo \
- 	go-deferred-recover.lo go-eface-compare.lo \
-@@ -757,6 +757,7 @@
- 	runtime/go-caller.c \
- 	runtime/go-callers.c \
- 	runtime/go-can-convert-interface.c \
-+	runtime/go-cdiv.c \
- 	runtime/go-cgo.c \
- 	runtime/go-check-interface.c \
- 	runtime/go-construct-map.c \
-@@ -2368,6 +2369,7 @@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-caller.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-callers.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-can-convert-interface.Plo@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-cdiv.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-cgo.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-check-interface.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/go-construct-map.Plo@am__quote@
-@@ -2554,6 +2556,13 @@
- @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
- @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o go-can-convert-interface.lo `test -f 'runtime/go-can-convert-interface.c' || echo '$(srcdir)/'`runtime/go-can-convert-interface.c
- 
-+go-cdiv.lo: runtime/go-cdiv.c
-+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT go-cdiv.lo -MD -MP -MF $(DEPDIR)/go-cdiv.Tpo -c -o go-cdiv.lo `test -f 'runtime/go-cdiv.c' || echo '$(srcdir)/'`runtime/go-cdiv.c
-+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/go-cdiv.Tpo $(DEPDIR)/go-cdiv.Plo
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='runtime/go-cdiv.c' object='go-cdiv.lo' libtool=yes @AMDEPBACKSLASH@
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o go-cdiv.lo `test -f 'runtime/go-cdiv.c' || echo '$(srcdir)/'`runtime/go-cdiv.c
-+
- go-cgo.lo: runtime/go-cgo.c
- @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT go-cgo.lo -MD -MP -MF $(DEPDIR)/go-cgo.Tpo -c -o go-cgo.lo `test -f 'runtime/go-cgo.c' || echo '$(srcdir)/'`runtime/go-cgo.c
- @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/go-cgo.Tpo $(DEPDIR)/go-cgo.Plo
 diff -Naur gcc-4.8.2.orig/libgo/mksysinfo.sh gcc-4.8.2/libgo/mksysinfo.sh
---- gcc-4.8.2.orig/libgo/mksysinfo.sh	2013-02-11 13:03:04.000000000 -0600
-+++ gcc-4.8.2/libgo/mksysinfo.sh	2013-10-17 13:41:40.134537000 -0500
+--- gcc-4.8.2.orig/libgo/mksysinfo.sh	2013-02-11 19:03:04.000000000 +0000
++++ gcc-4.8.2/libgo/mksysinfo.sh	2013-11-01 16:12:34.299849784 +0000
 @@ -1035,6 +1035,10 @@
  grep '^const _LOCK_' gen-sysinfo.go |
      sed -e 's/^\(const \)_\(LOCK_[^= ]*\)\(.*\)$/\1\2 = _\2/' >> ${OUT}
@@ -3034,8 +3944,8 @@ diff -Naur gcc-4.8.2.orig/libgo/mksysinfo.sh gcc-4.8.2/libgo/mksysinfo.sh
  grep '^const _LINUX_REBOOT_' gen-sysinfo.go |
      sed -e 's/^\(const \)_\(LINUX_REBOOT_[^= ]*\)\(.*\)$/\1\2 = _\2/' >> ${OUT}
 diff -Naur gcc-4.8.2.orig/libgo/runtime/go-cdiv.c gcc-4.8.2/libgo/runtime/go-cdiv.c
---- gcc-4.8.2.orig/libgo/runtime/go-cdiv.c	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/libgo/runtime/go-cdiv.c	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/libgo/runtime/go-cdiv.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/libgo/runtime/go-cdiv.c	2013-11-01 16:12:34.299849784 +0000
 @@ -0,0 +1,46 @@
 +/* go-cdiv.c -- complex division routines
 +
@@ -3084,8 +3994,8 @@ diff -Naur gcc-4.8.2.orig/libgo/runtime/go-cdiv.c gcc-4.8.2/libgo/runtime/go-cdi
 +  return a / b;
 +}
 diff -Naur gcc-4.8.2.orig/libgo/runtime/go-make-slice.c gcc-4.8.2/libgo/runtime/go-make-slice.c
---- gcc-4.8.2.orig/libgo/runtime/go-make-slice.c	2012-11-21 01:03:38.000000000 -0600
-+++ gcc-4.8.2/libgo/runtime/go-make-slice.c	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/libgo/runtime/go-make-slice.c	2012-11-21 07:03:38.000000000 +0000
++++ gcc-4.8.2/libgo/runtime/go-make-slice.c	2013-11-01 16:12:34.303850472 +0000
 @@ -34,7 +34,10 @@
    std = (const struct __go_slice_type *) td;
  
@@ -3099,8 +4009,8 @@ diff -Naur gcc-4.8.2.orig/libgo/runtime/go-make-slice.c gcc-4.8.2/libgo/runtime/
  
    icap = (intgo) cap;
 diff -Naur gcc-4.8.2.orig/libgo/runtime/go-nosys.c gcc-4.8.2/libgo/runtime/go-nosys.c
---- gcc-4.8.2.orig/libgo/runtime/go-nosys.c	2013-01-29 14:52:43.000000000 -0600
-+++ gcc-4.8.2/libgo/runtime/go-nosys.c	2013-10-18 08:26:14.115640000 -0500
+--- gcc-4.8.2.orig/libgo/runtime/go-nosys.c	2013-01-29 20:52:43.000000000 +0000
++++ gcc-4.8.2/libgo/runtime/go-nosys.c	2013-11-01 16:12:34.303850472 +0000
 @@ -43,6 +43,17 @@
  }
  #endif
@@ -3194,8 +4104,8 @@ diff -Naur gcc-4.8.2.orig/libgo/runtime/go-nosys.c gcc-4.8.2/libgo/runtime/go-no
  #endif
  
 diff -Naur gcc-4.8.2.orig/libgo/runtime/go-signal.c gcc-4.8.2/libgo/runtime/go-signal.c
---- gcc-4.8.2.orig/libgo/runtime/go-signal.c	2013-07-22 23:42:18.000000000 -0500
-+++ gcc-4.8.2/libgo/runtime/go-signal.c	2013-10-16 12:27:53.564070000 -0500
+--- gcc-4.8.2.orig/libgo/runtime/go-signal.c	2013-07-23 04:42:18.000000000 +0000
++++ gcc-4.8.2/libgo/runtime/go-signal.c	2013-11-01 16:12:34.303850472 +0000
 @@ -399,6 +399,9 @@
  {
    G *gp;
@@ -3225,8 +4135,8 @@ diff -Naur gcc-4.8.2.orig/libgo/runtime/go-signal.c gcc-4.8.2/libgo/runtime/go-s
      }
  }
 diff -Naur gcc-4.8.2.orig/libitm/libitm.info gcc-4.8.2/libitm/libitm.info
---- gcc-4.8.2.orig/libitm/libitm.info	2013-10-16 03:29:00.000000000 -0500
-+++ gcc-4.8.2/libitm/libitm.info	1969-12-31 18:00:00.000000000 -0600
+--- gcc-4.8.2.orig/libitm/libitm.info	2013-10-16 08:29:00.000000000 +0000
++++ gcc-4.8.2/libitm/libitm.info	1970-01-01 00:00:00.000000000 +0000
 @@ -1,1293 +0,0 @@
 -This is libitm.info, produced by makeinfo version 5.1 from libitm.texi.
 -
@@ -4522,8 +5432,8 @@ diff -Naur gcc-4.8.2.orig/libitm/libitm.info gcc-4.8.2/libitm/libitm.info
 -
 -End Tag Table
 diff -Naur gcc-4.8.2.orig/libquadmath/libquadmath.info gcc-4.8.2/libquadmath/libquadmath.info
---- gcc-4.8.2.orig/libquadmath/libquadmath.info	2013-10-16 03:18:56.000000000 -0500
-+++ gcc-4.8.2/libquadmath/libquadmath.info	1969-12-31 18:00:00.000000000 -0600
+--- gcc-4.8.2.orig/libquadmath/libquadmath.info	2013-10-16 08:18:56.000000000 +0000
++++ gcc-4.8.2/libquadmath/libquadmath.info	1970-01-01 00:00:00.000000000 +0000
 @@ -1,808 +0,0 @@
 -This is libquadmath.info, produced by makeinfo version 5.1 from
 -libquadmath.texi.
@@ -5333,9 +6243,30 @@ diff -Naur gcc-4.8.2.orig/libquadmath/libquadmath.info gcc-4.8.2/libquadmath/lib
 -Node: Reporting Bugs35944
 -
 -End Tag Table
+diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/bits/shared_ptr_base.h gcc-4.8.2/libstdc++-v3/include/bits/shared_ptr_base.h
+--- gcc-4.8.2.orig/libstdc++-v3/include/bits/shared_ptr_base.h	2013-10-08 13:38:21.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/include/bits/shared_ptr_base.h	2013-11-01 16:12:34.311851849 +0000
+@@ -391,7 +391,7 @@
+     public:
+       template<typename... _Args>
+ 	_Sp_counted_ptr_inplace(_Alloc __a, _Args&&... __args)
+-	: _M_impl(__a), _M_storage()
++	: _M_impl(__a)
+ 	{
+ 	  _M_impl._M_ptr = static_cast<_Tp*>(static_cast<void*>(&_M_storage));
+ 	  // _GLIBCXX_RESOLVE_LIB_DEFECTS
+@@ -819,7 +819,7 @@
+ 	: _M_ptr(__r.get()), _M_refcount()
+ 	{
+ 	  __glibcxx_function_requires(_ConvertibleConcept<_Tp1*, _Tp*>)
+-	  auto __tmp = std::__addressof(*__r.get());
++	  auto __tmp = __r.get();
+ 	  _M_refcount = __shared_count<_Lp>(std::move(__r));
+ 	  __enable_shared_from_this_helper(_M_refcount, __tmp, __tmp);
+ 	}
 diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/bits/stl_algo.h gcc-4.8.2/libstdc++-v3/include/bits/stl_algo.h
---- gcc-4.8.2.orig/libstdc++-v3/include/bits/stl_algo.h	2013-09-30 12:42:52.000000000 -0500
-+++ gcc-4.8.2/libstdc++-v3/include/bits/stl_algo.h	2013-10-20 04:08:12.578223000 -0500
+--- gcc-4.8.2.orig/libstdc++-v3/include/bits/stl_algo.h	2013-09-30 17:42:52.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/include/bits/stl_algo.h	2013-11-01 16:12:34.399866997 +0000
 @@ -2279,7 +2279,7 @@
  				_RandomAccessIterator __last)
      {
@@ -5354,9 +6285,20 @@ diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/bits/stl_algo.h gcc-4.8.2/libstdc
  				  __comp);
        return std::__unguarded_partition(__first + 1, __last, *__first, __comp);
      }
+diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/c_global/cstdio gcc-4.8.2/libstdc++-v3/include/c_global/cstdio
+--- gcc-4.8.2.orig/libstdc++-v3/include/c_global/cstdio	2013-02-03 17:54:05.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/include/c_global/cstdio	2013-11-01 16:12:34.399866997 +0000
+@@ -69,6 +69,7 @@
+ #undef ftell
+ #undef fwrite
+ #undef getc
++#undef getchar
+ #undef gets
+ #undef perror
+ #undef printf
 diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/debug/functions.h gcc-4.8.2/libstdc++-v3/include/debug/functions.h
---- gcc-4.8.2.orig/libstdc++-v3/include/debug/functions.h	2013-02-03 11:54:05.000000000 -0600
-+++ gcc-4.8.2/libstdc++-v3/include/debug/functions.h	2013-10-16 15:09:18.884767000 -0500
+--- gcc-4.8.2.orig/libstdc++-v3/include/debug/functions.h	2013-02-03 17:54:05.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/include/debug/functions.h	2013-11-01 16:12:34.399866997 +0000
 @@ -345,11 +345,13 @@
        return __check_sorted_set_aux(__first, __last, __pred, _SameType());
     }
@@ -5528,8 +6470,8 @@ diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/debug/functions.h gcc-4.8.2/libst
    template<typename _Iterator>
      struct __is_safe_random_iterator
 diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/debug/macros.h gcc-4.8.2/libstdc++-v3/include/debug/macros.h
---- gcc-4.8.2.orig/libstdc++-v3/include/debug/macros.h	2013-02-03 11:54:05.000000000 -0600
-+++ gcc-4.8.2/libstdc++-v3/include/debug/macros.h	2013-10-16 15:09:18.884767000 -0500
+--- gcc-4.8.2.orig/libstdc++-v3/include/debug/macros.h	2013-02-03 17:54:05.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/include/debug/macros.h	2013-11-01 16:12:34.403867685 +0000
 @@ -261,8 +261,9 @@
      w.r.t. the value _Value. */
  #define __glibcxx_check_partitioned_lower(_First,_Last,_Value)		\
@@ -5578,9 +6520,46 @@ diff -Naur gcc-4.8.2.orig/libstdc++-v3/include/debug/macros.h gcc-4.8.2/libstdc+
  		      _M_message(__gnu_debug::__msg_unpartitioned_pred) \
  		      ._M_iterator(_First, #_First)			\
  		      ._M_iterator(_Last, #_Last)			\
+diff -Naur gcc-4.8.2.orig/libstdc++-v3/testsuite/20_util/shared_ptr/cons/58839.cc gcc-4.8.2/libstdc++-v3/testsuite/20_util/shared_ptr/cons/58839.cc
+--- gcc-4.8.2.orig/libstdc++-v3/testsuite/20_util/shared_ptr/cons/58839.cc	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/testsuite/20_util/shared_ptr/cons/58839.cc	2013-11-01 16:12:34.403867685 +0000
+@@ -0,0 +1,33 @@
++// { dg-options "-std=gnu++11" }
++// { dg-do compile }
++
++// Copyright (C) 2013 Free Software Foundation, Inc.
++//
++// This file is part of the GNU ISO C++ Library.  This library is free
++// software; you can redistribute it and/or modify it under the
++// terms of the GNU General Public License as published by the
++// Free Software Foundation; either version 3, or (at your option)
++// any later version.
++
++// This library is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++
++// You should have received a copy of the GNU General Public License along
++// with this library; see the file COPYING3.  If not see
++// <http://www.gnu.org/licenses/>.
++
++#include <memory>
++
++// libstdc++/58839
++
++struct D {
++  void operator()(void*) const noexcept { }
++};
++
++void test01()
++{
++  std::unique_ptr<void, D> y;
++  std::shared_ptr<void> x = std::move(y);
++}
 diff -Naur gcc-4.8.2.orig/libstdc++-v3/testsuite/25_algorithms/nth_element/58800.cc gcc-4.8.2/libstdc++-v3/testsuite/25_algorithms/nth_element/58800.cc
---- gcc-4.8.2.orig/libstdc++-v3/testsuite/25_algorithms/nth_element/58800.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.8.2/libstdc++-v3/testsuite/25_algorithms/nth_element/58800.cc	2013-10-20 04:08:12.578223000 -0500
+--- gcc-4.8.2.orig/libstdc++-v3/testsuite/25_algorithms/nth_element/58800.cc	1970-01-01 00:00:00.000000000 +0000
++++ gcc-4.8.2/libstdc++-v3/testsuite/25_algorithms/nth_element/58800.cc	2013-11-01 16:12:34.403867685 +0000
 @@ -0,0 +1,52 @@
 +// Copyright (C) 2013 Free Software Foundation, Inc.
 +//
