@@ -64,8 +64,11 @@ unset LINKER</userinput></screen>
     EGLIBC Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
-    <para os="e">The EGLIBC documentation recommends building EGLIBC outside of the
-    source directory in a dedicated build directory:</para>
+    <para os="s1">Allow EGLIBC to detect Make-4.x:</para>
+
+<screen os="s2"><userinput>sed -r -i 's/(3..89..)/\1 | 4.*/' configure</userinput></screen>
+
+    <para os="e">The EGLIBC documentation recommends building EGLIBC outside of     the source directory in a dedicated build directory:</para>
 
 <screen os="f"><userinput>mkdir -v ../eglibc-build
 cd ../eglibc-build</userinput></screen>
