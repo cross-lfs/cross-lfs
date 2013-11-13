@@ -72,8 +72,7 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 <screen os="e"><userinput>make</userinput></screen>
 
     <para os="f">To test the results, issue:
-    <userinput>make check</userinput>.</para>
-
+    <userinput>useradd nobody &amp;&amp; chown -Rv nobody . &amp;&amp; su nobody -s /bin/bash -c "PATH=$PATH make -k check" ; userdel nobody</userinput></para>
 
     <para os="g">Install the package:</para>
 
