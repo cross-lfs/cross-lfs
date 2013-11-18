@@ -57,57 +57,51 @@
 
     <para os="g">The test suite of Coreutils makes several assumptions about the
     presence of system users and groups that are not valid within the minimal
-    environment that exists at the moment. Therefore, additional items need
-    to be set up before running the tests. Skip down to <quote>Install the
-    package</quote> if not running the test suite.</para>
+    environment that exists at the moment. Therefore, we will reuse the dummy
+    groups and user created during Util-linux. Skip down to <quote>Install the
+    package</quote> if not running the test suite and you did not create the
+    dummy groups and users during Util-linux.</para>
 
-    <para os="h">Create two <systemitem class="groupname">dummy</systemitem> groups
-    and a <systemitem class="username">dummy</systemitem> user:</para>
-
-<screen os="i"><userinput>echo "dummy1:x:1000:" &gt;&gt; /etc/group
-echo "dummy2:x:1001:dummy" &gt;&gt; /etc/group
-echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></screen>
-
-    <para os="j">Now the test suite is ready to be run. First, run
+   <para os="h">Now the test suite is ready to be run. First, run
     the tests that are meant to be run as user
     <systemitem class="username">root</systemitem>:</para>
 
-<screen os="k"><userinput>make NON_ROOT_USERNAME=dummy SUBDIRS= check-root</userinput></screen>
+<screen os="i"><userinput>make NON_ROOT_USERNAME=dummy</userinput></screen>
 
-    <para os="l">The testsuite will now be run as the
+    <para os="j">The testsuite will now be run as the
     <systemitem class="username">dummy</systemitem> user. Fix the permissions
     for a few files to allow this:</para>
 
-<screen os="m"><userinput>chown -Rv dummy .</userinput></screen>
+<screen os="k"><userinput>chown -Rv dummy .</userinput></screen>
 
-    <para os="n">Then run the remainder of the tests as the
+    <para os="l">Then run the remainder of the tests as the
     <systemitem class="username">dummy</systemitem> user:</para>
 
-<screen os="o"><userinput>su dummy -s /bin/bash \
+<screen os="m"><userinput>su dummy -s /bin/bash \
     -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes -k check || true"</userinput></screen>
 
-    <para os="p">When testing is complete, remove the
+    <para os="n">When testing is complete, remove the
     <systemitem class="username">dummy</systemitem> user and groups:</para>
 
-<screen os="q"><userinput>sed -i '/dummy/d' /etc/passwd /etc/group</userinput></screen>
+<screen os="o"><userinput>sed -i '/dummy/d' /etc/passwd /etc/group</userinput></screen>
 
-    <para os="r">Install the package:</para>
+    <para os="p">Install the package:</para>
 
-<screen os="s"><userinput>make install</userinput></screen>
+<screen os="q"><userinput>make install</userinput></screen>
 
-    <para os="t">Move programs to the locations specified by the FHS:</para>
+    <para os="r">Move programs to the locations specified by the FHS:</para>
 
-<screen os="u"><userinput>mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date} /bin
+<screen os="s"><userinput>mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date} /bin
 mv -v /usr/bin/{dd,df,echo,false,hostname,ln,ls,mkdir,mknod} /bin
 mv -v /usr/bin/{mv,pwd,rm,rmdir,stty,true,uname} /bin
 mv -v /usr/bin/chroot /usr/sbin</userinput></screen>
 
-    <para os="v">Other Coreutils programs are used by some of the scripts
+    <para os="t">Other Coreutils programs are used by some of the scripts
     in the CLFS-Bootscripts package. As <filename
     class="directory">/usr</filename> may not be available during the early
     stages of booting, those binaries need to be on the root partition:</para>
 
-<screen os="w"><userinput>mv -v /usr/bin/{[,basename,head,install,nice} /bin
+<screen os="u"><userinput>mv -v /usr/bin/{[,basename,head,install,nice} /bin
 mv -v /usr/bin/{readlink,sleep,sync,test,touch} /bin
 ln -svf ../../bin/install /usr/bin</userinput></screen>
 
