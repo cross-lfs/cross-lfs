@@ -105,14 +105,15 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
         chrt, col, colcrt, colrm, column, ctrlaltdel, cytune, delpart,
         dmesg, eject, fallocate, fdformat, fdisk, findfs, findmnt, flock,
         fsck, fsck.cramfs, fsck.minix, fsfreeze, fstrim, getopt, hexdump,
-        hwclock, ionice, ipcmk, ipcrm, ipcs, isosize, kill, ldattach,
-        logger, look, losetup, lsblk, lscpu, lslocks, mcookie, mkfs, mkfs.bfs,
-        mkfs.cramfs, mkfs.minix, mkswap, more, mount, mountpoint,  namei,
-        partx, pg, pivot_root, prlimit, raw, readprofile, rename, renice,
-        resizepart, rev, rtcwake, script, scriptreplay, setarch, setsid,
-        setterm, sfdisk, sulogin, swaplabel, swapoff (link to swapon), swapon,
-        switch_root, tailf, taskset, tunelp, ul, umount, unshare, utmpdump,
-        uuidd, uuidgen, wall, wdctl, whereis, wipefs, and write</seg>
+        hwclock, ionice, ipcmk, ipcrm, ipcs, isosize, kill, last, lastb (link
+        to last), ldattach, logger, look, losetup, lsblk, lscpu, lslocks,
+        mcookie, mesg, mkfs, mkfs.bfs, mkfs.cramfs, mkfs.minix, mkswap, more,
+        mount, mountpoint,  namei, partx, pg, pivot_root, prlimit, raw,
+        readprofile, rename, renice, resizepart, rev, rtcwake, script,
+        scriptreplay, setarch, setsid, setterm, sfdisk, sulogin, swaplabel,
+        swapoff (link to swapon), swapon, switch_root, tailf, taskset, tunelp,
+        ul, umount, unshare, utmpdump, uuidd, uuidgen, wall, wdctl, whereis,
+        wipefs, and write</seg>
         <seg>libblkid.[a,so], libmount.[a,so], and libuuid.[a,so]</seg>
         <seg>/usr/include/blkid, /usr/include/libmount, /usr/include/uuid,
         /usr/share/getopt, /var/lib/hwclock</seg>
@@ -518,6 +519,29 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
         </listitem>
       </varlistentry>
 
+      <varlistentry id="last">
+        <term><command>last</command></term>
+        <listitem>
+          <para>Shows which users last logged in (and out), searching back
+          through the <filename>/var/log/wtmp</filename> file; it also shows
+          system boots, shutdowns, and run-level changes</para>
+          <indexterm zone="ch-system-util-linux last">
+            <primary sortas="b-last">last</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lastb">
+        <term><command>lastb</command></term>
+        <listitem>
+          <para>Shows the failed login attempts, as logged in
+          <filename>/var/log/btmp</filename></para>
+          <indexterm zone="ch-system-util-linux lastb">
+            <primary sortas="b-lastb">lastb</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="ldattach">
         <term><command>ldattach</command></term>
         <listitem>
@@ -595,6 +619,17 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
           <command>xauth</command></para>
           <indexterm zone="ch-system-util-linux mcookie">
             <primary sortas="b-mcookie">mcookie</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="mesg">
+        <term><command>mesg</command></term>
+        <listitem>
+          <para>Controls whether other users can send messages to the current
+          user's terminal</para>
+          <indexterm zone="ch-system-util-linux mesg">
+            <primary sortas="b-mesg">mesg</primary>
           </indexterm>
         </listitem>
       </varlistentry>
