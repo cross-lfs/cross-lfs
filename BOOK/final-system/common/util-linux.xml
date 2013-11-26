@@ -43,7 +43,7 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
     <para os="a">Prepare Util-linux for compilation:</para>
 
-<screen os="b"><userinput>./configure --enable-write --disable-login --disable-su</userinput></screen>
+<screen os="b"><userinput>./configure --enable-write</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
@@ -53,15 +53,6 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         <listitem>
           <para>This option allows the <command>write</command> program to be
           installed.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--disable-login --disable-su</parameter></term>
-        <listitem>
-          <para>Disables building the <command>login</command> and
-          <command>su</command> programs, as the Shadow package installs its
-          own versions.</para>
         </listitem>
       </varlistentry>
 
