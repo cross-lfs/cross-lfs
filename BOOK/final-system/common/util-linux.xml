@@ -101,14 +101,14 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>addpart, agetty, blkid, blockdev, cal, cfdisk, chcpu,
+        <seg>addpart, agetty, blkdiscard, blkid, blockdev, cal, cfdisk, chcpu,
         chrt, col, colcrt, colrm, column, ctrlaltdel, cytune, delpart,
         dmesg, eject, fallocate, fdformat, fdisk, findfs, findmnt, flock,
         fsck, fsck.cramfs, fsck.minix, fsfreeze, fstrim, getopt, hexdump,
         hwclock, ionice, ipcmk, ipcrm, ipcs, isosize, kill, last, lastb (link
         to last), ldattach, logger, look, losetup, lsblk, lscpu, lslocks,
         mcookie, mesg, mkfs, mkfs.bfs, mkfs.cramfs, mkfs.minix, mkswap, more,
-        mount, mountpoint,  namei, nologin, partx, pg, pivot_root, prlimit,
+        mount, mountpoint,  namei, nsenter, nologin, partx, pg, pivot_root, prlimit,
         raw, readprofile, rename, renice, resizepart, rev, rtcwake, script,
         scriptreplay, setarch, setsid, setterm, sfdisk, sulogin, swaplabel,
         swapoff (link to swapon), swapon, switch_root, tailf, taskset, tunelp,
@@ -116,7 +116,7 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
         wipefs, and write</seg>
         <seg>libblkid.[a,so], libmount.[a,so], and libuuid.[a,so]</seg>
         <seg>/usr/include/blkid, /usr/include/libmount, /usr/include/uuid,
-        /usr/share/getopt, /var/lib/hwclock</seg>
+        /usr/share/doc/util-linux/getopt, /var/lib/hwclock</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -142,6 +142,16 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
           and then invokes the <command>login</command> program</para>
           <indexterm zone="ch-system-util-linux agetty">
             <primary sortas="b-agetty">agetty</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="blkdiscard">
+        <term><command>blkdiscard</command></term>
+        <listitem>
+          <para>Discards sectors on a device</para>
+          <indexterm zone="ch-system-util-linux blkdiscard">
+            <primary sortas="b-blkdiscard">blkdiscard</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -723,6 +733,16 @@ echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></scre
           <para>Shows the symbolic links in the given pathnames</para>
           <indexterm zone="ch-system-util-linux namei">
             <primary sortas="b-namei">namei</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nsenter">
+        <term><command>nsenter</command></term>
+        <listitem>
+          <para>Runs a program with namespaces of other processes</para>
+          <indexterm zone="ch-system-util-linux nsenter">
+            <primary sortas="b-nsenter">nsenter</primary>
           </indexterm>
         </listitem>
       </varlistentry>
