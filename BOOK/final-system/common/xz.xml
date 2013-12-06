@@ -29,7 +29,7 @@
 
     <para os="a">Prepare XZ-Utils for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr --libdir=/lib</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -41,12 +41,18 @@
 
     <para os="f">Install the programs:</para>
 
-<screen os="g"><userinput>make pkgconfigdir=/usr/lib/pkgconfig install</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
     <para os="h">Move the <filename>xz</filename> binary, and several symlinks
     that point to it, into the /bin directory:</para>
 
 <screen os="i"><userinput>mv -v /usr/bin/{xz,lzma,lzcat,unlzma,unxz,xzcat} /bin</userinput></screen>
+
+    <para os="j">Finally, move the shared library to a more appropriate
+    location, and recreate the symlink pointing to it:</para>
+
+<screen os="k"><userinput>mv -v /usr/lib/liblzma.so.* /lib
+ln -svf ../../lib/liblzma.so.&xz-version; /usr/lib/liblzma.so</userinput></screen>
 
   </sect2>
 
@@ -59,10 +65,13 @@
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>lzcat (link to xz), lzcmp (link to lzdiff), lzdiff, lzegrep (link to lzgrep),
-        lzfgrep (link to lzgrep), lzgrep, lzless (link to lzmore), lzma (link to xz),
-        lzmadec, lzmore, unlzma (link to xz), unxz (link to xz), xz, xzcat
-        (link to xz), and xzdec</seg>
+        <seg>lzcat (link to xz), lzcmp (link to xzdiff), lzdiff (link to
+        xzdiff), lzegrep (link to xzgrep), lzfgrep (link to xzgrep), lzgrep
+        (link to xzgrep), lzless (link to xzless), lzma (link to xz), lzmadec,
+        lzmainfo, lzmore (link to xzmore), unlzma (link to xz), unxz (link to
+        xz), xz, xzcat (link to xz), xzcmp (link to xzdiff), xzdec, xzdiff,
+        xzegrep (link to xzgrep), xzfgrep (link to xzgrep), xzgrep, xzless,
+        and xzmore</seg>
         <seg>liblzma.[a,so]</seg>
         <seg>/usr/include/lzma, /usr/share/doc/xz</seg>
       </seglistitem>
