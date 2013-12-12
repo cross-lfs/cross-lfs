@@ -78,14 +78,14 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
     <para os="m">Test the results, but do not stop at errors:</para>
 
-<screen os="n"><userinput>make -k check</userinput></screen>
+<screen os="n"><userinput remap="test">make -k check</userinput></screen>
 
     <para os="o">The <parameter>-k</parameter> flag is used to make the test suite
     run through to completion and not stop at the first failure. The GCC test
     suite is very comprehensive and is almost guaranteed to generate a few
     failures. To receive a summary of the test suite results, run:</para>
 
-<screen os="p"><userinput>../gcc-&gcc-version;/contrib/test_summary</userinput></screen>
+<screen os="p"><userinput remap="test">../gcc-&gcc-version;/contrib/test_summary</userinput></screen>
 
     <para os="q">For only the summaries, pipe the output through
     <userinput>grep -A7 Summ</userinput>.</para>
