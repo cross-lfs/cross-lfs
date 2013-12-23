@@ -33,6 +33,10 @@
 LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
   ./configure --prefix=/usr --enable-shared --with-isl=system</userinput></screen>
 
+    <para os="s1">Apply a <command>sed</command> which prevents the attempted installation of an invalid file:</para>
+
+<screen os="s2"><userinput>sed -i '/cmake/d' Makefile</userinput></screen>
+
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
