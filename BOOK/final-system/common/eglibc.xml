@@ -57,12 +57,6 @@ sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
 
-    <para os="p1">The following patch fixes an issue where EGLIBC will
-    improperly handle a condition where an elf binary has missing
-    dependencies:</para>
-
-<screen os="p2"><userinput>patch -Np1 -i ../&eglibc-dl_dep_fix-patch;</userinput></screen>
-
     <para os="b">The EGLIBC build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
     pointing at <filename class="directory">/tools</filename>. The specs
@@ -70,8 +64,11 @@ unset LINKER</userinput></screen>
     EGLIBC Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
-    <para os="e">The EGLIBC documentation recommends building EGLIBC outside of the
-    source directory in a dedicated build directory:</para>
+    <para os="s1">Allow EGLIBC to detect Make-4.x:</para>
+
+<screen os="s2"><userinput>sed -r -i 's/(3..89..)/\1 | 4.*/' configure</userinput></screen>
+
+    <para os="e">The EGLIBC documentation recommends building EGLIBC outside of     the source directory in a dedicated build directory:</para>
 
 <screen os="f"><userinput>mkdir -v ../eglibc-build
 cd ../eglibc-build</userinput></screen>
@@ -79,8 +76,8 @@ cd ../eglibc-build</userinput></screen>
     <para os="g">Prepare EGLIBC for compilation:</para>
 
 <screen os="h"><userinput>../eglibc-&eglibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
-    --libexecdir=/usr/lib/eglibc</userinput></screen>
+    --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/lib/eglibc \
+    --enable-obsolete-rpc</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the new configure option:</title>
@@ -88,8 +85,8 @@ cd ../eglibc-build</userinput></screen>
       <varlistentry>
         <term><parameter>--libexecdir=/usr/lib/eglibc</parameter></term>
         <listitem>
-          <para>This changes the location of the <command>pt_chown</command>
-          program from its default of <filename
+          <para>This changes the location of the <command>getconf</command>
+          utility from its default of <filename
           class="directory">/usr/libexec</filename> to <filename
           class="directory">/usr/lib/eglibc</filename>.</para>
         </listitem>
@@ -110,7 +107,7 @@ cd ../eglibc-build</userinput></screen>
 
 <!-- items n,o,p no longer the master, use x86_64 which has no failures -->
 
-<screen os="n"><userinput>cp -v ../eglibc-&eglibc-version;/iconvdata/gconv-modules iconvdata
+<screen os="n"><userinput remap="test">cp -v ../eglibc-&eglibc-version;/iconvdata/gconv-modules iconvdata
 make -k check 2&gt;&amp;1 | tee eglibc-check-log; grep Error eglibc-check-log</userinput></screen>
 
     <para os="o">The EGLIBC test suite is highly dependent on certain functions of
@@ -149,9 +146,11 @@ make -k check 2&gt;&amp;1 | tee eglibc-check-log; grep Error eglibc-check-log</u
 
 <screen os="r"><userinput>touch /etc/ld.so.conf</userinput></screen>
 
-    <para os="s">Install the package:</para>
+    <para os="s">Install the package, and remove unneeded files from
+    <filename class="directory">/usr/include/rpcsvc</filename>:</para>
 
-<screen os="t"><userinput>make install</userinput></screen>
+<screen os="t"><userinput>make install &amp;&amp;
+rm -v /usr/include/rpcsvc/*.x</userinput></screen>
 
   </sect2>
 
@@ -245,6 +244,63 @@ rpc: files
 # End /etc/nsswitch.conf</literal>
 EOF</userinput></screen>
 
+    <para>Install timezone data:</para>
+<screen><userinput>tar -xf ../tzdata&tzdata-version;.tar.gz
+
+ZONEINFO=/usr/share/zoneinfo
+mkdir -pv $ZONEINFO/{posix,right}
+
+for tz in etcetera southamerica northamerica europe africa antarctica  \
+          asia australasia backward pacificnew \
+          systemv; do
+    zic -L /dev/null   -d $ZONEINFO       -y "sh yearistype.sh" ${tz}
+    zic -L /dev/null   -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz}
+    zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
+done
+
+cp -v zone.tab iso3166.tab $ZONEINFO
+zic -d $ZONEINFO -p America/New_York
+unset ZONEINFO</userinput></screen>
+
+    <variablelist>
+      <title>The meaning of the zic commands:</title>
+
+      <varlistentry>
+        <term><parameter>zic -L /dev/null ...</parameter></term>
+        <listitem>
+          <para>This creates posix timezones, without any leap seconds.  It is
+          conventional to put these in both
+          <filename class="directory">zoneinfo</filename> and
+          <filename class="directory">zoneinfo/posix</filename>. It is
+          necessary to put the POSIX timezones in
+          <filename class="directory">zoneinfo</filename>, otherwise various
+          test-suites will report errors. On an embedded system, where space is
+          tight and you do not intend to ever update the timezones, you could save
+          1.9MB by not using the <filename class="directory">posix</filename>
+          directory, but some applications or test-suites might give less good
+          results</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>zic -L leapseconds ...</parameter></term>
+        <listitem>
+          <para>This creates right timezones, including leap seconds. On an
+          embedded system, where space is tight and you do not intend to
+          ever update the timezones, or care about the correct time, you could
+          save 1.9MB by omitting the <filename class="directory">right</filename>
+          directory.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>zic ... -p ...</parameter></term>
+        <listitem>
+          <para>This creates the <filename>posixrules</filename> file. We use
+          New York because POSIX requires the daylight savings time rules
+          to be in accordance with US rules.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
     <para>To determine the local time zone, run the following script:</para>
 
 <screen role="nodump"><userinput>tzselect</userinput></screen>
@@ -322,9 +378,9 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>catchsegv, gencat, getconf, getent, iconv, iconvconfig, ldconfig,
-        ldd, lddlibc4, locale, localedef, mtrace, nscd,
-        pcprofiledump, pt_chown, rpcgen, rpcinfo, sln, sprof, tzselect, xtrace,
-        zdump, and zic</seg>
+        ldd, lddlibc4, locale, localedef, makedb, mtrace, nscd,
+        pcprofiledump, pldd, rpcgen, sln, sprof, tzselect, xtrace,zdump,
+        and zic</seg>
         <seg>ld.so, libBrokenLocale.[a,so], libSegFault.so, libanl.[a,so],
         libbsd-compat.a, libc.[a,so], libc_nonshared.a, libcidn.[a,so],
         libcrypt.[a,so], libdl.[a,so], libg.a, libieee.a, libm.[a,so],
@@ -464,6 +520,16 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="makedb">
+        <term><command>makedb</command></term>
+        <listitem>
+          <para>Creates a simple database from textual input</para>
+          <indexterm zone="ch-system-eglibc makedb">
+            <primary sortas="b-makedb">makedb</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="mtrace">
         <term><command>mtrace</command></term>
         <listitem>
@@ -496,13 +562,12 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="pt_chown">
-        <term><command>pt_chown</command></term>
+      <varlistentry id="pldd">
+        <term><command>pldd</command></term>
         <listitem>
-          <para>A helper program for <command>grantpt</command> to set the owner,
-          group and access permissions of a slave pseudo terminal</para>
-          <indexterm zone="ch-system-eglibc pt_chown">
-            <primary sortas="b-pt_chown">pt_chown</primary>
+          <para>Lists dynamic shared objects used by running processes</para>
+          <indexterm zone="ch-system-eglibc pldd">
+            <primary sortas="b-pldd">pldd</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -518,22 +583,22 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="rpcinfo">
-        <term><command>rpcinfo</command></term>
-        <listitem>
-          <para>Makes an RPC call to an RPC server</para>
-          <indexterm zone="ch-system-eglibc rpcinfo">
-            <primary sortas="b-rpcinfo">rpcinfo</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="sln">
         <term><command>sln</command></term>
         <listitem>
           <para>A statically linked program that creates symbolic links</para>
           <indexterm zone="ch-system-eglibc sln">
             <primary sortas="b-sln">sln</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="sotruss">
+        <term><command>sotruss</command></term>
+        <listitem>
+          <para>Traces shared library procedure calls of a specified command</para>
+          <indexterm zone="ch-system-eglibc sotruss">
+            <primary sortas="b-sotruss">sotruss</primary>
           </indexterm>
         </listitem>
       </varlistentry>

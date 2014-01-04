@@ -47,6 +47,14 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -57,10 +65,11 @@
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="h"><userinput>CFLAGS="-march=$(cut -d- -f1 &lt;&lt;&lt; $MACHTYPE) \
-    -mtune=generic -g -O2" ../eglibc-&eglibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
-    --libexecdir=/usr/lib/eglibc</userinput></screen>
+<screen os="h"><userinput>
+    CFLAGS="-march=$(cut -d- -f1 &lt;&lt;&lt; $MACHTYPE) -O2" \
+    ../eglibc-&eglibc-version;/configure --prefix=/usr \
+    --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/lib/eglibc \
+    --enable-obsolete-rpc</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"

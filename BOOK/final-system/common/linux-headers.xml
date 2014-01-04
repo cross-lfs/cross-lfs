@@ -31,8 +31,7 @@
 
 <screen os="c"><userinput>make mrproper
 make headers_check
-make INSTALL_HDR_PATH=dest headers_install
-cp -rv dest/include/* /usr/include
+make INSTALL_HDR_PATH=/usr headers_install
 find /usr/include -name .install -or -name ..install.cmd | xargs rm -fv</userinput></screen>
 
     <variablelist os="d">
@@ -54,13 +53,17 @@ find /usr/include -name .install -or -name ..install.cmd | xargs rm -fv</userinp
       </varlistentry>
 
       <varlistentry os="d3">
-        <term><parameter>make INSTALL_HDR_PATH=dest headers_install</parameter></term>
+        <term><parameter>make INSTALL_HDR_PATH=/usr headers_install</parameter></term>
         <listitem>
-          <para>Normally the headers_install target removes the entire
-          destination directory (default
-          <filename class="directory">/usr/include</filename>) before
-          installing the headers. To prevent this, we tell the kernel to
-          install the headers to a directory inside the source dir.</para>
+          <para>This will install the kernel headers into
+          <filename class="directory">/usr/include</filename>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="d4">
+        <term><parameter>find /usr/include -name .install -or -name ..install.cmd | xargs rm -fv</parameter></term>
+        <listitem>
+          <para>Removes a number of unneeded debugging files that were installed.</para>
         </listitem>
       </varlistentry>
 
@@ -76,10 +79,11 @@ find /usr/include -name .install -or -name ..install.cmd | xargs rm -fv</userinp
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>/usr/include/{asm,asm-generic,drm,linux,mtd,rdma,sound,video}/*.h</seg>
+        <seg>/usr/include/{asm,asm-generic,drm,linux,mtd,rdma,scsi,sound,video,xen}/*.h</seg>
         <seg>/usr/include/asm, /usr/include/asm-generic, /usr/include/drm,
         /usr/include/linux, /usr/include/mtd, /usr/include/rdma,
-        /usr/include/scsi, /usr/include/sound, /usr/include/video, /usr/include/xen</seg>
+        /usr/include/scsi, /usr/include/sound, /usr/include/uapi,
+        /usr/include/video, /usr/include/xen</seg>
       </seglistitem>
     </segmentedlist>
 

@@ -23,6 +23,22 @@
     <title>Installation of Yaboot</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p3'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p4'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p5'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p6'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../ppc/yaboot-build.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
 
@@ -42,6 +58,7 @@ sed -e "s/\(-print-libgcc-file-name\)/${BUILD32} \1/" \
             -e "s/\(-Bstatic\)/-melf32ppclinux \1/" \
             -e "s/\(strip \)/${CLFS_TARGET}-\1/" \
             -e 's/-o root -g root//' \
+            -e 's/-Werror//' \
     Makefile.orig &gt; Makefile</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

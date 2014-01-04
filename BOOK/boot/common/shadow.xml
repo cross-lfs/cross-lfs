@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-shadow" role="wrap">
+  <?dbhtml filename="shadow.html"?>
+
+  <title>Shadow-&shadow-version;</title>
+
+  <indexterm zone="ch-boot-shadow">
+    <primary sortas="a-Shadow">Shadow</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../../final-system/common/shadow.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
+
+  <sect2 role="installation">
+    <title>Installation of Shadow</title>
+
+    <para os="b">Disable the installation of the <command>groups</command>
+    program, as Coreutils provides a better version:</para>
+
+<screen os="c"><userinput>cp -v src/Makefile.in{,.orig}
+sed -e 's/groups$(EXEEXT) //' src/Makefile.in.orig > src/Makefile.in</userinput></screen>
+
+    <para os="d">Prepare Shadow for compilation:</para>
+
+<screen os="e"><userinput>./configure --prefix=/tools \
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} --sysconfdir=/etc</userinput></screen>
+
+<para os="f">The meaning of the configure options:</para>
+
+  <variablelist os="g">
+    <varlistentry>
+      <term><parameter>--sysconfdir=/etc</parameter></term>
+      <listitem><para>Tells Shadow to install its configuration files into
+      <filename class="directory">/etc</filename>, rather than
+      <filename class="directory">/tools/etc</filename>.</para></listitem>
+    </varlistentry>
+    
+  </variablelist>
+
+
+    <para os="h">Compile the package:</para>
+
+<screen os="i"><userinput>make</userinput></screen>
+
+    <para os="j">This package does not come with a test suite.</para>
+
+    <para os="k">Install the package:</para>
+
+<screen os="l"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-shadow" role="."/></para>
+  </sect2>
+
+</sect1>

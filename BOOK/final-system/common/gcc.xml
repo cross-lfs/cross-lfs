@@ -25,11 +25,16 @@
   <sect2 role="installation">
     <title>Installation of GCC</title>
 
-
     <para os="p1">The following patch contains a number of updates to the 
     &gcc-version; branch by the GCC developers:</para>
 
     <screen os="p2"><userinput>patch -Np1 -i ../&gcc-branch_update-patch;</userinput></screen>
+
+    <para os="fix1">Apply a <command>sed</command> subsitution that will
+    suppress the execution of the <command>fixincludes</command> script:</para>
+
+<screen os="fix2"><userinput>cp -v gcc/Makefile.in{,.orig}
+sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
     <para os="d">Apply a <command>sed</command> substitution that will suppress the
     installation of <filename class="libraryfile">libiberty.a</filename>. The
@@ -53,7 +58,10 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
     --libexecdir=/usr/lib --enable-shared --enable-threads=posix \
     --enable-__cxa_atexit --enable-c99 --enable-long-long \
     --enable-clocale=gnu --enable-languages=c,c++ \
-    --disable-multilib --disable-libstdcxx-pch</userinput></screen>
+    --disable-multilib --disable-libstdcxx-pch \
+    --enable-cloog-backend=isl --disable-isl-version-check --with-system-zlib \
+    --enable-checking=release --enable-libstdcxx-time \
+    --disable-install-libiberty</userinput></screen>
 
     <para os="j">Compile the package:</para>
 
@@ -64,16 +72,20 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
       critical. Do not skip it under any circumstance.</para>
     </important>
 
+   <para os="s1">Increase the stack size prior to running the tests:</para>
+
+<screen os="s2"><userinput remap="test">ulimit -s 32768</userinput></screen>
+
     <para os="m">Test the results, but do not stop at errors:</para>
 
-<screen os="n"><userinput>make -k check</userinput></screen>
+<screen os="n"><userinput remap="test">make -k check</userinput></screen>
 
     <para os="o">The <parameter>-k</parameter> flag is used to make the test suite
     run through to completion and not stop at the first failure. The GCC test
     suite is very comprehensive and is almost guaranteed to generate a few
     failures. To receive a summary of the test suite results, run:</para>
 
-<screen os="p"><userinput>../gcc-&gcc-version;/contrib/test_summary</userinput></screen>
+<screen os="p"><userinput remap="test">../gcc-&gcc-version;/contrib/test_summary</userinput></screen>
 
     <para os="q">For only the summaries, pipe the output through
     <userinput>grep -A7 Summ</userinput>.</para>
@@ -97,6 +109,10 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
 <screen os="x"><userinput>ln -sv gcc /usr/bin/cc</userinput></screen>
 
+    <para os="y">Finally, move a misplaced file:</para>
+
+<screen os="z"><userinput>mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib</userinput></screen>
+
   </sect2>
 
   <sect2 id="contents-gcc" role="content">
@@ -108,11 +124,11 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>c++, cc (link to gcc), cpp, g++, gcc, gccbug, and gcov</seg>
-        <seg>libgcc.a, libgcc_eh.a, libgcc_s.so, libgcov.a, libgomp.[a,so],
-        libmudflap.[a,so], libmudflapth.[a,so], libssp.[a,so],
-        libssp_nonshared.a, libstdc++.[a,so], and libsupc++.a</seg>
-        <seg>/usr/include/c++, /usr/lib/gcc</seg>
+        <seg>c++, cc (link to gcc), cpp, g++, gcc, and gcov</seg>
+        <seg>libasan.[a,so], libgcc.a, libgcc_eh.a, libgcc_s.so, libgcov.a,
+        libgomp.[a,so], libmudflap.[a,so], libmudflapth.[a,so], libssp.[a,so],
+        libssp_nonshared.a, libstdc++.[a,so], libsupc++.a, and libtsan.[a,so]</seg>
+        <seg>/usr/include/c++, /usr/lib/gcc, /usr/share/gcc-&gcc-version;</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -172,16 +188,6 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
         </listitem>
       </varlistentry>
 
-      <varlistentry id="gccbug">
-        <term><command>gccbug</command></term>
-        <listitem>
-          <para>A shell script used to help create useful bug reports</para>
-          <indexterm zone="ch-system-gcc gccbug">
-            <primary sortas="b-gccbug">gccbug</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="gcov">
         <term><command>gcov</command></term>
         <listitem>
@@ -189,6 +195,16 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           determine where optimizations will have the most effect</para>
           <indexterm zone="ch-system-gcc gcov">
             <primary sortas="b-gcov">gcov</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libasan">
+        <term><filename class="libraryfile">libasan</filename></term>
+        <listitem>
+          <para>The Address Sanitizer runtime library</para>
+          <indexterm zone="ch-system-gcc libasan">
+            <primary sortas="c-libasan">libasan</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -264,6 +280,16 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           language</para>
           <indexterm zone="ch-system-gcc libsupc">
             <primary sortas="c-libsupc++">libsupc++</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libtsan">
+        <term><filename class="libraryfile">libtsan</filename></term>
+        <listitem>
+          <para>The Thread Sanitizer runtime library</para>
+          <indexterm zone="ch-system-gcc libtsan">
+            <primary sortas="c-libtsan">libtsan</primary>
           </indexterm>
         </listitem>
       </varlistentry>

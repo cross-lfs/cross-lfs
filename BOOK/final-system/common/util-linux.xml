@@ -32,8 +32,8 @@
     location for the <filename>adjtime</filename> file. To make the
     <command>hwclock</command> program FHS-compliant, run the following:</para>
 
-<screen><userinput>sed -i 's@etc/adjtime@var/lib/hwclock/adjtime@g' \
-    hwclock/hwclock.c
+<screen><userinput>sed -i -e 's@etc/adjtime@var/lib/hwclock/adjtime@g' \
+    $(grep -rl '/etc/adjtime' .)
 mkdir -pv /var/lib/hwclock</userinput></screen>
 
   </sect2>
@@ -43,27 +43,10 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
     <para os="a">Prepare Util-linux for compilation:</para>
 
-<screen os="b"><userinput>./configure --enable-arch \
-    --enable-partx --enable-write --disable-wall</userinput></screen>
+<screen os="b"><userinput>./configure --enable-write</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
-
-      <varlistentry>
-        <term><parameter>--enable-arch</parameter></term>
-        <listitem>
-          <para>This option allows the <command>arch</command> program to be
-          installed.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--enable-partx</parameter></term>
-        <listitem>
-          <para>Enables building the <command>addpart</command>, <command>delpart</command>,
-           <command>partx</command> programs.</para>
-        </listitem>
-      </varlistentry>
 
       <varlistentry>
         <term><parameter>--enable-write</parameter></term>
@@ -73,21 +56,22 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry>
-        <term><parameter>--disable-wall</parameter></term>
-        <listitem>
-          <para>Disables building the <command>wall</command> program,
-          as the Sysvinit package installs its own version.</para>
-        </listitem>
-      </varlistentry>
-
     </variablelist>
 
     <para os="d">Compile the package:</para>
 
 <screen os="e"><userinput>make</userinput></screen>
 
-    <para os="f">This package does not come with a test suite.</para>
+    <para os="dummy1">Create two <systemitem class="groupname">dummy</systemitem> groups and a <systemitem class="username">dummy</systemitem> user to be used during Util-linux and Coreutils test suites:</para>
+
+<screen os="dummy2"><userinput remap="test">echo "dummy1:x:1000:" &gt;&gt; /etc/group
+echo "dummy2:x:1001:dummy" &gt;&gt; /etc/group
+echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></screen>
+
+    <para os="f">To test the results, issue:</para>
+
+<screen os="f2"><userinput remap="test">chown -Rv dummy . &amp;&amp;
+su dummy -s /bin/bash -c "PATH=$PATH make -k check"</userinput></screen>
 
     <para os="g">Install the package:</para>
 
@@ -104,19 +88,21 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>addpart, agetty, arch, blkid, blockdev, cal, cfdisk, chkdupexe,
-        chrt, col, colcrt, colrm, column, ctrlaltdel, cytune, ddate, delpart,
-        dmesg, fdformat, fdisk, findfs, flock, fsck, fsck.cramfs, fsck.minix,
-        getopt, hexdump, hwclock, ionice, ipcmk, ipcrm, ipcs, isosize,
-        ldattach, line, logger, look, losetup, lscpu, mcookie, mkfs, mkfs.bfs,
-        mkfs.cramfs, mkfs.minix, mkswap, more, mount, namei, partx, pg,
-        pivot_root, readprofile, rename, renice, rev, rtcwake, script,
-        scriptreplay, setarch, setsid, setterm, sfdisk, swapoff (link to
-        swapon), swapon, switch_root, tailf, taskset, tunelp, ul, umount,
-        uuidd, uuidgen, whereis, and write</seg>
-        <seg>libblkid.[a,so] and libuuid.[a,so]</seg>
-        <seg>/usr/include/blkid, /usr/include/uuid, /usr/share/getopt,
-        /var/lib/hwclock</seg>
+        <seg>addpart, agetty, blkdiscard, blkid, blockdev, cal, cfdisk, chcpu,
+        chrt, col, colcrt, colrm, column, ctrlaltdel, cytune, delpart,
+        dmesg, eject, fallocate, fdformat, fdisk, findfs, findmnt, flock,
+        fsck, fsck.cramfs, fsck.minix, fsfreeze, fstrim, getopt, hexdump,
+        hwclock, ionice, ipcmk, ipcrm, ipcs, isosize, kill, last, lastb (link
+        to last), ldattach, logger, look, losetup, lsblk, lscpu, lslocks,
+        mcookie, mesg, mkfs, mkfs.bfs, mkfs.cramfs, mkfs.minix, mkswap, more,
+        mount, mountpoint,  namei, nologin, nsenter, partx, pg, pivot_root, prlimit,
+        raw, readprofile, rename, renice, resizepart, rev, rtcwake, script,
+        scriptreplay, setarch, setsid, setterm, sfdisk, sulogin, swaplabel,
+        swapoff, swapon, switch_root, tailf, taskset, ul, umount, unshare,
+        utmpdump, uuidd, uuidgen, wall, wdctl, whereis, wipefs, and write</seg>
+        <seg>libblkid.[a,so], libmount.[a,so], and libuuid.[a,so]</seg>
+        <seg>/usr/include/blkid, /usr/include/libmount, /usr/include/uuid,
+        /usr/share/doc/util-linux/getopt, /var/lib/hwclock</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -146,12 +132,12 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="arch">
-        <term><command>arch</command></term>
+      <varlistentry id="blkdiscard">
+        <term><command>blkdiscard</command></term>
         <listitem>
-          <para>Reports the machine's architecture</para>
-          <indexterm zone="ch-system-util-linux arch">
-            <primary sortas="b-arch">arch</primary>
+          <para>Discards sectors on a device</para>
+          <indexterm zone="ch-system-util-linux blkdiscard">
+            <primary sortas="b-blkdiscard">blkdiscard</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -198,12 +184,12 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="chkdupexe">
-        <term><command>chkdupexe</command></term>
+      <varlistentry id="chcpu">
+        <term><command>chcpu</command></term>
         <listitem>
-          <para>Finds duplicate executables</para>
-          <indexterm zone="ch-system-util-linux chkdupexe">
-            <primary sortas="b-chkdupexe">chkdupexe</primary>
+          <para>Utility to configure CPUs</para>
+          <indexterm zone="ch-system-util-linux chcpu">
+            <primary sortas="b-chcpu">chcpu</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -312,6 +298,26 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="eject">
+        <term><command>eject</command></term>
+        <listitem>
+          <para>Eject removable media</para>
+          <indexterm zone="ch-system-util-linux eject">
+            <primary sortas="b-dmesg">eject</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fallocate">
+        <term><command>fallocate</command></term>
+        <listitem>
+          <para>Preallocates space to a file</para>
+          <indexterm zone="ch-system-util-linux fallocate">
+            <primary sortas="b-fallocate">fallocate</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="fdformat">
         <term><command>fdformat</command></term>
         <listitem>
@@ -339,6 +345,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           (UUID)</para>
           <indexterm zone="ch-system-util-linux findfs">
             <primary sortas="b-findfs">findfs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="findmnt">
+        <term><command>findmnt</command></term>
+        <listitem>
+          <para>Lists mounted filesystems or searches for a filesystem</para>
+          <indexterm zone="ch-system-util-linux findmnt">
+            <primary sortas="b-findmnt">findmnt</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -382,6 +398,26 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           given device</para>
           <indexterm zone="ch-system-util-linux fsck.minix">
             <primary sortas="b-fsck.minix">fsck.minix</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fsfreeze">
+        <term><command>fsfreeze</command></term>
+        <listitem>
+          <para>Suspends and resumes access to a filesystem</para>
+          <indexterm zone="ch-system-util-linux fsfreeze">
+            <primary sortas="b-fsfreeze">fsfreeze</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fstrim">
+        <term><command>fstrim</command></term>
+        <listitem>
+          <para>Discards unused blocks on a mounted filesystem</para>
+          <indexterm zone="ch-system-util-linux fstrim">
+            <primary sortas="b-fstrim">fstrim</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -469,22 +505,45 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="kill">
+        <term><command>kill</command></term>
+        <listitem>
+          <para>Send a signal to a process</para>
+          <indexterm zone="ch-system-util-linux kill">
+            <primary sortas="b-kill">kill</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="last">
+        <term><command>last</command></term>
+        <listitem>
+          <para>Shows which users last logged in (and out), searching back
+          through the <filename>/var/log/wtmp</filename> file; it also shows
+          system boots, shutdowns, and run-level changes</para>
+          <indexterm zone="ch-system-util-linux last">
+            <primary sortas="b-last">last</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lastb">
+        <term><command>lastb</command></term>
+        <listitem>
+          <para>Shows the failed login attempts, as logged in
+          <filename>/var/log/btmp</filename></para>
+          <indexterm zone="ch-system-util-linux lastb">
+            <primary sortas="b-lastb">lastb</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="ldattach">
         <term><command>ldattach</command></term>
         <listitem>
           <para>Attaches a line discipline to a serial line</para>
           <indexterm zone="ch-system-util-linux ldattach">
             <primary sortas="b-ldattach">ldattach</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="line">
-        <term><command>line</command></term>
-        <listitem>
-          <para>Copies a single line</para>
-          <indexterm zone="ch-system-util-linux line">
-            <primary sortas="b-line">line</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -519,12 +578,32 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="lsblk">
+        <term><command>lsblk</command></term>
+        <listitem>
+          <para>Prints information about block devices</para>
+          <indexterm zone="ch-system-util-linux lsblk">
+            <primary sortas="b-lsblk">lsblk</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="lscpu">
         <term><command>lscpu</command></term>
         <listitem>
           <para>Prints CPU architechture information</para>
           <indexterm zone="ch-system-util-linux lscpu">
             <primary sortas="b-lscpu">lscpu</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lslocks">
+        <term><command>lslocks</command></term>
+        <listitem>
+          <para>Lists local system locks</para>
+          <indexterm zone="ch-system-util-linux lslocks">
+            <primary sortas="b-lslocks">lslocks</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -536,6 +615,17 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           <command>xauth</command></para>
           <indexterm zone="ch-system-util-linux mcookie">
             <primary sortas="b-mcookie">mcookie</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="mesg">
+        <term><command>mesg</command></term>
+        <listitem>
+          <para>Controls whether other users can send messages to the current
+          user's terminal</para>
+          <indexterm zone="ch-system-util-linux mesg">
+            <primary sortas="b-mesg">mesg</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -613,12 +703,44 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="mountpoint">
+        <term><command>mountpoint</command></term>
+        <listitem>
+          <para>Tells you whether or not a directory is a mount point.</para>
+          <indexterm zone="ch-system-util-linux mountpoint">
+            <primary sortas="b-mountpoint">mountpoint</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="namei">
         <term><command>namei</command></term>
         <listitem>
           <para>Shows the symbolic links in the given pathnames</para>
           <indexterm zone="ch-system-util-linux namei">
             <primary sortas="b-namei">namei</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nologin">
+        <term><command>nologin</command></term>
+        <listitem>
+          <para>Displays a message that an account is not available. Designed
+          to be used as the default shell for accounts that have been
+          disabled</para>
+          <indexterm zone="ch-system-util-linux nologin">
+            <primary sortas="b-nologin">nologin</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nsenter">
+        <term><command>nsenter</command></term>
+        <listitem>
+          <para>Runs a program with namespaces of other processes</para>
+          <indexterm zone="ch-system-util-linux nsenter">
+            <primary sortas="b-nsenter">nsenter</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -655,6 +777,26 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="prlimit">
+        <term><command>prlimit</command></term>
+        <listitem>
+          <para>Gets and sets a process' resource limits</para>
+          <indexterm zone="ch-system-util-linux prlimit">
+            <primary sortas="b-prlimit">prlimit</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="raw">
+        <term><command>raw</command></term>
+        <listitem>
+          <para>Binds a Linux raw character device to a block device</para>
+          <indexterm zone="ch-system-util-linux raw">
+            <primary sortas="b-raw">raw</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="readprofile">
         <term><command>readprofile</command></term>
         <listitem>
@@ -682,6 +824,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           <para>Alters the priority of running processes</para>
           <indexterm zone="ch-system-util-linux renice">
             <primary sortas="b-renice">renice</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="resizepart">
+        <term><command>resizepart</command></term>
+        <listitem>
+          <para>Asks the Linux kernel to resize a partition</para>
+          <indexterm zone="ch-system-util-linux resizepart">
+            <primary sortas="b-resizepart">resizepart</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -767,6 +919,28 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="sulogin">
+        <term><command>sulogin</command></term>
+        <listitem>
+          <para>Allows <emphasis>root</emphasis> to log in; it is normally
+          invoked by <command>init</command> when the system goes into single
+          user mode</para>
+          <indexterm zone="ch-system-util-linux sulogin">
+            <primary sortas="b-sulogin">sulogin</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="swaplabel">
+        <term><command>swaplabel</command></term>
+        <listitem>
+          <para>Prints or changes the label or UUID of a swap area</para>
+          <indexterm zone="ch-system-util-linux swaplabel">
+            <primary sortas="b-swaplabel">swaplabel</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="swapoff">
         <term><command>swapoff</command></term>
         <listitem>
@@ -820,16 +994,6 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="tunelp">
-        <term><command>tunelp</command></term>
-        <listitem>
-          <para>Tunes the parameters of the line printer</para>
-          <indexterm zone="ch-system-util-linux tunelp">
-            <primary sortas="b-tunelp">tunelp</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="ul">
         <term><command>ul</command></term>
         <listitem>
@@ -847,6 +1011,27 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           <para>Disconnects a file system from the system's file tree</para>
           <indexterm zone="ch-system-util-linux umount">
             <primary sortas="b-umount">umount</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="unshare">
+        <term><command>unshare</command></term>
+        <listitem>
+          <para>Runs a program with some namespaces unshared from parent</para>
+          <indexterm zone="ch-system-util-linux unshare">
+            <primary sortas="b-unshare">unshare</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="utmpdump">
+        <term><command>utmpdump</command></term>
+        <listitem>
+          <para>Displays the content of the given login file in a more
+          user-friendly format</para>
+          <indexterm zone="ch-system-util-linux utmpdump">
+            <primary sortas="b-utmpdump">utmpdump</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -874,6 +1059,26 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="wall">
+        <term><command>wall</command></term>
+        <listitem>
+          <para>Writes a message to all logged-in users</para>
+          <indexterm zone="ch-system-util-linux wall">
+            <primary sortas="b-wall">wall</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="wdctl">
+        <term><command>wdctl</command></term>
+        <listitem>
+          <para>Show hardware watchdog status</para>
+          <indexterm zone="ch-system-util-linux wdctl">
+            <primary sortas="b-uuidgen">wdctl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="whereis">
         <term><command>whereis</command></term>
         <listitem>
@@ -881,6 +1086,16 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           for the given command</para>
           <indexterm zone="ch-system-util-linux whereis">
             <primary sortas="b-whereis">whereis</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="wipefs">
+        <term><command>wipefs</command></term>
+        <listitem>
+          <para>Wipes a filesystem signature from a device</para>
+          <indexterm zone="ch-system-util-linux wipefs">
+            <primary sortas="b-wipefs">wipefs</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -903,6 +1118,20 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
           extraction</para>
           <indexterm zone="ch-system-util-linux libblkid">
             <primary sortas="c-libblkid">libblkid</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libmount">
+        <term><filename class="libraryfile">libmount</filename></term>
+        <listitem>
+          <para>Contains routines for parsing the
+          <filename>/etc/fstab</filename>, <filename>/etc/mtab</filename>,
+          and <filename>/proc/self/mountinfo</filename> files, managing
+          <filename>/etc/mtab</filename>, and configuring various mount
+          options</para>
+          <indexterm zone="ch-system-util-linux libmount">
+            <primary sortas="c-libmount">libmount</primary>
           </indexterm>
         </listitem>
       </varlistentry>

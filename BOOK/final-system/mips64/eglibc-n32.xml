@@ -39,24 +39,8 @@ sed -i "s|libs -o|libs -L/usr/lib32 -Wl,-dynamic-linker=${LINKER} -o|" \
 unset LINKER</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="eglibc.xml"
     xpointer="xpointer(//*[@os='b'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="eglibc.xml"
-    xpointer="xpointer(//*[@os='g1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="eglibc.xml"
-    xpointer="xpointer(//*[@os='g2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="eglibc-64bit.xml"
@@ -65,6 +49,14 @@ unset LINKER</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="eglibc-64bit.xml"
     xpointer="xpointer(//*[@os='m4'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="eglibc.xml"
@@ -85,8 +77,9 @@ unset LINKER</userinput></screen>
 
 <screen os="h"><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" \
     ../eglibc-&eglibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
-    --libexecdir=/usr/lib32/eglibc --libdir=/usr/lib32</userinput></screen>
+    --disable-profile --enable-kernel=2.6.32 \
+    --libexecdir=/usr/lib32/eglibc --libdir=/usr/lib32 \
+    --enable-obsolete-rpc</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the new configure option:</title>
@@ -94,7 +87,7 @@ unset LINKER</userinput></screen>
       <varlistentry>
         <term><parameter>--libexecdir=/usr/lib32/eglibc</parameter></term>
         <listitem>
-          <para>This changes the location of the <command>pt_chown</command>
+          <para>This changes the location of the <command>getconf</command>
           program from its default of <filename
           class="directory">/usr/libexec</filename> to <filename
           class="directory">/usr/lib32/eglibc</filename>.</para>

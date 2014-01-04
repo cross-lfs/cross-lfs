@@ -32,6 +32,14 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/procps.xml"
+    xpointer="xpointer(//*[@os='p3'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/procps.xml"
+    xpointer="xpointer(//*[@os='p4'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/procps.xml"
     xpointer="xpointer(//*[@os='s1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -52,7 +60,7 @@
     href="../common/procps.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-<screen os="e"><userinput>make install lib64=lib</userinput></screen>
+<screen os="e"><userinput>make SKIP='/bin/kill /usr/share/man/man1/kill.1' install lib64=lib</userinput></screen>
 
     <variablelist os="f">
       <title>The meaning of the make and install options:</title>

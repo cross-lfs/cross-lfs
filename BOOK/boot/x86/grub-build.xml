@@ -28,9 +28,17 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/x86/grub.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/x86/grub.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/x86/grub.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="ab"><userinput>./configure --prefix=/usr \
+<screen os="ab"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --sysconfdir=/etc --disable-werror</userinput></screen>
 

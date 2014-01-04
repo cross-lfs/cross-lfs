@@ -32,11 +32,15 @@
 
     <note os="n2">
       <para>This package is known to have issues when its default optimization
-      flags (including the <option>-march</option> and <option>-mcpu</option>
+      flags (including the <option>-march</option> and <option>-mtune</option>
       options) are changed. If any environment variables that override default
       optimizations have been defined, such as <envar>CFLAGS</envar> and
       <envar>CXXFLAGS</envar>, unset them when building GRUB.</para>
     </note>
+
+    <para os="s1">EGLIBC-&eglibc-version; does not declare gets():</para>
+
+<screen os="s2"><userinput>sed -i -e '/gets is a/d' grub-core/gnulib/stdio.in.h</userinput></screen>
 
     <para os="a">Prepare GRUB for compilation:</para>
 
@@ -47,8 +51,9 @@
 
 <screen os="d"><userinput>make</userinput></screen>
 
-    <para os="e">To test GRUB you must have QEMU installed and then, issue:
-    <userinput>make check</userinput>.</para>
+    <para os="e">To test GRUB you must have QEMU installed and then, issue:</para>
+
+<screen os="d2"><userinput remap="test">make check</userinput></screen>
 
     <para os="f">Install the package:</para>
 

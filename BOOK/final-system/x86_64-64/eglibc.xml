@@ -47,25 +47,34 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para os="l1">Tell EGLIBC to install its libraries into
+    <para os="l5">Tell EGLIBC to install its libraries into
     <filename class="directory">/lib</filename>:</para>
 
-<screen os="l2"><userinput>echo "slibdir=/lib" &gt;&gt; configparms</userinput></screen>
+<screen os="l6"><userinput>echo "slibdir=/lib" &gt;&gt; configparms</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="h"><userinput>CFLAGS="-mtune=generic -g -O2" \
+<screen os="h"><userinput>CFLAGS="-O2" \
     ../eglibc-&eglibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-add-ons --enable-kernel=2.6.0 \
-    --libexecdir=/usr/lib/eglibc --libdir=/usr/lib</userinput></screen>
+    --disable-profile --enable-kernel=2.6.32 \
+    --libexecdir=/usr/lib/eglibc --libdir=/usr/lib \
+    --enable-obsolete-rpc</userinput></screen>
 
     <variablelist os="i">
       <title>The meaning of the new configure option:</title>
@@ -73,8 +82,8 @@
       <varlistentry>
         <term><parameter>--libexecdir=/usr/lib/eglibc</parameter></term>
         <listitem>
-          <para>This changes the location of the <command>pt_chown</command>
-          program from its default of <filename
+          <para>This changes the location of the <command>getconf</command>
+          utility from its default of <filename
           class="directory">/usr/libexec</filename> to <filename
           class="directory">/usr/lib/eglibc</filename>.</para>
         </listitem>
@@ -146,6 +155,12 @@ sed '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userin
     the backup.</para>
 
     <screen><userinput>rm -v /usr/bin/ldd.bak</userinput></screen>
+
+ <para os="u">The stubs.h header installed by EGLIBC looks for stubs-32.h
+    and stubs-64.h. This configuration of EGLIBC only generates stubs-64.h. Fix
+    this with the following:</para>
+
+    <screen os="v"><userinput>mv -v /usr/include/gnu/stubs{-64,}.h</userinput></screen>
 
   </sect2>
 

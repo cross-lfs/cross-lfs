@@ -39,6 +39,13 @@
     then the environment is not set up for proper PTY operation. This issue
     needs to be resolved before running the test suites for Binutils and GCC.</para>
 
+<!-- Branch update patch area
+    <para os="p1">The following patch contains a number of updates to the
+    &binutils-version; branch by the Binutils developers:</para>
+
+    <screen os="p2"><userinput>patch -Np1 -i ../&binutils-branch_update-patch;</userinput></screen>
+-->
+
     <para os="g">The Binutils documentation recommends building Binutils outside of the
     source directory in a dedicated build directory:</para>
 
@@ -49,7 +56,7 @@ cd ../binutils-build</userinput></screen>
 
 <screen os="ca"><userinput>CC="gcc -isystem /usr/include" \
 LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
-  ../binutils-&binutils-version;/configure --prefix=/usr \
+  ../binutils-&binutils-dir;/configure --prefix=/usr \
     --enable-shared</userinput></screen>
 
     <para os="j">Compile the package:</para>
@@ -90,7 +97,7 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
 
     <para os="p">Test the results:</para>
 
-<screen os="q"><userinput>make check</userinput></screen>
+<screen os="q"><userinput remap="test">make check</userinput></screen>
 
     <para os="r">Install the package:</para>
 
@@ -99,7 +106,7 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
     <para os="t">Install the <filename class="headerfile">libiberty</filename> header
     file that is needed by some packages:</para>
 
-<screen os="u"><userinput>cp -v ../binutils-&binutils-version;/include/libiberty.h /usr/include</userinput></screen>
+<screen os="u"><userinput>cp -v ../binutils-&binutils-dir;/include/libiberty.h /usr/include</userinput></screen>
 
   </sect2>
 
@@ -112,7 +119,8 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
       <segtitle>Installed directory</segtitle>
 
       <seglistitem>
-        <seg>addr2line, ar, as, c++filt, gprof, ld, nm, objcopy, objdump,
+        <seg>addr2line, ar, as, c++filt, elfedit, gprof, ld, ld.bfd, nm, objcopy,
+        objdump,
         ranlib, readelf, size, strings, and strip</seg>
         <seg>libiberty.a, libbfd.[a,so], and libopcodes.[a,so]</seg>
         <seg>/usr/lib/ldscripts</seg>
@@ -169,6 +177,16 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="elfedit">
+        <term><command>elfedit</command></term>
+        <listitem>
+          <para>Updates the ELF header of ELF files</para>
+          <indexterm zone="ch-system-binutils elfedit">
+            <primary sortas="b-elfedit">elfedit</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="gprof">
         <term><command>gprof</command></term>
         <listitem>
@@ -187,6 +205,16 @@ can get `Flex' from any GNU archive site.</computeroutput></screen>
           references</para>
           <indexterm zone="ch-system-binutils ld">
             <primary sortas="b-ld">ld</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ld.bfd">
+        <term><command>ld.bfd</command></term>
+        <listitem>
+          <para>Hard link to <command>ld</command></para>
+          <indexterm zone="ch-system-binutils ld.bfd">
+            <primary sortas="b-ld.bfd">ld.bfd</primary>
           </indexterm>
         </listitem>
       </varlistentry>

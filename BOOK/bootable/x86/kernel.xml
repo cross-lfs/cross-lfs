@@ -37,7 +37,7 @@
     un-tarring.</para>
 
     <para os="h">Configure the kernel via a menu-driven interface.
-    Please note that the udev bootscript requires "rtc" and "tmpfs" to be
+    Please note that the udev bootscript requires "rtc", "tmpfs" and "devtmpfs" to be
     enabled and built into the kernel, not as modules. CBLFS has
     some information regarding particular kernel configuration requirements of
     packages outside of CLFS at <ulink
@@ -71,22 +71,27 @@
     <para os="p">Be very careful when reading other documentation relating to
     kernel modules because it usually applies to 2.4.x kernels only. As
     far as we know, kernel configuration issues specific to Hotplug and
-    Udev are not documented. The problem is that Udev will create a device
+    Eudev are not documented. The problem is that Eudev will create a device
     node only if Hotplug or a user-written script inserts the corresponding
     module into the kernel, and not all modules are detectable by Hotplug.
     Note that statements like the one below in the
-    <filename>/etc/modprobe.conf</filename> file do not work with Udev:</para>
+    <filename>/etc/modprobe.conf</filename> file do not work with Eudev:</para>
 
 <screen os="q"><literal>alias char-major-XXX some-module</literal></screen>
 
-    <para os="r">Because of the complications with Udev and modules,
+    <para os="r">Because of the complications with Eudev and modules,
     we strongly recommend starting with a completely non-modular kernel
-    configuration, especially if this is the first time using Udev.</para>
+    configuration, especially if this is the first time using Eudev.</para>
 
     <para os="s">Install the modules, if the kernel configuration uses
     them:</para>
 
 <screen os="t"><userinput>make modules_install</userinput></screen>
+
+    <para os="s2">Install the firmware, if the kernel configuration uses
+    them:</para>
+
+<screen os="t2"><userinput>make firmware_install</userinput></screen>
 
     <para os="u">After kernel compilation is complete, additional steps are
     required to complete the installation. Some files need to be copied to

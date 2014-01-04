@@ -23,10 +23,13 @@
     <title>Installation of Cross GCC Compiler with Static libgcc
     and no Threads</title>
 
-    <para os="p1">The following patch contains a number of updates to the
-    &gcc-version; branch by the GCC developers:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/gcc.xml"
+    xpointer="xpointer(//*[@os='p1'])"/>
 
-    <screen os="p2"><userinput>patch -Np1 -i ../&gcc-branch_update-patch;</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/gcc.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
 
     <para os="aa">Make a couple of essential adjustments to the
     <filename>specs</filename> file to ensure GCC uses our build
@@ -34,19 +37,11 @@
 
 <screen os="ab"><userinput>patch -Np1 -i ../&gcc-specs-patch;</userinput></screen>
 
-    <para os="ag">Change the StartFile Spec and Standard Include Dir so that
-    GCC looks in <filename class="directory">/tools</filename>:</para>
+    <para os="ag">Change the StartFile Spec so that GCC looks in 
+<filename class="directory">/tools</filename>:</para>
 
-<screen os="ah"><userinput>echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
-echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
+<screen os="ah"><userinput>echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
 echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFIX_2 ""\n' >> gcc/config/linux.h</userinput></screen>
-
-    <para os="ai">Now alter <command>gcc</command>'s c preprocessor's default
-    include search path to use <filename class="directory">/tools</filename> only:</para>
-
-<screen os="aj"><userinput>cp -v gcc/Makefile.in{,.orig}
-sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
-    gcc/Makefile.in.orig &gt; gcc/Makefile.in</userinput></screen>
 
     <para os="t1">We will create a dummy <filename>limits.h</filename> so
     the build will not use the one provided by the host distro:</para>
@@ -68,15 +63,26 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
 <screen os="al"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
   ../gcc-&gcc-version;/configure --prefix=/cross-tools \
   --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
-  --with-sysroot=${CLFS} --with-local-prefix=/tools --disable-nls \
+  --with-sysroot=${CLFS} --with-local-prefix=/tools \
+  --with-native-system-header-dir=/tools/include --disable-nls \
   --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-  --with-ppl=/cross-tools --with-cloog=/cross-tools \
-  --without-headers --with-newlib --disable-decimal-float \
-  --disable-libgomp --disable-libmudflap --disable-libssp \
-  --disable-threads --enable-languages=c --disable-multilib</userinput></screen>
+  --with-isl=/cross-tools --with-cloog=/cross-tools --with-mpc=/cross-tools \
+  --without-headers --with-newlib --disable-decimal-float --disable-libgomp \
+  --disable-libmudflap --disable-libssp --disable-threads --disable-multilib \
+  --disable-libatomic --disable-libitm --disable-libsanitizer \
+  --disable-libquadmath --disable-target-libiberty --disable-target-zlib \
+  --with-system-zlib --enable-cloog-backend=isl --disable-isl-version-check \
+  --enable-languages=c --enable-checking=release</userinput></screen>
 
     <variablelist os="am">
-      <title>The meaning of the configure options:</title>
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--with-sysroot=${CLFS}</parameter></term>
+        <listitem>
+          <para>Tells GCC to consider ${CLFS} as the root file system.</para>
+        </listitem>
+      </varlistentry>
 
      <varlistentry>
         <term><parameter>--with-local-prefix=/tools</parameter></term>
@@ -89,10 +95,63 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
         </listitem>
       </varlistentry>
 
+
       <varlistentry>
-        <term><parameter>--disable-shared</parameter></term>
+        <term><parameter>--with-native-system-headers-dir=/tools/include</parameter></term>
         <listitem>
-          <para>Disables the creation of the shared libraries.</para>
+          <para>This switch ensures that GCC will search for the system headers
+           in <filename class="directory">/tools/include</filename> and that
+           host system headers will not be searched.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-nls</parameter></term>
+        <listitem>
+          <para>This disables internationalization as i18n is not needed for the
+          cross-compile tools.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--without-headers</parameter></term>
+        <listitem>
+          <para>Disables GCC from using the target's Libc when cross compiling.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-newlib</parameter></term>
+        <listitem>
+          <para>Tells GCC that the target libc will use 'newlib'.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-decimal-float</parameter></term>
+        <listitem>
+          <para>Disables support for the C decimal floating point extension.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libgomp</parameter></term>
+        <listitem>
+          <para>Disables the creation of runtime libraries used by GOMP.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libmudflap</parameter></term>
+        <listitem>
+          <para>Disables the creation of runtime libaries used by libmudflap.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libssp</parameter></term>
+        <listitem>
+          <para>Disables the use of Stack Smashing Protection for runtime libraries.</para>
         </listitem>
       </varlistentry>
 
@@ -107,9 +166,44 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
       </varlistentry>
 
       <varlistentry>
+        <term><parameter>--disable-libatomic</parameter></term>
+        <listitem>
+          <para>The atomic library isn't needed at this time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libitm</parameter></term>
+        <listitem>
+          <para>The itm library isn't neeeded at this tiem.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libsanitizer</parameter></term>
+        <listitem>
+          <para>The sanitizer library isn't needed at this time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-libquadmath</parameter></term>
+        <listitem>
+          <para>The quadmath library isn't needed at this time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term><parameter>--enable-languages=c</parameter></term>
         <listitem>
           <para>This option ensures that only the C compiler is built.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--enable-checking=release</parameter></term>
+        <listitem>
+          <para>This option selects the complexity of the internal consistency checks and adds error checking within the compiler.</para>
         </listitem>
       </varlistentry>
 
@@ -119,9 +213,22 @@ sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" \
 
 <screen os="ao"><userinput>make all-gcc all-target-libgcc</userinput></screen>
 
-    <para os="ap">Install the package:</para>
+    <variablelist os="ap">
+      <title>The meaning of the new make options:</title>
 
-<screen os="aq"><userinput>make install-gcc install-target-libgcc</userinput></screen>
+      <varlistentry>
+        <term><parameter>all-gcc all-target-libgcc</parameter></term>
+        <listitem>
+          <para>Compiles only the parts of GCC that are needed at this time,
+          rather than the full package.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="aq">Install the package:</para>
+
+<screen os="ar"><userinput>make install-gcc install-target-libgcc</userinput></screen>
 
   </sect2>
 

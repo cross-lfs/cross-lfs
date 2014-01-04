@@ -28,12 +28,18 @@
     <para os="s1">By default, this package builds the <command>arpd</command>
     program, which is dependent on Berkeley DB.  Because <command>arpd</command>
     is not a very common requirement on a base Linux system, remove the
-    dependency on Berkeley DB by applying the <command>sed</command> command
+    dependency on Berkeley DB by using the commands
     below. If the <command>arpd</command> binary is needed, instructions for
     compiling Berkeley DB can be found in CBLFS at <ulink
     url="&cblfs-root;index.php/Berkeley_DB"/>.</para>
 
-<screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile</userinput></screen>
+<screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
+sed -i '/ARPD/d' Makefile
+rm -v man/man8/arpd.8</userinput></screen>
+
+    <para os="f1">Remove unused libnl headers:</para>
+    
+    <screen os="f2"><userinput>sed -i '/netlink\//d' ip/ipl2tp.c</userinput></screen>
 
     <para os="a">Compile the package:</para>
 
@@ -82,8 +88,8 @@
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>ctstat (link to lnstat), genl, ifcfg, ifstat, ip, lnstat, nstat,
-        routef, routel, rtacct, rtmon, rtpr, rtstat (link to lnstat), ss,
+        <seg>bridge, ctstat (link to lnstat), genl, ifcfg, ifstat, ip, lnstat,
+        nstat, routef, routel, rtacct, rtmon, rtpr, rtstat (link to lnstat), ss,
         and tc</seg>
         <seg>/etc/iproute2, /lib/tc, /usr/lib/tc, /usr/share/doc/iproute2</seg>
       </seglistitem>
@@ -93,6 +99,16 @@
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="bridge">
+        <term><command>bridge</command></term>
+        <listitem>
+          <para>Configures network bridges</para>
+          <indexterm zone="ch-system-iproute2 bridge">
+            <primary sortas="b-bridge">bridge</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
 
       <varlistentry id="ctstat">
         <term><command>ctstat</command></term>

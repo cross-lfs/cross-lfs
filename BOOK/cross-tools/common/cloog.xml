@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-cross-tools-cloog" role="wrap">
+  <?dbhtml filename="cloog.html"?>
+
+  <title>CLooG-&cloog-version;</title>
+
+  <indexterm zone="ch-cross-tools-cloog">
+    <primary sortas="a-CLooG">CLooG</primary>
+    <secondary>cross-tools</secondary>
+  </indexterm>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../../final-system/common/cloog.xml"
+  xpointer="xpointer(//*[@role='package'])"/>
+
+  <sect2 role="installation">
+    <title>Installation of CLooG</title>
+
+    <para os="a">Prepare CLooG for compilation:</para>
+
+<screen os="b"><userinput>LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+    ./configure --prefix=/cross-tools --disable-static \
+    --with-gmp-prefix=/cross-tools --with-isl-prefix=/cross-tools</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/cloog.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/cloog.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
+
+    <para os="c">Compile the package:</para>
+
+<screen os="d"><userinput>make</userinput></screen>
+
+    <para os="e">Install the package:</para>
+
+<screen os="f"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title/>
+
+    <para>Details on this package are located in <xref
+    linkend="contents-cloog" role="."/></para>
+
+  </sect2>
+
+</sect1>

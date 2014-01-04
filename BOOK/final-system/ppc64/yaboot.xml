@@ -23,11 +23,14 @@
 
     <para>Existing multilib distributions alter gcc to default to 32-bit
     output.  Because our gcc defaults to 64-bit, we need to pass appropriate
-    options to both the compiler and the linker.  The Makefile already
-    overrides any CC and ignores LDFLAGS in favour of its own variables, so we
-    need to use the following seds for a successful compile and install.</para>
+    options to both the compiler and the linker.  To prevent the build from
+    failing due to compiler warnings, the -Werror flag is removed.  The 
+    Makefile already overrides any CC and ignores LDFLAGS in favour of 
+    its own variables, so we need to use the following seds for a 
+    successful compile and install.</para>
 
 <screen><userinput>sed -i -e "s/\(-print-libgcc-file-name\)/${BUILD32} \1/" \
+    -e "s/-Werror//" \
     -e "s/\(-Bstatic\)/-melf32ppclinux \1/" Makefile
 </userinput></screen>
 
@@ -43,6 +46,12 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><parameter>"s/-Werror//"</parameter></term>
+        <listitem>
+          <para>This deletes the -Werror flag from the Makefile.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><parameter>"s/\(-Bstatic\)/-melf32ppclinux \1/"</parameter></term>
         <listitem>
           <para>This picks the end of the LFLAGS which the Makefile passes to
@@ -53,6 +62,22 @@
       </varlistentry>
 
     </variablelist>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p3'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p4'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p5'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../ppc/yaboot.xml"
+    xpointer="xpointer(//*[@os='p6'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../ppc/yaboot.xml"

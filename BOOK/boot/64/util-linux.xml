@@ -21,15 +21,15 @@
 
   <sect2 role="installation">
     <title>Installation of Util-linux</title>
-
+    
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/util-linux.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="be"><userinput>CC="${CC} ${BUILD64}" PKG_CONFIG=true \
+<screen os="be"><userinput>CC="${CC} ${BUILD64}" PKG_CONFIG= \
   ./configure --prefix=/tools --exec-prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --enable-login-utils --disable-makeinstall-chown</userinput></screen>
+    --disable-makeinstall-chown --disable-login --disable-su</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/util-linux.xml"

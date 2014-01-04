@@ -29,14 +29,10 @@
 
 <screen os="p2"><userinput>patch -Np1 -i ../&iputils-fixes-patch;</userinput></screen>
 
-    <para os="p3">The following patch contains pregenerated documentation for
-    IPutils:</para>
-
-<screen os="p4"><userinput>patch -Np1 -i ../&iputils-doc-patch;</userinput></screen>
-
     <para os="a">Compile the package:</para>
 
-<screen os="b"><userinput>make IPV4_TARGETS="tracepath ping rdisc clockdiff" \
+<screen os="b"><userinput>make USE_CAP=no \
+    IPV4_TARGETS="tracepath ping clockdiff rdisc" \
     IPV6_TARGETS="tracepath6 traceroute6"</userinput></screen>
 
     <para os="c">This package does not come with a test suite.</para>

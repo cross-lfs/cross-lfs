@@ -34,9 +34,22 @@
 
     <para os="c">Now prepare Coreutils for compilation:</para>
 
-<screen os="d"><userinput>./configure --prefix=/usr \
+<screen os="d"><userinput>FORCE_UNSAFE_CONFIGURE=1 \
+  ./configure --prefix=/usr \
     --enable-no-install-program=kill,uptime \
     --enable-install-program=hostname</userinput></screen>
+    
+    <variablelist os="d1">
+      <title>The meaning of the configure options:</title>
+      
+        <varlistentry os="d2">
+          <term><parameter>FORCE_UNSAFE_CONFIGURE=1</parameter></term>
+          <listitem>
+            <para>Forces Coreutils to compile when using the root user.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
 
     <para os="e">Compile the package:</para>
 
@@ -44,46 +57,41 @@
 
     <para os="g">The test suite of Coreutils makes several assumptions about the
     presence of system users and groups that are not valid within the minimal
-    environment that exists at the moment. Therefore, additional items need
-    to be set up before running the tests. Skip down to <quote>Install the
-    package</quote> if not running the test suite.</para>
+    environment that exists at the moment. Therefore, we will reuse the dummy
+    groups and user created during Util-linux. Skip down to <quote>Install the
+    package</quote> if not running the test suite and you did not create the
+    dummy groups and users during Util-linux.</para>
 
-    <para os="h">Create two <systemitem class="groupname">dummy</systemitem> groups
-    and a <systemitem class="username">dummy</systemitem> user:</para>
-
-<screen os="i"><userinput>echo "dummy1:x:1000:" &gt;&gt; /etc/group
-echo "dummy2:x:1001:dummy" &gt;&gt; /etc/group
-echo "dummy:x:1000:1000::/root:/bin/bash" &gt;&gt; /etc/passwd</userinput></screen>
-
-    <para os="j">Now the test suite is ready to be run. First, run
+   <para os="h">Now the test suite is ready to be run. First, run
     the tests that are meant to be run as user
     <systemitem class="username">root</systemitem>:</para>
 
-<screen os="k"><userinput>make NON_ROOT_USERNAME=dummy check-root</userinput></screen>
+<screen os="i"><userinput remap="test">make NON_ROOT_USERNAME=dummy</userinput></screen>
 
-    <para os="l">The testsuite will now be run as the
+    <para os="j">The testsuite will now be run as the
     <systemitem class="username">dummy</systemitem> user. Fix the permissions
     for a few files to allow this:</para>
 
-<screen os="m"><userinput>chown -Rv dummy config.log {gnulib-tests,lib,src}/.deps</userinput></screen>
+<screen os="k"><userinput remap="test">chown -Rv dummy .</userinput></screen>
 
-    <para os="n">Then run the remainder of the tests as the
+    <para os="l">Then run the remainder of the tests as the
     <systemitem class="username">dummy</systemitem> user:</para>
 
-<screen os="o"><userinput>src/su dummy -c "make RUN_EXPENSIVE_TESTS=yes check"</userinput></screen>
+<screen os="m"><userinput remap="test">su dummy -s /bin/bash \
+    -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes -k check || true"</userinput></screen>
 
-    <para os="p">When testing is complete, remove the
+    <para os="n">When testing is complete, remove the
     <systemitem class="username">dummy</systemitem> user and groups:</para>
 
-<screen os="q"><userinput>sed -i '/dummy/d' /etc/passwd /etc/group</userinput></screen>
+<screen os="o"><userinput remap="test">sed -i '/dummy/d' /etc/passwd /etc/group</userinput></screen>
 
-    <para os="r">Install the package:</para>
+    <para os="p">Install the package:</para>
 
-<screen os="s"><userinput>make install</userinput></screen>
+<screen os="q"><userinput>make install</userinput></screen>
 
-    <para os="t">Move programs to the locations specified by the FHS:</para>
+    <para os="r">Move programs to the locations specified by the FHS:</para>
 
-<screen os="u"><userinput>mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date} /bin
+<screen os="s"><userinput>mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date} /bin
 mv -v /usr/bin/{dd,df,echo,false,hostname,ln,ls,mkdir,mknod} /bin
 mv -v /usr/bin/{mv,pwd,rm,rmdir,stty,true,uname} /bin
 mv -v /usr/bin/chroot /usr/sbin</userinput></screen>
@@ -103,12 +111,12 @@ mv -v /usr/bin/chroot /usr/sbin</userinput></screen>
         cksum, comm, cp, csplit, cut, date, dd, df, dir, dircolors, dirname, du,
         echo, env, expand, expr, factor, false, fmt, fold, groups, head,
         hostid, hostname, id, install, join, link, ln, logname, ls, md5sum,
-        mkdir, mkfifo, mknod, mktemp, mv, nice, nl, nohup, od, paste, pathchk,
-        pinky, pr, printenv, printf, ptx, pwd, readlink, rm, rmdir, runcon, seq,
-        sha1sum, sha224sum, sha256sum, sha384sum, sha512sum, shred, shuf,
-        sleep, sort, split, stat, stdbuf, stty, sum, sync, tac, tail, tee, test,
-        timeout, touch, tr, true, truncate, tsort, tty, uname, unexpand, uniq,
-        unlink, users, vdir, wc, who, whoami, and yes</seg>
+        mkdir, mkfifo, mknod, mktemp, mv, nice, nl, nohup, nproc, numfmt, od, paste,
+        pathchk, pinky, pr, printenv, printf, ptx, pwd, readlink, realpath, rm,
+        rmdir, runcon, seq, sha1sum, sha224sum, sha256sum, sha384sum,
+        sha512sum, shred, shuf, sleep, sort, split, stat, stdbuf, stty, sum,
+        sync, tac, tail, tee, test, timeout, touch, tr, true, truncate, tsort,
+        tty, uname, unexpand, uniq, unlink, users, vdir, wc, who, whoami, and yes</seg>
         <seg>libstdbuf.so</seg>
         <seg>/usr/lib/coreutils</seg>
       </seglistitem>
@@ -626,6 +634,27 @@ mv -v /usr/bin/chroot /usr/sbin</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="nproc">
+        <term><command>nproc</command></term>
+        <listitem>
+          <para>Prints the number of processing units available to the current
+          process</para>
+          <indexterm zone="ch-system-coreutils nproc">
+            <primary sortas="b-nproc">nproc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="numfmt">
+        <term><command>numfmt</command></term>
+        <listitem>
+          <para>Converts numbers to or from human-readable strings</para>
+          <indexterm zone="ch-system-coreutils numfmt">
+            <primary sortas="b-numfmt">numfmt</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="od">
         <term><command>od</command></term>
         <listitem>
@@ -726,6 +755,16 @@ mv -v /usr/bin/chroot /usr/sbin</userinput></screen>
           <para>Reports the value of the given symbolic link</para>
           <indexterm zone="ch-system-coreutils readlink">
             <primary sortas="b-readlink">readlink</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="realpath">
+        <term><command>realpath</command></term>
+        <listitem>
+          <para>Prints the resolved path</para>
+          <indexterm zone="ch-system-coreutils realpath">
+            <primary sortas="b-realpath">realpath</primary>
           </indexterm>
         </listitem>
       </varlistentry>

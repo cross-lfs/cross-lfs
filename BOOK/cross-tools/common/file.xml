@@ -5,7 +5,7 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-cross-tools-file">
+<sect1 id="ch-cross-tools-file" role="wrap">
   <?dbhtml filename="file.html"?>
 
   <title>File-&file-version;</title>
@@ -24,7 +24,29 @@
 
     <para>Prepare File for compilation:</para>
 
-<screen><userinput>./configure --prefix=/cross-tools</userinput></screen>
+<screen><userinput>./configure --prefix=/cross-tools --disable-static</userinput></screen>
+
+    <variablelist>
+      <title>The meaning of the configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--prefix=/cross-tools</parameter></term>
+        <listitem>
+          <para>This tells the configure script to prepare to install the
+          package in the <filename class="directory">/cross-tools</filename>
+          directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-static</parameter></term>
+        <listitem>
+          <para>This tells the File package not to compile or install static
+          libraries, which are not needed for the Cross-Tools</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
 
     <para>Compile the package:</para>
 

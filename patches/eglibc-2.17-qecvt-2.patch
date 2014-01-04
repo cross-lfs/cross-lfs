@@ -1,0 +1,51 @@
+Submitted By: William Harrington kb0iic at cross-lfs dot org.
+Date: 2013-08-12
+Initial Package Version: 2.17
+Upstream Status: Applied to 2.18 
+Origin: http://sourceware.org/git/gitweb.cgi?p=glibc.git;a=commitdiff;h=4220c3ef773c0e7fff7c95ecd7cff69886fe4c0e
+Description: Fixes a mismatch of guards around qcvt and friends.
+
+Redone for eglibc-2.17 on 2013-08-12
+
+diff -Naur eglibc-2.17.orig/stdlib/bits/stdlib-ldbl.h eglibc-2.17/stdlib/bits/stdlib-ldbl.h
+--- eglibc-2.17.orig/stdlib/bits/stdlib-ldbl.h	2012-02-18 02:24:59.000000000 +0000
++++ eglibc-2.17/stdlib/bits/stdlib-ldbl.h	2013-08-11 22:09:07.000000000 +0000
+@@ -30,12 +30,10 @@
+ __LDBL_REDIR1_DECL (strtold_l, strtod_l)
+ #endif
+ 
+-#if defined __USE_SVID || defined __USE_XOPEN_EXTENDED
+-# ifdef __USE_MISC
++#ifdef __USE_MISC
+ __LDBL_REDIR1_DECL (qecvt, ecvt)
+ __LDBL_REDIR1_DECL (qfcvt, fcvt)
+ __LDBL_REDIR1_DECL (qgcvt, gcvt)
+ __LDBL_REDIR1_DECL (qecvt_r, ecvt_r)
+ __LDBL_REDIR1_DECL (qfcvt_r, fcvt_r)
+-# endif
+ #endif
+diff -Naur eglibc-2.17.orig/stdlib/stdlib.h eglibc-2.17/stdlib/stdlib.h
+--- eglibc-2.17.orig/stdlib/stdlib.h	2012-11-09 22:50:35.000000000 +0000
++++ eglibc-2.17/stdlib/stdlib.h	2013-08-11 22:06:29.000000000 +0000
+@@ -819,8 +819,9 @@
+ extern char *gcvt (double __value, int __ndigit, char *__buf)
+      __THROW __nonnull ((3)) __wur;
+ 
++#endif
+ 
+-# ifdef __USE_MISC
++#ifdef __USE_MISC
+ /* Long double versions of above functions.  */
+ extern char *qecvt (long double __value, int __ndigit,
+ 		    int *__restrict __decpt, int *__restrict __sign)
+@@ -849,9 +850,7 @@
+ 		    int *__restrict __decpt, int *__restrict __sign,
+ 		    char *__restrict __buf, size_t __len)
+      __THROW __nonnull ((3, 4, 5));
+-# endif	/* misc */
+-#endif	/* use MISC || use X/Open Unix */
+-
++#endif /* misc */
+ 
+ __BEGIN_NAMESPACE_STD
+ /* Return the length of the multibyte character

@@ -24,7 +24,14 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-    <para os="c">Compile the package:</para>
+<para os ="a">Apply a sed which disables last, mesg, mountpoint, sulogin,
+utmpdump, and wall from being built and installed as they are provided by
+Util-linux:</para>
+
+<screen os="b"><userinput>sed -i -e 's/\ sulogin[^ ]*//' \
+    -e '/utmpdump/d' -e '/mountpoint/d' -e '/mesg/d' src/Makefile</userinput></screen>
+
+<para os ="c">Compile the package:</para>
 
 <screen os="d"><userinput>make -C src clobber
 make -C src</userinput></screen>
@@ -75,12 +82,12 @@ EOF</userinput></screen>
     console skip the following command:</para>
 
 <screen><userinput>cat &gt;&gt; /etc/inittab &lt;&lt; "EOF"
-<literal>1:2345:respawn:/sbin/agetty -I '\033(K' tty1 9600
-2:2345:respawn:/sbin/agetty -I '\033(K' tty2 9600
-3:2345:respawn:/sbin/agetty -I '\033(K' tty3 9600
-4:2345:respawn:/sbin/agetty -I '\033(K' tty4 9600
-5:2345:respawn:/sbin/agetty -I '\033(K' tty5 9600
-6:2345:respawn:/sbin/agetty -I '\033(K' tty6 9600
+<literal>1:2345:respawn:/sbin/agetty --noclear -I '\033(K' tty1 9600
+2:2345:respawn:/sbin/agetty --noclear -I '\033(K' tty2 9600
+3:2345:respawn:/sbin/agetty --noclear -I '\033(K' tty3 9600
+4:2345:respawn:/sbin/agetty --noclear -I '\033(K' tty4 9600
+5:2345:respawn:/sbin/agetty --noclear -I '\033(K' tty5 9600
+6:2345:respawn:/sbin/agetty --noclear -I '\033(K' tty6 9600
 </literal>
 EOF</userinput></screen>
 
@@ -88,7 +95,7 @@ EOF</userinput></screen>
     the entry to <filename>/etc/inittab</filename>:</para>
 
 <screen><userinput>cat &gt;&gt; /etc/inittab &lt;&lt; "EOF"
-<literal>c0:12345:respawn:/sbin/agetty 115200 ttyS0 vt100
+<literal>c0:12345:respawn:/sbin/agetty --noclear 115200 ttyS0 vt100
 </literal>
 EOF</userinput></screen>
 
@@ -117,10 +124,9 @@ EOF</userinput></screen>
       <segtitle>Installed programs</segtitle>
 
       <seglistitem>
-        <seg>bootlogd, halt, init, killall5, last, lastb (link to last), mesg,
-        mountpoint, pidof (link to killall5), poweroff (link to halt),
-        reboot (link to halt), runlevel, shutdown, sulogin,
-        telinit (link to init), utmpdump, and wall</seg>
+        <seg>bootlogd, fstab-decode, halt, init, killall5, pidof (link to
+        killall5), poweroff (link to halt), reboot (link to halt), runlevel,
+        shutdown, and telinit (link to init)</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -135,6 +141,16 @@ EOF</userinput></screen>
           <para>Logs boot messages to a log file</para>
           <indexterm zone="ch-system-sysvinit bootlogd">
             <primary sortas="b-bootlogd">bootlogd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fstab-decode">
+        <term><command>fstab-decode</command></term>
+        <listitem>
+          <para>Runs a command with fstab-encoded arguments</para>
+          <indexterm zone="ch-system-sysvinit fstab-decode">
+            <primary sortas="b-fstab-decode">fstab-decode</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -173,50 +189,6 @@ EOF</userinput></screen>
           it</para>
           <indexterm zone="ch-system-sysvinit killall5">
             <primary sortas="b-killall5">killall5</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="last">
-        <term><command>last</command></term>
-        <listitem>
-          <para>Shows which users last logged in (and out), searching back
-          through the <filename>/var/log/wtmp</filename> file; it also shows
-          system boots, shutdowns, and run-level changes</para>
-          <indexterm zone="ch-system-sysvinit last">
-            <primary sortas="b-last">last</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="lastb">
-        <term><command>lastb</command></term>
-        <listitem>
-          <para>Shows the failed login attempts, as logged in
-          <filename>/var/log/btmp</filename></para>
-          <indexterm zone="ch-system-sysvinit lastb">
-            <primary sortas="b-lastb">lastb</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="mesg">
-        <term><command>mesg</command></term>
-        <listitem>
-          <para>Controls whether other users can send messages to the current
-          user's terminal</para>
-          <indexterm zone="ch-system-sysvinit mesg">
-            <primary sortas="b-mesg">mesg</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="mountpoint">
-        <term><command>mountpoint</command></term>
-        <listitem>
-          <para>Tells you whether or not a directory is a mount point.</para>
-          <indexterm zone="ch-system-sysvinit mountpoint">
-            <primary sortas="b-mountpoint">mountpoint</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -275,45 +247,12 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="sulogin">
-        <term><command>sulogin</command></term>
-        <listitem>
-          <para>Allows <emphasis>root</emphasis> to log in; it is normally
-          invoked by <command>init</command> when the system goes into single
-          user mode</para>
-          <indexterm zone="ch-system-sysvinit sulogin">
-            <primary sortas="b-sulogin">sulogin</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="telinit">
         <term><command>telinit</command></term>
         <listitem>
           <para>Tells <command>init</command> which run-level to change to</para>
           <indexterm zone="ch-system-sysvinit telinit">
             <primary sortas="b-telinit">telinit</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="utmpdump">
-        <term><command>utmpdump</command></term>
-        <listitem>
-          <para>Displays the content of the given login file in a more
-          user-friendly format</para>
-          <indexterm zone="ch-system-sysvinit utmpdump">
-            <primary sortas="b-utmpdump">utmpdump</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="wall">
-        <term><command>wall</command></term>
-        <listitem>
-          <para>Writes a message to all logged-in users</para>
-          <indexterm zone="ch-system-sysvinit wall">
-            <primary sortas="b-wall">wall</primary>
           </indexterm>
         </listitem>
       </varlistentry>

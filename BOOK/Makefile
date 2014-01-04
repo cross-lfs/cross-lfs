@@ -20,7 +20,7 @@ ROOT_ID		:=
 ARCHS		:= x86 x86_64 x86_64-64 \
 		   sparc sparc64 sparc64-64 \
 		   mips mips64 mips64-64 \
-		   ppc ppc64 \
+		   ppc ppc64 ppc64-64 \
 		   alpha
 
 ifdef V
@@ -197,6 +197,18 @@ $(ARCHS_DLLIST):
 	  $(TOP)/stylesheets/wget.xsl \
 	  $(TOP)/$(arch)-index.xml
 
+ARCHS_MD5LIST := $(ARCHS:%=%-md5list)
+.PHONY: md5-list $(ARCHS_MD5LIST)
+md5-list: $(ARCHS_MD5LIST)
+$(ARCHS_MD5LIST): override arch = $(@:%-md5list=%)
+$(ARCHS_MD5LIST):
+	@echo "Creating md5 hash list for $(arch)..."
+	$(Q)mkdir -p $(DLLISTDIR)
+	$(Q)xsltproc --xinclude --nonet \
+	  --output $(DLLISTDIR)/$(arch).md5sum \
+	  $(TOP)/stylesheets/md5sum.xsl \
+	  $(TOP)/$(arch)-index.xml
+       
 FG_GREEN := $(shell echo -e '\e[0;32m')
 FG_BLUE := $(shell echo -e '\e[0;34m')
 FG_DEFAULT := $(shell echo -e '\e[0;0m')
@@ -226,3 +238,5 @@ help:
 	@echo
 	@echo "Download-List Targets"
 	@echo "  $(FG_GREEN)download-list $(FG_BLUE)$(ARCHS_DLLIST)$(FG_DEFAULT)"
+	@echo "md5-List Targets"
+	@echo "  $(FG_GREEN)md5-list $(FG_BLUE)$(ARCHS_MD5LIST)$(FG_DEFAULT)"

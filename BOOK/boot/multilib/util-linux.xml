@@ -21,17 +21,16 @@
 
   <sect2 role="installation">
     <title>Installation of Util-linux</title>
-
+    
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/util-linux.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="be"><userinput>CC="${CC} ${BUILD64}" PKG_CONFIG=true \
-  ./configure \
-    --prefix=/tools --exec-prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --libdir=/tools/lib64 --enable-login-utils \
-    --disable-makeinstall-chown</userinput></screen>
+<screen os="be"><userinput>CC="${CC} ${BUILD64}" PKG_CONFIG= ./configure \
+    --prefix=/tools --exec-prefix="" --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} --libdir=/tools/lib64 --bindir=/tools/bin \
+    --sbindir=/tools/sbin --disable-makeinstall-chown --disable-login \
+    --disable-su</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/util-linux.xml"
@@ -45,9 +44,7 @@
     href="../common/util-linux.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/util-linux.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+<screen os="h"><userinput>make usrsbin_execdir=/tools/sbin usrbin_execdir=/tools/bin install</userinput></screen>
 
   </sect2>
 

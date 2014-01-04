@@ -23,13 +23,12 @@
     <title>Installation of GCC Cross Compiler</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="gcc-static.xml"
+    href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
-    
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/gcc.xml"
+    xpointer="xpointer(//*[@os='p2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="gcc-static.xml"
@@ -49,14 +48,6 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='ai'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="gcc-static.xml"
-    xpointer="xpointer(//*[@os='aj'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="gcc-static.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -70,11 +61,17 @@
 <screen os="bf"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
   ../gcc-&gcc-version;/configure --prefix=/cross-tools \
   --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
-  --with-sysroot=${CLFS} --with-local-prefix=/tools --disable-nls \
-  --enable-shared --enable-languages=c,c++ --enable-__cxa_atexit \
-  --with-mpfr=/cross-tools --with-gmp=/cross-tools --enable-c99 \
-  --with-ppl=/cross-tools --with-cloog=/cross-tools \
-  --enable-long-long --enable-threads=posix --with-abi=64</userinput></screen>
+  --with-sysroot=${CLFS} --with-local-prefix=/tools \
+  --with-native-system-header-dir=/tools/include --disable-nls \
+  --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
+  --with-isl=/cross-tools --with-cloog=/cross-tools --with-mpc=/cross-tools \
+  --without-headers --with-newlib --disable-decimal-float --disable-libgomp \
+  --disable-libmudflap --disable-libssp --disable-threads --disable-multilib \
+  --disable-libatomic --disable-libitm --disable-libsanitizer \
+  --disable-libquadmath --disable-target-libiberty --disable-target-zlib \
+  --with-system-zlib --enable-cloog-backend=isl --disable-isl-version-check \
+  --enable-languages=c --enable-checking=release --with-abi=64
+  </userinput></screen>
 
     <variablelist os="bg">
       <title>The meaning of the new configure options:</title>

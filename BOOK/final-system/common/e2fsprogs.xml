@@ -72,8 +72,9 @@ cd build</userinput></screen>
 
 <screen os="g"><userinput>make</userinput></screen>
 
-    <para os="h">To test the results, issue:
-    <userinput>make check</userinput>.</para>
+    <para os="h">To test the results, issue:</para>
+
+<screen os="h2"><userinput remap="test">make check</userinput></screen>
 
     <para os="i">Install the binaries, documentation and shared libraries:</para>
 
@@ -95,14 +96,14 @@ cd build</userinput></screen>
 
       <seglistitem>
         <seg>badblocks, chattr, compile_et, debugfs, dumpe2fs, e2freefrag,
-        e2fsck, e2image, e2initrd_helper, e2label, e2undo, filefrag, fsck.ext2,
-        fsck.ext3, fsck.ext4, fsck.ext4dev, logsave, lsattr, mk_cmds, mke2fs,
-        mkfs.ext2, mkfs.ext3, mkfs.ext4, mkfs.ext4dev, mklost+found, resize2fs,
-        and tune2fs</seg>
-        <seg>libcom_err.[a,so], libe2p.[a,so], libext2fs.[a,so], and
-        libss.[a,so]</seg>
+        e2fsck, e2image, e2initrd_helper, e2label, e2undo, e4defrag, filefrag,
+        fsck.ext2, fsck.ext3, fsck.ext4, fsck.ext4dev, logsave, lsattr,
+        mk_cmds, mke2fs, mkfs.ext2, mkfs.ext3, mkfs.ext4, mkfs.ext4dev,
+        mklost+found, resize2fs, and tune2fs</seg>
+        <seg>libcom_err.[a,so], libe2p.[a,so], libext2fs.[a,so],
+        libss.[a,so], and libquota.a</seg>
         <seg>/usr/include/e2p, /usr/include/et, /usr/include/ext2fs,
-        /usr/include/ss, /usr/share/et, /usr/share/ss</seg>
+        /usr/include/quota, /usr/include/ss, /usr/share/et, /usr/share/ss</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -125,11 +126,7 @@ cd build</userinput></screen>
       <varlistentry id="chattr">
         <term><command>chattr</command></term>
         <listitem>
-          <para>Changes the attributes of files on an <systemitem
-          class="filesystem">ext2</systemitem> file system; it also
-          changes <systemitem class="filesystem">ext3</systemitem>
-          file systems, the journaling version of <systemitem
-          class="filesystem">ext2</systemitem> file systems</para>
+          <para>Changes the attributes on a Linux file system</para>
           <indexterm zone="ch-system-e2fsprogs chattr">
             <primary sortas="b-chattr">chattr</primary>
           </indexterm>
@@ -185,8 +182,9 @@ cd build</userinput></screen>
         <term><command>e2fsck</command></term>
         <listitem>
           <para>Is used to check, and optionally repair <systemitem
-          class="filesystem">ext2</systemitem> file systems and <systemitem
-          class="filesystem">ext3</systemitem> file systems</para>
+          class="filesystem">ext2</systemitem>, <systemitem
+          class="filesystem">ext3</systemitem> and <systemitem 
+          class="filesystem">ext4</systemitem>file systems</para>
           <indexterm zone="ch-system-e2fsprogs e2fsck">
             <primary sortas="b-e2fsck">e2fsck</primary>
           </indexterm>
@@ -233,6 +231,16 @@ cd build</userinput></screen>
           <para>Replays an undo log for an ext2/ext3/ext4 filesystem</para>
           <indexterm zone="ch-system-e2fsprogs e2undo">
             <primary sortas="b-e2undo">e2undo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="e4defrag">
+        <term><command>e4defrag</command></term>
+        <listitem>
+          <para>Online defragmenter for ext4 filesystems</para>
+          <indexterm zone="ch-system-e2fsprogs e4defrag">
+            <primary sortas="b-e4defrag">e4defrag</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -327,9 +335,9 @@ cd build</userinput></screen>
       <varlistentry id="mke2fs">
         <term><command>mke2fs</command></term>
         <listitem>
-          <para>Creates an <systemitem class="filesystem">ext2</systemitem>
-          or <systemitem class="filesystem">ext3</systemitem> file system on
-          the given device</para>
+          <para>Creates an <systemitem class="filesystem">ext2</systemitem>,
+          <systemitem class="filesystem">ext3</systemitem> or <systemitem 
+          class="filesystem">ext4</systemitem> file system on the given device</para>
           <indexterm zone="ch-system-e2fsprogs mke2fs">
             <primary sortas="b-mke2fs">mke2fs</primary>
           </indexterm>
@@ -443,6 +451,17 @@ cd build</userinput></screen>
           <systemitem class="filesystem">ext2</systemitem> file system</para>
           <indexterm zone="ch-system-e2fsprogs libext2fs">
             <primary sortas="c-libext2fs">libext2fs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libquota">
+        <term><filename class="libraryfile">libquota</filename></term>
+        <listitem>
+          <para>Provides an interface for creating and updating quota files
+          and ext4 superblock fields</para>
+          <indexterm zone="ch-system-e2fsprogs libquota">
+            <primary sortas="c-libquota">libquota</primary>
           </indexterm>
         </listitem>
       </varlistentry>

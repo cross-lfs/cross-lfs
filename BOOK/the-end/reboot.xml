@@ -37,7 +37,15 @@
   <para>Then unmount the virtual file systems:</para>
 
 <screen><userinput>umount ${CLFS}/dev/pts
-umount ${CLFS}/dev/shm
+
+if [ -h ${CLFS}/dev/shm ]; then
+  link=$(readlink ${CLFS}/dev/shm)
+  umount -v ${CLFS}/$link
+  unset link
+else
+  umount -v ${CLFS}/dev/shm
+fi
+
 umount ${CLFS}/dev
 umount ${CLFS}/proc
 umount ${CLFS}/sys</userinput></screen>

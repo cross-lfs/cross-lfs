@@ -39,8 +39,7 @@
     </listitem>
 
     <listitem>
-      <para><emphasis role="strong">Coreutils-5.0</emphasis> (or Sh-Utils-2.0,
-      Textutils-2.0, and Fileutils-4.1)</para>
+      <para><emphasis role="strong">Coreutils-5.0</emphasis></para>
     </listitem>
 
     <listitem>
@@ -52,13 +51,13 @@
     </listitem>
 
     <listitem>
-      <para><emphasis role="strong">Gawk-3.0</emphasis></para>
+      <para><emphasis role="strong">Gawk-3.1.5</emphasis></para>
     </listitem>
 
     <listitem>
-      <para><emphasis role="strong">Gcc-2.95.3</emphasis> (Versions
-      greater than &gcc-version; are not recommended as they have not
-      been tested)</para>
+      <para><emphasis role="strong">GCC-4.1.2</emphasis> and the C++ compiler, 
+      <command>g++</command> (Versions greater than &gcc-version; are not
+      recommended as they have not been tested)</para>
     </listitem>
 
     <listitem>
@@ -76,11 +75,11 @@
     </listitem>
 
    <listitem>
-     <para><emphasis role="strong">Linux 2.6.22</emphasis></para>
+     <para><emphasis role="strong">Linux 2.6.32 (Built with GCC 4.1.2 or later)</emphasis></para>
    </listitem>
 
     <listitem>
-      <para><emphasis role="strong">Make-3.79.1</emphasis></para>
+      <para><emphasis role="strong">Make-3.80</emphasis></para>
     </listitem>
 
     <listitem>
@@ -96,16 +95,22 @@
     </listitem>
 
     <listitem>
-      <para><emphasis role="strong">Tar-1.14</emphasis></para>
+      <para><emphasis role="strong">Tar-1.22</emphasis></para>
     </listitem>
 
     <listitem>
       <para><emphasis role="strong">Texinfo-4.7</emphasis></para>
     </listitem>
 
+    <listitem>
+      <para><emphasis role="strong">XZ-Utils-4.999.8beta</emphasis></para>
+    </listitem>
+
   </itemizedlist>
 
-  <para>To see whether your host system has all the appropriate versions, run the following:</para>
+  <para>To see whether your host system has all the appropriate versions,
+  create and run the following script. Read the output carefully for any
+  errors, and make sure to install any packages that are reported as not found.</para>
 
 <screen role="nodump"><userinput>cat &gt; version-check.sh &lt;&lt; "EOF"
 <literal>#!/bin/bash
@@ -121,7 +126,8 @@ diff --version | head -n1
 find --version | head -n1
 gawk --version | head -n1
 gcc --version | head -n1
-/lib/libc.so.6 | head -n1 | cut -d" " -f1-7
+g++ --version | head -n1
+ldd $(which ${SHELL}) | grep libc.so | cut -d ' ' -f 3 | ${SHELL} | head -n 1 | cut -d ' ' -f 1-7
 grep --version | head -n1
 gzip --version | head -n1
 uname -s -r
@@ -130,10 +136,18 @@ tic -V
 patch --version | head -n1
 sed --version | head -n1
 tar --version | head -n1
-makeinfo --version | head -n1</literal>
-
+makeinfo --version | head -n1
+xz --version | head -n1
+echo 'main(){}' | gcc -v -o /dev/null -x c - > dummy.log 2>&amp;1
+if ! grep -q ' error' dummy.log; then
+  echo "Compilation successful" &amp;&amp; rm dummy.log
+else
+  echo 1>&amp;2  "Compilation FAILED - more development packages may need to be \
+installed. If you like, you can also view dummy.log for more details."
+fi</literal>
 EOF
 
-bash version-check.sh</userinput></screen>
+bash version-check.sh 2>errors.log &amp;&amp;
+[ -s errors.log ] &amp;&amp; echo -e "\nThe following packages could not be found:\n$(cat errors.log)"</userinput></screen>
 
 </sect1>

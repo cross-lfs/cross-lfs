@@ -90,7 +90,7 @@ EOF</userinput></screen>
 
 <screen os="g"><userinput>echo 'echo "32bit Version"' &gt; test-32
 echo 'echo "64bit Version"' &gt; test-64
-chmod 755 test-32 test-64
+chmod -v 755 test-32 test-64
 ln -sv /usr/bin/multiarch_wrapper test</userinput></screen>
 
     <para os="h">Test the wrapper:</para>
@@ -102,6 +102,10 @@ USE_ARCH=64 ./test</userinput></screen>
 
 <screen os="k" role="nodump"><userinput>32bit Version
 64bit Version</userinput></screen>
+
+    <para os="l">Remove the testcase source, binaries, and link:</para>
+
+<screen os="m"><userinput>rm -v multiarch_wrapper.c test{,-32,-64}</userinput></screen>
 
   </sect2>
 

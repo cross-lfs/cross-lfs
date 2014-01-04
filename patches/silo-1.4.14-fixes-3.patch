@@ -1,0 +1,1223 @@
+Submitted By: William Harrington <kb0iic at gmail dot com>
+Date: 2012-09-01
+Initial Package Version: 1.4.14
+Upstream Status: Unknown
+Origin: git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/davem/silo
+Description:  Fixes for current silo.1.4.14 not yet released.
+
+diff -Naur silo-1.4.14.orig/Rules.make silo-1.4.14/Rules.make
+--- silo-1.4.14.orig/Rules.make	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/Rules.make	2012-09-01 19:14:27.000000000 +0000
+@@ -1,4 +1,4 @@
+-VERSION=1.4.14
++VERSION=1.4.14_git20120901
+ IMGVERSION=0.99
+ SHELL=/bin/bash
+ RM=rm -f
+@@ -18,8 +18,8 @@
+ 		> /dev/null 2>&1; then echo "y"; else echo "n"; fi;)
+ 
+ CFLAGS = -Os -Wall -I. -I../include -fomit-frame-pointer \
+-	-fno-strict-aliasing -DSMALL_RELOC=$(SMALL_RELOC) \
+-	-DLARGE_RELOC=$(LARGE_RELOC)
++	-fno-strict-aliasing -U_FORTIFY_SOURCE \
++        -DSMALL_RELOC=$(SMALL_RELOC) -DLARGE_RELOC=$(LARGE_RELOC)
+ 
+ ifeq ($(call cc-option-yn, -fno-stack-protector),y)
+ CFLAGS += -fno-stack-protector
+diff -Naur silo-1.4.14.orig/common/.gitignore silo-1.4.14/common/.gitignore
+--- silo-1.4.14.orig/common/.gitignore	1970-01-01 00:00:00.000000000 +0000
++++ silo-1.4.14/common/.gitignore	2012-09-01 19:05:11.000000000 +0000
+@@ -0,0 +1,4 @@
++#
++# Generated files
++#
++bin2h
+diff -Naur silo-1.4.14.orig/common/divdi3.S silo-1.4.14/common/divdi3.S
+--- silo-1.4.14.orig/common/divdi3.S	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/common/divdi3.S	2012-09-01 19:06:01.000000000 +0000
+@@ -20,6 +20,8 @@
+ 	.data
+ 	.align 8
+ 	.globl	__clz_tab
++        .register %g2,#scratch
++        .register %g3,#scratch
+ __clz_tab:
+ 	.byte	0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5
+ 	.byte	6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6
+diff -Naur silo-1.4.14.orig/common/malloc.c silo-1.4.14/common/malloc.c
+--- silo-1.4.14.orig/common/malloc.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/common/malloc.c	2012-09-01 19:05:11.000000000 +0000
+@@ -18,6 +18,8 @@
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+    USA.  */
+ 
++#include <stringops.h>
++
+ #ifndef MALLOC_BASE
+ extern unsigned long _start;
+ static char *malloc_ptr = ((char *)&_start) + 0x30000;
+@@ -27,6 +29,12 @@
+ 
+ static char *last_alloc = 0;
+ 
++static char *align_ptr_to(char *ptr, unsigned long align)
++{
++    return (char *) ((((unsigned long) ptr) + (align - 1UL)) &
++		     ~(align - 1UL));
++}
++
+ void *malloc (int size)
+ {
+     char *caddr;
+@@ -34,10 +42,51 @@
+     caddr = malloc_ptr;
+     malloc_ptr += size;
+     last_alloc = caddr;
+-    malloc_ptr = (char *) ((((unsigned long) malloc_ptr) + 7) & (~7));
++    malloc_ptr = align_ptr_to(malloc_ptr, 8UL);
+     return caddr;
+ }
+ 
++void *calloc (int nmemb, int memb_size)
++{
++    char *ret;
++    int size;
++
++    if (!nmemb || !memb_size)
++        return (void *) 0;
++
++    size = nmemb * memb_size;
++    ret = malloc(size);
++
++    if (ret)
++        memset(ret, 0, size);
++
++    return ret;
++}
++
++int posix_memalign(void **memptr, unsigned long alignment, unsigned long size)
++{
++    char *caddr;
++
++    if (alignment & (alignment - 1UL))
++        return -1;
++    if (alignment & (sizeof(void *) - 1UL))
++        return -1;
++
++    if (size == 0) {
++      *memptr = (void *) 0;
++      return 0;
++    }
++
++    caddr = align_ptr_to(malloc_ptr, alignment);
++    malloc_ptr = (caddr + size);
++    last_alloc = caddr;
++    malloc_ptr = align_ptr_to(malloc_ptr, 8UL);
++
++    *memptr = caddr;
++
++    return 0;
++}
++
+ void free (void *m)
+ {
+     if (m == last_alloc)
+diff -Naur silo-1.4.14.orig/common/printf.c silo-1.4.14/common/printf.c
+--- silo-1.4.14.orig/common/printf.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/common/printf.c	2012-09-01 19:05:11.000000000 +0000
+@@ -21,6 +21,7 @@
+    USA.  */
+ 
+ #include "promlib.h"
++#include <stringops.h>
+ 
+ /*
+  * This part is rewritten by Igor Timkin <ivt@msu.su>. Than I
+@@ -147,3 +148,91 @@
+     vprintf (fmt, x1);
+     va_end (x1);
+ }
++
++static int sprintn (char *str, long long n, int b)
++{
++    static char prbuf[33];
++    register char *cp;
++    int count = 0;
++
++    if (b == 10 && n < 0) {
++	memset (str + count, '-', 1);
++	count++;
++	n = -n;
++    }
++    cp = prbuf;
++    do
++	*cp++ = "0123456789ABCDEF"[(unsigned int) (((unsigned long)n) % b)];
++    while ((n = ((unsigned long long)n) / b & 0x0FFFFFFFFFFFFFFFULL));
++    do {
++	memset (str + count, *--cp, 1);
++	count++;
++    } while (cp > prbuf);
++
++    return count;
++}
++
++int vsprintf (char *str, char *fmt, va_list adx)
++{
++    register int c;
++    char *s;
++    int count = 0;
++
++    for (;;) {
++	while ((c = *fmt++) != '%') {
++	    memset (str + count, c, 1);
++	    if (c == '\0') {
++		return count;
++	    }
++	}
++	c = *fmt++;
++	if (c == 'd' || c == 'o' || c == 'x' || c == 'X') {
++	    count += sprintn (str + count, (long long) va_arg (adx, unsigned),
++			     c == 'o' ? 8 : (c == 'd' ? 10 : 16));
++	} else if (c == 'c') {
++	    memset (str + count, va_arg (adx, unsigned), 1);
++	    count++;
++	} else if (c == 's') {
++	    if ((s = va_arg (adx, char *)) == NULL)
++		s = (char *)"(null)";
++	    while ((c = *s++)) {
++		memset (str + count, c, 1);
++		count++;
++	    }
++	} else if (c == 'l' || c == 'O') {
++	    count += sprintn (str + count, (long long) va_arg (adx, long), c == 'l' ? 10 : 8);
++	} else if (c == 'L') {
++	    int hex = 0;
++	    if (*fmt == 'x') {
++		fmt++;
++		hex = 1;
++	    }
++	    count += sprintn (str + count, (long long) va_arg (adx, long long), hex ? 16 : 10);
++	} else {
++	    /* This is basically what libc's printf does */
++	    memset (str + count, '%', 1);
++	    count++;
++	    memset (str + count, c, 1);
++	    count++;
++	}
++    }
++
++    return count;
++}
++
++/*
++ * Scaled down version of C Library sprintf.
++ * Only %c %s %d (==%u) %o %x %X %l %O are recognized.
++ */
++
++int sprintf (char *s, char *format, ...)
++{
++    va_list arg;
++    int done;
++
++    va_start (arg, format);
++    done = vsprintf (s, format, arg);
++    va_end (arg);
++
++    return done;
++}
+diff -Naur silo-1.4.14.orig/common/udivdi3.S silo-1.4.14/common/udivdi3.S
+--- silo-1.4.14.orig/common/udivdi3.S	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/common/udivdi3.S	2012-09-01 19:09:16.000000000 +0000
+@@ -20,6 +20,8 @@
+ 	.text
+ 	.align 4
+ 	.globl __udivdi3
++        .register %g2,#scratch
++        .register %g3,#scratch
+ __udivdi3:
+ 	save %sp,-104,%sp
+ 	mov %i3,%o3
+diff -Naur silo-1.4.14.orig/first/.gitignore silo-1.4.14/first/.gitignore
+--- silo-1.4.14.orig/first/.gitignore	1970-01-01 00:00:00.000000000 +0000
++++ silo-1.4.14/first/.gitignore	2012-09-01 19:05:11.000000000 +0000
+@@ -0,0 +1,16 @@
++#
++# Generated files
++#
++fd
++fd.b
++fd.h
++first
++first.b
++first.h
++generic
++generic.b
++generic.h
++ieee32.b
++ultra
++ultra.b
++ultra.h
+diff -Naur silo-1.4.14.orig/first-isofs/.gitignore silo-1.4.14/first-isofs/.gitignore
+--- silo-1.4.14.orig/first-isofs/.gitignore	1970-01-01 00:00:00.000000000 +0000
++++ silo-1.4.14/first-isofs/.gitignore	2012-09-01 19:05:11.000000000 +0000
+@@ -0,0 +1,5 @@
++#
++# Generated files
++#
++isofs
++isofs.b
+diff -Naur silo-1.4.14.orig/include/ext2fs/ext2fs.h silo-1.4.14/include/ext2fs/ext2fs.h
+--- silo-1.4.14.orig/include/ext2fs/ext2fs.h	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/include/ext2fs/ext2fs.h	2012-09-01 19:05:11.000000000 +0000
+@@ -39,7 +39,7 @@
+  */
+ #define EXT2_LIB_CURRENT_REV	0
+ 
+-#ifdef HAVE_SYS_TYPES_H
++#if defined(HAVE_SYS_TYPES_H)
+ #include <sys/types.h>
+ #endif
+ 
+diff -Naur silo-1.4.14.orig/include/silo.h silo-1.4.14/include/silo.h
+--- silo-1.4.14.orig/include/silo.h	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/include/silo.h	2012-09-01 19:05:11.000000000 +0000
+@@ -87,6 +87,8 @@
+ void silo_disk_close(void);
+ /* printf.c */
+ int vprintf (char *, va_list);
++int vsprintf (char *str, char *fmt, va_list adx);
++int sprintf (char *s, char *format, ...);
+ int putchar (int);
+ /* malloc.c */
+ void *malloc (int);
+@@ -123,6 +125,7 @@
+ int decompress (char *, char *, unsigned char (*)(void), void (*)(void));
+ /* main.c */
+ extern enum arch architecture;
++extern int sun4v_cpu;
+ /* timer.c */
+ int init_timer ();
+ void close_timer ();
+diff -Naur silo-1.4.14.orig/include/stringops.h silo-1.4.14/include/stringops.h
+--- silo-1.4.14.orig/include/stringops.h	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/include/stringops.h	2012-09-01 19:05:11.000000000 +0000
+@@ -2,14 +2,13 @@
+ #define __STRINGOPS_H
+ 
+ #include <silo.h>
++#include <stddef.h>
+ 
+ /* common */
+ #ifndef __SIZE_TYPE__
+ #define __SIZE_TYPE__ long unsigned int
+ #endif
+-#ifndef _LINUX_TYPES_H
+ typedef __SIZE_TYPE__ size_t;
+-#endif
+ 
+ /* stringops1.c */
+ char *strcpy(char *, const char *);
+diff -Naur silo-1.4.14.orig/second/.gitignore silo-1.4.14/second/.gitignore
+--- silo-1.4.14.orig/second/.gitignore	1970-01-01 00:00:00.000000000 +0000
++++ silo-1.4.14/second/.gitignore	2012-09-01 19:05:11.000000000 +0000
+@@ -0,0 +1,12 @@
++#
++# Generated files
++#
++second
++second.b
++second.b2
++second2
++silotftp
++silotftp.b
++silotftp.b2
++silotftp2
++util
+diff -Naur silo-1.4.14.orig/second/Makefile silo-1.4.14/second/Makefile
+--- silo-1.4.14.orig/second/Makefile	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/Makefile	2012-09-01 19:05:11.000000000 +0000
+@@ -58,13 +58,13 @@
+ 	$(AR) rc $@ $(FS_OBJS)
+ 
+ second: $(OBJS) mark.o
+-	$(LD) $(LDFLAGS_SMALL) -Bstatic -o second $(OBJS) -lext2fs mark.o
+-	$(LD) $(LDFLAGS_LARGE) -Bstatic -o second2 $(OBJS) -lext2fs mark.o
++	$(LD) $(LDFLAGS_SMALL) -Bstatic -o second $(OBJS) mark.o `$(CC) -print-libgcc-file-name`
++	$(LD) $(LDFLAGS_LARGE) -Bstatic -o second2 $(OBJS) mark.o `$(CC) -print-libgcc-file-name`
+ 	$(NM) second | grep -v '*ABS*' | sort > second.map
+ 
+ silotftp: $(OBJSNET) mark.o
+-	$(LD) $(LDFLAGS_SMALL) -Bstatic -o silotftp $(OBJSNET) -lext2fs mark.o
+-	$(LD) $(LDFLAGS_LARGE) -Bstatic -o silotftp2 $(OBJSNET) -lext2fs mark.o
++	$(LD) $(LDFLAGS_SMALL) -Bstatic -o silotftp $(OBJSNET) mark.o `$(CC) -print-libgcc-file-name`
++	$(LD) $(LDFLAGS_LARGE) -Bstatic -o silotftp2 $(OBJSNET) mark.o `$(CC) -print-libgcc-file-name`
+ 	$(NM) silotftp | grep -v '*ABS*' | sort > silotftp.map
+ 
+ second.l: second
+diff -Naur silo-1.4.14.orig/second/file.c silo-1.4.14/second/file.c
+--- silo-1.4.14.orig/second/file.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/file.c	2012-09-01 19:05:11.000000000 +0000
+@@ -19,6 +19,7 @@
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+    USA.  */
+ 
++#include <sys/types.h>
+ #include <silo.h>
+ #include <file.h>
+ #include <stringops.h>
+diff -Naur silo-1.4.14.orig/second/fs/ext2.c silo-1.4.14/second/fs/ext2.c
+--- silo-1.4.14.orig/second/fs/ext2.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/fs/ext2.c	2012-09-01 19:05:11.000000000 +0000
+@@ -3,6 +3,7 @@
+    Copyright (C) 1996 Maurizio Plaza
+    		 1996,1997,1999 Jakub Jelinek
+ 		 2001 Ben Collins
++		 2012 David S. Miller
+    
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+@@ -27,118 +28,654 @@
+ static ino_t inode = 0;
+ struct fs_ops ext2_fs_ops;
+ 
+-void com_err (const char *a, long i, const char *fmt,...)
++#define EXT2_SUPER_MAGIC	0xEF53
++
++static __u32 ext2_to_cpu_32(__u32 v)
+ {
+-    printf ((char *) fmt);
++	const __u8 *p = (const __u8 *) &v;
++
++	return ((__u32)p[3] << 24 |
++		(__u32)p[2] << 16 |
++		(__u32)p[1] <<  8 |
++		(__u32)p[0]);
+ }
+ 
+-static void ext2fs_error (int errcode)
++static __u16 ext2_to_cpu_16(__u16 v)
+ {
+-#if 0
+-    int i;
+-    for (i = 0; i < sizeof (ext2errors) / sizeof (ext2errors[0]); i++)
+-    	if (ext2errors[i].errnum == errcode) {
+-    	    printf ("%s", ext2errors [i].desc);
+-    	    return;
+-    	}
+-#endif
+-    printf ("Unknown ext2 error: %d", errcode);
++	const __u8 *p = (const __u8 *) &v;
++
++	return ((__u16)p[1] << 8) | ((__u16)p[0]);
+ }
+ 
+-static int open_ext2 (char *device)
++struct silo_ext2_state {
++	struct ext2_super_block	*super;
++
++	void			*scratch_block[4];
++	__u32			scratch_block_blk[4];
++
++	__u32			inode_size;
++	__u32			block_size;
++	__u32			addr_per_block;
++	__u32			addr_per_block_bits;
++	__u32			desc_per_block;
++	__u32			desc_per_block_bits;
++};
++static struct silo_ext2_state *sstate;
++
++static __u32 ext2_inode_size(struct silo_ext2_state *s)
+ {
+-    int retval;
++	__u32 rev = ext2_to_cpu_32(s->super->s_rev_level);
+ 
+-    retval = ext2fs_open (device, EXT2_FLAG_DIRTY, 0, 0, silo_io_manager, &fs);
+-    if (retval == EXT2_ET_BAD_MAGIC)
+-        return 0;
+-    if (retval) {
+-        printf ("\n");
+-        ext2fs_error (retval);
+-        printf ("\n");
+-	return 0;
+-    }
+-    root = EXT2_ROOT_INO;
+-    return 1;
++	if (rev == 0)
++		return 128;
++
++	return ext2_to_cpu_16(s->super->s_inode_size);
+ }
+ 
+-static int dump_block_ext2 (ext2_filsys fs, blk_t *blocknr,
+-			    int blockcnt, void *private)
++static __u32 ext2_block_size(struct silo_ext2_state *s)
+ {
+-    return dump_block(blocknr, blockcnt);
++	__u32 x = ext2_to_cpu_32(s->super->s_log_block_size);
++
++	x += 1;
++
++	return ((__u32) 1 << x) * 512;
+ }
+ 
+-static int dump_ext2 (void)
++static void read_scratch_block(struct silo_ext2_state *s, __u32 block, int N)
+ {
+-    if (ext2fs_block_iterate (fs, inode, 0, 0, dump_block_ext2, 0))
++	if (s->scratch_block_blk[N] == block)
++		return;
++	io_channel_read_blk(fs->io, block, 1, s->scratch_block[N]);
++	s->scratch_block_blk[N] = block;
++}
++
++static void read_data(struct silo_ext2_state *s, __u32 block, __u32 off, __u32 len, void *buf)
++{
++	read_scratch_block(s, block, 0);
++	memcpy(buf, s->scratch_block[0] + off, len);
++}
++
++static int has_extents(struct ext2_inode *ip)
++{
++	if (ext2_to_cpu_32(ip->i_flags) & 0x80000)
++		return 1;
+ 	return 0;
++}
++
++#define EXT4_EXT_MAGIC		0xf30a
++
++struct ext4_extent_header {
++	__u16	eh_magic;
++	__u16	eh_entries;
++	__u16	eh_max;
++	__u16	eh_depth;
++	__u32	eh_generation;
++};
++
++struct ext4_extent_idx {
++	__u32	ei_block;
++	__u32	ei_leaf_lo;
++	__u16	ei_leaf_hi;
++	__u16	ei_unused;
++};
++
++struct ext4_extent {
++	__u32	ee_block;
++	__u16	ee_len;
++	__u16	ee_start_hi;
++	__u32	ee_start_lo;
++};
++
++static struct ext4_extent_header *search_leaf(struct silo_ext2_state *s,
++					      struct ext2_inode *ip,
++					      unsigned long long file_block)
++{
++	struct ext4_extent_header *ehp;
++
++	ehp = (struct ext4_extent_header *) &ip->i_block[0];
++	for (;;) {
++		unsigned long long ext_block, hi, lo;
++		struct ext4_extent_idx *idxp;
++		int i;
++
++		idxp = (struct ext4_extent_idx *) (ehp + 1);
++
++		if (ext2_to_cpu_16(ehp->eh_magic) != EXT4_EXT_MAGIC)
++			return (struct ext4_extent_header *) 0;
++
++		if (ehp->eh_depth == ext2_to_cpu_16(0))
++			return ehp;
++
++		for (i = 0; i < ext2_to_cpu_16(ehp->eh_entries); i++, idxp++)
++			if (file_block < ext2_to_cpu_32(idxp->ei_block))
++				break;
++
++		if (i == 0)
++			return (struct ext4_extent_header *) 0;
++
++		idxp -= 1;
++
++		hi = ((unsigned long long)ext2_to_cpu_16(idxp->ei_leaf_hi)) << 32;
++		lo = ext2_to_cpu_32(idxp->ei_leaf_lo);
++		ext_block = hi | lo;
++
++		read_scratch_block(s, ext_block, 0);
++		ehp = (struct ext4_extent_header *) s->scratch_block[0];
++	}
++}
++
++#define BLOCK_MAP_ERROR (~0ULL)
++
++static int block_to_path(struct silo_ext2_state *s, struct ext2_inode *ip,
++			 int offsets[4], long file_block)
++{
++	int ptrs_bits = s->addr_per_block_bits;
++	int ptrs = s->addr_per_block;
++	const long direct_blocks = EXT2_NDIR_BLOCKS,
++		indirect_blocks = ptrs,
++		double_blocks = (1 << (ptrs_bits * 2));
++	int n = 0;
++
++	if (file_block < 0) {
++		printf("EXT2: Illegal file block %ld\n", file_block);
++	} else if (file_block < direct_blocks) {
++		offsets[n++] = file_block;
++	} else if ((file_block -= direct_blocks) < indirect_blocks) {
++		offsets[n++] = EXT2_IND_BLOCK;
++		offsets[n++] = file_block;
++	} else if ((file_block -= indirect_blocks) < double_blocks) {
++		offsets[n++] = EXT2_DIND_BLOCK;
++		offsets[n++] = file_block >> ptrs_bits;
++		offsets[n++] = file_block & (ptrs - 1);
++	} else if (((file_block -= double_blocks) >> (ptrs_bits * 2)) < ptrs) {
++		offsets[n++] = EXT2_TIND_BLOCK;
++		offsets[n++] = file_block >> (ptrs_bits * 2);
++		offsets[n++] = (file_block >> ptrs_bits) & (ptrs - 1);
++		offsets[n++] = file_block & (ptrs - 1);
++	} else {
++		printf("EXT2: File block %ld is too big\n", file_block);
++	}
++
++	return n;
++}
++
++static unsigned long long resolve_path(struct silo_ext2_state *s,
++				       struct ext2_inode *ip,
++				       int *offsets, int depth)
++{
++	__u32 *p = ip->i_block + *offsets;
++
++	while (--depth) {
++		__u32 block = ext2_to_cpu_32(*p);
++
++		read_scratch_block(s, block, depth);
++		p = (__u32 *) s->scratch_block[depth] + *++offsets;
++	}
++
++	return ext2_to_cpu_32(*p);
++}
++
++static unsigned long long resolve_extent(struct silo_ext2_state *s,
++					 struct ext4_extent_header *ehp,
++					 unsigned long long file_block)
++{
++	unsigned long long hi, lo;
++	struct ext4_extent *ep;
++	int i;
++
++	ep = (struct ext4_extent *) (ehp + 1);
++
++	for (i = 0; i < ext2_to_cpu_16(ehp->eh_entries); i++, ep++)
++		if (file_block < ext2_to_cpu_32(ep->ee_block))
++			break;
++
++	if (i == 0)
++		return BLOCK_MAP_ERROR;
++
++	ep -= 1;
++	file_block -= ext2_to_cpu_32(ep->ee_block);
++	if (file_block >= ext2_to_cpu_16(ep->ee_len))
++		return BLOCK_MAP_ERROR;
+ 
+-    return dump_finish ();
++	hi = ((unsigned long long)ext2_to_cpu_16(ep->ee_start_hi)) << 32;
++	lo = ext2_to_cpu_32(ep->ee_start_lo);
++
++	return (hi | lo) + file_block;
+ }
+ 
+-static int ls_ext2_proc(struct ext2_dir_entry *dirent, int offset,
+-			int blocksize, char *buf, void *private)
++static unsigned long long file_to_disk_block(struct silo_ext2_state *s,
++					     struct ext2_inode *ip,
++					     unsigned long long file_block)
+ {
+-    struct ext2_inode ino;
+-    int sl = 0, name_len = dirent->name_len & 0xFF;
+-    char name[256], symlink[256];
++	if (has_extents(ip)) {
++		struct ext4_extent_header *ehp = search_leaf(s, ip, file_block);
+ 
+-    strncpy(name, dirent->name, name_len);
+-    name[name_len] = 0;
++		if (ehp)
++			return resolve_extent(s, ehp, file_block);
+ 
+-    if (ext2fs_read_inode(fs, dirent->inode, &ino))
+-	strcpy (name, "--- error ---");
++		printf("EXT2: Extent leaf search for block %d failed\n",
++		       (int) file_block);
+ 
+-    if (LINUX_S_ISLNK (ino.i_mode)) {
+-	sl = 1;
+-	if (ext2fs_inode_data_blocks(fs, &ino)) {
+-	    if (io_channel_read_blk(fs->io, ino.i_block[0], 1, symlink))
+-		ino.i_size = 0;
++		return BLOCK_MAP_ERROR;
+ 	} else {
+-	    strncpy (symlink, (char *)&(ino.i_block[0]),ino.i_size);
++		int depth, offsets[4];
++
++		depth = block_to_path(s, ip, offsets, file_block);
++		if (depth)
++			return resolve_path(s, ip, offsets, depth);
++
++		printf("EXT2: block --> path on block %d failed\n",
++		       (int) file_block);
++
++		return BLOCK_MAP_ERROR;
++	}
++}
++
++static void read_file(struct silo_ext2_state *s, struct ext2_inode *ip,
++		      __u32 off, __u32 len, void *buf)
++{
++	unsigned long long disk_block;
++
++	disk_block = file_to_disk_block(s, ip, off / s->block_size);
++
++	read_scratch_block(s, disk_block, 0);
++	memcpy(buf, s->scratch_block[0] + (off % s->block_size), len);
++}
++
++static void read_group(struct silo_ext2_state *s, __u32 grp_no,
++		       struct ext2_group_desc *grp)
++{
++	__u32 first = ext2_to_cpu_32(s->super->s_first_data_block);
++	__u32 blk, offset;
++
++	blk = first + 1 + (grp_no >> s->desc_per_block_bits);
++	offset = (grp_no & (s->desc_per_block - 1)) * sizeof(*grp);
++
++	read_data(s, blk, offset, sizeof(*grp), grp);
++}
++
++static void read_inode(struct silo_ext2_state *s, __u32 ino, struct ext2_inode *ip)
++{
++	__u32 grp_no, blk_no, inode_in_block, ipg, ipb;
++	struct ext2_super_block *sb = s->super;
++	struct ext2_group_desc gd;
++
++	ipg = ext2_to_cpu_32(sb->s_inodes_per_group);
++
++	grp_no = (ino - 1) / ipg;
++	read_group(s, grp_no, &gd);
++
++	blk_no = (ino - 1) % ipg;
++	inode_in_block = blk_no;
++
++	ipb = s->block_size / s->inode_size;
++	blk_no /= ipb;
++	inode_in_block %= ipb;
++
++	read_data(s,
++		  ext2_to_cpu_32(gd.bg_inode_table) + blk_no,
++		  inode_in_block * s->inode_size,
++		  sizeof(struct ext2_inode), ip);
++}
++
++static int calc_ilog2(__u32 n)
++{
++	int i = 0;
++
++	while ((n >>= 1) != 0)
++		i++;
++
++	return i;
++}
++
++static int open_ext2(char *device)
++{
++	struct silo_ext2_state *s = malloc(sizeof(*s));
++	struct ext2_super_block *sb;
++	int err, i;
++
++	if (!s) {
++		printf("Cannot allocate silo_ext2_state\n");
++		return 0;
++	}
++	memset(s, 0, sizeof(*s));
++
++	fs = malloc(sizeof(*fs));
++	if (!fs) {
++		printf("Cannot allocate ext2_filsys\n");
++		goto out_free_s;
++	}
++	memset(fs, 0, sizeof(*fs));
++	err = silo_io_manager->open(device, 0, &fs->io);
++	if (err) {
++		printf("I/O manager open failed (err=%d)\n", err);
++		goto out_free_fs;
++	}
++	fs->io->app_data = fs;
++
++	sb = s->super = malloc(1024);
++	if (!sb) {
++		printf("Cannot allocate ext2 super block\n");
++		goto out_free_fs;
++	}
++
++	io_channel_set_blksize(fs->io, 1024);
++	err = io_channel_read_blk(fs->io, 1, -1024, sb);
++
++	if (ext2_to_cpu_16(sb->s_magic) != EXT2_SUPER_MAGIC) {
++		printf("EXT2 superblock magic is wrong\n");
++		goto out_free_super;
++	}
++
++	s->inode_size = ext2_inode_size(s);
++	s->block_size = ext2_block_size(s);
++
++	io_channel_set_blksize(fs->io, s->block_size);
++
++	s->addr_per_block = s->block_size / sizeof(__u32);
++	s->addr_per_block_bits = calc_ilog2(s->addr_per_block);
++	s->desc_per_block = s->block_size / sizeof(struct ext2_group_desc);
++	s->desc_per_block_bits = calc_ilog2(s->desc_per_block);
++
++	s->scratch_block[0] = malloc(s->block_size * 4);
++	if (!s->scratch_block[0]) {
++		printf("Cannot allocate ext2 scratch blocks\n");
++		goto out_free_super;
++	}
++	for (i = 1; i < 4; i++)
++		s->scratch_block[i] =
++			s->scratch_block[i - 1] + s->block_size;
++	for (i = 0; i < 4; i++)
++		s->scratch_block_blk[i] = ~(__u32)0;
++
++	root = EXT2_ROOT_INO;
++
++	sstate = s;
++
++	return 1;
++
++out_free_super:
++	free(s->super);
++
++out_free_fs:
++	free(fs);
++	fs = NULL;
++
++out_free_s:
++	free(s);
++	return 0;
++}
++
++void close_ext2 (void)
++{
++	struct silo_ext2_state *s = sstate;
++
++	if (s) {
++		free(s->scratch_block[0]);
++		free(s->super);
++		free(s);
++
++		sstate = (struct silo_ext2_state *) 0;
+ 	}
+-	symlink[ino.i_size] = 0;
+-    }
++}
++
++static int dump_ext2 (void)
++{
++	struct silo_ext2_state *s = sstate;
++	struct ext2_inode ei;
++	long file_offset;
++	int sz, blk_sz;
++	int blk_cnt;
++
++	read_inode(s, inode, &ei);
++
++	sz = ext2_to_cpu_32(ei.i_size);
++	blk_sz = s->block_size;
++
++	blk_cnt = 0;
++	for (file_offset = 0; file_offset < sz; file_offset += blk_sz) {
++		blk_t disk_block;
++
++		disk_block = file_to_disk_block(s, &ei,
++						file_offset / blk_sz);
++		if (disk_block == BLOCK_MAP_ERROR)
++			return 0;
++
++		if (disk_block)
++			dump_block(&disk_block, blk_cnt);
++
++		blk_cnt++;
++	}
++
++	return dump_finish ();
++}
++
++static char *read_symlink(struct silo_ext2_state *s, struct ext2_inode *ip, char *namebuf)
++{
++	__u32 isize = ext2_to_cpu_32(ip->i_size);
++
++	if (isize <= 60)
++		return (char *) &ip->i_block[0];
++
++	read_data(s, ext2_to_cpu_32(ip->i_block[0]), 0, isize, namebuf);
++
++	return namebuf;
++}
++
++static int is_symlink(__u16 mode)
++{
++	if ((mode & 0xf000) == 0xa000)
++		return 1;
++	return 0;
++}
++
++typedef int (*dir_callback_t)(struct silo_ext2_state *, struct ext2_dir_entry_2 *, void *);
++
++static int ls_callback(struct silo_ext2_state *s, struct ext2_dir_entry_2 *dirent, void *priv_data)
++{
++	struct ext2_inode e_ino;
++	char *sym = (char *) 0;
++	char symlink_buf[256];
++
++	read_inode(s, ext2_to_cpu_32(dirent->inode), &e_ino);
++
++	if (is_symlink(ext2_to_cpu_16(e_ino.i_mode)))
++		sym = read_symlink(s, &e_ino, symlink_buf);
++
++	register_silo_inode(ext2_to_cpu_32(e_ino.i_mtime),
++			    ext2_to_cpu_32(e_ino.i_size),
++			    ext2_to_cpu_16(e_ino.i_mode),
++			    ext2_to_cpu_16(e_ino.i_uid),
++			    ext2_to_cpu_16(e_ino.i_gid),
++			    dirent->name, sym);
++	return 0;
++}
++
++static void iterate_dir(struct silo_ext2_state *s, __u32 ino, dir_callback_t cb, void *cb_arg)
++{
++	struct ext2_dir_entry_2 e;
++	struct ext2_inode ei;
++	__u32 off, size;
+ 
+-    register_silo_inode(ino.i_mtime, ino.i_size, ino.i_mode, ino.i_uid,
+-			ino.i_gid, name, sl ? symlink : NULL);
++	read_inode(s, ino, &ei);
++	size = ext2_to_cpu_32(ei.i_size);
+ 
+-    return 0;
++	for (off = 0; off < size; ) {
++		read_file(s, &ei, off, 8, &e);
++
++		if (ext2_to_cpu_16(e.rec_len) == 0)
++			break;
++
++		if (ext2_to_cpu_32(e.inode) == 0 ||
++		    e.name_len == 0) {
++			off += ext2_to_cpu_16(e.rec_len);
++			continue;
++		}
++
++		read_file(s, &ei, off + 8, e.name_len, &e.name[0]);
++		e.name[e.name_len] = 0;
++
++		if (cb(s, &e, cb_arg))
++			break;
++
++		off += ext2_to_cpu_16(e.rec_len);
++	}
+ }
+ 
+ static int ls_ext2 (void)
+ {
+-    return ext2fs_dir_iterate (fs, inode, DIRENT_FLAG_INCLUDE_EMPTY,
+-				 0, ls_ext2_proc, NULL);
++	struct silo_ext2_state *s = sstate;
++
++	iterate_dir(s, inode, ls_callback, 0);
++
++	return 0;
++}
++
++static int ino_size_ext2 (void)
++{
++	struct silo_ext2_state *s = sstate;
++	struct ext2_inode ei = { };
++
++	read_inode(s, inode, &ei);
++
++	return ext2_to_cpu_32(ei.i_size);
++}
++
++struct namei_cb_arg {
++	const char	*name;
++	int		len;
++	ino_t		*ino;
++	int		found;
++};
++
++static int lookup_cb(struct silo_ext2_state *s, struct ext2_dir_entry_2 *dirent, void *priv_data)
++{
++	struct namei_cb_arg *p = priv_data;
++
++	if (p->len != dirent->name_len)
++		return 0;
++	if (strncmp(p->name, dirent->name, p->len))
++		return 0;
++	p->found = 1;
++	*p->ino = ext2_to_cpu_32(dirent->inode);
++	return 1;
+ }
+ 
+-static int ino_size_ext2 (void) {
+-    struct ext2_inode ei;
+-    int retval;
++static int do_lookup(struct silo_ext2_state *s, __u32 dir_ino, const char *name,
++		     int namelen, ino_t *ret_ino)
++{
++	struct namei_cb_arg arg;
++
++	arg.name = name;
++	arg.len = namelen;
++	arg.ino = ret_ino;
++	arg.found = 0;
++
++	iterate_dir(s, dir_ino, lookup_cb, &arg);
+ 
+-    if ((retval = ext2fs_read_inode (fs, inode, &ei))) {
+-	printf ("\n");
+-	ext2fs_error (retval);
+-	printf ("\n");
++	return arg.found ? 0 : -1;
++}
++
++static int open_namei(struct silo_ext2_state *s, const char *name,
++		      int namelen, ino_t root, ino_t base, ino_t *ret_ino);
++
++static int follow_link(struct silo_ext2_state *s, ino_t root, ino_t dir,
++		       ino_t inode, ino_t *res_inode)
++{
++	struct ext2_inode ei = { };
++	char symlink_buf[256];
++	char *sym;
++
++	read_inode(s, inode, &ei);
++	if (!is_symlink(ext2_to_cpu_16(ei.i_mode))) {
++		*res_inode = inode;
++		return 0;
++	}
++	sym = read_symlink(s, &ei, symlink_buf);
++	return open_namei(s, sym, ext2_to_cpu_32(ei.i_size), root, dir, res_inode);
++}
++
++static int dir_namei(struct silo_ext2_state *s, ino_t root, ino_t dir,
++		     const char *pathname, int pathlen,
++		     const char **name, int *namelen,
++		     ino_t *res_inode)
++{
++	const char *thisname;
++	int len, retval;
++	ino_t inode;
++	char c;
++
++	if ((c = *pathname) == '/') {
++		dir = root;
++		pathname++;
++		pathlen--;
++	}
++	while (1) {
++		thisname = pathname;
++		for (len = 0; --pathlen >= 0; len++) {
++			c = *pathname++;
++			if (c == '/')
++				break;
++		}
++		if (pathlen < 0)
++			break;
++		retval = do_lookup(s, dir, thisname, len, &inode);
++		if (retval)
++			return retval;
++		retval = follow_link(s, root, dir, inode, &dir);
++		if (retval)
++			return retval;
++	}
++	*name = thisname;
++	*namelen = len;
++	*res_inode = dir;
+ 	return 0;
+-    }
+-    return ei.i_size;
+ }
+ 
+-static int namei_follow_ext2 (const char *filename) {
+-    int ret = ext2fs_namei_follow (fs, root, root, filename, &inode);
++static int open_namei(struct silo_ext2_state *s, const char *name,
++		      int namelen, ino_t root, ino_t base, ino_t *ret_ino)
++{
++	const char *base_name;
++	ino_t dir_ino, inode;
++	int ret;
++
++	ret = dir_namei(s, root, base, name, namelen,
++			&base_name, &namelen, &dir_ino);
++	if (ret)
++		return ret;
++
++	if (!namelen) {
++		*ret_ino = dir_ino;
++		return 0;
++	}
+ 
+-    ext2_fs_ops.have_inode = (inode) ? 1 : 0;
++	ret = do_lookup(s, dir_ino, base_name, namelen, &inode);
++	if (ret)
++		return ret;
++
++	ret = follow_link(s, root, dir_ino, inode, &inode);
++	if (ret)
++		return ret;
+ 
+-    return ret;
++	*ret_ino = inode;
++	return 0;
+ }
+ 
+-static void print_error_ext2 (int error_val) {
+-    ext2fs_error (error_val);
++static int namei_follow_ext2 (const char *filename)
++{
++	int ret;
++
++	ret = open_namei(sstate, filename, strlen(filename),
++			 root, root, &inode);
++
++	ext2_fs_ops.have_inode = inode ? 1 : 0;
++
++	return ret;
+ }
+ 
+-void close_ext2 (void) {
+-    ext2fs_close(fs);
++static void print_error_ext2 (int error_val)
++{
++	printf("error: %d", error_val);
+ }
+ 
+ struct fs_ops ext2_fs_ops = {
+@@ -152,14 +689,3 @@
+     .namei_follow	= namei_follow_ext2,
+     .have_inode		= 0,
+ };
+-
+-/* These are silly stubs to satisfy libext2fs symbols */
+-unsigned long time(void)
+-{
+-        return 0;
+-}
+-
+-void *realloc(void *p, int size)
+-{
+-        return NULL;
+-}
+diff -Naur silo-1.4.14.orig/second/ls.c silo-1.4.14/second/ls.c
+--- silo-1.4.14.orig/second/ls.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/ls.c	2012-09-01 19:05:11.000000000 +0000
+@@ -18,6 +18,7 @@
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+    USA.  */
+ 
++#include <sys/types.h>
+ #include <silo.h>
+ #include <stringops.h>
+ 
+diff -Naur silo-1.4.14.orig/second/main.c silo-1.4.14/second/main.c
+--- silo-1.4.14.orig/second/main.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/main.c	2012-09-01 19:05:11.000000000 +0000
+@@ -25,8 +25,7 @@
+ /* TODO: This file is a good candidate for rewrite from scratch.  */
+ 
+ #include <silo.h>
+-#include <asm/page.h>
+-#include <linux/elf.h>
++#include <elf.h>
+ #include <stringops.h>
+ 
+ #ifndef NULL
+@@ -65,6 +64,7 @@
+     CMD_LS
+ } load_cmd;
+ enum arch architecture;
++int sun4v_cpu;
+ static int timer_status = 0;
+ static char *initrd_start;
+ static int initrd_size;
+diff -Naur silo-1.4.14.orig/second/misc.c silo-1.4.14/second/misc.c
+--- silo-1.4.14.orig/second/misc.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/misc.c	2012-09-01 19:05:11.000000000 +0000
+@@ -501,7 +501,7 @@
+         if ((i = prom_searchsiblings(i, "MicroSPARC-IIep")) != 0) {
+             return sun4p;
+         }
+-        return sun4u;
++	buffer[4] = 'u';
+     }
+     i = prom_getproperty (prom_root_node, "compatability", buffer, 8);
+ 
+@@ -517,8 +517,10 @@
+ 	return sun4d;
+     case 'e':
+ 	return sun4e;
+-    case 'u':
+     case 'v':
++	sun4v_cpu = 1;
++	/* FALLTHRU */
++    case 'u':
+ 	return sun4u;
+     default:
+     	for(i = 0; i < NUM_SUN_MACHINES; i++)
+diff -Naur silo-1.4.14.orig/second/muldi3.S silo-1.4.14/second/muldi3.S
+--- silo-1.4.14.orig/second/muldi3.S	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/muldi3.S	2012-09-01 19:11:45.000000000 +0000
+@@ -20,6 +20,8 @@
+ 	.text
+ 	.align 4
+ 	.globl __muldi3
++        .register %g2,#scratch
++        .register %g3,#scratch
+ __muldi3:
+ 	save  %sp, -104, %sp
+ 	wr  %g0, %i1, %y
+diff -Naur silo-1.4.14.orig/second/timer.c silo-1.4.14/second/timer.c
+--- silo-1.4.14.orig/second/timer.c	2008-06-12 16:39:12.000000000 +0000
++++ silo-1.4.14/second/timer.c	2012-09-01 19:05:11.000000000 +0000
+@@ -156,7 +156,7 @@
+     }
+     if (!foundcpu || !clock_frequency)
+         clock_frequency = prom_getint(prom_root_node, "clock-frequency") / 100;
+-    if (notimer) {
++    if (notimer && !sun4v_cpu) {
+         sun4u_notimer = 1;
+         __asm__ __volatile__ ("\t"
+         	"rd	%%tick_cmpr, %%g1\n\t"
+diff -Naur silo-1.4.14.orig/silo/.gitignore silo-1.4.14/silo/.gitignore
+--- silo-1.4.14.orig/silo/.gitignore	1970-01-01 00:00:00.000000000 +0000
++++ silo-1.4.14/silo/.gitignore	2012-09-01 19:05:11.000000000 +0000
+@@ -0,0 +1,6 @@
++#
++# Generated files
++#
++floppy.h
++silo
++silocheck
+diff -Naur silo-1.4.14.orig/tilo/.gitignore silo-1.4.14/tilo/.gitignore
+--- silo-1.4.14.orig/tilo/.gitignore	1970-01-01 00:00:00.000000000 +0000
++++ silo-1.4.14/tilo/.gitignore	2012-09-01 19:05:11.000000000 +0000
+@@ -0,0 +1,10 @@
++#
++# Generated files
++#
++b.h
++b.out
++b2.h
++b2.out
++boot
++boot2
++maketilo

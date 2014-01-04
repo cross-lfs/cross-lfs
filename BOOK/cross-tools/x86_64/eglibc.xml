@@ -27,12 +27,12 @@
     xpointer="xpointer(//*[@os='da'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='db'])"/>
+    href="../../final-system/common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/eglibc.xml"
-    xpointer="xpointer(//*[@os='dc'])"/>
+    href="../../final-system/common/eglibc.xml"
+    xpointer="xpointer(//*[@os='s2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eglibc.xml"
@@ -56,13 +56,12 @@
 
 <screen os="df"><userinput>BUILD_CC="gcc" CC="${CLFS_TARGET}-gcc ${BUILD32}" \
     AR="${CLFS_TARGET}-ar" RANLIB="${CLFS_TARGET}-ranlib" \
-    CFLAGS="-march=$(cut -d- -f1 &lt;&lt;&lt; $CLFS_TARGET32) -mtune=generic -g -O2" \
+    CFLAGS="-march=$(cut -d- -f1 &lt;&lt;&lt; $CLFS_TARGET32) -O2" \
     ../eglibc-&eglibc-version;/configure --prefix=/tools \
     --host=${CLFS_TARGET32} --build=${CLFS_HOST} \
-    --disable-profile --enable-add-ons \
-    --with-tls --enable-kernel=2.6.0 --with-__thread \
+    --disable-profile --with-tls --enable-kernel=2.6.32 --with-__thread \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
-    --cache-file=config.cache</userinput></screen>
+    --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
@@ -85,7 +84,7 @@
 
      <varlistentry os="ea2">
         <term><parameter>CFLAGS="-march=$(cut -d- -f1 &lt;&lt;&lt;
-        $CLFS_TARGET32) -mtune=generic -g -O2"</parameter></term>
+        $CLFS_TARGET32) -O2"</parameter></term>
         <listitem>
           <para>Forces EGLIBC to optimize for our target system.</para>
         </listitem>
@@ -114,6 +113,10 @@
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../common/eglibc.xml"
       xpointer="xpointer(//*[@os='dg10'])"/>
+
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../common/eglibc.xml"
+      xpointer="xpointer(//*[@os='dg11'])"/>
 
     </variablelist>
 
