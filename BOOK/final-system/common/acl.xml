@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-system-acl" role="wrap">
+  <?dbhtml filename="acl.html"?>
+
+  <title>ACL-&acl-version;</title>
+
+  <indexterm zone="ch-system-acl">
+    <primary sortas="a-ACL">ACL</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>ACL is a library for getting and setting POSIX Access Control Lists.</para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of ACL</title>
+
+    <para os="a">Prepare ACL for compilation:</para>
+
+<screen os="b"><userinput>./configure --prefix=/usr \
+    --libdir=/lib --libexecdir=/usr/lib</userinput></screen>
+
+    <para os="c">Compile the package:</para>
+
+<screen os="d"><userinput>make</userinput></screen>
+
+    <para os="e">This package does not come with a test suite.</para>
+
+    <para os="f">Install the package:</para>
+
+<screen os="g"><userinput>make install install-dev install-lib</userinput></screen>
+
+    <para os="h">Remove extra symlinks:</para>
+
+<screen os="i"><userinput>rm -v /lib/libacl.{,l}a</userinput></screen>
+
+    <para os="j">Set the proper permissions on the library:</para>
+
+<screen os="k"><userinput>chmod 755 -v /lib/libacl.so.1.1.0</userinput></screen>
+
+  </sect2>
+
+  <sect2 id="contents-acl" role="content">
+    <title>Contents of ACL</title>
+
+    <segmentedlist>
+      <segtitle>Installed programs</segtitle>
+      <segtitle>Installed libraries</segtitle>
+      <segtitle>Installed directories</segtitle>
+
+      <seglistitem>
+        <seg>chacl, getfacl, setfacl</seg>
+        <seg>libattr.[a,so]</seg>
+        <seg>/usr/include/acl, /usr/share/doc/acl</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="chacl">
+        <term><command>chacl</command></term>
+        <listitem>
+          <para>Changes the access control list of a file or directory</para>
+          <indexterm zone="ch-system-acl chacl">
+            <primary sortas="b-chacl">chacl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="getfacl">
+        <term><command>getfacl</command></term>
+        <listitem>
+          <para>Get file access control lists</para>
+          <indexterm zone="ch-system-acl getfacl">
+            <primary sortas="b-getfacl">getfacl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="setfacl">
+        <term><command>setfacl</command></term>
+        <listitem>
+          <para>Set file access control lists</para>
+          <indexterm zone="ch-system-acl setfacl">
+            <primary sortas="b-setfacl">setfacl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libacl">
+        <term><filename class="libraryfile">libacl</filename></term>
+        <listitem>
+          <para>Library to manage access control lists</para>
+          <indexterm zone="ch-system-acl libacl">
+            <primary sortas="c-libacl">libacl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
