@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-system-intltool" role="wrap">
+  <?dbhtml filename="intltool.html"?>
+
+  <title>Intltool-&intltool-version;</title>
+
+  <indexterm zone="ch-system-intltool">
+    <primary sortas="a-Intltool">Intltool</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>The Intltool package contains internationalization tools.</para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Intltool</title>
+
+    <para os="a">Prepare Intltool for compilation:</para>
+
+<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
+
+    <para os="c">Compile the package:</para>
+
+<screen os="d"><userinput>make</userinput></screen>
+
+    <para os="e">To test the results, issue:</para>
+
+<screen os="e2"><userinput remap="test">make check</userinput></screen>
+
+    <para os="f">Install the package:</para>
+
+<screen os="g"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 id="contents-intltool" role="content">
+    <title>Contents of Intltool</title>
+
+    <segmentedlist>
+      <segtitle>Installed programs</segtitle>
+
+      <seglistitem>
+        <seg>intltool-extract</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="intltool-extract">
+        <term><command>intltool-extract</command></term>
+        <listitem>
+          <para>Tries to classify each given file; it does this by performing
+          several tests&mdash;file system tests, magic number tests, and
+          language tests</para>
+          <indexterm zone="ch-system-file intltool-extract">
+            <primary sortas="b-intltool-extract">intltool-extract</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
