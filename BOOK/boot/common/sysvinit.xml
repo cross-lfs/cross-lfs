@@ -15,9 +15,13 @@
     <secondary>boot</secondary>
   </indexterm>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-  href="../../final-system/common/sysvinit.xml"
-  xpointer="xpointer(//*[@role='package'])"/>
+  <sect2 role="package">
+    <title/>
+
+    <para>The Sysvinit package contains programs for controlling the startup,
+    running, and shutdown of the system.</para>
+
+  </sect2>
 
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
@@ -29,16 +33,12 @@
 sed -e 's,/usr/lib,/tools/lib,g' \
     src/Makefile.orig > src/Makefile</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../final-system/common/sysvinit.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+    <para os ="c">Compile the package:</para>
 
 <screen os="ac"><userinput>make -C src clobber
 make -C src CC="${CC}"</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../final-system/common/sysvinit.xml"
-    xpointer="xpointer(//*[@os='e'])"/>
+   <para os="e">Install the package:</para>
 
 <screen os="ad"><userinput>make -C src ROOT=${CLFS} install</userinput></screen>
 
@@ -107,6 +107,160 @@ EOF</userinput></screen>
 <screen><userinput>cat &gt;&gt; ${CLFS}/etc/inittab &lt;&lt; "EOF"
 <literal># End /etc/inittab</literal>
 EOF</userinput></screen>
+
+    <para>The <parameter>-I '\033(K'</parameter> option tells
+    <command>agetty</command> to send this escape sequence to the terminal
+    before doing anything else. This escape sequence switches the console
+    character set to a user-defined one, which can be modified by running
+    the <command>setfont</command> program. The <command>console</command>
+    initscript from the CLFS-Bootscripts package calls the
+    <command>setfont</command> program during system startup. Sending this
+    escape sequence is necessary for people who use non-ISO 8859-1 screen
+    fonts, but it does not affect native English speakers.</para>
+
+  </sect2>
+
+  <sect2 id="contents-sysvinit" role="content">
+    <title>Contents of Sysvinit</title>
+
+    <segmentedlist>
+      <segtitle>Installed programs</segtitle>
+
+      <seglistitem>
+        <seg>bootlogd, fstab-decode, halt, init, killall5, pidof (link to
+        killall5), poweroff (link to halt), reboot (link to halt), runlevel,
+        shutdown, and telinit (link to init)</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="bootlogd">
+        <term><command>bootlogd</command></term>
+        <listitem>
+          <para>Logs boot messages to a log file</para>
+          <indexterm zone="ch-boot-sysvinit bootlogd">
+            <primary sortas="b-bootlogd">bootlogd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="fstab-decode">
+        <term><command>fstab-decode</command></term>
+        <listitem>
+          <para>Runs a command with fstab-encoded arguments</para>
+          <indexterm zone="ch-boot-sysvinit fstab-decode">
+            <primary sortas="b-fstab-decode">fstab-decode</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="halt">
+        <term><command>halt</command></term>
+        <listitem>
+          <para>Normally invokes <command>shutdown</command> with the
+          <parameter>-h</parameter> option, except when already in run-level 0,
+          then it tells the kernel to halt the system; it notes in the
+          file <filename>/var/log/wtmp</filename> that the system is being
+          brought down</para>
+          <indexterm zone="ch-boot-sysvinit halt">
+            <primary sortas="b-halt">halt</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="init">
+        <term><command>init</command></term>
+        <listitem>
+          <para>The first process to be started when the kernel has initialized
+          the hardware which takes over the boot process and starts all the
+          proceses it is instructed to</para>
+          <indexterm zone="ch-boot-sysvinit init">
+            <primary sortas="b-init">init</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="killall5">
+        <term><command>killall5</command></term>
+        <listitem>
+          <para>Sends a signal to all processes, except the processes in its own
+          session so it will not kill the shell running the script that called
+          it</para>
+          <indexterm zone="ch-boot-sysvinit killall5">
+            <primary sortas="b-killall5">killall5</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pidof">
+        <term><command>pidof</command></term>
+        <listitem>
+          <para>Reports the PIDs of the given programs</para>
+          <indexterm zone="ch-boot-sysvinit pidof">
+            <primary sortas="b-pidof">pidof</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="poweroff">
+        <term><command>poweroff</command></term>
+        <listitem>
+          <para>Tells the kernel to halt the system and switch off the computer
+          (see <command>halt</command>)</para>
+          <indexterm zone="ch-boot-sysvinit poweroff">
+            <primary sortas="b-poweroff">poweroff</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="reboot">
+        <term><command>reboot</command></term>
+        <listitem>
+          <para>Tells the kernel to reboot the system (see
+          <command>halt</command>)</para>
+          <indexterm zone="ch-boot-sysvinit reboot">
+            <primary sortas="b-reboot">reboot</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="runlevel">
+        <term><command>runlevel</command></term>
+        <listitem>
+          <para>Reports the previous and the current run-level, as noted in
+          the last run-level record in <filename>/var/run/utmp</filename></para>
+          <indexterm zone="ch-boot-sysvinit runlevel">
+            <primary sortas="b-runlevel">runlevel</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="shutdown">
+        <term><command>shutdown</command></term>
+        <listitem>
+          <para>Brings the system down in a secure way, signaling all processes
+          and notifying all logged-in users</para>
+          <indexterm zone="ch-boot-sysvinit shutdown">
+            <primary sortas="b-shutdown">shutdown</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="telinit">
+        <term><command>telinit</command></term>
+        <listitem>
+          <para>Tells <command>init</command> which run-level to change to</para>
+          <indexterm zone="ch-boot-sysvinit telinit">
+            <primary sortas="b-telinit">telinit</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
 
   </sect2>
 
