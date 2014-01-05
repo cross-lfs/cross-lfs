@@ -49,6 +49,18 @@ do
 done
 install -v -m644 man/*.html /usr/share/doc/systemd-&systemd-version;</userinput></screen>
 
+    <para os="i">Create symlinks for backwards-compatibility with Sysvinit:</para>
+
+<screen os="j"><userinput>for tool in runlevel reboot shutdown poweroff halt telinit; do
+  ln -sfv ../bin/systemctl /sbin/$tool
+done
+ln -sfv ../lib/systemd/systemd /sbin/init</userinput></screen>
+
+    <para os="k">Modify a configuration file which references a group that
+    doesn't exist:</para>
+
+<screen os="l"><userinput>sed -i "s@root lock@0root root@g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
+
   </sect2>
 
   <sect2 id="conf-systemd" role="configuration">
@@ -61,6 +73,11 @@ install -v -m644 man/*.html /usr/share/doc/systemd-&systemd-version;</userinput>
     <indexterm zone="conf-systemd">
       <primary sortas="e-/etc/os-release">/etc/os-release</primary>
     </indexterm>
+
+    <para>Create <filename>/etc/machine-id</filename> which is needed
+    by Journald:</para>
+
+<screen><userinput>systemd-machine-id-setup</userinput></screen>
 
     <para>Create a file to identify the operating system.
     <command>systemd</command> will use this file on boot to put information
