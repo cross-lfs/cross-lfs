@@ -52,14 +52,15 @@
 
     </variablelist>
 
-    <para os="f">Compile the package:</para>
+    <para os="f">Compile the required programs and support library:</para>
 
 <screen os="g"><userinput>make -C gnulib-lib
-make -C src msgfmt</userinput></screen>
+make -C src msgfmt msgmerge xgettext</userinput></screen>
 
-    <para os="h">Install the <command>msgfmt</command> binary:</para>
+    <para os="h">Install the <command>msgfmt</command>,
+    <command>msgmerge</command> and <command>xgettext</command> binaries:</para>
 
-<screen os="i"><userinput>cp -v src/msgfmt /tools/bin</userinput></screen>
+<screen os="i"><userinput>cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin</userinput></screen>
 
   </sect2>
 
