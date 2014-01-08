@@ -26,8 +26,7 @@
 
     <para os="a">Prepare ACL for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr \
-    --libdir=/lib --libexecdir=/usr/lib</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr --libexecdir=/usr/lib</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -39,11 +38,13 @@
 
 <screen os="g"><userinput>make install install-dev install-lib</userinput></screen>
 
-    <para os="h">Remove extra symlinks:</para>
+    <para os="h">Move the shared library to <filename class="directory">/lib</filename>
+    and recreate the symlink in <filename class="directory">/usr/lib</filename>:</para>
 
-<screen os="i"><userinput>rm -v /lib/libacl.{,l}a</userinput></screen>
+<screen os="i"><userinput>mv -v /usr/lib/libacl.so.* /lib
+ln -sfv ../../lib/libacl.so.1 /usr/lib/libacl.so</userinput></screen>
 
-    <para os="j">Set the proper permissions on the library:</para>
+    <para os="j">Set the proper permissions on the shared library:</para>
 
 <screen os="k"><userinput>chmod 755 -v /lib/libacl.so.1.1.0</userinput></screen>
 
