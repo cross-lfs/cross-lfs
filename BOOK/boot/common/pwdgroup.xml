@@ -201,22 +201,4 @@ EOF</userinput></screen>
   well-written programs do not depend on GID numbers, but rather use the
   group's name.</para>
 
-  <para os="f">The <command>login</command>, <command>agetty</command>, and
-  <command>init</command> programs (and others) use a number of log
-  files to record information such as who was logged into the system and
-  when. However, these programs will not write to the log files if they
-  do not already exist. Initialize the log files and give them
-  proper permissions:</para>
-
-<screen><userinput>touch ${CLFS}/var/run/utmp ${CLFS}/var/log/{btmp,lastlog,wtmp}
-chmod -v 664 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
-chmod -v 600 ${CLFS}/var/log/btmp</userinput></screen>
-
-  <para>The <filename>/var/run/utmp</filename> file records the users
-  that are currently logged in. The <filename>/var/log/wtmp</filename>
-  file records all logins and logouts. The
-  <filename>/var/log/lastlog</filename> file records when
-  each user last logged in. The <filename>/var/log/btmp</filename> file
-  records the bad login attempts.</para>
-
 </sect1>
