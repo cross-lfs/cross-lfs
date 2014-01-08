@@ -44,7 +44,7 @@ cd ../gcc-build</userinput></screen>
 
     <para os="h">Prepare GCC for compilation:</para>
 
-<screen os="i"><userinput>CC="gcc -isystem /usr/include" \
+<screen os="i"><userinput>SED=sed CC="gcc -isystem /usr/include" \
 CXX="g++ -isystem /usr/include" \
 LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
   ../gcc-&gcc-version;/configure --prefix=/usr \
