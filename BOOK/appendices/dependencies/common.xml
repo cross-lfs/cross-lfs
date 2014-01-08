@@ -30,6 +30,34 @@
   scripts installed to the final system. This is obviously not desirable.
   </para>
 
+<!-- Begin ACL dependency info -->
+  <bridgehead renderas="sect2" id="acl-dep">ACL</bridgehead>
+
+      <segmentedlist>
+        <segtitle>&dependencies;</segtitle>
+
+        <seglistitem>
+         <seg>Attr, Bash, Binutils, Coreutils, EGLIBC, GCC, Grep,
+         Libtool, Make and Sed</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&testsuites;</segtitle>
+
+        <seglistitem>
+          <seg>No testsuite available</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&before;</segtitle>
+
+        <seglistitem>
+          <seg>Libcap</seg>
+        </seglistitem>
+      </segmentedlist>
+
 <!-- Begin Attr dependency info -->
   <bridgehead renderas="sect2" id="attr-dep">Attr</bridgehead>
 
@@ -37,7 +65,7 @@
         <segtitle>&dependencies;</segtitle>
 
         <seglistitem>
-         <seg>Autoconf, Automake, Bash, Binutils, Coreutils, EGLIBC, GCC, Grep,
+         <seg>Bash, Binutils, Coreutils, EGLIBC, GCC, Gettext, Grep,
          Libtool, Make and Sed</seg>
         </seglistitem>
       </segmentedlist>
@@ -526,7 +554,7 @@
         <segtitle>&before;</segtitle>
 
         <seglistitem>
-          <seg>D-Bus</seg>
+          <seg>D-Bus and XML::Parser</seg>
         </seglistitem>
       </segmentedlist>
 
@@ -809,6 +837,34 @@
         </seglistitem>
       </segmentedlist>
 
+<!-- Begin Gperf dependency info -->
+  <bridgehead renderas="sect2" id="gperf-dep">Gperf</bridgehead>
+
+      <segmentedlist>
+        <segtitle>&dependencies;</segtitle>
+
+        <seglistitem>
+         <seg>Bash, Binutils, Coreutils, EGLIBC, GCC, Grep,
+         Make, Sed and Texinfo</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&testsuites;</segtitle>
+
+        <seglistitem>
+          <seg>Intltool</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&before;</segtitle>
+
+        <seglistitem>
+          <seg>Man</seg>
+        </seglistitem>
+      </segmentedlist>
+
 <!-- Begin Grep dependency info -->
   <bridgehead renderas="sect2" id="grep-dep">Grep</bridgehead>
 
@@ -917,6 +973,33 @@
 
         <seglistitem>
           <seg>Perl</seg>
+        </seglistitem>
+      </segmentedlist>
+
+<!-- Begin Intltool dependency info -->
+  <bridgehead renderas="sect2" id="intltool-dep">Intltool</bridgehead>
+
+      <segmentedlist>
+        <segtitle>&dependencies;</segtitle>
+
+        <seglistitem>
+         <seg>Binutils, Coreutils, EGLIBC, GCC, Make, Perl Sed and XML::Parser</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&testsuites;</segtitle>
+
+        <seglistitem>
+          <seg>No testsuite available</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&before;</segtitle>
+
+        <seglistitem>
+          <seg>None</seg>
         </seglistitem>
       </segmentedlist>
 
@@ -1365,34 +1448,6 @@
         </seglistitem>
       </segmentedlist>
 
-<!-- Begin KMOD dependency info -->
-  <bridgehead renderas="sect2" id="module-init-tools-dep">KMOD</bridgehead>
-
-      <segmentedlist>
-        <segtitle>&dependencies;</segtitle>
-
-        <seglistitem>
-         <seg>Bash, Binutils, Coreutils, EGLIBC, Findutils, GCC, Grep, Make,
-         Sed and Zlib</seg>
-        </seglistitem>
-      </segmentedlist>
-
-      <segmentedlist>
-        <segtitle>&testsuites;</segtitle>
-
-        <seglistitem>
-          <seg>Diffutils, File, Gawk and Gzip</seg>
-        </seglistitem>
-      </segmentedlist>
-
-      <segmentedlist>
-        <segtitle>&before;</segtitle>
-
-        <seglistitem>
-          <seg>None</seg>
-        </seglistitem>
-      </segmentedlist>
-
 <!-- Begin Ncurses dependency info -->
   <bridgehead renderas="sect2" id="ncurses-dep">Ncurses</bridgehead>
 
@@ -1651,36 +1706,9 @@
         <segtitle>&dependencies;</segtitle>
 
         <seglistitem>
-         <seg>Attr, Bash, Binutils, Coreutils, D-Bus, E2fsprogs, EGLIBC, Findutils, Gawk,
-         GCC, GPerf, Grep, Intltool, Libcap, Make, Perl, Pkg-config, Sed,
-         Util-linux and XML-Parser</seg>
-        </seglistitem>
-      </segmentedlist>
-
-      <segmentedlist>
-        <segtitle>&testsuites;</segtitle>
-
-        <seglistitem>
-          <seg>No testsuite available</seg>
-        </seglistitem>
-      </segmentedlist>
-
-      <segmentedlist>
-        <segtitle>&before;</segtitle>
-
-        <seglistitem>
-          <seg>None</seg>
-        </seglistitem>
-      </segmentedlist>
-
-<!-- Begin Sysvinit dependency info -->
-  <bridgehead renderas="sect2" id="sysvinit-dep">Sysvinit</bridgehead>
-
-      <segmentedlist>
-        <segtitle>&dependencies;</segtitle>
-
-        <seglistitem>
-         <seg>Binutils, Coreutils, EGLIBC, GCC, Make and Sed</seg>
+         <seg>ACL, Attr, Bash, Binutils, Coreutils, D-Bus, E2fsprogs, EGLIBC,
+         Findutils, Gawk, GCC, GPerf, Grep, Intltool, Libcap, Make, Perl,
+         Pkg-config, Sed, Util-linux and XML::Parser</seg>
         </seglistitem>
       </segmentedlist>
 
@@ -1865,6 +1893,33 @@
 
         <seglistitem>
           <seg>None</seg>
+        </seglistitem>
+      </segmentedlist>
+
+<!-- Begin XML::Parser dependency info -->
+  <bridgehead renderas="sect2" id="xml-parser-dep">XML::Parser</bridgehead>
+
+      <segmentedlist>
+        <segtitle>&dependencies;</segtitle>
+
+        <seglistitem>
+         <seg>Coreutils, Expat, Make and Perl</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&testsuites;</segtitle>
+
+        <seglistitem>
+          <seg>None</seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <segmentedlist>
+        <segtitle>&before;</segtitle>
+
+        <seglistitem>
+          <seg>Intltool</seg>
         </seglistitem>
       </segmentedlist>
 
