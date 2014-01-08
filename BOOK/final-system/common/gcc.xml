@@ -36,13 +36,6 @@
 <screen os="fix2"><userinput>cp -v gcc/Makefile.in{,.orig}
 sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig > gcc/Makefile.in</userinput></screen>
 
-    <para os="d">Apply a <command>sed</command> substitution that will suppress the
-    installation of <filename class="libraryfile">libiberty.a</filename>. The
-    version of <filename class="libraryfile">libiberty.a</filename> provided by
-    Binutils will be used instead:</para>
-
-<screen os="e"><userinput>sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in</userinput></screen>
-
     <para os="f">The GCC documentation recommends building GCC outside of the source
     directory in a dedicated build directory:</para>
 
@@ -60,8 +53,7 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
     --enable-clocale=gnu --enable-languages=c,c++ \
     --disable-multilib --disable-libstdcxx-pch \
     --enable-cloog-backend=isl --disable-isl-version-check --with-system-zlib \
-    --enable-checking=release --enable-libstdcxx-time \
-    --disable-install-libiberty</userinput></screen>
+    --enable-checking=release --enable-libstdcxx-time</userinput></screen>
 
     <para os="j">Compile the package:</para>
 
@@ -98,20 +90,25 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
 <screen os="t"><userinput>make install</userinput></screen>
 
-    <para os="u">Some packages expect the C preprocessor to be installed in the
+    <para os="u">Install the <filename class="headerfile">libiberty</filename> header
+    file that is needed by some packages:</para>
+
+<screen os="v"><userinput>cp -v ../gcc-&gcc-version;/include/libiberty.h /usr/include</userinput></screen>
+
+    <para os="w">Some packages expect the C preprocessor to be installed in the
     <filename class="directory">/lib</filename> directory.
     To support those packages, create this symlink:</para>
 
-<screen os="v"><userinput>ln -sv ../usr/bin/cpp /lib</userinput></screen>
+<screen os="x"><userinput>ln -sv ../usr/bin/cpp /lib</userinput></screen>
 
-    <para os="w">Many packages use the name <command>cc</command> to call the C
+    <para os="y">Many packages use the name <command>cc</command> to call the C
     compiler. To satisfy those packages, create a symlink:</para>
 
-<screen os="x"><userinput>ln -sv gcc /usr/bin/cc</userinput></screen>
+<screen os="z"><userinput>ln -sv gcc /usr/bin/cc</userinput></screen>
 
-    <para os="y">Finally, move a misplaced file:</para>
+    <para os="aa">Finally, move a misplaced file:</para>
 
-<screen os="z"><userinput>mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib</userinput></screen>
+<screen os="ab"><userinput>mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib</userinput></screen>
 
   </sect2>
 
@@ -126,8 +123,9 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
       <seglistitem>
         <seg>c++, cc (link to gcc), cpp, g++, gcc, and gcov</seg>
         <seg>libasan.[a,so], libgcc.a, libgcc_eh.a, libgcc_s.so, libgcov.a,
-        libgomp.[a,so], libmudflap.[a,so], libmudflapth.[a,so], libssp.[a,so],
-        libssp_nonshared.a, libstdc++.[a,so], libsupc++.a, and libtsan.[a,so]</seg>
+        libgomp.[a,so], libiberty.a, libmudflap.[a,so], libmudflapth.[a,so],
+        libssp.[a,so], libssp_nonshared.a, libstdc++.[a,so], libsupc++.a, and
+        libtsan.[a,so]</seg>
         <seg>/usr/include/c++, /usr/lib/gcc, /usr/share/gcc-&gcc-version;</seg>
       </seglistitem>
     </segmentedlist>
@@ -237,6 +235,19 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           shared-memory parallel programming in C/C++ and Fortran</para>
           <indexterm zone="ch-system-gcc libgomp">
             <primary sortas="c-libgomp">libgomp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libiberty">
+        <term><filename class="libraryfile">libiberty</filename></term>
+        <listitem>
+          <para>Contains routines used by various GNU programs, including
+          <command>getopt</command>, <command>obstack</command>,
+          <command>strerror</command>, <command>strtol</command>, and
+          <command>strtoul</command></para>
+          <indexterm zone="ch-system-gcc libiberty">
+            <primary sortas="c-libiberty">libiberty</primary>
           </indexterm>
         </listitem>
       </varlistentry>

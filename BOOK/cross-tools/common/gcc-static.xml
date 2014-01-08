@@ -70,7 +70,7 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
   --without-headers --with-newlib --disable-decimal-float --disable-libgomp \
   --disable-libmudflap --disable-libssp --disable-threads --disable-multilib \
   --disable-libatomic --disable-libitm --disable-libsanitizer \
-  --disable-libquadmath --disable-target-libiberty --disable-target-zlib \
+  --disable-libquadmath --disable-target-zlib \
   --with-system-zlib --enable-cloog-backend=isl --disable-isl-version-check \
   --enable-languages=c --enable-checking=release</userinput></screen>
 
@@ -229,6 +229,11 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
     <para os="aq">Install the package:</para>
 
 <screen os="ar"><userinput>make install-gcc install-target-libgcc</userinput></screen>
+
+    <para os="as">Copy <filename class="headerfile">libiberty.h</filename> to
+    <filename class="directory">/tools/include</filename> directory:</para>
+
+<screen os="at"><userinput>cp -v ../gcc-&gcc-version;/include/libiberty.h /tools/include</userinput></screen>
 
   </sect2>
 
