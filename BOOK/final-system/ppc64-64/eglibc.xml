@@ -140,8 +140,7 @@
     is. The following <command>sed</command> will correct this:</para>
 
     <screen><userinput>rm -v /lib/ld.so.1
-cp -v /usr/bin/ldd{,.bak}
-sed '/RTLDLIST/s%/ld.so.1 /lib64%%' /usr/bin/ldd.bak >/usr/bin/ldd</userinput></screen>
+sed -i.bak '/RTLDLIST/s%/ld.so.1 /lib64%%' /usr/bin/ldd</userinput></screen>
 
     <para>Check the script to make sure the sed worked correctly, then delete
     the backup.</para>
