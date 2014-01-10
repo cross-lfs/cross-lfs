@@ -238,5 +238,6 @@ help:
 	@echo
 	@echo "Download-List Targets"
 	@echo "  $(FG_GREEN)download-list $(FG_BLUE)$(ARCHS_DLLIST)$(FG_DEFAULT)"
+	@echo
 	@echo "md5-List Targets"
 	@echo "  $(FG_GREEN)md5-list $(FG_BLUE)$(ARCHS_MD5LIST)$(FG_DEFAULT)"
