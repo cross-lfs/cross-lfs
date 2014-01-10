@@ -1,0 +1,48 @@
+Submitted By: Ryan Oliver <ryan dot oliver at pha dot com dot au>
+Date: 2013-08-13
+Initial Package Version: 5.8.8
+Origin: Ryan Oliver
+Upstream Status: Unknown
+Description: This patch allows perl to be installed in /usr/lib32
+             or /usr/lib64 instead of /usr/lib.
+
+Rediffed: Against 5.10.0 by Joe Ciccone on 2008-08-30
+          Against 5.10.1 By Jim Gifford on 2009-08-25
+          Against 5.12.1 By Joe Ciccone on 2010-08-01
+          Against 5.16.1 By William Harrington on 2012-08-26
+Rename for 5.16.2 by William Harrington on 2012-11-01
+
+Rediffed: Against 5.18.0 by William Harrington on 2013-05-28
+Rediffed: Against 5.18.1 by William Harrington on 2013-08-13
+Rediffed: Against 5.18.2 by Chris Staub on 2014-01-10
+
+diff -Naur perl-5.18.2.orig/Configure perl-5.18.2/Configure
+--- perl-5.18.2.orig/Configure	2014-01-06 17:46:42.000000000 -0500
++++ perl-5.18.2/Configure	2014-01-10 02:38:43.000000000 -0500
+@@ -6219,6 +6219,8 @@
+ : The default "style" setting is made in installstyle.U
+ case "$installstyle" in
+ *lib/perl5*) set dflt privlib lib/$package/$version ;;
++*lib32/perl5*) set dflt privlib lib32/$package/$version ;;
++*lib64/perl5*) set dflt privlib lib64/$package/$version ;;
+ *)	 set dflt privlib lib/$version ;;
+ esac
+ eval $prefixit
+@@ -6467,6 +6469,8 @@
+ case "$sitelib" in
+ '') case "$installstyle" in
+ 	*lib/perl5*) dflt=$siteprefix/lib/$package/site_$prog/$version ;;
++	*lib32/perl5*) dflt=$siteprefix/lib32/$package/site_$prog/$version ;;
++	*lib64/perl5*) dflt=$siteprefix/lib64/$package/site_$prog/$version ;;
+ 	*)	 dflt=$siteprefix/lib/site_$prog/$version ;;
+ 	esac
+ 	;;
+@@ -6986,6 +6990,8 @@
+ 		prog=`echo $package | $sed 's/-*[0-9.]*$//'`
+ 		case "$installstyle" in
+ 		*lib/perl5*) dflt=$vendorprefix/lib/$package/vendor_$prog/$version ;;
++		*lib32/perl5*) dflt=$vendorprefix/lib32/$package/vendor_$prog/$version ;;
++		*lib64/perl5*) dflt=$vendorprefix/lib64/$package/vendor_$prog/$version ;;
+ 		*)	     dflt=$vendorprefix/lib/vendor_$prog/$version ;;
+ 		esac
+ 		;;
