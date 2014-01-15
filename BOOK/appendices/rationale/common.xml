@@ -19,6 +19,19 @@
   <itemizedlist>
 
     <listitem>
+      <para>ACL</para>
+      <para>The ACL package allows usage and setting of POSIX Access Control
+      Lists. It can be used by several other packages in CLFS, such as Coreutils
+      and systemd.</para>
+    </listitem>
+
+    <listitem>
+      <para>Attr</para>
+      <para>Attr allows setting and viewing extended attributes of filesystem
+      objects. It is required by systemd..</para>
+    </listitem>
+
+    <listitem>
       <para>Autoconf</para>
       <para>The Autoconf package contains programs for producing shell scripts
       that can automatically configure source code. This is useful for software
@@ -73,11 +86,12 @@
 
     <listitem>
       <para>Check</para>
-      <para>This package contains a test harness for other programs.</para>
+      <para>This package contains a test harness for other programs. It is
+      used for some packages' testsuites.</para>
     </listitem>
 
     <listitem>
-      <para>CLooG-ISL</para>
+      <para>CLooG</para>
       <para>This package is used by GCC.</para>
     </listitem>
 
@@ -85,6 +99,12 @@
       <para>Coreutils</para>
       <para>This package contains many basic command-line file-management
       tools, required for installation of every package in CLFS.</para>
+    </listitem>
+
+    <listitem>
+      <para>D-Bus</para>
+      <para>D-Bus is a message bus system, which allows applications to
+      communicate to each other. It is required by systemd.</para>
     </listitem>
 
     <listitem>
@@ -111,6 +131,14 @@
       <para>EGLIBC</para>
       <para>Any dynamically-linked C program (which is nearly everything
       in CLFS) needs a C library to compile and run.</para>
+    </listitem>
+
+    <listitem>
+      <para>Eudev</para>
+      <para>This is a package that allows for dynamic creation of device nodes.
+      It is a fork of Udev, which is now part of systemd. It is still
+      used for the "Boot" method in the temp-system, as systemd is not needed
+      there.</para>
     </listitem>
 
     <listitem>
@@ -169,6 +197,11 @@
     </listitem>
 
     <listitem>
+      <para>Gperf</para>
+      <para>This package is required by systemd.</para>
+    </listitem>
+
+    <listitem>
       <para>Grep</para>
       <para>This package contains programs for searching for text in files.
       These programs are required by many packages in CLFS.</para>
@@ -191,6 +224,11 @@
       <filename>/etc/protocols</filename> files. These files map port names to
       port numbers as well as protocol names to their corresponding numbers.
       These files are essential for many network based programs to work properly.</para>
+    </listitem>
+
+    <listitem>
+      <para>Intltool</para>
+      <para>This package is required by systemd.</para>
     </listitem>
 
     <listitem>
@@ -224,6 +262,11 @@
       <para>Less</para>
       <para>A program that lets you view text files one page at a time.
       Used by Man for displaying manpages.</para>
+    </listitem>
+
+    <listitem>
+      <para>Libcap</para>
+      <para>This package is required by systemd.</para>
     </listitem>
 
     <listitem>
@@ -328,9 +371,9 @@
     </listitem>
 
     <listitem>
-      <para>Sysvinit</para>
-      <para>Sysvinit is the init daemon that the clfs-bootscripts were written
-      to work with.</para>
+      <para>systemd</para>
+      <para>Systemd provides the init daemon for the system, as well as Udev, 
+      which dynamically creates device nodes.</para>
     </listitem>
 
     <listitem>
@@ -352,12 +395,6 @@
     </listitem>
 
     <listitem>
-      <para>Eudev</para>
-      <para>The Eudev package contains programs for dynamic creation of device
-      nodes.</para>
-    </listitem>
-
-    <listitem>
       <para>Util-linux</para>
       <para>The Util-linux package contains miscellaneous utility programs.
       Among them are utilities for handling file systems, consoles,
@@ -369,6 +406,11 @@
       <para>Vim</para>
       <para>The Vim package contains a text editor. Users may substitute Nano,
       Joe, Emacs, or whatever other editor they prefer.</para>
+    </listitem>
+
+    <listitem>
+      <para>XML::Parser</para>
+      <para>This Perl module is required by Intltool.</para>
     </listitem>
 
     <listitem>
