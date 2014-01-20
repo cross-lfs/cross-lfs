@@ -38,8 +38,8 @@
 
 <screen os="e"><userinput>make lib=lib32 install
 chmod -v 755 /lib32/libcap.so.&libcap-version;
-rm /lib32/libcap.so
-ln -sfv ../../lib32/libcap.so.2 /usr/lib32/libcap.so
+ln -sfv ../../lib32/$(readlink /lib32/libcap.so) /usr/lib32/libcap.so
+rm -v /lib32/libcap.so
 mv -v /lib32/libcap.a /usr/lib32</userinput></screen>
 
   </sect2>

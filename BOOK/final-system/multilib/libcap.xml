@@ -36,9 +36,11 @@
     href="../common/libcap.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/libcap.xml"
-    xpointer="xpointer(//*[@os='e'])"/>
+<screen os="e"><userinput>make RAISE_SETFCAP=no lib=lib install
+chmod -v 755 /lib/libcap.so.&libcap-version;
+ln -sfv ../../lib/$(readlink /lib/libcap.so) /usr/lib/libcap.so
+rm -v /lib/libcap.so
+mv -v /lib/libcap.a /usr/lib</userinput></screen>
 
   </sect2>
 

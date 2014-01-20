@@ -35,8 +35,8 @@
 
 <screen os="e"><userinput>make RAISE_SETFCAP=no install
 chmod -v 755 /lib/libcap.so.&libcap-version;
+ln -sfv ../../lib/$(readlink /lib/libcap.so) /usr/lib/libcap.so
 rm -v /lib/libcap.so
-ln -sfv ../../lib/libcap.so.2 /usr/lib/libcap.so
 mv -v /lib/libcap.a /usr/lib</userinput></screen>
 
   </sect2>
