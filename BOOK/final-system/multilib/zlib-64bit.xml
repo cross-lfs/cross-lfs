@@ -61,7 +61,7 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib64:/lib64 ${BUILD64}" \
     to <filename class="directory">/usr/lib64</filename>:</para>
 
 <screen os="i"><userinput>mv -v /usr/lib64/libz.so.* /lib64
-ln -svf ../../lib64/libz.so.1 /usr/lib64/libz.so</userinput></screen>
+ln -sfv ../../lib64/$(readlink /usr/lib64/libz.so) /usr/lib64/libz.so</userinput></screen>
 
   </sect2>
 
