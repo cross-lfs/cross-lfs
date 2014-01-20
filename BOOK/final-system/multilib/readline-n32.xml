@@ -71,13 +71,12 @@
 
 <screen os="k"><userinput>mv -v /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
 
-    <para os="l">Next, remove the <filename class="extension">.so</filename>
-    files in <filename class="directory">/lib32</filename> and relink them into
-    <filename class="directory">/usr/lib32</filename>.</para>
+    <para os="l">Next, relink the dynamic libraries into <filename class="directory">/usr/lib32</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib32</filename>.</para>
 
-<screen os="m"><userinput>rm -v /lib32/lib{readline,history}.so
-ln -svf ../../lib32/libreadline.so.&readline-version2; /usr/lib32/libreadline.so
-ln -svf ../../lib32/libhistory.so.&readline-version2; /usr/lib32/libhistory.so</userinput></screen>
+<screen os="m"><userinput>
+ln -svf ../../lib32/$(readlink /lib32/libreadline.so) /usr/lib32/libreadline.so
+ln -svf ../../lib32/$(readlink /lib32/libhistory.so) /usr/lib32/libhistory.so
+rm -v /lib32/lib{readline,history}.so</userinput></screen>
 
   </sect2>
 

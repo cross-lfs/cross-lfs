@@ -52,13 +52,12 @@
 
 <screen os="k"><userinput>mv -v /lib/lib{readline,history}.a /usr/lib</userinput></screen>
 
-    <para os="l">Next, remove the <filename class="extension">.so</filename>
-    files in <filename class="directory">/lib</filename> and relink them into
-    <filename class="directory">/usr/lib</filename>.</para>
+    <para os="l">Next, relink the dynamic libraries into <filename class="directory">/usr/lib</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib</filename>.</para>
 
-<screen os="m"><userinput>rm -v /lib/lib{readline,history}.so
-ln -svf ../../lib/libreadline.so.&readline-version2; /usr/lib/libreadline.so
-ln -svf ../../lib/libhistory.so.&readline-version2; /usr/lib/libhistory.so</userinput></screen>
+<screen os="m"><userinput>
+ln -svf ../../lib/$(readlink /lib/libreadline.so) /usr/lib/libreadline.so
+ln -svf ../../lib/$(readlink /lib/libhistory.so) /usr/lib/libhistory.so
+rm -v /lib/lib{readline,history}.so</userinput></screen>
 
   </sect2>
 
