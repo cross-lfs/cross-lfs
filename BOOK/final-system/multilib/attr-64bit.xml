@@ -49,11 +49,11 @@
     href="../common/attr.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+    <para os="h">Recreate the symlink in <filename class="directory">/usr/lib64</filename> and remove the shared link from <filename class="directory">/lib64</filename>:</para>
 
-<screen os="i"><userinput>rm -v /lib64/libattr.{,l}a</userinput></screen>
+<screen os="i"><userinput>
+ln -sfv ../../lib64/$(readlink /lib64/libattr.so) /usr/lib64/libattr.so
+rm -v /lib64/libattr.so</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/attr.xml"
