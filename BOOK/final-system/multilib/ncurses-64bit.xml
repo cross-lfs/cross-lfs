@@ -73,11 +73,13 @@ ln -svf multiarch_wrapper /usr/bin/ncursesw5-config</userinput></screen>
 
     <para os="j">Create symlinks in <filename class="directory">/usr/lib64:</filename></para>
 
-<screen os="k"><userinput>rm -v /lib64/lib{ncursesw,menuw,panelw,formw}.so
-ln -svf ../../lib64/libncursesw.so.5 /usr/lib64/libncursesw.so
-ln -svf ../../lib64/libmenuw.so.5 /usr/lib64/libmenuw.so
-ln -svf ../../lib64/libpanelw.so.5 /usr/lib64/libpanelw.so
-ln -svf ../../lib64/libformw.so.5 /usr/lib64/libformw.so</userinput></screen>
+<screen os="k"><userinput>
+ln -svf ../../lib64/$(readlink /lib64/libncursesw.so) /usr/lib64/libncursesw.so
+ln -svf ../../lib64/$(readlink /lib64/libmenuw.so) /usr/lib64/libmenuw.so
+ln -svf ../../lib64/$(readlink /lib64/libpanelw.so) /usr/lib64/libpanelw.so
+ln -svf ../../lib64/$(readlink /lib64/libformw.so) /usr/lib64/libformw.so
+rm -v /lib64/lib{ncursesw,menuw,panelw,formw}.so
+</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"

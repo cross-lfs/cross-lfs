@@ -56,11 +56,13 @@
 
     <para os="j">Create symlinks in <filename class="directory">/usr/lib:</filename></para>
 
-<screen os="k"><userinput>rm -v /lib/lib{ncursesw,menuw,panelw,formw}.so
-ln -svf ../../lib/libncursesw.so.5 /usr/lib/libncursesw.so
-ln -svf ../../lib/libmenuw.so.5 /usr/lib/libmenuw.so
-ln -svf ../../lib/libpanelw.so.5 /usr/lib/libpanelw.so
-ln -svf ../../lib/libformw.so.5 /usr/lib/libformw.so</userinput></screen>
+<screen os="k"><userinput>
+ln -svf ../../lib/$(readlink /lib/libncursesw.so) /usr/lib/libncursesw.so
+ln -svf ../../lib/$(readlink /lib/libmenuw.so) /usr/lib/libmenuw.so
+ln -svf ../../lib/$(readlink /lib/libpanelw.so) /usr/lib/libpanelw.so
+ln -svf ../../lib/$(readlink /lib/libformw.so) /usr/lib/libformw.so
+rm -v /lib/lib{ncursesw,menuw,panelw,formw}.so
+</userinput></screen>
 
     <para os="l">Now we will make our Ncurses compatible for older and non-widec compatible programs
     can build properly:</para>
