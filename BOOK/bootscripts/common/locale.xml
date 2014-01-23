@@ -13,23 +13,18 @@
     <primary sortas="e-/etc/locale.conf">/etc/locale.conf</primary>
   </indexterm>
 
-  <para>The file <filename>/etc/locale.conf</filename> file configures
-  system-wide locale settings. The basic file format of locale.conf is a
-  newline-separated list of variable assignments. It is possible to source this
-  configuration file from shell scripts, but it should never contain any shell
-  script features beyond variable assignments. The
-  <filename>locale.conf</filename> man page contains information about the
-  function of this file. Setting up this file properly results in:</para>
+  <para>The <filename>/etc/locale.conf</filename> below sets some environment
+  variables necessary for native language support. Setting them properly
+  results in:</para>
 
   <itemizedlist>
     <listitem>
       <para>The output of programs translated into the native language</para>
     </listitem>
     <listitem>
-      <para>Correct classification of characters into letters, digits and
-      other classes. This is necessary for <command>bash</command> to
-      properly accept non-ASCII characters in command lines in non-English
-      locales</para>
+      <para>Correct classification of characters into letters, digits and other
+      classes. This is necessary for <command>bash</command> to properly accept
+      non-ASCII characters in command lines in non-English locales</para>
     </listitem>
     <listitem>
       <para>The correct alphabetical sorting order for the country</para>
@@ -47,7 +42,8 @@
   <replaceable>[CC]</replaceable> with the two-letter code for the
   appropriate country (e.g., <quote>GB</quote> or <quote>US</quote>).
   <replaceable>[charmap]</replaceable> should be replaced with the
-  canonical charmap for your chosen locale.</para>
+  canonical charmap for your chosen locale. Optional modifiers such as
+  <quote>@euro</quote> may also be present.</para>
 
   <para>The list of all locales supported by Glibc can be obtained by running
   the following command:</para>
@@ -70,8 +66,8 @@
 <screen><computeroutput>UTF-8</computeroutput></screen>
 
   <para>This results in a final locale setting of <quote>en_US.UTF-8</quote>.
-  It is important that the locale found using the heuristic above is tested prior
-  to it being added to <filename>/etc/locale.conf</filename>:</para>
+  It is important that the locale found using the heuristic above is tested
+  prior to it being added to <filename>/etc/locale.conf</filename>:</para>
 
 <screen role="nodump"><userinput>LC_ALL=[locale name] locale territory 
 LC_ALL=[locale name] locale language
@@ -107,9 +103,9 @@ LC_ALL=[locale name] locale int_prefix</userinput></screen>
   &quot;de_DE@euro&quot; in order to get this locale recognized by Xlib.</para>
 
   <para>Other packages can also function incorrectly (but may not necessarily
-  display any error messages) if the locale name does not meet their expectations.
-  In those cases, investigating how other Linux distributions support your locale
-  might provide some useful information.</para>
+  display any error messages) if the locale name does not meet their
+  expectations. In those cases, investigating how other Linux distributions
+  support your locale might provide some useful information.</para>
 
   <para>Once the proper locale settings have been determined, create the
   <filename>/etc/locale.conf</filename> file:</para>
@@ -117,11 +113,27 @@ LC_ALL=[locale name] locale int_prefix</userinput></screen>
 <screen><userinput>cat &gt; /etc/locale.conf &lt;&lt; "EOF"
 <literal># Begin /etc/locale.conf
 
-LANG=<replaceable>[ll]</replaceable>_<replaceable>[CC]</replaceable>.<replaceable>[charmap]</replaceable>
+LANG=<replaceable>[ll]</replaceable>_<replaceable>[CC]</replaceable>.<replaceable>[charmap]</replaceable><replaceable>[@modifiers]</replaceable>
 
 # End /etc/locale.conf</literal>
 EOF</userinput></screen>
 
+  <para>Note that you can modify <filename>/etc/locale.conf</filename> with
+  Systemd <command>localectl</command> utility. To use
+  <command>localectl</command> for the example above, run:</para>
+
+<screen role="nodump"><userinput>localectl set-locale LANG="<replaceable>[ll]_[CC][charmap][@modifiers]</replaceable>"</userinput></screen>
+
+  <para>You can also specify other language specific environment variables such
+  as <envar>LANG</envar>, <envar>LC_CTYPE</envar>, <envar>LC_NUMERIC</envar> or
+  any other environment variable from <command>locale</command> output. Just
+  seperate them with a space. An example where <envar>LANG</envar> is set as
+  en_US.UTF-8 but <envar>LC_CTYPE</envar> is set as just en_US is:</para>
+
+<screen role="nodump"><userinput>localectl set-locale LANG="en_US.UTF-8" LC_CTYPE="en_US"</userinput></screen>
+
+  <note><para>Please note that <command>localectl</command> command can
+  be used  only on a system booted with Systemd.</para></note>
   <para>Setting the keyboard layout, screen font, and locale-related
   environment variables are the only internationalization steps needed to
   support locales that use ordinary single-byte encodings and left-to-right
