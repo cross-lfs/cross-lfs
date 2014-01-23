@@ -14,31 +14,123 @@
   <secondary>configuring</secondary></indexterm>
 
   <para>This section discusses how to configure the
-  <filename>vconsole.conf</filename> file that sets up the keyboard map and the
-  console font. If non-ASCII characters (e.g., the British pound sign and Euro
-  character) will not be used and the keyboard is most likely a U.S. one. The
-  defaults in the file will probably be suitable for you.</para>
-
-  <para>The <filename>vconsole.conf</filename> file is read by the init system
-  and applied on startup. Decide which keymap and screen font will be used.
-  Various language-specific HOWTO's can also help with this (see
-  <ulink url="http://www.tldp.org/HOWTO/HOWTO-INDEX/other-lang.html"/>. Look in
+  <command>systemd-vconsole-setup</command> system service which configures
+  the virtual console font and console keymap.
+ 
+  The <command>systemd-vconsole-setup</command> service reads <filename>
+  /etc/vconsole.conf</filename> for configuration information. Decide which
+  keymap and screen font will be used. Various language-specific HOWTO's can
+  help. with this (see
+  <ulink url="http://www.tldp.org/HOWTO/HOWTO-INDEX/other-lang.html"/>. Examine
+  <command>localectl list-keymaps</command> output for a list of valid console
+  keymaps. Look in
   <filename class="directory">/usr/share/consolefonts</filename> for valid
-  screen fonts and <filename class="directory">/usr/share/keymaps</filename> for
-  valid keymaps.</para>
+  screen fonts.</para>
 
-  <para>The default <filename>/etc/vconsole.conf</filename> is set up for a us 
-  keymap. You will need to edit the file to your specific needs. The
-  <filename>vconsole.conf</filename> man page has some information about
-  additional configuration options you may need or want.</para>
+  <para>The <filename>/etc/vconsole.conf</filename> file should contain lines
+  of the form: VARIABLE="value". The following variables are recognized:</para>
 
-<screen><userinput>cat &gt; /etc/vconsole.conf &lt;&lt; "EOF"
-# Begin /etc/vconsole.conf
+  <variablelist>
 
-KEYMAP=us
-FONT=drdos8x16
+    <varlistentry>
+      <term>KEYMAP</term>
+      <listitem>
+        <para>This variable specifies the key mapping table for the keyboard. If
+        unset, it defaults to <literal>us</literal>.</para>
+      </listitem>
+    </varlistentry>
 
-# End /etc/vconsole.conf
+    <varlistentry>
+      <term>KEYMAP_TOGGLE</term>
+      <listitem>
+        <para>This variable can be used to configure a second toggle keymap and
+        is unset by default.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>FONT</term>
+      <listitem>
+        <para>This variable specifies the font used by the virtual
+        console.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>FONT_MAP</term>
+      <listitem>
+        <para>This variable specifies the console map to be used.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>FONT_UNIMAP</term>
+      <listitem>
+        <para>This variable specifies the unicode font map.</para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+  <para>An example for a German keyboard and console is given below:</para>
+
+<screen role="nodump"><userinput>cat &gt; /etc/vconsole.conf &lt;&lt; "EOF"
+<literal>KEYMAP=de-latin1
+FONT=Lat2-Terminus16</literal>
 EOF</userinput></screen>
+
+  <para>You can change KEYMAP value at runtime by using the
+  <command>localectl</command> utility:</para>
+
+<screen role="nodump"><userinput>localectl set-keymap MAP</userinput></screen>
+
+  <note><para>Please note that <command>localectl</command> command can
+  be used  only on a system booted with Systemd.</para></note>
+
+  <para>You can also use <command>localectl</command> utility with the
+  corresponding parameters to change X11 keyboard layout, model, variant
+  and options:</para>
+
+<screen role="nodump"><userinput>localectl set-x11-keymap LAYOUT [MODEL] [VARIANT] [OPTIONS]</userinput></screen>
+
+  <para>To list possible values for <command>localectl set-x11-keymap</command>
+  parameters, run <command>localectl</command> with parameters listed below:
+  </para>
+
+  <variablelist>
+
+    <varlistentry>
+      <term>list-x11-keymap-models</term>
+      <listitem>
+        <para>Show known X11 keyboard mapping models.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>list-x11-keymap-layouts</term>
+      <listitem>
+        <para>Show known X11 keyboard mapping layouts.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>list-x11-keymap-variants</term>
+      <listitem>
+        <para>Show known X11 keyboard mapping variants.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>list-x11-keymap-options</term>
+      <listitem>
+        <para>Show known X11 keyboard mapping options.</para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+  <note><para>Using any of the parameters listed above requires
+  <ulink url="http://cblfs.cross-lfs.org/index.php/Xorg7/Data">
+  XKeyboard Client</ulink> package from CBLFS.</para></note>
 
 </sect1>
