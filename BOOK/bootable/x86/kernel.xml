@@ -36,6 +36,36 @@
     kernel compilation. Do not rely on the source tree being clean after
     un-tarring.</para>
 
+    <note os="kc"><para>A good starting place for setting up the kernel configuration
+    is to run <command>make defconfig</command>. This will set the base
+    configuration to a good state that takes your current system architecture
+    into account.</para>
+
+    <para>Be sure to enable or disable following features or the system might not
+    work correctly or boot at all:</para>
+
+    <screen role="nodump">General setup  ---&gt;
+  [*] Control Group support
+Processor type and features  ---&gt;
+  [*] Enable seccomp to safely compute untrusted bytecode
+Networking support  ---&gt;
+  Networking options  ---&gt;
+    &lt;*&gt; The IPv6 protocol
+Device Drivers  ---&gt;
+  Generic Driver Options  ---&gt;
+    ()  path to uevent helper
+    [*] Maintain a devtmpfs filesystem to mount at /dev
+    [ ] Fallback user-helper invocation for firmware loading
+File systems  ---&gt;
+  [*] Inotify support for userspace
+  &lt;*&gt; Kernel automounter version 4 support (also supports v3)
+  Pseudo filesystems  ---&gt;
+    [*] Tmpfs POSIX Access Control Lists
+    [*] Tmpfs extended attributes</screen></note>
+
+    <note><para>While "The IPv6 Protocol" is not strictly required, it is
+    highly recommended by the Systemd developers.</para></note>
+
     <para os="h">Configure the kernel via a menu-driven interface.
     Please note that the udev bootscript requires "rtc", "tmpfs" and "devtmpfs" to be
     enabled and built into the kernel, not as modules. CBLFS has
