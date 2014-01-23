@@ -15,7 +15,7 @@
 
     <para>Which interfaces are brought up and down by the network script
     depends on the files and directories in the <filename
-    class="directory">/etc/sysconfig/network-devices</filename> hierarchy.
+    class="directory">/etc/sysconfig</filename> hierarchy.
     This directory should contain a sub-directory for each interface to be
     configured, such as <filename>ifconfig.xyz</filename>, where
     <quote>xyz</quote> is a network interface name. Inside this directory
@@ -35,8 +35,8 @@
     <para>The following command creates a sample <filename>ipv4</filename>
     file for the <emphasis>eth0</emphasis> device:</para>
 
-<screen><userinput>mkdir -pv /etc/sysconfig/network-devices &amp;&amp;
-cd /etc/sysconfig/network-devices &amp;&amp;
+<screen><userinput>mkdir -pv /etc/sysconfig &amp;&amp;
+cd /etc/sysconfig &amp;&amp;
 cat &gt; ifconfig.eth0 &lt;&lt; "EOF"
 <literal>IFACE="eth0"
 SERVICE="ipv4-static"
