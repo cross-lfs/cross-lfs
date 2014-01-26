@@ -10,9 +10,9 @@
 
   <title>Creating Essential Symlinks</title>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-  href="../../boot/common/createfiles.xml"
-  xpointer="xpointer(//*[@os='a'])"/>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../boot/common/createfiles.xml"
+    xpointer="xpointer(//*[@os='a'])"/>
 
 <screen><userinput>ln -sv /tools/bin/{bash,cat,echo,grep,pwd,stty} /bin
 ln -sv /tools/bin/file /usr/bin
@@ -21,5 +21,11 @@ ln -sv /tools/lib/libstdc++.so{.6,} /usr/lib
 sed -e 's/tools/usr/' /tools/lib/libstdc++.la > /usr/lib/libstdc++.la
 ln -sv bash /bin/sh
 ln -sv /run /var/run</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../boot/common/createfiles.xml"
+    xpointer="xpointer(//*[@os='c'])"/>
+
+<screen os="d"><userinput>ln -sv /proc/self/mounts /etc/mtab</userinput></screen>
 
 </sect1>

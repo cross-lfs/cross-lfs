@@ -24,4 +24,13 @@ sed -e 's/tools/usr/' /tools/lib/libstdc++.la > ${CLFS}/usr/lib/libstdc++.la
 ln -sv bash ${CLFS}/bin/sh
 ln -sv /run ${CLFS}/var/run</userinput></screen>
 
+  <para os="c">Historically, Linux maintains a list of the mounted file systems
+  in the file <filename>/etc/mtab</filename>. Modern kernels maintain this list
+  internally and exposes it to the user via the
+  <filename class="directory">/proc</filename> filesystem. To satisfy utilities
+  that expect the presence of <filename>/etc/mtab</filename>, create the
+  following symbolic link:</para>
+
+<screen os="d"><userinput>ln -sv /proc/self/mounts ${CLFS}/etc/mtab</userinput></screen>
+
 </sect1>
