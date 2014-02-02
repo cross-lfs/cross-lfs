@@ -16,8 +16,8 @@ fi
 # Download Perl Source
 #
 cd /usr/src
-if ! [ -e perl-${VERSION}.tar.gz  ]; then
-  wget http://www.cpan.org/src/perl-${VERSION}.tar.gz
+if ! [ -e perl-${VERSION}.tar.bz2  ]; then
+  wget http://www.cpan.org/src/perl-${VERSION}.tar.bz2
 fi
 
 # Set Patch Number
@@ -40,7 +40,7 @@ rm -f index.html
 # Cleanup Directory
 #
 rm -rf perl-${VERSION} perl-${VERSION}.orig
-tar xvf perl-${VERSION}.tar.gz
+tar xvf perl-${VERSION}.tar.bz2
 mv perl-${VERSION} perl-${VERSION}.orig
 CURRENTDIR=$(pwd -P)
 
