@@ -25,22 +25,16 @@
   <sect2 role="installation">
     <title>Installation of Iana-Etc</title>
 
-    <note os="p1">
-      <para>This package has the option of downloading updated data when internet access is available. If /etc/resolv.conf has a nameserver entry and internet access is available at this step, then apply the IANA get patch and get the updated data:
-<screen><command>patch -Np1 -i ../&iana-etc-get_fix-patch;</command>
-<command>make get</command></screen>
-Do not apply the following patch.</para>
-    </note>
+    <para os="p2">The following patch updates the services and protocol xml files:</para>
 
-    <para os="p2">The following patch updates the services and protocol files:</para>
-
-<screen os="p3"><userinput>patch -Np1 -i ../&iana-etc-numbers_update-patch;</userinput></screen>
+<screen os="p3"><userinput>xzcat ../&iana-etc-numbers_update-patch; | patch -Np1 -i -</userinput></screen>
 
     <para os="a">The following command converts the raw data provided by IANA into
     the correct formats for the <filename>/etc/protocols</filename> and
     <filename>/etc/services</filename> data files:</para>
 
-<screen os="b"><userinput>make</userinput></screen>
+<screen os="b"><userinput>make get &amp;&amp;
+make</userinput></screen>
 
     <para os="c">This package does not come with a test suite.</para>
 
