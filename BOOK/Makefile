@@ -20,8 +20,8 @@ ROOT_ID		:=
 ARCHS		:= x86 x86_64 x86_64-64 \
 		   sparc sparc64 sparc64-64 \
 		   mips mips64 mips64-64 \
-		   ppc ppc64 ppc64-64 \
-		   alpha
+		   ppc ppc64 ppc64-64
+#		   alpha Not tested anymore
 
 ifdef V
   Q =
