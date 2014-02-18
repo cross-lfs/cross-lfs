@@ -64,9 +64,9 @@ unset LINKER</userinput></screen>
     GLIBC Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
-    <para os="s1">Allow GLIBC to detect Make-4.x:</para>
+    <para os="s1">Apply the following sed so the <command>tzselect</command> script works properly:</para>
 
-<screen os="s2"><userinput>sed -r -i 's/(3..89..)/\1 | 4.*/' configure</userinput></screen>
+<screen os="s2"><userinput>sed -i 's/\\$$(pwd)/`pwd`/' timezone/Makefile</userinput></screen>
 
     <para os="e">The GLIBC documentation recommends building GLIBC outside of     the source directory in a dedicated build directory:</para>
 
