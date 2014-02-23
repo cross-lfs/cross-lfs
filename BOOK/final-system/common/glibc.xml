@@ -152,6 +152,17 @@ make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</use
 <screen os="t"><userinput>make install &amp;&amp;
 rm -v /usr/include/rpcsvc/*.x</userinput></screen>
 
+    <para os="u">Install the configuration file and runtime directory for
+    <command>nscd</command></para>
+
+<screen os="v"><userinput>cp -v ../glibc-2.19/nscd/nscd.conf /etc/nscd.conf
+mkdir -pv /var/cache/nscd</userinput></screen>
+
+    <para os="w">Install the Systemd support files for <command>nscd</command>:</para>
+
+<screen os="x"><userinput>install -v -Dm644 ../glibc-2.19/nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
+install -v -Dm644 ../glibc-2.19/nscd/nscd.service /lib/systemd/systemd/nscd.service</userinput></screen>
+
   </sect2>
 
   <sect2 id="i18n-glibc" role="configuration">
@@ -396,7 +407,8 @@ EOF</userinput></screen>
         /usr/include/netrom, /usr/include/netrose, /usr/include/nfs,
         /usr/include/protocols, /usr/include/rpc, /usr/include/rpcsvc,
         /usr/include/sys, /usr/lib/gconv, /usr/lib/glibc, /usr/lib/locale,
-        /usr/share/i18n, /usr/share/zoneinfo, /var/cache/ldconfig</seg>
+        /usr/share/i18n, /usr/share/zoneinfo, /var/cache/ldconfig, and
+        /var/cache/nscd</seg>
       </seglistitem>
     </segmentedlist>
 
