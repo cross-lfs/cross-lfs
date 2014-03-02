@@ -111,7 +111,8 @@ cd ../glibc-build</userinput></screen>
 make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</userinput></screen>
 
     <para os="o">The GLIBC test suite is highly dependent on certain functions of
-    the host system, in particular the kernel. The posix/annexc test normally fails
+    the host system, in particular the kernel. The <emphasis>posix/annexc</emphasis> and
+    <emphasis>conform/run-conformtest</emphasis> tests normally fail
     and you should see <literal>Error 1 (ignored)</literal> in the output. Apart
     from this, the GLIBC test suite is always expected to pass. However, in certain
     circumstances, some failures are unavoidable. If a test fails because of a missing
@@ -122,6 +123,15 @@ make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</use
     informative. Here is a list of the most common issues:</para>
 
     <itemizedlist os="p">
+      <listitem>
+        <para>The <emphasis>nptl/tst-clock2</emphasis>,
+        <emphasis>nptl/tst-attr3</emphasis>,
+        <emphasis>tst/tst-cputimer1</emphasis>, and
+        <emphasis>rt/tst-cpuclock2</emphasis>
+        tests have been known to fail.  The
+        reason is not completely understood, but indications are that minor
+        timing issues can trigger these failures.</para>
+      </listitem>
       <listitem>
         <para>The <emphasis>math</emphasis> tests sometimes fail.
         Certain optimization settings are known to be a
@@ -136,7 +146,14 @@ make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</use
       </listitem>
       <listitem>
         <para>When running on older and slower hardware, some tests
-        can fail because of test timeouts being exceeded.</para>
+        can fail because of test timeouts being exceeded.
+        Modifying the make check command to set a TIMEOUTFACTOR is reported to
+        help eliminate these errors (e.g. <command>TIMEOUTFACTOR=16
+        make -k check</command>).</para>
+      </listitem>
+      <listitem>
+        <para>posix/tst-getaddrinfo4 will always fail due to not having a network
+        connection when the test is run.</para>
       </listitem>
     </itemizedlist>
 

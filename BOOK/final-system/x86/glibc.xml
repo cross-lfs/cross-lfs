@@ -102,6 +102,15 @@
     <!-- this is specific to x86 because of the i686 reference in the math tests -->
     <itemizedlist os="p">
       <listitem>
+        <para>The <emphasis>nptl/tst-clock2</emphasis>,
+        <emphasis>nptl/tst-attr3</emphasis>,
+        <emphasis>tst/tst-cputimer1</emphasis>, and
+        <emphasis>rt/tst-cpuclock2</emphasis>
+        tests have been known to fail.  The
+        reason is not completely understood, but indications are that minor
+        timing issues can trigger these failures.</para>
+      </listitem>
+      <listitem>
         <para>The <emphasis>math</emphasis> tests, at least on i686, fail in
         the <emphasis>test-double</emphasis> and <emphasis>test-idouble</emphasis>
         tests with gcc-&gcc-version;
@@ -119,7 +128,14 @@
       </listitem>
       <listitem>
         <para>When running on older and slower hardware, some tests
-        can fail because of test timeouts being exceeded.</para>
+        can fail because of test timeouts being exceeded.
+        Modifying the make check command to set a TIMEOUTFACTOR is reported to
+        help eliminate these errors (e.g. <command>TIMEOUTFACTOR=16
+        make -k check</command>).</para>
+      </listitem>
+      <listitem>
+        <para>posix/tst-getaddrinfo4 will always fail due to not having a network
+        connection when the test is run.</para>
       </listitem>
     </itemizedlist>
 
