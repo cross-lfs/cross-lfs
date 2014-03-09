@@ -35,8 +35,26 @@
   timezone, which is also known as GMT -0700, add seven hours to the local
   time.</para>
 
-  <para>If your clock is set to local time, tell <command>systemd-timedated</command>
-  about it by running the following command:</para>
+  <para><command>systemd-timedated</command> reads
+  <filename>/etc/adjtime</filename>, and depending on the contents of the file,
+  it sets the clock to either UTC or local time.</para>
+
+ <para>Create the <filename>/etc/adjtime</filename> file with the following
+ contents if your hardware clock is set to local time:</para>
+
+<screen role="nodump"><userinput>cat &gt; /etc/adjtime &lt;&lt; "EOF"
+<literal>0.0 0 0.0
+0
+LOCAL</literal>
+EOF</userinput></screen>
+
+ <para>If <filename>/etc/adjtime</filename> isn't present at first boot,
+ <command>systemd-timedated</command> will assume that hardware clock is
+ set to UTC and adjust the file according to that.</para>
+
+  <para>If your clock is set to local time, tell
+  <command>systemd-timedated</command> about it by running the following
+  command:</para>
 
 <screen role="nodump"><userinput>timedatectl set-local-rtc 1</userinput></screen>
 
