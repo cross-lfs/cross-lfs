@@ -41,6 +41,13 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
   <sect2 role="installation">
     <title>Installation of Util-linux</title>
 
+    <note os="n">
+      <para><command>findmnt</command>, and <command>lsblk</command> can
+      utilize <filename class="libraryfile">libudev</filename> for WWN and serial
+      number information. If this is desired, rebuild Util-linux after
+      <xref linkend="ch-system-systemd"/></para>
+    </note>
+
     <para os="a">Prepare Util-linux for compilation:</para>
 
 <screen os="b"><userinput>./configure --enable-write</userinput></screen>
