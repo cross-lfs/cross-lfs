@@ -34,7 +34,8 @@
     <para os="a">Prepare Bash for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr --bindir=/bin \
-    --without-bash-malloc --with-installed-readline</userinput></screen>
+    --without-bash-malloc --with-installed-readline \
+    --docdir=/usr/share/doc/bash-&bash-version;</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure option:</title>
@@ -60,7 +61,7 @@
 
     <para os="g">Install the package:</para>
 
-<screen os="h"><userinput>make htmldir=/usr/share/doc/bash-&bash-version; install</userinput></screen>
+<screen os="h"><userinput>make install</userinput></screen>
 
     <para os="i">Run the newly compiled <command>bash</command> program (replacing
     the one that is currently being executed):</para>
