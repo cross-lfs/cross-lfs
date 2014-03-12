@@ -52,8 +52,7 @@
 
     <para os="j">Next, relink the dynamic libraries into <filename class="directory">/usr/lib</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib</filename>.</para>
 
-<screen os="k"><userinput>
-ln -svf ../../lib/$(readlink /lib/libreadline.so) /usr/lib/libreadline.so
+<screen os="k"><userinput>ln -svf ../../lib/$(readlink /lib/libreadline.so) /usr/lib/libreadline.so
 ln -svf ../../lib/$(readlink /lib/libhistory.so) /usr/lib/libhistory.so
 rm -v /lib/lib{readline,history}.so</userinput></screen>
 

@@ -67,8 +67,7 @@
 
     <para os="j">Next, relink the dynamic libraries into <filename class="directory">/usr/lib32</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib32</filename>.</para>
 
-<screen os="k"><userinput>
-ln -svf ../../lib32/$(readlink /lib32/libreadline.so) /usr/lib32/libreadline.so
+<screen os="k"><userinput>ln -svf ../../lib32/$(readlink /lib32/libreadline.so) /usr/lib32/libreadline.so
 ln -svf ../../lib32/$(readlink /lib32/libhistory.so) /usr/lib32/libhistory.so
 rm -v /lib32/lib{readline,history}.so</userinput></screen>
 
