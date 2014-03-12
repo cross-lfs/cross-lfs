@@ -62,19 +62,11 @@
     href="readline.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="readline.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
+<screen os="i"><userinput>mv -v /lib64/lib{readline,history}.a /usr/lib64</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="readline.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+    <para os="j">Next, relink the dynamic libraries into <filename class="directory">/usr/lib64</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib64</filename>.</para>
 
-<screen os="k"><userinput>mv -v /lib64/lib{readline,history}.a /usr/lib64</userinput></screen>
-
-    <para os="l">Next, relink the dynamic libraries into <filename class="directory">/usr/lib64</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib64</filename>.</para>
-
-<screen os="m"><userinput>
+<screen os="k"><userinput>
 ln -svf ../../lib64/$(readlink /lib64/libreadline.so) /usr/lib64/libreadline.so
 ln -svf ../../lib64/$(readlink /lib64/libhistory.so) /usr/lib64/libhistory.so
 rm -v /lib64/lib{readline,history}.so</userinput></screen>

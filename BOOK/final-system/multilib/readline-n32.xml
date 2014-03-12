@@ -63,19 +63,11 @@
     href="readline.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="readline.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
+<screen os="i"><userinput>mv -v /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="readline.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+    <para os="j">Next, relink the dynamic libraries into <filename class="directory">/usr/lib32</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib32</filename>.</para>
 
-<screen os="k"><userinput>mv -v /lib32/lib{readline,history}.a /usr/lib32</userinput></screen>
-
-    <para os="l">Next, relink the dynamic libraries into <filename class="directory">/usr/lib32</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib32</filename>.</para>
-
-<screen os="m"><userinput>
+<screen os="k"><userinput>
 ln -svf ../../lib32/$(readlink /lib32/libreadline.so) /usr/lib32/libreadline.so
 ln -svf ../../lib32/$(readlink /lib32/libhistory.so) /usr/lib32/libhistory.so
 rm -v /lib32/lib{readline,history}.so</userinput></screen>

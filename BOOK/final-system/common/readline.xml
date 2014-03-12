@@ -44,19 +44,15 @@
 
     <para os="f">Install the package:</para>
 
-<screen os="g"><userinput>make install</userinput></screen>
+<screen os="g"><userinput>make htmldir=/usr/share/doc/readline install</userinput></screen>
 
-    <para os="h">Install the documentation:</para>
+    <para os="h">Now move the static libraries to a more appropriate location:</para>
 
-<screen os="i"><userinput>make install-doc</userinput></screen>
+<screen os="i"><userinput>mv -v /lib/lib{readline,history}.a /usr/lib</userinput></screen>
 
-    <para os="j">Now move the static libraries to a more appropriate location:</para>
+    <para os="j">Next, relink the dynamic libraries into <filename class="directory">/usr/lib</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib</filename>.</para>
 
-<screen os="k"><userinput>mv -v /lib/lib{readline,history}.a /usr/lib</userinput></screen>
-
-    <para os="l">Next, relink the dynamic libraries into <filename class="directory">/usr/lib</filename> and remove the <filename class="extension">.so</filename> files in <filename class="directory">/lib</filename>.</para>
-
-<screen os="m"><userinput>
+<screen os="k"><userinput>
 ln -svf ../../lib/$(readlink /lib/libreadline.so) /usr/lib/libreadline.so
 ln -svf ../../lib/$(readlink /lib/libhistory.so) /usr/lib/libhistory.so
 rm -v /lib/lib{readline,history}.so</userinput></screen>
