@@ -36,15 +36,16 @@
     kernel compilation. Do not rely on the source tree being clean after
     un-tarring.</para>
 
-    <note os="kc"><para>A good starting place for setting up the kernel configuration
-    is to run <command>make defconfig</command>. This will set the base
-    configuration to a good state that takes your current system architecture
-    into account.</para>
+    <note os="kc"><para>A good starting place for setting up the kernel
+    configuration is to run <command>make defconfig</command>. This will set the    base configuration to a good state that takes your current system
+    architecture into account.</para>
 
-    <para>Be sure to enable or disable following features or the system might not
-    work correctly or boot at all:</para>
+    <para>Be sure to enable or disable following features or the system might
+    not work correctly or boot at all. Refer to
+    <filename>/usr/share/doc/systemd-&systemd-version;/README</filename>:</para>
 
     <screen role="nodump">General setup  ---&gt;
+  [*] open by fhandle syscalls
   [*] Control Group support
 Processor type and features  ---&gt;
   [*] Enable seccomp to safely compute untrusted bytecode
@@ -63,14 +64,12 @@ File systems  ---&gt;
     [*] Tmpfs POSIX Access Control Lists
     [*] Tmpfs extended attributes</screen></note>
 
-    <note><para>While "The IPv6 Protocol" is not strictly required, it is
-    highly recommended by the Systemd developers.</para></note>
+    <note os="kd"><para>While "The IPv6 Protocol" is not strictly required, it
+    is highly recommended by the Systemd developers.</para></note>
 
     <para os="h">Configure the kernel via a menu-driven interface.
-    Please note that the udev bootscript requires "rtc", "tmpfs" and "devtmpfs" to be
-    enabled and built into the kernel, not as modules. CBLFS has
-    some information regarding particular kernel configuration requirements of
-    packages outside of CLFS at <ulink
+    CBLFS has some information regarding particular kernel configuration
+    requirements of packages outside of CLFS at <ulink
     url="&cblfs-root;"/>:</para>
 
 <screen os="i"><userinput>make menuconfig</userinput></screen>
