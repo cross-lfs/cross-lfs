@@ -27,7 +27,7 @@
 
 <screen os="b"><userinput>CC="gcc ${BUILDN32}" USE_ARCH=n32 \
   ./configure --prefix=/usr --sysconfdir=/etc \
-    --libdir=/usr/lib32 --libexecdir=/usr/lib/dbus-1.0 \
+    --libdir=/usr/lib32 --libexecdir=/usr/lib32/dbus-1.0 \
     --localstatedir=/var --with-systemdsystemunitdir=/lib/systemd/system</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -50,13 +50,12 @@
     href="../common/dbus.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../multilib/libdbus-n32.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+    <para os="h">Move the shared library to <filename class="directory">/lib32
+    </filename> and recreate the symbolic link.</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../multilib/libdbus-n32.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
+<screen os="i"><userinput>mv -v /usr/lib32/libdbus-1.so.* /lib32
+ln -sfv ../../lib32/$(readlink /usr/lib32/libdbus-1.so) /usr/lib32/libdbus-1.so
+</userinput></screen>
 
   </sect2>
 

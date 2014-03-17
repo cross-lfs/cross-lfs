@@ -44,13 +44,11 @@
 
 <screen os="g"><userinput>make install</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="libdbus.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+    <para os="h">Move the shared library to <filename class="directory">/lib
+    </filename> and recreate the symbolic link.</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="libdbus.xml"
-    xpointer="xpointer(//*[@os='i'])"/>
+<screen os="i"><userinput>mv -v /usr/lib/libdbus-1.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</userinput></screen>
 
     <para os="j">Create a symlink so that D-Bus and Systemd can use the same
     <filename>machine-id</filename> file:</para>
