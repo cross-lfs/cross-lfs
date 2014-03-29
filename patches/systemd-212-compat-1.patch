@@ -1,0 +1,213 @@
+Submitted By: William Harrington (kb0iic at cross-lfs dot org)
+Date: 2014-03-30
+Initial Package Version: 212
+Origin: LFS-Systemd
+Upstream Status: Rejected
+Description: Install pkg-config files when not installing compatible libraries.
+
+--- a/Makefile.am	2014-03-25 23:37:49.955147143 +0100
++++ b/Makefile.am	2014-03-26 15:44:23.424370770 +0100
+@@ -2194,7 +2194,11 @@
+ UNINSTALL_EXEC_HOOKS += libsystemd-uninstall-hook
+ 
+ pkgconfiglib_DATA += \
+-	src/libsystemd/libsystemd.pc
++	src/libsystemd/libsystemd.pc \
++	src/compat-libs/libsystemd-journal.pc \
++	src/compat-libs/libsystemd-login.pc \
++	src/compat-libs/libsystemd-id128.pc \
++	src/compat-libs/libsystemd-daemon.pc
+ 
+ pkginclude_HEADERS += \
+ 	src/systemd/sd-login.h \
+@@ -4677,12 +4681,6 @@
+ 	libsystemd-id128.la \
+ 	libsystemd-daemon.la
+ 
+-pkgconfiglib_DATA += \
+-	src/compat-libs/libsystemd-journal.pc \
+-	src/compat-libs/libsystemd-login.pc \
+-	src/compat-libs/libsystemd-id128.pc \
+-	src/compat-libs/libsystemd-daemon.pc
+-
+ # move lib from $(libdir) to $(rootlibdir) and update devel link, if needed
+ compat-lib-install-hook:
+ 	libname=libsystemd-login.so && $(move-to-rootlibdir)
+--- a/Makefile.in	2014-03-25 23:38:07.329146442 +0100
++++ b/Makefile.in	2014-03-26 15:44:23.428370844 +0100
+@@ -1115,21 +1115,18 @@
+ @ENABLE_COMPAT_LIBS_TRUE@	libsystemd-id128.la \
+ @ENABLE_COMPAT_LIBS_TRUE@	libsystemd-daemon.la
+ 
+-@ENABLE_COMPAT_LIBS_TRUE@am__append_244 = \
+-@ENABLE_COMPAT_LIBS_TRUE@	src/compat-libs/libsystemd-journal.pc \
+-@ENABLE_COMPAT_LIBS_TRUE@	src/compat-libs/libsystemd-login.pc \
+-@ENABLE_COMPAT_LIBS_TRUE@	src/compat-libs/libsystemd-id128.pc \
+-@ENABLE_COMPAT_LIBS_TRUE@	src/compat-libs/libsystemd-daemon.pc
+-
+-@ENABLE_COMPAT_LIBS_TRUE@am__append_245 = compat-lib-install-hook
+-@ENABLE_COMPAT_LIBS_TRUE@am__append_246 = compat-lib-uninstall-hook
+-@ENABLE_MANPAGES_TRUE@am__append_247 = \
++@ENABLE_COMPAT_LIBS_TRUE@am__append_244 = compat-lib-install-hook
++@ENABLE_COMPAT_LIBS_TRUE@am__append_245 = compat-lib-uninstall-hook
++@ENABLE_MANPAGES_TRUE@am__append_246 = \
+ @ENABLE_MANPAGES_TRUE@	man/custom-entities.ent
+ 
+-@HAVE_SYSV_COMPAT_TRUE@am__append_248 = \
++@HAVE_SYSV_COMPAT_TRUE@am__append_247 = \
+ @HAVE_SYSV_COMPAT_TRUE@	docs/sysvinit/README \
+ @HAVE_SYSV_COMPAT_TRUE@	docs/var-log/README
+ 
++@HAVE_SYSV_COMPAT_TRUE@am__append_248 = \
++@HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
++
+ @HAVE_SYSV_COMPAT_TRUE@am__append_249 = \
+ @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
+ 
+@@ -1143,9 +1140,6 @@
+ @HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
+ 
+ @HAVE_SYSV_COMPAT_TRUE@am__append_253 = \
+-@HAVE_SYSV_COMPAT_TRUE@	systemd-update-utmp-runlevel.service
+-
+-@HAVE_SYSV_COMPAT_TRUE@am__append_254 = \
+ @HAVE_SYSV_COMPAT_TRUE@	poweroff.target runlevel0.target \
+ @HAVE_SYSV_COMPAT_TRUE@	rescue.target runlevel1.target \
+ @HAVE_SYSV_COMPAT_TRUE@	multi-user.target runlevel2.target \
+@@ -1154,31 +1148,31 @@
+ @HAVE_SYSV_COMPAT_TRUE@	graphical.target runlevel5.target \
+ @HAVE_SYSV_COMPAT_TRUE@	reboot.target runlevel6.target
+ 
+-@HAVE_SYSV_COMPAT_TRUE@am__append_255 = \
++@HAVE_SYSV_COMPAT_TRUE@am__append_254 = \
+ @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel1.target.wants \
+ @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel2.target.wants \
+ @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel3.target.wants \
+ @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel4.target.wants \
+ @HAVE_SYSV_COMPAT_TRUE@	$(systemunitdir)/runlevel5.target.wants
+ 
+-@HAVE_SYSV_COMPAT_TRUE@am__append_256 = \
++@HAVE_SYSV_COMPAT_TRUE@am__append_255 = \
+ @HAVE_SYSV_COMPAT_TRUE@	--with-sysvinit-path=$$dc_install_base/$(sysvinitdir) \
+ @HAVE_SYSV_COMPAT_TRUE@	--with-sysvrcnd-path=$$dc_install_base/$(sysvrcnddir)
+ 
+-@HAVE_SYSV_COMPAT_FALSE@am__append_257 = \
++@HAVE_SYSV_COMPAT_FALSE@am__append_256 = \
+ @HAVE_SYSV_COMPAT_FALSE@	--with-sysvinit-path= \
+ @HAVE_SYSV_COMPAT_FALSE@	--with-sysvrcnd-path=
+ 
+-@ENABLE_GTK_DOC_TRUE@am__append_258 = \
++@ENABLE_GTK_DOC_TRUE@am__append_257 = \
+ @ENABLE_GTK_DOC_TRUE@	--enable-gtk-doc
+ 
+-@ENABLE_COMPAT_LIBS_TRUE@am__append_259 = \
++@ENABLE_COMPAT_LIBS_TRUE@am__append_258 = \
+ @ENABLE_COMPAT_LIBS_TRUE@	$(test_libsystemd_journal_sym_SOURCES) \
+ @ENABLE_COMPAT_LIBS_TRUE@	$(test_libsystemd_login_sym_SOURCES) \
+ @ENABLE_COMPAT_LIBS_TRUE@	$(test_libsystemd_id128_sym_SOURCES) \
+ @ENABLE_COMPAT_LIBS_TRUE@	$(test_libsystemd_daemon_sym_SOURCES)
+ 
+-@ENABLE_COMPAT_LIBS_TRUE@am__append_260 = \
++@ENABLE_COMPAT_LIBS_TRUE@am__append_259 = \
+ @ENABLE_COMPAT_LIBS_TRUE@	test-libsystemd-journal-sym \
+ @ENABLE_COMPAT_LIBS_TRUE@	test-libsystemd-login-sym \
+ @ENABLE_COMPAT_LIBS_TRUE@	test-libsystemd-id128-sym \
+@@ -4207,8 +4201,8 @@
+ 	$(am__append_216) $(am__append_239) $(nodist_systemunit_DATA) \
+ 	$(nodist_userunit_DATA) $(pkgconfigdata_DATA) \
+ 	$(pkgconfiglib_DATA) $(nodist_polkitpolicy_DATA) \
+-	$(am__append_248) defined undefined
+-DISTCLEANFILES = $(am__append_247)
++	$(am__append_247) defined undefined
++DISTCLEANFILES = $(am__append_246)
+ 
+ # Really, do not edit this file.
+ EXTRA_DIST = units/getty@.service.m4 units/serial-getty@.service.m4 \
+@@ -4401,16 +4395,16 @@
+ 	$(nodist_libudev_core_la_SOURCES) $(am__append_99) \
+ 	$(am__append_240) $(am__append_242) \
+ 	$(test_libsystemd_sym_SOURCES) $(test_libudev_sym_SOURCES) \
+-	$(am__append_259)
++	$(am__append_258)
+ INSTALL_EXEC_HOOKS = install-target-wants-hook \
+ 	install-directories-hook install-aliases-hook \
+ 	systemd-detect-virt-install-hook $(am__append_78) \
+ 	bus-proxyd-install-hook libsystemd-install-hook \
+ 	libudev-install-hook $(am__append_101) journal-install-hook \
+-	$(am__append_245)
++	$(am__append_244)
+ UNINSTALL_EXEC_HOOKS = $(am__append_79) bus-proxyd-uninstall-hook \
+ 	libsystemd-uninstall-hook libudev-uninstall-hook \
+-	$(am__append_102) journal-uninstall-hook $(am__append_246)
++	$(am__append_102) journal-uninstall-hook $(am__append_245)
+ INSTALL_DATA_HOOKS = units-install-hook hwdb-update-hook \
+ 	catalog-update-hook
+ UNINSTALL_DATA_HOOKS = units-uninstall-hook catalog-remove-hook
+@@ -4449,7 +4443,11 @@
+ include_HEADERS = src/libudev/libudev.h
+ noinst_DATA = $(am__append_49) $(am__append_51) $(am__append_86)
+ pkgconfiglib_DATA = src/libsystemd/libsystemd.pc \
+-	src/libudev/libudev.pc $(am__append_97) $(am__append_244)
++	src/compat-libs/libsystemd-journal.pc \
++	src/compat-libs/libsystemd-login.pc \
++	src/compat-libs/libsystemd-id128.pc \
++	src/compat-libs/libsystemd-daemon.pc src/libudev/libudev.pc \
++	$(am__append_97)
+ polkitpolicy_in_in_files =  \
+ 	src/core/org.freedesktop.systemd1.policy.in.in
+ polkitpolicy_in_files =  \
+@@ -4502,7 +4500,7 @@
+ 	test-journal-verify test-journal-interleaving \
+ 	test-journal-flush test-mmap-cache test-catalog \
+ 	$(am__append_201) $(am__append_214) $(am__append_225) \
+-	test-libsystemd-sym test-libudev-sym $(am__append_260)
++	test-libsystemd-sym test-libudev-sym $(am__append_259)
+ 
+ # ------------------------------------------------------------------------------
+ manual_tests = test-engine test-ns test-loopback test-hostname \
+@@ -4567,7 +4565,7 @@
+ # ------------------------------------------------------------------------------
+ INSTALL_DIRS = $(am__append_71) $(sysconfdir)/udev/rules.d \
+ 	$(sysconfdir)/udev/hwdb.d $(am__append_128) $(am__append_189) \
+-	$(am__append_232) $(am__append_255) \
++	$(am__append_232) $(am__append_254) \
+ 	$(prefix)/lib/modules-load.d $(sysconfdir)/modules-load.d \
+ 	$(prefix)/lib/systemd/network $(sysconfdir)/systemd/network \
+ 	$(prefix)/lib/sysctl.d $(sysconfdir)/sysctl.d \
+@@ -4578,11 +4576,11 @@
+ 	$(pkgsysconfdir)/system/getty.target.wants \
+ 	$(pkgsysconfdir)/user $(dbussessionservicedir) \
+ 	$(sysconfdir)/xdg/systemd
+-RUNLEVEL1_TARGET_WANTS = $(am__append_249)
+-RUNLEVEL2_TARGET_WANTS = $(am__append_250)
+-RUNLEVEL3_TARGET_WANTS = $(am__append_251)
+-RUNLEVEL4_TARGET_WANTS = $(am__append_252)
+-RUNLEVEL5_TARGET_WANTS = $(am__append_253)
++RUNLEVEL1_TARGET_WANTS = $(am__append_248)
++RUNLEVEL2_TARGET_WANTS = $(am__append_249)
++RUNLEVEL3_TARGET_WANTS = $(am__append_250)
++RUNLEVEL4_TARGET_WANTS = $(am__append_251)
++RUNLEVEL5_TARGET_WANTS = $(am__append_252)
+ SHUTDOWN_TARGET_WANTS = 
+ LOCAL_FS_TARGET_WANTS = systemd-remount-fs.service tmp.mount
+ MULTI_USER_TARGET_WANTS = $(am__append_233) getty.target \
+@@ -4607,7 +4605,7 @@
+ USER_BUSNAMES_TARGET_WANTS = $(am__append_168)
+ SYSTEM_UNIT_ALIASES = $(am__append_158) $(am__append_176) \
+ 	$(am__append_190) $(am__append_207) $(am__append_234) \
+-	$(am__append_254) graphical.target default.target \
++	$(am__append_253) graphical.target default.target \
+ 	reboot.target ctrl-alt-del.target getty@.service \
+ 	autovt@.service
+ USER_UNIT_ALIASES = $(am__append_169) $(systemunitdir)/shutdown.target \
+@@ -7421,8 +7419,8 @@
+ 	--with-pamlibdir=$$dc_install_base/$(pamlibdir) \
+ 	--with-pamconfdir=$$dc_install_base/$(pamconfdir) \
+ 	--with-rootprefix=$$dc_install_base --disable-split-usr \
+-	--enable-kdbus --enable-compat-libs $(am__append_256) \
+-	$(am__append_257) $(am__append_258)
++	--enable-kdbus --enable-compat-libs $(am__append_255) \
++	$(am__append_256) $(am__append_257)
+ www_target = www.freedesktop.org:/srv/www.freedesktop.org/www/software/systemd
+ OBJECT_VARIABLES := $(filter %_OBJECTS,$(.VARIABLES))
+ ALL_OBJECTS := $(foreach v,$(OBJECT_VARIABLES),$($(v)))
