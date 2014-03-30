@@ -41,20 +41,13 @@
 
 <screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="h">There are some packages that expect to find the
-    <filename class="libraryfile">lex</filename> library in <filename
-    class="directory">/usr/lib</filename>. Create a symlink to account for
-    this:</para>
-
-<screen os="i"><userinput>ln -sv libfl.a /usr/lib/libl.a</userinput></screen>
-
-    <para os="j">A few programs do not know about <command>flex</command> yet and
+    <para os="h">A few programs do not know about <command>flex</command> yet and
     try to run its predecessor, <command>lex</command>. To support those
     programs, create a wrapper script named <filename>lex</filename> that
     calls <filename>flex</filename> in <command>lex</command> emulation
     mode:</para>
 
-<screen os="k"><userinput>cat &gt; /usr/bin/lex &lt;&lt; "EOF"
+<screen os="i"><userinput>cat &gt; /usr/bin/lex &lt;&lt; "EOF"
 <literal>#!/bin/sh
 # Begin /usr/bin/lex
 
