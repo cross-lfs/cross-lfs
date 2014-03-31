@@ -45,6 +45,58 @@
 
   </sect2>
 
+  <sect2 id="conf-dhcpcd" role="configuration">
+    <title>Creating the DHCP Network Interface Configuration File</title>
+
+    <para>The following is an example for the eth0 interface. Refer to the
+    dhcpcd.conf man page for more information. This step may be skipped if
+    default behavior of dhcpcd is required.</para>
+
+    <para>Create the <filename>/etc/dhcpcd.conf</filename> configuration file
+    using the following commands. Adjust appropriately for additional options:</para>
+
+<screen><userinput>cd /etc &amp;&amp;
+cat &gt; dhcpcd.conf &lt;&lt; "EOF"
+<literal># dhcpcd configuration eth0 interface
+# See dhcpcd.conf(5) for details.
+
+interface eth0
+# dhcpcd-run-hooks uses these options.
+option subnet_mask, routers, domain_name_servers
+
+# The default timeout for waiting for a DHCP response is 30 seconds
+# which may be too long or too short and can be changed here.
+timeout 16</literal>
+EOF</userinput></screen>
+
+    <para>To configure another Static Interface, Follow <xref linkend="ch-network-static"/>.</para>
+
+  </sect2>
+
+  <sect2>
+    <title>Configuring the Network Interface at boot</title>
+
+    <para>Enabling of the Network Interface configuration is
+    done per interface. To enable Network Interface
+    configuration at boot, run:</para>
+
+<screen role="nodump"><userinput>systemctl enable dhcpcd@eth0</userinput></screen>
+
+    <para>To disable previously enabled Network Interface
+    configuration at boot, run:</para>
+
+<screen role="nodump"><userinput>systemctl disable dhcpcd@eth0</userinput></screen>
+
+    <para>To manually start the Network Interface configuration,
+    run:</para>
+
+<screen role="nodump"><userinput>systemctl start dhcpcd@eth0</userinput></screen>
+
+    <para>Replace eth0 with the correct Network Interface
+    name as described on the beginning of this page.</para>
+
+  </sect2>
+
   <sect2 id="contents-dhcpcd" role="content">
     <title>Contents of dhcpcd</title>
 
