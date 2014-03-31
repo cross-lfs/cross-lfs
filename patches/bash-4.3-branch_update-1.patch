@@ -1,0 +1,259 @@
+Submitted By: William Harrington (kb0iic at cross-lfs dot org)
+Date: 03-30-2014
+Initial Package Version: 4.3
+Origin: Upstream
+Upstream Status: Applied
+Description: Contains all upstream patches up to 4.3-008
+
+diff -Naur bash-4.3.orig/arrayfunc.c bash-4.3/arrayfunc.c
+--- bash-4.3.orig/arrayfunc.c	2013-08-02 15:19:59.000000000 -0500
++++ bash-4.3/arrayfunc.c	2014-03-30 08:38:16.233599982 -0500
+@@ -597,6 +597,11 @@
+       if (assoc_p (var))
+ 	{
+ 	  val = expand_assignment_string_to_string (val, 0);
++	  if (val == 0)
++	    {
++	      val = (char *)xmalloc (1);
++	      val[0] = '\0';	/* like do_assignment_internal */
++	    }
+ 	  free_val = 1;
+ 	}
+ 
+diff -Naur bash-4.3.orig/jobs.c bash-4.3/jobs.c
+--- bash-4.3.orig/jobs.c	2014-01-10 08:05:34.000000000 -0600
++++ bash-4.3/jobs.c	2014-03-30 08:38:14.340206206 -0500
+@@ -4374,7 +4374,7 @@
+ void
+ end_job_control ()
+ {
+-  if (interactive_shell)		/* XXX - should it be interactive? */
++  if (interactive_shell || job_control)		/* XXX - should it be just job_control? */
+     {
+       terminate_stopped_jobs ();
+ 
+diff -Naur bash-4.3.orig/lib/glob/glob.c bash-4.3/lib/glob/glob.c
+--- bash-4.3.orig/lib/glob/glob.c	2014-01-31 20:43:51.000000000 -0600
++++ bash-4.3/lib/glob/glob.c	2014-03-30 08:38:18.153657420 -0500
+@@ -179,42 +179,50 @@
+      char *pat, *dname;
+      int flags;
+ {
+-  char *pp, *pe, *t;
+-  int n, r;
++  char *pp, *pe, *t, *se;
++  int n, r, negate;
+ 
++  negate = *pat == '!';
+   pp = pat + 2;
+-  pe = pp + strlen (pp) - 1;	/*(*/
+-  if (*pe != ')')
+-    return 0;
+-  if ((t = strchr (pp, '|')) == 0)	/* easy case first */
++  se = pp + strlen (pp) - 1;		/* end of string */
++  pe = glob_patscan (pp, se, 0);	/* end of extglob pattern (( */
++  /* we should check for invalid extglob pattern here */
++  /* if pe != se we have more of the pattern at the end of the extglob
++     pattern. Check the easy case first ( */
++  if (pe == se && *pe == ')' && (t = strchr (pp, '|')) == 0)
+     {
+       *pe = '\0';
++#if defined (HANDLE_MULTIBYTE)
++      r = mbskipname (pp, dname, flags);
++#else
+       r = skipname (pp, dname, flags);	/*(*/
++#endif
+       *pe = ')';
+       return r;
+     }
++
++  /* check every subpattern */
+   while (t = glob_patscan (pp, pe, '|'))
+     {
+       n = t[-1];
+       t[-1] = '\0';
++#if defined (HANDLE_MULTIBYTE)
++      r = mbskipname (pp, dname, flags);
++#else
+       r = skipname (pp, dname, flags);
++#endif
+       t[-1] = n;
+       if (r == 0)	/* if any pattern says not skip, we don't skip */
+         return r;
+       pp = t;
+     }	/*(*/
+ 
+-  if (pp == pe)		/* glob_patscan might find end of pattern */
++  /* glob_patscan might find end of pattern */
++  if (pp == se)
+     return r;
+ 
+-  *pe = '\0';
+-#  if defined (HANDLE_MULTIBYTE)
+-  r = mbskipname (pp, dname, flags);	/*(*/
+-#  else
+-  r = skipname (pp, dname, flags);	/*(*/
+-#  endif
+-  *pe = ')';
+-  return r;
++  /* but if it doesn't then we didn't match a leading dot */
++  return 0;
+ }
+ #endif
+ 
+@@ -277,20 +285,23 @@
+      int flags;
+ {
+ #if EXTENDED_GLOB
+-  wchar_t *pp, *pe, *t, n;
+-  int r;
++  wchar_t *pp, *pe, *t, n, *se;
++  int r, negate;
+ 
++  negate = *pat == L'!';
+   pp = pat + 2;
+-  pe = pp + wcslen (pp) - 1;	/*(*/
+-  if (*pe != L')')
+-    return 0;
+-  if ((t = wcschr (pp, L'|')) == 0)
++  se = pp + wcslen (pp) - 1;	/*(*/
++  pe = glob_patscan_wc (pp, se, 0);
++
++  if (pe == se && *pe == ')' && (t = wcschr (pp, L'|')) == 0)
+     {
+       *pe = L'\0';
+       r = wchkname (pp, dname); /*(*/
+       *pe = L')';
+       return r;
+     }
++
++  /* check every subpattern */
+   while (t = glob_patscan_wc (pp, pe, '|'))
+     {
+       n = t[-1];
+@@ -305,10 +316,8 @@
+   if (pp == pe)		/* glob_patscan_wc might find end of pattern */
+     return r;
+ 
+-  *pe = L'\0';
+-  r = wchkname (pp, dname);	/*(*/
+-  *pe = L')';
+-  return r;
++  /* but if it doesn't then we didn't match a leading dot */
++  return 0;
+ #else
+   return (wchkname (pat, dname));
+ #endif
+diff -Naur bash-4.3.orig/lib/glob/gmisc.c bash-4.3/lib/glob/gmisc.c
+--- bash-4.3.orig/lib/glob/gmisc.c	2013-10-28 13:45:25.000000000 -0500
++++ bash-4.3/lib/glob/gmisc.c	2014-03-30 08:38:18.153657420 -0500
+@@ -210,6 +210,7 @@
+     case '+':
+     case '!':
+     case '@':
++    case '?':
+       return (pat[1] == LPAREN);
+     default:
+       return 0;
+diff -Naur bash-4.3.orig/lib/readline/readline.c bash-4.3/lib/readline/readline.c
+--- bash-4.3.orig/lib/readline/readline.c	2013-10-28 13:58:06.000000000 -0500
++++ bash-4.3/lib/readline/readline.c	2014-03-30 08:38:10.556751185 -0500
+@@ -744,7 +744,8 @@
+     r = _rl_subseq_result (r, cxt->oldmap, cxt->okey, (cxt->flags & KSEQ_SUBSEQ));
+ 
+   RL_CHECK_SIGNALS ();
+-  if (r == 0)			/* success! */
++  /* We only treat values < 0 specially to simulate recursion. */
++  if (r >= 0 || (r == -1 && (cxt->flags & KSEQ_SUBSEQ) == 0))	/* success! or failure! */
+     {
+       _rl_keyseq_chain_dispose ();
+       RL_UNSETSTATE (RL_STATE_MULTIKEY);
+@@ -964,7 +965,7 @@
+ #if defined (VI_MODE)
+   if (rl_editing_mode == vi_mode && _rl_keymap == vi_movement_keymap &&
+       key != ANYOTHERKEY &&
+-      rl_key_sequence_length == 1 &&	/* XXX */
++      _rl_dispatching_keymap == vi_movement_keymap &&
+       _rl_vi_textmod_command (key))
+     _rl_vi_set_last (key, rl_numeric_arg, rl_arg_sign);
+ #endif
+diff -Naur bash-4.3.orig/parse.y bash-4.3/parse.y
+--- bash-4.3.orig/parse.y	2014-02-11 08:42:10.000000000 -0600
++++ bash-4.3/parse.y	2014-03-30 08:38:12.463477417 -0500
+@@ -3398,7 +3398,7 @@
+          within a double-quoted ${...} construct "an even number of
+          unescaped double-quotes or single-quotes, if any, shall occur." */
+       /* This was changed in Austin Group Interp 221 */
+-      if MBTEST(posixly_correct && shell_compatibility_level > 41 && dolbrace_state != DOLBRACE_QUOTE && (flags & P_DQUOTE) && (flags & P_DOLBRACE) && ch == '\'')
++      if MBTEST(posixly_correct && shell_compatibility_level > 41 && dolbrace_state != DOLBRACE_QUOTE && dolbrace_state != DOLBRACE_QUOTE2 && (flags & P_DQUOTE) && (flags & P_DOLBRACE) && ch == '\'')
+ 	continue;
+ 
+       /* Could also check open == '`' if we want to parse grouping constructs
+diff -Naur bash-4.3.orig/patchlevel.h bash-4.3/patchlevel.h
+--- bash-4.3.orig/patchlevel.h	2012-12-29 09:47:57.000000000 -0600
++++ bash-4.3/patchlevel.h	2014-03-30 08:38:18.153657420 -0500
+@@ -25,6 +25,6 @@
+    regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
+    looks for to find the patch level (for the sccs version string). */
+ 
+-#define PATCHLEVEL 0
++#define PATCHLEVEL 8
+ 
+ #endif /* _PATCHLEVEL_H_ */
+diff -Naur bash-4.3.orig/test.c bash-4.3/test.c
+--- bash-4.3.orig/test.c	2014-02-04 15:52:58.000000000 -0600
++++ bash-4.3/test.c	2014-03-30 08:38:04.859903460 -0500
+@@ -646,8 +646,8 @@
+       return (v && invisible_p (v) == 0 && var_isset (v) ? TRUE : FALSE);
+ 
+     case 'R':
+-      v = find_variable (arg);
+-      return (v && invisible_p (v) == 0 && var_isset (v) && nameref_p (v) ? TRUE : FALSE);
++      v = find_variable_noref (arg);
++      return ((v && invisible_p (v) == 0 && var_isset (v) && nameref_p (v)) ? TRUE : FALSE);
+     }
+ 
+   /* We can't actually get here, but this shuts up gcc. */
+@@ -723,6 +723,7 @@
+     case 'o': case 'p': case 'r': case 's': case 't':
+     case 'u': case 'v': case 'w': case 'x': case 'z':
+     case 'G': case 'L': case 'O': case 'S': case 'N':
++    case 'R':
+       return (1);
+     }
+ 
+diff -Naur bash-4.3.orig/trap.c bash-4.3/trap.c
+--- bash-4.3.orig/trap.c	2014-02-05 09:03:21.000000000 -0600
++++ bash-4.3/trap.c	2014-03-30 08:38:06.756626741 -0500
+@@ -920,7 +920,8 @@
+       subst_assign_varlist = 0;
+ 
+ #if defined (JOB_CONTROL)
+-      save_pipeline (1);	/* XXX only provides one save level */
++      if (sig != DEBUG_TRAP)	/* run_debug_trap does this */
++	save_pipeline (1);	/* XXX only provides one save level */
+ #endif
+ 
+       /* If we're in a function, make sure return longjmps come here, too. */
+@@ -940,7 +941,8 @@
+       trap_exit_value = last_command_exit_value;
+ 
+ #if defined (JOB_CONTROL)
+-      restore_pipeline (1);
++      if (sig != DEBUG_TRAP)	/* run_debug_trap does this */
++	restore_pipeline (1);
+ #endif
+ 
+       subst_assign_varlist = save_subst_varlist;
+diff -Naur bash-4.3.orig/y.tab.c bash-4.3/y.tab.c
+--- bash-4.3.orig/y.tab.c	2014-02-11 09:57:47.000000000 -0600
++++ bash-4.3/y.tab.c	2014-03-30 08:38:12.463477417 -0500
+@@ -5710,7 +5710,7 @@
+          within a double-quoted ${...} construct "an even number of
+          unescaped double-quotes or single-quotes, if any, shall occur." */
+       /* This was changed in Austin Group Interp 221 */
+-      if MBTEST(posixly_correct && shell_compatibility_level > 41 && dolbrace_state != DOLBRACE_QUOTE && (flags & P_DQUOTE) && (flags & P_DOLBRACE) && ch == '\'')
++      if MBTEST(posixly_correct && shell_compatibility_level > 41 && dolbrace_state != DOLBRACE_QUOTE && dolbrace_state != DOLBRACE_QUOTE2 && (flags & P_DQUOTE) && (flags & P_DOLBRACE) && ch == '\'')
+ 	continue;
+ 
+       /* Could also check open == '`' if we want to parse grouping constructs

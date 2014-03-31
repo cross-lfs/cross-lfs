@@ -46,6 +46,7 @@
 
     <screen role="nodump">General setup  ---&gt;
   [*] open by fhandle syscalls
+  [ ] Auditing support
   [*] Control Group support
 Processor type and features  ---&gt;
   [*] Enable seccomp to safely compute untrusted bytecode
@@ -62,10 +63,23 @@ File systems  ---&gt;
   &lt;*&gt; Kernel automounter version 4 support (also supports v3)
   Pseudo filesystems  ---&gt;
     [*] Tmpfs POSIX Access Control Lists
-    [*] Tmpfs extended attributes</screen></note>
+    [*] Tmpfs extended attributes
+Firmware Drivers ---&gt;
+  EFI (Extensible Firmware Interface) Support ---&gt;
+    &lt;*&gt; EFI Variable Support via sysfs
+-*- Enable the block layer ---&gt;
+  Partition Types ---&gt;
+    [*] Advanced partition selection
+    [*]   EFI GUID Partition support
+Kernel Hacking ---&gt;
+  [*] Collect scheduler debugging info
+  [*] Collect scheduler statistics</screen></note>
 
     <note os="kd"><para>While "The IPv6 Protocol" is not strictly required, it
-    is highly recommended by the Systemd developers.</para></note>
+    is highly recommended by the Systemd developers. "EFI Variable support" and
+    "EFI GUID Partition support" are for UEFI systems. "Collect scheduler
+    debugging info" and "Collect scheduler statistics" is for systemd-bootchart.
+    </para></note>
 
     <para os="h">Configure the kernel via a menu-driven interface.
     CBLFS has some information regarding particular kernel configuration
