@@ -26,9 +26,9 @@
     href="../common/acl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILDN32}" ./configure \
-    --prefix=/usr --libdir=/lib32 \
-    --libexecdir=/usr/lib32</userinput></screen>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/acl.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/acl.xml"
@@ -42,24 +42,46 @@
     href="../common/acl.xml"
     xpointer="xpointer(//*[@os='e'])"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+<screen os="f"><userinput>CC="gcc ${BUILDN32}" ./configure \
+    --prefix=/usr --libdir=/lib32 \
+    --libexecdir=/usr/lib32</userinput></screen>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/acl.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para os="h">Recreate the symlink in <filename class="directory">/usr/lib32</filename> and remove the shared link from <filename class="directory">/lib32</filename>:</para>
-
-<screen os="i"><userinput>ln -sfv ../../lib32/$(readlink /lib32/libacl.so) /usr/lib32/libacl.so
-rm -v /lib32/libacl.so</userinput></screen>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/acl.xml"
+    xpointer="xpointer(//*[@os='h'])"/>
+ 
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/acl.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/acl.xml"
     xpointer="xpointer(//*[@os='j'])"/>
 
-<screen os="k"><userinput>chmod 755 -v /lib32/libacl.so.1.1.0</userinput></screen>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/acl.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/acl.xml"
+    xpointer="xpointer(//*[@os='l'])"/>
+
+    <para os="m">Recreate the symlink in <filename class="directory">/usr/lib32
+    </filename> and remove the shared link from <filename class="directory">
+    /lib32</filename>:</para>
+
+<screen os="n"><userinput>ln -sfv ../../lib32/$(readlink /lib32/libacl.so) /usr/lib32/libacl.so
+rm -v /lib32/libacl.so</userinput></screen>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/acl.xml"
+    xpointer="xpointer(//*[@os='o'])"/>
+
+<screen os="p"><userinput>chmod 755 -v /lib32/libacl.so.1.1.0</userinput></screen>
 
   </sect2>
 

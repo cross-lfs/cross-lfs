@@ -22,43 +22,65 @@
     <title>Installation of Acl</title>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='a'])"/>
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILD64}" ./configure \
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='b'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='c'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='d'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='e'])"/>
+ 
+<screen os="f"><userinput>CC="gcc ${BUILD64}" ./configure \
     --prefix=/usr --libdir=/lib64 \
     --libexecdir=/usr/lib64</userinput></screen>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='g'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='d'])"/>
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='h'])"/>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='i'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='e'])"/>
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='j'])"/>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='k'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='l'])"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='g'])"/>
+    <para os="m">Recreate the symlink in <filename class="directory">/usr/lib64
+    </filename> and remove the shared link from <filename class="directory">
+    /lib64</filename>:</para>
 
-    <para os="h">Recreate the symlink in <filename class="directory">/usr/lib64</filename> and remove the shared link from <filename class="directory">/lib64</filename>:</para>
-
-<screen os="i"><userinput>ln -sfv ../../lib64/$(readlink /lib64/libacl.so) /usr/lib64/libacl.so
+<screen os="n"><userinput>ln -sfv ../../lib64/$(readlink /lib64/libacl.so) /usr/lib64/libacl.so
 rm -v /lib64/libacl.so</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/acl.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+  href="../common/acl.xml"
+  xpointer="xpointer(//*[@os='o'])"/>
 
-<screen os="k"><userinput>chmod 755 -v /lib64/libacl.so.1.1.0</userinput></screen>
+<screen os="p"><userinput>chmod 755 -v /lib64/libacl.so.1.1.0</userinput></screen>
 
   </sect2>
 
