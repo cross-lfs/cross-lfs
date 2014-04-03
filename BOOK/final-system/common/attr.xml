@@ -25,29 +25,38 @@
   <sect2 role="installation">
     <title>Installation of Attr</title>
 
-    <para os="a">Prepare Attr for compilation:</para>
+    <para os="a">Apply a sed to install the documentation with a versioned
+    directory:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
+<screen os="b"><userinput>sed -i -e 's|/@pkg_name@|&amp;-@pkg_version@|' include/builddefs.in</userinput></screen>
 
-    <para os="c">Compile the package:</para>
+    <para os="c">Prepare Attr for compilation:</para>
 
-<screen os="d"><userinput>make</userinput></screen>
+<screen os="d"><userinput>./configure --prefix=/usr</userinput></screen>
 
-    <para os="e">This package does not come with a test suite.</para>
+    <para os="e">Compile the package:</para>
 
-    <para os="f">Install the package:</para>
+<screen os="f"><userinput>make</userinput></screen>
 
-<screen os="g"><userinput>make install install-dev install-lib</userinput></screen>
+    <para os="g">The tests need to run with a filesystem which supports extended
+    attributes. Test the results:</para>
 
-    <para os="h">Move the shared library to <filename class="directory">/lib</filename>
-    and recreate the symlink in <filename class="directory">/usr/lib</filename>:</para>
+<screen os="h"><userinput remap="test">make -j1 tests root-tests</userinput></screen>
 
-<screen os="i"><userinput>mv -v /usr/lib/libattr.so.* /lib
+    <para os="i">Install the package:</para>
+
+<screen os="j"><userinput>make install install-dev install-lib</userinput></screen>
+
+    <para os="k">Move the shared library to <filename class="directory">/lib
+    </filename> and recreate the symlink in <filename class="directory">/usr/lib
+    </filename>:</para>
+
+<screen os="l"><userinput>mv -v /usr/lib/libattr.so.* /lib
 ln -sfv ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so</userinput></screen>
 
-    <para os="j">Set the proper permissions on the shared library:</para>
+    <para os="m">Set the proper permissions on the shared library:</para>
 
-<screen os="k"><userinput>chmod 755 -v /lib/libattr.so.1.1.0</userinput></screen>
+<screen os="n"><userinput>chmod 755 -v /lib/libattr.so.1.1.0</userinput></screen>
 
   </sect2>
 

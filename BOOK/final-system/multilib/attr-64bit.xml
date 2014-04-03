@@ -22,44 +22,58 @@
     <title>Installation of Attr</title>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='a'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILD64}" ./configure \
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='b'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='c'])"/>
+
+<screen os="d"><userinput>CC="gcc ${BUILD64}" ./configure \
     --prefix=/usr --libdir=/lib64 \
     --libexecdir=/usr/lib64</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='c'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='e'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='d'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='f'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='e'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='g'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='f'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='h'])"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='g'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='i'])"/>
 
-    <para os="h">Recreate the symlink in <filename class="directory">/usr/lib64</filename> and remove the shared link from <filename class="directory">/lib64</filename>:</para>
+    <para os="j">Recreate the symlink in <filename class="directory">/usr/lib64
+    </filename> and remove the shared link from <filename class="directory">
+    /lib64</filename>:</para>
 
-<screen os="i"><userinput>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='k'])"/>
+
+<screen os="l"><userinput>
 ln -sfv ../../lib64/$(readlink /lib64/libattr.so) /usr/lib64/libattr.so
 rm -v /lib64/libattr.so</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/attr.xml"
-    xpointer="xpointer(//*[@os='j'])"/>
+  href="../common/attr.xml"
+  xpointer="xpointer(//*[@os='m'])"/>
 
-<screen os="k"><userinput>chmod 755 -v /lib64/libattr.so.1.1.0</userinput></screen>
+<screen os="n"><userinput>chmod 755 -v /lib64/libattr.so.1.1.0</userinput></screen>
 
   </sect2>
 
