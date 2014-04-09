@@ -69,6 +69,12 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
 <screen os="i"><userinput>make install</userinput></screen>
 
+    <para os="j">Install the documentation:</para>
+
+<screen os="k"><userinput>mkdir -v /usr/share/doc/gmp-&gmp-version;
+cp -v doc/{isa_abi_headache,configuration} doc/*.html \
+    /usr/share/doc/gmp-&gmp-version;</userinput></screen>
+
   </sect2>
 
   <sect2 id="contents-gmp" role="content">
@@ -76,9 +82,11 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
     <segmentedlist>
       <segtitle>Installed libraries</segtitle>
+      <segtitle>Installed directory</segtitle>
 
       <seglistitem>
         <seg>libgmp.[a,so], libgmpxx.[a,so]</seg>
+        <seg>/usr/share/doc/gmp-&gmp-version;</seg>
       </seglistitem>
     </segmentedlist>
 

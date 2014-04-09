@@ -29,7 +29,8 @@
 
 <screen os="b"><userinput>./configure --prefix=/usr --sysconfdir=/etc \
     --libexecdir=/usr/lib/dbus-1.0 --localstatedir=/var \
-    --with-systemdsystemunitdir=/lib/systemd/system</userinput></screen>
+    --with-systemdsystemunitdir=/lib/systemd/system \
+    --docdir=/usr/share/doc/dbus-&dbus-version;</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
@@ -69,7 +70,7 @@ ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</useri
         <seg>dbus-cleanup-sockets, dbus-daemon, dbus-launch, dbus-monitor, dbus-send, dbus-uuidgen</seg>
         <seg>libdbus-1.[a,so]</seg>
         <seg>/etc/dbus-1, /usr/include/dbus-1.0, /usr/lib/dbus-1.0,
-        /var/lib/dbus</seg>
+        /usr/share/doc/dbus-&dbus-version;, /var/lib/dbus</seg>
       </seglistitem>
     </segmentedlist>
 
