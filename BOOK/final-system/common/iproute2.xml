@@ -35,7 +35,7 @@
 
 <screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
 sed -i '/ARPD/d' Makefile
-rm -v man/man8/arpd.8</userinput></screen>
+sed -i 's/arpd.8//' man/man8/Makefile</userinput></screen>
 
     <para os="f1">Remove unused libnl headers:</para>
     
