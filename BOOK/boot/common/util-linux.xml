@@ -31,6 +31,27 @@
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --disable-makeinstall-chown --disable-login --disable-su</userinput></screen>
 
+    <variablelist os="c">
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--disable-makeinstall-chown</parameter></term>
+        <listitem>
+          <para>This prevents Util-linux from trying to perform any
+          chown commands when it is installed.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-login --disable-su</parameter></term>
+        <listitem>
+          <para>This tells Util-linux not to build <command>login</command>
+          or <command>su</command>, as both require PAM.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/util-linux.xml"
     xpointer="xpointer(//*[@os='d'])"/>
