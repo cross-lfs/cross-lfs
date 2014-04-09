@@ -68,21 +68,14 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
   --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
   --with-isl=/cross-tools --with-cloog=/cross-tools --with-mpc=/cross-tools \
   --without-headers --with-newlib --disable-decimal-float --disable-libgomp \
-  --disable-libmudflap --disable-libssp --disable-threads --disable-multilib \
-  --disable-libatomic --disable-libitm --disable-libsanitizer \
-  --disable-libquadmath --disable-target-zlib \
-  --with-system-zlib --enable-cloog-backend=isl --disable-isl-version-check \
+  --disable-libmudflap --disable-libssp --disable-libatomic --disable-libitm \
+  --disable-libsanitizer --disable-libquadmath --disable-threads \
+  --disable-multilib --disable-target-zlib --with-system-zlib \
+  --enable-cloog-backend=isl --disable-isl-version-check \
   --enable-languages=c --enable-checking=release</userinput></screen>
 
     <variablelist os="am">
       <title>The meaning of the new configure options:</title>
-
-      <varlistentry>
-        <term><parameter>--with-sysroot=${CLFS}</parameter></term>
-        <listitem>
-          <para>Tells GCC to consider ${CLFS} as the root file system.</para>
-        </listitem>
-      </varlistentry>
 
      <varlistentry>
         <term><parameter>--with-local-prefix=/tools</parameter></term>
@@ -127,23 +120,10 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-libgomp</parameter></term>
+        <term><parameter>--disable-lib*</parameter></term>
         <listitem>
-          <para>Disables the creation of runtime libraries used by GOMP.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--disable-libmudflap</parameter></term>
-        <listitem>
-          <para>Disables the creation of runtime libaries used by libmudflap.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><parameter>--disable-libssp</parameter></term>
-        <listitem>
-          <para>Disables the use of Stack Smashing Protection for runtime libraries.</para>
+          <para>These options prevent GCC from building a number of libraries
+          that are not needed at this time.</para>
         </listitem>
       </varlistentry>
 
@@ -158,30 +138,32 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-libatomic</parameter></term>
+        <term><parameter>--disable-target-zlib</parameter></term>
         <listitem>
-          <para>The atomic library isn't needed at this time.</para>
+          <para>This tells GCC stuff.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-libitm</parameter></term>
+        <term><parameter>--with-system-zlib</parameter></term>
         <listitem>
-          <para>The itm library isn't neeeded at this tiem.</para>
+          <para>This tells GCC to link to the system-installed zlib instead
+          of the one in its source tree.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-libsanitizer</parameter></term>
+        <term><parameter>--enable-cloog-backend=isl</parameter></term>
         <listitem>
-          <para>The sanitizer library isn't needed at this time.</para>
+          <para>This tells GCC to use ISL as its backend for CLooG.</para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-libquadmath</parameter></term>
+        <term><parameter>--disable-isl-version-check</parameter></term>
         <listitem>
-          <para>The quadmath library isn't needed at this time.</para>
+          <para>This prevents GCC from checking the version of the installed
+          ISL.</para>
         </listitem>
       </varlistentry>
 
