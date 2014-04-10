@@ -22,11 +22,13 @@
   <sect2 role="installation">
     <title>Installation of Shadow</title>
 
-    <para os="b">Disable the installation of the <command>groups</command>
-    program, as Coreutils provides a better version:</para>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/shadow.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
 
 <screen os="c"><userinput>cp -v src/Makefile.in{,.orig}
-sed -e 's/groups$(EXEEXT) //' src/Makefile.in.orig > src/Makefile.in</userinput></screen>
+sed  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
+    src/Makefile.in.orig > src/Makefile.in</userinput></screen>
 
     <para os="d">Prepare Shadow for compilation:</para>
 
