@@ -40,7 +40,18 @@
 
 <screen os="ab"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --sysconfdir=/etc --disable-werror</userinput></screen>
+    --sysconfdir=/etc --disable-werror --enable-grub-mkfont=no</userinput></screen>
+
+<para os="b">The meaning of the new configure option:</para>
+
+  <variablelist os="bc">
+    <varlistentry>
+      <term><parameter>--enable-grub-mkfont=no</parameter></term>
+      <listitem><para>Prevents GRUB from trying to build
+      <command>grub-mkfont</command>, which requires Freetype.</para></listitem>
+    </varlistentry>
+
+  </variablelist>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/x86/grub.xml"

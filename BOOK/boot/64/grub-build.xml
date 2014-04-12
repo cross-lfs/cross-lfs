@@ -40,7 +40,15 @@
 
 <screen os="ab"><userinput>CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --sysconfdir=/etc --libdir=/tools/lib64 --disable-werror</userinput></screen>
+    --sysconfdir=/etc --disable-werror --enable-grub-mkfont=no</userinput></screen>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../x86/grub-build.xml"
+    xpointer="xpointer(//*[@os='b'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../x86/grub-build.xml"
+    xpointer="xpointer(//*[@os='bc'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/x86/grub.xml"
