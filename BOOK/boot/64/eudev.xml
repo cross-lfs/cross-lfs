@@ -26,12 +26,12 @@
     href="../common/eudev.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>BLKID_CFLAGS="-I/tools/include" BLKID_LIBS="-L/tools/lib64 -lblkid" \
-KMOD_CFLAGS="-I/tools/include/" KMOD_LIBS="-L/tools/lib64 -lkmod" \
-CC="${CC} ${BUILD64}" LDFLAGS="-Wl,-rpath,/tools/lib64:/lib64" \
+<screen os="b"><userinput>BLKID_CFLAGS="-I/tools/include" BLKID_LIBS="-L/tools/lib -lblkid" \
+KMOD_CFLAGS="-I/tools/include/" KMOD_LIBS="-L/tools/lib -lkmod" \
+CC="${CC} ${BUILD64}" LDFLAGS="-Wl,-rpath,/tools/lib:/lib" \
     ./configure --prefix=/usr --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --with-rootprefix='' --enable-split-usr --sysconfdir=/etc \
-    --libexecdir=/lib64 --bindir=/sbin --sbindir=/sbin --libdir=/lib64 \
+    --libexecdir=/lib --bindir=/sbin --sbindir=/sbin --libdir=/lib \
     --disable-introspection --disable-gtk-doc-html --disable-gudev \
     --disable-keymap --with-firmware-path=/lib/firmware --enable-libkmod</userinput></screen>
 
@@ -53,13 +53,21 @@ CC="${CC} ${BUILD64}" LDFLAGS="-Wl,-rpath,/tools/lib64:/lib64" \
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eudev.xml"
+    xpointer="xpointer(//*[@os='i'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eudev.xml"
+    xpointer="xpointer(//*[@os='k'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../common/eudev.xml"
     xpointer="xpointer(//*[@os='r1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eudev.xml"
     xpointer="xpointer(//*[@os='r2'])"/>
 
- </sect2>
+  </sect2>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
   href="../common/eudev.xml"
