@@ -26,6 +26,14 @@
   <sect2 role="installation">
     <title>Installation of Bootscripts</title>
 
+    <para os="s1">Remove references to Makefile targets that do not need
+    to be used at this time:</para>
+
+<screen os="s2"><userinput>cp Makefile{,.orig}
+sed -e '/^install-minimal/s/ udev_device_dirs udev_device_links//' \
+    -e '/ mknod_devices/d' \
+    Makefile.orig > Makefile</userinput></screen>
+
     <para os="a">Install the package:</para>
 
 <screen os="b"><userinput>make DESTDIR=${CLFS} install-minimal</userinput></screen>
