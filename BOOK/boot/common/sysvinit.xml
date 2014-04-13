@@ -45,7 +45,8 @@ make -C src CC="${CC}"</userinput></screen>
 
    <para os="e">Install the package:</para>
 
-<screen os="ad"><userinput>make -C src ROOT=${CLFS} install</userinput></screen>
+<screen os="ad"><userinput>make -C src ROOT=/tools install
+ln -svf /tools/sbin/init ${CLFS}/sbin</userinput></screen>
 
   </sect2>
 
@@ -79,7 +80,7 @@ l4:4:wait:/etc/rc.d/init.d/rc 4
 l5:5:wait:/etc/rc.d/init.d/rc 5
 l6:6:wait:/etc/rc.d/init.d/rc 6
 
-ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -r now
+ca:12345:ctrlaltdel:/tools/sbin/shutdown -t1 -a -r now
 
 su:S016:once:/tools/sbin/sulogin
 </literal>
