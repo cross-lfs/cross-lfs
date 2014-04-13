@@ -34,6 +34,11 @@ sed -e '/^install-minimal/s/ udev_device_dirs udev_device_links//' \
     -e '/ mknod_devices/d' \
     Makefile.orig > Makefile</userinput></screen>
 
+    <para os="s3">Account for udev now being in /tools:</para>
+
+<screen os="s4"><userinput>cp clfs/init.d/udev{,.orig}
+sed 's@/sbin/udev@/tools&amp;@' clfs/init.d/udev.orig > clfs/init.d/udev</userinput></screen>
+
     <para os="a">Install the package:</para>
 
 <screen os="b"><userinput>make DESTDIR=${CLFS} install-minimal</userinput></screen>
