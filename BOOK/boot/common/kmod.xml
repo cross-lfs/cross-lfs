@@ -31,6 +31,19 @@ zlib_CFLAGS="-I/tools/include" zlib_LIBS="-L/tools/lib -lz" \
 ./configure --prefix=/tools --bindir=/bin \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} --with-xz --with-zlib</userinput></screen>
 
+    <variablelist os="c">
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--with-zlib --with-xz</parameter></term>
+        <listitem>
+          <para>These allow the Kmod package to handle zlib and XZ
+            compressed kernel modules.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/kmod.xml"
     xpointer="xpointer(//*[@os='d'])"/>
@@ -43,7 +56,7 @@ zlib_CFLAGS="-I/tools/include" zlib_LIBS="-L/tools/lib -lz" \
     href="../../final-system/common/kmod.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="k"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
+<screen os="h"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
 
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
 href="../../final-system/common/kmod.xml"
