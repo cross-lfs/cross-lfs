@@ -27,11 +27,11 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>BLKID_CFLAGS="-I/tools/include" BLKID_LIBS="-L/tools/lib -lblkid" \
-KMOD_CFLAGS="-I/tools/include/" KMOD_LIBS="-L/tools/lib -lkmod" \
-CC="${CC} ${BUILD64}" LDFLAGS="-Wl,-rpath,/tools/lib:/lib" \
-    ./configure --prefix=/tools --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --disable-introspection --disable-gtk-doc-html --disable-gudev \
-    --disable-keymap --with-firmware-path=/lib/firmware --enable-libkmod</userinput></screen>
+    KMOD_CFLAGS="-I/tools/include/" KMOD_LIBS="-L/tools/lib -lkmod" \
+    CC="${CC} ${BUILD64}" ./configure --prefix=/tools --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET}  --disable-introspection --disable-gtk-doc-html \
+    --disable-gudev --disable-keymap --with-firmware-path=/lib/firmware \
+    --enable-libkmod</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/eudev.xml"
