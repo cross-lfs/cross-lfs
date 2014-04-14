@@ -1,0 +1,82 @@
+diff -Naur sysvinit-2.88dsf.orig/src/Makefile sysvinit-2.88dsf/src/Makefile
+--- sysvinit-2.88dsf.orig/src/Makefile	2010-04-11 05:30:27.000000000 -0400
++++ sysvinit-2.88dsf/src/Makefile	2014-04-14 17:00:32.000000000 -0400
+@@ -16,27 +16,20 @@
+ # For some known distributions we do not build all programs, otherwise we do.
+ BIN	=
+ SBIN	= init halt shutdown runlevel killall5 fstab-decode
+-USRBIN	= last mesg
+ 
+-MAN1	= last.1 lastb.1 mesg.1
+ MAN5	= initscript.5 inittab.5
+ MAN8	= halt.8 init.8 killall5.8 pidof.8 poweroff.8 reboot.8 runlevel.8
+ MAN8	+= shutdown.8 telinit.8 fstab-decode.8
+ 
+ ifeq ($(DISTRO),)
+-BIN	+= mountpoint
+-SBIN	+= sulogin bootlogd
+-USRBIN	+= utmpdump wall
+-MAN1	+= utmpdump.1 mountpoint.1 wall.1
+-MAN8	+= sulogin.8 bootlogd.8
++SBIN	+= bootlogd
++MAN8	+= bootlogd.8
+ endif
+ 
+ ifeq ($(DISTRO),Debian)
+ CPPFLAGS+= -DACCTON_OFF
+-BIN	+= mountpoint
+-SBIN	+= sulogin bootlogd
+-MAN1	+= mountpoint.1
+-MAN8	+= sulogin.8 bootlogd.8
++SBIN	+= bootlogd
++MAN8	+= bootlogd.8
+ endif
+ 
+ ifeq ($(DISTRO),Owl)
+@@ -46,11 +39,8 @@
+ 
+ ifeq ($(DISTRO),SuSE)
+ CPPFLAGS+= -DUSE_SYSFS -DSANE_TIO -DSIGINT_ONLYONCE -DUSE_ONELINE
+-BIN	+= mountpoint
+-SBIN	+= sulogin
+-USRBIN	+= utmpdump
+-MAN1	+= utmpdump.1 mountpoint.1
+-MAN8	+= sulogin.8
++SBIN	+=
++MAN8	+=
+ endif
+ 
+ ID		= $(shell id -u)
+@@ -78,7 +68,7 @@
+ endif
+ 
+ # Additional libs for GNU libc.
+-ifneq ($(wildcard /usr/lib*/libcrypt.a),)
++ifneq ($(wildcard /tools/lib*/libcrypt.a),)
+   SULOGINLIBS	+= -lcrypt
+ endif
+ 
+@@ -96,11 +86,8 @@
+ 
+ last:		last.o oldutmp.h
+ 
+-mesg:		mesg.o
+ 
+-mountpoint:	mountpoint.o
+ 
+-utmpdump:	utmpdump.o
+ 
+ runlevel:	runlevel.o
+ 
+diff -Naur sysvinit-2.88dsf.orig/src/paths.h sysvinit-2.88dsf/src/paths.h
+--- sysvinit-2.88dsf.orig/src/paths.h	2010-04-11 05:30:27.000000000 -0400
++++ sysvinit-2.88dsf/src/paths.h	2014-04-14 17:00:36.000000000 -0400
+@@ -26,7 +26,7 @@
+ #define CONSOLE		"/dev/console"		/* Logical system console */
+ #define SECURETTY	"/etc/securetty"	/* List of root terminals */
+ #define SDALLOW		"/etc/shutdown.allow"	/* Users allowed to shutdown */
+-#define INITTAB		"/etc/inittab"		/* Location of inittab */
++#define INITTAB		"/tools/etc/inittab"		/* Location of inittab */
+ #define INIT		"/sbin/init"		/* Location of init itself. */
+ #define NOLOGIN		"/etc/nologin"		/* Stop user logging in. */
+ #define FASTBOOT	"/fastboot"		/* Enable fast boot. */
