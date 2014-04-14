@@ -26,22 +26,13 @@
   <sect2 role="installation">
     <title>Installation of Bootscripts</title>
 
-    <para os="s1">Remove references to Makefile targets that do not need
-    to be used at this time:</para>
+    <para os="s1">Update the bootscripts so they can be used in /tools:</para>
 
-<screen os="s2"><userinput>cp Makefile{,.orig}
-sed -e '/^install-minimal/s/ udev_device_dirs udev_device_links//' \
-    -e '/ mknod_devices/d' \
-    Makefile.orig > Makefile</userinput></screen>
-
-    <para os="s3">Account for udev now being in /tools:</para>
-
-<screen os="s4"><userinput>cp clfs/init.d/udev{,.orig}
-sed 's@/sbin/udev@/tools&amp;@' clfs/init.d/udev.orig > clfs/init.d/udev</userinput></screen>
+<screen os="s2"><userinput>patch -Np1 -i ../bootscripts-cross-lfs-2.1-pre1-updates-1.patch</userinput></screen>
 
     <para os="a">Install the package:</para>
 
-<screen os="b"><userinput>make DESTDIR=${CLFS} install-minimal</userinput></screen>
+<screen os="b"><userinput>make DESTDIR=/tools install-minimal</userinput></screen>
 
   <para os="c">The <command>setclock</command> script reads the time from the
   hardware clock, also known as the BIOS or the Complementary Metal Oxide
@@ -65,12 +56,12 @@ sed 's@/sbin/udev@/tools&amp;@' clfs/init.d/udev.orig > clfs/init.d/udev</userin
   to a value of <option>0</option> (zero) if the hardware clock
   is <emphasis>not</emphasis> set to UTC time.</para>
 
-<screen os="f"><userinput>cat &gt; ${CLFS}/etc/sysconfig/clock &lt;&lt; "EOF"
-<literal># Begin /etc/sysconfig/clock
+<screen os="f"><userinput>cat &gt; /tools/etc/sysconfig/clock &lt;&lt; "EOF"
+<literal># Begin /tools/etc/sysconfig/clock
 
 UTC=1
 
-# End /etc/sysconfig/clock</literal>
+# End /tools/etc/sysconfig/clock</literal>
 EOF</userinput></screen>
 
   </sect2>
