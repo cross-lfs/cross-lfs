@@ -47,16 +47,20 @@ sed  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
     
   </variablelist>
 
+    <para os="h">Tell Shadow to use passwd in /tools/bin:</para>
 
-    <para os="h">Compile the package:</para>
+<screen os="i"><userinput>cp config.h{,.orig}
+sed '/PASSWD_PROGRAM/s@/bin/passwd@/tools&amp;@' config.h.orig &gt; config.h</userinput></screen>
 
-<screen os="i"><userinput>make</userinput></screen>
+    <para os="j">Compile the package:</para>
 
-    <para os="j">This package does not come with a test suite.</para>
+<screen os="k"><userinput>make</userinput></screen>
 
-    <para os="k">Install the package:</para>
+    <para os="l">This package does not come with a test suite.</para>
 
-<screen os="l"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
+    <para os="m">Install the package:</para>
+
+<screen os="n"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
 
   </sect2>
 
