@@ -26,6 +26,13 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
+    <para os="s1">Prevent several programs from being built, as better versions
+    were already installed by Util-linux:</para>
+
+<screen os="s2"><userinput>cp -v src/Makefile{,.orig}
+sed -e 's/\ sulogin[^ ]*//' -e '/utmpdump/d' -e '/mountpoint/d' \
+    -e '/mesg/d' src/Makefile.orig &gt; src/Makefile</userinput></screen>
+
     <para os="aa">The following modifications help locate files specific to this
     particular build:</para>
 
