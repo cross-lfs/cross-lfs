@@ -26,24 +26,11 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-    <para os="s1">Prevent several programs from being built, as better versions
-    were already installed by Util-linux:</para>
+    <para os="p1">Apply a patch to prevent installation of unneeded programs,
+    and allow Sysvinit to be installed in
+    <filename class="directory">/tools</filename>:</para>
 
-<screen os="s2"><userinput>cp -v src/Makefile{,.orig}
-sed -e 's/\ sulogin[^ ]*//' -e '/utmpdump/d' -e '/mountpoint/d' \
-    -e '/mesg/d' src/Makefile.orig &gt; src/Makefile</userinput></screen>
-
-    <para os="aa">The following modifications help locate files specific to this
-    particular build:</para>
-
-<screen os="ab"><userinput>cp -v src/Makefile{,.orig}
-sed -e 's,/usr/lib,/tools/lib,g' \
-    src/Makefile.orig > src/Makefile</userinput></screen>
-
-    <para os="bc">Change the location of inittab:</para>
-
-<screen os="bd"><userinput>cp -v src/paths.h{,.orig}
-sed 's@/etc/inittab@/tools&amp;@' src/paths.h.orig &gt; src/paths.h</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../sysvinit-&sysvinit-version;-tools_updates-1.patch</userinput></screen>
 
     <para os ="c">Compile the package:</para>
 
