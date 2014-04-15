@@ -28,8 +28,8 @@
 
 <screen><userinput>cat &gt; ${CLFS}/etc/passwd &lt;&lt; "EOF"
 <literal>root::&uid-root;:&gid-root;:root:/root:/bin/bash</literal>
-<literal>bin:x:&uid-bin;:&gid-bin;:/dev/null:/bin/false</literal>
-<literal>daemon:x:&uid-daemon;:&gid-daemon;:/dev/null:/bin/false</literal>
+<literal>bin:x:&uid-bin;:&gid-bin;:/bin:/bin/false</literal>
+<literal>daemon:x:&uid-daemon;:&gid-daemon;:/sbin:/bin/false</literal>
 <literal>messagebus:x:&uid-messagebus;:&gid-messagebus;:D-Bus Message Daemon User:/dev/null:/bin/false</literal>
 <literal>nobody:x:&uid-nobody;:&gid-nogroup;:Unprivileged User:/dev/null:/bin/false</literal>
 EOF</userinput></screen>
@@ -42,19 +42,6 @@ EOF</userinput></screen>
   
     <title>Additional users you may want to add if not already included:</title>
 
-    <varlistentry>
-      <term><literal>bin:x:&uid-bin;:&gid-bin;:bin:/bin:/bin/false</literal></term>
-      <listitem>
-        <para>Can be useful for compatibility with legacy applications.</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>daemon:x:&uid-daemon;:&gid-daemon;:daemon:/sbin:/bin/false</literal></term>
-      <listitem>
-        <para>It is often recommended to use an unprivileged User ID/Group ID
-        for daemons to run as, in order to limit their access to the system.</para>
-      </listitem>
-    </varlistentry>
     <varlistentry>
       <term><literal>adm:x:&uid-adm;:&gid-adm;:adm:/var/adm:/bin/false</literal></term>
       <listitem>
@@ -89,12 +76,6 @@ EOF</userinput></screen>
       <term><literal>postmaster:x:&uid-postmaster;:&gid-mail;:postmaster:/var/spool/mail:/bin/false</literal></term>
       <listitem>
         <para>Generally used as an account that receives all the information of troubles with the mail server</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>nobody:x:&uid-nobody;:&gid-nogroup;:nobody:/:/bin/false</literal></term>
-      <listitem>
-        <para>Used by NFS</para>
       </listitem>
     </varlistentry>
   </variablelist>
@@ -132,12 +113,6 @@ EOF</userinput></screen>
     <title>Additional groups you may want to add if not already included:</title>
 
     <varlistentry>
-      <term><literal>adm:x:&gid-adm;:root,adm,daemon</literal></term>
-      <listitem>
-        <para>All users in this group are allowed to do administrative tasks</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
       <term><literal>console:x:&gid-console;:</literal></term>
       <listitem>
         <para>This group has direct access to the console</para>
@@ -150,12 +125,6 @@ EOF</userinput></screen>
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term><literal>mail:x:&gid-mail;:mail</literal></term>
-      <listitem>
-        <para>Used by MTAs (Mail Transport Agents)</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
       <term><literal>news:x:&gid-news;:news</literal></term>
       <listitem>
         <para>Used by Network News Servers</para>
@@ -165,13 +134,6 @@ EOF</userinput></screen>
       <term><literal>users:x:&gid-users;:</literal></term>
       <listitem>
         <para>The default GID used by shadow for new users</para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><literal>nogroup:x:&gid-nogroup;:</literal></term>
-      <listitem>
-        <para>This is a default group used by some programs that do not
-        require a group</para>
       </listitem>
     </varlistentry>
     <varlistentry>
