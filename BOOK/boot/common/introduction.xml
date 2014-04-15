@@ -15,10 +15,10 @@
   build the final system packages.</para>
 
   <para>There are a few additional packages that will need to be
-  installed to allow you to boot the minimal system. Some of these
-  packages will be installed onto root or in /usr on the CLFS
-  partition (${CLFS}/bin, ${CLFS}/usr/bin, etc...), rather than /tools, using the
-  "DESTDIR" option with make. This will require the
+  installed to allow you to boot the minimal system. They will be installed
+  into <filename class="directory">/tools</filename>, but a few additional
+  files and symlinks will be needed on the CLFS partition to be able to boot
+  and log in. This will require the
   <systemitem class="username">clfs</systemitem> user to have write access to
   the rest of the CLFS partition, so you will need to temporarily change the
   ownership of ${CLFS} to the <systemitem class="username">clfs</systemitem> user.
