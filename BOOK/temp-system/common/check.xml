@@ -29,6 +29,20 @@
 <screen os="d"><userinput>PKG_CONFIG= ./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
 
+    <variablelist os="e">
+      <title>The meaning of the new configure option:</title>
+
+      <varlistentry>
+        <term><parameter>PKG_CONFIG=</parameter></term>
+        <listitem>
+          <para>Prevents check from using <command>pkg-config</command> to
+          search for additional packages that may be on the host but
+          won't exist inside the temporary build environment.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
     <para os="f">Build the package:</para>
 
 <screen os="g"><userinput>make</userinput></screen>
