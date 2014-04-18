@@ -22,9 +22,9 @@
   <sect2 role="installation">
     <title>Installation of Shadow</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../final-system/common/shadow.xml"
-    xpointer="xpointer(//*[@os='b'])"/>
+    <para os="b">Disable the installation of the <command>groups</command> and
+    <command>nologin</command> programs, as better versions
+    of these programs are provided by Coreutils and Util-linux:</para>
 
 <screen os="c"><userinput>cp -v src/Makefile.in{,.orig}
 sed  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
