@@ -33,33 +33,25 @@ sed  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
     <para os="d">Prepare Shadow for compilation:</para>
 
 <screen os="e"><userinput>./configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} --sysconfdir=/etc</userinput></screen>
+    --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
 
-<para os="f">The meaning of the configure options:</para>
-
-  <variablelist os="g">
-    <varlistentry>
-      <term><parameter>--sysconfdir=/etc</parameter></term>
-      <listitem><para>Tells Shadow to install its configuration files into
-      <filename class="directory">/etc</filename>, rather than
-      <filename class="directory">/tools/etc</filename>.</para></listitem>
-    </varlistentry>
-    
-  </variablelist>
-
-    <para os="h">Tell Shadow to use <command>passwd</command> in
+    <para os="f">Tell Shadow to use <command>passwd</command> in
     <filename class="directory">/tools/bin</filename>:</para>
 
-<screen os="i"><userinput>cp config.h{,.orig}
+<screen os="g"><userinput>cp config.h{,.orig}
 sed '/PASSWD_PROGRAM/s@/bin/passwd@/tools&amp;@' config.h.orig &gt; config.h</userinput></screen>
 
-    <para os="j">Compile the package:</para>
+    <para os="h">Compile the package:</para>
 
-<screen os="k"><userinput>make</userinput></screen>
+<screen os="i"><userinput>make</userinput></screen>
 
-    <para os="l">Install the package:</para>
+    <para os="j">Install the package:</para>
 
-<screen os="m"><userinput>make DESTDIR=${CLFS} install</userinput></screen>
+<screen os="k"><userinput>make install</userinput></screen>
+
+    <para os="l">Create needed symlinks to be able to log on:</para>
+
+<screen os="m"><userinput>ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
 
   </sect2>
 
