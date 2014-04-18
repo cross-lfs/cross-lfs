@@ -10,32 +10,24 @@
 
   <title>Changing Ownership</title>
 
-    <note>
-      <para>This step is not optional as some of the binaries in 
-      <filename class="directory">/tools</filename> are set u+s.
-      Leaving the permissions as is could cause some commands,
-      <command>mount</command> in particular, to fail later.</para>
-    </note>
-
     <para os="a">Currently, the <filename class="directory">/tools</filename>
     and <filename class="directory">/cross-tools</filename> directories
     are owned by the user <emphasis>clfs</emphasis>, a user that
-    exists only on the host system. Although the <filename
+    exists only on the host system. Although <filename
     class="directory">/tools</filename> and <filename
-    class="directory">/cross-tools</filename> directories can be deleted
-    once the CLFS system has been finished, they can be retained to build
+    class="directory">/cross-tools</filename> can be deleted once the CLFS
+    system has been finished, they can be retained to build
     additional CLFS systems. If the <filename class="directory">/tools</filename>
     and <filename class="directory">/cross-tools</filename> directories are
     kept as is, the files are owned by a user ID without a corresponding
     account. This is dangerous because a user account created later could
-    get this same user ID and would own the <filename
-    class="directory">/tools</filename> directory and all the files therein,
-    thus exposing these files to possible malicious manipulation.</para>
+    get this same user ID and would own these directories and all the files
+    therein, thus exposing those files to possible malicious manipulation.</para>
 
-    <para os="b">To avoid this issue, add the <systemitem
-    class="username">clfs</systemitem> user to the new CLFS system later when
-    creating the <filename>/etc/passwd</filename> file, taking care to assign
-    it the same user and group IDs as on the host system. Alternatively,
+    <para os="b">One possible fix for this issue might be to add the
+    <systemitem class="username">clfs</systemitem> user to the new CLFS system
+    later when creating the <filename>/etc/passwd</filename> file, taking care
+    to assign it the same user and group IDs as on the host system. Alternatively,
     assign the contents of the <filename class="directory">/tools</filename>
     and <filename class="directory">/cross-tools</filename> directories to
     user <systemitem class="username">root</systemitem> by running the
