@@ -69,11 +69,9 @@ make -C man install</userinput></screen>
     <para os="i">Create symbolic links for programs that expect Module-Init-Tools.</para>
 
 <screen os="j"><userinput>ln -sfv kmod /bin/lsmod
-ln -sfv ../bin/kmod /sbin/depmod
-ln -sfv ../bin/kmod /sbin/insmod
-ln -sfv ../bin/kmod /sbin/modprobe
-ln -sfv ../bin/kmod /sbin/modinfo
-ln -sfv ../bin/kmod /sbin/rmmod</userinput></screen>
+for tool in depmod insmod modprobe modinfo rmmod; do
+ln -sfv ../bin/kmod /sbin/${tool}
+done</userinput></screen>
   
   </sect2>
 
