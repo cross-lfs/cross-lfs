@@ -22,6 +22,12 @@
   <sect2 role="installation">
     <title>Installation of Kmod</title>
 
+    <para os="s1">Tell Kmod to use <filename class="directory">/tools/lib/modules</filename>:</para>
+
+<screen os="s2"><userinput>cp -v libkmod/libkmod.c{,.orig}
+sed '/dirname_default_prefix /s@/lib/modules@/tools&amp;@' \
+    libkmod/libkmod.c.orig &gt; libkmod/libkmod.c</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/kmod.xml"
     xpointer="xpointer(//*[@os='a'])"/>
@@ -62,13 +68,10 @@ zlib_CFLAGS="-I/tools/include" zlib_LIBS="-L/tools/lib -lz" \
     href="../../final-system/common/kmod.xml"
     xpointer="xpointer(//*[@os='i'])"/>
 
-<screen os="j"><userinput>ln -sv /tools/bin/kmod ${CLFS}/bin
-ln -sv kmod ${CLFS}/bin/lsmod
-ln -sv ../bin/kmod ${CLFS}/sbin/depmod
-ln -sv ../bin/kmod ${CLFS}/sbin/insmod
-ln -sv ../bin/kmod ${CLFS}/sbin/modprobe
-ln -sv ../bin/kmod ${CLFS}/sbin/modinfo
-ln -sv ../bin/kmod ${CLFS}/sbin/rmmod</userinput></screen>
+<screen os="j"><userinput>ln -sfv kmod /tools/bin/lsmod
+for tool in depmod insmod modprobe modinfo rmmod; do
+    ln -sv ../bin/kmod /tools/sbin/${tool}
+done</userinput></screen>
 
   </sect2>
 

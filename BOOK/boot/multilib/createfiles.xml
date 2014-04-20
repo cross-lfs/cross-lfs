@@ -20,9 +20,12 @@ ln -sv /tools/lib/libgcc_s.so{,.1} ${CLFS}/usr/lib
 ln -sv /tools/lib64/libgcc_s.so{,.1} ${CLFS}/usr/lib64
 ln -sv /tools/lib/libstdc++.so{.6,} ${CLFS}/usr/lib
 ln -sv /tools/lib64/libstdc++.so{.6,} ${CLFS}/usr/lib64
-sed -e 's/tools/usr/' /tools/lib/libstdc++.la > ${CLFS}/usr/lib/libstdc++.la
+sed -e 's/tools/usr/' /tools/lib/libstdc++.la &gt; ${CLFS}/usr/lib/libstdc++.la
 ln -sv bash ${CLFS}/bin/sh
-ln -sv ../run ${CLFS}/var/run</userinput></screen>
+ln -sv ../run ${CLFS}/var/run
+ln -sv /tools/sbin/{fsck.ext2,fsck.ext3,fsck.ext4,e2fsck} ${CLFS}/sbin
+ln -sv /tools/sbin/init ${CLFS}/sbin
+ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
   href="../common/createfiles.xml"

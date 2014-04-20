@@ -79,36 +79,34 @@
     xpointer="xpointer(//*[@os='s'])"/>
 
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${CLFS_TARGET}- \
-    INSTALL_MOD_PATH=${CLFS} modules_install</userinput></screen>
+    INSTALL_MOD_PATH=/tools modules_install</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='s2'])"/>
 
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${CLFS_TARGET}- \
-   INSTALL_FW_PATH=${CLFS}/lib/firmware firmware_install</userinput></screen>
+   INSTALL_MOD_PATH=/tools firmware_install</userinput></screen>
 
     <para os="u">After kernel compilation is complete, additional steps are
     required to complete the installation. Some files need to be copied to
-    the <filename class="directory">${CLFS}/boot</filename> directory.</para>
+    the <filename class="directory">/tools/boot</filename> directory.</para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../bootable/x86/kernel.xml"
-    xpointer="xpointer(//*[@os='v'])"/>
+    <para os="v">Issue the following commands to install the kernel:</para>
 
-<screen><userinput>cp -v arch/i386/boot/bzImage ${CLFS}/boot/vmlinuz-clfs-&linux-version;</userinput></screen>
+<screen><userinput>cp -v arch/i386/boot/bzImage /tools/boot/vmlinuz-clfs-&linux-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='w'])"/>
 
-<screen os="w1"><userinput>cp -v System.map ${CLFS}/boot/System.map-&linux-version;</userinput></screen>
+<screen os="w1"><userinput>cp -v System.map /tools/boot/System.map-&linux-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='x'])"/>
 
-<screen os="x1"><userinput>cp -v .config ${CLFS}/boot/config-&linux-version;</userinput></screen>
+<screen os="x1"><userinput>cp -v .config /tools/boot/config-&linux-version;</userinput></screen>
 
   </sect2>
 

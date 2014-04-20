@@ -12,23 +12,18 @@
 
   <title>Creating Essential Symlinks</title>
 
-  <para os="a">Some programs use hard-wired paths to programs which do not exist
-  yet. In order to satisfy these programs, create a number of symbolic
-  links which will be replaced by real files throughout the course of
-  the next chapter after the software has been installed.</para>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/createfiles.xml"
+  xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>ln -sv /tools/bin/{bash,cat,echo,grep,login,pwd,stty} ${CLFS}/bin
-ln -sv /tools/bin/file ${CLFS}/usr/bin
-ln -sv /tools/lib/libgcc_s.so{,.1} ${CLFS}/usr/lib
-ln -sv /tools/lib/libstdc++.so{.6,} ${CLFS}/usr/lib
-sed -e 's/tools/usr/' /tools/lib/libstdc++.la > ${CLFS}/usr/lib/libstdc++.la
-ln -sv bash ${CLFS}/bin/sh
-ln -sv ../run ${CLFS}/var/run</userinput></screen>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../common/createfiles.xml"
+  xpointer="xpointer(//*[@os='b'])"/>
 
-  <para os="b">To enable some c++ tests in the Glibc and Binutils testsuites
+  <para os="e">To enable some C++ tests in the Glibc and Binutils testsuites
   to link, create a directory and make some symbolic links:</para>
 
-<screen><userinput>mkdir -pv ${CLFS}/usr/lib64
+<screen os="f"><userinput>mkdir -pv ${CLFS}/usr/lib64
 ln -sv /tools/lib/libstdc++.so{.6,} ${CLFS}/usr/lib64</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

@@ -41,17 +41,18 @@ sed  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
 <screen os="g"><userinput>cp config.h{,.orig}
 sed '/PASSWD_PROGRAM/s@/bin/passwd@/tools&amp;@' config.h.orig &gt; config.h</userinput></screen>
 
-    <para os="h">Compile the package:</para>
+    <para os="h">Prevent Shadow from setting installed programs suid:</para>
 
-<screen os="i"><userinput>make</userinput></screen>
+<screen os="i"><userinput>cp -v src/Makefile{,.orig}
+sed 's/\(^suidu*bins = \).*/\1/' src/Makefile.orig &gt; src/Makefile</userinput></screen>
 
-    <para os="j">Install the package:</para>
+    <para os="j">Compile the package:</para>
 
-<screen os="k"><userinput>make install</userinput></screen>
+<screen os="k"><userinput>make</userinput></screen>
 
-    <para os="l">Create needed symlinks to be able to log on:</para>
+    <para os="l">Install the package:</para>
 
-<screen os="m"><userinput>ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
+<screen os="m"><userinput>make install</userinput></screen>
 
   </sect2>
 
