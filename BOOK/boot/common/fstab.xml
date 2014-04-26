@@ -37,8 +37,14 @@ EOF</userinput></screen>
   href="../../bootable/common/fstab.xml"
   xpointer="xpointer(//*[@os='b'])"/>
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-  href="../../bootable/common/fstab.xml"
-  xpointer="xpointer(//*[@os='c'])"/>
+  <para os="c">The <filename class="directory">/dev/shm</filename> mount point
+  for <systemitem class="filesystem">tmpfs</systemitem> is included to
+  allow enabling POSIX-shared memory. The kernel must have the required
+  support built into it for this to work (more about this is in the next
+  section). Please note that very little software currently uses
+  POSIX-shared memory.  Therefore, consider the <filename
+  class="directory">/dev/shm</filename> mount point optional. For more
+  information, see <filename>Documentation/filesystems/tmpfs.txt</filename>
+  in the kernel source tree.</para>
 
 </sect1>
