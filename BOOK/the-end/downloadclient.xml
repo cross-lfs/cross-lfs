@@ -62,7 +62,7 @@ gawk 'BEGIN {
   close(NetService)
 }' > binary
 
-gawk '{q=p;p=$0}NR&gt;1{print q}END{ORS = ""; print p}' binary &gt; wget-1.14.tar.xz 
+gawk '{q=p;p=$0}NR&gt;1{print q}END{ORS = ""; print p}' binary &gt; wget-1.14.tar.xz
 
 rm binary
 EOF</userinput></screen>
@@ -78,7 +78,7 @@ my $response;
 
 $response = $http->mirror('http://ftp.gnu.org/gnu/wget/wget-1.14.tar.xz', 'wget-1.14.tar.xz');
 die "Failed!\n" unless $response->{success};
-print "Unchanged!\n" if $response->{status} eq '304';      
+print "Unchanged!\n" if $response->{status} eq '304';
 EOF</userinput></screen>
       <para>Or use this:</para>
 <screen><userinput>perl -MHTTP::Tiny -E 'say HTTP::Tiny-&gt;new-&gt;get(shift)-&gt;{content}' "http://ftp.gnu.org/gnu/wget/wget-1.14.tar.xz" &gt; binary

@@ -23,9 +23,9 @@
 
     <para>Yaboot defaults to build as 32bit, so we need to pass appropriate
     options to both the compiler and the linker.  To prevent the build from
-    failing due to compiler warnings, the -Werror flag is removed.  The 
-    Makefile already overrides any CC and ignores LDFLAGS in favour of 
-    its own variables, so we need to use the following seds for a 
+    failing due to compiler warnings, the -Werror flag is removed.  The
+    Makefile already overrides any CC and ignores LDFLAGS in favour of
+    its own variables, so we need to use the following seds for a
     successful compile and install.</para>
 
 <screen><userinput>sed -i -e "s/m32/m64/g" \
