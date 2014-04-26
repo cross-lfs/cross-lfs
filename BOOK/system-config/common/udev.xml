@@ -92,31 +92,6 @@
     </sect3>
 
     <sect3>
-      <title>Udev Bootscript</title>
-
-      <para>The <command>S10udev</command> initscript takes care of creating
-      device nodes when Linux is booted. The script unsets the uevent handler
-      from the default of <command>/sbin/hotplug</command>.  This is done
-      because the kernel no longer needs to call out to an external binary.
-      Instead <command>udevd</command> will listen on a netlink socket for
-      uevents that the kernel raises. Next, the bootscript copies any static
-      device nodes that exist in <filename
-      class="directory">/lib/udev/devices</filename> to <filename
-      class="directory">/dev</filename>. This is necessary because some devices,
-      directories, and symlinks are needed before the dynamic device handling
-      processes are available during the early stages of booting a system.
-      Creating static device nodes in <filename
-      class="directory">/lib/udev/devices</filename> also provides an easy
-      workaround for devices that are not supported by the dynamic device
-      handling infrastructure. The bootscript then starts the Udev daemon,
-      <command>udevd</command>, which will act on any uevents it receives.
-      Finally, the bootscript forces the kernel to replay uevents for any
-      devices that have already been registered and then waits for
-      <command>udevd</command> to handle them.</para>
-
-    </sect3>
-
-    <sect3>
       <title>Device Node Creation</title>
 
       <para>To obtain the right major and minor number for a device, Udev relies
@@ -128,14 +103,13 @@
       to create a device node with major number <emphasis>7</emphasis> and minor
       <emphasis>0</emphasis>. The names and permissions of the nodes created
       under the <filename class="directory">/dev</filename> directory are
-      determined by rules specified in the files within the <filename
-      class="directory">/etc/udev/rules.d/</filename> directory. These are
-      numbered in a similar fashion to the CLFS-Bootscripts package. If
-      <command>udevd</command> can't find a rule for the device it is creating,
-      it will default permissions to <emphasis>660</emphasis> and ownership to
-      <emphasis>root:root</emphasis>. Documentation on the syntax of the Udev
-      rules configuration files is available in
-      <filename>/usr/share/doc/udev/writing_udev_rules/index.html</filename></para>
+      determined by rules specified in the files within the
+      <filename class="directory">/lib/udev/rules.d</filename> and <filename
+      class="directory">/etc/udev/rules.d/</filename> directories. These files
+      have names that start with numbers, and are evaluated in numerical order.
+      If <command>udevd</command> can't find a rule for the device it is
+      creating, it will default permissions to <emphasis>660</emphasis> and
+      ownership to <emphasis>root:root</emphasis>. </para>
 
     </sect3>
 
@@ -233,17 +207,11 @@
       enhances the functionality of <emphasis>snd-pcm</emphasis> by making the
       sound cards available to OSS applications), configure
       <command>modprobe</command> to load the wrapper after Udev loads the
-      wrapped module. To do this, add an <quote>install</quote> line in
-      <filename>/etc/modprobe.conf</filename>. For example:</para>
+      wrapped module. To do this, add an <quote>install</quote> line to a file
+      in <filename>/etc/modprobe.d</filename>. For example:</para>
 
 <screen role="nodump"><literal>install snd-pcm /sbin/modprobe -i snd-pcm ; \
     /sbin/modprobe snd-pcm-oss ; true</literal></screen>
-
-      <para>If the module in question is not a wrapper and is useful by itself,
-      configure the <command>S05modules</command> bootscript to load this
-      module on system boot. To do this, add the module name to the
-      <filename>/etc/sysconfig/modules</filename> file on a separate line.
-      This works for wrapper modules too, but is suboptimal in that case.</para>
 
     </sect3>
 
@@ -251,7 +219,7 @@
       <title>Udev loads some unwanted module</title>
 
       <para>Either don't build the module, or blacklist it in
-      <filename>/etc/modprobe.conf</filename> file as done with the
+      <filename>/etc/modprobe.d</filename> file as done with the
       <emphasis>forte</emphasis> module in the example below:</para>
 
 <screen role="nodump"><literal>blacklist forte</literal></screen>
