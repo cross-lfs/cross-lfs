@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-scripts-boot-scripts" role="wrap">
+  <?dbhtml filename="boot-scripts.html"?>
+
+  <title>Boot-scripts for CLFS &boot-scripts-clfs-version;</title>
+
+  <indexterm zone="ch-scripts-boot-scripts">
+    <primary sortas="a-Boot-scripts">Boot-scripts</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title/>
+
+    <para>The Boot-scripts package contains a set of scripts to
+    start/stop the CLFS system at bootup/shutdown.</para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Boot-scripts</title>
+
+    <para os="a">Install the package:</para>
+
+<screen os="b"><userinput>make DESTDIR=/tools install-boot-scripts</userinput></screen>
+
+  <para os="c">The <command>setclock</command> script reads the time from the
+  hardware clock, also known as the BIOS or the Complementary Metal Oxide
+  Semiconductor (CMOS) clock. If the hardware clock is set to UTC, this
+  script will convert the hardware clock's time to the local time using
+  the <filename>/etc/sysconfig/clock</filename> file (which tells the
+  <command>hwclock</command> program which timezone the user is in). There
+  is no way to detect whether or not the hardware clock is set to UTC, so
+  this needs to be configured manually.</para>
+
+
+
+  <para os="d">If you do not know whether or not the hardware clock is set to UTC,
+  you can find out after you have booted the new machine by running the
+  <userinput>hwclock --localtime  --show</userinput> command, and if
+  necessary editing the <filename>/etc/sysconfig/clock</filename> script.
+  The worst that will happen if you make a wrong guess here is that the
+  time displayed will be wrong.</para>
+
+  <para os="e">Change the value of the <envar>UTC</envar> variable below
+  to a value of <option>0</option> (zero) if the hardware clock
+  is <emphasis>not</emphasis> set to UTC time.</para>
+
+<screen os="f"><userinput>cat &gt; /tools/etc/sysconfig/clock &lt;&lt; "EOF"
+<literal># Begin /tools/etc/sysconfig/clock
+
+UTC=1
+
+# End /tools/etc/sysconfig/clock</literal>
+EOF</userinput></screen>
+
+  </sect2>
+
+  <sect2 id="contents-boot-scripts" role="content">
+    <title>Contents of Boot-scripts</title>
+
+    <segmentedlist>
+      <segtitle>Installed scripts</segtitle>
+
+      <seglistitem>
+        <seg>checkfs, cleanfs, functions, halt, localnet, mountfs, mountkernfs,
+        rc, reboot, sendsignals, setclock, swap, and udev.</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="checkfs-boot-scripts">
+        <term><command>checkfs</command></term>
+        <listitem>
+          <para>Checks the integrity of the file systems before they are
+          mounted (with the exception of journal and network based file
+          systems)</para>
+          <indexterm zone="ch-scripts-boot-scripts checkfs-boot-scripts">
+            <primary sortas="d-checkfs">checkfs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="cleanfs-boot-scripts">
+        <term><command>cleanfs</command></term>
+        <listitem>
+          <para>Removes files that should not be preserved between reboots,
+          such as those in <filename class="directory">/var/run/</filename>
+          and <filename class="directory">/var/lock/</filename>; it re-creates
+          <filename>/var/run/utmp</filename> and removes the possibly present
+          <filename>/etc/nologin</filename>, <filename>/fastboot</filename>,
+          and <filename>/forcefsck</filename> files</para>
+          <indexterm zone="ch-scripts-boot-scripts cleanfs-boot-scripts">
+            <primary sortas="d-cleanfs">cleanfs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="functions-boot-scripts">
+        <term><command>functions</command></term>
+        <listitem>
+          <para>Contains common functions, such as error and status checking,
+          that are used by several boot-scripts</para>
+          <indexterm zone="ch-scripts-boot-scripts functions-boot-scripts">
+            <primary sortas="d-functions">functions</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="halt-boot-scripts">
+        <term><command>halt</command></term>
+        <listitem>
+          <para>Halts the system</para>
+          <indexterm zone="ch-scripts-boot-scripts halt-boot-scripts">
+            <primary sortas="d-halt">halt</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="localnet-boot-scripts">
+        <term><command>localnet</command></term>
+        <listitem>
+          <para>Sets up the system's hostname and local loopback device</para>
+          <indexterm zone="ch-scripts-boot-scripts localnet-boot-scripts">
+            <primary sortas="d-localnet">localnet</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="mountfs-boot-scripts">
+        <term><command>mountfs</command></term>
+        <listitem>
+          <para>Mounts all file systems, except ones that are marked
+          <emphasis>noauto</emphasis> or are network based</para>
+          <indexterm zone="ch-scripts-boot-scripts mountfs-boot-scripts">
+            <primary sortas="d-mountfs">mountfs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="mountkernfs-boot-scripts">
+        <term><command>mountkernfs</command></term>
+        <listitem>
+          <para>Mounts virtual kernel file systems, such as
+          <systemitem class="filesystem">proc</systemitem></para>
+          <indexterm zone="ch-scripts-boot-scripts mountkernfs-boot-scripts">
+            <primary sortas="d-mountkernfs">mountkernfs</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rc-boot-scripts">
+        <term><command>rc</command></term>
+        <listitem>
+          <para>The master run-level control script; it is responsible for
+          running all the other boot-scripts one-by-one, in a sequence
+          determined by the name of the symbolic links being processed</para>
+          <indexterm zone="ch-scripts-boot-scripts rc-boot-scripts">
+            <primary sortas="d-rc">rc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="reboot-boot-scripts">
+        <term><command>reboot</command></term>
+        <listitem>
+          <para>Reboots the system</para>
+          <indexterm zone="ch-scripts-boot-scripts reboot-boot-scripts">
+            <primary sortas="d-reboot">reboot</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="sendsignals-boot-scripts">
+        <term><command>sendsignals</command></term>
+        <listitem>
+          <para>Makes sure every process is terminated before the system reboots
+          or halts</para>
+          <indexterm zone="ch-scripts-boot-scripts sendsignals-boot-scripts">
+            <primary sortas="d-sendsignals">sendsignals</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="setclock-boot-scripts">
+        <term><command>setclock</command></term>
+        <listitem>
+          <para>Resets the kernel clock to local time in case the hardware clock
+          is not set to UTC time</para>
+          <indexterm zone="ch-scripts-boot-scripts setclock-boot-scripts">
+            <primary sortas="d-setclock">setclock</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="swap-boot-scripts">
+        <term><command>swap</command></term>
+        <listitem>
+          <para>Enables and disables swap files and partitions</para>
+          <indexterm zone="ch-scripts-boot-scripts swap-boot-scripts">
+            <primary sortas="d-swap">swap</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="eudev-boot-scripts">
+        <term><command>udev</command></term>
+        <listitem>
+          <para>Starts and stops the Eudev daemon</para>
+          <indexterm zone="ch-scripts-boot-scripts eudev-boot-scripts">
+            <primary sortas="d-eudev">udev</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
