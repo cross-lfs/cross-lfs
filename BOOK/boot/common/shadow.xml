@@ -38,7 +38,7 @@ sed  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
     <para os="f">Tell Shadow to use <command>passwd</command> in
     <filename class="directory">/tools/bin</filename>:</para>
 
-<screen os="g"><userinput>cp config.h{,.orig}
+<screen os="g"><userinput>cp -v config.h{,.orig}
 sed '/PASSWD_PROGRAM/s@/bin/passwd@/tools&amp;@' config.h.orig &gt; config.h</userinput></screen>
 
     <para os="h">Prevent Shadow from setting installed programs suid:</para>
