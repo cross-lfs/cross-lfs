@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="ch-boot-how-to-view">
+  <?dbhtml filename="how-to-view.html"?>
+
+  <title>How to View the Book</title>
+
+  <para>Most likely, you have been using a web browser or PDF viewer to read
+  the CLFS book so far. However, the temporary system in
+  <filename class="directory">/tools</filename> does not have
+  any of these, so you will need to find a way to continue following the book
+  after booting into the temporary build environment. One possibility might
+  be to simply have the book open on another computer, or even read a printed
+  copy, though one downside to this is that you cannot copy-and-paste commands.
+  Another solution could be to convert the CLFS book into plain text, thus
+  allowing it to be viewed with <command>more</command>, by using a command
+  such as the following:</para>
+
+<screen><userinput>lynx -dump /path/to/clfs/book.html &gt; ${CLFS}/root/CLFS-book.txt</userinput></screen>
+
+  <para>Other possible solutions include cross-compiling and installing
+  additional programs before booting, such as Lynx or Links to view the book,
+  or OpenSSH to allow remote login. See the CLFS Hints website at
+  <ulink url="http://hints.cross-lfs.org"/> for more suggestions that other
+  users have come up with.</para>
+
+</sect1>
