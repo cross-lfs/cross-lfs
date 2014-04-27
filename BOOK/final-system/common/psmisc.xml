@@ -27,39 +27,17 @@
 
     <para os="a">Prepare Psmisc for compilation:</para>
 
-<screen os="b"><userinput>./configure --prefix=/usr --exec-prefix=""</userinput></screen>
+<screen os="b"><userinput>./configure --prefix=/usr</userinput></screen>
 
-    <variablelist os="c">
-      <title>The meaning of the configure option:</title>
+    <para os="c">Compile the package:</para>
 
-      <varlistentry>
-        <term><parameter>--exec-prefix=""</parameter></term>
-        <listitem>
-          <para>This ensures that the Psmisc binaries will install into
-          <filename class="directory">/bin</filename> instead of
-          <filename class="directory">/usr/bin</filename>. This is the
-          correct location according to the FHS, because some of the Psmisc
-          binaries are used by Systemd.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <para os="d">Compile the package:</para>
+    <para os="e">This package does not come with a test suite.</para>
 
-<screen os="e"><userinput>make</userinput></screen>
+    <para os="f">Install the package:</para>
 
-    <para os="f">This package does not come with a test suite.</para>
-
-    <para os="g">Install the package:</para>
-
-<screen os="h"><userinput>make install</userinput></screen>
-
-    <para os="i">There is no reason for the <command>pstree</command> and
-    <command>pstree.x11</command> programs to reside in <filename
-    class="directory">/bin</filename>. Therefore, move them to <filename
-    class="directory">/usr/bin</filename>:</para>
-
-<screen os="j"><userinput>mv -v /bin/pstree* /usr/bin</userinput></screen>
+<screen os="g"><userinput>make install</userinput></screen>
 
   </sect2>
 
