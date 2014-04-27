@@ -30,19 +30,21 @@
        -e '/^LIB/s,\./zlib-src,/usr/lib64,' \
        cpan/Compress-Raw-Zlib/config.in</userinput></screen>
 
-    <para os="mp1">Perl does not, by default, know about library directories with names other
-    than lib, The following patch will allow it to install to other directories:</para>
+    <para os="mp1">Perl does not, by default, know about library directories
+    with names other than <filename class="directory">lib</filename>. The
+    following patch will allow it to install to other directories:</para>
 
 <screen os="mp2"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
 
-    <para os="s1">There is a further (possibly cosmetic) anomaly - if we install perl and
-    then run <command>perl -V</command> it will claim that libc is in /lib.  The
-    following sed fixes this, but only takes effect when <command>make install
-    </command> is run:</para>
+    <para os="s1">There is a further (possibly cosmetic) anomaly - if we
+    install Perl and then run <command>perl -V</command> it will claim that
+    libc is in <filename class="directory">/lib</filename>.  The
+    following sed fixes this, but only takes effect when
+    <command>make install</command> is run:</para>
 
 <screen os="s2"><userinput>sed -i "/libc/s@/lib@/lib64@" hints/linux.sh</userinput></screen>
 
-    <para os="m2">We still need to tell perl to actually use lib64:</para>
+    <para os="m2">We still need to tell Perl to actually use <filename class="directory">lib64</filename>:</para>
 
 <screen os="m3"><userinput>echo 'installstyle="lib64/perl5"' >>hints/linux.sh</userinput></screen>
 
