@@ -1,0 +1,56 @@
+Submitted By: Joe Ciccone <jciccone@gmail.com>
+Date: 14-06-2010
+Initial Package Version: 2.6.18
+Upstream Status: Unknown
+Origin: Joe Ciccone
+Description: This patch gives the ability to change the libdir.
+             Updated for Iproute2-2.6.28 by Jim Gifford
+             Updated for Iproute2-2.6.34 by Joe Ciccone
+             Updated for Iproute2-2.6.37 by Joe Ciccone
+             Renamed for Iproute2-2.6.38 by Jonathan Norman
+             Rediffed for Iproute2-3.4.0 by William Harrington
+             Rediffed for Iproute2-3.8.0 by William Harrington
+             Renamed for Iproute2-3.12.0 by William Harrington
+             Renamed for Iproute2-3.14.0 by William Harrington
+
+diff -Naur iproute2-3.8.0.orig/Makefile iproute2-3.8.0/Makefile
+--- iproute2-3.8.0.orig/Makefile	2013-02-21 16:41:20.000000000 +0000
++++ iproute2-3.8.0/Makefile	2013-06-03 12:31:18.891352195 +0000
+@@ -13,7 +13,7 @@
+ 
+ SHARED_LIBS = y
+ 
+-DEFINES= -DRESOLVE_HOSTNAMES -DLIBDIR=\"$(LIBDIR)\"
++DEFINES= -DRESOLVE_HOSTNAMES -DLIBDIR=\"$(LIBDIR)\" -DARPDDIR=\"$(ARPDDIR)\"
+ ifneq ($(SHARED_LIBS),y)
+ DEFINES+= -DNO_SHARED_LIBS
+ endif
+diff -Naur iproute2-3.8.0.orig/include/iptables.h iproute2-3.8.0/include/iptables.h
+--- iproute2-3.8.0.orig/include/iptables.h	2013-02-21 16:41:20.000000000 +0000
++++ iproute2-3.8.0/include/iptables.h	2013-06-03 12:31:18.891352195 +0000
+@@ -4,8 +4,12 @@
+ #include "iptables_common.h"
+ #include "libiptc/libiptc.h"
+ 
++#ifndef LIBDIR
++#define LIBDIR "/usr/lib"
++#endif
++
+ #ifndef IPT_LIB_DIR
+-#define IPT_LIB_DIR "/usr/local/lib/iptables"
++#define IPT_LIB_DIR LIBDIR "/iptables"
+ #endif
+ 
+ #ifndef IPPROTO_SCTP
+diff -Naur iproute2-3.8.0.orig/misc/arpd.c iproute2-3.8.0/misc/arpd.c
+--- iproute2-3.8.0.orig/misc/arpd.c	2013-02-21 16:41:20.000000000 +0000
++++ iproute2-3.8.0/misc/arpd.c	2013-06-03 12:31:18.891352195 +0000
+@@ -40,7 +40,7 @@
+ int resolve_hosts;
+ 
+ DB	*dbase;
+-char	*dbname = "/var/lib/arpd/arpd.db";
++char   *dbname = ARPDDIR "/arpd.db";
+ 
+ int	ifnum;
+ int	*ifvec;
