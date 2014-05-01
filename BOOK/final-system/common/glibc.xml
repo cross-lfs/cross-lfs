@@ -8,16 +8,16 @@
 <sect1 id="ch-system-glibc" role="wrap">
   <?dbhtml filename="glibc.html"?>
 
-  <title>GLIBC-&glibc-version;</title>
+  <title>Glibc-&glibc-version;</title>
 
   <indexterm zone="ch-system-glibc">
-    <primary sortas="a-GLIBC">GLIBC</primary>
+    <primary sortas="a-Glibc">Glibc</primary>
   </indexterm>
 
   <sect2 role="package">
     <title/>
 
-    <para>The GLIBC package contains the main C library. This library provides
+    <para>The Glibc package contains the main C library. This library provides
     the basic routines for allocating memory, searching directories, opening and
     closing files, reading and writing files, string handling, pattern matching,
     arithmetic, and so on.</para>
@@ -25,7 +25,7 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of GLIBC</title>
+    <title>Installation of Glibc</title>
 
     <note os="z">
       <para>Some packages outside of CLFS suggest installing GNU libiconv in
@@ -33,7 +33,7 @@
       home page (<ulink url="http://www.gnu.org/software/libiconv/"/>) says
       <quote>This library provides an <function>iconv()</function>
       implementation, for use on systems which don't have one, or whose
-      implementation cannot convert from/to Unicode.</quote> GLIBC provides
+      implementation cannot convert from/to Unicode.</quote> Glibc provides
       an <function>iconv()</function> implementation and can convert from/to
       Unicode, therefore libiconv is not required on a CLFS system.</para>
     </note>
@@ -57,23 +57,23 @@ sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
   scripts/test-installation.pl
 unset LINKER</userinput></screen>
 
-    <para os="b">The GLIBC build system is self-contained and will install
+    <para os="b">The Glibc build system is self-contained and will install
     perfectly, even though the compiler specs file and linker are still
     pointing at <filename class="directory">/tools</filename>. The specs
-    and linker cannot be adjusted before the GLIBC install because the
-    GLIBC Autoconf tests would give false results and defeat the goal
+    and linker cannot be adjusted before the Glibc install because the
+    Glibc Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
     <para os="s1">Apply the following sed so the <command>tzselect</command> script works properly:</para>
 
 <screen os="s2"><userinput>sed -i 's/\\$$(pwd)/`pwd`/' timezone/Makefile</userinput></screen>
 
-    <para os="e">The GLIBC documentation recommends building GLIBC outside of     the source directory in a dedicated build directory:</para>
+    <para os="e">The Glibc documentation recommends building Glibc outside of     the source directory in a dedicated build directory:</para>
 
 <screen os="f"><userinput>mkdir -v ../glibc-build
 cd ../glibc-build</userinput></screen>
 
-    <para os="g">Prepare GLIBC for compilation:</para>
+    <para os="g">Prepare Glibc for compilation:</para>
 
 <screen os="h"><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
     --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/lib/glibc \
@@ -98,7 +98,7 @@ cd ../glibc-build</userinput></screen>
 <screen os="k"><userinput>make</userinput></screen>
 
     <important os="l">
-      <para>The test suite for GLIBC is considered critical.
+      <para>The test suite for Glibc is considered critical.
       Do not skip it under any circumstance.</para>
     </important>
 
@@ -110,11 +110,11 @@ cd ../glibc-build</userinput></screen>
 <screen os="n"><userinput remap="test">cp -v ../glibc-&glibc-version;/iconvdata/gconv-modules iconvdata
 make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</userinput></screen>
 
-    <para os="o">The GLIBC test suite is highly dependent on certain functions of
+    <para os="o">The Glibc test suite is highly dependent on certain functions of
     the host system, in particular the kernel. The <emphasis>posix/annexc</emphasis> and
     <emphasis>conform/run-conformtest</emphasis> tests normally fail
     and you should see <literal>Error 1 (ignored)</literal> in the output. Apart
-    from this, the GLIBC test suite is always expected to pass. However, in certain
+    from this, the Glibc test suite is always expected to pass. However, in certain
     circumstances, some failures are unavoidable. If a test fails because of a missing
     program (or missing symbolic link), or a segfault, you will see an error code
     greater than 127 and the details will be in the log. More commonly, tests will
@@ -157,7 +157,7 @@ make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</use
       </listitem>
     </itemizedlist>
 
-    <para os="q">Though it is a harmless message, the install stage of GLIBC will
+    <para os="q">Though it is a harmless message, the install stage of Glibc will
     complain about the absence of <filename>/etc/ld.so.conf</filename>.
     Prevent this warning with:</para>
 
@@ -197,7 +197,7 @@ install -v -Dm644 ../glibc-2.19/nscd/nscd.service /lib/systemd/system/nscd.servi
     to install only those locales that are wanted and needed. This can be
     achieved by using the <command>localedef</command> command. Information on
     this command is located in the <filename>INSTALL</filename> file in the
-    GLIBC source. However, there are a number of locales that are essential in
+    Glibc source. However, there are a number of locales that are essential in
     order for the tests of future packages to pass, in particular, the
     <emphasis>libstdc++</emphasis> tests from GCC. The following instructions,
     instead of the <parameter>install-locales</parameter> target used above,
@@ -236,7 +236,7 @@ localedef -i ja_JP -f EUC-JP ja_JP</userinput></screen>
   </sect2>
 
   <sect2 id="conf-glibc" role="configuration">
-    <title>Configuring GLIBC</title>
+    <title>Configuring Glibc</title>
 
     <indexterm zone="conf-glibc">
       <primary sortas="e-/etc/nsswitch.conf">/etc/nsswitch.conf</primary>
@@ -247,8 +247,8 @@ localedef -i ja_JP -f EUC-JP ja_JP</userinput></screen>
     </indexterm>
 
     <para>The <filename>/etc/nsswitch.conf</filename> file needs to be created
-    because, although GLIBC provides defaults when this file is missing or
-    corrupt, the GLIBC defaults do not work well in a networked environment.
+    because, although Glibc provides defaults when this file is missing or
+    corrupt, the Glibc defaults do not work well in a networked environment.
     The time zone also needs to be configured.</para>
 
     <para>Create a new file <filename>/etc/nsswitch.conf</filename> by running
@@ -382,7 +382,7 @@ EOF</userinput></screen>
   </sect2>
 
   <sect2 id="contents-glibc" role="content">
-    <title>Contents of GLIBC</title>
+    <title>Contents of Glibc</title>
 
     <segmentedlist>
       <segtitle>Installed programs</segtitle>
@@ -722,7 +722,7 @@ EOF</userinput></screen>
       <varlistentry id="libcidn">
         <term><filename class="libraryfile">libcidn</filename></term>
         <listitem>
-          <para>Used internally by GLIBC for handling internationalized domain
+          <para>Used internally by Glibc for handling internationalized domain
           names in the <function>getaddrinfo()</function> function</para>
           <indexterm zone="ch-system-glibc libcidn">
             <primary sortas="c-libcidn">libcidn</primary>
@@ -794,7 +794,7 @@ EOF</userinput></screen>
       <varlistentry id="libmemusage">
         <term><filename class="libraryfile">libmemusage</filename></term>
         <listitem>
-          <para>Used by <command>memusage</command> (included in GLIBC, but
+          <para>Used by <command>memusage</command> (included in Glibc, but
           not built in a base CLFS system as it has additional dependencies)
           to help collect information about the memory usage of a program</para>
           <indexterm zone="ch-system-glibc libmemusage">
