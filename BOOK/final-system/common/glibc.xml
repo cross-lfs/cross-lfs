@@ -102,13 +102,12 @@ cd ../glibc-build</userinput></screen>
       Do not skip it under any circumstance.</para>
     </important>
 
-    <para os="m">Before running the tests, copy a file from the source tree into our
-    build tree to prevent a couple of test failures, then run the tests:</para>
+    <para os="m">Use the following commands to run the testsuite and output
+    any test failures:</para>
 
 <!-- items n,o,p no longer the master, use x86_64 which has no failures -->
 
-<screen os="n"><userinput remap="test">cp -v ../glibc-&glibc-version;/iconvdata/gconv-modules iconvdata
-make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</userinput></screen>
+<screen os="n"><userinput remap="test">make -k check 2&gt;&amp;1 | tee glibc-check-log; grep Error glibc-check-log</userinput></screen>
 
     <para os="o">The Glibc test suite is highly dependent on certain functions of
     the host system, in particular the kernel. The <emphasis>posix/annexc</emphasis> and
