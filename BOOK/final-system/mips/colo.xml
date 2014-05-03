@@ -34,6 +34,11 @@
 
 <screen os="p4"><userinput>patch -Np1 -i ../&colo-relocation-patch;</userinput></screen>
 
+    <para os="s1">Disable -Werror in one of the <filename>Makefile</filename>s
+    to prevent a compile failure:</para>
+
+<screen os="s2"><userinput>sed -i '/^CFLAGS/s/-Werror //' stage2/Makefile</userinput></screen>
+
     <para os="b">Compile the Colo package:</para>
 
 <screen><userinput>make</userinput></screen>
