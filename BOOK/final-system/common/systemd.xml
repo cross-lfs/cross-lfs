@@ -16,20 +16,20 @@
   <sect2 role="package">
     <title/>
 
-    <para>The Systemd package is a system and service manager for Linux
+    <para>The systemd package is a system and service manager for Linux
     operating systems.</para>
 
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of systemd</title>
+    <title>Installation of Systemd</title>
 
     <para os="p1">Apply a patch so that compat <command>pkg-config</command>
     files get installed without installing compat libraries:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&systemd-compat-patch;</userinput></screen>
 
-    <para os="a">Prepare Systemd for compilation:</para>
+    <para os="a">Prepare systemd for compilation:</para>
 
 <screen os="b"><userinput>./configure --prefix=/usr \
     --sysconfdir=/etc --localstatedir=/var \
@@ -56,7 +56,7 @@
       <varlistentry>
         <term><parameter>--enable-split-usr</parameter></term>
         <listitem>
-          <para>This switch ensures that Systemd will work on
+          <para>This switch ensures that systemd will work on
           systems where /bin, /lib and /sbin directories are not
           symlinks to their /usr counterparts.</para>
         </listitem>
@@ -65,7 +65,7 @@
       <varlistentry>
         <term><parameter>--disable-gudev</parameter></term>
         <listitem>
-          <para>This switch prevents Systemd from building
+          <para>This switch prevents systemd from building
           <filename class="libraryfile">libgudev</filename> as it requires
           Glib, which is not installed in CLFS.</para>
         </listitem>
@@ -202,7 +202,7 @@ EOF</userinput></screen>
       <varlistentry id="systemctl">
         <term><command>systemctl</command></term>
         <listitem>
-          <para>Control the Systemd system and service manager</para>
+          <para>Control the systemd system and service manager</para>
           <indexterm zone="ch-system-systemd systemctl">
             <primary sortas="b-systemctl">systemctl</primary>
           </indexterm>
@@ -264,7 +264,7 @@ EOF</userinput></screen>
       <varlistentry id="pam_systemd">
         <term><filename class="libraryfile">pam_systemd</filename></term>
         <listitem>
-          <para>Register user sessions in the Systemd control group
+          <para>Register user sessions in the systemd control group
           hierarchy</para>
           <indexterm zone="ch-system-systemd pam_systemd">
             <primary sortas="c-pam_systemd">pam_systemd</primary>
