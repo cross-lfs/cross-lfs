@@ -74,6 +74,182 @@
 
   </sect2>
 
+  <sect2 id="encoding-man-db" role="encoding">
+    <title>Non-English Manual Pages in LFS</title>
+
+    <para>The following table shows the character set that Man-DB assumes
+    manual pages installed under
+    <filename class="directory">/usr/share/man/&lt;ll&gt;</filename> will be
+    encoded with.  In addition to this, Man-DB correctly determines if manual
+    pages installed in that directory are UTF-8 encoded.</para>
+
+    <!-- Origin: man-db-2.5.9/lib/encodings.c -->
+    <table>
+<title>Expected character encoding of legacy 8-bit manual pages</title>
+      <?dbfo table-width="6in" ?>
+
+      <tgroup cols="4">
+
+        <colspec colnum="1" colwidth="1.5in"/>
+        <colspec colnum="2" colwidth="1in"/>
+        <colspec colnum="3" colwidth="2.5in"/>
+        <colspec colnum="4" colwidth="1in"/>
+
+        <thead>
+          <row>
+            <entry>Language (code)</entry>
+            <entry>Encoding</entry>
+            <entry>Language (code)</entry>
+            <entry>Encoding</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>Danish (da)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Croatian (hr)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>German (de)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Hungarian (hu)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>English (en)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Japanese (ja)</entry>
+            <entry>EUC-JP</entry>
+          </row>
+          <row>
+            <entry>Spanish (es)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Korean (ko)</entry>
+            <entry>EUC-KR</entry>
+          </row>
+          <row>
+            <entry>Estonian (et)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Lithuanian (lt)</entry>
+            <entry>ISO-8859-13</entry>
+          </row>
+          <row>
+            <entry>Finnish (fi)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Latvian (lv)</entry>
+            <entry>ISO-8859-13</entry>
+          </row>
+          <row>
+            <entry>French (fr)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Macedonian (mk)</entry>
+            <entry>ISO-8859-5</entry>
+          </row>
+          <row>
+            <entry>Irish (ga)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Polish (pl)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>Galician (gl)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Romanian (ro)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>Indonesian (id)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Russian (ru)</entry>
+            <entry>KOI8-R</entry>
+          </row>
+          <row>
+            <entry>Icelandic (is)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Slovak (sk)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>Italian (it)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Slovenian (sl)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>Norwegian Bokmal (nb)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Serbian Latin (sr@latin)</entry>
+            <entry>ISO-8859-2</entry>
+          </row>
+          <row>
+            <entry>Dutch (nl)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Serbian (sr)</entry>
+            <entry>ISO-8859-5</entry>
+          </row>
+          <row>
+            <entry>Norwegian Nynorsk (nn)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Turkish (tr)</entry>
+            <entry>ISO-8859-9</entry>
+          </row>
+          <row>
+            <entry>Norwegian (no)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Ukrainian (uk)</entry>
+            <entry>KOI8-U</entry>
+          </row>
+          <row>
+            <entry>Portuguese (pt)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Vietnamese (vi)</entry>
+            <entry>TCVN5712-1</entry>
+          </row>
+          <row>
+            <entry>Swedish (sv)</entry>
+            <entry>ISO-8859-1</entry>
+            <entry>Simplified Chinese (zh_CN)</entry>
+            <entry>GBK</entry>
+          </row>
+          <row>
+            <entry>Belarusian (be)</entry>
+            <entry>CP1251</entry>
+            <entry>Simplified Chinese, Singapore (zh_SG)</entry>
+            <entry>GBK</entry>
+          </row>
+          <row>
+            <entry>Bulgarian (bg)</entry>
+            <entry>CP1251</entry>
+            <entry>Traditional Chinese, Hong Kong (zh_HK)</entry>
+            <entry>BIG5HKSCS</entry>
+          </row>
+          <row>
+            <entry>Czech (cs)</entry>
+            <entry>ISO-8859-2</entry>
+            <entry>Traditional Chinese (zh_TW)</entry>
+            <entry>BIG5</entry>
+          </row>
+          <row>
+            <entry>Greek (el)</entry>
+            <entry>ISO-8859-7</entry>
+            <entry></entry>
+            <entry></entry>
+          </row>
+
+        </tbody>
+
+      </tgroup>
+
+    </table>
+
+    <note>
+      <para>Manual pages in languages not in the list are not supported.</para>
+    </note>
+
+  </sect2>
+
   <sect2 id="contents-man-db" role="content">
     <title>Contents of Man-DB</title>
 
