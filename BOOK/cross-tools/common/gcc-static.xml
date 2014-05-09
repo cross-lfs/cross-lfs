@@ -23,6 +23,16 @@
     <title>Installation of Cross GCC Compiler with Static libgcc
     and no Threads</title>
 
+    <para os="e">Here we will compile GCC, as a cross-compiler that will create
+    executables for our target architechture, statically so that it will not
+    need to look for Glibc's startfiles, which do not yet exist in
+    <filename class="directory">/tools</filename>. We will use this
+    cross-compiler, plus the cross-linker we have just installed with Binutils,
+    to compile Glibc. After Glibc is installed into
+    <filename class="directory">/tools</filename>, we can rebuild GCC
+    so that it will then be able to build executables that link against the
+    libraries in <filename class="directory">/tools</filename>.</para>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
