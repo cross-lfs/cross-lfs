@@ -22,6 +22,16 @@
   <sect2 role="installation">
     <title>Installation of Ncurses</title>
 
+    <para os="e1">When Ncurses is compiled, it executes <command>tic</command>
+    to create a terminfo database in
+    <filename class="directory">${prefix}/share/terminfo</filename>. If
+    possible, the <filename>Makefile</filename> will use the
+    <command>tic</command> binary that was just compiled in its
+    source tree, but this does not work when Ncurses is cross-compiled. To
+    allow the Ncurses build in <xref linkend="chapter-temp-system" /> to succeed, we
+    will build and install a <command>tic</command> program that can be run on
+    the host system.</para>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../temp-system/common/ncurses.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
