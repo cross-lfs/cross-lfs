@@ -48,6 +48,19 @@
     href="../../bootable/x86/kernel.xml"
     xpointer="xpointer(//*[@os='d'])"/>
 
+    <note os="kc"><para>A good starting place for setting up the kernel
+    configuration is to run <command>make defconfig</command>. This will set the    base configuration to a good state that takes your current system
+    architecture into account.</para>
+
+    <para>Be sure to enable or disable following features or the system might
+    not work correctly or boot at all:</para>
+
+    <screen role="nodump">Device Drivers  ---&gt;
+  Generic Driver Options  ---&gt;
+    ()  path to uevent helper
+    [*] Maintain a devtmpfs filesystem to mount at /dev
+    [ ] Fallback user-helper invocation for firmware loading</screen></note>
+
     <para os="ae">Configure the kernel via a menu-driven interface:</para>
 
 <screen><userinput>make ARCH=i386 CROSS_COMPILE=${CLFS_TARGET}- menuconfig</userinput></screen>
