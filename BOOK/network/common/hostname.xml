@@ -8,19 +8,20 @@
 <sect1 id="ch-network-hostname">
   <?dbhtml filename="hostname.html"?>
 
-  <title>Configuring the system hostname</title>
+  <title>Configuring the localnet Script</title>
 
   <indexterm zone="ch-network-hostname">
-    <primary sortas="d-hostname">hostname</primary>
+    <primary sortas="d-localnet">localnet</primary>
   <secondary>configuring</secondary></indexterm>
 
-  <para>Systemd reads <filename>/etc/hostname</filename> to determine which
-  hostname should be set.</para>
+  <para>Part of the job of the <command>localnet</command> script is
+  setting the system's hostname. This needs to be configured in the
+  <filename>/etc/sysconfig/network</filename> file.</para>
 
-  <para>Create the <filename>/etc/hostname</filename> file and enter a hostname
-  by running:</para>
+  <para>Create the <filename>/etc/sysconfig/network</filename> file
+  and enter a hostname by running:</para>
 
-  <screen><userinput>echo "<replaceable>[clfs]</replaceable>" &gt; /etc/hostname</userinput></screen>
+  <screen><userinput>echo "HOSTNAME=<replaceable>[clfs]</replaceable>" &gt; /etc/sysconfig/network</userinput></screen>
 
   <para><replaceable>[clfs]</replaceable> needs to be replaced with the
   name given to the computer. Do not enter the Fully Qualified

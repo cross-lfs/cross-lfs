@@ -46,54 +46,46 @@
   </sect2>
 
   <sect2 id="conf-dhcpcd" role="configuration">
-    <title>Creating the DHCP Network Interface Configuration File</title>
+    <title>Creating the DHCP Network Interface Configuration Files</title>
 
-    <para>The following is an example for the eth0 interface. Refer to the
-    dhcpcd.conf man page for more information. This step may be skipped if
-    default behavior of dhcpcd is required.</para>
+    <para>First install the service from the CLFS Bootscripts package:</para>
 
-    <para>Create the <filename>/etc/dhcpcd.conf</filename> configuration file
-    using the following commands. Adjust appropriately for additional options:</para>
+<screen><userinput>tar -xvf bootscripts-cross-lfs-&bootscripts-clfs-version;.tar.xz
+cd bootscripts-cross-lfs-&bootscripts-clfs-version;
+make install-service-dhcpcd</userinput></screen>
 
-<screen><userinput>cd /etc &amp;&amp;
-cat &gt; dhcpcd.conf &lt;&lt; "EOF"
-<literal># dhcpcd configuration eth0 interface
-# See dhcpcd.conf(5) for details.
+    <para>Finally, create the
+    <filename>/etc/sysconfig/network-devices/ifconfig.eth0/dhcpcd</filename>
+    configuration file using the following commands. Adjust appropriately for
+    additional interfaces:</para>
 
-interface eth0
-# dhcpcd-run-hooks uses these options.
-option subnet_mask, routers, domain_name_servers
+<screen><userinput>cd /etc/sysconfig/network-devices &amp;&amp;
+mkdir -v ifconfig.eth0 &amp;&amp;
+cat &gt; ifconfig.eth0/dhcpcd &lt;&lt; "EOF"
+<literal>ONBOOT="yes"
+SERVICE="dhcpcd"
 
-# The default timeout for waiting for a DHCP response is 30 seconds
-# which may be too long or too short and can be changed here.
-timeout 16</literal>
+# Start Command for DHCPCD
+DHCP_START="-q"
+
+# Stop Command for DHCPCD
+DHCP_STOP="-k"</literal>
 EOF</userinput></screen>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="static.xml"
+    xpointer="xpointer(//*[@os='var-ob'])"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="static.xml"
+    xpointer="xpointer(//*[@os='var-s'])"/>
+
+    <para>The <envar>DHCP_START</envar> and <envar>DHCP_STOP</envar> variables
+    arguments that are passed onto <filename>dhcpcd</filename> when starting
+    and stoppping the service. More information about what can be passed can
+    be found in the <filename>dhcpcd(8)</filename> man page.</para>
+
     <para>To configure another Static Interface, Follow <xref linkend="ch-network-static"/>.</para>
-
-  </sect2>
-
-  <sect2>
-    <title>Configuring the Network Interface at boot</title>
-
-    <para>Enabling of the Network Interface configuration is
-    done per interface. To enable Network Interface
-    configuration at boot, run:</para>
-
-<screen role="nodump"><userinput>systemctl enable dhcpcd@eth0</userinput></screen>
-
-    <para>To disable previously enabled Network Interface
-    configuration at boot, run:</para>
-
-<screen role="nodump"><userinput>systemctl disable dhcpcd@eth0</userinput></screen>
-
-    <para>To manually start the Network Interface configuration,
-    run:</para>
-
-<screen role="nodump"><userinput>systemctl start dhcpcd@eth0</userinput></screen>
-
-    <para>Replace eth0 with the correct Network Interface
-    name as described on the beginning of this page.</para>
 
   </sect2>
 
