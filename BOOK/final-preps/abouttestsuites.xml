@@ -10,13 +10,11 @@
 
   <title>About the Test Suites</title>
 
-  <para>Most packages provide a test suite. Running the test suite for a
-  newly built package is a good idea because it can provide a <quote>sanity
-  check</quote> indicating that everything compiled correctly. A test suite
-  that passes its set of checks usually proves that the package is
-  functioning as the developer intended. It does not, however, guarantee
-  that the package is totally bug free.</para>
-
-  <para>It is not possible to run testsuites when cross-compiling, so package installation instructions do not explain how to run testsuites until <xref linkend="chapter-building-system"/>.</para>
+  <para>Most packages provide a test suite, usually a script or
+  <command>make</command> target, which tests the just-compiled programs or
+  libraries by executing or linking to them. Test suites are often useful
+  for verifying that a package compiled correctly. However, they cannot
+  be run while cross-compiling so we will not mention test suite commands
+  for any packages until <xref linkend="chapter-building-system"/>.</para>
 
 </sect1>
