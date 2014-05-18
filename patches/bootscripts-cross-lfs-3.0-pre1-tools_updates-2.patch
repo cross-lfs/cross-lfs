@@ -1,41 +1,13 @@
 Submitted By: William Harrington (kb0iic at cross-lfs dot org)
-Date: 2014-05-16
+Date: 2014-05-17
 Initial Package Version: 3.1-pre1
 Origin: Idea for cleaning up boot chapter by Chris Staub
 Upstream Status: Not Applied - CLFS Specific
 Description: Reduces ${CLFS}/ pollution by using ${CLFS}/tools as much as possible.
 
-diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/Makefile bootscripts-cross-lfs-3.0-pre1/Makefile
---- bootscripts-cross-lfs-3.0-pre1.orig/Makefile	2011-01-09 02:43:16.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/Makefile	2014-05-17 00:02:04.100001526 +0000
-@@ -118,7 +118,6 @@
- 	if [ ! -f ${EXTDIR}/sysconfig/i18n        ]; then install -m ${CONFMODE} clfs/sysconfig/i18n        ${EXTDIR}/sysconfig/; fi
- 	if [ ! -f ${EXTDIR}/sysconfig/modules     ]; then install -m ${CONFMODE} clfs/sysconfig/modules     ${EXTDIR}/sysconfig/; fi
- 	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} clfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
--	@$(MAKE) mknod_devices
- 
- install-network: create-dirs create-service-dir
- 
-@@ -138,7 +137,7 @@
- install-service-mtu: create-service-dir
- 	install -m ${MODE} contrib/sysconfig/network-devices/services/mtu ${EXTDIR}/sysconfig/network-devices/services
- 
--install-minimal: create-dirs create-service-dir udev_device_dirs udev_device_links
-+install-minimal: create-dirs create-service-dir
- 	sed -e 's|/bin:/usr/bin:/sbin:/usr/sbin|/tools/bin:/tools/sbin:/bin:/sbin|g' clfs/init.d/functions > clfs/init.d/functions.minimal
- 	install -m ${MODE} clfs/init.d/checkfs       		${EXTDIR}/rc.d/init.d/
- 	install -m ${MODE} clfs/init.d/cleanfs       		${EXTDIR}/rc.d/init.d/
-@@ -170,7 +169,6 @@
- 	ln -sf ../init.d/setclock    ${EXTDIR}/rc.d/rcsysinit.d/S60setclock
- 	if [ ! -f ${EXTDIR}/sysconfig/rc          ]; then install -m ${CONFMODE} clfs/sysconfig/rc          ${EXTDIR}/sysconfig/; fi
- 	if [ ! -f ${EXTDIR}/sysconfig/createfiles ]; then install -m ${CONFMODE} clfs/sysconfig/createfiles ${EXTDIR}/sysconfig/; fi
--	@$(MAKE) mknod_devices
- 
- install-raq2: create-dirs
- 	install -m ${MODE} clfs/init.d/paneld        ${EXTDIR}/rc.d/init.d/
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/checkfs bootscripts-cross-lfs-3.0-pre1/clfs/init.d/checkfs
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/checkfs	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/checkfs	2014-05-17 00:02:04.100001526 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/checkfs	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/checkfs	2014-05-17 23:40:45.000000000 -0400
 @@ -25,7 +25,7 @@
  #
  #########################################################################
@@ -46,8 +18,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/checkfs bootscripts-c
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/cleanfs bootscripts-cross-lfs-3.0-pre1/clfs/init.d/cleanfs
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/cleanfs	2012-09-05 02:21:09.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/cleanfs	2014-05-17 00:02:04.100001526 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/cleanfs	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/cleanfs	2014-05-17 23:40:45.000000000 -0400
 @@ -12,13 +12,13 @@
  #
  ########################################################################
@@ -76,8 +48,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/cleanfs bootscripts-c
  				create_files
  				evaluate_retval
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/consolelog bootscripts-cross-lfs-3.0-pre1/clfs/init.d/consolelog
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/consolelog	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/consolelog	2014-05-17 00:02:04.100001526 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/consolelog	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/consolelog	2014-05-17 23:40:45.000000000 -0400
 @@ -13,13 +13,13 @@
  #
  ########################################################################
@@ -96,8 +68,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/consolelog bootscript
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions bootscripts-cross-lfs-3.0-pre1/clfs/init.d/functions
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/functions	2014-05-17 00:03:00.800003131 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/functions	2014-05-17 23:40:45.000000000 -0400
 @@ -13,14 +13,14 @@
  #
  ########################################################################
@@ -117,27 +89,9 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions bootscripts
  fi
  
  ## Environmental setup
-@@ -54,7 +54,7 @@
- # If formatting is needed, $ECHO should be used
- case "`echo -e -n test`" in
- 	-[en]*)
--		ECHO=/bin/echo
-+		ECHO=/tools/bin/echo
- 		;;
- 	*)
- 		ECHO=echo
-@@ -153,7 +153,7 @@
- boot_log()
- {
- 	if [ "$LOGGING" ]; then
--		/bin/logger -p local2.info -t bootlog "${DISPLAYLOG} ${1}"
-+		/tools/bin/logger -p local2.info -t bootlog "${DISPLAYLOG} ${1}"
- 	else
- 		return 0
- 	fi
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions.minimal bootscripts-cross-lfs-3.0-pre1/clfs/init.d/functions.minimal
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions.minimal	2012-03-13 18:41:15.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/functions.minimal	2014-05-17 00:03:59.963337110 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions.minimal	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/functions.minimal	2014-05-17 23:40:45.000000000 -0400
 @@ -13,14 +13,14 @@
  #
  ########################################################################
@@ -157,27 +111,9 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/functions.minimal boo
  fi
  
  ## Environmental setup
-@@ -54,7 +54,7 @@
- # If formatting is needed, $ECHO should be used
- case "`echo -e -n test`" in
- 	-[en]*)
--		ECHO=/bin/echo
-+		ECHO=/tools/bin/echo
- 		;;
- 	*)
- 		ECHO=echo
-@@ -153,7 +153,7 @@
- boot_log()
- {
- 	if [ "$LOGGING" ]; then
--		/bin/logger -p local2.info -t bootlog "${DISPLAYLOG} ${1}"
-+		/tools/bin/logger -p local2.info -t bootlog "${DISPLAYLOG} ${1}"
- 	else
- 		return 0
- 	fi
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/halt bootscripts-cross-lfs-3.0-pre1/clfs/init.d/halt
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/halt	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/halt	2014-05-17 00:02:04.103335102 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/halt	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/halt	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -188,8 +124,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/halt bootscripts-cros
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/i18n bootscripts-cross-lfs-3.0-pre1/clfs/init.d/i18n
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/i18n	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/i18n	2014-05-17 00:02:04.103335102 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/i18n	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/i18n	2014-05-17 23:40:45.000000000 -0400
 @@ -12,11 +12,11 @@
  #
  ########################################################################
@@ -206,8 +142,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/i18n bootscripts-cros
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/localnet bootscripts-cross-lfs-3.0-pre1/clfs/init.d/localnet
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/localnet	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/localnet	2014-05-17 00:02:04.103335102 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/localnet	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/localnet	2014-05-17 23:40:45.000000000 -0400
 @@ -12,9 +12,9 @@
  #
  ########################################################################
@@ -221,8 +157,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/localnet bootscripts-
  case "${1}" in
  	start)
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/modules bootscripts-cross-lfs-3.0-pre1/clfs/init.d/modules
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/modules	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/modules	2014-05-17 00:02:04.103335102 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/modules	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/modules	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -253,8 +189,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/modules bootscripts-c
  		boot_mesg "" ${NORMAL}
  		# Print a message about successfully loaded
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountfs bootscripts-cross-lfs-3.0-pre1/clfs/init.d/mountfs
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountfs	2012-09-05 02:21:09.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/mountfs	2014-05-17 00:02:34.460003607 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountfs	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/mountfs	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -264,26 +200,9 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountfs bootscripts-c
  . ${rc_functions}
  
  case "${1}" in
-@@ -24,16 +24,6 @@
- 		# Remove fsck-related file system watermarks.
- 		rm -f /fastboot /forcefsck
- 
--		boot_mesg "Recording existing mounts in /etc/mtab..."
--		> /etc/mtab
--		mount -f / || failed=1
--		mount -f /proc || failed=1
--		mount -f /sys || failed=1
--		mount -f /run || failed=1
--		mount -f /dev || failed=1
--		(exit ${failed})
--		evaluate_retval
--
- 		# This will mount all filesystems that do not have _netdev in
- 		# their option list.  _netdev denotes a network filesystem.
- 		boot_mesg "Mounting remaining file systems..."
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountkernfs bootscripts-cross-lfs-3.0-pre1/clfs/init.d/mountkernfs
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountkernfs	2012-09-05 02:21:09.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/mountkernfs	2014-05-17 00:02:04.103335102 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountkernfs	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/mountkernfs	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -294,8 +213,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/mountkernfs bootscrip
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/network bootscripts-cross-lfs-3.0-pre1/clfs/init.d/network
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/network	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/network	2014-05-17 00:02:04.106668584 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/network	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/network	2014-05-17 23:40:45.000000000 -0400
 @@ -14,9 +14,9 @@
  #
  ########################################################################
@@ -315,8 +234,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/network bootscripts-c
 -# End /etc/rc.d/init.d/network
 +# End /tools/etc/rc.d/init.d/network
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/paneld bootscripts-cross-lfs-3.0-pre1/clfs/init.d/paneld
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/paneld	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/paneld	2014-05-17 00:02:04.106668584 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/paneld	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/paneld	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -327,8 +246,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/paneld bootscripts-cr
  
  case "$1" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rc bootscripts-cross-lfs-3.0-pre1/clfs/init.d/rc
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rc	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/rc	2014-05-17 00:02:04.106668584 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rc	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/rc	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -339,8 +258,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rc bootscripts-cross-
  
  # This sets a few default terminal options.
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/reboot bootscripts-cross-lfs-3.0-pre1/clfs/init.d/reboot
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/reboot	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/reboot	2014-05-17 00:02:04.106668584 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/reboot	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/reboot	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -351,8 +270,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/reboot bootscripts-cr
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rsyslog bootscripts-cross-lfs-3.0-pre1/clfs/init.d/rsyslog
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rsyslog	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/rsyslog	2014-05-17 00:02:04.106668584 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rsyslog	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/rsyslog	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -363,8 +282,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/rsyslog bootscripts-c
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sendsignals bootscripts-cross-lfs-3.0-pre1/clfs/init.d/sendsignals
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sendsignals	2012-09-05 02:21:09.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/sendsignals	2014-05-17 00:02:04.110002078 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sendsignals	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/sendsignals	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -375,8 +294,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sendsignals bootscrip
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setclock bootscripts-cross-lfs-3.0-pre1/clfs/init.d/setclock
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setclock	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/setclock	2014-05-17 00:02:04.110002078 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setclock	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/setclock	2014-05-17 23:40:45.000000000 -0400
 @@ -12,9 +12,9 @@
  #
  ########################################################################
@@ -390,8 +309,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setclock bootscripts-
  CLOCKPARAMS=
  
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setlcd bootscripts-cross-lfs-3.0-pre1/clfs/init.d/setlcd
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setlcd	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/setlcd	2014-05-17 00:02:04.110002078 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setlcd	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/setlcd	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -402,8 +321,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/setlcd bootscripts-cr
  
  case "$1" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/swap bootscripts-cross-lfs-3.0-pre1/clfs/init.d/swap
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/swap	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/swap	2014-05-17 00:02:04.110002078 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/swap	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/swap	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -414,8 +333,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/swap bootscripts-cros
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sysctl bootscripts-cross-lfs-3.0-pre1/clfs/init.d/sysctl
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sysctl	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/sysctl	2014-05-17 00:02:04.110002078 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sysctl	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/sysctl	2014-05-17 23:40:45.000000000 -0400
 @@ -14,7 +14,7 @@
  #
  ########################################################################
@@ -426,8 +345,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/sysctl bootscripts-cr
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/template bootscripts-cross-lfs-3.0-pre1/clfs/init.d/template
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/template	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/template	2014-05-17 00:02:04.110002078 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/template	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/template	2014-05-17 23:40:45.000000000 -0400
 @@ -12,7 +12,7 @@
  #
  ########################################################################
@@ -438,8 +357,8 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/template bootscripts-
  
  case "${1}" in
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/udev bootscripts-cross-lfs-3.0-pre1/clfs/init.d/udev
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/udev	2013-08-07 19:54:26.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/udev	2014-05-17 00:02:04.113335656 +0000
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/udev	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/init.d/udev	2014-05-17 23:40:45.000000000 -0400
 @@ -16,7 +16,7 @@
  #
  ########################################################################
@@ -496,16 +415,14 @@ diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/init.d/udev bootscripts-cros
  
      *)
 diff -Naur bootscripts-cross-lfs-3.0-pre1.orig/clfs/sysconfig/rc bootscripts-cross-lfs-3.0-pre1/clfs/sysconfig/rc
---- bootscripts-cross-lfs-3.0-pre1.orig/clfs/sysconfig/rc	2009-07-07 01:39:12.000000000 +0000
-+++ bootscripts-cross-lfs-3.0-pre1/clfs/sysconfig/rc	2014-05-17 00:03:44.446670264 +0000
-@@ -11,8 +11,8 @@
+--- bootscripts-cross-lfs-3.0-pre1.orig/clfs/sysconfig/rc	2014-05-17 23:40:24.000000000 -0400
++++ bootscripts-cross-lfs-3.0-pre1/clfs/sysconfig/rc	2014-05-17 23:40:45.000000000 -0400
+@@ -11,7 +11,7 @@
  #
  ########################################################################
  
 -rc_base=/etc/rc.d
 +rc_base=/tools/etc/rc.d
  rc_functions=${rc_base}/init.d/functions
--network_devices=/etc/sysconfig/network-devices
-+network_devices=/tools/etc/sysconfig/network-devices
+ network_devices=/etc/sysconfig/network-devices
  
- # End /etc/sysconfig/rc
