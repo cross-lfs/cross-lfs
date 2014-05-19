@@ -34,8 +34,7 @@
     href="../../final-system/common/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="aa"><userinput>PKG_CONFIG=true \
-  ../configure --prefix=/tools \
+<screen os="aa"><userinput>../configure --prefix=/tools \
     --enable-elf-shlibs --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --disable-libblkid --disable-libuuid --disable-fsck \
     --disable-uuidd</userinput></screen>
@@ -57,8 +56,9 @@
     href="../../final-system/common/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-<screen os="g"><userinput>make LIBUUID="-luuid" STATIC_LIBUUID="-luuid" \
-    LIBBLKID="-lblkid" STATIC_LIBBLKID="-lblkid"</userinput></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="../../final-system/common/e2fsprogs.xml"
+    xpointer="xpointer(//*[@os='g'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/e2fsprogs.xml"

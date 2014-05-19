@@ -53,7 +53,7 @@ echo "ac_cv_sizeof_short=2" &gt;&gt; config.cache</userinput></screen>-->
     href="../common/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='c'])"/>
 
-<screen os="aa"><userinput>CC="${CC} ${BUILD64}" PKG_CONFIG=true \
+<screen os="aa"><userinput>CC="${CC} ${BUILD64}" \
   ../configure --prefix=/tools --enable-elf-shlibs \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --disable-libblkid --disable-libuuid --disable-fsck \
@@ -67,10 +67,8 @@ echo "ac_cv_sizeof_short=2" &gt;&gt; config.cache</userinput></screen>-->
     href="../64/e2fsprogs.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-<screen os="g"><userinput>make LIBUUID="-luuid" STATIC_LIBUUID="-luuid" \
-    LIBBLKID="-lblkid" STATIC_LIBBLKID="-lblkid" libs
-make LIBUUID="-luuid" STATIC_LIBUUID="-luuid" LIBBLKID="-lblkid" \
-    STATIC_LIBBLKID="-lblkid" LDFLAGS="-Wl,-rpath,/tools/lib64" -C e2fsck/</userinput></screen>
+<screen os="g"><userinput>make libs
+make -C e2fsck/</userinput></screen>
 
     <para os="i">Install the e2fsck binary:</para>
 
