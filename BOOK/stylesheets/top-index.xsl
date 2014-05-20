@@ -111,15 +111,15 @@ hr {
           </li>
           <li>
             <h4>
-              <a href="ppc">
-                <xsl:text>PowerPC</xsl:text>
+              <a href="mips">
+                <xsl:text>MIPS</xsl:text>
               </a>
             </h4>
           </li>
           <li>
             <h4>
-              <a href="mips">
-                <xsl:text>MIPS</xsl:text>
+              <a href="ppc">
+                <xsl:text>PowerPC</xsl:text>
               </a>
             </h4>
           </li>
@@ -147,16 +147,15 @@ hr {
           </li>
           <li>
             <h4>
-              <a href="ppc64-64">
-                <xsl:text>PowerPC64</xsl:text>
+              <a href="mips64-64">
+                <xsl:text>MIPS</xsl:text>
               </a>
             </h4>
           </li>
-
           <li>
             <h4>
-              <a href="mips64-64">
-                <xsl:text>MIPS</xsl:text>
+              <a href="ppc64-64">
+                <xsl:text>PowerPC64</xsl:text>
               </a>
             </h4>
           </li>
@@ -191,16 +190,16 @@ hr {
           </li>
           <li>
             <h4>
-             <a href="sparc64">
-                <xsl:text>Sparc v9/Ultrasparc</xsl:text>
-             </a>
+              <a href="ppc64">
+                <xsl:text>PowerPC64</xsl:text>
+              </a>
             </h4>
           </li>
           <li>
             <h4>
-              <a href="ppc64">
-                <xsl:text>PowerPC64</xsl:text>
-              </a>
+             <a href="sparc64">
+                <xsl:text>Sparc v9/Ultrasparc</xsl:text>
+             </a>
             </h4>
           </li>
         </ul>
