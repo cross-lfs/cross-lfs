@@ -44,7 +44,9 @@ umask 022
 CLFS=/mnt/clfs
 LC_ALL=POSIX
 PATH=/cross-tools/bin:/bin:/usr/bin
-export CLFS LC_ALL PATH</literal>
+export CLFS LC_ALL PATH
+unset CFLAGS
+unset CXXFLAGS</literal>
 EOF</userinput></screen>
 
   <para os="f">The <command>set +h</command> command turns off
@@ -86,9 +88,12 @@ EOF</userinput></screen>
   hashing, helps to ensure that you will be using the cross-compile
   tools to build the temp-system in /tools.</para>
 
-  <para os="k">Finally, to have the environment fully prepared for building the
+  <para os="k">The <envar>CFLAGS</envar> and <envar>CXXFLAGS</envar> should
+  not be set while building the temporary system, so we unset them.</para>
+
+  <para os="l">Finally, to have the environment fully prepared for building the
   temporary tools, source the just-created user profile:</para>
 
-<screen os="l"><userinput>source ~/.bash_profile</userinput></screen>
+<screen os="m"><userinput>source ~/.bash_profile</userinput></screen>
 
 </sect1>
