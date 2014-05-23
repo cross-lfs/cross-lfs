@@ -32,19 +32,37 @@
     xpointer="xpointer(//*[@os='p2'])"/>
 -->
 
-    <para os="a">Prepare GMP for compilation:</para>
+    <para os="a">As with the Cross-Tools, we will compile GMP, MPFR, MPC, ISL,
+    and CLooG so that GCC can use them. though this time we will
+    cross-compile them into <filename class="directory">/tools</filename>.</para>
 
-<screen os="b"><userinput>CC_FOR_BUILD=gcc ./configure --prefix=/tools \
+    <para os="b">Prepare GMP for compilation:</para>
+
+<screen os="c"><userinput>CC_FOR_BUILD=gcc ./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --enable-cxx</userinput></screen>
 
-    <para os="c">Compile the package:</para>
+    <variablelist os="ca">
+      <title>The meaning of the new configure option:</title>
 
-<screen os="d"><userinput>make</userinput></screen>
+      <varlistentry os="ca1">
+        <term><parameter>CC_FOR_BUILD=gcc</parameter></term>
+        <listitem>
+          <para>Tells <command>configure</command> to use the host's
+          <command>gcc</command> instead of our cross-compiler to build
+          native tools it needs while compiling.</para>
+        </listitem>
+      </varlistentry>
 
-    <para os="e">Install the package:</para>
+    </variablelist>
 
-<screen os="f"><userinput>make install</userinput></screen>
+    <para os="d">Compile the package:</para>
+
+<screen os="e"><userinput>make</userinput></screen>
+
+    <para os="f">Install the package:</para>
+
+<screen os="g"><userinput>make install</userinput></screen>
 
   </sect2>
 
