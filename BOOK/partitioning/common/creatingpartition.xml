@@ -13,9 +13,10 @@
   <para os="a">Like most other operating systems, CLFS is usually installed
   on a dedicated partition. The recommended approach to building a CLFS
   system is to use an available empty partition or, if you have enough
-  unpartitioned space, to create one. However, if you're building for a different
-  architecture you can simply build everything in <quote>/mnt/clfs</quote>
-  and transfer it to your target machine.</para>
+  unpartitioned space, to create one. However, if you're building for a
+  different architecture you can simply build everything in
+  <quote>/mnt/clfs</quote> (or whatever directory you want to use) and
+  transfer it to your target machine.</para>
 
   <para os="b">A minimal system requires around 6 gigabytes (GB).
   This is enough to store all the source tarballs and compile the packages. The CLFS
@@ -35,14 +36,14 @@
   <para os="d">Start a disk partitioning program such as <command>cfdisk</command>
   or <command>fdisk</command> with a command line option naming the hard
   disk on which the new partition will be created&mdash;for example
-  <filename class="devicefile">/dev/hda</filename> for the primary
+  <filename class="devicefile">/dev/sda</filename> for the primary
   Integrated Drive Electronics (IDE) disk. Create a Linux native partition
   and a swap partition, if needed. Please refer to
   <filename>cfdisk(8)</filename> or <filename>fdisk(8)</filename> if you
   do not yet know how to use the programs.</para>
 
   <para os="e">Remember the designation of the new partition (e.g.,
-  <filename class="devicefile">hda5</filename>). This book will refer to
+  <filename class="devicefile">sda5</filename>). This book will refer to
   this as the CLFS partition. Also remember the designation of the swap
   partition. These names will be needed later for the
   <filename>/etc/fstab</filename> file.</para>
