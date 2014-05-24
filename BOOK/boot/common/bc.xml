@@ -5,14 +5,14 @@
   %general-entities;
 ]>
 
-<sect1 id="ch-cross-tools-bc">
+<sect1 id="ch-boot-bc">
   <?dbhtml filename="bc.html"?>
 
   <title>Bc-&bc-version;</title>
 
-  <indexterm zone="ch-cross-tools-bc">
+  <indexterm zone="ch-boot-bc">
     <primary sortas="a-Bc">Bc</primary>
-    <secondary>cross tools</secondary>
+    <secondary>boot</secondary>
   </indexterm>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -27,17 +27,16 @@
 
     <para>Prepare Bc for compilation:</para>
 
-<screen><userinput>./configure --prefix=/cross-tools</userinput></screen>
+<screen><userinput>CC=gcc ./configure --prefix=/cross-tools</userinput></screen>
 
     <variablelist>
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
-        <term><parameter>--prefix=/cross-tools</parameter></term>
+        <term><parameter>CC=gcc</parameter></term>
         <listitem>
-          <para>This tells the configure script to prepare to install the
-          package in the <filename class="directory">/cross-tools</filename>
-          directory.</para>
+          <para>This ensures that we use the host's compiler to build Bc,
+          since we need it to run on the host system.</para>
         </listitem>
       </varlistentry>
 
