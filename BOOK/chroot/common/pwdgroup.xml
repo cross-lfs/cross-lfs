@@ -8,7 +8,7 @@
 <sect1 id="ch-chroot-pwdgroup">
   <?dbhtml filename="pwdgroup.html"?>
 
-  <title>Creating the passwd and group Files</title>
+  <title>Creating the passwd, group, and log Files</title>
 
   <indexterm zone="ch-chroot-pwdgroup">
     <primary sortas="e-/etc/passwd">/etc/passwd</primary>
@@ -17,6 +17,26 @@
 
   <indexterm zone="ch-chroot-pwdgroup">
     <primary sortas="e-/etc/group">/etc/group</primary>
+    <secondary>chroot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/run/utmp">/var/run/utmp</primary>
+    <secondary>chroot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/log/btmp">/var/log/btmp</primary>
+    <secondary>chroot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/log/lastlog">/var/log/lastlog</primary>
+    <secondary>chroot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/log/wtmp">/var/log/wtmp</primary>
     <secondary>chroot</secondary>
   </indexterm>
 
@@ -77,6 +97,19 @@ EOF</userinput></screen>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
   href="../../boot/common/pwdgroup.xml"
   xpointer="xpointer(//*[@os='e'])"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='f'])"/>
+
+<screen os="g"><userinput>touch /var/run/utmp /var/log/{btmp,lastlog,wtmp}
+chgrp -v utmp /var/run/utmp /var/log/lastlog
+chmod -v 664 /var/run/utmp /var/log/lastlog
+chmod -v 600 /var/log/btmp</userinput></screen>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+  href="../../boot/common/pwdgroup.xml"
+  xpointer="xpointer(//*[@os='h'])"/>
 
   <para>To remove the <quote>I have no name!</quote> prompt, start a
   new shell. Since a full Glibc was installed in <xref

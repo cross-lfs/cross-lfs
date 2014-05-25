@@ -8,7 +8,7 @@
 <sect1 id="ch-boot-pwdgroup">
   <?dbhtml filename="pwdgroup.html"?>
 
-  <title>Creating the passwd and group Files</title>
+  <title>Creating the passwd, group, and log Files</title>
 
   <indexterm zone="ch-boot-pwdgroup">
     <primary sortas="e-/etc/passwd">/etc/passwd</primary>
@@ -17,6 +17,26 @@
 
   <indexterm zone="ch-boot-pwdgroup">
     <primary sortas="e-/etc/group">/etc/group</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/run/utmp">/var/run/utmp</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/log/btmp">/var/log/btmp</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/log/lastlog">/var/log/lastlog</primary>
+    <secondary>boot</secondary>
+  </indexterm>
+
+  <indexterm zone="ch-boot-pwdgroup">
+    <primary sortas="e-/var/log/wtmp">/var/log/wtmp</primary>
     <secondary>boot</secondary>
   </indexterm>
 
@@ -165,5 +185,24 @@ EOF</userinput></screen>
   names and GIDs can be chosen freely by the system administrator since
   well-written programs do not depend on GID numbers, but rather use the
   group's name.</para>
+
+  <para os="f">The <command>login</command>, <command>agetty</command>, and
+  <command>init</command> programs (and others) use a number of log
+  files to record information such as who was logged into the system and
+  when. However, these programs will not write to the log files if they
+  do not already exist. Initialize the log files and give them
+  proper permissions:</para>
+
+<screen os="g"><userinput>touch ${CLFS}/var/run/utmp ${CLFS}/var/log/{btmp,lastlog,wtmp}
+chgrp -v &gid-utmp; ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
+chmod -v 664 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
+chmod -v 600 ${CLFS}/var/log/btmp</userinput></screen>
+
+  <para os="h">The <filename>/var/run/utmp</filename> file records the users
+  that are currently logged in. The <filename>/var/log/wtmp</filename>
+  file records all logins and logouts. The
+  <filename>/var/log/lastlog</filename> file records when
+  each user last logged in. The <filename>/var/log/btmp</filename> file
+  records the bad login attempts.</para>
 
 </sect1>
