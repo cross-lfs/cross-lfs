@@ -28,12 +28,12 @@
 
       <para>Linux systems in general traditionally use a static device creation
       method, whereby a great many device nodes are created under <filename
-      class="directory">/dev</filename> (sometimes literally thousands of nodes),
-      regardless of whether the corresponding hardware devices actually exist.
-      This is typically done via a <command>MAKEDEV</command> script, which
-      contains a number of calls to the <command>mknod</command> program with the
-      relevant major and minor device numbers for every possible device that
-      might exist in the world.</para>
+      class="directory">/dev</filename> (sometimes literally thousands of
+      nodes), regardless of whether the corresponding hardware devices actually
+      exist. This is typically done via a <command>MAKEDEV</command> script,
+      which contains a number of calls to the <command>mknod</command> program
+      with the relevant major and minor device numbers for every possible
+      device that might exist in the world.</para>
 
     </sect3>
 
@@ -41,11 +41,12 @@
       <title>Devfs</title>
 
       <para>In February 2000, a new filesystem called <systemitem
-      class="filesystem">devfs</systemitem> was merged into the 2.3.46 kernel
-      and was made available during the 2.4 series of stable kernels. Although
-      it was present in the kernel source itself, this method of creating devices
-      dynamically never received overwhelming support from the core kernel
-      developers.</para>
+      class="filesystem">devfs</systemitem>, which dynamically created device
+      nodes as devices were found by the kernel, was merged into the
+      2.3.46 kernel and was made available during the 2.4 series of stable
+      kernels. Although it was present in the kernel source itself, this method
+      of creating devices dynamically never received overwhelming support from
+      the core kernel developers.</para>
 
       <para>The main problem with the approach adopted by <systemitem
       class="filesystem">devfs</systemitem> was the way it handled device
@@ -55,8 +56,8 @@
       should be up to a system administrator, not imposed on them by any
       particular developer(s). The <systemitem
       class="filesystem">devfs</systemitem> file system also suffered from race
-      conditions that were inherent in its design and could not be fixed without a
-      substantial revision to the kernel. It was marked deprecated with the
+      conditions that were inherent in its design and could not be fixed without
+      a substantial revision to the kernel. It was marked deprecated with the
       release of the 2.6 kernel series, and was removed entirely as of version
       2.6.18.</para>
 
@@ -77,68 +78,81 @@
       class="filesystem">sysfs</systemitem> filesystem is mounted (on <filename
       class="directory">/sys</filename>), data which the built-in drivers
       registered with <systemitem class="filesystem">sysfs</systemitem> are
-      available to userspace processes. With this
-      userspace-visible representation, the possibility of seeing a userspace
-      replacement for <systemitem class="filesystem">devfs</systemitem> became
-      much more realistic.</para>
+      available to userspace processes. With this userspace-visible
+      representation, the possibility of seeing a userspace replacement for
+      <systemitem class="filesystem">devfs</systemitem> became much more
+      realistic.</para>
 
     </sect3>
 
     <sect3>
       <title>Udev Implementation</title>
 
-<!--      <title>Device Node Creation</title> -->
-
-      <para>When Udev was introduced, the <command>udevd</command> daemon made
-      calls to mknod() to create device nodes in
-      <filename class="directory">/dev</filename> dynamically, based on the
+      <para>Shortly after the introduction of
+      <systemitem class="filesystem">sysfs</systemitem>, work began on a
+      program called Udev to advantage of it. The <command>udev</command>
+      daemon made calls to <function>mknod()</function> to create device nodes
+      in <filename class="directory">/dev</filename> dynamically, based on the
       information from <systemitem class="filesystem">sysfs</systemitem>, in
       <filename class="directory">/sys</filename>. For example,
       <filename>/sys/class/tty/vcs/dev</filename> contains the string
-      <quote>7:0</quote>. This string was used by <command>udevd</command>
+      <quote>7:0</quote>. This string was used by <command>udev</command>
       to create a device node with major number <emphasis>7</emphasis> and
-      minor number <emphasis>0</emphasis>. Using the Udev method
-      only those devices which are detected by the kernel would get device
-      nodes created for them. Because these device nodes were created each time
-      the system boots, they were stored on a
-      <systemitem class="filesystem">tmpfs</systemitem> file system (a virtual
-      file system that resides entirely in system memory). Device nodes do not
-      require much space, so the memory that is used is negligible.</para>
+      minor number <emphasis>0</emphasis>.</para>
 
       <para>Linux kernel version 2.6.32 introduced a new virtual file system
-      called <systemitem class="filesystem">devtmpfs</systemitem>, a
-      replacement for <systemitem class="filesystem">devfs</systemitem>.
-      With this approach, a
-      <systemitem class="filesystem">devtmpfs</systemitem> file system is
-      mounted on <filename class="directory">/dev/</filename> when the system
-      is booted, and all needed device nodes are created on this virtual
-      file system. As of version 176, Udev no longer creates device nodes
-      itself, instead relying on
+      called <systemitem class="filesystem">devtmpfs</systemitem>, an improved
+      replacement for <systemitem class="filesystem">devfs</systemitem>. This
+      allows device nodes to once again be dynamically created by the kernel,
+      without many of the problems of
+      <systemitem class="filesystem">devfs</systemitem>. As of version 176,
+      Udev no longer creates device nodes itself, instead relying on
       <systemitem class="filesystem">devtmpfs</systemitem> to do so.</para>
-
-      <para>Udev also sets appropriate ownership and permissions
-      for the device nodes, and creates extra symlinks as needed (such as
-      <filename class="symlink">/dev/cdrom</filename>). The ownership and
-      permissions of the nodes under the
-      <filename class="directory">/dev</filename> directory are
-      determined by rules specified in the files within the <filename
-      class="directory">/etc/udev/rules.d/</filename> directory. These are
-      numbered in a similar fashion to the CLFS-Bootscripts package. If
-      <command>udevd</command> can't find a rule for the device it is creating,
-      it will default permissions to <emphasis>660</emphasis> and ownership to
-      <emphasis>root:root</emphasis>.</para>
 
     </sect3>
 
     <sect3>
       <title>Systemd and Eudev</title>
 
-        <para>In May 2012, Udev's source was merged with systemd, an alternate
-        <command>init</command> implementation. Some time later, several Gentoo
-        developers took the Udev code from systemd and created a fork called
-        Eudev.</para>
-
+        <para>In 2010, development began on systemd, an alternate
+        <command>init</command> implementation. Starting with Udev 183, Udev's
+        source tree was merged with systemd. Several Gentoo
+        developers who disagreed with this merge announced a project fork
+        called Eudev in December 2012, created by extracting the
+        Udev code from systemd. One of the goals of Eudev is to allow for
+        easier installation and usage of <command>udevd</command> without
+        the need for the rest of systemd.</para>
     </sect3>
+
+  </sect2>
+
+  <sect2>
+    <title>Device Node Creation</title>
+
+    <para>By default, device nodes created by the kernel in a
+    <systemitem class="filesystem">devtmpfs</systemitem> are owned by
+    <emphasis>root:root</emphasis> and have <emphasis>600</emphasis>
+    permissions. <command>udevd</command> can modify ownership and permissions
+    of the nodes under the <filename class="directory">/dev</filename>
+    directory, and can also create additional symlinks, based on rules
+    specified in the files within the
+    <filename class="directory">/etc/udev/rules.d</filename>,
+    <filename class="directory">/lib/udev/rules.d</filename>,
+    and <filename class="directory">/run/udev/rules.d</filename> directories.
+    The names for these files start with a number, to indicate the order in
+    which they are run, and they have a <filename>.rules</filename>
+    extension (<command>udevd</command> will ignore files with any other
+    extension). All of the rules files from these directories are combined into
+    a single list, sorted by filename, and run in that order. In the event of
+    a conflict, where a rules file with the same name exists in two or more of
+    these directories, the rules in <filename class="directory">/etc</filename>
+    take the highest priority, followed by rules files in
+    <filename class="directory">/run</filename>, and finally
+    <filename class="directory">/lib</filename>. Any device for which a rule
+    cannot be found will just be ignored by <command>udevd</command>
+    and be left at the defaults defined by the kernel, as described above. For
+    more details about writing Udev rules, see
+    <ulink url="/usr/share/doc/systemd-&systemd-version;/udev.html" />.</para>
 
   </sect2>
 
@@ -172,16 +186,6 @@
 
     <para>The kernel itself is also able to load modules for network
     protocols, filesystems and NLS support on demand.</para>
-
-  </sect2>
-
-  <sect2>
-    <title>Handling Hotpluggable/Dynamic Devices</title>
-
-    <para>When you plug in a device, such as a Universal Serial Bus (USB) MP3
-    player, the kernel recognizes that the device is now connected and
-    generates a uevent. This uevent is then handled by
-    <command>udevd</command> as described above.</para>
 
   </sect2>
 
@@ -234,8 +238,8 @@
       enhances the functionality of <emphasis>snd-pcm</emphasis> by making the
       sound cards available to OSS applications), configure
       <command>modprobe</command> to load the wrapper after Udev loads the
-      wrapped module. To do this, add an <quote>install</quote> line in
-      <filename>/etc/modprobe.conf</filename>. For example:</para>
+      wrapped module. To do this, add an <quote>install</quote> line to a file
+      in <filename>/etc/modprobe.d</filename>. For example:</para>
 
 <screen role="nodump"><literal>install snd-pcm /sbin/modprobe -i snd-pcm ; \
     /sbin/modprobe snd-pcm-oss ; true</literal></screen>
@@ -252,7 +256,7 @@
       <title>Udev loads some unwanted module</title>
 
       <para>Either don't build the module, or blacklist it in
-      <filename>/etc/modprobe.conf</filename> file as done with the
+      <filename>/etc/modprobe.d</filename> file as done with the
       <emphasis>forte</emphasis> module in the example below:</para>
 
 <screen role="nodump"><literal>blacklist forte</literal></screen>
@@ -263,7 +267,7 @@
     </sect3>
 
     <sect3>
-      <title>Udev creates a device incorrectly, or makes a wrong symlink</title>
+      <title>Udev makes a wrong symlink</title>
 
       <para>This usually happens if a rule unexpectedly matches a device. For
       example, a poorly-writen rule can match both a SCSI disk (as desired)
