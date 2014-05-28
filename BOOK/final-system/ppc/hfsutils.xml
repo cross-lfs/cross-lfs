@@ -18,15 +18,17 @@
     <title/>
 
     <para>The Hfsutils package contains a number of utilities for accessing
-    files on hfs filesystems. It is needed to run <command>ybin</command>.</para>
+    files on <systemitem class="filesystem">hfs</systemitem> filesystems.
+    It is needed to run <command>ybin</command>.</para>
 
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Hfsutils</title>
 
-    <para os="p1">The following patch contains fixes. One that fixes a missing errno.h, the other
-    that allows HFSutils to recognize beyond 2gb devices:</para>
+    <para os="p1">Apply the following patch to add a missing
+    <filename>errno.h</filename> include and allow HFSutils to recognize
+    devices larger than 2GB:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&hfsutils-fixes-patch;</userinput></screen>
 
