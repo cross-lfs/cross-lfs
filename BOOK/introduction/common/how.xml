@@ -21,10 +21,9 @@
   <para>As an alternative to installing an entire separate distribution onto
   your machine, you may wish to use a livecd. Most distributions provide
   a livecd, which provides an environment to which you can add the required
-  tools onto, allowing you to
-  successfully follow the instructions in this book. Remember that if you
-  reboot the livecd you will need to reconfigure the host environment before
-  continuing with your build.</para>
+  tools onto, allowing you to successfully follow the instructions in this
+  book. Remember that if you reboot the livecd you will need to reconfigure
+  the host environment before continuing with your build.</para>
 
   <para><xref linkend="chapter-partitioning"/> of this book describes how
   to create a new Linux native partition and file system, the place
@@ -53,34 +52,21 @@
 
   <para>After we build our <quote>Cross-Tools</quote>, we start building
   a very minimal working system in
-  <filename class="directory">/tools</filename>. This minimal system will be
-  built using the cross-toolchain in
-  <filename class="directory">/cross-tools</filename>.</para>
+  <filename class="directory">/tools</filename>, using the cross-toolchain in
+  <filename class="directory">/cross-tools</filename>. Once the temporary
+  system is finished, we perform a few additional tasks to prepare to
+  enter this temporary build environment, either by booting or chrooting into
+  it. For more details about the difference between these methods, see
+  <xref linkend="ch-temp-system-choose"/>.</para>
 
-  <para>In <xref linkend="chapter-building-system"/>, the full CLFS system is
-  built. Depending on the system you are cross-compiling for, you will either
-  boot the minimal temp-system on the target machine, or chroot into it.</para>
+  <para>In <xref linkend="chapter-building-system"/>, after having booted
+  or chrooted into the temporary build environment, the full CLFS system is
+  built.</para>
 
-  <para>The <command>chroot</command> (change root) program is used to enter
-  a virtual environment and start a new shell whose root directory will be set
-  to the CLFS partition. This is very similar to rebooting and instructing the
-  kernel to mount the CLFS partition as the root partition.
-  The major advantage is that <quote>chrooting</quote> allows the builder to
-  continue using the host while CLFS is being built. While waiting for package
-  compilation to complete, a user can switch to a different virtual console
-  (VC) or X desktop and continue using the computer as normal.</para>
-
-  <para>Some systems cannot be built by chrooting so they must be
-  booted instead. Generally, if you building for a different arch than
-  the host system, you must reboot because the kernel will likely not
-  support the target machine. Booting involves installing a few
-  additional packages that are needed for bootup, installing
-  bootscripts, and building a miminal kernel.<!-- We also describe some
-  alternative booting methods in <xref linkend="ch-boot-whatnext"/> --></para>
-
-  <para> To finish the installation, the CLFS-Bootscripts are set up in
-  <xref linkend="chapter-system-config"/>, and the kernel and boot loader are set
-  up in <xref linkend="chapter-bootable"/>. <xref linkend="chapter-finalizing"/>
+  <para>To finish the installation, several configuration files are created in
+  <xref linkend="chapter-system-config"/>, and the kernel and boot loader are
+  set up in <xref linkend="chapter-bootable"/>.
+  <xref linkend="chapter-finalizing"/>
   contains information on furthering the CLFS experience beyond this book.
   After the steps in this book have been implemented, the computer will be
   ready to reboot into the new CLFS system.</para>
