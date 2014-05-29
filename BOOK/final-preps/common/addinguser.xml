@@ -45,8 +45,21 @@ chown -v clfs:clfs /home/clfs</userinput></screen>
     <varlistentry>
       <term><parameter>-g clfs</parameter></term>
       <listitem>
-        <para>This option adds user <systemitem class="username">clfs</systemitem>
-        to group <systemitem class="groupname">clfs</systemitem>.</para>
+        <para>This option adds the new user to the
+        <systemitem class="groupname">clfs</systemitem> group.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-d /home/clfs</parameter></term>
+      <listitem>
+        <para>This option sets the user's home directory, but does not create
+        it. We could have used <option>-m</option> to tell
+        <command>useradd</command> to create the directory as well, but this
+        would also copy whatever is in the host system's
+        <filename class="directory">/etc/skel</filename> directory into the new
+        user's home. We would prefer to have a clean user environment, so we
+        just create an empty directory after adding the user.</para>
       </listitem>
     </varlistentry>
 
