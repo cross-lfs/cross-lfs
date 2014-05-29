@@ -133,7 +133,7 @@ sed --version | head -n1
 tar --version | head -n1
 makeinfo --version | head -n1
 xz --version | head -n1
-echo 'main(){}' | gcc -v -o /dev/null -x c - > dummy.log 2>&amp;1
+echo 'main(){}' | gcc -v -o /dev/null -x c - &gt; dummy.log 2>&amp;1
 if ! grep -q ' error' dummy.log; then
   echo "Compilation successful" &amp;&amp; rm dummy.log
 else
