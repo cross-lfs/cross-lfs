@@ -36,18 +36,6 @@
 
 <screen os="mp2"><userinput>patch -Np1 -i ../&perl-multilib-patch;</userinput></screen>
 
-    <para os="s1">There is a further (possibly cosmetic) anomaly - if we
-    install Perl and then run <command>perl -V</command> it will claim that
-    libc is in <filename class="directory">/lib</filename>.  The
-    following sed fixes this, but only takes effect when
-    <command>make install</command> is run:</para>
-
-<screen os="s2"><userinput>sed -i "/libc/s@/lib@/lib64@" hints/linux.sh</userinput></screen>
-
-    <para os="m2">We still need to tell Perl to actually use <filename class="directory">lib64</filename>:</para>
-
-<screen os="m3"><userinput>echo 'installstyle="lib64/perl5"' &gt;&gt; hints/linux.sh</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/perl.xml"
     xpointer="xpointer(//*[@os='a'])"/>
