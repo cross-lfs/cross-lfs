@@ -8,7 +8,7 @@ Description: This patch allows perl to be installed in /usr/lib32
 
 diff -Naur perl-5.20.0.orig/Configure perl-5.20.0/Configure
 --- perl-5.20.0.orig/Configure	2014-05-26 13:34:18.000000000 +0000
-+++ perl-5.20.0/Configure	2014-05-29 13:23:29.534283207 +0000
++++ perl-5.20.0/Configure	2014-05-30 01:43:45.621522372 +0000
 @@ -1359,6 +1359,7 @@
  glibpth="$glibpth /usr/ccs/lib /usr/ucblib /usr/local/lib"
  test -f /usr/shlib/libc.so && glibpth="/usr/shlib $glibpth"
@@ -35,12 +35,11 @@ diff -Naur perl-5.20.0.orig/Configure perl-5.20.0/Configure
  	*)	 dflt=$siteprefix/lib/site_$prog/$version ;;
  	esac
  	;;
-@@ -7166,6 +7171,9 @@
+@@ -7166,6 +7171,8 @@
  		prog=`echo $package | $sed 's/-*[0-9.]*$//'`
  		case "$installstyle" in
  		*lib/perl5*) dflt=$vendorprefix/lib/$package/vendor_$prog/$version ;;
 +		*lib32/perl5*) dflt=$vendorprefix/lib32/$package/vendor_$prog/$version ;;
-+
 +		*lib64/perl5*) dflt=$vendorprefix/lib64/$package/vendor_$prog/$version ;;
  		*)	     dflt=$vendorprefix/lib/vendor_$prog/$version ;;
  		esac
