@@ -13,46 +13,44 @@
   <para os="a"> There are two different ways you can proceed from this point
   to build the final system. You can build a kernel, a bootloader, and
   a few other utilities, boot into the temporary system, and build the
-  rest there. Alternatively, you can chroot into the temporary system.</para>
+  rest there. Alternatively, you can mount a few virtual filesystems and
+  chroot into the temporary system.</para>
 
-  <para os="b">The <command>chroot</command> (change root) program is used to enter
-  a virtual environment and start a new shell whose root directory will be set
-  to the CLFS partition. This is very similar to rebooting and instructing the
-  kernel to mount the CLFS partition as the root partition.
+  <para os="b">The <command>chroot</command> (change root) program is used to
+  enter a virtual environment and start a new shell whose root directory will
+  be set to the CLFS partition. This is very similar to rebooting and
+  instructing the kernel to mount the CLFS partition as the root partition.
   The major advantage is that <quote>chrooting</quote> allows the builder to
   continue using the host while CLFS is being built. While waiting for package
   compilation to complete, a user can switch to a different virtual console
   (VC) or X desktop and continue using the computer as normal.</para>
 
-  <para os="c">Some systems cannot be built by chrooting so they must be
-  booted instead. Generally, if you building for a different arch than
-  the host system, you must reboot because the kernel will likely not
-  support the target machine. Booting involves installing a few
-  additional packages that are needed for bootup, installing
-  boot-scripts, and building a miminal kernel.<!-- We also describe some
-  alternative booting methods in <xref linkend="ch-boot-whatnext"/> -->
-  The boot method is needed when you are building on a different
-  architecture. For example, if you are building a PowerPC system from
-  an x86, you can't chroot. The chroot method is for when you are
-  building on the same architecture. If you are building on, and for,
-  an x86 system, you can simply chroot. The rule of thumb here is if
-  the architectures match and you are running the same series kernel
-  you can just chroot. If you aren't running the same series kernel, or are
-  wanting to run a different ABI, you will need to use the boot option.</para>
+  <!-- We also describe some alternative booting methods in <xref linkend="ch-boot-whatnext"/> -->
+
+  <para os="c">The main downside to chrooting is that you are more limited in
+  when you can use it - booting will always work for any CLFS build, but the
+  chroot method can only be used when you are building on the same
+  architecture. For example, if you are building on, and for, an x86 system,
+  you can simply chroot. Booting is required when you are compiling for a
+  different architecture, such as building a PowerPC system from an x86. The
+  rule of thumb here is that if the architectures match and you are running
+  the same series kernel you can just chroot. If you aren't running the same
+  series kernel, or are wanting to run a different ABI, you will need to use
+  the boot option.</para>
 
   <para os="d">If you are in any doubt about this, you can try the following
- commands to see if you can chroot:</para>
+  commands to see if you can chroot:</para>
 
 <screen os="e"><userinput>/tools/lib/libc.so.6
 /tools/bin/gcc -v</userinput></screen>
 
-  <para os="f">If either of these commands fail, you will have to follow the boot
-  method.</para>
+  <para os="f">If either of these commands fail, you will have to follow the
+  boot method.</para>
 
-  <para os="g">To chroot, you will also need a Linux Kernel-2.6.32 or greater
-  (having been compiled with GCC-4.1.2 or greater). The reason for the
-  kernel version requirement is that Glibc is built to generate the library
-  for the smallest version of the Linux kernel expected to be supported.</para>
+  <para os="g">To chroot, you will also need a Linux Kernel, version
+  2.6.32 or higher, having been compiled with GCC-4.1.2 or greater.
+  This is required because Glibc was built to generate libraries for the
+  smallest version of the Linux kernel expected to be supported.</para>
 
   <para os="h">To check your kernel version, run <command>cat /proc/version</command>
   - if it does not say that you are running a 2.6.32 or later Linux kernel,
