@@ -34,7 +34,7 @@
 
     <para os="b">Prepare Pkg-config-lite for compilation:</para>
 
-<screen os="c"><userinput>./configure --prefix=/cross-tools \
+<screen os="c"><userinput>./configure --prefix=/cross-tools --host=${CLFS_TARGET}\
     --with-pc-path=/tools/lib/pkgconfig:/tools/share/pkgconfig</userinput></screen>
 
     <variablelist os="d">
@@ -46,6 +46,16 @@
           <para>This sets the default PKG_CONFIG_PATH to
           <filename class="directory">/tools/lib/pkgconfig</filename> and
           <filename class="directory">/tools/share/pkgconfig</filename>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--host=${CLFS_TARGET}</parameter></term>
+        <listitem>
+          <para>This option makes sure the installation includes the proper
+          <command>{$CLFS_TARGET}-pkg-config</command> to be detected and used
+          when cross-compiling some tools in the temporary system and boot
+          chapter.</para> 
         </listitem>
       </varlistentry>
 
