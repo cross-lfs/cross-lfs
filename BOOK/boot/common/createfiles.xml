@@ -47,8 +47,7 @@ ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
       <term><parameter><filename>/bin/echo</filename></parameter></term>
       <listitem>
         <para>This is to satisfy one of the tests in Glibc's test suite, which
-        will fail in <command>echo</command> is not found in
-        <filename class="directory">/bin</filename>.</para>
+        expects <filename>/bin/echo</filename>.</para>
       </listitem>
     </varlistentry>
 
@@ -111,7 +110,8 @@ ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
       <term><parameter><filename>/usr/lib/libstdc++.la</filename></parameter></term>
       <listitem>
         <para>This prevents a <filename class="directory">/tools</filename>
-        reference that would be in <filename>/usr/lib/libstdc++.la</filename>.</para>
+        reference that would otherwise be in
+        <filename>/usr/lib/libstdc++.la</filename> after GCC is installed.</para>
       </listitem>
     </varlistentry>
 
