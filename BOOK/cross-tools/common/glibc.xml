@@ -54,7 +54,7 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
     AR="${CLFS_TARGET}-ar" RANLIB="${CLFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
-    --disable-profile --with-tls --enable-kernel=2.6.32 \
+    --disable-profile --with-tls --enable-kernel=&glibc-kernel-version; \
     --with-__thread --with-binutils=/cross-tools/bin \
     --with-headers=/tools/include --enable-obsolete-rpc \
     --cache-file=config.cache</userinput></screen>
@@ -110,10 +110,10 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
       </varlistentry>
 
       <varlistentry os="dg7">
-        <term><parameter>--enable-kernel=2.6.32</parameter></term>
+        <term><parameter>--enable-kernel=&glibc-kernel-version;</parameter></term>
         <listitem>
           <para>This tells Glibc to compile the library with support
-          for 2.6.32 and later Linux kernels.</para>
+          for &glibc-kernel-version; and later Linux kernels.</para>
         </listitem>
       </varlistentry>
 
