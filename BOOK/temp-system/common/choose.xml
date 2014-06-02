@@ -10,7 +10,7 @@
 
   <title>To Boot or to Chroot?</title>
 
-  <para os="a"> There are two different ways you can proceed from this point
+  <para os="a">There are two different ways you can proceed from this point
   to build the final system. You can build a kernel, a bootloader, and
   a few other utilities, boot into the temporary system, and build the
   rest there. Alternatively, you can mount a few virtual filesystems and
@@ -34,9 +34,9 @@
   you can simply chroot. Booting is required when you are compiling for a
   different architecture, such as building a PowerPC system from an x86. The
   rule of thumb here is that if the architectures match and you are running
-  the same series kernel you can just chroot. If you aren't running the same
-  series kernel, or are wanting to run a different ABI, you will need to use
-  the boot option.</para>
+  the same series kernel (specifically, a 2.6.32 or newer Linux kernel) you
+  can just chroot. If you aren't running the same series kernel, or are
+  wanting to run a different ABI, you will need to use the boot option.</para>
 
   <para os="d">If you are in any doubt about this, you can try the following
   commands to see if you can chroot:</para>
@@ -47,17 +47,8 @@
   <para os="f">If either of these commands fail, you will have to follow the
   boot method.</para>
 
-  <para os="g">To chroot, you will also need a Linux Kernel, version
-  2.6.32 or higher, having been compiled with GCC-4.1.2 or greater.
-  This is required because Glibc was built to generate libraries for the
-  smallest version of the Linux kernel expected to be supported.</para>
+  <para os="g">For the boot method, follow <xref linkend="chapter-boot"/>.</para>
 
-  <para os="h">To check your kernel version, run <command>cat /proc/version</command>
-  - if it does not say that you are running a 2.6.32 or later Linux kernel,
-  compiled with GCC 4.1.2 or later, you cannot chroot.</para>
-
-  <para os="i">For the boot method, follow <xref linkend="chapter-boot"/>.</para>
-
-  <para os="j">For the chroot method, follow <xref linkend="chapter-chroot"/>.</para>
+  <para os="h">For the chroot method, follow <xref linkend="chapter-chroot"/>.</para>
 
 </sect1>
