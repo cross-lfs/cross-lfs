@@ -14,13 +14,14 @@
   be made accessible. In order to do this, the partition needs to be
   mounted at a chosen mount point.</para>
 
-  <para>If you haven't already, choose a mount point and assign it to the
-  <envar>CLFS</envar> environment variable by running:</para>
+  <para>As the <systemitem class="username">root</systemitem> user, ensure the
+  <envar>CLFS</envar> variable is set, if you haven't already:</para>
 
 <screen><userinput>export CLFS=<replaceable>[/mnt/clfs]</replaceable></userinput></screen>
 
   <para>Next, create the mount point and mount the CLFS file system by
-  running:</para>
+  running the following commands as
+  <systemitem class="username">root</systemitem>:</para>
 
 <screen><userinput>mkdir -pv ${CLFS}
 mount -v /dev/<replaceable>[xxx]</replaceable> ${CLFS}</userinput></screen>
@@ -30,7 +31,8 @@ mount -v /dev/<replaceable>[xxx]</replaceable> ${CLFS}</userinput></screen>
 
   <para>If using multiple partitions for CLFS (e.g., one for <filename
   class="directory">/</filename> and another for <filename
-  class="directory">/usr</filename>), mount them using:</para>
+  class="directory">/usr</filename>), mount them as
+  <systemitem class="username">root</systemitem> using:</para>
 
 <screen><userinput>mkdir -pv ${CLFS}
 mount -v /dev/<replaceable>[xxx]</replaceable> ${CLFS}
