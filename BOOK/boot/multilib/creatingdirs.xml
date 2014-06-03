@@ -24,6 +24,7 @@ mkdir -pv ${CLFS}/var/{lock,log,mail,spool}
 mkdir -pv ${CLFS}/var/{opt,cache,lib{,64}/{misc,locate},local}
 install -dv ${CLFS}/root -m 0750
 install -dv ${CLFS}{/var,}/tmp -m 1777
+ln -sv ../run ${CLFS}/var/run
 mkdir -pv ${CLFS}/usr/{,local/}{bin,include,lib{,64},sbin,src}
 mkdir -pv ${CLFS}/usr/{,local/}share/{doc,info,locale,man}
 mkdir -pv ${CLFS}/usr/{,local/}share/{misc,terminfo,zoneinfo}

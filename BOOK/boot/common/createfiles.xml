@@ -21,7 +21,6 @@ ln -sv /tools/lib/libgcc_s.so{,.1} ${CLFS}/usr/lib
 ln -sv /tools/lib/libstdc++.so{.6,} ${CLFS}/usr/lib
 sed -e 's/tools/usr/' /tools/lib/libstdc++.la &gt; ${CLFS}/usr/lib/libstdc++.la
 ln -sv bash ${CLFS}/bin/sh
-ln -sv ../run ${CLFS}/var/run
 ln -sv /tools/sbin/init ${CLFS}/sbin
 ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
 
@@ -123,21 +122,13 @@ ln -sv /tools/etc/{login.{access,defs},limits} ${CLFS}/etc</userinput></screen>
     </varlistentry>
 
     <varlistentry os="c13">
-      <term><parameter><filename>/var/run</filename></parameter></term>
-      <listitem>
-        <para>This is to account for any applications that have not yet
-        migrated to using <filename class="directory">/run</filename>.</para>
-      </listitem>
-    </varlistentry>
-
-    <varlistentry os="c14">
       <term><parameter><filename>/sbin/init</filename></parameter></term>
       <listitem>
         <para>This is where the kernel expects to find <command>init</command>.</para>
       </listitem>
     </varlistentry>
 
-    <varlistentry os="c15">
+    <varlistentry os="c14">
       <term><parameter><filename>/etc/{login.{access,defs},limits}</filename></parameter></term>
       <listitem>
         <para>These are configuration files used by Shadow and are expected to
