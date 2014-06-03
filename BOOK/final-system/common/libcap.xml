@@ -39,6 +39,20 @@ ln -sfv ../../lib/$(readlink /lib/libcap.so) /usr/lib/libcap.so
 rm -v /lib/libcap.so
 mv -v /lib/libcap.a /usr/lib</userinput></screen>
 
+    <variablelist os="f">
+      <title>The meaning of the make option:</title>
+
+      <varlistentry>
+        <term><parameter>RAISE_SETFCAP=no</parameter></term>
+        <listitem>
+          <para>This prevents <command>setcap</command> from being run on
+          itself, which will fail if the kernel or file system does not
+          support extended capabilities.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
   </sect2>
 
   <sect2 id="contents-libcap" role="content">
