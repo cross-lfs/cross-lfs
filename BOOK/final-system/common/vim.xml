@@ -65,16 +65,31 @@
 
 <screen os="k"><userinput>make HELPSUBLOC=/usr/share/doc/vim-&vim-version; install</userinput></screen>
 
-    <para os="l">Many users are accustomed to using <command>vi</command>
+    <variablelist os="l">
+      <title>The meaning of the make option:</title>
+
+      <varlistentry>
+        <term><parameter>HELPSUBLOC=/usr/share/doc/vim-&vim-version;</parameter></term>
+        <listitem>
+          <para>Tells Vim to install its documentation into
+          <filename class="directory">/usr/share/doc/vim-&vim-version;</filename>
+          instead of 
+          <filename class="directory">/usr/share/vim/vim&vim-version2;/doc</filename>.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="m">Many users are accustomed to using <command>vi</command>
     instead of <command>vim</command>. Some programs, such as
     <command>vigr</command> and <command>vipw</command>, also use
     <command>vi</command>. Create a symlink to permit execution of
     <command>vim</command> when users habitually enter <command>vi</command>
     and allow programs that use <command>vi</command> to work:</para>
 
-<screen os="m"><userinput>ln -sv vim /usr/bin/vi</userinput></screen>
+<screen os="n"><userinput>ln -sv vim /usr/bin/vi</userinput></screen>
 
-    <para os="n">If an X Window System is going to be installed on the CLFS
+    <para os="o">If an X Window System is going to be installed on the CLFS
     system, you may want to recompile Vim after installing X. Vim
     comes with a GUI version of the editor that requires X and some
     additional libraries to be installed. For more information, refer to the
