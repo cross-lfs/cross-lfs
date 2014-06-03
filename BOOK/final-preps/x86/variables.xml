@@ -18,8 +18,8 @@
   put into the <envar>CLFS_HOST</envar> variable. To account for the
   possibility that the host and target are the same arch, as cross-compiling
   won't work when host and target are the same, part of the triplet needs to
-  be changed slightly to add "cross". Set <envar>CLFS_HOST</envar> using the
-  following command:</para>
+  be changed slightly - in our case, we will change part of the triplet
+  to "cross". Set <envar>CLFS_HOST</envar> using the following command:</para>
 
 <screen os="b"><userinput>export CLFS_HOST=$(echo ${MACHTYPE} | sed -e 's/-[^-]*/-cross/')</userinput></screen>
 
