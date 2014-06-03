@@ -52,10 +52,12 @@
       <varlistentry>
         <term><parameter>--host=${CLFS_TARGET}</parameter></term>
         <listitem>
-          <para>This option makes sure the installation includes the proper
-          <command>{$CLFS_TARGET}-pkg-config</command> to be detected and used
-          when cross-compiling some tools in the temporary system and boot
-          chapter.</para> 
+          <para>Several packages that we will cross-compile later will try to
+          search for <command>${CLFS_TARGET}-pkg-config</command>. Setting
+          this option ensures that Pkg-config-lite will create a hard
+          link in <filename class="directory">/cross-tools/bin</filename> with
+          this name, so that it will be used instead of any similarly-named
+          program that might exist on the host.</para>
         </listitem>
       </varlistentry>
 
