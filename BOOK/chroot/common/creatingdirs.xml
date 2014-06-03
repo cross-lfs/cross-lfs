@@ -20,6 +20,7 @@ mkdir -pv /var/{lock,log,mail,spool}
 mkdir -pv /var/{opt,cache,lib/{misc,locate},local}
 install -dv -m 0750 /root
 install -dv -m 1777 {/var,}/tmp
+ln -sv ../run /var/run
 mkdir -pv /usr/{,local/}{bin,include,lib,sbin,src}
 mkdir -pv /usr/{,local/}share/{doc,info,locale,man}
 mkdir -pv /usr/{,local/}share/{misc,terminfo,zoneinfo}
