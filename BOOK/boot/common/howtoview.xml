@@ -14,19 +14,33 @@
   the CLFS book so far. However, the temporary system in
   <filename class="directory">/tools</filename> does not have
   any of these, so you will need to find a way to continue following the book
-  after booting into the temporary build environment. One possibility might
-  be to simply have the book open on another computer, or even read a printed
-  copy, though one downside to this is that you cannot copy-and-paste commands.
-  Another solution could be to convert the CLFS book into plain text, thus
-  allowing it to be viewed with <command>more</command>, by using a command
-  such as the following:</para>
+  after booting into the temporary build environment. Possible solutions
+  include:</para>
+
+  <itemizedlist>
+
+    <listitem>
+      <para>Simply have the book open on another computer, or even read a
+      printed copy, though one downside to this is that you cannot
+      copy-and-paste commands.</para>
+    </listitem>
+
+    <listitem>
+      <para>Convert the CLFS book into plain text, thus allowing it to be
+      viewed with <command>more</command> or <command>view</command>, by using
+      a command such as the following:</para>
 
 <screen><userinput>lynx -dump /path/to/clfs/book.html &gt; ${CLFS}/root/CLFS-book.txt</userinput></screen>
 
-  <para>Other possible solutions include cross-compiling and installing
-  additional programs before booting, such as Lynx or Links to view the book,
-  or OpenSSH to allow remote login. See the CLFS Hints website at
-  <ulink url="http://hints.cross-lfs.org"/> for more suggestions that other
-  users have come up with.</para>
+    </listitem>
+
+    <listitem>
+      <para>Cross-compile and install additional programs before booting,
+      such as Lynx or Links to view the book, or Dropbear to allow remote
+      login. See the CLFS Hints website at <ulink url="&hints-root;"/> for more
+      suggestions by other users.</para>
+    </listitem>
+
+  </itemizedlist>
 
 </sect1>
