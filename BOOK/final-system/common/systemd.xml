@@ -24,8 +24,11 @@
   <sect2 role="installation">
     <title>Installation of Systemd</title>
 
-    <para os="p1">Apply a patch so that compat <command>pkg-config</command>
-    files get installed without installing compat libraries:</para>
+    <para os="p1">Systemd 211 merged several libraries into
+    <filename class="libraryfile">libsystemd</filename>, but some packages
+    that use systemd still expect those separate libraries. Apply a patch
+    to allow backwards compatibility with these packages by
+    installing Pkg-config files for the old libraries:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&systemd-compat-patch;</userinput></screen>
 
