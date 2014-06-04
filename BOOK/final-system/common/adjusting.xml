@@ -10,7 +10,7 @@
 
   <title>Adjusting the Toolchain</title>
 
-  <para os="a">Now we amend the GCC specs file so that it points to the new
+  <para os="a">Now we adjust GCC's specs so that they point to the new
   dynamic linker. A <command>perl</command> command accomplishes this:</para>
 
 <screen os="c"><userinput>gcc -dumpspecs | \
@@ -18,8 +18,13 @@ perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
      -e 's@\*startfile_prefix_spec:\n@$_/usr/lib/ @g;' &gt; \
      $(dirname $(gcc --print-libgcc-file-name))/specs</userinput></screen>
 
-  <para os="d">It is a good idea to visually inspect the specs file to verify the
-  intended change was actually made.</para>
+  <para os="d">The <command>perl</command> command above makes 2
+  modifications to GCC's specs: it removes <quote>/tools</quote> from the
+  pathname to the dynamic linker, and adds <quote>/usr/lib/</quote> to the
+  startfile_prefix_spec. It is a good idea to visually inspect the
+  <filename>specs</filename> file, and compare with the output of
+  <command>gcc -dumpspecs</command>, to verify that
+  the intended changes were actually made.</para>
 
   <para os="e">Note that <filename class="directory">/lib</filename> is now
   the prefix of our dynamic linker.</para>
