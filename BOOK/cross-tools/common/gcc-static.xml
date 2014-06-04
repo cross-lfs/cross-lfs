@@ -123,7 +123,9 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
       <varlistentry>
         <term><parameter>--with-newlib</parameter></term>
         <listitem>
-          <para>Tells GCC that the target libc will use 'newlib'.</para>
+          <para>This causes GCC to enable the <envar>inhibit_libc</envar> flag,
+          which prevents <filename class="libraryfile">libgcc</filename>
+          from building code that uses libc support.</para>
         </listitem>
       </varlistentry>
 
@@ -155,7 +157,8 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
       <varlistentry>
         <term><parameter>--disable-target-zlib</parameter></term>
         <listitem>
-          <para>This tells GCC stuff.</para>
+          <para>This tells GCC not to build the copy of Zlib in its
+          source tree.</para>
         </listitem>
       </varlistentry>
 
