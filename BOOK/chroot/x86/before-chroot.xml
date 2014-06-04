@@ -45,9 +45,10 @@
   <sect2 role="using-setarch">
     <title>Using Setarch</title>
 
-    <para>If your host has a tool called <command>setarch</command> this may
-    solve your problems. The reason for saying may is because on a architecture
-    such as x86_64, using <command>setarch linux32 uname -m</command> will only
+    <para>If your host has a tool called <command>setarch</command>, this may
+    solve your problems, at least if you're building for i686. On an
+    architecture such as x86_64, using
+    <command>setarch linux32 uname -m</command> will only
     ever output i686. It is not possible to get an output of i486 or i586.</para>
 
     <para>To test if setarch does everything you need it to, execute the
