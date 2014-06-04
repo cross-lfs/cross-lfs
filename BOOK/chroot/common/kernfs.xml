@@ -37,19 +37,19 @@ mount -vt sysfs sysfs ${CLFS}/sys</userinput></screen>
   and start again later, it is important to check that these file systems
   are mounted again before entering the chroot environment.</para>
 
-  <para>Two device nodes, /dev/console and /dev/null, are required to be
+  <para>Two device nodes, <filename class="devicefile">/dev/console</filename>
+  and <filename class="devicefile">/dev/null</filename>, are required to be
   present on the filesystem.  These are needed by the kernel even before
-  starting Eudev early in the boot process, so we create them here:</para>
+  starting Udev early in the boot process, so we create them here:</para>
 
 <screen><userinput>mknod -m 600 ${CLFS}/dev/console c 5 1
 mknod -m 666 ${CLFS}/dev/null c 1 3</userinput></screen>
 
   <para>Once the system is complete and booting, the rest of our device
-  nodes are created by Udev, part of Systemd.  Since this package is not
-  available to us right now, we must take other steps to provide device
-  nodes under on the CLFS filesystem.  We will use the <quote>bind</quote>
-  option in the mount command to make our host system's /dev structure
-  appear in the new CLFS filesystem:</para>
+  nodes will be created by the kernel's
+  <systemitem class="filesystem">devtmpfs</systemitem> file system. For now
+  though, we will just use the <quote>bind</quote> option in the mount command
+  to make our host system's /dev structure appear in the new CLFS filesystem:</para>
 
 <screen><userinput>mount -v -o bind /dev ${CLFS}/dev</userinput></screen>
 
