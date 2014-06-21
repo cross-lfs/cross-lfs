@@ -31,7 +31,7 @@ xsltproc -xinclude -output x86.wget stylesheets/wget.xsl x86-index.xml
     </xsl:if>
       <!-- Patches. Match only the patches and skip possible duplicated
       URLs due that may be splitted for PDF output-->
-    <xsl:if test="contains(@url, '.patch') and contains(@url, '&patches-root;')
+    <xsl:if test="contains(@url, '&patches-root;') and @url != '&patches-root;'
             and not(ancestor-or-self::*/@condition = 'pdf')">
       <xsl:value-of select="@url"/>
       <xsl:text>&#x0a;</xsl:text>
