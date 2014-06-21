@@ -50,30 +50,33 @@ mv -v config{fsf,}.sub</screen>
 <screen os="b"><userinput>CC="gcc -isystem /usr/include" \
 CXX="g++ -isystem /usr/include" \
 LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
-  ./configure --prefix=/usr --enable-cxx</userinput></screen>
+  ./configure --prefix=/usr --enable-cxx \
+  --docdir=/usr/share/doc/gmp-&gmp-version;</userinput></screen>
 
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
 
-    <important os="e">
+    <para os="e">Build the HTML documentation:</para>
+
+<screen os="f"><userinput>make html</userinput></screen>
+
+    <important os="g">
       <para>The test suite for GMP is considered
       critical. Do not skip it under any circumstance.</para>
     </important>
 
-    <para os="f">Test the results:</para>
+    <para os="h">Test the results:</para>
 
-<screen os="g"><userinput remap="test">make check</userinput></screen>
+<screen os="i"><userinput remap="test">make check</userinput></screen>
 
-    <para os="h">Install the package:</para>
+    <para os="j">Install the package:</para>
 
-<screen os="i"><userinput>make install</userinput></screen>
+<screen os="k"><userinput>make install</userinput></screen>
 
-    <para os="j">Install the documentation:</para>
+    <para os="l">Install the documentation:</para>
 
-<screen os="k"><userinput>mkdir -v /usr/share/doc/gmp-&gmp-version;
-cp -v doc/{isa_abi_headache,configuration} doc/*.html \
-    /usr/share/doc/gmp-&gmp-version;</userinput></screen>
+<screen os="m"><userinput>make install-html</userinput></screen>
 
   </sect2>
 
