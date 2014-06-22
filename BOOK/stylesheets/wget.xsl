@@ -23,14 +23,14 @@ xsltproc -xinclude -output x86.wget stylesheets/wget.xsl x86-index.xml
   </xsl:template>
 
   <xsl:template match="ulink">
-      <!-- Packages. If some package don't have the string ".tar." in their
-      name, the next test must be fixed to match it also. -->
+      <!-- Packages. If some package doesn't have the string ".tar." or
+      ".tgz" in its name, the next test must be fixed to match it also. -->
     <xsl:if test="contains(@url, '.tar.') or contains(@url, '.tgz')">
       <xsl:value-of select="@url"/>
       <xsl:text>&#x0a;</xsl:text>
     </xsl:if>
       <!-- Patches. Match only the patches and skip possible duplicated
-      URLs due that may be splitted for PDF output-->
+      URLs that may be split for PDF output-->
     <xsl:if test="contains(@url, '&patches-root;') and @url != '&patches-root;'
             and not(ancestor-or-self::*/@condition = 'pdf')">
       <xsl:value-of select="@url"/>
