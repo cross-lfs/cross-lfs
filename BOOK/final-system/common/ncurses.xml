@@ -41,8 +41,8 @@
 
 <screen os="d"><userinput>make</userinput></screen>
 
-    <para os="e">This package has a test suite, and can be ran after the
-    package is installed. The tests are in the
+    <para os="e">This package has a test suite, but it can only be run after
+    the package is installed. The tests are in the
     <filename class="directory">test/</filename> directory. See the
     <filename>README</filename> file in that directory for details.</para>
 
@@ -62,8 +62,10 @@ ln -svf ../../lib/$(readlink /lib/libpanelw.so) /usr/lib/libpanelw.so
 ln -svf ../../lib/$(readlink /lib/libformw.so) /usr/lib/libformw.so
 rm -v /lib/lib{ncursesw,menuw,panelw,formw}.so</userinput></screen>
 
-    <para os="l">Now we will make our Ncurses compatible for older and non-widec compatible programs
-    can build properly:</para>
+    <para os="l">Many packages that use Ncurses will compile just fine against
+    the widechar libraries, but won't know to look for them. Create linker
+    scripts and symbolic links to allow older and non-widec compatible
+    programs to build properly:</para>
 
 <screen os="m"><userinput>for lib in curses ncurses form panel menu ; do
         echo "INPUT(-l${lib}w)" &gt; /usr/lib/lib${lib}.so
