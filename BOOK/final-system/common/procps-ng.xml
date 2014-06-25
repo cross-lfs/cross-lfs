@@ -48,13 +48,14 @@
 
     <note os="note1">
       <para>When using the boot method, two tests will fail if the hostname is
-      not set:</para>
+      not set. If you have booted the temporary system, and want to run the
+      test suite, run the following command:</para>
 
 <screen><userinput remap="test">hostname clfs</userinput></screen>
     </note>
 
-    <para os="f">Remove the test which fails when scripting does not use a tty
-    device. Run the following commands:</para>
+    <para os="f">If running the testsuite, first disable a test which fails
+    when scripting does not use a tty device:</para>
 
 <screen os="g"><userinput remap="test">sed -i -r 's|(pmap_initname)\\\$|\1|' testsuite/pmap.test/pmap.exp
 make check</userinput></screen>
