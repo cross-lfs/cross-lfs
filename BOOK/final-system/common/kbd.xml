@@ -30,27 +30,39 @@
 <screen os="b"><userinput>PKG_CONFIG_PATH="/tools/lib/pkgconfig" \
     ./configure --prefix=/usr --disable-vlock --enable-optional-progs</userinput></screen>
 
-    <para os="c">Compile the package:</para>
+    <variablelist os="c">
+      <title>The meaning of the configure option:</title>
 
-<screen os="d"><userinput>make</userinput></screen>
+      <varlistentry>
+        <term><envar>PKG_CONFIG_PATH</envar></term>
+        <listitem>
+          <para>Use pkg-config to obtain the location of the test library
+          metadata built in <xref linkend="ch-temp-system-check"/>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
-    <para os="e">To test the results, issue:</para>
+    <para os="d">Compile the package:</para>
 
-<screen os="f"><userinput remap="test">make check</userinput></screen>
+<screen os="e"><userinput>make</userinput></screen>
 
-    <para os="g">Install the package:</para>
+    <para os="f">To test the results, issue:</para>
 
-<screen os="h"><userinput>make install</userinput></screen>
+<screen os="g"><userinput remap="test">make check</userinput></screen>
 
-    <para os="i">Some of the programs from Kbd are used by systemd to
+    <para os="h">Install the package:</para>
+
+<screen os="i"><userinput>make install</userinput></screen>
+
+    <para os="j">Some of the programs from Kbd are used by systemd to
     initialize the system, those binaries need to be on the root
     partition:</para>
 
-<screen os="j"><userinput>mv -v /usr/bin/{loadkeys,setfont} /bin</userinput></screen>
+<screen os="k"><userinput>mv -v /usr/bin/{loadkeys,setfont} /bin</userinput></screen>
 
-    <para os="k">Install the documentation:</para>
+    <para os="l">Install the documentation:</para>
 
-<screen os="l"><userinput>mkdir -v /usr/share/doc/kbd-&kbd-version;
+<screen os="m"><userinput>mkdir -v /usr/share/doc/kbd-&kbd-version;
 cp -R -v docs/doc/* /usr/share/doc/kbd-&kbd-version;</userinput></screen>
 
   </sect2>

@@ -29,29 +29,17 @@
 
 <screen os="b"><userinput>PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr</userinput></screen>
 
-    <variablelist os="c">
-      <title>The meaning of the configure option:</title>
+    <para os="c">Compile the package:</para>
 
-      <varlistentry>
-        <term><envar>PKG_CONFIG_PATH</envar></term>
-        <listitem>
-          <para>Use pkg-config to obtain the location of the test library
-          metadata built in <xref linkend="ch-temp-system-check"/>.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+<screen os="d"><userinput>make</userinput></screen>
 
-    <para os="d">Compile the package:</para>
+    <para os="e">To test the results, issue:</para>
 
-<screen os="e"><userinput>make</userinput></screen>
+<screen os="f"><userinput remap="test">make check</userinput></screen>
 
-    <para os="f">To test the results, issue:</para>
+    <para os="g">Install the package:</para>
 
-<screen os="g"><userinput remap="test">make check</userinput></screen>
-
-    <para os="h">Install the package:</para>
-
-<screen os="i"><userinput>make install</userinput></screen>
+<screen os="h"><userinput>make install</userinput></screen>
 
   </sect2>
 
