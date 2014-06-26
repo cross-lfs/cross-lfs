@@ -31,7 +31,7 @@
     ./configure --prefix=/usr --disable-vlock --enable-optional-progs</userinput></screen>
 
     <variablelist os="c">
-      <title>The meaning of the configure option:</title>
+      <title>The meaning of the new configure options:</title>
 
       <varlistentry>
         <term><envar>PKG_CONFIG_PATH</envar></term>
@@ -40,6 +40,22 @@
           metadata built in <xref linkend="ch-temp-system-check"/>.</para>
         </listitem>
       </varlistentry>
+
+      <varlistentry>
+        <term><envar>--disable-vlock</envar></term>
+        <listitem>
+          <para>Prevents Kbd from trying to build the
+          <command>vlock</command> program, which requires Linux-PAM.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><envar>--enable-optional-progs</envar></term>
+        <listitem>
+          <para>Installs several additional programs.</para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
 
     <para os="d">Compile the package:</para>
