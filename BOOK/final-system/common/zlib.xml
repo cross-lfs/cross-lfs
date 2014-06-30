@@ -53,6 +53,11 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 <screen os="i"><userinput>mv -v /usr/lib/libz.so.* /lib
 ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so</userinput></screen>
 
+    <para os="j">Install the documentation:</para>
+
+<screen os="k"><userinput>mkdir -pv /usr/share/doc/zlib-&zlib-version;
+cp -rv doc/* examples /usr/share/doc/zlib-&zlib-version;</userinput></screen>
+
   </sect2>
 
   <sect2 id="contents-zlib" role="content">
@@ -60,9 +65,11 @@ ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so</userinput></scr
 
     <segmentedlist>
       <segtitle>Installed libraries</segtitle>
+      <segtitle>Installed directory</segtitle>
 
       <seglistitem>
         <seg>libz.[a,so]</seg>
+        <seg>/usr/share/doc/zlib-&zlib-version;</seg>
       </seglistitem>
     </segmentedlist>
 
