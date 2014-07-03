@@ -62,7 +62,7 @@
   to the image(s), such as
   <parameter>device=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:</parameter>
   for the disk, and
-  <parameter>image=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:9,/boot/clfskernel-&linux-version;</parameter>
+  <parameter>image=/ht@0,f2000000/pci@3/k2-sata-root@c/k2-sata@0/disk@0:9,/boot/clfskernel-&linux-version;-&linux-version2;</parameter>
   which definitely works.</para>
 
   <para os="k">Create a <quote>yaboot.conf</quote> file defining yaboot's boot
@@ -112,7 +112,7 @@ fgcolor=light-green
 # For all images, the pathname is relative to the filesystem
 # on which they are situated and can include at most one
 # directory
-image=/boot/clfskernel-&linux-version;
+image=/boot/clfskernel-&linux-version;-&linux-version2;
     label=&version;
     read-only</literal>
 EOF</userinput></screen>
