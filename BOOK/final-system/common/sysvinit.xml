@@ -24,14 +24,14 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-<para os ="a">Apply a sed which disables last, mesg, mountpoint, sulogin,
-utmpdump, and wall from being built and installed as they are provided by
-Util-linux:</para>
+    <para os ="a">Apply a sed which disables last, mesg, mountpoint, sulogin,
+    utmpdump, and wall from being built and installed as they are provided by
+    Util-linux:</para>
 
 <screen os="b"><userinput>sed -i -e 's/\ sulogin[^ ]*//' \
     -e '/utmpdump/d' -e '/mountpoint/d' -e '/mesg/d' src/Makefile</userinput></screen>
 
-<para os ="c">Compile the package:</para>
+    <para os ="c">Compile the package:</para>
 
 <screen os="d"><userinput>make -C src clobber
 make -C src</userinput></screen>
