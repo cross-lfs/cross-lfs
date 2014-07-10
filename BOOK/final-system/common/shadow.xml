@@ -98,6 +98,16 @@ find man -name Makefile.in -exec sed -i \
 
 <screen os="v"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
+    <para os="w">The <command>login</command> program will write to
+    <filename>/var/log/lastlog</filename>, if it exists, to record the date and
+    time of the latest successful login for each user. This log file is not
+    created automatically if it does not already exist, so we will
+    create it now and give it appropriate ownership and permissions:</para>
+
+<screen os="x"><userinput>touch /var/log/lastlog
+chgrp -v utmp /var/log/lastlog
+chmod -v 664 /var/log/lastlog</userinput></screen>
+
   </sect2>
 
   <sect2 id="conf-shadow" role="configuration">
