@@ -24,11 +24,11 @@
   <sect2 role="installation">
     <title>Installation of Sysvinit</title>
 
-    <para os ="a">Apply a sed which disables last, mesg, mountpoint, sulogin,
-    utmpdump, and wall from being built and installed as they are provided by
-    Util-linux:</para>
+    <para os ="a">Apply a <command>sed</command> to disable several programs
+    from being built and installed as better versions are provided by
+    other packages:</para>
 
-<screen os="b"><userinput>sed -i -e 's/\ sulogin[^ ]*//' \
+<screen os="b"><userinput>sed -i -e 's/\ sulogin[^ ]*//' -e 's/pidof\.8//' -e '/ln .*pidof/d' \
     -e '/utmpdump/d' -e '/mountpoint/d' -e '/mesg/d' src/Makefile</userinput></screen>
 
     <para os ="c">Compile the package:</para>
@@ -124,9 +124,9 @@ EOF</userinput></screen>
       <segtitle>Installed programs</segtitle>
 
       <seglistitem>
-        <seg>bootlogd, fstab-decode, halt, init, killall5, pidof (link to
-        killall5), poweroff (link to halt), reboot (link to halt), runlevel,
-        shutdown, and telinit (link to init)</seg>
+        <seg>bootlogd, fstab-decode, halt, init, killall5, poweroff
+        (link to halt), reboot (link to halt), runlevel, shutdown, telinit
+        (link to init)</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -189,16 +189,6 @@ EOF</userinput></screen>
           it</para>
           <indexterm zone="ch-system-sysvinit killall5">
             <primary sortas="b-killall5">killall5</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="pidof">
-        <term><command>pidof</command></term>
-        <listitem>
-          <para>Reports the PIDs of the given programs</para>
-          <indexterm zone="ch-system-sysvinit pidof">
-            <primary sortas="b-pidof">pidof</primary>
           </indexterm>
         </listitem>
       </varlistentry>
