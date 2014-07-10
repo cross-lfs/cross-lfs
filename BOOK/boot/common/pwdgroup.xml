@@ -21,11 +21,6 @@
   </indexterm>
 
   <indexterm zone="ch-boot-pwdgroup">
-    <primary sortas="e-/var/run/utmp">/var/run/utmp</primary>
-    <secondary>boot</secondary>
-  </indexterm>
-
-  <indexterm zone="ch-boot-pwdgroup">
     <primary sortas="e-/var/log/btmp">/var/log/btmp</primary>
     <secondary>boot</secondary>
   </indexterm>
@@ -193,13 +188,12 @@ EOF</userinput></screen>
   do not already exist. Initialize the log files and give them
   proper permissions:</para>
 
-<screen os="g"><userinput>touch ${CLFS}/var/run/utmp ${CLFS}/var/log/{btmp,lastlog,wtmp}
-chgrp -v &gid-utmp; ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
-chmod -v 664 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
+<screen os="g"><userinput>touch ${CLFS}/var/log/{btmp,lastlog,wtmp}
+chgrp -v &gid-utmp; ${CLFS}/var/log/lastlog
+chmod -v 664 ${CLFS}/var/log/lastlog
 chmod -v 600 ${CLFS}/var/log/btmp</userinput></screen>
 
-  <para os="h">The <filename>/var/run/utmp</filename> file records the users
-  that are currently logged in. The <filename>/var/log/wtmp</filename>
+  <para os="h">The <filename>/var/log/wtmp</filename>
   file records all logins and logouts. The
   <filename>/var/log/lastlog</filename> file records when
   each user last logged in. The <filename>/var/log/btmp</filename> file
