@@ -156,7 +156,7 @@ $Date$
             </xsl:when>
 
               <!-- Code for the "To Boot or To Chroot" CLFS links jumps. -->
-            <xsl:when test="$prev[@id='ch-chroot-devices'] or $prev[@id='ch-boot-whatnext']">
+            <xsl:when test="$prev[@id='ch-chroot-pwdgroup'] or $prev[@id='ch-boot-whatnext']">
               <a accesskey="p">
                 <xsl:attribute name="href">
                   <xsl:call-template name="href.target">
