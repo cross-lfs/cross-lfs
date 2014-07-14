@@ -26,20 +26,11 @@
   <para>Begin by creating directories onto which the file systems will
   be mounted:</para>
 
-<screen><userinput>mkdir -pv ${CLFS}/{dev,proc,sys}</userinput></screen>
-
-  <para>Now mount the file systems:</para>
-
-<screen><userinput>mount -vt proc proc ${CLFS}/proc
-mount -vt sysfs sysfs ${CLFS}/sys</userinput></screen>
-
-  <para>Remember that if for any reason you stop working on the CLFS system
-  and start again later, it is important to check that these file systems
-  are mounted again before entering the chroot environment.</para>
+<screen><userinput>mkdir -pv ${CLFS}/{dev,proc,run,sys}</userinput></screen>
 
   <para>Two device nodes, <filename class="devicefile">/dev/console</filename>
   and <filename class="devicefile">/dev/null</filename>, are required to be
-  present on the filesystem.  These are needed by the kernel even before
+  present on the file system. These are needed by the kernel even before
   starting Udev early in the boot process, so we create them here:</para>
 
 <screen><userinput>mknod -m 600 ${CLFS}/dev/console c 5 1
@@ -49,22 +40,25 @@ mknod -m 666 ${CLFS}/dev/null c 1 3</userinput></screen>
   nodes will be created by the kernel's
   <systemitem class="filesystem">devtmpfs</systemitem> file system. For now
   though, we will just use the <quote>bind</quote> option in the mount command
-  to make our host system's /dev structure appear in the new CLFS filesystem:</para>
+  to make our host system's <filename class="directory">/dev</filename> structure appear in the new CLFS file system:</para>
 
 <screen><userinput>mount -v -o bind /dev ${CLFS}/dev</userinput></screen>
 
-  <para>Additional file systems will soon be mounted from within the chroot
-  environment. To keep the host up to date, perform a <quote>fake mount</quote>
-  for each of these now:</para>
+  <para>Now mount the remaining file systems:</para>
 
-<screen><userinput>if [ -h ${CLFS}/dev/shm ]; then
-  link=$(readlink ${CLFS}/dev/shm)
-  mkdir -p ${CLFS}/$link
-  mount -f -vt tmpfs shm ${CLFS}/$link
-  unset link
-else
-  mount -f -vt tmpfs shm ${CLFS}/dev/shm
-fi
-mount -f -vt devpts -o gid=&gid-tty;,mode=620 devpts ${CLFS}/dev/pts</userinput></screen>
+<screen><userinput>mount -vt devpts -o gid=&gid-tty;,mode=620 devpts ${CLFS}/dev/pts
+mount -vt proc proc ${CLFS}/proc
+mount -vt tmpfs tmpfs ${CLFS}/run
+mount -vt sysfs sysfs ${CLFS}/sys</userinput></screen>
+
+  <para>On some host systems, <filename class="directory">/dev/shm</filename>
+  is a symbolic link to <filename class="directory">/run/shm</filename>.
+  If it is, create a directory in <filename class="directory">/run</filename>:</para>
+
+<screen><userinput>[ -h ${CLFS}/dev/shm ] &amp;&amp; mkdir -pv ${CLFS}/$(readlink ${CLFS}/dev/shm)</userinput></screen>
+
+  <para>Remember that if for any reason you stop working on the CLFS system
+  and start again later, it is important to check that these file systems
+  are mounted again before entering the chroot environment.</para>
 
 </sect1>
