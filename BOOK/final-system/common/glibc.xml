@@ -48,9 +48,11 @@
 
     <para os="l3">This same script performs its tests by attempting to compile
     test programs against certain libraries. However it does not specify the
-    ld.so, and our toolchain is still configured to use the one in /tools. The
-    following set of commands will force the script to use the complete path
-    of the new ld.so that was just installed:</para>
+    path to <filename class="libraryfile">ld.so</filename>, and our toolchain
+    is still configured to use the one in
+    <filename class="directory">/tools</filename>. The following set of
+    commands will force the script to use the complete path of the new
+    <filename class="libraryfile">ld.so</filename> that was just installed:</para>
 
 <screen os="l4"><userinput>LINKER=$(readelf -l /tools/bin/bash | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
 sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=${LINKER} -o|" \
@@ -64,7 +66,8 @@ unset LINKER</userinput></screen>
     Glibc Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
-    <para os="s1">Apply the following sed so the <command>tzselect</command> script works properly:</para>
+    <para os="s1">Apply the following <command>sed</command> so the
+    <command>tzselect</command> script works properly:</para>
 
 <screen os="s2"><userinput>sed -i 's/\\$$(pwd)/`pwd`/' timezone/Makefile</userinput></screen>
 
