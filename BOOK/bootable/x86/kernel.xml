@@ -49,35 +49,35 @@
     <filename>/usr/share/doc/systemd-&systemd-version;/README</filename>:</para>
 
     <screen role="nodump">General setup  ---&gt;
-  [*] open by fhandle syscalls
-  [ ] Auditing support
-  [*] Control Group support
+  [*] open by fhandle syscalls (CONFIG_FHANDLE)
+  [ ] Auditing support (CONFIG_AUDIT)
+  [*] Control Group support (CONFIG_CGROUPS)
 Processor type and features  ---&gt;
-  [*] Enable seccomp to safely compute untrusted bytecode
+  [*] Enable seccomp to safely compute untrusted bytecode (CONFIG_SECCOMP)
 Networking support  ---&gt;
   Networking options  ---&gt;
-    &lt;*&gt; The IPv6 protocol
+    &lt;*&gt; The IPv6 protocol (CONFIG_IPV6)
 Device Drivers  ---&gt;
   Generic Driver Options  ---&gt;
-    ()  path to uevent helper
-    [*] Maintain a devtmpfs filesystem to mount at /dev
-    [ ] Fallback user-helper invocation for firmware loading
+    ()  path to uevent helper (CONFIG_UEVENT_HELPER_PATH)
+    [*] Maintain a devtmpfs filesystem to mount at /dev (CONFIG_DEVTMPFS)
+    [ ] Fallback user-helper invocation for firmware loading (CONFIG_FW_LOADER_USER_HELPER)
 File systems  ---&gt;
-  [*] Inotify support for userspace
-  &lt;*&gt; Kernel automounter version 4 support (also supports v3)
+  [*] Inotify support for userspace (CONFIG_FSNOTIFY)
+  &lt;*&gt; Kernel automounter version 4 support (also supports v3) (CONFIG_AUTOFS4_FS)
   Pseudo filesystems  ---&gt;
-    [*] Tmpfs POSIX Access Control Lists
-    [*] Tmpfs extended attributes
+    [*] Tmpfs POSIX Access Control Lists (CONFIG_TMPFS_POSIX_ACL)
+    [*] Tmpfs extended attributes (CONFIG_TMPFS_XATTR)
 Firmware Drivers ---&gt;
   EFI (Extensible Firmware Interface) Support ---&gt;
-    &lt;*&gt; EFI Variable Support via sysfs
--*- Enable the block layer ---&gt;
+    &lt;*&gt; EFI Variable Support via sysfs (CONFIG_EFI_VARS)
+-*- Enable the block layer ---&gt; (CONFIG_BLOCK)
   Partition Types ---&gt;
-    [*] Advanced partition selection
-    [*]   EFI GUID Partition support
+    [*] Advanced partition selection (CONFIG_PARTITION_ADVANCED)
+    [*]   EFI GUID Partition support (CONFIG_EFI_PARTITION)
 Kernel Hacking ---&gt;
-  [*] Collect scheduler debugging info
-  [*] Collect scheduler statistics</screen></note>
+  [*] Collect scheduler debugging info (CONFIG_SCHED_DEBUG)
+  [*] Collect scheduler statistics (CONFIG_SCHEDSTATS)</screen></note>
 
     <note os="kd"><para>While "The IPv6 Protocol" is not strictly required, it
     is highly recommended by the Systemd developers. "EFI Variable support" and
