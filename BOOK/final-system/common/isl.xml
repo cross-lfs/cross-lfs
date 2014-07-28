@@ -35,22 +35,17 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
 <screen os="d"><userinput>make</userinput></screen>
 
-    <important os="e">
-      <para>The test suite for ISL is considered
-      critical. Do not skip it under any circumstance.</para>
-    </important>
+    <para os="e">Test the results:</para>
 
-    <para os="f">Test the results:</para>
+<screen os="f"><userinput remap="test">make check</userinput></screen>
 
-<screen os="g"><userinput remap="test">make check</userinput></screen>
+    <para os="g">Install the package:</para>
 
-    <para os="h">Install the package:</para>
+<screen os="h"><userinput>make install</userinput></screen>
 
-<screen os="i"><userinput>make install</userinput></screen>
+    <para os="i">Finally, move a misplaced file:</para>
 
-    <para os="j">Finally, move a misplaced file:</para>
-
-<screen os="k"><userinput>mkdir -pv /usr/share/gdb/auto-load/usr/lib
+<screen os="j"><userinput>mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/libisl*gdb.py /usr/share/gdb/auto-load/usr/lib</userinput></screen>
   </sect2>
 
