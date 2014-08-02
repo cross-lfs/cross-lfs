@@ -28,9 +28,15 @@
     <note os="a">
       <para>If you would like to enforce the use of strong passwords,
       refer to <ulink url="&cblfs-root;index.php/Cracklib"/>
-      for installing Cracklib prior to building Shadow. Then add
-      <parameter>--with-libcrack</parameter> to the <command>configure</command>
-      command below.</para>
+      for installing Cracklib prior to building Shadow. After Cracklib is
+      installed, execute this <command>sed</command> in Shadow's source
+      directory to correct the path to the Cracklib dictionary:</para>
+
+<screen role="nodump"><userinput>sed -i 's@\(DICTPATH.\).*@\1/lib/cracklib/pw_dict@' etc/login.defs</userinput></screen>
+
+      <para>Finally, add <parameter>--with-libcrack</parameter> to the
+      <command>configure</command> command below.</para>
+
     </note>
 
     <para os="b">Disable the installation of the <command>groups</command> and
@@ -86,25 +92,17 @@ find man -name Makefile.in -exec sed -i \
     -e 's@#\(ENCRYPT_METHOD \).*@\1SHA512@' \
     -e 's@/var/spool/mail@/var/mail@'</userinput></screen>
 
-    <note os="t">
-      <para>If you built Shadow with Cracklib support, execute
-      this <command>sed</command> to correct the path to the Cracklib
-      dictionary:</para>
+    <para os="t">Move a misplaced program to its proper location:</para>
 
-<screen role="nodump"><userinput>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</userinput></screen>
-    </note>
+<screen os="u"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
-    <para os="u">Move a misplaced program to its proper location:</para>
-
-<screen os="v"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
-
-    <para os="w">The <command>login</command> program will write to
+    <para os="v">The <command>login</command> program will write to
     <filename>/var/log/lastlog</filename>, if it exists, to record the date and
     time of the latest successful login for each user. This log file is not
     created automatically if it does not already exist, so we will
     create it now and give it appropriate ownership and permissions:</para>
 
-<screen os="x"><userinput>touch /var/log/lastlog
+<screen os="w"><userinput>touch /var/log/lastlog
 chgrp -v utmp /var/log/lastlog
 chmod -v 664 /var/log/lastlog</userinput></screen>
 
