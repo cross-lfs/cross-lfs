@@ -34,7 +34,7 @@
 
 <screen os="b"><userinput>./configure --prefix=/usr --libdir=/lib \
     --with-shared --without-debug --enable-widec \
-    --with-manpage-format=normal \
+    --with-manpage-format=normal --enable-pc-files \
     --with-default-terminfo-dir=/usr/share/terminfo</userinput></screen>
 
     <variablelist os="b1">
@@ -44,6 +44,14 @@
         <term><parameter>--with-manpage-format=normal</parameter></term>
         <listitem>
           <para>This tells Ncurses not to compress its installed manpages.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--enable-pc-files</parameter></term>
+        <listitem>
+          <para>This tells Ncurses to generate and install .pc files for
+          <command>pkg-config</command>.</para>
         </listitem>
       </varlistentry>
     </variablelist>
