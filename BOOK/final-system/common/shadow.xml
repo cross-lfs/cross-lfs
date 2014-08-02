@@ -28,9 +28,15 @@
     <note os="a">
       <para>If you would like to enforce the use of strong passwords,
       refer to <ulink url="&cblfs-root;index.php/Cracklib"/>
-      for installing Cracklib prior to building Shadow. Then add
-      <parameter>--with-libcrack</parameter> to the <command>configure</command>
-      command below.</para>
+      for installing Cracklib prior to building Shadow. After Cracklib is
+      installed, execute this <command>sed</command> in Shadow's source
+      directory to correct the path to the Cracklib dictionary:</para>
+
+<screen role="nodump"><userinput>sed -i 's@\(DICTPATH.\).*@\1/lib/cracklib/pw_dict@' etc/login.defs</userinput></screen>
+
+      <para>Finally, add <parameter>--with-libcrack</parameter> to the
+      <command>configure</command> command below.</para>
+
     </note>
 
     <para os="b">Disable the installation of the <command>groups</command> and
@@ -86,17 +92,9 @@ find man -name Makefile.in -exec sed -i \
     -e 's@#\(ENCRYPT_METHOD \).*@\1SHA512@' \
     -e 's@/var/spool/mail@/var/mail@'</userinput></screen>
 
-    <note os="t">
-      <para>If you built Shadow with Cracklib support, execute
-      this <command>sed</command> to correct the path to the Cracklib
-      dictionary:</para>
+    <para os="t">Move a misplaced program to its proper location:</para>
 
-<screen role="nodump"><userinput>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' /etc/login.defs</userinput></screen>
-    </note>
-
-    <para os="u">Move a misplaced program to its proper location:</para>
-
-<screen os="v"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
+<screen os="u"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
   </sect2>
 
