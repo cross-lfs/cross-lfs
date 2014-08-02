@@ -62,21 +62,21 @@ export BUILD_BZIP2=0</userinput></screen>
       <title>The meaning of the configure option:</title>
 
       <varlistentry os="c1">
+        <term><parameter>-Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3</parameter></term>
+        <listitem>
+          <para>Since Groff is not installed yet,
+          <command>configure.gnu</command> thinks that we do not want
+          man pages for Perl. Issuing these parameters overrides this decision.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry os="c2">
         <term><parameter>-Dpager="/bin/less -isR"</parameter></term>
         <listitem>
           <para>Less has not yet been installed, so by default
           <command>perldoc</command> will invoke the <command>more</command>
           program for viewing documentation. This option ensures that it will
           use <command>less</command> instead.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="c2">
-        <term><parameter>-Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3</parameter></term>
-        <listitem>
-          <para>Since Groff is not installed yet,
-          <command>configure.gnu</command> thinks that we do not want
-          man pages for Perl. Issuing these parameters overrides this decision.</para>
         </listitem>
       </varlistentry>
 
