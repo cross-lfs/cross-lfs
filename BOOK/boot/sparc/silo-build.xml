@@ -32,7 +32,8 @@
 
 <para os="ae">This sed allows us to compile the bin2h binary separately.</para>
 
-<screen os="ad"><userinput>sed -i -e 's@\$(PROGRAMS)$@programs\n\nprograms: &amp;@' common/Makefile</userinput></screen>
+<screen os="ad"><userinput>cp -v common/Makefile{,.orig}
+sed -e 's@\$(PROGRAMS)$@programs\n\nprograms: &amp;@' common/Makefile.orig &gt; common/Makefile</userinput></screen>
 
 <para os="af">Compile the bin2h and util binaries for the host.</para>
 
