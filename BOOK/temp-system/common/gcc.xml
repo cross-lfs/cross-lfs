@@ -50,9 +50,8 @@
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='fix1'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../final-system/common/gcc.xml"
-    xpointer="xpointer(//*[@os='fix2'])"/>
+<screen os="fix2"><userinput>cp -v gcc/Makefile.in{,.orig}
+sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig &gt; gcc/Makefile.in</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/gcc.xml"
