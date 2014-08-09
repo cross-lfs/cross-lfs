@@ -46,9 +46,9 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
     <para os="h">The previous command installed two <filename
     class="extension">.so</filename> files into <filename
-    class="directory">/usr/lib</filename>. We will move it into
-    <filename class="directory">/lib</filename> and then relink it
-    to <filename class="directory">/usr/lib</filename>:</para>
+    class="directory">/usr/lib</filename>. We will move them into
+    <filename class="directory">/lib</filename> and then recreate a link
+    in <filename class="directory">/usr/lib</filename>:</para>
 
 <screen os="i"><userinput>mv -v /usr/lib/libz.so.* /lib
 ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so</userinput></screen>

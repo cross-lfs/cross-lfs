@@ -57,9 +57,9 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib32:/lib32 ${BUILDN32}" \
 
     <para os="h">The previous command installed two <filename
     class="extension">.so</filename> files into <filename
-    class="directory">/usr/lib32</filename>. We will remove itinto
-    <filename class="directory">/lib32</filename> and then relink it
-    to <filename class="directory">/usr/lib32</filename>:</para>
+    class="directory">/usr/lib32</filename>. We will move them into
+    <filename class="directory">/lib32</filename> and then recreate a link
+    in <filename class="directory">/usr/lib32</filename>:</para>
 
 <screen os="i"><userinput>mv -v /usr/lib32/libz.so.* /lib32
 ln -sfv ../../lib32/$(readlink /usr/lib32/libz.so) /usr/lib32/libz.so</userinput></screen>
