@@ -22,7 +22,9 @@
   <sect2 role="installation">
     <title>Installation of Kmod</title>
 
-    <para os="s1">Tell Kmod to use <filename class="directory">/tools/lib/modules</filename>:</para>
+    <para os="s1">The following <command>sed</command> changes Kmod's default
+    module search location to
+    <filename class="directory">/tools/lib/modules</filename>:</para>
 
 <screen os="s2"><userinput>cp -v libkmod/libkmod.c{,.orig}
 sed '/dirname_default_prefix /s@/lib/modules@/tools&amp;@' \
