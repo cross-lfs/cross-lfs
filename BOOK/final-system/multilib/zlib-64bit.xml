@@ -56,9 +56,9 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib64:/lib64 ${BUILD64}" \
 
     <para os="h">The previous command installed two <filename
     class="extension">.so</filename> files into <filename
-    class="directory">/usr/lib64</filename>. We will move it into
-    <filename class="directory">/lib64</filename> and then relink it
-    to <filename class="directory">/usr/lib64</filename>:</para>
+    class="directory">/usr/lib64</filename>. We will move them into
+    <filename class="directory">/lib64</filename> and then recreate a link
+    in <filename class="directory">/usr/lib64</filename>:</para>
 
 <screen os="i"><userinput>mv -v /usr/lib64/libz.so.* /lib64
 ln -sfv ../../lib64/$(readlink /usr/lib64/libz.so) /usr/lib64/libz.so</userinput></screen>
