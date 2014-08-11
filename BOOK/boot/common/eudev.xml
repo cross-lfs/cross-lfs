@@ -32,6 +32,37 @@
     --disable-gudev --disable-keymap --with-firmware-path=/tools/lib/firmware \
     --enable-libkmod</userinput></screen>
 
+    <variablelist os="b1">
+      <title>The meaning of the new configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--disable-introspection --disable-gtk-doc-html
+        --disable-gudev --disable-keymap</parameter></term>
+        <listitem>
+          <para>These switches disable several features which are not needed
+          for the temporary system and have additional dependencies.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--with-firmware-path=/tools/lib/firmware</parameter></term>
+        <listitem>
+          <para>This allows Eudev to load firmware from
+          <filename class="directory">/tools/lib/firmware</filename> instead of
+          the default location of <filename class="directory">/lib/firmware</filename>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--enable-libkmod</parameter></term>
+        <listitem>
+          <para>Allows Eudev to load modules by using
+          <filename class="libraryfile">libkmod</filename> directly.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
