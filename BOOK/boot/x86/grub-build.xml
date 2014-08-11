@@ -44,10 +44,17 @@ sed -e '/gets is a/d' grub-core/gnulib/stdio.in.h.orig &gt; grub-core/gnulib/std
 <para os="b">The meaning of the new configure option:</para>
 
   <variablelist os="bc">
+
     <varlistentry>
       <term><parameter>--enable-grub-mkfont=no</parameter></term>
       <listitem><para>Prevents GRUB from trying to build
       <command>grub-mkfont</command>, which requires Freetype.</para></listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>--with-bootdir=tools/boot</parameter></term>
+      <listitem><para>This modifies GRUB's default location where it
+      searches for kernel images and installs its bootloader files.</para></listitem>
     </varlistentry>
 
   </variablelist>
