@@ -22,37 +22,38 @@
   <sect2 role="installation">
     <title>Installation of Shadow</title>
 
-    <para os="b">Disable the installation of the <command>groups</command> and
+    <para os="a">Disable the installation of the <command>groups</command> and
     <command>nologin</command> programs, as better versions
     of these programs are provided by Coreutils and Util-linux:</para>
 
-<screen os="c"><userinput>cp -v src/Makefile.in{,.orig}
+<screen os="b"><userinput>cp -v src/Makefile.in{,.orig}
 sed -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /' \
     src/Makefile.in.orig &gt; src/Makefile.in</userinput></screen>
 
-    <para os="d">Prepare Shadow for compilation:</para>
+    <para os="c">Prevent Shadow from setting installed programs suid:</para>
 
-<screen os="e"><userinput>./configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET}</userinput></screen>
+<screen os="d"><userinput>cp -v src/Makefile.in{,.orig}
+sed 's/\(^suidu*bins = \).*/\1/' src/Makefile.in.orig &gt; src/Makefile.in</userinput></screen>
 
-    <para os="f">Tell Shadow to use <command>passwd</command> in
+    <para os="e">Tell Shadow to use <command>passwd</command> in
     <filename class="directory">/tools/bin</filename>:</para>
 
-<screen os="g"><userinput>cp -v config.h{,.orig}
-sed '/PASSWD_PROGRAM/s@/bin/passwd@/tools&amp;@' config.h.orig &gt; config.h</userinput></screen>
+<screen os="f"><userinput>cat > config.cache &lt;&lt; "EOF"
+shadow_cv_passwd_dir=/tools/bin
+EOF</userinput></screen>
 
-    <para os="h">Prevent Shadow from setting installed programs suid:</para>
+    <para os="g">Prepare Shadow for compilation:</para>
 
-<screen os="i"><userinput>cp -v src/Makefile{,.orig}
-sed 's/\(^suidu*bins = \).*/\1/' src/Makefile.orig &gt; src/Makefile</userinput></screen>
+<screen os="h"><userinput>./configure --prefix=/tools \
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} --cache-file=config.cache</userinput></screen>
 
-    <para os="j">Compile the package:</para>
+    <para os="i">Compile the package:</para>
 
-<screen os="k"><userinput>make</userinput></screen>
+<screen os="j"><userinput>make</userinput></screen>
 
-    <para os="l">Install the package:</para>
+    <para os="k">Install the package:</para>
 
-<screen os="m"><userinput>make install</userinput></screen>
+<screen os="l"><userinput>make install</userinput></screen>
 
   </sect2>
 
