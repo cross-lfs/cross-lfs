@@ -66,7 +66,8 @@
     --with-kbd-setfont=/bin/setfont --with-dbuspolicydir=/etc/dbus-1/system.d \
     --with-dbusinterfacedir=/usr/share/dbus-1/interfaces \
     --with-dbussessionservicedir=/usr/share/dbus-1/services \
-    --with-dbussystemservicedir=/usr/share/dbus-1/system-services</userinput></screen>
+    --with-dbussystemservicedir=/usr/share/dbus-1/system-services \
+    cc_cv_CFLAGS__flto=no</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
@@ -105,6 +106,16 @@
           installed to the correct locations.</para>
         </listitem>
       </varlistentry>
+
+      <varlistentry>
+        <term><parameter>cc_cv_CFLAGS__flto=no</parameter></term>
+        <listitem>
+          <para>This prevents the build system from using GCC's Link-time
+          optimization (LTO), to ensure that systemd's binaries will not try
+          to link to <filename class="libraryfile">libgcc_s</filename>.</para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
 
     <para os="d">Compile the package:</para>
