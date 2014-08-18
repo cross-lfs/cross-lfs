@@ -54,10 +54,9 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
     AR="${CLFS_TARGET}-ar" RANLIB="${CLFS_TARGET}-ranlib" \
     ../glibc-&glibc-version;/configure --prefix=/tools \
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
-    --disable-profile --with-tls --enable-kernel=&glibc-kernel-version; \
-    --with-__thread --with-binutils=/cross-tools/bin \
-    --with-headers=/tools/include --enable-obsolete-rpc \
-    --cache-file=config.cache</userinput></screen>
+    --disable-profile --enable-kernel=&glibc-kernel-version; \
+    --with-binutils=/cross-tools/bin --with-headers=/tools/include \
+    --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
 
     <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
@@ -103,13 +102,6 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
       </varlistentry>
 
       <varlistentry os="dg6">
-        <term><parameter>--with-tls</parameter></term>
-        <listitem>
-          <para>This tells Glibc to use Thread Local Storage.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="dg7">
         <term><parameter>--enable-kernel=&glibc-kernel-version;</parameter></term>
         <listitem>
           <para>This tells Glibc to compile the library with support
@@ -117,15 +109,7 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg8">
-        <term><parameter>--with-__thread</parameter></term>
-        <listitem>
-          <para>This tells Glibc to use use the __thread for libc and
-          libpthread builds.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="dg9">
+      <varlistentry os="dg7">
         <term><parameter>--with-binutils=/cross-tools/bin</parameter></term>
         <listitem>
           <para>This tells Glibc to use the Binutils that are specific to
@@ -133,7 +117,7 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg10">
+      <varlistentry os="dg8">
         <term><parameter>--with-headers=/tools/include</parameter></term>
         <listitem>
           <para>This tells Glibc to compile itself against the headers
@@ -143,7 +127,7 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg11">
+      <varlistentry os="dg9">
         <term><parameter>--enable-obsolete-rpc</parameter></term>
         <listitem>
           <para>This tells Glibc to install rpc headers that are not installed
@@ -151,7 +135,7 @@ sed 's/\\$$(pwd)/`pwd`/' timezone/Makefile.orig &gt; timezone/Makefile</userinpu
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg12">
+      <varlistentry os="dg10">
         <term><parameter>--cache-file=config.cache</parameter></term>
         <listitem>
           <para>This tells Glibc to utilize a premade cache file.</para>
