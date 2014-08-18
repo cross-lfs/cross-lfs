@@ -31,7 +31,7 @@
       to systemd.network(5) and systemd.netdev(5). Configure a network
       interface with a config file. Adjust Name= as required:</para>
 
-  <screen><userinput>cd /etc/systemd/network &amp;&amp;
+  <screen role="nodump"><userinput>cd /etc/systemd/network &amp;&amp;
 cat &gt; static.network &lt;&lt; "EOF"
 [Match]
 Name=enp2s0
@@ -65,7 +65,7 @@ EOF</userinput></screen>
     <filename>systemd.netdev(5)</filename>. Configure a network interface
     with a config file. Adjust Name= as required:</para>
 
-<screen><userinput>cd /etc/systemd/network &amp;&amp;
+<screen role="nodump"><userinput>cd /etc/systemd/network &amp;&amp;
 cat &gt; dhcp.network &lt;&lt; "EOF"
 [Match]
 Name=enp2s0
@@ -79,7 +79,7 @@ EOF</userinput></screen>
     If you did not manually create <filename>/etc/resolv.conf</filename>,
     create a symlink:</para>
 
-<screen><userinput>ln -sv /run/systemd/network/resolv.conf /etc</userinput></screen>
+<screen role="nodump"><userinput>ln -sv /run/systemd/network/resolv.conf /etc</userinput></screen>
 
     </sect3>
 
@@ -93,13 +93,13 @@ EOF</userinput></screen>
     default. If you want to enable it, you will first need to add a required
     user and group:</para>
 
-<screen><userinput>groupadd -g &gid-systemd-timesync; systemd-timesync
+<screen role="nodump"><userinput>groupadd -g &gid-systemd-timesync; systemd-timesync
 useradd -g systemd-timesync -u &uid-systemd-timesync; -d /dev/null -s /bin/false systemd-timesync</userinput></screen>
 
     <para>Then, actually enable <command>systemd-timesyncd</command> so that
     it will run on system boot:</para>
 
-<screen><userinput>systemctl enable systemd-timesyncd</userinput></screen>
+<screen role="nodump"><userinput>systemctl enable systemd-timesyncd</userinput></screen>
 
     <para>You can configure <command>systemd-timesyncd</command> by editing
     <filename>/etc/systemd/timesyncd.conf</filename>.</para>
