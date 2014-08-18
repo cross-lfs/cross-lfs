@@ -30,18 +30,18 @@
 
     <para os="b">Prepare DHCPCD for compilation:</para>
 
-<screen os="c"><userinput>./configure --prefix=/usr --sbindir=/sbin \
+<screen os="c" role="nodump"><userinput>./configure --prefix=/usr --sbindir=/sbin \
     --sysconfdir=/etc --dbdir=/var/lib/dhcpcd --libexecdir=/usr/lib/dhcpcd</userinput></screen>
 
     <para os="d">Compile the package:</para>
 
-<screen os="e"><userinput>make</userinput></screen>
+<screen os="e" role="nodump"><userinput>make</userinput></screen>
 
     <para os="f">This package does not come with a test suite.</para>
 
     <para os="g">Install the package:</para>
 
-<screen os="h"><userinput>make install</userinput></screen>
+<screen os="h" role="nodump"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -50,7 +50,7 @@
 
     <para>First install the service from the CLFS Bootscripts package:</para>
 
-<screen><userinput>tar -xvf bootscripts-cross-lfs-&bootscripts-clfs-version;.tar.xz
+<screen role="nodump"><userinput>tar -xvf bootscripts-cross-lfs-&bootscripts-clfs-version;.tar.xz
 cd bootscripts-cross-lfs-&bootscripts-clfs-version;
 make install-service-dhcpcd</userinput></screen>
 
@@ -59,7 +59,7 @@ make install-service-dhcpcd</userinput></screen>
     configuration file using the following commands. Adjust appropriately for
     additional interfaces:</para>
 
-<screen><userinput>cd /etc/sysconfig/network-devices &amp;&amp;
+<screen role="nodump"><userinput>cd /etc/sysconfig/network-devices &amp;&amp;
 mkdir -v ifconfig.eth0 &amp;&amp;
 cat &gt; ifconfig.eth0/dhcpcd &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
