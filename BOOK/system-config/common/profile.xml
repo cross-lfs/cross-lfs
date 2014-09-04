@@ -47,7 +47,13 @@
 <literal># Begin /etc/profile
 
 source /etc/locale.conf
-for f in /etc/bash_completion.d/*.sh; do source $f; done; unset f
+
+for f in /etc/bash_completion.d/*
+do
+  if [ -e ${f} ]; then source ${f}; fi
+done
+unset f
+
 export INPUTRC=/etc/inputrc
 
 # End /etc/profile</literal>
