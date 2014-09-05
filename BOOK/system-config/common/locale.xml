@@ -13,9 +13,10 @@
     <primary sortas="e-/etc/profile">/etc/profile</primary>
   </indexterm>
 
-  <para>The base <filename>/etc/profile</filename> below sets some
-  environment variables necessary for native language support. Setting
-  them properly results in:</para>
+  <para>The instructions below explain how to add some environment variables
+  necessary for native language support to the base
+  <filename>/etc/profile</filename> created in the previous section. Setting
+  these variables properly results in:</para>
 
   <itemizedlist>
     <listitem>
@@ -37,10 +38,6 @@
       <para>Correct formatting of monetary, time, and date values</para>
     </listitem>
   </itemizedlist>
-
-  <para>This script also sets the <envar>INPUTRC</envar> environment variable
-  that makes Bash and Readline use the <filename>/etc/inputrc</filename> file
-  created earlier.</para>
 
   <para>Replace <replaceable>[ll]</replaceable> below with the
   two-letter code for the desired language (e.g., <quote>en</quote>) and
@@ -111,14 +108,12 @@ LC_ALL=[locale name] locale int_prefix</userinput></screen>
   In those cases, investigating how other Linux distributions support your locale
   might provide some useful information.</para>
 
-  <para>Once the proper locale settings have been determined, create the
+  <para>Once the proper locale settings have been determined, add them to the
   <filename>/etc/profile</filename> file:</para>
 
-<screen><userinput>cat &gt; /etc/profile &lt;&lt; "EOF"
-<literal># Begin /etc/profile
+<screen><userinput>cat &gt;&gt; /etc/profile &lt;&lt; "EOF"
 
-export LANG=<replaceable>[ll]</replaceable>_<replaceable>[CC]</replaceable>.<replaceable>[charmap]</replaceable>
-export INPUTRC=/etc/inputrc
+<literal>export LANG=<replaceable>[ll]</replaceable>_<replaceable>[CC]</replaceable>.<replaceable>[charmap]</replaceable>
 
 # End /etc/profile</literal>
 EOF</userinput></screen>
