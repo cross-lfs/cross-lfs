@@ -44,15 +44,33 @@ EOF</userinput></screen>
     <para os="e">Prepare Shadow for compilation:</para>
 
 <screen os="f"><userinput>./configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} --cache-file=config.cache</userinput></screen>
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} --cache-file=config.cache \
+    --enable-subordinate-ids=no</userinput></screen>
 
-    <para os="g">Compile the package:</para>
+    <variablelist os="g">
+      <title>The meaning of the configure options:</title>
 
-<screen os="h"><userinput>make</userinput></screen>
+      <varlistentry os="h">
+        <term><parameter>--enable-subordinate-ids=no</parameter></term>
+        <listitem>
+          <para>Disable subordinate ids option during cross-compile.</para>
+        </listitem>
+      </varlistentry>
 
-    <para os="i">Install the package:</para>
+    </variablelist>
 
-<screen os="j"><userinput>make install</userinput></screen>
+    <para os="i">Append <filename>config.h></filename> since a test program
+    will not be ran when cross-compiling.</para>
+
+<screen os="j"><userinput>echo "#define ENABLE_SUBUIDS 1" &gt;&gt; config.h</userinput></screen>
+
+    <para os="k">Compile the package:</para>
+
+<screen os="l"><userinput>make</userinput></screen>
+
+    <para os="m">Install the package:</para>
+
+<screen os="n"><userinput>make install</userinput></screen>
 
   </sect2>
 
