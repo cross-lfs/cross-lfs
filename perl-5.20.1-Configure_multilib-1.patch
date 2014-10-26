@@ -1,0 +1,48 @@
+Submitted By: William Harrington <kb0iic at cross-lfs dot org>
+Date: 2014-10-25
+Initial Package Version: 5.12.0
+Origin: Cross-LFS
+Upstream Status: Not Applied - Internal to CLFS
+Description: This patch allows perl to be installed in /usr/lib32
+             or /usr/lib64 instead of /usr/lib.
+
+Comments: Renamed for 5.20.1
+
+diff -Naur perl-5.20.0.orig/Configure perl-5.20.0/Configure
+--- perl-5.20.0.orig/Configure	2014-05-26 13:34:18.000000000 +0000
++++ perl-5.20.0/Configure	2014-05-30 01:43:45.621522372 +0000
+@@ -1359,6 +1359,7 @@
+ glibpth="$glibpth /usr/ccs/lib /usr/ucblib /usr/local/lib"
+ test -f /usr/shlib/libc.so && glibpth="/usr/shlib $glibpth"
+ test -f /shlib/libc.so     && glibpth="/shlib $glibpth"
++test -d /usr/lib32         && glibpth="$glibpth /lib32 /usr/lib32 /usr/local/lib32"
+ test -d /usr/lib64         && glibpth="$glibpth /lib64 /usr/lib64 /usr/local/lib64"
+ 
+ : Private path used by Configure to find libraries.  Its value
+@@ -6500,6 +6501,8 @@
+ : The default "style" setting is made in installstyle.U
+ case "$installstyle" in
+ *lib/perl5*) set dflt privlib lib/$package/$version ;;
++*lib32/perl5*) set dflt privlib lib32/$package/$version ;;
++*lib64/perl5*) set dflt privlib lib64/$package/$version ;;
+ *)	 set dflt privlib lib/$version ;;
+ esac
+ eval $prefixit
+@@ -6748,6 +6751,8 @@
+ case "$sitelib" in
+ '') case "$installstyle" in
+ 	*lib/perl5*) dflt=$siteprefix/lib/$package/site_$prog/$version ;;
++	*lib32/perl5*) dflt=$witeprefix/lib32/$package/site_$prog/$version ;;
++	*lib64/perl5*) dflt=$siteprefix/lib64/$package/site_$prog/$version ;;
+ 	*)	 dflt=$siteprefix/lib/site_$prog/$version ;;
+ 	esac
+ 	;;
+@@ -7166,6 +7171,8 @@
+ 		prog=`echo $package | $sed 's/-*[0-9.]*$//'`
+ 		case "$installstyle" in
+ 		*lib/perl5*) dflt=$vendorprefix/lib/$package/vendor_$prog/$version ;;
++		*lib32/perl5*) dflt=$vendorprefix/lib32/$package/vendor_$prog/$version ;;
++		*lib64/perl5*) dflt=$vendorprefix/lib64/$package/vendor_$prog/$version ;;
+ 		*)	     dflt=$vendorprefix/lib/vendor_$prog/$version ;;
+ 		esac
+ 		;;
