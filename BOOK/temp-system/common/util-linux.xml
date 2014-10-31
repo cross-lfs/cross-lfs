@@ -28,7 +28,8 @@
 
 <screen os="b"><userinput>./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --disable-makeinstall-chown --disable-makeinstall-setuid</userinput></screen>
+    --disable-makeinstall-chown --disable-makeinstall-setuid
+    --without-python</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the new configure option:</title>
@@ -46,6 +47,14 @@
         <listitem>
           <para>This prevents Util-linux from enabling the setuid bit on
           any of its installed programs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--without-python</parameter></term>
+        <listitem>
+          <para>This avoids the building of unneeded Python buildings when
+          Python is installed on the host system.</para>
         </listitem>
       </varlistentry>
 
