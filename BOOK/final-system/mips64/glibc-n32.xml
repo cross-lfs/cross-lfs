@@ -53,7 +53,9 @@ unset LINKER</userinput></screen>
     <para os="m1">Tell Glibc to install its 32-bit libraries into
     <filename class="directory">/lib32</filename>:</para>
 
-<screen os="m2"><userinput>echo "slibdir=/lib32" &gt;&gt; configparms</userinput></screen>
+<screen os="m2"><userinput>echo "libc_cv_rtlddir=/lib32" &gt;&gt;
+    config.cache
+    echo "libc_cv_slibdir=/lib32" &gt;&gt; config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../multilib/glibc.xml"
