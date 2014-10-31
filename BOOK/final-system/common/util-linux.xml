@@ -32,9 +32,7 @@
     location for the <filename>adjtime</filename> file. To make the
     <command>hwclock</command> program FHS-compliant, run the following:</para>
 
-<screen><userinput>sed -i -e 's@etc/adjtime@var/lib/hwclock/adjtime@g' \
-    $(grep -rl '/etc/adjtime' .)
-mkdir -pv /var/lib/hwclock</userinput></screen>
+<screen><userinput>mkdir -pv /var/lib/hwclock</userinput></screen>
 
   </sect2>
 
@@ -43,7 +41,8 @@ mkdir -pv /var/lib/hwclock</userinput></screen>
 
     <para os="a">Prepare Util-linux for compilation:</para>
 
-<screen os="b"><userinput>./configure --enable-write --docdir=/usr/share/doc/util-linux-&util-linux-version;</userinput></screen>
+<screen os="b"><userinput>./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
+    --enable-write --docdir=/usr/share/doc/util-linux-&util-linux-version;</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
