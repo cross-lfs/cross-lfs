@@ -60,11 +60,6 @@ unset LINKER</userinput></screen>
     Glibc Autoconf tests would give false results and defeat the goal
     of achieving a clean build.</para>
 
-    <para os="s1">Apply the following <command>sed</command> so the
-    <command>tzselect</command> script works properly:</para>
-
-<screen os="s2"><userinput>sed -i 's/\\$$(pwd)/`pwd`/' timezone/Makefile</userinput></screen>
-
     <para os="e">The Glibc documentation recommends building Glibc outside of     the source directory in a dedicated build directory:</para>
 
 <screen os="f"><userinput>mkdir -v ../glibc-build
