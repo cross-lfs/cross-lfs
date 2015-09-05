@@ -32,16 +32,9 @@
 
 <screen os="b"><userinput>cd gettext-tools</userinput></screen>
 
-    <para os="t1">When cross-compiling, the Gettext
-    <command>configure</command> script assumes we don't have a working wcwidth
-    even when we do. The following will fix possible
-    compilation errors because of this assumption:</para>
-
-<screen os="t2"><userinput>echo "gl_cv_func_wcwidth_works=yes" &gt; config.cache</userinput></screen>
-
     <para os="c">Prepare Gettext for compilation:</para>
 
-<screen os="d"><userinput>./configure --prefix=/tools \
+<screen os="d"><userinput>EMACS="no" ./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --disable-shared --cache-file=config.cache</userinput></screen>
 
@@ -53,6 +46,30 @@ make -C src msgfmt</userinput></screen>
     <para os="g">Install the <command>msgfmt</command> binary:</para>
 
 <screen os="h"><userinput>cp -v src/msgfmt /tools/bin</userinput></screen>
+
+<variablelist os="i">
+      <title>The meaning of the configure option:</title>
+
+      <varlistentry>
+        <term><parameter>EMACS="no"</parameter></term>
+        <listitem>
+          <para>This prevents the installation of the Emacs Lisp files
+          as the test is known to hang on some hosts.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para os="j">Compile the required programs and support library:</para>
+
+<screen os="k"><userinput>make -C gnulib-lib
+make -C intl pluralx.c
+make -C src msgfmt msgmerge xgettext</userinput></screen>
+
+    <para os="l">Install the <command>msgfmt</command>,
+    <command>msgmerge</command> and <command>xgettext</command> binaries:</para>
+
+<screen os="m"><userinput>cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin</userinput></screen>
 
   </sect2>
 
