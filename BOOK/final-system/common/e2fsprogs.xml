@@ -28,6 +28,12 @@
   <sect2 role="installation">
     <title>Installation of E2fsprogs</title>
 
+    <para os="s1">Fix a potential security issue identified upstream:</para>
+
+<screen os="s2"><userinput>sed -e '/int.*old_desc_blocks/s/int/blk64_t/' \
+    -e '/if (old_desc_blocks/s/super->s_first_meta_bg/desc_blocks/' \
+    -i lib/ext2fs/closefs.c</userinput></screen>
+
     <para os="a">The E2fsprogs documentation recommends that the package be
     built in a subdirectory of the source tree:</para>
 
@@ -36,10 +42,9 @@ cd build</userinput></screen>
 
     <para os="c">Prepare E2fsprogs for compilation:</para>
 
-<screen os="d"><userinput>../configure --prefix=/usr --with-root-prefix="" \
-    --enable-elf-shlibs --disable-libblkid \
-    --disable-libuuid --disable-fsck \
-    --disable-uuidd</userinput></screen>
+<screen os="d"><userinput>../configure --prefix=/usr --bindir=/bin \
+    --with-root-prefix="" --enable-elf-shlibs --disable-libblkid \
+    --disable-libuuid --disable-fsck --disable-uuidd</userinput></screen>
 
     <variablelist os="e">
       <title>The meaning of the configure options:</title>
