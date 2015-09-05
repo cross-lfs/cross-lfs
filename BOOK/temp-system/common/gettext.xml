@@ -22,25 +22,25 @@
   <sect2 role="installation">
     <title>Installation of Gettext</title>
 
-    <para os="i">Many packages' installation procedures use the
+    <para os="a">Many packages' installation procedures use the
     <command>msgfmt</command> program for i18n support, so we will compile
     and install it into <filename class="directory">/tools</filename>.
     Attr also needs <command>msgmerge</command> and <command>xgettext</command>,
     so we will install those as well.</para>
 
-    <para os="a">Only the programs in the
+    <para os="b">Only the programs in the
     <filename class="directory">gettext-tools</filename> directory need to be
     installed for the temp-system:</para>
 
-<screen os="b"><userinput>cd gettext-tools</userinput></screen>
+<screen os="c"><userinput>cd gettext-tools</userinput></screen>
 
-    <para os="c">Prepare Gettext for compilation:</para>
+    <para os="d">Prepare Gettext for compilation:</para>
 
-<screen os="d"><userinput>EMACS="no" ./configure --prefix=/tools \
+<screen os="e"><userinput>EMACS="no" ./configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} \
     --disable-shared --cache-file=config.cache</userinput></screen>
 
-<variablelist os="e">
+<variablelist os="f">
       <title>The meaning of the configure option:</title>
 
       <varlistentry>
@@ -53,16 +53,16 @@
 
     </variablelist>
 
-    <para os="f">Compile the required programs and support library:</para>
+    <para os="g">Compile the required programs and support library:</para>
 
-<screen os="g"><userinput>make -C gnulib-lib
+<screen os="h"><userinput>make -C gnulib-lib
 make -C intl pluralx.c
 make -C src msgfmt msgmerge xgettext</userinput></screen>
 
-    <para os="h">Install the <command>msgfmt</command>,
+    <para os="i">Install the <command>msgfmt</command>,
     <command>msgmerge</command> and <command>xgettext</command> binaries:</para>
 
-<screen os="i"><userinput>cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin</userinput></screen>
+<screen os="j"><userinput>cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin</userinput></screen>
 
   </sect2>
 
