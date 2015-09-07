@@ -24,16 +24,14 @@
   <sect2 role="installation">
     <title>Installation of IPutils</title>
 
-    <para os="p1">IPutils has various issues addressed by the following
-    patch:</para>
+    <para os="p1">Apply the following patch for man-pages and build edits:</para>
 
-<screen os="p2"><userinput>patch -Np1 -i ../&iputils-fixes-patch;</userinput></screen>
+<screen os="p2"><userinput>patch -Np1 -i ../&iputils-build-patch;</userinput></screen>
 
     <para os="a">Compile the package:</para>
 
 <screen os="b"><userinput>make \
-    IPV4_TARGETS="tracepath ping clockdiff rdisc" \
-    IPV6_TARGETS="tracepath6 traceroute6"</userinput></screen>
+    TARGETS="clockdiff ping rdisc tracepath tracepath6 traceroute6</userinput></screen>
 
     <para os="c">This package does not come with a test suite.</para>
 
@@ -44,7 +42,9 @@ install -v -m755 clockdiff /usr/bin
 install -v -m755 rdisc /usr/bin
 install -v -m755 tracepath /usr/bin
 install -v -m755 trace{path,route}6 /usr/bin
-install -v -m644 doc/*.8 /usr/share/man/man8</userinput></screen>
+install -v -m644 doc/*.8 /usr/share/man/man8
+ln -sv ping /bin/ping4
+ln -sv ping /bin/ping6</userinput></screen>
 
   </sect2>
 
@@ -55,7 +55,7 @@ install -v -m644 doc/*.8 /usr/share/man/man8</userinput></screen>
       <segtitle>Installed programs</segtitle>
 
       <seglistitem>
-        <seg>clockdiff, ping, rdisc, tracepath, tracepath6, traceroute6</seg>
+        <seg>clockdiff, ping, rdisc, tracepath, tracepath6, traceroute6, ping4 (link to ping), ping6 (link to ping)</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -88,24 +88,33 @@ install -v -m644 doc/*.8 /usr/share/man/man8</userinput></screen>
         <term><command>ping</command></term>
         <listitem>
           <para>Sends echo-request packets and reports how long the replies
-          take. This is the IPV4 version</para>
+          take.</para>
           <indexterm zone="ch-system-iputils ping">
             <primary sortas="b-ping">ping</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-<!--
+
+      <varlistentry id="ping4">
+        <term><command>ping</command></term>
+        <listitem>
+          <para>Executes ping for IPV4 support</para>
+          <indexterm zone="ch-system-iputils ping4">
+            <primary sortas="b-ping4">ping</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="ping6">
         <term><command>ping6</command></term>
         <listitem>
-          <para>Sends echo-request packets and reports how long the replies
-          take. This is the IPV6 version</para>
+          <para>Executes ping for  IPV6 support</para>
           <indexterm zone="ch-system-iputils ping6">
             <primary sortas="b-ping6">ping6</primary>
           </indexterm>
         </listitem>
       </varlistentry>
--->
+
       <varlistentry id="rdisc">
         <term><command>rdisc</command></term>
         <listitem>
