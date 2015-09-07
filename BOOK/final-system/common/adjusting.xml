@@ -33,7 +33,7 @@ perl -p -e 's@/tools/lib/ld@/lib/ld@g;' \
     are working as expected. To do this, perform a sanity
     check:</para>
 
-<screen os="g"><userinput>echo 'main(){}' &gt; dummy.c
+<screen os="g"><userinput>echo 'int main(){}' &gt; dummy.c
 gcc dummy.c
 readelf -l a.out | grep ': /lib'</userinput></screen>
 
