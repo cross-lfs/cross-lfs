@@ -1,5 +1,5 @@
 Submitted By: Joe Ciccone <jciccone@gmail.com>
-Date: 14-06-2010
+Date: 16-09-2015
 Initial Package Version: 2.6.18
 Upstream Status: Unknown
 Origin: Joe Ciccone
@@ -12,10 +12,11 @@ Description: This patch gives the ability to change the libdir.
              Rediffed for Iproute2-3.8.0 by William Harrington
              Renamed for Iproute2-3.12.0 by William Harrington
              Renamed for Iproute2-3.14.0 by William Harrington
+             Rediffed for Iproute2-4.1.1 by William Harrington
 
-diff -Naur iproute2-3.8.0.orig/Makefile iproute2-3.8.0/Makefile
---- iproute2-3.8.0.orig/Makefile	2013-02-21 16:41:20.000000000 +0000
-+++ iproute2-3.8.0/Makefile	2013-06-03 12:31:18.891352195 +0000
+diff -Naur iproute2-4.1.1.orig/Makefile iproute2-4.1.1/Makefile
+--- iproute2-4.1.1.orig/Makefile	2015-07-06 21:57:34.000000000 +0000
++++ iproute2-4.1.1/Makefile	2015-09-16 23:57:03.117721908 +0000
 @@ -13,7 +13,7 @@
  
  SHARED_LIBS = y
@@ -25,9 +26,9 @@ diff -Naur iproute2-3.8.0.orig/Makefile iproute2-3.8.0/Makefile
  ifneq ($(SHARED_LIBS),y)
  DEFINES+= -DNO_SHARED_LIBS
  endif
-diff -Naur iproute2-3.8.0.orig/include/iptables.h iproute2-3.8.0/include/iptables.h
---- iproute2-3.8.0.orig/include/iptables.h	2013-02-21 16:41:20.000000000 +0000
-+++ iproute2-3.8.0/include/iptables.h	2013-06-03 12:31:18.891352195 +0000
+diff -Naur iproute2-4.1.1.orig/include/iptables.h iproute2-4.1.1/include/iptables.h
+--- iproute2-4.1.1.orig/include/iptables.h	2015-07-06 21:57:34.000000000 +0000
++++ iproute2-4.1.1/include/iptables.h	2015-09-16 23:57:03.118722035 +0000
 @@ -4,8 +4,12 @@
  #include "iptables_common.h"
  #include "libiptc/libiptc.h"
@@ -42,10 +43,10 @@ diff -Naur iproute2-3.8.0.orig/include/iptables.h iproute2-3.8.0/include/iptable
  #endif
  
  #ifndef IPPROTO_SCTP
-diff -Naur iproute2-3.8.0.orig/misc/arpd.c iproute2-3.8.0/misc/arpd.c
---- iproute2-3.8.0.orig/misc/arpd.c	2013-02-21 16:41:20.000000000 +0000
-+++ iproute2-3.8.0/misc/arpd.c	2013-06-03 12:31:18.891352195 +0000
-@@ -40,7 +40,7 @@
+diff -Naur iproute2-4.1.1.orig/misc/arpd.c iproute2-4.1.1/misc/arpd.c
+--- iproute2-4.1.1.orig/misc/arpd.c	2015-07-06 21:57:34.000000000 +0000
++++ iproute2-4.1.1/misc/arpd.c	2015-09-16 23:57:03.118722035 +0000
+@@ -41,7 +41,7 @@
  int resolve_hosts;
  
  DB	*dbase;
