@@ -28,12 +28,6 @@
   <sect2 role="installation">
     <title>Installation of E2fsprogs</title>
 
-    <para os="s1">Fix a potential security issue identified upstream:</para>
-
-<screen os="s2"><userinput>sed -e '/int.*old_desc_blocks/s/int/blk64_t/' \
-    -e '/if (old_desc_blocks/s/super->s_first_meta_bg/desc_blocks/' \
-    -i lib/ext2fs/closefs.c</userinput></screen>
-
     <para os="a">The E2fsprogs documentation recommends that the package be
     built in a subdirectory of the source tree:</para>
 
