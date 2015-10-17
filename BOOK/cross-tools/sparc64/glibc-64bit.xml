@@ -34,16 +34,13 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/glibc.xml"
-    xpointer="xpointer(//*[@os='dd'])"/>
+    <para os="dd">Add the following variables to <filename>config.cache</filename> so they are set properly:</para>
 
 <screen os="de"><userinput>cat &gt; config.cache &lt;&lt; "EOF"
 libc_cv_forced_unwind=yes
 libc_cv_c_cleanup=yes
 libc_cv_sparc64_tls=yes
 libc_cv_gnu89_inline=yes
-libc_cv_ssp=no
 EOF</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

@@ -34,11 +34,6 @@
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='f'])"/>
 
-    <para os="dd">Add the following to <filename>config.cache</filename>
-    to disable ssp when building Glibc:</para>
-
-<screen os="de"><userinput>echo "libc_cv_ssp=no" &gt; config.cache</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../final-system/common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
@@ -49,7 +44,7 @@
     --host=${CLFS_TARGET} --build=${CLFS_HOST} \
     --disable-profile --enable-kernel=&glibc-kernel-version; \
     --with-binutils=/cross-tools/bin --with-headers=/tools/include \
-    --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
+    --enable-obsolete-rpc</userinput></screen>
 
     <variablelist os="dg">
       <title>The meaning of the new configure options:</title>
@@ -125,13 +120,6 @@
         <listitem>
           <para>This tells Glibc to install rpc headers that are not installed
           by default but may be needed by other packages.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="dg10">
-        <term><parameter>--cache-file=config.cache</parameter></term>
-        <listitem>
-          <para>This tells Glibc to utilize a premade cache file.</para>
         </listitem>
       </varlistentry>
 
