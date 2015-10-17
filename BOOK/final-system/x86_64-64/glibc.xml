@@ -48,8 +48,13 @@
     <para os="l5">Configure Glibc to install its libraries into
     <filename class="directory">/lib</filename>:</para>
 
-<screen os="l6"><userinput>echo "libc_cv_rtlddir=/lib" &gt;&gt; config.cache
-echo "libc_cv_slibdir=/lib" &gt;&gt; config.cache</userinput></screen>
+<screen os="l6"><userinput>echo "libc_cv_slibdir=/lib" &gt;&gt; config.cache</userinput></screen>
+
+    <para os="l7">Modify the <command>ldd</command> rewrite script to remove
+    <filename class="directory">lib64</filename> and
+    <filename class="directory">libx32</filename> from RTLDLIST.</para>
+
+<screen os="l8"><userinput>sed -i '/RTLDLIST/d' sysdeps/unix/sysv/linux/*/ldd-rewrite.sed</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
@@ -126,18 +131,9 @@ echo "libc_cv_slibdir=/lib" &gt;&gt; config.cache</userinput></screen>
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='t'])"/>
 
-    <para>Now we can remove this symlink.  We also need to correct the <command>
-    /usr/bin/ldd</command> script - if you look at this, you will see it references
-    not only the 32-bit linker, but also /lib64 where it thinks the 64-bit linker
-    is. The following <command>sed</command> will correct this:</para>
+    <para>Now we can remove this symlink:</para>
 
-    <screen><userinput>rm -v /lib/ld-linux.so.2
-sed -i.bak '/RTLDLIST/s%/ld-linux.so.2 /lib64%%' /usr/bin/ldd</userinput></screen>
-
-    <para>Check the script to make sure the sed worked correctly, then delete
-    the backup.</para>
-
-    <screen><userinput>rm -v /usr/bin/ldd.bak</userinput></screen>
+    <screen><userinput>rm -v /lib/ld-linux.so.2</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
