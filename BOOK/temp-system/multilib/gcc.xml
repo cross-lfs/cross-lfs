@@ -72,10 +72,10 @@
 
 <screen os="dc"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
     --libdir=/tools/lib64 --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --target=${CLFS_TARGET} --with-local-prefix=/tools --disable-nls \
-    --enable-languages=c,c++ --disable-libstdcxx-pch \
-    --with-system-zlib --with-native-system-header-dir=/tools/include \
-    --disable-libssp --enable-libstdcxx-time --enable-checking=release</userinput></screen>
+    --target=${CLFS_TARGET} --with-local-prefix=/tools \
+    --enable-languages=c,c++ --with-system-zlib \
+    --with-native-system-header-dir=/tools/include \
+    --disable-libssp --enable-install-libiberty --disable-bootstrap</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/gcc.xml"
@@ -104,14 +104,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/gcc.xml"
     xpointer="xpointer(//*[@os='cp'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/gcc.xml"
-    xpointer="xpointer(//*[@os='u'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/gcc.xml"
-    xpointer="xpointer(//*[@os='cr'])"/>
 
   </sect2>
 
