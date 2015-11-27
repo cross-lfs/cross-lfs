@@ -65,7 +65,7 @@
     --with-native-system-header-dir=/tools/include --disable-nls \
     --disable-static --enable-languages=c,c++ --disable-multilib \
     --with-mpc=/cross-tools --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --with-isl=/cross-tools --with-system-zlib --disable-bootstrap</userinput></screen>
+    --with-isl=/cross-tools --with-system-zlib</userinput></screen>
 
     <variablelist os="bg">
       <title>The meaning of the new configure options:</title>
@@ -74,33 +74,6 @@
         <term><parameter>--enable-languages=c,c++</parameter></term>
         <listitem>
           <para>This option ensures that only the C and C++ compilers are built.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="bg2">
-        <term><parameter>--enable-__cxa_atexit</parameter></term>
-        <listitem>
-          <para>This option allows use of __cxa_atexit, rather than atexit,
-          to register C++ destructors for local statics and global objects
-          and is essential for fully standards-compliant handling of destructors.
-          It also affects the C++ ABI and therefore results in C++ shared libraries
-          and C++ programs that are interoperable with other Linux distributions.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="bg3">
-        <term><parameter>--enable-threads=posix</parameter></term>
-        <listitem>
-          <para>This enables C++ exception handling for multi-threaded code.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="bg4">
-        <term><parameter>--enable-libstdcxx-time</parameter></term>
-        <listitem>
-          <para>This enables link-time checks for the availability of
-          clock_gettime clocks, and nanosleep and sched_yield functions, in the
-          C library.</para>
         </listitem>
       </varlistentry>
 
