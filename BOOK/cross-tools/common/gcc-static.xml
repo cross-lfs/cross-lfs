@@ -73,14 +73,15 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
     ../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
     --with-sysroot=${CLFS} --with-local-prefix=/tools \
-    --with-native-system-header-dir=/tools/include --disable-nls \
+    --with-native-system-header-dir=/tools/include \
     --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --with-isl=/cross-tools --with-cloog=/cross-tools --with-mpc=/cross-tools \
-    --without-headers --with-newlib --disable-decimal-float --disable-libgomp \
-    --disable-libmudflap --disable-libssp --disable-libatomic --disable-libitm \
-    --disable-libsanitizer --disable-libquadmath --disable-threads \
-    --disable-multilib --disable-target-zlib --with-system-zlib \
-    --enable-languages=c --enable-checking=release</userinput></screen>
+    --with-isl=/cross-tools --with-mpc=/cross-tools --without-headers \
+    --with-newlib --disable-decimal-float --disable-libgomp --disable-libssp \
+    --disable-libatomic --disable-libitm --disable-libsanitizer \
+    --disable-libquadmath --disable-libvtv --disable-libcilkrts \
+    --disable-libstdc++-v3 --disable-threads --disable-multilib \
+    --with-system-zlib --enable-languages=c --disable-boostrap \
+    --with-glibc-version=&glibc-version;</userinput></screen>
 
     <variablelist os="am">
       <title>The meaning of the new configure options:</title>
@@ -162,14 +163,6 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-target-zlib</parameter></term>
-        <listitem>
-          <para>This tells GCC not to build the copy of Zlib in its
-          source tree.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term><parameter>--with-system-zlib</parameter></term>
         <listitem>
           <para>This tells GCC to link to the system-installed zlib instead
@@ -185,9 +178,10 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--enable-checking=release</parameter></term>
+        <term><parameter>--with-glibc-version=&glibc-version;</parameter></term>
         <listitem>
-          <para>This option selects the complexity of the internal consistency checks and adds error checking within the compiler.</para>
+          <para>Needed when bootstrapping a cross toolchain without the header
+          files avilable for building the initial bootstrap compiler.</para>
         </listitem>
       </varlistentry>
 

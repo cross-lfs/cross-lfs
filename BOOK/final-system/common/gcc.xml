@@ -47,10 +47,9 @@ cd ../gcc-build</userinput></screen>
 CXX="g++ -isystem /usr/include" \
 LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
   ../gcc-&gcc-version;/configure --prefix=/usr \
-    --libexecdir=/usr/lib --enable-threads=posix \
-    --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++ \
-    --disable-multilib --disable-libstdcxx-pch \
-    --with-system-zlib --enable-checking=release --enable-libstdcxx-time</userinput></screen>
+    --libexecdir=/usr/lib --enable-languages=c,c++ \
+    --disable-multilib --disable-libstdcxx-pch --with-system-zlib \
+    --enable-install-libiberty --disable-bootstrap</userinput></screen>
 
     <variablelist os="i1">
       <title>The meaning of the new configure option:</title>
@@ -101,14 +100,7 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
 
 <screen os="t"><userinput>make install</userinput></screen>
 
-    <para os="u">Install the <filename class="headerfile">libiberty</filename> header
-    file that is needed by some packages:</para>
-
-<screen os="v"><userinput>cp -v ../gcc-&gcc-version;/include/libiberty.h /usr/include</userinput></screen>
-
-    <para os="w">Some packages expect the C preprocessor to be installed in the
-    <filename class="directory">/lib</filename> directory.
-    To support those packages, create this symlink:</para>
+    <para os="w">Create a link to satisfy FHS requirements:</para>
 
 <screen os="x"><userinput>ln -sv ../usr/bin/cpp /lib</userinput></screen>
 
@@ -132,12 +124,15 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
       <segtitle>Installed directories</segtitle>
 
       <seglistitem>
-        <seg>c++, cc (link to gcc), cpp, g++, gcc, gcov</seg>
-        <seg>libasan.[a,so], libatomic.[a,so], libgcc.a, libgcc_eh.a, libgcc_s.so, libgcov.a,
-        libgomp.[a,so], libiberty.a, libitm.[a,so], liblto_plugin.so, libmudflap.[a,so], libmudflapth.[a,so],
-        libquadmath.[a,so], libssp.[a,so], libssp_nonshared.a, libstdc++.[a,so], libsupc++.a,
-        libtsan.[a,so]</seg>
-        <seg>/usr/include/c++, /usr/lib/gcc, /usr/share/gcc-&gcc-version;</seg>
+        <seg>c++, cc (link to gcc), cpp, g++, gcc, gcov, gcov-tool</seg>
+        <seg>libasan.[a,so], libatomic.[a,so], libcc1.so, libcilkrts.[a,so],
+        libgcc.a, libgcc_eh.a, libgcc_s.so, libgcov.a, libgomp.[a,so],
+        libiberty.a, libitm.[a,so], liblsan.[a,so], liblto_plugin.so,
+        libquadmath.[a,so], libssp.[a,so], libssp_nonshared.a,
+        libstdc++.[a,so], libsupc++.a, libtsan.[a,so], libubsan.[a,so],
+        libvtv.[a,so]</seg>
+        <seg>/usr/include/[c++,libiberty], /usr/lib/gcc,
+        /usr/share/gcc-&gcc-version;</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -208,6 +203,16 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
         </listitem>
       </varlistentry>
 
+      <varlistentry id="gcovtool">
+        <term><command>gcov-tool</command></term>
+        <listitem>
+          <para>An offline tool to handle gcda counts</para>
+          <indexterm zone="ch-system-gcc gcovtool">
+            <primary sortas="b-gcov-tool">gcov-tool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libasan">
         <term><filename class="libraryfile">libasan</filename></term>
         <listitem>
@@ -224,7 +229,27 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           <para>A GCC support runtime library for atomic operations not
           supported by hardware</para>
           <indexterm zone="ch-system-gcc libatomic">
-            <primary sortas="c-libatomic*">libatomic*</primary>
+            <primary sortas="c-libatomic">libatomic</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libcc1">
+        <term><filename class="libraryfile">libcc1</filename></term>
+        <listitem>
+          <para>Translates API into RPC calls</para>
+          <indexterm zone="ch-system-gcc libcc1">
+            <primary sortas="c-libcc1">libcc1</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libcilkrts">
+        <term><filename class="libraryfile">libcilkrts</filename></term>
+        <listitem>
+          <para>Intel&reg; Cilk&trade; Plus runtime library</para>
+          <indexterm zone="ch-system-gcc libcilkrts">
+            <primary sortas="c-libcilkrts">libcilkrts</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -285,23 +310,22 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
         </listitem>
       </varlistentry>
 
+      <varlistentry id="liblsan">
+        <term><filename class="libraryfile">liblsan</filename></term>
+        <listitem>
+          <para>The Leak Sanitizer runtime library</para>
+          <indexterm zone="ch-system-gcc liblsan">
+            <primary sortas="c-liblsan">liblsan</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="liblto_plugin">
         <term><filename class="libraryfile">liblto_plugin</filename></term>
         <listitem>
           <para>Runtime library for GCC's link-time optimization plugin</para>
           <indexterm zone="ch-system-gcc liblto_plugin">
             <primary sortas="c-liblto_plugin">liblto_plugin</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libmudflap">
-        <term><filename class="libraryfile">libmudflap</filename></term>
-        <listitem>
-          <para>The libmudflap libraries are used by GCC for instrumenting
-          pointer and array dereferencing operations.</para>
-          <indexterm zone="ch-system-gcc libmudflap">
-            <primary sortas="c-libmudflap*">libmudflap*</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -354,6 +378,26 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           <para>The Thread Sanitizer runtime library</para>
           <indexterm zone="ch-system-gcc libtsan">
             <primary sortas="c-libtsan">libtsan</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libubsan">
+        <term><filename class="libraryfile">libubsan</filename></term>
+        <listitem>
+          <para>The Undefined Beahvior Sanitizer runtime library</para>
+          <indexterm zone="ch-system-gcc libubsan">
+            <primary sortas="c-libubsan">libubsan</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libvtv">
+        <term><filename class="libraryfile">libvtv</filename></term>
+        <listitem>
+          <para>The Virtual Table Verification runtime library</para>
+          <indexterm zone="ch-system-gcc libvtv">
+            <primary sortas="c-libvtv">libvtv</primary>
           </indexterm>
         </listitem>
       </varlistentry>

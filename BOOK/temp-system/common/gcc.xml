@@ -70,10 +70,11 @@ sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig &gt; gcc/Makefile.in</userin
 
 <screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
     --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
-    --with-local-prefix=/tools --disable-multilib --disable-nls \
-    --enable-languages=c,c++ --disable-libstdcxx-pch \
-    --with-system-zlib --with-native-system-header-dir=/tools/include \
-    --disable-libssp --enable-checking=release --enable-libstdcxx-time</userinput></screen>
+    --with-local-prefix=/tools --disable-multilib \
+    --enable-languages=c,c++ --with-system-zlib \
+    --with-native-system-header-dir=/tools/include \
+    --disable-libssp --enable-install-libiberty \
+    --disable-bootstrap</userinput></screen>
 
     <variablelist os="cl">
       <title>The meaning of the new configure option:</title>
@@ -104,12 +105,6 @@ sed "/^HOST_\(GMP\|ISL\|CLOOG\)\(LIBS\|INC\)/s:/tools:/cross-tools:g" \
     <para os="co">Install the package:</para>
 
 <screen os="cp"><userinput>make install</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../final-system/common/gcc.xml"
-    xpointer="xpointer(//*[@os='u'])"/>
-
-<screen os="cr"><userinput>cp -v ../gcc-&gcc-version;/include/libiberty.h /tools/include</userinput></screen>
 
   </sect2>
 

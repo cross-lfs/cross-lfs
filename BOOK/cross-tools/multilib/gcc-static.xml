@@ -75,14 +75,14 @@
     ../gcc-&gcc-version;/configure --prefix=/cross-tools \
     --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
     --with-sysroot=${CLFS} --with-local-prefix=/tools \
-    --with-native-system-header-dir=/tools/include --disable-nls \
-    --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --with-cloog=/cross-tools --with-mpc=/cross-tools --without-headers \
-    --with-newlib --disable-decimal-float --disable-libgomp --disable-libmudflap \
+    --with-native-system-header-dir=/tools/include --disable-shared \
+    --with-mpfr=/cross-tools --with-gmp=/cross-tools --with-mpc=/cross-tools \
+    --without-headers --with-newlib --disable-decimal-float --disable-libgomp \
     --disable-libssp --disable-libatomic --disable-libitm \
-    --disable-libsanitizer --disable-libquadmath --disable-threads \
-    --disable-target-zlib --with-system-zlib --with-isl=/cross-tools \
-    --enable-languages=c --enable-checking=release</userinput></screen>
+    --disable-libsanitizer --disable-libquadmath --disable-libvtv \
+    --disable-libcilkrts --disable-libstdc++-v3 --disable-threads \
+    --with-system-zlib --with-isl=/cross-tools --enable-languages=c \
+    --disable-bootstrap --with-glibc-version=&glibc-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/gcc-static.xml"
