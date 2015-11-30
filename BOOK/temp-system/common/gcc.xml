@@ -79,11 +79,12 @@ sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig &gt; gcc/Makefile.in</userin
       <title>The meaning of the new configure option:</title>
 
       <varlistentry os="cl1">
-        <term><parameter>--disable-libstdcxx-pch</parameter></term>
+        <term><parameter>--enable-install-libiberty</parameter></term>
         <listitem>
-          <para>Do not build the pre-compiled header (PCH) for
-          <filename class="libraryfile">libstdc++</filename>. It takes
-          up a lot of space, and we have no use for it.</para>
+          <para>Allows GCC to build and install
+          <filename class="libraryfile">libiberty.a</filename>
+          and its associated headers. This library is needed for some packages
+          to compile.</para>
         </listitem>
       </varlistentry>
 
