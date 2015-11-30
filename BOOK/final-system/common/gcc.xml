@@ -52,7 +52,7 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
     --enable-install-libiberty --disable-bootstrap</userinput></screen>
 
     <variablelist os="i1">
-      <title>The meaning of the new configure option:</title>
+      <title>The meaning of the new configure options:</title>
 
       <varlistentry>
         <term><parameter>SED=sed</parameter></term>
@@ -60,6 +60,19 @@ LDFLAGS="-Wl,-rpath-link,/usr/lib:/lib" \
           <para>This prevents a hard-coded path to
           <filename>/tools/bin/sed</filename> in the <command>fixincl</command>
           program.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-bootstrap</parameter></term>
+        <listitem>
+          <para>For a native build, GCC defaults to performing a 3-stage
+          "bootstrap" of the compiler. This means that GCC is compiled a total
+          of 3 times - it is compiled once, the first stage compiler is used
+          to build itself again, and the second stage compiler builds itself
+          once more. The second and third passes are then compared, verifying
+          that GCC is able to reproduce itself successfully. However, there is
+          no need for this with the CLFS build process so we disable it here.</para>
         </listitem>
       </varlistentry>
 
