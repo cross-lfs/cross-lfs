@@ -33,6 +33,12 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='l2'])"/>
 
+    <para os="l3">Modify the <command>ldd</command> rewrite script to remove
+    <filename class="directory">lib64</filename> and
+    <filename class="directory">libx32</filename> from RTLDLIST.</para>
+
+<screen os="l4"><userinput>sed -i '/RTLDLIST/d' sysdeps/unix/sysv/linux/*/ldd-rewrite.sed</userinput></screen>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='b'])"/>
@@ -49,12 +55,6 @@
     <filename class="directory">/lib</filename>:</para>
 
 <screen os="l6"><userinput>echo "libc_cv_slibdir=/lib" &gt;&gt; config.cache</userinput></screen>
-
-    <para os="l7">Modify the <command>ldd</command> rewrite script to remove
-    <filename class="directory">lib64</filename> and
-    <filename class="directory">libx32</filename> from RTLDLIST.</para>
-
-<screen os="l8"><userinput>sed -i '/RTLDLIST/d' sysdeps/unix/sysv/linux/*/ldd-rewrite.sed</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
