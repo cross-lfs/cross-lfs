@@ -105,14 +105,6 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='r'])"/>
 
-    <para>The install will finish by checking that everything is correctly installed.
-    Unfortunately, it will test for a multilib installation. On x86_64 Pure64 this means
-    it will try to test the non-existent 32-bit loader which has a different name
-    from the 64-bit loader (unlike on other 64-bit architectures).  We fool it by
-    creating a symlink to the real loader.</para>
-
-    <screen><userinput>ln -sv &glibc-ld-name; /lib/ld-linux.so.2</userinput></screen>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='s'])"/>
@@ -120,10 +112,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='t'])"/>
-
-    <para>Now we can remove this symlink:</para>
-
-    <screen><userinput>rm -v /lib/ld-linux.so.2</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
