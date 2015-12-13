@@ -37,9 +37,13 @@ sed -e '/gets is a/d' grub-core/gnulib/stdio.in.h.orig &gt; grub-core/gnulib/std
     href="../../final-system/x86/grub.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="ab"><userinput>./configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --disable-werror --enable-grub-mkfont=no --with-bootdir=tools/boot</userinput></screen>
+<screen os="ab"><userinput>./configure \
+    --prefix=/tools \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --disable-werror \
+    --enable-grub-mkfont=no \
+    --with-bootdir=tools/boot</userinput></screen>
 
 <para os="b">The meaning of the new configure option:</para>
 

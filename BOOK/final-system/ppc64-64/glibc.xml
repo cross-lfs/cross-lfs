@@ -65,10 +65,14 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="h"><userinput>CC="gcc ${BUILD64}" ../glibc-&glibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-kernel=&glibc-kernel-version; \
-    --libexecdir=/usr/lib/glibc --libdir=/usr/lib \
-    --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
+<screen os="h"><userinput>CC="gcc ${BUILD64}" ../glibc-&glibc-version;/configure \
+    --prefix=/usr \
+    --disable-profile \
+    --enable-kernel=&glibc-kernel-version; \
+    --libexecdir=/usr/lib/glibc \
+    --libdir=/usr/lib \
+    --enable-obsolete-rpc \
+    --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../x86_64-64/glibc.xml"
@@ -116,7 +120,7 @@
     from the 64-bit loader (unlike on other 64-bit architectures).  We fool it by
     creating a symlink to the real loader.</para>
 
-    <screen><userinput>ln -sv &glibc-ld-name; /lib/ld.so.1</userinput></screen>
+<screen><userinput>ln -sv &glibc-ld-name; /lib/ld.so.1</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
@@ -128,7 +132,7 @@
 
     <para>Now we can remove this symlink:</para>
 
-    <screen><userinput>rm -v /lib/ld.so.1</userinput></screen>
+<screen><userinput>rm -v /lib/ld.so.1</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
