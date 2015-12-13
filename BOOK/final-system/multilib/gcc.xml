@@ -52,9 +52,14 @@
 <screen os="i"><userinput>SED=sed CC="gcc -isystem /usr/include ${BUILD64}" \
 CXX="g++ -isystem /usr/include ${BUILD64}" \
 LDFLAGS="-Wl,-rpath-link,/usr/lib64:/lib64:/usr/lib:/lib" \
-  ../gcc-&gcc-version;/configure --prefix=/usr --libdir=/usr/lib64 \
-    --libexecdir=/usr/lib64 --enable-languages=c,c++ \
-    --with-system-zlib --enable-install-libiberty --disable-bootstrap</userinput></screen>
+../gcc-&gcc-version;/configure \
+    --prefix=/usr \
+    --libdir=/usr/lib64 \
+    --libexecdir=/usr/lib64 \
+    --enable-languages=c,c++ \
+    --with-system-zlib \
+    --enable-install-libiberty \
+    --disable-bootstrap</userinput></screen>
 
    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/gcc.xml"

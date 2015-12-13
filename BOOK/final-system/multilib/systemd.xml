@@ -43,12 +43,19 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen><userinput>CC="gcc ${BUILD32}" PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-  ./configure --prefix=/usr \
-    --sysconfdir=/etc --localstatedir=/var \
-    --libexecdir=/usr/lib --docdir=/usr/share/doc/systemd-&systemd-version; \
-    --with-rootprefix="" --with-rootlibdir=/lib \
-    --enable-split-usr --disable-gudev --with-kbd-loadkeys=/bin/loadkeys \
-    --with-kbd-setfont=/bin/setfont --with-dbuspolicydir=/etc/dbus-1/system.d \
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib \
+    --docdir=/usr/share/doc/systemd-&systemd-version; \
+    --with-rootprefix="" \
+    --with-rootlibdir=/lib \
+    --enable-split-usr \
+    --disable-gudev \
+    --with-kbd-loadkeys=/bin/loadkeys \
+    --with-kbd-setfont=/bin/setfont \
+    --with-dbuspolicydir=/etc/dbus-1/system.d \
     --with-dbusinterfacedir=/usr/share/dbus-1/interfaces \
     --with-dbussessionservicedir=/usr/share/dbus-1/services \
     --with-dbussystemservicedir=/usr/share/dbus-1/system-services \

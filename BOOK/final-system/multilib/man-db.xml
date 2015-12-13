@@ -26,10 +26,17 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-    CC="gcc ${BUILD64}" ./configure --prefix=/usr --libexecdir=/usr/lib64 \
-    --docdir=/usr/share/doc/man-db-&man-db-version; --sysconfdir=/etc \
-    --libdir=/usr/lib64 --disable-setuid --with-browser=/usr/bin/lynx \
-    --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap</userinput></screen>
+    CC="gcc ${BUILD64}" \
+./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib64 \
+    --docdir=/usr/share/doc/man-db-&man-db-version; \
+    --sysconfdir=/etc \
+    --libdir=/usr/lib64 \
+    --disable-setuid \
+    --with-browser=/usr/bin/lynx \
+    --with-vgrind=/usr/bin/vgrind \
+    --with-grap=/usr/bin/grap</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/man-db.xml"

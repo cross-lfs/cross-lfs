@@ -26,9 +26,13 @@
     xpointer="xpointer(//*[@os='a'])"/>
 
 <screen os="b"><userinput>CC="gcc ${BUILD32}" USE_ARCH=32 PKG_CONFIG_PATH=${PKG_CONFIG_PATH32} \
-  ./configure --prefix=/usr --sysconfdir=/etc \
-    --libdir=/usr/lib --libexecdir=/usr/lib/dbus-1.0 \
-    --localstatedir=/var --with-systemdsystemunitdir=/lib/systemd/system \
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib/dbus-1.0 \
+    --localstatedir=/var \
+    --with-systemdsystemunitdir=/lib/systemd/system \
     --docdir=/usr/share/doc/dbus-&dbus-version;</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

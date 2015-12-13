@@ -51,10 +51,14 @@
     xpointer="xpointer(//*[@os='g'])"/>
 
 <screen os="h"><userinput>CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-    ../glibc-&glibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-kernel=&glibc-kernel-version; \
-    --libexecdir=/usr/lib64/glibc --libdir=/usr/lib64 \
-    --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
+../glibc-&glibc-version;/configure \
+    --prefix=/usr \
+    --disable-profile \
+    --enable-kernel=&glibc-kernel-version; \
+    --libexecdir=/usr/lib64/glibc \
+    --libdir=/usr/lib64 \
+    --enable-obsolete-rpc \
+    --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../multilib/glibc-64bit.xml"

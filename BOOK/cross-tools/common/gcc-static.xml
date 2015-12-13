@@ -69,18 +69,37 @@ echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFI
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="al"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
-    ../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
-    --with-sysroot=${CLFS} --with-local-prefix=/tools \
+<screen os="al"><userinput>AR=ar \
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+../gcc-&gcc-version;/configure \
+    --prefix=/cross-tools \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_HOST} \
+    --target=${CLFS_TARGET} \
+    --with-sysroot=${CLFS} \
+    --with-local-prefix=/tools \
     --with-native-system-header-dir=/tools/include \
-    --disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-    --with-isl=/cross-tools --with-mpc=/cross-tools --without-headers \
-    --with-newlib --disable-decimal-float --disable-libgomp --disable-libssp \
-    --disable-libatomic --disable-libitm --disable-libsanitizer \
-    --disable-libquadmath --disable-libvtv --disable-libcilkrts \
-    --disable-libstdc++-v3 --disable-threads --disable-multilib \
-    --with-system-zlib --enable-languages=c \
+    --disable-shared \
+    --with-mpfr=/cross-tools \
+    --with-gmp=/cross-tools \
+    --with-isl=/cross-tools \
+    --with-mpc=/cross-tools \
+    --without-headers \
+    --with-newlib \
+    --disable-decimal-float \
+    --disable-libgomp \
+    --disable-libssp \
+    --disable-libatomic \
+    --disable-libitm \
+    --disable-libsanitizer \
+    --disable-libquadmath \
+    --disable-libvtv \
+    --disable-libcilkrts \
+    --disable-libstdc++-v3 \
+    --disable-threads \
+    --disable-multilib \
+    --with-system-zlib \
+    --enable-languages=c \
     --with-glibc-version=&glibc-version;</userinput></screen>
 
     <variablelist os="am">
