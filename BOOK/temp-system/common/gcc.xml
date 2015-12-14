@@ -68,12 +68,18 @@ sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig &gt; gcc/Makefile.in</userin
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="ck"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
-    --build=${CLFS_HOST} --host=${CLFS_TARGET} --target=${CLFS_TARGET} \
-    --with-local-prefix=/tools --disable-multilib \
-    --enable-languages=c,c++ --with-system-zlib \
+<screen os="ck"><userinput>../gcc-&gcc-version;/configure \
+    --prefix=/tools \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --target=${CLFS_TARGET} \
+    --with-local-prefix=/tools \
+    --disable-multilib \
+    --enable-languages=c,c++ \
+    --with-system-zlib \
     --with-native-system-header-dir=/tools/include \
-    --disable-libssp --enable-install-libiberty</userinput></screen>
+    --disable-libssp \
+    --enable-install-libiberty</userinput></screen>
 
     <variablelist os="cl">
       <title>The meaning of the new configure option:</title>

@@ -58,13 +58,23 @@
     href="gcc-static.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="bf"><userinput>AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
-    ../gcc-&gcc-version;/configure --prefix=/cross-tools \
-    --build=${CLFS_HOST} --target=${CLFS_TARGET} --host=${CLFS_HOST} \
-    --with-sysroot=${CLFS} --with-local-prefix=/tools \
-    --with-native-system-header-dir=/tools/include --disable-static \
-    --enable-languages=c,c++ --with-mpc=/cross-tools --with-mpfr=/cross-tools \
-    --with-gmp=/cross-tools --with-isl=/cross-tools --with-system-zlib</userinput></screen>
+<screen os="bf"><userinput>AR=ar \
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+../gcc-&gcc-version;/configure \
+    --prefix=/cross-tools \
+    --build=${CLFS_HOST} \
+    --target=${CLFS_TARGET} \
+    --host=${CLFS_HOST} \
+    --with-sysroot=${CLFS} \
+    --with-local-prefix=/tools \
+    --with-native-system-header-dir=/tools/include \
+    --disable-static \
+    --enable-languages=c,c++ \
+    --with-mpc=/cross-tools \
+    --with-mpfr=/cross-tools \
+    --with-gmp=/cross-tools \
+    --with-isl=/cross-tools \
+    --with-system-zlib</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/gcc-final.xml"

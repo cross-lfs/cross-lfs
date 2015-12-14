@@ -70,10 +70,16 @@
     href="../../final-system/common/gcc.xml"
     xpointer="xpointer(//*[@os='h'])"/>
 
-<screen os="dc"><userinput>../gcc-&gcc-version;/configure --prefix=/tools \
-    --libdir=/tools/lib64 --build=${CLFS_HOST} --host=${CLFS_TARGET} \
-    --target=${CLFS_TARGET} --with-local-prefix=/tools \
-    --enable-languages=c,c++ --with-abi=64 --with-system-zlib \
+<screen os="dc"><userinput>../gcc-&gcc-version;/configure \
+    --prefix=/tools \
+    --libdir=/tools/lib64 \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --target=${CLFS_TARGET} \
+    --with-local-prefix=/tools \
+    --enable-languages=c,c++ \
+    --with-abi=64 \
+    --with-system-zlib \
     --with-native-system-header-dir=/tools/include \
     --enable-install-libiberty</userinput></screen>
 

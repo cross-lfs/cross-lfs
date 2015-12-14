@@ -67,9 +67,12 @@
     xpointer="xpointer(//*[@os='g'])"/>
 
 <screen os="h"><userinput>CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-    ../glibc-&glibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-kernel=&glibc-kernel-version; \
-    --libexecdir=/usr/lib/glibc --host=${CLFS_TARGET32} \
+../glibc-&glibc-version;/configure \
+    --prefix=/usr \
+    --disable-profile \
+    --enable-kernel=&glibc-kernel-version; \
+    --libexecdir=/usr/lib/glibc \
+    --host=${CLFS_TARGET32} \
     --enable-obsolete-rpc</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

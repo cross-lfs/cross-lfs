@@ -33,9 +33,10 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='l2'])"/>
 
-    <para os="l3">Modify the <command>ldd</command> rewrite script to remove
-    <filename class="directory">lib64</filename> and
-    <filename class="directory">libx32</filename> from RTLDLIST.</para>
+    <para os="l3">Modify the <command>ldd</command> rewrite script to prevent
+    it from adding <filename class="directory">lib64</filename> and
+    <filename class="directory">libx32</filename> to its list of linker
+    search locations:</para>
 
 <screen os="l4"><userinput>sed -i '/RTLDLIST/d' sysdeps/unix/sysv/linux/*/ldd-rewrite.sed</userinput></screen>
 
@@ -60,10 +61,14 @@
     href="../common/glibc.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-<screen os="h"><userinput>../glibc-&glibc-version;/configure --prefix=/usr \
-    --disable-profile --enable-kernel=&glibc-kernel-version; \
-    --libexecdir=/usr/lib/glibc --libdir=/usr/lib \
-    --enable-obsolete-rpc --cache-file=config.cache</userinput></screen>
+<screen os="h"><userinput>../glibc-&glibc-version;/configure \
+    --prefix=/usr \
+    --disable-profile \
+    --enable-kernel=&glibc-kernel-version; \
+    --libexecdir=/usr/lib/glibc \
+    --libdir=/usr/lib \
+    --enable-obsolete-rpc \
+    --cache-file=config.cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/glibc.xml"
