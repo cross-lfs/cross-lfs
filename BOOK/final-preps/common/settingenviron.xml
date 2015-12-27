@@ -45,7 +45,7 @@ CLFS=/mnt/clfs
 LC_ALL=POSIX
 PATH=/cross-tools/bin:/bin:/usr/bin
 export CLFS LC_ALL PATH
-unset CFLAGS CXXFLAGS</literal>
+unset CFLAGS CXXFLAGS PKG_CONFIG_PATH</literal>
 EOF</userinput></screen>
 
   <para os="f">The <command>set +h</command> command turns off
@@ -83,8 +83,9 @@ EOF</userinput></screen>
   hashing, helps to ensure that you will be using the cross-compile
   tools to build the temp-system in /tools.</para>
 
-  <para os="k">The <envar>CFLAGS</envar> and <envar>CXXFLAGS</envar> variables
-  should not be set while building the temporary system, so we unset them.</para>
+  <para os="k">The <envar>CFLAGS</envar>, <envar>CXXFLAGS</envar> and
+  <envar>PKG_CONFIG_PATH</envar> variables should not be set while building the
+  temporary system, so we unset them.</para>
 
   <para os="l">Finally, to have the environment fully prepared for building the
   temporary tools, source the just-created user profile:</para>
