@@ -25,10 +25,12 @@
   <sect2 role="installation">
     <title>Installation of Ncurses</title>
 
+<!--Ncurses Branch Update Area
     <para os="p1">The following patch contains updates from the &ncurses-version; branch
     by the Ncurses developers:</para>
 
 <screen os="p2"><userinput>patch -Np1 -i ../&ncurses-branch_update-patch;</userinput></screen>
+-->
 
     <para os="a">Prepare Ncurses for compilation:</para>
 
@@ -38,9 +40,7 @@
     --with-shared \
     --without-debug \
     --enable-widec \
-    --with-manpage-format=normal \
-    --enable-pc-files \
-    --with-default-terminfo-dir=/usr/share/terminfo</userinput></screen>
+    --enable-pc-files</userinput></screen>
 
     <variablelist os="b1">
       <title>The meaning of the new configure option:</title>
@@ -98,7 +98,7 @@ done
 ln -sfv libncursesw.so /usr/lib/libcursesw.so
 ln -sfv libncursesw.a /usr/lib/libcursesw.a
 ln -sfv libncurses++w.a /usr/lib/libncurses++.a
-ln -sfv ncursesw5-config /usr/bin/ncurses5-config</userinput></screen>
+ln -sfv ncursesw6-config /usr/bin/ncurses6-config</userinput></screen>
 
   </sect2>
 
@@ -112,7 +112,7 @@ ln -sfv ncursesw5-config /usr/bin/ncurses5-config</userinput></screen>
 
       <seglistitem>
         <seg>captoinfo (link to tic), clear, infocmp, infotocap (link to tic),
-        ncursesw5-config, reset (link to tset), tabs, tic, toe, tput, tset</seg>
+        ncursesw6-config, reset (link to tset), tabs, tic, toe, tput, tset</seg>
         <seg>libcursesw.so (link to libncursesw.so), libformw.[a,so],
         libmenuw.[a,so], libncurses++w.a, libncursesw.[a,so],
         libpanelw.[a,so]</seg>
@@ -165,12 +165,12 @@ ln -sfv ncursesw5-config /usr/bin/ncurses5-config</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="ncursesw5-config">
-        <term><command>ncursesw5-config</command></term>
+      <varlistentry id="ncursesw6-config">
+        <term><command>ncursesw6-config</command></term>
         <listitem>
           <para>Provides configuration information for ncurses</para>
-          <indexterm zone="ch-system-ncurses ncursesw5-config">
-            <primary sortas="b-ncursesw5-config">ncursesw5-config</primary>
+          <indexterm zone="ch-system-ncurses ncursesw6-config">
+            <primary sortas="b-ncursesw6-config">ncursesw6-config</primary>
           </indexterm>
         </listitem>
       </varlistentry>

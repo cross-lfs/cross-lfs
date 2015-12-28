@@ -21,6 +21,7 @@
   <sect2 role="installation">
     <title>Installation of Ncurses</title>
 
+<!--Ncurses Branch Update Area
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='p1'])"/>
@@ -28,6 +29,7 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='p2'])"/>
+-->
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"
@@ -40,9 +42,7 @@
     --with-shared \
     --without-debug \
     --enable-widec \
-    --with-manpage-format=normal \
-    --enable-pc-files \
-    --with-default-terminfo-dir=/usr/share/terminfo</userinput></screen>
+    --enable-pc-files</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"
@@ -64,11 +64,11 @@
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='g'])"/>
 
-    <para os="m1">Prepare <filename>ncursesw5-config</filename> to be wrapped by
+    <para os="m1">Prepare <filename>ncursesw6-config</filename> to be wrapped by
     the multiarch wrapper and then wrap it:</para>
 
-<screen os="m2"><userinput>mv -v /usr/bin/ncursesw5-config{,-64}
-ln -svf multiarch_wrapper /usr/bin/ncursesw5-config</userinput></screen>
+<screen os="m2"><userinput>mv -v /usr/bin/ncursesw6-config{,-64}
+ln -svf multiarch_wrapper /usr/bin/ncursesw6-config</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"
@@ -97,8 +97,8 @@ ln -sfv libncurses.so /usr/lib64/libcurses.so
 ln -sfv libncursesw.a /usr/lib64/libcursesw.a
 ln -sfv libncurses.a /usr/lib64/libcurses.a
 ln -sfv libncurses++w.a /usr/lib64/libncurses++.a
-ln -sfv ncursesw5-config-64 /usr/bin/ncurses5-config-64
-ln -sfv ncursesw5-config /usr/bin/ncurses5-config</userinput></screen>
+ln -sfv ncursesw6-config-64 /usr/bin/ncurses6-config-64
+ln -sfv ncursesw6-config /usr/bin/ncurses6-config</userinput></screen>
 
   </sect2>
 
