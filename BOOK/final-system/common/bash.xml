@@ -33,7 +33,6 @@
 
 <screen os="b"><userinput>./configure \
     --prefix=/usr \
-    --bindir=/bin \
     --without-bash-malloc \
     --with-installed-readline \
     --docdir=/usr/share/doc/bash-&bash-version;</userinput></screen>
@@ -64,12 +63,18 @@
 
 <screen os="h"><userinput>make install</userinput></screen>
 
-    <para os="i">Run the newly compiled <command>bash</command> program (replacing
+    <para os="i">Move the <command>bash</command> binary to
+    <filename class="directory">/bin</filename>, overwriting the symlink
+    that was previously created:</para>
+
+<screen os="j"><userinput>mv -v /usr/bin/bash /bin</userinput></screen>
+
+    <para os="k">Run the newly compiled <command>bash</command> program (replacing
     the one that is currently being executed):</para>
 
-<screen os="j" role="nodump"><userinput>exec /bin/bash --login +h</userinput></screen>
+<screen os="l" role="nodump"><userinput>exec /bin/bash --login +h</userinput></screen>
 
-    <note os="k">
+    <note os="m">
       <para>The parameters used make the <command>bash</command>
       process an interactive login shell and continue to disable hashing so
       that new programs are found as they become available.</para>
