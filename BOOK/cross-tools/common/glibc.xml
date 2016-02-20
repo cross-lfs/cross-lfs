@@ -46,7 +46,6 @@ RANLIB="${CLFS_TARGET}-ranlib" \
     --prefix=/tools \
     --host=${CLFS_TARGET} \
     --build=${CLFS_HOST} \
-    --disable-profile \
     --enable-kernel=&glibc-kernel-version; \
     --with-binutils=/cross-tools/bin \
     --with-headers=/tools/include \
@@ -88,14 +87,6 @@ RANLIB="${CLFS_TARGET}-ranlib" \
       </varlistentry>
 
       <varlistentry os="dg5">
-        <term><parameter>--disable-profile</parameter></term>
-        <listitem>
-          <para>This builds the libraries without profiling information.
-          Omit this option if profiling on the temporary tools is necessary.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry os="dg6">
         <term><parameter>--enable-kernel=&glibc-kernel-version;</parameter></term>
         <listitem>
           <para>This tells Glibc to compile the library with support
@@ -103,7 +94,7 @@ RANLIB="${CLFS_TARGET}-ranlib" \
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg7">
+      <varlistentry os="dg6">
         <term><parameter>--with-binutils=/cross-tools/bin</parameter></term>
         <listitem>
           <para>This tells Glibc to use the Binutils that are specific to
@@ -111,7 +102,7 @@ RANLIB="${CLFS_TARGET}-ranlib" \
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg8">
+      <varlistentry os="dg7">
         <term><parameter>--with-headers=/tools/include</parameter></term>
         <listitem>
           <para>This tells Glibc to compile itself against the headers
@@ -121,7 +112,7 @@ RANLIB="${CLFS_TARGET}-ranlib" \
         </listitem>
       </varlistentry>
 
-      <varlistentry os="dg9">
+      <varlistentry os="dg8">
         <term><parameter>--enable-obsolete-rpc</parameter></term>
         <listitem>
           <para>This tells Glibc to install rpc headers that are not installed
