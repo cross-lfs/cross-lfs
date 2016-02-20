@@ -36,7 +36,6 @@
 
 <screen os="b"><userinput>./configure \
     --prefix=/usr \
-    --libdir=/lib \
     --with-shared \
     --without-debug \
     --enable-widec \
@@ -74,17 +73,12 @@
 
 <screen os="g"><userinput>make install</userinput></screen>
 
-    <para os="h">Move the Ncurses static libraries to the proper location:</para>
+    <para os="h">Move the <filename class="libraryfile">libncursesw</filename>
+    shared library to <filename class="directory">/lib</filename>
+    and create a new symlink in <filename class="directory">/usr/lib</filename>:</para>
 
-<screen os="i"><userinput>mv -v /lib/lib{panelw,menuw,formw,ncursesw,ncurses++w}.a /usr/lib</userinput></screen>
-
-    <para os="j">Create symlinks in <filename class="directory">/usr/lib:</filename></para>
-
-<screen os="k"><userinput>ln -svf ../../lib/$(readlink /lib/libncursesw.so) /usr/lib/libncursesw.so
-ln -svf ../../lib/$(readlink /lib/libmenuw.so) /usr/lib/libmenuw.so
-ln -svf ../../lib/$(readlink /lib/libpanelw.so) /usr/lib/libpanelw.so
-ln -svf ../../lib/$(readlink /lib/libformw.so) /usr/lib/libformw.so
-rm -v /lib/lib{ncursesw,menuw,panelw,formw}.so</userinput></screen>
+<screen os="i"><userinput>mv -v /usr/lib/libncursesw.so.* /lib
+ln -svf ../../lib/$(readlink /usr/lib/libncursesw.so) /usr/lib/libncursesw.so</userinput></screen>
 
     <para os="l">Many packages that use Ncurses will compile just fine against
     the widechar libraries, but won't know to look for them. Create linker
