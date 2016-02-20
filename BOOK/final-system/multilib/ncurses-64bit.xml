@@ -88,12 +88,10 @@ rm -v /lib64/lib{ncursesw,menuw,panelw,formw}.so</userinput></screen>
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='l'])"/>
 
-<screen os="m"><userinput>for lib in curses ncurses form panel menu ; do
+<screen os="m"><userinput>for lib in ncurses form panel menu ; do
         echo "INPUT(-l${lib}w)" &gt; /usr/lib64/lib${lib}.so
         ln -sfv lib${lib}w.a /usr/lib64/lib${lib}.a
 done
-ln -sfv libcurses.so /usr/lib64/libcursesw.so
-ln -sfv libncursesw.a /usr/lib64/libcursesw.a
 ln -sfv libncurses++w.a /usr/lib64/libncurses++.a
 ln -sfv ncursesw6-config-64 /usr/bin/ncurses6-config-64
 ln -sfv ncursesw6-config /usr/bin/ncurses6-config</userinput></screen>
