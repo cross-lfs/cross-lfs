@@ -38,7 +38,7 @@
 <screen os="b"><userinput>CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 ./configure \
     --prefix=/usr \
-    --libdir=/lib64 \
+    --libdir=/usr/lib64 \
     --with-shared \
     --without-debug \
     --enable-widec \
@@ -70,19 +70,12 @@
 <screen os="m2"><userinput>mv -v /usr/bin/ncursesw6-config{,-64}
 ln -svf multiarch_wrapper /usr/bin/ncursesw6-config</userinput></screen>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="ncurses.xml"
-    xpointer="xpointer(//*[@os='h'])"/>
+    <para os="h">Move the <filename class="libraryfile">libncursesw</filename>
+    shared library to <filename class="directory">/lib64</filename>
+    and create a new symlink in <filename class="directory">/usr/lib64</filename>:</para>
 
-<screen os="i"><userinput>mv -v /lib64/lib{panelw,menuw,formw,ncursesw,ncurses++w}.a /usr/lib64</userinput></screen>
-
-    <para os="j">Create symlinks in <filename class="directory">/usr/lib64:</filename></para>
-
-<screen os="k"><userinput>ln -svf ../../lib64/$(readlink /lib64/libncursesw.so) /usr/lib64/libncursesw.so
-ln -svf ../../lib64/$(readlink /lib64/libmenuw.so) /usr/lib64/libmenuw.so
-ln -svf ../../lib64/$(readlink /lib64/libpanelw.so) /usr/lib64/libpanelw.so
-ln -svf ../../lib64/$(readlink /lib64/libformw.so) /usr/lib64/libformw.so
-rm -v /lib64/lib{ncursesw,menuw,panelw,formw}.so</userinput></screen>
+<screen os="i"><userinput>mv -v /usr/lib64/libncursesw.so.* /lib64
+ln -svf ../../lib64/$(readlink /usr/lib/libncursesw.so) /usr/lib64/libncursesw.so</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="ncurses.xml"
