@@ -94,12 +94,10 @@
     href="../common/ncurses.xml"
     xpointer="xpointer(//*[@os='l'])"/>
 
-<screen os="m"><userinput>for lib in curses ncurses form panel menu ; do
+<screen os="m"><userinput>for lib in ncurses form panel menu ; do
         echo "INPUT(-l${lib}w)" &gt; /usr/lib/lib${lib}.so
         ln -sfv lib${lib}w.a /usr/lib/lib${lib}.a
 done
-ln -sfv libcurses.so /usr/lib/libcursesw.so
-ln -sfv libncursesw.a /usr/lib/libcursesw.a
 ln -sfv libncurses++w.a /usr/lib/libncurses++.a
 ln -sfv ncursesw6-config-32 /usr/bin/ncurses6-config-32</userinput></screen>
 

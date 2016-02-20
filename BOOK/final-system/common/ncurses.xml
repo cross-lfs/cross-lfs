@@ -91,12 +91,10 @@ rm -v /lib/lib{ncursesw,menuw,panelw,formw}.so</userinput></screen>
     scripts and symbolic links to allow older and non-widec compatible
     programs to build properly:</para>
 
-<screen os="m"><userinput>for lib in curses ncurses form panel menu ; do
+<screen os="m"><userinput>for lib in ncurses form panel menu ; do
         echo "INPUT(-l${lib}w)" &gt; /usr/lib/lib${lib}.so
         ln -sfv lib${lib}w.a /usr/lib/lib${lib}.a
 done
-ln -sfv libncursesw.so /usr/lib/libcursesw.so
-ln -sfv libncursesw.a /usr/lib/libcursesw.a
 ln -sfv libncurses++w.a /usr/lib/libncurses++.a
 ln -sfv ncursesw6-config /usr/bin/ncurses6-config</userinput></screen>
 
