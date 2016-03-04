@@ -97,9 +97,9 @@ EOF</userinput></screen>
   href="../../boot/common/pwdgroup.xml"
   xpointer="xpointer(//*[@os='f'])"/>
 
-<screen os="g"><userinput>touch /var/log/{btmp,lastlog,wtmp}
-chgrp -v utmp /var/log/lastlog
-chmod -v 664 /var/log/lastlog
+<screen os="g"><userinput>touch /var/log/{btmp,faillog,lastlog,wtmp}
+chgrp -v utmp /var/log/{faillog,lastlog}
+chmod -v 664 /var/log/{faillog,lastlog}
 chmod -v 600 /var/log/btmp</userinput></screen>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

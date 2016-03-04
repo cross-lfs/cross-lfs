@@ -189,9 +189,9 @@ EOF</userinput></screen>
   do not already exist. Initialize the log files and give them
   proper permissions:</para>
 
-<screen os="g"><userinput>touch ${CLFS}/var/log/{btmp,lastlog,wtmp}
-chgrp -v &gid-utmp; ${CLFS}/var/log/lastlog
-chmod -v 664 ${CLFS}/var/log/lastlog
+<screen os="g"><userinput>touch ${CLFS}/var/log/{btmp,faillog,lastlog,wtmp}
+chgrp -v &gid-utmp; ${CLFS}/var/log/{faillog,lastlog}
+chmod -v 664 ${CLFS}/var/log/{faillog,lastlog}
 chmod -v 600 ${CLFS}/var/log/btmp</userinput></screen>
 
   <para os="h">The <filename>/var/log/wtmp</filename>
