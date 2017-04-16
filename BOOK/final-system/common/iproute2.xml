@@ -25,17 +25,14 @@
   <sect2 role="installation">
     <title>Installation of IPRoute2</title>
 
-    <para os="s1">By default, this package builds the <command>arpd</command>
-    program, which is dependent on Berkeley DB.  Because <command>arpd</command>
-    is not a very common requirement on a base Linux system, remove the
-    dependency on Berkeley DB by using the commands
-    below. If the <command>arpd</command> binary is needed, instructions for
-    compiling Berkeley DB can be found in CBLFS at <ulink
-    url="&cblfs-root;index.php/Berkeley_DB"/>.</para>
+    <para os="s1">ARPD will not be installed as Berkeley DB is not installed.
+        Remove any <command>arpd</command> references during install.</para>
 
-<screen os="s2"><userinput>sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
-sed -i '/ARPD/d' Makefile
-sed -i 's/arpd.8//' man/man8/Makefile</userinput></screen>
+    <screen os="s2"><userinput>sed -i '/ARPD/d' Makefile
+            sed -i 's/arpd.8//' man/man8/Makefile
+            sed -i '/tc-simple/s@tc-skbmod.8 @@' man/man8/Makefile
+            rm -v doc/arpd.sgml
+    </userinput></screen>
 
     <para os="a">Compile the package:</para>
 
