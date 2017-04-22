@@ -36,8 +36,8 @@
     href="ncurses.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="b"><userinput>CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" \
-./configure \
+<screen os="b"><userinput>PKG_CONFIG_PATH=${PKG_CONFIG_PATHN32} \
+CC="gcc ${BUILDN32}" CXX="g++ ${BUILDN32}" ./configure \
     --prefix=/usr \
     --libdir=/usr/lib32 \
     --with-shared \
