@@ -22,40 +22,38 @@
     <title>Installation of systemd</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="systemd.xml"
-    xpointer="xpointer(//*[@os='mlw1'])"/>
+    href="../common/systemd.xml"
+    xpointer="xpointer(//*[@os='cc1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
+    xpointer="xpointer(//*[@os='cc2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="systemd.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen><userinput>CC="gcc ${BUILDN32}" PKG_CONFIG_PATH="${PKG_CONFIG_PATHN32}" \
+<screen os="b"><userinput>CC="gcc ${BUILDN32}" PKG_CONFIG_PATH="${PKG_CONFIG_PATHN32}" \
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
-    --libdir=/usr/lib32 \
     --libexecdir=/usr/lib32 \
     --docdir=/usr/share/doc/systemd-&systemd-version; \
     --with-rootprefix="" \
     --with-rootlibdir=/lib32 \
     --enable-split-usr \
-    --disable-gudev \
+    --disable-firstboot \
+    --disable-ldconfig \
+    --disable-lto \
+    --disable-sysusers \
+    --with-default-dnssec=no \
     --with-kbd-loadkeys=/bin/loadkeys \
     --with-kbd-setfont=/bin/setfont \
     --with-dbuspolicydir=/etc/dbus-1/system.d \
-    --with-dbusinterfacedir=/usr/share/dbus-1/interfaces \
     --with-dbussessionservicedir=/usr/share/dbus-1/services \
     --with-dbussystemservicedir=/usr/share/dbus-1/system-services \
-    cc_cv_CFLAGS__flto=no</userinput></screen>
+    --config-cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
@@ -72,12 +70,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="systemd.xml"
     xpointer="xpointer(//*[@os='k'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='n'])"/>
-
-<screen><userinput>mv -v /usr/lib32/libnss_myhostname.so.2 /lib32</userinput></screen>
 
   </sect2>
 

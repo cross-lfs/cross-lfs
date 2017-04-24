@@ -24,14 +24,6 @@
   <sect2 role="installation">
     <title>Installation of Systemd</title>
 
-    <para os="p1">Systemd 209 merged several libraries into
-    <filename class="libraryfile">libsystemd</filename>, but some packages
-    that use systemd still expect those separate libraries. Apply a patch
-    to allow backwards compatibility with these packages by
-    installing Pkg-config files for the old libraries:</para>
-
-<screen os="p2"><userinput>patch -Np1 -i ../&systemd-compat-patch;</userinput></screen>
-
     <para os="s1">Prevent the <filename>Makefile</filename> from trying to run
     <command>setcap</command> on <command>systemd-detect-virt</command>,
     which will fail if the kernel or file system does not support extended
@@ -45,18 +37,17 @@
 
 <screen os="s4"><userinput>sed -i '/timesyncd.conf/d' src/timesync/timesyncd.conf.in</userinput></screen>
 
-    <para os="s5">By default, <command>systemd-fsck</command> will run
-    <filename>/sbin/fsck</filename> with the <option>-l</option> option, which
-    applies an <function>flock</function> on the file system being checked.
-    This can conflict with an <function>flock</function> that
-    systemd itself puts on the file system, which could result in problems
-    booting. <command>fsck</command> will be fixed to avoid this problem in a
-    future release of Util-linux, but for now we will work around the issue by
-    simply preventing <command>systemd-fsck</command> from using <option>-l</option>:</para>
-
-<screen os="s6"><userinput>sed -i '/-l/d' src/fsck/fsck.c</userinput></screen>
-
     <para os="a">Prepare systemd for compilation:</para>
+
+    <para os="cc1">Create a file to declare some variables</para>
+
+    <screen os="cc2"><userinput>cat &gt; config.cache &lt;&lt; "EOF"
+        KILL="/bin/kill"
+        MOUNT_PATH="/bin/mount"
+        UMOUNT_PATH="/bin/umount"
+        SULOGIN="/sbin/sulogin"
+        XSLTPROC="/usr/bin/xsltproc"
+        EOF</userinput></screen>
 
 <screen os="b"><userinput>./configure \
     --prefix=/usr \
@@ -67,17 +58,27 @@
     --with-rootprefix="" \
     --with-rootlibdir=/lib \
     --enable-split-usr \
-    --disable-gudev \
+    --disable-firstboot \
+    --disable-ldconfig \
+    --disable-lto \
+    --disable-sysusers \
+    --with-default-dnssec=no \
     --with-kbd-loadkeys=/bin/loadkeys \
     --with-kbd-setfont=/bin/setfont \
     --with-dbuspolicydir=/etc/dbus-1/system.d \
-    --with-dbusinterfacedir=/usr/share/dbus-1/interfaces \
     --with-dbussessionservicedir=/usr/share/dbus-1/services \
     --with-dbussystemservicedir=/usr/share/dbus-1/system-services \
-    cc_cv_CFLAGS__flto=no</userinput></screen>
+    --config-cache</userinput></screen>
 
     <variablelist os="c">
       <title>The meaning of the configure options:</title>
+
+      <varlistentry>
+        <term><parameter>--config-cache</parameter></term>
+        <listitem>
+          <para>Use the created <filename>config.cache</filename>.</para>
+        </listitem>
+      </varlistentry>
 
       <varlistentry>
         <term><parameter>--with-root*</parameter></term>
@@ -98,11 +99,40 @@
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>--disable-gudev</parameter></term>
+        <term><parameter>--disable-firstboot</parameter></term>
         <listitem>
-          <para>This switch prevents systemd from building
-          <filename class="libraryfile">libgudev</filename> as it requires
-          Glib, which is not installed in CLFS.</para>
+          <para>This switch prevents installation of systemd services 
+            responsible for setting up the system for the first time.
+            They are not useful for CLFS as everything is done manually.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-ldconfig</parameter></term>
+        <listitem>
+          <para>This switch prevents installation of a systemd unit that runs
+          <command>ldconfig</command> at boot, and increases boot time.
+          While it may be not useful for source distributions like CLFS,
+          this option may be removed.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-lto</parameter></term>
+        <listitem>
+          <para>This prevents the build system from using GCC's Link-time
+          optimization (LTO), to ensure that systemd's binaries will not try
+          to link to <filename class="libraryfile">libgcc_s</filename></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-sysusers</parameter></term>
+        <listitem>
+            <para>This switch prevents install of systemd services which setup
+            the previously created <filename>/etc/group</filename> and
+            <filename>/etc/passwd</filename> files.</para>
         </listitem>
       </varlistentry>
 
@@ -115,11 +145,9 @@
       </varlistentry>
 
       <varlistentry>
-        <term><parameter>cc_cv_CFLAGS__flto=no</parameter></term>
+        <term><parameter>--with-default-dnssec=no</parameter></term>
         <listitem>
-          <para>This prevents the build system from using GCC's Link-time
-          optimization (LTO), to ensure that systemd's binaries will not try
-          to link to <filename class="libraryfile">libgcc_s</filename>.</para>
+          <para>This switch turns off the experimental DNNSEC support.</para>
         </listitem>
       </varlistentry>
 
@@ -131,14 +159,16 @@
 
     <para os="f">Prevent a broken test case from running:</para>
 
-<screen os="g"><userinput remap="test">sed -e "s:test/udev-test.pl::g" \
-    -e "s:test-bus-cleanup\$(EXEEXT) ::g" \
-    -e "s:test-bus-gvariant\$(EXEEXT) ::g" \
-    -i Makefile</userinput></screen>
+<screen os="g"><userinput remap="test">sed -e 's@test/udev-test.pl @@'  \
+        -e 's@test-copy$(EXEEXT) @@' \
+        -i Makefile.in
+</userinput></screen>
 
     <para os="h">To test the results, issue:</para>
 
-<screen os="i"><userinput remap="test">make check</userinput></screen>
+    <screen os="i"><userinput remap="test">
+            sed -i "s:minix:ext4:g" src/test/test-path-util.c
+            make check</userinput></screen>
 
     <para os="j">Install the package:</para>
 
@@ -147,12 +177,6 @@
     <para os="l">Install documentation files that are not installed by default:</para>
 
 <screen os="m"><userinput>install -v -m644 man/*.html /usr/share/doc/systemd-&systemd-version;</userinput></screen>
-
-    <para os="n">Move the
-    <filename class="libraryfile">nss_myhostname</filename> library to
-    <filename class="directory">/lib</filename>:</para>
-
-<screen os="o"><userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
 
     <para os="p">Remove an unnecessary directory:</para>
 
@@ -164,11 +188,6 @@
   ln -sfv ../bin/systemctl /sbin/$tool
 done
 ln -sfv ../lib/systemd/systemd /sbin/init</userinput></screen>
-
-    <para os="t">Modify a configuration file which references a group that
-    doesn't exist:</para>
-
-<screen os="u"><userinput>sed -i "s@root lock@root root@g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
 
   </sect2>
 

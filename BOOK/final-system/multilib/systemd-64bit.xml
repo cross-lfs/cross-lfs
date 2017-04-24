@@ -22,14 +22,6 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='p1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='p2'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/systemd.xml"
     xpointer="xpointer(//*[@os='s1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -46,11 +38,11 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='s5'])"/>
+    xpointer="xpointer(//*[@os='cc1'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='s6'])"/>
+    xpointer="xpointer(//*[@os='cc2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
@@ -61,20 +53,22 @@
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
-    --libdir=/usr/lib64 \
     --libexecdir=/usr/lib64 \
     --docdir=/usr/share/doc/systemd-&systemd-version; \
     --with-rootprefix="" \
     --with-rootlibdir=/lib64 \
     --enable-split-usr \
-    --disable-gudev \
+    --disable-firstboot \
+    --disable-ldconfig \
+    --disable-lto \
+    --disable-sysusers \
+    --with-default-dnssec=no \
     --with-kbd-loadkeys=/bin/loadkeys \
     --with-kbd-setfont=/bin/setfont \
     --with-dbuspolicydir=/etc/dbus-1/system.d \
-    --with-dbusinterfacedir=/usr/share/dbus-1/interfaces \
     --with-dbussessionservicedir=/usr/share/dbus-1/services \
     --with-dbussystemservicedir=/usr/share/dbus-1/system-services \
-    cc_cv_CFLAGS__flto=no</userinput></screen>
+    --config-cache</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
@@ -122,12 +116,6 @@
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='n'])"/>
-
-<screen><userinput>mv -v /usr/lib64/libnss_myhostname.so.2 /lib64</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/systemd.xml"
     xpointer="xpointer(//*[@os='p'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -141,14 +129,6 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/systemd.xml"
     xpointer="xpointer(//*[@os='s'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='t'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/systemd.xml"
-    xpointer="xpointer(//*[@os='u'])"/>
 
   </sect2>
 
