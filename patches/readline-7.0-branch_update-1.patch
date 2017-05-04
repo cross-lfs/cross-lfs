@@ -1,0 +1,96 @@
+Submitted By: William Harrington (kb0iic at cross-lfs dot org)
+Date: 05-04-2017
+Initial Package Version: 7.0
+Origin: Upstream
+Upstream Status: Applied
+Description: Contains all upstream patches up to 7.0-003
+
+diff -Naur readline-7.0.orig/history.c readline-7.0/history.c
+--- readline-7.0.orig/history.c	2015-12-28 18:50:31.000000000 +0000
++++ readline-7.0/history.c	2017-05-04 22:19:51.586694240 +0000
+@@ -57,6 +57,8 @@
+ /* How big to make the_history when we first allocate it. */
+ #define DEFAULT_HISTORY_INITIAL_SIZE	502
+ 
++#define MAX_HISTORY_INITIAL_SIZE	8192
++
+ /* The number of slots to increase the_history by. */
+ #define DEFAULT_HISTORY_GROW_SIZE 50
+ 
+@@ -277,6 +279,7 @@
+      const char *string;
+ {
+   HIST_ENTRY *temp;
++  int new_length;
+ 
+   if (history_stifled && (history_length == history_max_entries))
+     {
+@@ -293,13 +296,9 @@
+ 
+       /* Copy the rest of the entries, moving down one slot.  Copy includes
+ 	 trailing NULL.  */
+-#if 0
+-      for (i = 0; i < history_length; i++)
+-	the_history[i] = the_history[i + 1];
+-#else
+       memmove (the_history, the_history + 1, history_length * sizeof (HIST_ENTRY *));
+-#endif
+ 
++      new_length = history_length;
+       history_base++;
+     }
+   else
+@@ -307,11 +306,13 @@
+       if (history_size == 0)
+ 	{
+ 	  if (history_stifled && history_max_entries > 0)
+-	    history_size = history_max_entries + 2;
++	    history_size = (history_max_entries > MAX_HISTORY_INITIAL_SIZE)
++				? MAX_HISTORY_INITIAL_SIZE
++				: history_max_entries + 2;
+ 	  else
+ 	    history_size = DEFAULT_HISTORY_INITIAL_SIZE;
+ 	  the_history = (HIST_ENTRY **)xmalloc (history_size * sizeof (HIST_ENTRY *));
+-	  history_length = 1;
++	  new_length = 1;
+ 	}
+       else
+ 	{
+@@ -321,14 +322,15 @@
+ 	      the_history = (HIST_ENTRY **)
+ 		xrealloc (the_history, history_size * sizeof (HIST_ENTRY *));
+ 	    }
+-	  history_length++;
++	  new_length = history_length + 1;
+ 	}
+     }
+ 
+   temp = alloc_history_entry ((char *)string, hist_inittime ());
+ 
+-  the_history[history_length] = (HIST_ENTRY *)NULL;
+-  the_history[history_length - 1] = temp;
++  the_history[new_length] = (HIST_ENTRY *)NULL;
++  the_history[new_length - 1] = temp;
++  history_length = new_length;
+ }
+ 
+ /* Change the time stamp of the most recent history entry to STRING. */
+diff -Naur readline-7.0.orig/input.c readline-7.0/input.c
+--- readline-7.0.orig/input.c	2016-08-30 14:21:47.000000000 +0000
++++ readline-7.0/input.c	2017-05-04 22:19:51.587694257 +0000
+@@ -513,6 +513,7 @@
+       result = 0;
+ #if defined (HAVE_PSELECT)
+       sigemptyset (&empty_set);
++      sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &empty_set);
+       FD_ZERO (&readfds);
+       FD_SET (fileno (stream), &readfds);
+       result = pselect (fileno (stream) + 1, &readfds, NULL, NULL, NULL, &empty_set);
+diff -Naur readline-7.0.orig/patchlevel readline-7.0/patchlevel
+--- readline-7.0.orig/patchlevel	2015-10-02 11:25:03.000000000 +0000
++++ readline-7.0/patchlevel	2017-05-04 22:19:51.587694257 +0000
+@@ -1,3 +1,3 @@
+ # Do not edit -- exists only for use by patch
+ 
+-0
++3
