@@ -1,0 +1,709 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      gcc-7.1.0-pure64-1.2.patch on Ticket #1114 – Attachment
+     – CLFS Trac
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="search" href="/search" />
+        <link rel="help" href="/wiki/TracGuide" />
+        <link rel="alternate" href="/raw-attachment/ticket/1114/gcc-7.1.0-pure64-1.2.patch" type="text/x-diff; charset=iso-8859-15" title="Original Format" />
+        <link rel="up" href="/ticket/1114" title="Ticket #1114" />
+        <link rel="start" href="/wiki" />
+        <link rel="stylesheet" href="/chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="/chrome/common/css/diff.css" type="text/css" /><link rel="stylesheet" href="/chrome/common/css/code.css" type="text/css" />
+        <link rel="shortcut icon" href="/chrome/site/trac.ico" type="image/x-icon" />
+        <link rel="icon" href="/chrome/site/trac.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Search CLFS Trac" />
+    <script type="text/javascript" src="/chrome/common/js/jquery.js"></script><script type="text/javascript" src="/chrome/common/js/babel.js"></script><script type="text/javascript" src="/chrome/common/js/messages/en_US.js"></script><script type="text/javascript" src="/chrome/common/js/trac.js"></script><script type="text/javascript" src="/chrome/common/js/search.js"></script><script type="text/javascript" src="/chrome/common/js/diff.js"></script>
+    <!--[if lt IE 7]>
+    <script type="text/javascript" src="/chrome/common/js/ie_pre7_hacks.js"></script>
+    <![endif]-->
+      <script type="text/javascript" src="/chrome/common/js/folding.js"></script>
+      <script type="text/javascript">
+        jQuery(document).ready(function($) {
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
+        });
+      </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.clfs.org"><img src="/chrome/site/clfs-logo.png" alt="CLFS Trac" height="74" width="588" /></a>
+      </div>
+      <form id="search" action="/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Search" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="/login">Login</a></li><li><a href="/wiki/TracGuide">Help/Guide</a></li><li><a href="/about">About Trac</a></li><li><a href="/prefs">Preferences</a></li><li class="last"><a href="/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Timeline</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/browser">Browse Source</a></li><li><a href="/report">View Tickets</a></li><li class="last"><a href="/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+          <ul>
+              <li class="last first"><a href="/ticket/1114">Back to Ticket #1114</a></li>
+          </ul>
+        <hr />
+      </div>
+    <div id="content" class="attachment">
+        <h1><a href="/ticket/1114">Ticket #1114</a>: gcc-7.1.0-pure64-1.2.patch</h1>
+        <table id="info" summary="Description">
+          <tbody>
+            <tr>
+              <th scope="col">File gcc-7.1.0-pure64-1.2.patch,
+                <span title="9111 bytes">8.9 KB</span>
+                (added by chris@…, <a class="timeline" href="/timeline?from=2017-05-11T23%3A12%3A25Z&amp;precision=second" title="2017-05-11T23:12:25Z in Timeline">2 days</a> ago)</th>
+            </tr>
+            <tr>
+              <td class="message searchable">
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="preview" class="searchable">
+          
+  <div class="diff">
+  <ul class="entries">
+      <li class="entry">
+        <h2>
+          <a>gcc/config/i386/linux64.h</a>
+        </h2>
+        <pre>Submitted By: William Harrington &lt;kb0iic at cross-lfs dot org&gt;
+Date: 12-28-2015
+Initial Package Version: 5.2.0
+Origin: Idea originally developed by Ryan Oliver and Greg Schafer for
+        the Pure LFS project with help from
+        Martin Ward
+Upstream Status: Not Applied - CLFS Specific
+Description: This patch makes changes to the paths for pure64, eg 64bit libs
+             in /usr/lib, 32bit in /usr/lib32.
+Comment: Renamed for GCC 5.3.0
+
+diff -Naur gcc-6.1.0.orig/gcc/config/i386/linux64.h gcc-6.1.0/gcc/config/i386/linux64.h</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/i386/linux64.h 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/i386/linux64.h 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>27</th><th>27</th><td class="l"><span>#define GNU_USER_LINK_EMULATION64 "elf_x86_64"</span> </td>
+                  </tr><tr>
+                          <th>28</th><th>28</th><td class="l"><span>#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"</span> </td>
+                  </tr><tr>
+                          <th>29</th><th>29</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>30</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER32 "/lib<del></del>/ld-linux.so.2"</span> </td>
+                      </tr><tr>
+                        <th>31</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER64 "/lib<del>64</del>/ld-linux-x86-64.so.2"</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>30</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER32 "/lib<ins>32</ins>/ld-linux.so.2"</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>31</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER64 "/lib<ins></ins>/ld-linux-x86-64.so.2"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>32</th><th>32</th><td class="l"><span>#define GLIBC_DYNAMIC_LINKERX32 "/libx32/ld-linux-x32.so.2"</span> </td>
+                  </tr><tr>
+                          <th>33</th><th>33</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>34</th><th>34</th><td class="l"><span>#undef MUSL_DYNAMIC_LINKER32</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/i386/t-linux64</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/i386/t-linux64 gcc-6.1.0/gcc/config/i386/t-linux64</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/i386/t-linux64 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/i386/t-linux64 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>33</th><th>33</th><td class="l"><span>comma=,</span> </td>
+                  </tr><tr>
+                          <th>34</th><th>34</th><td class="l"><span>MULTILIB_OPTIONS&nbsp; &nbsp; = $(subst $(comma),/,$(TM_MULTILIB_CONFIG))</span> </td>
+                  </tr><tr>
+                          <th>35</th><th>35</th><td class="l"><span>MULTILIB_DIRNAMES&nbsp; &nbsp;= $(patsubst m%, %, $(subst /, ,$(MULTILIB_OPTIONS)))</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>36</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES = m64=../lib<del>64</del>$(call if_multiarch,:x86_64-linux-gnu)</span> </td>
+                      </tr><tr>
+                        <th>37</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES+= m32=$(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<del></del>)$(call if_multiarch,:i386-linux-gnu)</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>36</th><td class="r"><span>MULTILIB_OSDIRNAMES = m64=../lib<ins></ins>$(call if_multiarch,:x86_64-linux-gnu)</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>37</th><td class="r"><span>MULTILIB_OSDIRNAMES+= m32=$(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<ins>32</ins>)$(call if_multiarch,:i386-linux-gnu)</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>38</th><th>38</th><td class="l"><span>MULTILIB_OSDIRNAMES+= mx32=../libx32$(call if_multiarch,:x86_64-linux-gnux32)</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/linux.h</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/linux.h gcc-6.1.0/gcc/config/linux.h</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/linux.h 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/linux.h 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>82</th><th>82</th><td class="l"><span>&nbsp; &nbsp;GLIBC_DYNAMIC_LINKER32 and GLIBC_DYNAMIC_LINKER64 for targets</span> </td>
+                  </tr><tr>
+                          <th>83</th><th>83</th><td class="l"><span>&nbsp; &nbsp;supporting both 32-bit and 64-bit compilation.&nbsp; */</span> </td>
+                  </tr><tr>
+                          <th>84</th><th>84</th><td class="l"><span>#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>85</th><th> </th><td class="l"><span>#define UCLIBC_DYNAMIC_LINKER32 "/lib<del></del>/ld-uClibc.so.0"</span> </td>
+                      </tr>
+                      <tr class="last">
+                        <th> </th><th>85</th><td class="r"><span>#define UCLIBC_DYNAMIC_LINKER32 "/lib<ins>32</ins>/ld-uClibc.so.0"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>86</th><th>86</th><td class="l"><span>#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"</span> </td>
+                  </tr><tr>
+                          <th>87</th><th>87</th><td class="l"><span>#define UCLIBC_DYNAMIC_LINKERX32 "/lib/ldx32-uClibc.so.0"</span> </td>
+                  </tr><tr>
+                          <th>88</th><th>88</th><td class="l"><span>#define BIONIC_DYNAMIC_LINKER "/system/bin/linker"</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/mips/t-linux64</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/mips/t-linux64 gcc-6.1.0/gcc/config/mips/t-linux64</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/mips/t-linux64 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/mips/t-linux64 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>22</th><th>22</th><td class="l"><span>MIPS_SOFT = $(if $(strip $(filter MASK_SOFT_FLOAT_ABI, $(target_cpu_default)) $(filter soft, $(with_float))),soft)</span> </td>
+                  </tr><tr>
+                          <th>23</th><th>23</th><td class="l"><span>MULTILIB_OSDIRNAMES = \</span> </td>
+                  </tr><tr>
+                          <th>24</th><th>24</th><td class="l"><span>&nbsp; &nbsp; &nbsp; &nbsp; ../lib32$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabin32$(MIPS_SOFT)) \</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>25</th><th> </th><td class="l"><span>&nbsp; &nbsp; &nbsp; &nbsp; ../lib<del></del>$(call if_multiarch,:mips$(MIPS_EL)-linux-gnu$(MIPS_SOFT)) \</span> </td>
+                      </tr><tr>
+                        <th>26</th><th> </th><td class="l"><span>&nbsp; &nbsp; &nbsp; &nbsp; ../lib<del>64</del>$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>25</th><td class="r"><span>&nbsp; &nbsp; &nbsp; &nbsp; ../lib<ins>32</ins>$(call if_multiarch,:mips$(MIPS_EL)-linux-gnu$(MIPS_SOFT)) \</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>26</th><td class="r"><span>&nbsp; &nbsp; &nbsp; &nbsp; ../lib<ins></ins>$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))</span> </td>
+                      </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/rs6000/linux64.h</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/rs6000/linux64.h gcc-6.1.0/gcc/config/rs6000/linux64.h</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/rs6000/linux64.h 2016-01-21 12:32:28.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/rs6000/linux64.h 2016-05-12 03:00:52.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>412</th><th>412</th><td class="l"><span>#undef&nbsp; LINK_OS_DEFAULT_SPEC</span> </td>
+                  </tr><tr>
+                          <th>413</th><th>413</th><td class="l"><span>#define LINK_OS_DEFAULT_SPEC "%(link_os_linux)"</span> </td>
+                  </tr><tr>
+                          <th>414</th><th>414</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>415</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER32 "<del>%(dynamic_linker_prefix)/lib</del>/ld.so.1"</span> </td>
+                      </tr>
+                      <tr class="last">
+                        <th> </th><th>415</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER32 "<ins>/lib32</ins>/ld.so.1"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>416</th><th>416</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>417</th><th>417</th><td class="l"><span>#ifdef LINUX64_DEFAULT_ABI_ELFv2</span> </td>
+                  </tr><tr>
+                          <th>418</th><th>418</th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER64 \</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>419</th><th> </th><td class="l"><span>"%{mabi=elfv1:<del>%(dynamic_linker_prefix)/lib64</del>/ld64.so.1;" \</span> </td>
+                      </tr><tr>
+                        <th>420</th><th> </th><td class="l"><span>":<del>%(dynamic_linker_prefix)/lib64</del>/ld64.so.2}"</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>419</th><td class="r"><span>"%{mabi=elfv1:<ins>/lib</ins>/ld64.so.1;" \</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>420</th><td class="r"><span>":<ins>/lib</ins>/ld64.so.2}"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>421</th><th>421</th><td class="l"><span>#else</span> </td>
+                  </tr><tr>
+                          <th>422</th><th>422</th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER64 \</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>423</th><th> </th><td class="l"><span>"%{mabi=elfv2:<del>%(dynamic_linker_prefix)/lib64</del>/ld64.so.2;" \</span> </td>
+                      </tr><tr>
+                        <th>424</th><th> </th><td class="l"><span>":<del>%(dynamic_linker_prefix)/lib64</del>/ld64.so.1}"</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>423</th><td class="r"><span>"%{mabi=elfv2:<ins>/lib</ins>/ld64.so.2;" \</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>424</th><td class="r"><span>":<ins>/lib</ins>/ld64.so.1}"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>425</th><th>425</th><td class="l"><span>#endif</span> </td>
+                  </tr><tr>
+                          <th>426</th><th>426</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>427</th><th>427</th><td class="l"><span>#define MUSL_DYNAMIC_LINKER32 \</span> </td>
+                  </tr>
+            </tbody>
+              <tbody class="skipped">
+                <tr>
+                  <th><a href="#L429">…</a></th>
+                  <th><a href="#L429">…</a></th>
+                  <td><em></em> </td>
+                </tr>
+              </tbody>
+            <tbody class="unmod">
+                  <tr>
+                          <th>429</th><th>429</th><td class="l"><span>#define MUSL_DYNAMIC_LINKER64 \</span> </td>
+                  </tr><tr>
+                          <th>430</th><th>430</th><td class="l"><span>&nbsp; "/lib/ld-musl-powerpc64" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"</span> </td>
+                  </tr><tr>
+                          <th>431</th><th>431</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>432</th><th> </th><td class="l"><span>#define UCLIBC_DYNAMIC_LINKER32 "/lib<del></del>/ld-uClibc.so.0"</span> </td>
+                      </tr>
+                      <tr class="last">
+                        <th> </th><th>432</th><td class="r"><span>#define UCLIBC_DYNAMIC_LINKER32 "/lib<ins>32</ins>/ld-uClibc.so.0"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>433</th><th>433</th><td class="l"><span>#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"</span> </td>
+                  </tr><tr>
+                          <th>434</th><th>434</th><td class="l"><span>#if DEFAULT_LIBC == LIBC_UCLIBC</span> </td>
+                  </tr><tr>
+                          <th>435</th><th>435</th><td class="l"><span>#define CHOOSE_DYNAMIC_LINKER(G, U, M) \</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/rs6000/t-linux64</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/rs6000/t-linux64 gcc-6.1.0/gcc/config/rs6000/t-linux64</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/rs6000/t-linux64 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/rs6000/t-linux64 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>28</th><th>28</th><td class="l"><span>MULTILIB_OPTIONS&nbsp; &nbsp; := m64/m32</span> </td>
+                  </tr><tr>
+                          <th>29</th><th>29</th><td class="l"><span>MULTILIB_DIRNAMES&nbsp; &nbsp;:= 64 32</span> </td>
+                  </tr><tr>
+                          <th>30</th><th>30</th><td class="l"><span>MULTILIB_EXTRA_OPTS := </span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>31</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES := m64=../lib<del>64</del>$(call if_multiarch,:powerpc64-linux-gnu)</span> </td>
+                      </tr><tr>
+                        <th>32</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES += m32=$(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<del></del>)$(call if_multiarch,:powerpc-linux-gnu)</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>31</th><td class="r"><span>MULTILIB_OSDIRNAMES := m64=../lib<ins></ins>$(call if_multiarch,:powerpc64-linux-gnu)</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>32</th><td class="r"><span>MULTILIB_OSDIRNAMES += m32=$(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<ins>32</ins>)$(call if_multiarch,:powerpc-linux-gnu)</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>33</th><th>33</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>34</th><th>34</th><td class="l"><span>rs6000-linux.o: $(srcdir)/config/rs6000/rs6000-linux.c</span> </td>
+                  </tr><tr>
+                          <th>35</th><th>35</th><td class="l"><span>&nbsp; &nbsp; &nbsp; &nbsp; $(COMPILE) $&lt;</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/s390/linux.h</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/s390/linux.h gcc-6.1.0/gcc/config/s390/linux.h</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/s390/linux.h 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/s390/linux.h 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>60</th><th>60</th><td class="l"><span>#define MULTILIB_DEFAULTS { "m31" }</span> </td>
+                  </tr><tr>
+                          <th>61</th><th>61</th><td class="l"><span>#endif</span> </td>
+                  </tr><tr>
+                          <th>62</th><th>62</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>63</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER32 "/lib<del></del>/ld.so.1"</span> </td>
+                      </tr>
+                      <tr class="last">
+                        <th> </th><th>63</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER32 "/lib<ins>32</ins>/ld.so.1"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>64</th><th>64</th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER64 "/lib/ld64.so.1"</span> </td>
+                  </tr><tr>
+                          <th>65</th><th>65</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>66</th><th>66</th><td class="l"><span>#undef&nbsp; LINK_SPEC</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/s390/t-linux64</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/s390/t-linux64 gcc-6.1.0/gcc/config/s390/t-linux64</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/s390/t-linux64 2012-11-21 11:13:28.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/s390/t-linux64 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>7</th><th>7</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>8</th><th>8</th><td class="l"><span>MULTILIB_OPTIONS = m64/m31</span> </td>
+                  </tr><tr>
+                          <th>9</th><th>9</th><td class="l"><span>MULTILIB_DIRNAMES = 64 32</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>10</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES = ../lib<del>64</del>$(call if_multiarch,:s390x-linux-gnu)</span> </td>
+                      </tr><tr>
+                        <th>11</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES += $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<del></del>)$(call if_multiarch,:s390-linux-gnu)</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>10</th><td class="r"><span>MULTILIB_OSDIRNAMES = ../lib<ins></ins>$(call if_multiarch,:s390x-linux-gnu)</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>11</th><td class="r"><span>MULTILIB_OSDIRNAMES += $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<ins>32</ins>)$(call if_multiarch,:s390-linux-gnu)</span> </td>
+                      </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/sparc/linux64.h</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/sparc/linux64.h gcc-6.1.0/gcc/config/sparc/linux64.h</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/sparc/linux64.h 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/sparc/linux64.h 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>84</th><th>84</th><td class="l"><span>&nbsp; &nbsp;When the -shared link option is used a final link is not being</span> </td>
+                  </tr><tr>
+                          <th>85</th><th>85</th><td class="l"><span>&nbsp; &nbsp;done.&nbsp; */</span> </td>
+                  </tr><tr>
+                          <th>86</th><th>86</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>87</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER32 "/lib<del></del>/ld-linux.so.2"</span> </td>
+                      </tr><tr>
+                        <th>88</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER64 "/lib<del>64</del>/ld-linux.so.2"</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>87</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER32 "/lib<ins>32</ins>/ld-linux.so.2"</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>88</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER64 "/lib<ins></ins>/ld-linux.so.2"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>89</th><th>89</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>90</th><th>90</th><td class="l"><span>#ifdef SPARC_BI_ARCH</span> </td>
+                  </tr><tr>
+                          <th>91</th><th>91</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody>
+              <tbody class="skipped">
+                <tr>
+                  <th><a href="#L193">…</a></th>
+                  <th><a href="#L193">…</a></th>
+                  <td><em></em> </td>
+                </tr>
+              </tbody>
+            <tbody class="unmod">
+                  <tr>
+                          <th>193</th><th>193</th><td class="l"><span>#else /* !SPARC_BI_ARCH */</span> </td>
+                  </tr><tr>
+                          <th>194</th><th>194</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>195</th><th>195</th><td class="l"><span>#undef LINK_SPEC</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>196</th><th> </th><td class="l"><span>#define LINK_SPEC "-m elf64_sparc -Y P,%R/<del>usr/lib64</del> %{shared:-shared} \</span> </td>
+                      </tr>
+                      <tr class="last">
+                        <th> </th><th>196</th><td class="r"><span>#define LINK_SPEC "-m elf64_sparc -Y P,%R/<ins>lib</ins> %{shared:-shared} \</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>197</th><th>197</th><td class="l"><span>&nbsp; %{!shared: \</span> </td>
+                  </tr><tr>
+                          <th>198</th><th>198</th><td class="l"><span>&nbsp; &nbsp; %{!static: \</span> </td>
+                  </tr><tr>
+                          <th>199</th><th>199</th><td class="l"><span>&nbsp; &nbsp; &nbsp; %{rdynamic:-export-dynamic} \</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/sparc/linux.h</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/sparc/linux.h gcc-6.1.0/gcc/config/sparc/linux.h</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/sparc/linux.h 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/sparc/linux.h 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>83</th><th>83</th><td class="l"><span>&nbsp; &nbsp;When the -shared link option is used a final link is not being</span> </td>
+                  </tr><tr>
+                          <th>84</th><th>84</th><td class="l"><span>&nbsp; &nbsp;done.&nbsp; */</span> </td>
+                  </tr><tr>
+                          <th>85</th><th>85</th><td class="l"><span></span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>86</th><th> </th><td class="l"><span>#define GLIBC_DYNAMIC_LINKER "/lib<del></del>/ld-linux.so.2"</span> </td>
+                      </tr>
+                      <tr class="last">
+                        <th> </th><th>86</th><td class="r"><span>#define GLIBC_DYNAMIC_LINKER "/lib<ins>32</ins>/ld-linux.so.2"</span> </td>
+                      </tr>
+            </tbody><tbody class="unmod">
+                  <tr>
+                          <th>87</th><th>87</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>88</th><th>88</th><td class="l"><span>#undef&nbsp; LINK_SPEC</span> </td>
+                  </tr><tr>
+                          <th>89</th><th>89</th><td class="l"><span>#define LINK_SPEC "-m elf32_sparc %{shared:-shared} \</span> </td>
+                  </tr>
+            </tbody>
+        </table>
+      </li>
+      <li class="entry">
+        <h2>
+          <a>gcc/config/sparc/t-linux64</a>
+        </h2>
+        <pre>diff -Naur gcc-6.1.0.orig/gcc/config/sparc/t-linux64 gcc-6.1.0/gcc/config/sparc/t-linux64</pre>
+        <table class="trac-diff inline" summary="Differences" cellspacing="0">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="File gcc-6.1.0.orig/gcc/config/sparc/t-linux64 2016-01-04 09:30:50.000000000 -0500">
+                      old
+                  </th>
+                  <th title="File gcc-6.1.0/gcc/config/sparc/t-linux64 2016-05-12 02:55:51.000000000 -0400">
+                      new
+                  </th>
+                  <td><em></em> </td>
+                </tr>
+              </thead>
+            <tbody class="unmod">
+                  <tr>
+                          <th>25</th><th>25</th><td class="l"><span></span> </td>
+                  </tr><tr>
+                          <th>26</th><th>26</th><td class="l"><span>MULTILIB_OPTIONS = m64/m32</span> </td>
+                  </tr><tr>
+                          <th>27</th><th>27</th><td class="l"><span>MULTILIB_DIRNAMES = 64 32</span> </td>
+                  </tr>
+            </tbody><tbody class="mod">
+                      <tr class="first">
+                        <th>28</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES = ../lib<del>64</del>$(call if_multiarch,:sparc64-linux-gnu)</span> </td>
+                      </tr><tr>
+                        <th>29</th><th> </th><td class="l"><span>MULTILIB_OSDIRNAMES += $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<del></del>)$(call if_multiarch,:sparc-linux-gnu)</span> </td>
+                      </tr>
+                      <tr>
+                        <th> </th><th>28</th><td class="r"><span>MULTILIB_OSDIRNAMES = ../lib<ins></ins>$(call if_multiarch,:sparc64-linux-gnu)</span> </td>
+                      </tr><tr class="last">
+                        <th> </th><th>29</th><td class="r"><span>MULTILIB_OSDIRNAMES += $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib<ins>32</ins>)$(call if_multiarch,:sparc-linux-gnu)</span> </td>
+                      </tr>
+            </tbody>
+        </table>
+      </li>
+  </ul>
+</div>
+
+        </div>
+    </div>
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="/raw-attachment/ticket/1114/gcc-7.1.0-pure64-1.2.patch">Original Format</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="/chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Powered by <a href="/about"><strong>Trac 0.12.2</strong></a><br />
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Project-Id-Version: Trac 0.12
+Report-Msgid-Bugs-To: trac-dev@googlegroups.com
+POT-Creation-Date: 2008-01-30 09:20+0100
+PO-Revision-Date: 2011-04-04 22:39+0000
+Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
+Language-Team: en_US <trac-dev@googlegroups.com>
+Plural-Forms: nplurals=2; plural=(n != 1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Generated-By: Babel 0.9.5
+</p>
+    </div>
+  </body>
+</html>
