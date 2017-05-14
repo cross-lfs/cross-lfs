@@ -37,12 +37,11 @@
 <screen os="b"><userinput>./configure \
     --prefix=/usr</userinput></screen>
 
-    <para os="s3">Diffutils wants <command>ed</command> as the default editor
+    <para os="s5">Diffutils wants <command>ed</command> as the default editor
     for <command>sdiff</command>. The following <command>sed</command> will
     change the default to <command>vi</command>:</para>
 
-<screen os="s4"><userinput>sed -i 's@\(^#define DEFAULT_EDITOR_PROGRAM \).*@\1"vi"@' lib/config.h</userinput></screen>
-
+<screen os="s6"><userinput>sed -i 's@\(^#define DEFAULT_EDITOR_PROGRAM \).*@\1"vi"@' lib/config.h</userinput></screen>
     <para os="c">Compile the package:</para>
 
 <screen os="d"><userinput>make</userinput></screen>
