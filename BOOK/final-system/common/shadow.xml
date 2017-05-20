@@ -53,9 +53,9 @@ find man -name Makefile.in -exec sed -i \
 <screen os="e"><userinput>./configure \
     --sysconfdir=/etc</userinput></screen>
 
-<para os="f">The meaning of the new configure option:</para>
+  <variablelist os="f">
+    <title>The meaning of the new configure option:</title>
 
-  <variablelist os="g">
     <varlistentry>
       <term><parameter>--sysconfdir=/etc</parameter></term>
       <listitem><para>Tells Shadow to install its configuration files into
@@ -65,17 +65,17 @@ find man -name Makefile.in -exec sed -i \
 
   </variablelist>
 
-    <para os="h">Compile the package:</para>
+    <para os="g">Compile the package:</para>
 
-<screen os="i"><userinput>make</userinput></screen>
+<screen os="h"><userinput>make</userinput></screen>
 
-    <para os="j">This package does not come with a test suite.</para>
+    <para os="i">This package does not come with a test suite.</para>
 
-    <para os="k">Install the package:</para>
+    <para os="j">Install the package:</para>
 
-<screen os="l"><userinput>make install</userinput></screen>
+<screen os="k"><userinput>make install</userinput></screen>
 
-    <para os="m" id="shadow-login_defs">Instead of using the default
+    <para os="l" id="shadow-login_defs">Instead of using the default
     <emphasis>DES</emphasis> method, use the more secure
     <emphasis>SHA512</emphasis> method of password encryption, which also allows
     passwords longer than 8 characters. It is also necessary to change the
@@ -85,26 +85,26 @@ find man -name Makefile.in -exec sed -i \
     following sed command to make these changes to the appropriate
     configuration file:</para>
 
-    <indexterm os="n" zone="shadow-login_defs">
+    <indexterm os="m" zone="shadow-login_defs">
       <primary sortas="e-/etc/login.defs">/etc/login.defs</primary>
     </indexterm>
 
-<screen os="s"><userinput>sed -i /etc/login.defs \
+<screen os="n"><userinput>sed -i /etc/login.defs \
     -e 's@#\(ENCRYPT_METHOD \).*@\1SHA512@' \
     -e 's@/var/spool/mail@/var/mail@'</userinput></screen>
 
-    <para os="t">Move a misplaced program to its proper location:</para>
+    <para os="o">Move a misplaced program to its proper location:</para>
 
-<screen os="u"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
+<screen os="p"><userinput>mv -v /usr/bin/passwd /bin</userinput></screen>
 
-    <para os="v">The <command>login</command> program will write to
+    <para os="q">The <command>login</command> program will write to
     <filename>/var/log/faillog</filename>, to record failed login attempts, and
     <filename>/var/log/lastlog</filename>, to record the date and
     time of the latest successful login for each user. These log files are not
     created automatically if they do not already exist, so we will
     create them now and give them appropriate ownership and permissions:</para>
 
-<screen os="w"><userinput>touch /var/log/{fail,last}log
+<screen os="r"><userinput>touch /var/log/{fail,last}log
 chgrp -v utmp /var/log/{fail,last}log
 chmod -v 664 /var/log/{fail,last}log</userinput></screen>
 
