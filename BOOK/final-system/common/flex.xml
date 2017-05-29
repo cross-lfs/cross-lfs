@@ -50,19 +50,11 @@
 
     <para os="h">A few programs do not know about <command>flex</command> yet and
     try to run its predecessor, <command>lex</command>. To support those
-    programs, create a wrapper script named <filename>lex</filename> that
-    calls <filename>flex</filename> in <command>lex</command> emulation
+    programs, create a symbolic link named <filename>lex</filename> that
+    runs <filename>flex</filename> in <command>lex</command> emulation
     mode:</para>
 
-<screen os="i"><userinput>cat &gt; /usr/bin/lex &lt;&lt; "EOF"
-<literal>#!/bin/sh
-# Begin /usr/bin/lex
-
-exec /usr/bin/flex -l "$@"
-
-# End /usr/bin/lex</literal>
-EOF
-chmod -v 755 /usr/bin/lex</userinput></screen>
+<screen os="i"><userinput>ln -sv flex /usr/bin/lex</userinput></screen>
 
   </sect2>
 
