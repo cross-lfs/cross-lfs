@@ -31,7 +31,7 @@
 <screen os="b"><userinput>cp -v src/Makefile.in{,.orig}
 sed -e 's/groups$(EXEEXT) //' \
     -e 's/= nologin$(EXEEXT)/= /' \
-    -e 's/\(^suidu*bins = \).*/\1/' \
+    -e 's/\(^suidu*bins = \).*/\1\\/' \
     src/Makefile.in.orig &gt; src/Makefile.in</userinput></screen>
 
     <para os="c">Tell Shadow to use <command>passwd</command> in
@@ -47,26 +47,7 @@ EOF</userinput></screen>
     --prefix=/tools \
     --build=${CLFS_HOST} \
     --host=${CLFS_TARGET} \
-    --cache-file=config.cache \
-    --enable-subordinate-ids=no</userinput></screen>
-
-    <variablelist os="g">
-      <title>The meaning of the configure options:</title>
-
-      <varlistentry os="h">
-        <term><parameter>--enable-subordinate-ids=no</parameter></term>
-        <listitem>
-          <para>Disable subordinate ids to allow Shadow to cross-compile
-          successfully.</para>
-        </listitem>
-      </varlistentry>
-
-    </variablelist>
-
-    <para os="i">Append to <filename>config.h</filename> since a test program
-    will not be ran when cross-compiling:</para>
-
-<screen os="j"><userinput>echo "#define ENABLE_SUBIDS 1" &gt;&gt; config.h</userinput></screen>
+    --cache-file=config.cache</userinput></screen>
 
     <para os="k">Compile the package:</para>
 
