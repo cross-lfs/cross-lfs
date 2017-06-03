@@ -39,16 +39,15 @@
 
     </note>
 
-    <para os="b">Disable the installation of the <command>groups</command> and
-    <command>nologin</command> programs and their man pages, as better versions
-    of these programs are provided by Coreutils and Util-linux:</para>
+    <para os="b">Disable the installation of the <command>groups</command>
+    program and man pages, as better versions of these programs are provided by
+    Coreutils, Util-linux and Man-pages:</para>
 
 <screen os="c"><userinput>sed -i src/Makefile.in \
-  -e 's/groups$(EXEEXT) //' -e 's/= nologin$(EXEEXT)/= /'
+  -e 's/groups$(EXEEXT) //'
 find man -name Makefile.in -exec sed -i \
   -e 's/man1\/groups\.1 //' \
   -e 's/man3\/getspnam\.3 //' \
-  -e 's/man8\/nologin\.8 //' \
   -e 's/man5\/passwd\.5 //' '{}' \;</userinput></screen>
 
     <para os="d">Prepare Shadow for compilation:</para>
@@ -173,7 +172,7 @@ chmod -v 664 /var/log/{fail,last}log</userinput></screen>
       <seglistitem>
         <seg>chage, chfn, chgpasswd, chpasswd, chsh, expiry, faillog, gpasswd,
         groupadd, groupdel, groupmems, groupmod, grpck, grpconv, grpunconv,
-        lastlog, login, logoutd, newgrp, newusers, passwd, pwck,
+        lastlog, login, logoutd, newgrp, newusers, nologin, passwd, pwck,
         pwconv, pwunconv, sg (link to newgrp), su, useradd, userdel, usermod,
         vigr (link to vipw), vipw</seg>
         <seg>/etc/default</seg>
@@ -394,6 +393,17 @@ chmod -v 664 /var/log/{fail,last}log</userinput></screen>
           accounts</para>
           <indexterm zone="ch-system-shadow newusers">
             <primary sortas="b-newusers">newusers</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nologin">
+        <term><command>nologin</command></term>
+        <listitem>
+          <para>Displays a message that an account is not available. It is
+          designed to be used as the default shell for disabled accounts.</para>
+          <indexterm zone="ch-system-shadow nologin">
+            <primary sortas="b-nologin">nologin</primary>
           </indexterm>
         </listitem>
       </varlistentry>

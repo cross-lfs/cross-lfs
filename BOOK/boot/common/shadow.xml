@@ -22,15 +22,13 @@
   <sect2 role="installation">
     <title>Installation of Shadow</title>
 
-    <para os="a">Run the following <command>sed</command> command to disable
-    the installation of the <command>groups</command> and
-    <command>nologin</command> programs, as better versions of these programs
-    are provided by other packages, and prevent Shadow from setting the suid
-    bit on its installed programs:</para>
+    <para os="a">Disable the installation of the <command>groups</command>
+    program and man pages, as better versions of these programs are provided by
+    Coreutils, Util-linux and Man-pages. Also, prevent Shadow from setting the
+    suid bit on its installed programs:</para>
 
 <screen os="b"><userinput>cp -v src/Makefile.in{,.orig}
 sed -e 's/groups$(EXEEXT) //' \
-    -e 's/= nologin$(EXEEXT)/= /' \
     -e 's/\(^suidu*bins = \).*/\1\\/' \
     src/Makefile.in.orig &gt; src/Makefile.in</userinput></screen>
 
