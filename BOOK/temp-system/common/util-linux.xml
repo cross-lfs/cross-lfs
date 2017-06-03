@@ -32,6 +32,7 @@
     --host=${CLFS_TARGET} \
     --disable-makeinstall-chown \
     --disable-makeinstall-setuid \
+    --disable-nologin \
     --without-python</userinput></screen>
 
     <variablelist os="c">
@@ -50,6 +51,14 @@
         <listitem>
           <para>This prevents Util-linux from enabling the setuid bit on
           any of its installed programs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>--disable-nologin</parameter></term>
+        <listitem>
+          <para>This prevents Util-linux from installing
+          <command>nologin</command>.</para> 
         </listitem>
       </varlistentry>
 
