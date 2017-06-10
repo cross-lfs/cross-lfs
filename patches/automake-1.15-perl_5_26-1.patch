@@ -1,0 +1,18 @@
+Submitted by: Chris Staub (chris at clfs dot org)
+Date: 2017-06-01
+Initial Package Version: 1.15
+Origin: https://patchwork.ozlabs.org/patch/735705/
+Description: Updates Automake to work with Perl 5.26
+
+diff -Naur automake-1.15.orig/bin/automake.in automake-1.15/bin/automake.in
+--- automake-1.15.orig/bin/automake.in	2015-01-05 14:25:55.000000000 -0500
++++ automake-1.15/bin/automake.in	2017-06-01 16:17:54.000000000 -0400
+@@ -3878,7 +3878,7 @@
+ sub substitute_ac_subst_variables
+ {
+   my ($text) = @_;
+-  $text =~ s/\${([^ \t=:+{}]+)}/substitute_ac_subst_variables_worker ($1)/ge;
++  $text =~ s/\$[{]([^ \t=:+{}]+)}/substitute_ac_subst_variables_worker ($1)/ge;
+   return $text;
+ }
+ 
