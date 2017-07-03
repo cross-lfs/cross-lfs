@@ -26,7 +26,11 @@
     href="../common/util-linux.xml"
     xpointer="xpointer(//*[@os='a'])"/>
 
-<screen os="be"><userinput>PKG_CONFIG_PATH="" ./configure \
+<screen os="be"><userinput>NCURSESW6_CONFIG=" " \
+NCURSES6_CONFIG=" " \
+NCURSESW5_CONFIG=" " \
+NCURSES5_CONFIG=" " \
+    ./configure \
     --prefix=/tools \
     --build=${CLFS_HOST} \
     --host=${CLFS_TARGET} \
@@ -35,14 +39,6 @@
     --disable-makeinstall-setuid \
     --disable-nologin \
     --without-python</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/util-linux.xml"
-    xpointer="xpointer(//*[@os='s1'])"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../common/util-linux.xml"
-    xpointer="xpointer(//*[@os='s2'])"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../common/util-linux.xml"
