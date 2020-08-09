@@ -1,5 +1,7 @@
 TOP		:= $(shell pwd)
-RENDERDIR	:= $(TOP)/../render
+ifndef RENDERDIR
+  RENDERDIR	:= $(TOP)/../render
+endif
 
 VALIDATEDIR	:= $(RENDERDIR)/validate
 PROFILEDIR	:= $(RENDERDIR)/profile
@@ -17,10 +19,12 @@ DLLISTDIR	:= $(RENDERDIR)/download-list
 CHUNK_QUIET	:= 1
 ROOT_ID		:=
 
-ARCHS		:= x86 x86_64 x86_64-64 \
+ifndef ARCHS
+  ARCHS		:= x86 x86_64 x86_64-64 \
 		   sparc sparc64 sparc64-64 \
 		   mips mips64 mips64-64 \
 		   ppc ppc64 ppc64-64
+endif
 
 ifdef V
   Q =
