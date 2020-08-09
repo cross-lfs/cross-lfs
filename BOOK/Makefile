@@ -1,26 +1,30 @@
 TOP		:= $(shell pwd)
-RENDERDIR	:= $(TOP)/../render
+ifndef BASEDIR
+  BASEDIR	:= $(TOP)/../render
+endif
 
-VALIDATEDIR	:= $(RENDERDIR)/validate
-PROFILEDIR	:= $(RENDERDIR)/profile
+VALIDATEDIR	:= $(BASEDIR)/validate
+PROFILEDIR	:= $(BASEDIR)/profile
 
-HTMLDIR		:= $(RENDERDIR)/html
-NOCHUNKDIR	:= $(RENDERDIR)/nochunk
+HTMLDIR		:= $(BASEDIR)/html
+NOCHUNKDIR	:= $(BASEDIR)/nochunk
 
-FODIR		:= $(RENDERDIR)/fo
-PDFDIR		:= $(RENDERDIR)/pdf
+FODIR		:= $(BASEDIR)/fo
+PDFDIR		:= $(BASEDIR)/pdf
 
-TROUBLEDIR	:= $(RENDERDIR)/trouble
-DUMPDIR		:= $(RENDERDIR)/commands
-DLLISTDIR	:= $(RENDERDIR)/download-list
+TROUBLEDIR	:= $(BASEDIR)/trouble
+DUMPDIR		:= $(BASEDIR)/commands
+DLLISTDIR	:= $(BASEDIR)/download-list
 
 CHUNK_QUIET	:= 1
 ROOT_ID		:=
 
-ARCHS		:= x86 x86_64 x86_64-64 \
+ifndef ARCHS
+  ARCHS		:= x86 x86_64 x86_64-64 \
 		   sparc sparc64 sparc64-64 \
 		   mips mips64 mips64-64 \
 		   ppc ppc64 ppc64-64
+endif
 
 ifdef V
   Q =
@@ -212,7 +216,7 @@ FG_GREEN := $(shell echo -e '\e[0;32m')
 FG_BLUE := $(shell echo -e '\e[0;34m')
 FG_DEFAULT := $(shell echo -e '\e[0;0m')
 help:
-	@echo "Output: $(RENDERDIR)"
+	@echo "Output: $(BASEDIR)"
 	@echo
 	@echo "HTML Targets"
 	@echo "  $(FG_GREEN)clfs lfs tidy html render titlepage $(FG_BLUE)$(ARCHS_HTML)$(FG_DEFAULT)"
